@@ -2,5 +2,5 @@
 *.obj
 *.d~
 .DS_Store
-*.
+winsamp
 *.exe
