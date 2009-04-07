@@ -2,3 +2,5 @@
 *.obj
 *.d~
 .DS_Store
+*.
+*.exe
