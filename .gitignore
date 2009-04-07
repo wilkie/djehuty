@@ -4,3 +4,6 @@
 .DS_Store
 winsamp
 *.exe
+*.ppk
+key
+key.pub
