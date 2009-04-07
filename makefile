@@ -174,11 +174,11 @@ endif
 
 clean:
 ifeq (${MY_ARCH},Darwin)
-	rm $(OBJS_MAC)
+	rm -f $(OBJS_MAC)
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	rm $(OBJS_WIN)
+	rm -f $(OBJS_WIN)
 else
-	rm $(OBJS_LINUX)
+	rm -f $(OBJS_LINUX)
 endif
 endif
