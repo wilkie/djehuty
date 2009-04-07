@@ -1,0 +1,316 @@
+module core.sound;
+
+import interfaces.stream;
+
+import core.time;
+import core.file;
+import core.string;
+import core.audio;
+import core.wavelet;
+import core.thread;
+import core.timer;
+
+import codecs.audio.codec;
+import codecs.audio.all;
+
+import console.main;
+
+// Section: Enums
+
+// Description: The state of a Sound object indicates the state of the audio it is in charge of playing.
+enum SoundState
+{
+	// Description: Indicates that the Sound object is currently paused.
+	Paused,
+	// Description: Indicates that the Sound object is currently stopped.
+	Stopped,
+	// Description: Indicates that the Sound object is currently playing.
+	Playing,
+}
+
+// Section: Core/Resources
+
+// Description: This class will abstract away the low-level Audio class.  It can load an audio file and control its playback with simple and common interactions.
+class Sound
+{
+
+
+	// Only temporary.. the user will be expected to do this themselves.
+	Timer tmr;
+
+	bool timerProc(Timer tmr)
+	{
+		getPositionString();
+		return true;
+	}
+
+	// Description: This constructor will create the object and load the file using the filename passed.
+	// filename: The string containing the filename of the audio file to load.
+	this(StringLiteral filename)
+	{
+		wavDevice = new Audio;
+		wavDevice.setDelegate(&_bufferCallback);
+
+		tmr = new Timer();
+		tmr.setInterval(1);
+		tmr.setDelegate(&timerProc);
+
+		load(filename);
+	}
+
+	~this()
+	{
+		tmr.stop();
+	}
+
+	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.
+	// filename: The string containing the filename of the audio file to load.
+	bool load(StringLiteral filename)
+	{
+		load(new File(filename));
+
+		return false;
+	}
+
+	// Description: This function will stream the audio using the stream given, stopping and unloading any current audio playback.
+	// stream: The Stream containing the audio information to decode.
+	StreamData load(AbstractStream stream)
+	{
+		_doneBuffering = false;
+		_state = SoundState.Paused;
+
+		buffers[0] = new Wavelet();
+		buffers[1] = new Wavelet();
+
+		inStream = stream;
+
+		StreamData ret;
+
+		// Find the correct audio codec for this audio stream
+		ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
+
+		if (ret == StreamData.Invalid) { return ret; }
+
+		Console.putln("Sound: Codec name: ", _curCodec.getName().array);
+
+		Console.putln("Sound: Audio File Loaded : Length: ", wavInfo.totalTime);
+		getTotalTimeString();
+
+		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
+
+		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.pause();
+
+		_state = SoundState.Paused;
+
+		if (ret == StreamData.Complete)
+		{
+			Console.putln("Sound : Decoded Last Buffer");
+			wavDevice.sendBuffer(buffers[0], true);
+
+			_doneBuffering = true;
+
+			return ret;
+		}
+		else
+		{
+			wavDevice.sendBuffer(buffers[0]);
+		}
+
+		bufferIndex = 1;
+		/*
+		_audioLoader = new Thread();
+		_audioLoader.setDelegate(&_bufferCallback);
+		_audioLoader.start(); */
+
+		_bufferCallback();
+
+		return ret;
+	}
+
+	// Description: Will start or resume the playback of the currently loaded audio stream.
+	void play()
+	{
+		if (_state == SoundState.Stopped || _state == SoundState.Playing)
+		{
+			Console.put(" SSSStoopeeedd?!?!");
+			stop();
+
+			inStream.rewind();
+
+			load(inStream);
+		}
+
+		wavDevice.resume();
+		//tmr.start();
+
+		_state = SoundState.Playing;
+	}
+
+	// Description: Will pause the currently playing audio stream.
+	void pause()
+	{
+		if (_state == SoundState.Playing)
+		{
+			_state = SoundState.Paused;
+			wavDevice.pause();
+			//tmr.stop();
+		}
+	}
+
+	// Description: Will stop the currently playing audio stream and reset the device.
+	void stop()
+	{
+		_state = SoundState.Stopped;
+		wavDevice.closeDevice();
+
+		// the audio device will close
+		// and therefore reset its clock
+		_synch = Time.init;
+	//	tmr.stop();
+	}
+
+	// Description: Will return the total length of the audio stream.
+	// Returns: The total length of the loaded audio.
+	Time getTotalTime()
+	{
+		Time tme;
+		if (inStream !is null)
+		{
+			tme.fromMilliseconds(cast(long)wavInfo.totalTime);
+		}
+
+		return tme;
+	}
+
+	String getTotalTimeString()
+	{
+		Time tme = getTotalTime();
+		tme.toString();
+
+		String str = new String("");
+
+		return str;
+	}
+
+	// Description: Will return the current position of the audio playback.
+	// Returns: The current position of playback.
+	Time getPosition()
+	{
+		if (inStream !is null)
+		{
+			return wavDevice.getPosition() + _synch;
+		}
+
+		Time retTime;
+
+		return retTime;
+	}
+
+	String getPositionString()
+	{
+		Time tme = getPosition();
+
+		tme.toString();
+		String str = new String("");
+
+		return str;
+	}
+
+	// Description: Will change the position of playback.
+	// toPosition: The microseconds from the beginning to set the audio playback.
+	void setPosition(ulong toPosition)
+	{
+		stop();
+
+		_doneBuffering = false;
+
+		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.pause();
+		_state = SoundState.Paused;
+
+		Time tme;
+		tme.fromMicroseconds(cast(long)toPosition);
+		_curCodec.seek(inStream, buffers[0].getAudioFormat(), wavInfo, tme);
+
+		_curCodec.decode(inStream, buffers[0], wavInfo);
+
+		_synch.fromMicroseconds(cast(long)toPosition);
+
+		buffers[0].crop(tme);
+
+		wavDevice.sendBuffer(buffers[0]);
+
+		bufferIndex = 1;
+
+		_bufferCallback();
+		play();
+	}
+
+	// Description: Will get the current state of playback.
+	// Returns: The current state of the device.
+	SoundState getState()
+	{
+		return _state;
+	}
+
+protected:
+
+	Wavelet buffers[2];
+	uint bufferIndex;
+
+	ulong curPos;
+
+	AudioCodec _curCodec;
+	AbstractStream inStream;
+
+	Audio wavDevice;
+	AudioFormat wavFormat;
+	AudioInfo wavInfo;
+
+	SoundState _state;
+
+	// the time that the audio device has is the amount of data
+	// that has been fed to the audio device
+
+	// this may be different to our perception of how much of a
+	// particular file or stream has been played
+	Time _synch;
+
+	bool _doneBuffering;
+
+	int curDecoder;
+
+	Thread _audioLoader;
+
+	void _bufferCallback()
+	{
+		if (_state == SoundState.Stopped) { return; }
+		if (_doneBuffering) { return; }
+
+		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
+
+		// send the next buffer
+		if (ret == StreamData.Complete)
+		{
+			Console.putln("Sound : Decoded Last Buffer");
+			wavDevice.sendBuffer(buffers[bufferIndex], true);
+
+			_doneBuffering = true;
+		}
+		else
+		{
+			wavDevice.sendBuffer(buffers[bufferIndex]);
+		}
+
+
+		if (bufferIndex == 0)
+			{ bufferIndex = 1; }
+		else
+			{ bufferIndex = 0; }
+
+
+
+		//Console.putln("Sound : Buffer Sent");
+	}
+}
