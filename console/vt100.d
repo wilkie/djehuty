@@ -168,7 +168,7 @@ class ConsoleVT100 : ConsoleBuffer
 
 					if (bgclr != -1)
 					{
-						cur_bg_color = bgclr;
+						_cur_bg_color = bgclr;
 				    }
 
 				    _cur_fg_color = _cur_fg_color % 8;
