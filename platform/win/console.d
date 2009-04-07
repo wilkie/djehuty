@@ -121,7 +121,7 @@ void ConsoleSetColors(uint fg, uint bg, int bright)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	curAttribs = cast(ushort)(_fgclrvalues[fg] | _bgclrvalues[bg] | (FOREGROUND_INTENSITY * cast(ushort)bright));
+	_curAttribs = cast(ushort)(_fgclrvalues[fg] | _bgclrvalues[bg] | (FOREGROUND_INTENSITY * cast(ushort)bright));
 
 	SetConsoleTextAttribute(hStdout, _curAttribs);
 }

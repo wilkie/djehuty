@@ -1334,6 +1334,7 @@ int mainloop()
 		            }
 
 			}
+			}
 		}
 		else
 		{

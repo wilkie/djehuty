@@ -1,6 +1,6 @@
 module platform.win.controls.osbutton;
 
-import bases.button;
+import controls.button;
 import core.string;
 
 import platform.win.definitions;
@@ -14,7 +14,7 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-class OSButton : BaseButton, OSControl
+class OSButton : Button, OSControl
 {
 public:
 	this(int x, int y, int width, int height, String value)
