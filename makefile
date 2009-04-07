@@ -1,7 +1,6 @@
 
 MY_ARCH := $(shell uname)
 
-DMDPATH = c:/d1/dmd/bin/
 DC = ldc
 OBJCC = gcc
 DFLAGS =
@@ -11,7 +10,7 @@ PLATFORM = PlatformWindows
 
 LFLAGS_LINUX = -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation
-LFLAGS_WIN = platform/win/lib/gdi32.lib $(DMDPATH)../lib/phobos.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib
+LFLAGS_WIN = platform/win/lib/gdi32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib
 
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
@@ -86,7 +85,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
-	@$(DMDPATH)dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
+	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
 else
 endif
 endif
@@ -96,7 +95,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
-	@$(DMDPATH)dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -unittest $<
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -unittest $<
 else
 endif
 endif
@@ -134,12 +133,12 @@ app: libdeps_xomb
 
 	@echo compiling test program...
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@$(DMDPATH)../../dm/bin/lib -c -p64 djehutyxomb.lib $(OBJS_XOMB) $(LFLAGS_WIN)
+	@lib -c -p64 djehutyxomb.lib $(OBJS_XOMB) $(LFLAGS_WIN)
 endif
 
 	@echo linking...
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@$(DMDPATH)dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
+	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
 endif
 
 
@@ -154,7 +153,7 @@ ifeq (${MY_ARCH},Darwin)
 	@$(DC) -c winsamp.d -o winsamp.o -fversion=PlatformOSX
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@$(DMDPATH)../../dm/bin/lib -c -p64 djehuty.lib $(OBJS_WIN) $(LFLAGS_WIN)
+#@lib -c -p64 djehuty.lib $(OBJS_WIN) $(LFLAGS_WIN)
 
 else
 	#@$(DC) winsamp.d -o winsamp.o -fversion=PlatformLinux
@@ -167,7 +166,7 @@ ifeq (${MY_ARCH},Darwin)
 	@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@$(DMDPATH)dmd.exe -w -version=$(PLATFORM) -unittest winsamp.d djehuty.lib
+	@dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
 endif
