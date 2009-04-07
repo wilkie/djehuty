@@ -11,7 +11,7 @@ PLATFORM = PlatformWindows
 
 LFLAGS_LINUX = -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation
-LFLAGS_WIN = c:/d2/dm/lib/gdi32.lib $(DMDPATH)../lib/phobos.lib c:/d2/dm/lib/WS2_32.lib c:/d2/dm/lib/winmm.lib c:/d2/dm/lib/comctl32.lib c:/d2/dm/lib/msimg32.lib c:/d2/dm/lib/advapi32.lib c:/d2/dm/lib/opengl32.lib c:/d2/dm/lib/glu32.lib
+LFLAGS_WIN = platform/win/lib/gdi32.lib $(DMDPATH)../lib/phobos.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib
 
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
