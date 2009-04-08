@@ -1,6 +1,5 @@
 module platform.win.controls.oshscrollbar;
 
-import bases.scroll;
 import core.string;
 
 import platform.win.definitions;
@@ -14,7 +13,9 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-class OSHScrollBar : BaseScroll, OSControl
+import controls.hscrollbar;
+
+class OSHScrollBar : HScrollBar, OSControl
 {
 public:
 	this(int x, int y, int width, int height)

@@ -1,6 +1,5 @@
 module platform.win.controls.osvscrollbar;
 
-import bases.scroll;
 import core.string;
 
 import platform.win.definitions;
@@ -14,9 +13,9 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-import std.stdio;
+import controls.vscrollbar;
 
-class OSVScrollBar : BaseScroll, OSControl
+class OSVScrollBar : VScrollBar, OSControl
 {
 public:
 	this(int x, int y, int width, int height)

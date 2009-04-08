@@ -7,9 +7,14 @@ import core.string;
 import core.timer;
 import core.graphics;
 
-import bases.scroll;
+import bases.windowedcontrol;
 
-public import bases.scroll : ScrollEvent;
+enum ScrollEvent : uint
+{
+	Selected,
+	Unselected,
+	Scrolled,
+}
 
 template ControlPrintCSTRList()
 {
@@ -23,7 +28,7 @@ template ControlPrintCSTRList()
 
 
 // Description: This control provides a standard vertical scroll bar.
-class VScrollBar : BaseScroll
+class VScrollBar : WindowedControl
 {
 public:
 
@@ -56,6 +61,9 @@ public:
 		_readyTimer.setInterval(100);
 	}
 
+	// support Events
+	mixin(ControlAddDelegateSupport!("VScrollBar", "ScrollEvent"));
+
 	override void OnAdd()
 	{
 		m_whatishovered = 0;
@@ -69,20 +77,20 @@ public:
 		//one more for the body
 		//one more for the thumb
 
-		int total_value_space = m_large_change + (m_max - m_min);
+		long total_value_space = m_large_change + (m_max - m_min);
 
-		float percent = cast(float)m_large_change / cast(float)total_value_space;
+		double percent = cast(double)m_large_change / cast(double)total_value_space;
 
 		m_area = (_height - (_width*2))+2;
 
-		m_thumb_size = cast(int)(cast(float)m_area * percent);
+		m_thumb_size = cast(int)(cast(double)m_area * percent);
 
 		if (m_thumb_size < 10) { m_thumb_size = 10; }
 
 		m_area -= m_thumb_size;
 
-		percent = cast(float)(m_value - m_min) / cast(float)(m_max - m_min);
-		m_thumb_pos_y = cast(int)(cast(float)m_area * percent) + _y + _width-1;
+		percent = cast(double)(m_value - m_min) / cast(double)(m_max - m_min);
+		m_thumb_pos_y = cast(int)(cast(double)m_area * percent) + _y + _width-1;
 		m_thumb_pos_b = m_thumb_pos_y + m_thumb_size;
 
 		//BODY
@@ -608,8 +616,56 @@ public:
 		return true;
 	}
 
+	void IncrementSmall()
+	{
+	}
 
+	void DecrementSmall()
+	{
+	}
 
+	void IncrementLarge()
+	{
+	}
+
+	void DecrementLarge()
+	{
+	}
+
+	void SetEnabled(bool bEnable)
+	{
+		_enabled = bEnable;
+	}
+
+	bool GetEnabled()
+	{
+		return _enabled;
+	}
+
+	void GetRange(out long min, out long max)
+	{
+	}
+
+	void SetRange(long min, long max)
+	{
+	}
+
+	void SetValue(long newValue)
+	{
+	}
+
+	long GetValue()
+	{
+		return 0;
+	}
+
+	void SetScrollPeriods(long smallChange, long largeChange)
+	{
+	}
+
+	void GetScrollPeriods(out long smallChange, out long largeChange)
+	{
+	}
 
 protected:
 
@@ -735,10 +791,10 @@ protected:
 	int m_last_x;
 	int m_last_y;
 
-	int m_min;
-	int m_max;
-	int m_value;
+	long m_min=0;
+	long m_max=30;
+	long m_value=0;
 
-	uint m_large_change;
-	uint m_small_change;
+	long m_large_change=5;
+	long m_small_change=1;
 }

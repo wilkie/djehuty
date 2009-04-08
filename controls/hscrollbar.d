@@ -7,9 +7,14 @@ import core.string;
 import core.timer;
 import core.graphics;
 
-import bases.scroll;
+import bases.windowedcontrol;
 
-public import bases.scroll : ScrollEvent;
+enum ScrollEvent : uint
+{
+	Selected,
+	Unselected,
+	Scrolled,
+}
 
 template ControlPrintCSTRList()
 {
@@ -23,7 +28,7 @@ template ControlPrintCSTRList()
 
 
 // Description: This control provides a standard horizontal scroll bar.
-class HScrollBar : BaseScroll
+class HScrollBar : WindowedControl
 {
 public:
 
@@ -48,6 +53,9 @@ public:
 		_readyTimer.setInterval(100);
 		_clickTimer.setInterval(50);
 	}
+
+	// support Events
+	mixin(ControlAddDelegateSupport!("HScrollBar", "ScrollEvent"));
 
 	override void OnAdd()
 	{
@@ -607,8 +615,56 @@ public:
 		return true;
 	}
 
+	void IncrementSmall()
+	{
+	}
 
+	void DecrementSmall()
+	{
+	}
 
+	void IncrementLarge()
+	{
+	}
+
+	void DecrementLarge()
+	{
+	}
+
+	void SetEnabled(bool bEnable)
+	{
+		_enabled = bEnable;
+	}
+
+	bool GetEnabled()
+	{
+		return _enabled;
+	}
+
+	void GetRange(out long min, out long max)
+	{
+	}
+
+	void SetRange(long min, long max)
+	{
+	}
+
+	void SetValue(long newValue)
+	{
+	}
+
+	long GetValue()
+	{
+		return 0;
+	}
+
+	void SetScrollPeriods(long smallChange, long largeChange)
+	{
+	}
+
+	void GetScrollPeriods(out long smallChange, out long largeChange)
+	{
+	}
 
 protected:
 
@@ -733,5 +789,12 @@ protected:
 
 	int m_last_x;
 	int m_last_y;
+
+	long m_min=0;
+	long m_max=30;
+	long m_value=0;
+
+	long m_large_change=5;
+	long m_small_change=1;
 }
 
