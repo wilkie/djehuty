@@ -6,16 +6,8 @@ module platform.unix.scaffolds.socket;
 import platform.unix.vars;
 import platform.unix.common;
 
-import core.view;
-import core.graphics;
-
-import bases.window;
-import core.window;
 import core.string;
-import core.file;
-
 import core.main;
-
 import core.definitions;
 
 import console.main;

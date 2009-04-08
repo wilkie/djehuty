@@ -10,7 +10,7 @@ import core.main;
 import core.definitions;
 import core.window;
 import core.view;
-import bases.window;
+import core.basewindow;
 
 import console.main;
 import console.window;

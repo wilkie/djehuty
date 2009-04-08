@@ -13,15 +13,11 @@ template ControlPrintCSTRList()
 	const char[] ControlPrintCSTRList = `
 	this(int x, int y, int width, int height, String value)
 	{
-		super(x,y,width,height);
-
-		_value = new String(value);
+		super(x,y,width,height,value);
 	}
 	this(int x, int y, int width, int height, StringLiteral value)
 	{
-		super(x,y,width,height);
-
-		_value = new String(value);
+		super(x,y,width,height,value);
 	}
 `;
 }
@@ -61,7 +57,7 @@ class ToggleField : WindowedControl
 	{
 		_btnstate = 1;
 	}
-	
+
 	void setText(String newTitle)
 	{
 		_value = new String(newTitle);
