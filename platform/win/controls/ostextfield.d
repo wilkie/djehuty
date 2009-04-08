@@ -1,6 +1,6 @@
 module platform.win.controls.ostextfield;
 
-import bases.textfield;
+import controls.textfield;
 import core.string;
 
 import platform.win.definitions;
@@ -14,7 +14,7 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-class OSTextField : BaseTextField, OSControl
+class OSTextField : TextField, OSControl
 {
 public:
 	this(int x, int y, int width, int height, String value)

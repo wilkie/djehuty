@@ -7,9 +7,7 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import bases.textfield;
-
-public import bases.textfield : TextFieldEvent;
+import bases.windowedcontrol;
 
 template ControlPrintCSTRList()
 {
@@ -25,32 +23,39 @@ template ControlPrintCSTRList()
 `;
 }
 
+enum TextFieldEvent : uint
+{
+	Selected,
+	Unselected,
+	Changed,
+}
+
 // Description: This control provides a standard one line text field.
-class TextField : BaseTextField
+class TextField : WindowedControl
 {
 
 public:
 
 	this(int x, int y, int width, int height, String value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
 
-		_clr_highlight.setRGB(0xf8,0xf8,0xf8);
-		_clr_outline = Color.DarkGray;
-		_clr_background = Color.White;
+		_value = new String(value);
 	}
 
 	this(int x, int y, int width, int height, StringLiteral value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
 
-		_clr_highlight.setRGB(0xd8,0xd8,0xd8);
-		_clr_outline = Color.DarkGray;
-		_clr_background = Color.White;
+		_value = new String(value);
 	}
 
 	override void OnAdd()
 	{
+		_clr_highlight.setRGB(0xf8,0xf8,0xf8);
+		_clr_outline = Color.DarkGray;
+		_clr_background = Color.White;
+
 		Graphics grp = _view.lockDisplay();
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
@@ -541,9 +546,29 @@ public:
 		}
 	}
 
+	// support Events
+	mixin(ControlAddDelegateSupport!("TextField", "TextFieldEvent"));
+
+	void setText(String newTitle)
+	{
+		_value = new String(newTitle);
+	}
+
+	void setText(StringLiteral newTitle)
+	{
+		_value = new String(newTitle);
+	}
+
+	String getText()
+	{
+		return _value;
+	}
+
+protected:
+
+	String _value;
 
 private:
-
 
 	void RefreshViewport(uint onPos)
 	{
