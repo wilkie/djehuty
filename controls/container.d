@@ -1,7 +1,7 @@
 module controls.container;
 
 import interfaces.container;
-import bases.windowedcontrol;
+import core.windowedcontrol;
 
 import core.window;
 import core.control;

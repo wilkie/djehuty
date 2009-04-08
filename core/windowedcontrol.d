@@ -1,4 +1,4 @@
-module bases.windowedcontrol;
+module core.windowedcontrol;
 
 import core.control;
 import core.string;

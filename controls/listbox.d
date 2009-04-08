@@ -11,7 +11,7 @@ import utils.arraylist;
 import interfaces.list;
 
 import controls.vscrollbar;
-import bases.windowedcontrol;
+import core.windowedcontrol;
 
 template ControlPrintCSTRList()
 {

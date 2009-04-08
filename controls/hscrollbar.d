@@ -7,7 +7,7 @@ import core.string;
 import core.timer;
 import core.graphics;
 
-import bases.windowedcontrol;
+import core.windowedcontrol;
 
 enum ScrollEvent : uint
 {

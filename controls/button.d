@@ -6,7 +6,7 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import bases.windowedcontrol;
+import core.windowedcontrol;
 
 import graphics.brush;
 

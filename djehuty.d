@@ -44,7 +44,7 @@ public import core.unicode;
 
 // basewindow
 public import core.basewindow 		: BaseWindow;
-public import bases.windowedcontrol : WindowedControl;
+public import core.windowedcontrol	: WindowedControl;
 
 // main class
 public import core.main 			: Djehuty;

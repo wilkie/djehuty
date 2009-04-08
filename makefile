@@ -24,9 +24,8 @@ DFILES_PLATFORM_UNIX = platform/unix/cairo/cairo.d platform/unix/scaffolds/threa
 DFILES_PLATFORM_WIN = platform/win/main.d platform/win/common.d platform/win/scaffold.d platform/win/vars.d platform/win/console.d platform/win/definitions.d platform/win/scaffolds/wave.d platform/win/scaffolds/graphics.d platform/win/scaffolds/thread.d platform/win/scaffolds/menu.d platform/win/scaffolds/window.d platform/win/scaffolds/view.d platform/win/scaffolds/color.d platform/win/scaffolds/file.d platform/win/scaffolds/socket.d platform/win/scaffolds/app.d platform/win/controls/oslistfield.d platform/win/controls/osprogressbar.d platform/win/controls/oslistbox.d platform/win/controls/oshscrollbar.d platform/win/controls/osvscrollbar.d platform/win/controls/osbutton.d platform/win/controls/ostextfield.d platform/win/controls/ostogglefield.d platform/win/controls/ostrackbar.d platform/win/scaffolds/time.d platform/win/oscontrolinterface.d platform/win/scaffolds/opengl.d
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
-DFILES_CORE = core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d
+DFILES_CORE = core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
 DFILES_CONTROLS = controls/container.d controls/trackbar.d controls/radiogroup.d controls/progressbar.d controls/togglefield.d controls/oscontrol.d controls/listfield.d controls/listbox.d controls/vscrollbar.d controls/hscrollbar.d controls/button.d controls/textfield.d
-DFILES_BASES = bases/windowedcontrol.d
 DFILES_UTILS = utils/arraylist.d utils/linkedlist.d
 DFILES_PARSERS = parsers/cfg.d
 DFILES = djehuty.d
@@ -46,7 +45,7 @@ DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
 
 DFILES_RESOURCE = staticrsc.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_BASES:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
+OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 
