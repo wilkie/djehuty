@@ -1,6 +1,6 @@
 module platform.win.controls.osprogressbar;
 
-import bases.progressbar;
+import controls.progressbar;
 import core.string;
 
 import platform.win.definitions;
@@ -14,7 +14,7 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-class OSProgressBar : BaseProgressBar, OSControl
+class OSProgressBar : ProgressBar, OSControl
 {
 public:
 	this(int x, int y, int width, int height)

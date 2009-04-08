@@ -6,7 +6,7 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import bases.progressbar;
+import bases.windowedcontrol;
 
 template ControlPrintCSTRList()
 {
@@ -20,7 +20,7 @@ template ControlPrintCSTRList()
 `;
 }
 
-class ProgressBar : BaseProgressBar
+class ProgressBar : WindowedControl
 {
 	// Description: This will create a button with the specified dimensions and text.
 	this(int x, int y, int width, int height)
@@ -48,4 +48,39 @@ class ProgressBar : BaseProgressBar
 		g.drawRect(_x, _y, barWidth + _x, _b);
 
 	}
+
+	void setRange(long min, long max)
+	{
+		_min = min;
+		_max = max;
+
+		if (_min > _max) { _min = _max; }
+		if (_value < _min) { _value = _min; }
+		if (_value > _max) { _value = _max; }
+	}
+
+	void getRange(out long min, out long max)
+	{
+		min = _min;
+		max = _max;
+	}
+
+	void setValue(long value)
+	{
+		_value = value;
+
+		if (_value < _min) { _value = _min; }
+		if (_value > _max) { _value = _max; }
+	}
+
+	long getValue()
+	{
+		return _value;
+	}
+
+protected:
+
+	long _min = 0;
+	long _max = 100;
+	long _value = 0;
 }

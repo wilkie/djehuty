@@ -26,7 +26,7 @@ DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb
 
 DFILES_CORE = core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d
 DFILES_CONTROLS = controls/container.d controls/trackbar.d controls/radiogroup.d controls/progressbar.d controls/togglefield.d controls/oscontrol.d controls/listfield.d controls/listbox.d controls/vscrollbar.d controls/hscrollbar.d controls/button.d controls/textfield.d
-DFILES_BASES = bases/windowedcontrol.d bases/progressbar.d bases/window.d
+DFILES_BASES = bases/windowedcontrol.d bases/window.d
 DFILES_UTILS = utils/arraylist.d utils/linkedlist.d
 DFILES_PARSERS = parsers/cfg.d
 DFILES = djehuty.d
