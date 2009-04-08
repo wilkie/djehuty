@@ -23,7 +23,7 @@ template ControlAddDelegateSupport(StringLiteral8 ControlClass, StringLiteral8 C
 		`
 		alias void delegate (` ~ ControlClass ~ `, ` ~ ControlEventEnum ~`) ControlBaseCallback;
 
-		public void SetBaseDelegate(ControlBaseCallback callback) {
+		public void setBaseDelegate(ControlBaseCallback callback) {
 
 			_internal_callback_Base = callback;
 

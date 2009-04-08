@@ -1,6 +1,6 @@
 module platform.win.controls.oslistbox;
 
-import bases.listbox;
+import controls.listbox;
 import core.string;
 
 import platform.win.definitions;
@@ -16,9 +16,7 @@ import core.control;
 
 import interfaces.list;
 
-import std.stdio;
-
-class OSListBox : BaseListBox, OSControl
+class OSListBox : ListBox, OSControl
 {
 public:
 

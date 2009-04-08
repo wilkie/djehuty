@@ -326,3 +326,8 @@ private:
 
 	Size _value_bounds;
 }
+
+void ToggleFieldSetGrouped(ref ToggleField ctrl, bool grouped)
+{
+  ctrl._is_grouped = grouped;
+}

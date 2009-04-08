@@ -7,6 +7,8 @@ import core.string;
 import core.graphics;
 import core.window;
 
+import utils.arraylist;
+
 import bases.windowedcontrol;
 
 import controls.button;
@@ -52,7 +54,9 @@ class ListField : WindowedControl, AbstractList!(String)
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
 		super(x,y,width,height);
-		_list = list;
+
+		_list = new ArrayList!(String)();
+		if (list !is null) { _list.addList(list); }
 	}
 
 	// support Events
@@ -197,7 +201,7 @@ protected:
 	ListBox control_listbox;
 	Window control_window;
 
-	AbstractList!(String) _list;
+	ArrayList!(String) _list;
 
 	void _ButtonEvents(Button button, ButtonEvent evt)
 	{
@@ -224,7 +228,7 @@ protected:
 			control_window.remove();
 
 			String data;
-			control_listbox.getItem(data, control_listbox.GetSelectionStart());
+			control_listbox.getItem(data, control_listbox.getSelectionStart());
 		}
 	}
 }

@@ -4,7 +4,7 @@ import core.control;
 import core.string;
 import core.graphics;
 
-import bases.togglefield;
+import controls.togglefield;
 
 // Description: This control provides a method of grouping together toggle fields to form a collection of mutually exclusive 'radio' fields.
 class RadioGroup : Control
@@ -24,19 +24,19 @@ public:
 
 
 	// Description: This function will add a toggle field control to the group.
-	void addControl(BaseToggleField inctrl)
+	void addControl(ToggleField inctrl)
 	{
 		if (_toggleFields is null)
 		{
-			_toggleFields = new BaseToggleField[_capacity];
+			_toggleFields = new ToggleField[_capacity];
 			_count = 0;
 		}
 
 		if (_capacity == _count)
 		{
-			BaseToggleField[] _tmp = _toggleFields;
+			ToggleField[] _tmp = _toggleFields;
 			_capacity *= 2;
-			_toggleFields = new BaseToggleField[_capacity];
+			_toggleFields = new ToggleField[_capacity];
 			_toggleFields[0.._count] = _tmp[0.._count];
 		}
 
@@ -45,7 +45,7 @@ public:
 
 		ToggleFieldSetGrouped(inctrl, true);
 
-		inctrl.SetBaseDelegate(&ControlProc);
+		inctrl.setDelegate(&ControlProc);
 
 		if (_window !is null)
 		{
@@ -55,7 +55,7 @@ public:
 
 private:
 
-	void ControlProc(BaseToggleField ctrl, ToggleFieldEvent evt)
+	void ControlProc(ToggleField ctrl, ToggleFieldEvent evt)
 	{
 		// go through each, and unselect, whilst keeping selected the current control
 
@@ -63,12 +63,12 @@ private:
 		{
 			if (_toggleFields[i] !is ctrl)
 			{
-				_toggleFields[i].Unselect();
+				_toggleFields[i].unselect();
 			}
 		}
 	}
 
-	BaseToggleField _toggleFields[] = null;
+	ToggleField _toggleFields[] = null;
 	uint _capacity = 10;
 	uint _count = 0;
 }

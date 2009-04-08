@@ -6,13 +6,12 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
+import utils.arraylist;
+
 import interfaces.list;
 
 import controls.vscrollbar;
-
-import bases.listbox;
-
-public import bases.listbox : ListBoxEvent;
+import bases.windowedcontrol;
 
 template ControlPrintCSTRList()
 {
@@ -24,15 +23,21 @@ template ControlPrintCSTRList()
 `;
 }
 
-
+enum ListBoxEvent : uint
+{
+	Selected,
+	Unselected
+}
 
 // Description: This control provides a standard list selection box.
-class ListBox : BaseListBox
+class ListBox : WindowedControl
 {
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
-		super(x,y,width,height,list);
-		control_scroll = new VScrollBar(_r - 17,_y, 17, _height);
+		super(x,y,width,height);
+
+		_list = new ArrayList!(String)();
+		if (list !is null) { _list.addList(list); }
 	}
 
 	// support Events
@@ -41,6 +46,11 @@ class ListBox : BaseListBox
 	// handle events
 	override void OnAdd()
 	{
+		if (control_scroll is null)
+		{
+			control_scroll = new VScrollBar(_r - 17,_y, 17, _height);
+		}
+
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
 		Graphics grp = _view.lockDisplay();
@@ -174,6 +184,59 @@ class ListBox : BaseListBox
 		return false;
 	}
 
+	uint getSelectionStart()
+	{
+		return m_sel_start;
+	}
+	
+	// AbstractList Methods
+
+	void addItem(String data)
+	{
+		_list.addItem(data);
+
+		_checkScrollBarStatus();
+	}
+
+	void addItem(StringLiteral data)
+	{
+		_list.addItem(new String(data));
+
+		_checkScrollBarStatus();
+	}
+
+	void addList(AbstractList!(String) list)
+	{
+		_list.addList(list);
+
+		_checkScrollBarStatus();
+	}
+
+    bool getItem(out String data, uint index)
+    {
+		return _list.getItem(data, index);
+    }
+
+	Iterator getIterator()
+	{
+		return _list.getIterator();
+	}
+
+	bool getItem(out String data, ref Iterator irate)
+	{
+		return _list.getItem(data, irate);
+    }
+
+    uint length()
+    {
+		return _list.length();
+    }
+
+	bool remove(out String item)
+	{
+		return _list.remove(item);
+    }
+
 protected:
 
 	Font _font;
@@ -186,11 +249,17 @@ protected:
 	Color m_clrbackground;
 	Color m_clroutline;
 
+	uint m_first_visible;
+	uint m_total_visible;
+	uint m_sel_start;
+
+	ArrayList!(String) _list;
+
 	int m_hoverstate;
 
 	VScrollBar control_scroll;
 
-	override void _checkScrollBarStatus()
+	void _checkScrollBarStatus()
 	{
 		//make sure list refits the list when it gets taller
 		if (m_first_visible > _list.length() - m_total_visible + 2)
