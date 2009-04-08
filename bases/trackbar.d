@@ -72,9 +72,9 @@ public:
 
 protected:
 
-	long _min;
-	long _max;
-	long _value;
+	long _min = 0;
+	long _max = 100;
+	long _value = 0;
 
 	ulong _tickFreq;
 

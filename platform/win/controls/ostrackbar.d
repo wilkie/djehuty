@@ -1,6 +1,6 @@
 module platform.win.controls.ostrackbar;
 
-import bases.trackbar;
+import controls.trackbar;
 import core.string;
 
 import platform.win.definitions;
@@ -14,7 +14,7 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-class OSTrackBar : BaseTrackBar, OSControl
+class OSTrackBar : TrackBar, OSControl
 {
 public:
 	this(int x, int y, int width, int height)
