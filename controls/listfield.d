@@ -7,21 +7,26 @@ import core.string;
 import core.graphics;
 import core.window;
 
+import bases.windowedcontrol;
+
 import controls.button;
 import controls.listbox;
 
-import bases.listfield;
-
 import interfaces.list;
 
-public import bases.listfield : ListFieldEvent;
+enum ListFieldEvent : uint
+{
+	Selected,
+	Unselected
+}
 
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
-		super(x,y,width,height,list);
+		super(x,y,width,height);
+		_list = list;
 	}
 `;
 }
@@ -42,26 +47,13 @@ class ListFieldWindow : Window
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : BaseListField
+class ListField : WindowedControl, AbstractList!(String)
 {
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
-		super(x,y,width,height,list);
-		control_button = new Button(_r - _height,_y, _height, _height, "V");
-		control_listbox = new ListBox(0,0, _width,_width / 2);
-		control_window = new ListFieldWindow(_width);
-
-		control_button.setDelegate(&_ButtonEvents);
-		control_listbox.setDelegate(&_ListBoxEvents);
-
-		if (list !is null)
-		{
-			control_listbox.addList(list);
-		}
+		super(x,y,width,height);
+		_list = list;
 	}
-
-	// I do not know why I need this to compile in D 2.0 without warnings:
-	alias BaseListField.remove remove;
 
 	// support Events
 	mixin(ControlAddDelegateSupport!("ListField", "ListFieldEvent"));
@@ -69,6 +61,22 @@ class ListField : BaseListField
 	// handle events
 	override void OnAdd()
 	{
+		if (control_button is null)
+		{
+			control_button = new Button(_r - _height,_y, _height, _height, "V");
+			control_listbox = new ListBox(0,0, _width,_width / 2);
+			control_window = new ListFieldWindow(_width);
+
+			control_button.setDelegate(&_ButtonEvents);
+			control_listbox.setDelegate(&_ListBoxEvents);
+
+			if (_list !is null)
+			{
+				control_listbox.addList(_list);
+			}
+			_list = null;
+		}
+
 		Graphics grp = _view.lockDisplay();
 		_font = new Font(FontSans, 8, 400, false, false, false);
 		grp.setFont(_font);
@@ -125,46 +133,47 @@ class ListField : BaseListField
 		rt.bottom = rt.top + m_entryHeight.y;
 	}
 
+	// List Methods
 
-
-
-
-	// IList Methods
-
-	override void addItem(String data)
+	void addItem(String data)
 	{
 		control_listbox.addItem(data);
 	}
 
-	override void addItem(StringLiteral data)
+	void addItem(StringLiteral data)
 	{
 		control_listbox.addItem(data);
 	}
 
-	override void addList(AbstractList!(String) list)
+	void addList(AbstractList!(String) list)
 	{
 		control_listbox.addList(list);
 	}
 
-    override bool getItem(out String data, uint index)
+    bool getItem(out String data, uint index)
     {
 		return control_listbox.getItem(data, index);
     }
 
-	override Iterator getIterator()
+	Iterator getIterator()
 	{
 		return control_listbox.getIterator();
 	}
 
-    override bool getItem(out String data, ref Iterator irate)
+    bool getItem(out String data, ref Iterator irate)
     {
 		return control_listbox.getItem(data, irate);
     }
 
-    override uint length()
+    uint length()
     {
 		return control_listbox.length();
     }
+
+	bool remove(out String item)
+	{
+		return control_listbox.remove(item);
+	}
 
 protected:
 
@@ -187,6 +196,8 @@ protected:
 	Button control_button;
 	ListBox control_listbox;
 	Window control_window;
+
+	AbstractList!(String) _list;
 
 	void _ButtonEvents(Button button, ButtonEvent evt)
 	{

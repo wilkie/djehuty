@@ -1,6 +1,6 @@
 module platform.win.controls.oslistfield;
 
-import bases.listfield;
+import controls.listfield;
 import core.string;
 
 import platform.win.definitions;
@@ -13,23 +13,19 @@ import bases.window;
 import platform.win.main;
 import core.view;
 import core.control;
+import bases.windowedcontrol;
 
 import interfaces.list;
 
 import utils.arraylist;
 
-import std.stdio;
-
-class OSListField : BaseListField, OSControl
+class OSListField : ListField, OSControl
 {
 public:
 
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
-		super(x,y,width,height,list);
-
-		_list = new ArrayList!(String);
-		if (list !is null) { _list.addList(list); }
+		super(x,y,width,height,null);
 	}
 
 	// support Events
@@ -106,8 +102,6 @@ public:
 		return _list.length();
     }
 
-
-
 protected:
 
 	LRESULT _AppLoopMessage(uint message, WPARAM wParam, LPARAM lParam)
@@ -133,6 +127,4 @@ protected:
 
 	HWND _hWnd;
 	WNDPROC _oldproc;
-
-	AbstractList!(String) _list;
 }
