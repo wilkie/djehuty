@@ -8,7 +8,7 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.oscontrolinterface;
 
-import bases.window;
+import core.basewindow;
 
 import platform.win.main;
 import core.view;

@@ -16,13 +16,6 @@ import core.definitions;
 
 import console.main;
 
-import bases.window;
-
-
-
-
-
-
 // FILE //
 
 bool FileOpen(ref FilePlatformVars fileVars, ref String filename)

@@ -78,8 +78,6 @@ class Container : WindowedControl, AbstractContainer
 			_firstControl = control;
 		}
 
-		//ControlPrintList(_firstControl);
-
 		// increase the number of controls
 		_numControls++;
 

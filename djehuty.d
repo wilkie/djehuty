@@ -7,15 +7,6 @@ module djehuty;
 //  * Vector, Matrix, math common... Math Root Object (casting of common operations?) ?!
 //  * Graphics, Regions
 
-
-// TODO: XOmB Bindings
-//  * Graphics: Drawing Functions
-//  * Socket: Network Functions
-//  * File: Disk Functions
-//  * Window: Window Manager, Menu System
-//  * Thread: Runtime Implemented Threading
-//  * View: Graphics Buffers and Contexts (see Graphics)
-
 // definitions
 public import core.definitions;
 
@@ -52,17 +43,17 @@ public import graphics.region	: Region;
 public import core.unicode;
 
 // basewindow
-public import bases.window 			: BaseWindow;
+public import core.basewindow 		: BaseWindow;
 public import bases.windowedcontrol : WindowedControl;
 
 // main class
-public import core.main 		: Djehuty;
+public import core.main 			: Djehuty;
 
 // utils?
 public import interfaces.list;
 
-public import utils.linkedlist 	: LinkedList;
-public import utils.arraylist 	: ArrayList;
+public import utils.linkedlist 		: LinkedList;
+public import utils.arraylist 		: ArrayList;
 
 // decoders
 public import codecs.codec;

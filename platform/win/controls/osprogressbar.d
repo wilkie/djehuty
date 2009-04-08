@@ -8,11 +8,11 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.oscontrolinterface;
 
-import bases.window;
-
 import platform.win.main;
 import core.view;
 import core.control;
+
+import core.basewindow;
 
 class OSProgressBar : ProgressBar, OSControl
 {

@@ -2,7 +2,6 @@ module platform.win.scaffolds.thread;
 
 import core.view;
 
-import bases.window;
 import core.window;
 import platform.win.main;
 import core.string;

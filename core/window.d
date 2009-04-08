@@ -10,7 +10,7 @@ import core.definitions;
 
 import interfaces.container;
 
-import bases.window;
+import core.basewindow;
 
 import core.control;
 import core.view;

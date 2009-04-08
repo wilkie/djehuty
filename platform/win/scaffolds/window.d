@@ -10,7 +10,7 @@ import core.view;
 import core.graphics;
 import core.color;
 
-import bases.window;
+import core.basewindow;
 import core.window;
 import platform.win.main;
 import core.string;

@@ -2,7 +2,7 @@ module core.main;
 
 extern(System) void DjehutyMain();
 
-import bases.window;
+import core.basewindow;
 import core.window;
 import core.string;
 

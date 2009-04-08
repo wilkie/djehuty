@@ -14,7 +14,7 @@ import core.thread;
 
 import console.window;
 
-import bases.window;
+import core.basewindow;
 
 // import strings
 import core.string;

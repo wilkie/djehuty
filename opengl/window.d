@@ -5,7 +5,7 @@
 
 module opengl.window;
 
-import bases.window;
+import core.basewindow;
 
 import core.string;
 import core.definitions;

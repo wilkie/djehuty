@@ -5,8 +5,6 @@ import platform.win.common;
 
 import core.view;
 import core.graphics;
-
-import bases.window;
 import core.window;
 import platform.win.main;
 import core.string;

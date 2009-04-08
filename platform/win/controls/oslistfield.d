@@ -8,12 +8,12 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.oscontrolinterface;
 
-import bases.window;
-
 import platform.win.main;
 import core.view;
 import core.control;
 import bases.windowedcontrol;
+
+import core.basewindow;
 
 import interfaces.list;
 

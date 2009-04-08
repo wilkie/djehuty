@@ -13,7 +13,7 @@ import core.stream;
 import core.main;
 import core.string;
 
-import bases.window;
+import core.basewindow;
 
 import opengl.window;
 import opengl.gl;

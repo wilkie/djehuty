@@ -6,8 +6,6 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
 
-import bases.window;
-
 import core.view;
 import core.graphics;
 import core.window;
