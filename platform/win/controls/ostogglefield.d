@@ -1,6 +1,6 @@
 module platform.win.controls.ostogglefield;
 
-import bases.togglefield;
+import controls.togglefield;
 import core.string;
 
 import platform.win.definitions;
@@ -14,9 +14,7 @@ import platform.win.main;
 import core.view;
 import core.control;
 
-import std.stdio;
-
-class OSToggleField : BaseToggleField, OSControl
+class OSToggleField : ToggleField, OSControl
 {
 public:
 	this(int x, int y, int width, int height, String value)
@@ -78,12 +76,12 @@ public:
 
 	// Methods
 
-	override void Unselect()
+	override void unselect()
 	{
 		SendMessageW( _hWnd, BM_SETCHECK, BST_UNCHECKED, 0);
 	}
 
-	override void Select()
+	override void select()
 	{
 		SendMessageW( _hWnd, BM_SETCHECK, BST_CHECKED, 0);
 	}

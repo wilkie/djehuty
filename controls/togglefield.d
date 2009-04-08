@@ -6,57 +6,82 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import bases.togglefield;
-
-public import bases.togglefield : ToggleFieldEvent;
+import bases.windowedcontrol;
 
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
 	this(int x, int y, int width, int height, String value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
+
+		_value = new String(value);
 	}
 	this(int x, int y, int width, int height, StringLiteral value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
+
+		_value = new String(value);
 	}
 `;
 }
 
+enum ToggleFieldEvent : uint
+{
+	Selected,
+	Unselected,
+}
+
 // Description: This control provides a standard toggle field.  When grouped, these will act as a exclusive list of options, essentially a 'radio' or 'option' field.  Otherwise they are 'check' fields.
-class ToggleField : BaseToggleField
+class ToggleField : WindowedControl
 {
 	this(int x, int y, int width, int height, String value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
 
-		_brsh = new Brush(Color.White);
+		_value = new String(value);
 	}
 
 	this(int x, int y, int width, int height, StringLiteral value)
 	{
-		super(x,y,width,height,value);
+		super(x,y,width,height);
 
-		_brsh = new Brush(Color.White);
+		_value = new String(value);
 	}
 
 	// support Events
 	mixin(ControlAddDelegateSupport!("ToggleField", "ToggleFieldEvent"));
 
-	override void Unselect()
+	void unselect()
 	{
 		_btnstate = 0;
 	}
 
-	override void Select()
+	void select()
 	{
 		_btnstate = 1;
+	}
+	
+	void setText(String newTitle)
+	{
+		_value = new String(newTitle);
+	}
+
+	void setText(StringLiteral newTitle)
+	{
+		_value = new String(newTitle);
+	}
+
+	String getText()
+	{
+		return _value;
 	}
 
 	// handle events
 	override void OnAdd()
 	{
+		_brsh = new Brush(Color.White);
+
 		_clroutline.setRGB(0x80, 0x80, 0x80);
 		_clrhighlight.setRGB(0xdd,0xdd,0xdd);
 		_clrnormal.setRGB(0xaa,0xaa,0xaa);
@@ -277,6 +302,11 @@ class ToggleField : BaseToggleField
 	{
 		return false;
 	}
+
+protected:
+	String _value;
+
+	bool _is_grouped = false;
 
 private:
 
