@@ -6,7 +6,7 @@ import platform.unix.common;
 import core.view;
 import core.graphics;
 
-import bases.window;
+import core.basewindow;
 import core.window;
 import core.string;
 import core.menu;

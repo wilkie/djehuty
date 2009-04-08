@@ -3,17 +3,8 @@ module platform.unix.scaffolds.color;
 import platform.unix.vars;
 import platform.unix.common;
 
-import core.view;
-import core.graphics;
-
-import bases.window;
-import core.window;
-import core.string;
-import core.file;
 import core.color;
-
 import core.main;
-
 import core.definitions;
 
 void ColorGetSystemColor(ref Color clr, SystemColor sysColorIndex)

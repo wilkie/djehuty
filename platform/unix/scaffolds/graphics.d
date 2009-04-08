@@ -2,8 +2,6 @@ module platform.unix.scaffolds.graphics;
 
 import core.view;
 
-import bases.window;
-import core.window;
 import core.string;
 import core.file;
 import core.graphics;

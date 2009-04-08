@@ -5,8 +5,6 @@ import platform.unix.vars;
 import core.view;
 import core.graphics;
 
-import bases.window;
-import core.window;
 import core.string;
 import core.file;
 import core.stream;

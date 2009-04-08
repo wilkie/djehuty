@@ -27,8 +27,7 @@ template ControlPrintCSTRList()
 	const char[] ControlPrintCSTRList = `
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
-		super(x,y,width,height);
-		_list = list;
+		super(x,y,width,height,list);
 	}
 `;
 }
