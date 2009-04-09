@@ -672,6 +672,11 @@ class String
 	// Returns: The address into the internal array for this character.
 	Char* ptrAt(uint position)
 	{
+		if (position == 0)
+		{
+			return _data.ptr;
+		}
+
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
