@@ -667,30 +667,6 @@ class String
 		return Unicode.toUtf32Chars(cast(StringLiteral)_data[_indices[position]..$]);
 	}
 
-	// Description: Will return a pointer to the character of the String at the position given regardless of its internal Unicode representation.
-	// position: The character index to index.
-	// Returns: The address into the internal array for this character.
-	Char* ptrAt(uint position)
-	{
-		if (position == 0)
-		{
-			return _data.ptr;
-		}
-
-		if (!_calcIndices)
-		{
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
-		}
-
-		if (position >= _indices.length)
-		{
-			position = _indices.length-1;
-		}
-
-		return &_data[_indices[position]];
-	}
-
 	// Description: Will cast the String object to a StringLiteral for functions that require it.
 	StringLiteral opCast()
 	{
@@ -833,6 +809,88 @@ class String
 		_calcIndices = false;
 		_calcLength = false;
 	}
+
+	// array operator overloads
+	StringLiteral opSlice()
+	{
+		return _data;
+	}
+
+	StringLiteral opSlice(size_t start)
+	{
+		size_t end = _data.length;
+
+		if (start < 0) { start = 0; }
+
+		if (!_calcIndices)
+		{
+			_calcIndices = true;
+			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+		}
+
+		if (end >= _indices.length)
+		{
+			end = _data.length;
+		}
+		else
+		{
+			end = _indices[end];
+		}
+
+		return _data[start..end];
+	}
+
+	StringLiteral opSlice(size_t start, size_t end)
+	{
+		if (start < 0) { start = 0; }
+
+		if (!_calcIndices)
+		{
+			_calcIndices = true;
+			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+		}
+
+		if (end >= _indices.length)
+		{
+			end = _data.length;
+		}
+		else
+		{
+			end = _indices[end];
+		}
+
+		return _data[start..end];
+	}
+
+	//StringLiteral opSliceAssign(T val)
+	//{
+	//	return _components[] = val;
+	//}
+
+	//StringLiteral opSliceAssign(T[] val)
+	//{
+	//	return _components[] = val;
+	//}
+
+	//StringLiteral opSliceAssign(T val, size_t x, size_t y)
+	//{
+	//	return _components[x..y] = val;
+	//}
+
+	//StringLiteral opSliceAssign(T[] val, size_t x, size_t y)
+	//{
+	//	return _components[x..y] = val;
+	//}
+
+	//StringLiteral opIndex(size_t i)
+	//{
+	//	return _components[i];
+	//}
+
+	//StringLiteral opIndexAssign(T value, size_t i)
+	//{
+	//	return _components[i] = value;
+	//}
 
 
 private:

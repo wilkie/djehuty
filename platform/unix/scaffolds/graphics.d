@@ -163,17 +163,6 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint 
 	Pango.pango_cairo_show_layout(viewVars.cr, viewVars.layout);
 }
 
-void drawTextPtr(ViewPlatformVars* viewVars, int x, int y, Char* str, uint length)
-{
-	Pango.pango_layout_set_text(viewVars.layout, str, length);
-
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
-
-	Cairo.cairo_move_to(viewVars.cr, (x), (y));
-
-	Pango.pango_cairo_show_layout(viewVars.cr, viewVars.layout);
-}
-
 // Clipped Text
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str)
 {
@@ -292,31 +281,6 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	Cairo.cairo_restore(viewVars.cr);
 }
 
-void drawClippedTextPtr(ViewPlatformVars* viewVars, int x, int y, Rect region, Char* str, uint length)
-{
-	Pango.pango_layout_set_text(viewVars.layout, str, length);
-
-	double xp1,yp1,xp2,yp2;
-
-	xp1 = region.left;
-	yp1 = region.top;
-	xp2 = region.right;
-	yp2 = region.bottom;
-
-	Cairo.cairo_save(viewVars.cr);
-
-	Cairo.cairo_rectangle(viewVars.cr, xp1, yp1, xp2, yp2);
-	Cairo.cairo_clip(viewVars.cr);
-
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
-
-	Cairo.cairo_move_to(viewVars.cr, (x), (y));
-
-	Pango.pango_cairo_show_layout(viewVars.cr, viewVars.layout);
-
-	Cairo.cairo_restore(viewVars.cr);
-}
-
 // Text Measurement
 void measureText(ViewPlatformVars* viewVars, String str, out Size sz)
 {
@@ -355,17 +319,6 @@ void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out
 {
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, length);
-
-	Pango.pango_layout_get_size(viewVars.layout, cast(int*)&sz.x, cast(int*)&sz.y);
-
-	sz.x /= Pango.PANGO_SCALE;
-	sz.y /= Pango.PANGO_SCALE;
-}
-
-void measureTextPtr(ViewPlatformVars* viewVars, Char* str, uint length, out Size sz)
-{
-	Pango.pango_layout_set_text(viewVars.layout,
-		str, length);
 
 	Pango.pango_layout_get_size(viewVars.layout, cast(int*)&sz.x, cast(int*)&sz.y);
 

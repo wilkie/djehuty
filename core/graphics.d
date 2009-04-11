@@ -22,9 +22,7 @@ mixin(PlatformScaffoldImport!());
 class Graphics
 {
 
-
-	// Primitives
-
+// Primitives
 
 	// Description: Draws a line from (x,y) to (x2,y2).
 	// x: The first coordinate's x value.
@@ -62,11 +60,7 @@ class Graphics
 	{
 	}
 
-
-
-
-
-	// Text
+// Text
 
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y).
@@ -106,24 +100,7 @@ class Graphics
 		Scaffold.drawText(_viewVars, x,y,str,length);
 	}
 
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and only up to the number of characters specified by length.
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// str: The address of the character array to render.
-	// length: the length of the string.
-	void drawTextPtr(int x, int y, Char* str, uint length)
-	{
-		Scaffold.drawTextPtr(_viewVars, x,y,str,length);
-	}
-
-
-
-
-
-
-
-	// Clipped Text
-
+// Clipped Text
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and clips it within a rectangular region.
 	// x: The x coordinate to start rendering the text.
@@ -167,24 +144,7 @@ class Graphics
 		Scaffold.drawClippedText(_viewVars, x,y,region,str,length);
 	}
 
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y) up to the specified number of characters and clips it within a rectangular region.
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// region: The Rect object that defines the rectangular clipping region.
-	// str: The address of the character array to render.
-	// length: the length of the string.
-	void drawClippedTextPtr(int x, int y, Rect region, Char* str, uint length)
-	{
-		Scaffold.drawClippedTextPtr(_viewVars, x,y,region,str,length);
-	}
-
-
-
-
-
-
-	// Text Measurement
-
+// Text Measurement
 
 	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
 	// str: The string to measure.
@@ -220,21 +180,7 @@ class Graphics
 		Scaffold.measureText(_viewVars, str, length, sz);
 	}
 
-	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
-	// str: The address of the character array to measure.
-	// length: The length of the string to consider.
-	// sz: The Size struct to update.
-	void measureTextPtr(Char* str, uint length, out Size sz)
-	{
-		Scaffold.measureTextPtr(_viewVars, str, length, sz);
-	}
-
-
-
-
-
-	// Text Colors
-
+// Text Colors
 
 	// Description: Will set the text background color, sometimes refered to as the highlight color.
 	// textColor: The Color structure to be used as the background color.
@@ -250,11 +196,7 @@ class Graphics
 		Scaffold.setTextColor(_viewVars, textColor);
 	}
 
-
-
-
-	// Text States
-
+// Text States
 
 	// Description: Will set the text mode to not draw the background behind the rendered text.
 	void setTextModeTransparent()
@@ -268,21 +210,14 @@ class Graphics
 		Scaffold.setTextModeOpaque(_viewVars);
 	}
 
+// Fonts
 
-
-
-	// Fonts
 	void setFont(ref Font font)
 	{
 		Scaffold.setFont(_viewVars, FontGetPlatformVars(font));
 	}
 
-
-
-
-
-	// Brushes
-
+// Brushes
 
 	// Description: Will set the fill type to that specified by the Brush object.
 	// brush: The Brush to use.
@@ -292,13 +227,7 @@ class Graphics
 		ViewSetBrush(_view, brush);
 	}
 
-
-
-
-
-
-	// Pens
-
+// Pens
 
 	// Description: Will set the stroke type to that specified by the Pen object.
 	// pen: The Pen to use.
@@ -308,14 +237,7 @@ class Graphics
 		ViewSetPen(_view, pen);
 	}
 
-
-
-
-
-	// View Interfacing
-
-
-
+// View Interfacing
 
 	// Description: Will draw the image stored by the view object onto the current view object at the coordinate (x,y).
 	// x: The x coordinate to place the top-left corner of the image.
@@ -422,12 +344,7 @@ class Graphics
 		view.unlockDisplay();
 	}
 
-
-
-
-	// Image Interfacing
-
-
+// Image Interfacing
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y).
 	// x: The x coordinate to place the top-left corner of the image.
@@ -534,9 +451,7 @@ class Graphics
 		ImageUnlock(image);
 	}
 
-
-
-	// Clipping
+// Clipping
 
 	// Description: Will push the clip region to a stack preserving its state.
 	void clipSave()
