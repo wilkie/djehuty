@@ -11,13 +11,11 @@ mixin(PlatformGenericImport!("definitions"));
 
 // TODO: Read and Write distinction, stream permissions
 
-
-
 // Section: Core/Streams
 
 // Description: A stream class!
 // Feature: Provides a nice interface to any read, write, and append operation on any type of input output device.
-class StreamImpl(StreamAccess permissions) : AbstractStream
+class Stream : AbstractStream
 {
 public:
 
@@ -52,33 +50,19 @@ public:
 	// Description: This will zero out the entire contents of the stream.
 	void zero()
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			_data[0..$] = 0;
-		}
-		else
-		{
-			// TODO: throw permission exception
-		}
+		_data[0..$] = 0;
 	}
 
 	// Description: This will shrink the stream back to the default size and invalidate the contents. You will need allocation and write permissions.  If you do not have allocation permissions, this will simply perform the operations of zero().
 	void clear()
 	{
-		static if ((cast(int)permissions) & AllocFlag)
-		{
-			_capacity = 100000;
-			_data = new ubyte[cast(uint)_capacity];
+		_capacity = 100000;
+		_data = new ubyte[cast(uint)_capacity];
 
-			_pos = &_data[0];
-			_curpos = 0;
+		_pos = &_data[0];
+		_curpos = 0;
 
-			_length = 0;
-		}
-		else
-		{
-			zero();
-		}
+		_length = 0;
 	}
 
 	// Description: Will resize the Stream.
@@ -86,42 +70,33 @@ public:
 	// newLength: the new length of the stream
 	bool resize(ulong newLength)
 	{
-		static if ((cast(int)permissions) & AllocFlag)
+		ubyte tmp[] = new ubyte[cast(uint)newLength];
+
+		if (newLength > _length)
 		{
-			ubyte tmp[] = new ubyte[cast(uint)newLength];
-
-			if (newLength > _length)
-			{
-				tmp[0..cast(uint)_length] = _data[0..cast(uint)_length];
-			}
-			else
-			{
-				tmp[0..cast(uint)newLength] = _data[0..cast(uint)newLength];
-			}
-
-			_length = newLength;
-
-			// Setup the new position
-			if (_curpos > newLength) { _curpos = newLength; }
-
-			// Rereference the new array
-			_data = tmp;
-
-			// Index like this to avoid index out of bounds errors:
-			_pos = &_data[0] + _curpos;
-
-			// the capacity is now the length
-			// resize() fits the array
-			_capacity = _length;
-
-			return true;
+			tmp[0..cast(uint)_length] = _data[0..cast(uint)_length];
 		}
 		else
 		{
-			// TODO: throw permission exception
-
-			return false;
+			tmp[0..cast(uint)newLength] = _data[0..cast(uint)newLength];
 		}
+
+		_length = newLength;
+
+		// Setup the new position
+		if (_curpos > newLength) { _curpos = newLength; }
+
+		// Rereference the new array
+		_data = tmp;
+
+		// Index like this to avoid index out of bounds errors:
+		_pos = &_data[0] + _curpos;
+
+		// the capacity is now the length
+		// resize() fits the array
+		_capacity = _length;
+
+		return true;
 	}
 
 	// Description: This function will append the buffer passed in with the length given to the end of the current stream.
@@ -130,26 +105,17 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	bool append(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
+		if (len <= 0) { return false;}
+
+		while (_length + len > _capacity)
 		{
-			if (len <= 0) { return false;}
-
-			while (_length + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			_data[cast(uint)_length..cast(uint)_length+len] = bytes[0..len];
-
-			_length += len;
-			return true;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
-			return false;
-		}
+		_data[cast(uint)_length..cast(uint)_length+len] = bytes[0..len];
+
+		_length += len;
+		return true;
 	}
 
 	// Description: This function will append len bytes from the stream passed to the end of the current stream.
@@ -158,31 +124,22 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	bool append(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
+		if (len <= 0) { return false;}
+
+		while (_length + len > _capacity)
 		{
-			if (len <= 0) { return false;}
-
-			while (_length + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			if (!stream.read(&_data[cast(uint)_length], len))
-			{
-				return false;
-			}
-
-			//writeln("append: ", _data[_length.._length+len]);
-
-			_length += len;
-			return true;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
+		if (!stream.read(&_data[cast(uint)_length], len))
+		{
 			return false;
 		}
+
+		//writeln("append: ", _data[_length.._length+len]);
+
+		_length += len;
+		return true;
 	}
 
 	// Description: This function will append len bytes from the stream passed to the end of the current stream.
@@ -191,28 +148,19 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	ulong appendAny(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
+		if (len <= 0) { return 0;}
+
+		while (_length + len > _capacity)
 		{
-			if (len <= 0) { return 0;}
-
-			while (_length + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			len = cast(uint)stream.readAny(&_data[cast(uint)_length], len);
-
-			//writeln("append: ", _data[_length.._length+len]);
-
-			_length += len;
-			return len;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
-			return 0;
-		}
+		len = cast(uint)stream.readAny(&_data[cast(uint)_length], len);
+
+		//writeln("append: ", _data[_length.._length+len]);
+
+		_length += len;
+		return len;
 	}
 
 	// Description: This function will write len bytes from the buffer passed to the current location in the stream.  It will then progress this stream to the end of the written data.
@@ -221,29 +169,20 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	bool write(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
+		if (len <= 0) { return false;}
+
+		while (_curpos + len > _capacity)
 		{
-			if (len <= 0) { return false;}
-
-			while (_curpos + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			_pos[0..len] = bytes[0..len];
-
-			_curpos += len;
-			_pos += len;
-
-			if (_curpos > _length) { _length = _curpos; }
-			return true;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
-			return false;
-		}
+		_pos[0..len] = bytes[0..len];
+
+		_curpos += len;
+		_pos += len;
+
+		if (_curpos > _length) { _length = _curpos; }
+		return true;
 	}
 
 	// Description: This function will write len bytes from the stream passed to the current location in the stream.  It will then progress this stream to the end of the written data and also progress the stream which was read to the end of the read data.
@@ -252,29 +191,20 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	bool write(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
+		if (len <= 0) { return false;}
+
+		while (_curpos + len > _capacity)
 		{
-			if (len <= 0) { return false;}
-
-			while (_curpos + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			stream.read(_pos, len);
-
-			_curpos += len;
-			_pos += len;
-
-			if (_curpos > _length) { _length = _curpos; }
-			return true;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
-			return false;
-		}
+		stream.read(_pos, len);
+
+		_curpos += len;
+		_pos += len;
+
+		if (_curpos > _length) { _length = _curpos; }
+		return true;
 	}
 
 	// Description: This function will write len bytes from the stream passed to the current location in the stream.  It will then progress this stream to the end of the written data and also progress the stream which was read to the end of the read data.
@@ -283,39 +213,27 @@ public:
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
 	ulong writeAny(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
+		if (len <= 0) { return false;}
+
+		while (_curpos + len > _capacity)
 		{
-			if (len <= 0) { return false;}
-
-			while (_curpos + len > _capacity)
-			{
-				resize();	// Size!
-			}
-
-			len = cast(uint)stream.readAny(_pos, len);
-
-			static if (!((cast(int)permissions) & AppendOnlyFlag))
-			{
-				if ((_curpos + len) > _length)
-				{
-					// cannot append
-					// TODO: throw permission exception
-					return 0;
-				}
-			}
-
-			_curpos += len;
-			_pos += len;
-
-			if (_curpos > _length) { _length = _curpos; }
-			return len;
+			resize();	// Size!
 		}
-		else
-		{
-			// TODO: throw permission exception
 
+		len = cast(uint)stream.readAny(_pos, len);
+
+		if ((_curpos + len) > _length)
+		{
+			// cannot append
+			// TODO: throw permission exception
 			return 0;
 		}
+
+		_curpos += len;
+		_pos += len;
+
+		if (_curpos > _length) { _length = _curpos; }
+		return len;
 	}
 
 	// Description: This function will write the ubyte passed to the end of the current stream.
@@ -481,7 +399,6 @@ public:
 		return write(cast(ubyte*)str.ptr, dchar.sizeof * str.length);
 	}
 
-
 	// Description: This function places the last bytes of information into the front and sets the pointer to end of the information after it is moved.
 	void flush()
 	{
@@ -489,7 +406,8 @@ public:
 
 	StreamAccess getPermissions()
 	{
-		return permissions;
+		//return permissions;
+		return StreamAccess.AllAccess;
 	}
 
 	// Description: This function will return the amount of data remaining in the stream from the current position.
@@ -577,25 +495,17 @@ public:
 	// Returns: Will return true when the stream has copied successfully all data and false when there is not enough data to complete the operation.
 	bool read(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				return false;
-			}
-
-			(cast(ubyte*)buffer)[0..len] = _pos[0..len];
-
-			_curpos += len;
-			_pos += len;
-
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
 			return false;
 		}
+
+		(cast(ubyte*)buffer)[0..len] = _pos[0..len];
+
+		_curpos += len;
+		_pos += len;
+
+		return true;
 	}
 
 	// Description: This function will read from the current stream the number of bytes given by len into the current position of the stream passed.  It will then, on success, progress the current positions of both streams.  On failure, no positions will change.
@@ -604,25 +514,17 @@ public:
 	// Returns: Will return true when the stream has copied successfully all data and false when there is not enough data to complete the operation.
 	bool read(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				return false;
-			}
-
-			stream.write(_pos, len);
-
-			_curpos += len;
-			_pos += len;
-
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
 			return false;
 		}
+
+		stream.write(_pos, len);
+
+		_curpos += len;
+		_pos += len;
+
+		return true;
 	}
 
 	/* // Description: This function will read from the current stream the number of bytes given by len into the end of the stream passed.  It will then, on success, progress the current position of the source stream. On failure, no positions will change.
@@ -650,23 +552,15 @@ public:
 	// Returns: Will return the number of bytes successfully copied.  This will be less than len when the stream does not have len bytes left in its buffer.
 	ulong readAny(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				len = cast(uint)(_length - _curpos);
-			}
-
-			if (len == 0) { return 0; }
-
-			(cast(ubyte*)buffer)[0..len] = _pos[0..len];
-			return len;
+			len = cast(uint)(_length - _curpos);
 		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+
+		if (len == 0) { return 0; }
+
+		(cast(ubyte*)buffer)[0..len] = _pos[0..len];
+		return len;
 	}
 
 	// Description: This function will read from the current stream the number of bytes given by len or all of the remaining bytes at the current position of the stream passed.  It will then progress the current positions of the streams.
@@ -675,23 +569,15 @@ public:
 	// Returns: Will return the number of bytes successfully copied.  This will be less than len when the stream does not have len bytes left in its buffer.
 	ulong readAny(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				len = cast(uint)(_length - _curpos);
-			}
-
-			if (len == 0) { return 0; }
-
-			stream.write(_pos, len);
-			return len;
+			len = cast(uint)(_length - _curpos);
 		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+
+		if (len == 0) { return 0; }
+
+		stream.write(_pos, len);
+		return len;
 	}
 
 	/* // Description: This function will read from the current stream the number of bytes given by len or all of the remaining bytes to the end of the stream passed.  It will then progress the current position of the source stream.
@@ -826,57 +712,49 @@ public:
 	// Returns: Will return true upon success and false when the region is undefined (the length is less than distanceBehind).
 	bool duplicateFromEnd(ulong distanceBehind, uint amount)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
+		if (amount <= 0) { return false; }
+
+		if (_length - distanceBehind < 0) { return false; }
+
+		// need to store bytes...could be an overlapping array copy!
+
+		while (_length + amount > _capacity)
 		{
-			if (amount <= 0) { return false; }
+			resize();	// Size!
+		}
 
-			if (_length - distanceBehind < 0) { return false; }
+		if (distanceBehind < amount) // overlapping regions (worst case)
+		{
+			// in chunks
+			ubyte bytes[] = new ubyte[cast(uint)distanceBehind];
 
-			// need to store bytes...could be an overlapping array copy!
+			bytes[0..cast(uint)distanceBehind] = _data[cast(uint)_length-cast(uint)distanceBehind..cast(uint)_length];
 
-			while (_length + amount > _capacity)
+			while(distanceBehind < amount)
 			{
-				resize();	// Size!
+				_data[cast(uint)_length..cast(uint)_length+cast(uint)distanceBehind] = bytes[0..cast(uint)distanceBehind];
+
+				_length += distanceBehind;
+				amount -= distanceBehind;
 			}
 
-			if (distanceBehind < amount) // overlapping regions (worst case)
+			if (amount > 0)
 			{
-				// in chunks
-				ubyte bytes[] = new ubyte[cast(uint)distanceBehind];
-
-				bytes[0..cast(uint)distanceBehind] = _data[cast(uint)_length-cast(uint)distanceBehind..cast(uint)_length];
-
-				while(distanceBehind < amount)
-				{
-					_data[cast(uint)_length..cast(uint)_length+cast(uint)distanceBehind] = bytes[0..cast(uint)distanceBehind];
-
-					_length += distanceBehind;
-					amount -= distanceBehind;
-				}
-
-				if (amount > 0)
-				{
-					_data[cast(uint)_length..cast(uint)_length+amount] = bytes[0..amount];
-					_length += amount;
-				}
-			}
-			else	// non overlapping regions (best case)
-			{
-				ubyte bytes[] = new ubyte[amount];
-
-				bytes[0..amount] = _data[cast(uint)_length - cast(uint)distanceBehind..cast(uint)_length - cast(uint)distanceBehind + amount];
 				_data[cast(uint)_length..cast(uint)_length+amount] = bytes[0..amount];
-
 				_length += amount;
 			}
-
-			return true;
 		}
-		else
+		else	// non overlapping regions (best case)
 		{
-			// TODO: throw permission exception
-			return false;
+			ubyte bytes[] = new ubyte[amount];
+
+			bytes[0..amount] = _data[cast(uint)_length - cast(uint)distanceBehind..cast(uint)_length - cast(uint)distanceBehind + amount];
+			_data[cast(uint)_length..cast(uint)_length+amount] = bytes[0..amount];
+
+			_length += amount;
 		}
+
+		return true;
 	}
 
 
@@ -956,6 +834,81 @@ ubyte* StreamGetPos(Stream s)
 }
 */
 
-alias StreamImpl!(StreamAccess.AllAccess) Stream;
-alias StreamImpl!(StreamAccess.Read) StreamReader;
-alias StreamImpl!(StreamAccess.Update) StreamWriter;
+class Buffer : Stream
+{
+	// Description: This will create the stream using a default capacity.
+	this()
+	{
+		super();
+	}
+
+	// Description: This will create the stream using the capacity given by the parameter.
+	// size: The default size of the stream, which will be allocated immediately.
+	this(ulong size)
+	{
+		super(size);
+	}
+
+	this(ubyte[] fromArray)
+	{
+		super(fromArray);
+	}
+}
+
+class BufferReader : Stream
+{
+	// Description: This will create the stream using a default capacity.
+	this()
+	{
+		super();
+	}
+
+	// Description: This will create the stream using the capacity given by the parameter.
+	// size: The default size of the stream, which will be allocated immediately.
+	this(ulong size)
+	{
+		super(size);
+	}
+
+	this(ubyte[] fromArray)
+	{
+		super(fromArray);
+	}
+
+	// Exceptions:
+
+	override bool write(byte value)
+	{
+		//throw new Exception("Stream Permission");
+		return false;
+	}
+}
+
+class BufferWriter : Stream
+{
+	// Description: This will create the stream using a default capacity.
+	this()
+	{
+		super();
+	}
+
+	// Description: This will create the stream using the capacity given by the parameter.
+	// size: The default size of the stream, which will be allocated immediately.
+	this(ulong size)
+	{
+		super(size);
+	}
+
+	this(ubyte[] fromArray)
+	{
+		super(fromArray);
+	}
+
+	// Exceptions:
+
+	override bool write(byte value)
+	{
+		//throw new Exception("Stream Permission");
+		return false;
+	}
+}
