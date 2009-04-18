@@ -220,7 +220,7 @@ class LinkedList(T) : AbstractList!(T)
 		return 0;
     }
 
-	int opApply(int delegate(inout T) loopFunc)
+	/*int opApply(int delegate(inout T) loopFunc)
 	{
 		int ret;
 		T obj;
@@ -234,7 +234,7 @@ class LinkedList(T) : AbstractList!(T)
 		}
 
 		return ret;
-	}
+	}*/
 
 	uint length()
 	{

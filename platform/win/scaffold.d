@@ -1,6 +1,5 @@
 module platform.win.scaffold;
 
-
 // Application Loop
 public import platform.win.scaffolds.app;
 
@@ -12,6 +11,9 @@ public import platform.win.scaffolds.view;
 
 // Files
 public import platform.win.scaffolds.file;
+
+// Directories
+public import platform.win.scaffolds.directory;
 
 // Sockets
 public import platform.win.scaffolds.socket;

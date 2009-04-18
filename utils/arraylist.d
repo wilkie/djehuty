@@ -2,8 +2,6 @@ module utils.arraylist;
 
 import interfaces.list;
 
-import platform.unix.common;
-
 // Section: Utils
 
 // Description: This template class abstracts the stack data structure. T is the type you wish to store.
@@ -143,7 +141,7 @@ class ArrayList(T) : AbstractList!(T)
 		return _list[start..end];
 	}
 
-	int opApply(int delegate(inout T) loopFunc)
+	/*int opApply(int delegate(inout T) loopFunc)
 	{
 		int ret;
 
@@ -154,7 +152,7 @@ class ArrayList(T) : AbstractList!(T)
 		}
 
 		return ret;
-	}
+	}*/
 
 	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.

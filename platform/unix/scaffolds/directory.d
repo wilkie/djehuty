@@ -24,12 +24,12 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 	return true;
 }
 
-ArrayList!(String) DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
+String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
 	if (!DirectoryOpen(dirVars, path)) { return null; }
 
 	dirent* dir;
-	ArrayList!(String) list = new ArrayList!(String)();
+	String[] list;
 
 	// Retrieve first directory
 	dir = readdir(dirVars.dir);
@@ -51,8 +51,7 @@ ArrayList!(String) DirectoryList(ref DirectoryPlatformVars dirVars, ref String p
 		// Add to list
 		if (dir.d_name[0..len] != "." && dir.d_name[0..len] != "..")
 		{
-			String name = new String(dir.d_name[0..len]);
-			list.addItem(name);
+			list ~= new String(dir.d_name[0..len]);
 		}
 
 		// Retrieve next item in the directory

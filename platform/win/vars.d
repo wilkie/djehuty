@@ -311,6 +311,10 @@ struct ViewPlatformVars
 	_clipList clipRegions;
 }
 
+struct DirectoryPlatformVars
+{
+}
+
 struct FilePlatformVars
 {
     HANDLE f;

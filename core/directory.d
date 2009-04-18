@@ -8,8 +8,6 @@ mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
-import utils.arraylist;
-
 class Directory
 {
 	// Description: This constructor will create a Directory object that represents the root.
@@ -108,7 +106,7 @@ class Directory
 
 	// Description: This function will return an array of filenames that are found within this directory.
 	// Returns: An array of filenames.
-	ArrayList!(String) list()
+	String[] list()
 	{
 		return Scaffold.DirectoryList(_pfVars, name);
 	}
