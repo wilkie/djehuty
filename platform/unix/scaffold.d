@@ -13,6 +13,9 @@ public import platform.unix.scaffolds.view;
 // Files
 public import platform.unix.scaffolds.file;
 
+// Directories
+public import platform.unix.scaffolds.directory;
+
 // Sockets
 public import platform.unix.scaffolds.socket;
 

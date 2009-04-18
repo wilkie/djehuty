@@ -136,6 +136,11 @@ struct FilePlatformVars
     FILE* file;
 }
 
+struct DirectoryPlatformVars
+{
+	DIR* dir;
+}
+
 struct SocketPlatformVars
 {
 	int m_skt;

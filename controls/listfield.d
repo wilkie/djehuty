@@ -153,6 +153,11 @@ class ListField : WindowedControl, AbstractList!(String)
 		control_listbox.addList(list);
 	}
 
+	void addList(String[] list)
+	{
+		control_listbox.addList(list);
+	}
+
     bool getItem(out String data, uint index)
     {
 		return control_listbox.getItem(data, index);

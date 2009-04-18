@@ -7,8 +7,6 @@ import core.string;
 import core.file;
 import core.main;
 
-
-
 // FILE //
 
 bool FileOpen(ref FilePlatformVars fileVars, ref String filename)
@@ -72,3 +70,21 @@ void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
 {
 }
 
+void FileRename(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
+{
+	String fn = new String(oldFullPath);
+	fn.appendChar('\0');
+
+	String fn2 = new String(newFullPath);
+	fn.appendChar('\0');
+
+	rename(fn.ptr, fn2.ptr);
+}
+
+void FileRemove(ref FilePlatformVars fileVars, String fullPath)
+{
+	String fn = new String(fullPath);
+	fn.appendChar('\0');
+
+	remove(fn.ptr);
+}

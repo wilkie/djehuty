@@ -34,12 +34,7 @@ class MyControl : WindowedControl
 	this()
 	{
 		super(0,0,48,48);
-		img = new Image();
-		img.load("tiles.png");
-	}
-
-	~this()
-	{
+		img = new Image("tiles.png");
 	}
 
 	void OnDraw(ref Graphics g)
@@ -307,18 +302,25 @@ class MyWindow : GLWindow
 
 void InitWindow()
 {
-	Tests.testAll();
-
 	MyWindow mainWindow;
 
 	mainWindow = new MyWindow();
 	mainWindow.setVisibility(true);
 
 	Djehuty.addWindow(mainWindow);
+
+	Directory testsDir = new Directory("tests");
+	File config = testsDir.saveFile("config.dat");
+
+	foreach(file; testsDir.list())
+	{
+		Console.putln("'", file.array, "'");
+	}
 }
 
 extern(System) void DjehutyMain()
 {
+	Tests.testAll();
+
 	InitWindow();
 }
-

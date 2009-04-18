@@ -15,6 +15,7 @@ interface AbstractList(T)
 {
 	void addItem(T item);
 	void addList(AbstractList!(T) list);
+	void addList(T[] list);
 
 	bool getItem(out T item, uint index);
 

@@ -3,6 +3,13 @@ module core.directory;
 import core.string;
 import core.file;
 
+import platform.imports;
+mixin(PlatformGenericImport!("vars"));
+mixin(PlatformGenericImport!("definitions"));
+mixin(PlatformScaffoldImport!());
+
+import utils.arraylist;
+
 class Directory
 {
 	// Description: This constructor will create a Directory object that represents the root.
@@ -16,6 +23,16 @@ class Directory
 	this(String path)
 	{
 		_isRoot = false;
+		name = new String(path);
+	}
+
+	this(StringLiteral path)
+	{
+		this(new String(path));
+	}
+
+	~this()
+	{
 	}
 
 	// Description: This function will return a String representing the name of the directory.
@@ -52,6 +69,19 @@ class Directory
 		return null;
 	}
 
+	// Description: This function will create a new file in this directory.
+	// filename: The name of the file to create.
+	// Returns: Will return null if the file cannot be created, will return a valid File otherwise.
+	File saveFile(String filename)
+	{
+		return null;
+	}
+
+	File saveFile(StringLiteral filename)
+	{
+		return null;
+	}
+
 	// Description: This function will return the parent directory of the current path.
 	// Returns: The Directory object representing the parent directory and null if the current directory is the root.
 	Directory getParent()
@@ -76,13 +106,22 @@ class Directory
 		return _isRoot;
 	}
 
+	// Description: This function will return an array of filenames that are found within this directory.
+	// Returns: An array of filenames.
+	ArrayList!(String) list()
+	{
+		return Scaffold.DirectoryList(_pfVars, name);
+	}
+
 protected:
 
 	String name;
 	Directory parent;
 
-	String[] files;
-	Directory[] subDirectories;
+//	String[] files;
+//	Directory[] subDirectories;
 
 	bool _isRoot;
+
+	DirectoryPlatformVars _pfVars;
 }
