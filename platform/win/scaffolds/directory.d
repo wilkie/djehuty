@@ -20,6 +20,16 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 	return false;
 }
 
+String DirectoryGetApp()
+{
+	return new String("");
+}
+
+String DirectoryGetCWD()
+{
+	return new String("");
+}
+
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
 	DirectoryOpen(dirVars, path);
