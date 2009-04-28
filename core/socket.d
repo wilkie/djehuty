@@ -13,7 +13,7 @@ mixin(PlatformScaffoldImport!());
 // Section: Core/Streams
 
 // Description: This class wraps networking calls and represents the information stream as a Stream class.  This is a low-level implementation of a socket.  Note: no rewind or seek operations will have any affect.
-class SocketImpl(StreamAccess permissions) : StreamImpl!(permissions)
+class Socket : Stream
 {
 	~this()
 	{
@@ -24,9 +24,9 @@ class SocketImpl(StreamAccess permissions) : StreamImpl!(permissions)
 
 	// Inherited Functionality
 
-	alias StreamImpl!(permissions).write write;
-	alias StreamImpl!(permissions).append append;
-	alias StreamImpl!(permissions).read read;
+	alias Stream.write write;
+	alias Stream.append append;
+	alias Stream.read read;
 
 	// Core Functionality
 
@@ -128,76 +128,44 @@ class SocketImpl(StreamAccess permissions) : StreamImpl!(permissions)
     // read
 	override bool read(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
-		{
-			return Scaffold.SocketRead(_pfvars, cast(ubyte*)buffer, len);
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		return Scaffold.SocketRead(_pfvars, cast(ubyte*)buffer, len);
 	}
 
 	override bool read(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				return false;
-			}
-
-			stream.write(this, len);
-
-			_curpos += len;
-
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
 			return false;
 		}
+
+		stream.write(this, len);
+
+		_curpos += len;
+
+		return true;
 	}
 
 	override ulong readAny(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
-		{
-			if (len == 0) { return 0; }
+		if (len == 0) { return 0; }
 
-			return Scaffold.SocketReadAvailable(_pfvars, cast(ubyte*)buffer, len);
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+		return Scaffold.SocketReadAvailable(_pfvars, cast(ubyte*)buffer, len);
 	}
 
 	override ulong readAny(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (len == 0) { return 0; }
+
+		ubyte buffer[] = new ubyte[len];
+
+		len = cast(uint)Scaffold.SocketReadAvailable(_pfvars, buffer.ptr, len);
+
+		if (len != 0)
 		{
-			if (len == 0) { return 0; }
-
-			ubyte buffer[] = new ubyte[len];
-
-			len = cast(uint)Scaffold.SocketReadAvailable(_pfvars, buffer.ptr, len);
-
-			if (len != 0)
-			{
-				stream.write(buffer.ptr, len);
-			}
-
-			return len;
+			stream.write(buffer.ptr, len);
 		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+
+		return len;
 	}
 
 
@@ -206,39 +174,23 @@ class SocketImpl(StreamAccess permissions) : StreamImpl!(permissions)
 
 	override bool write(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			Scaffold.SocketWrite(_pfvars, bytes, len);
+		Scaffold.SocketWrite(_pfvars, bytes, len);
 
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		return true;
 	}
 
 	override bool write(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			ubyte buffer[] = new ubyte[len];
+		ubyte buffer[] = new ubyte[len];
 
-			stream.read(&buffer[0], len);
-			Scaffold.SocketWrite(_pfvars, &buffer[0], len);
+		stream.read(&buffer[0], len);
+		Scaffold.SocketWrite(_pfvars, &buffer[0], len);
 
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		return true;
 	}
 
 
@@ -247,46 +199,24 @@ class SocketImpl(StreamAccess permissions) : StreamImpl!(permissions)
 
 	override bool append(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			Scaffold.SocketWrite(_pfvars, bytes, len);
+		Scaffold.SocketWrite(_pfvars, bytes, len);
 
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		return true;
 	}
 
 	override bool append(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			ubyte buffer[] = new ubyte[len];
+		ubyte buffer[] = new ubyte[len];
 
-			stream.read(&buffer[0], len);
-			Scaffold.SocketWrite(_pfvars, &buffer[0], len);
+		stream.read(&buffer[0], len);
+		Scaffold.SocketWrite(_pfvars, &buffer[0], len);
 
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		return true;
 	}
-
-
-
-
-
-
 
 	// rewind
 
@@ -350,6 +280,10 @@ protected:
 
 }
 
-alias SocketImpl!(StreamAccess.AllAccess) Socket;
-alias SocketImpl!(StreamAccess.Read) SocketReader;
-alias SocketImpl!(StreamAccess.AllAccess) SocketWriter;
+class SocketReader : Socket
+{
+}
+
+class SocketWriter : Socket
+{
+}

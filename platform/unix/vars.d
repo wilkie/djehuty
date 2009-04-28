@@ -5,6 +5,7 @@ import platform.unix.common : FILE;
 import platform.unix.definitions;
 
 import core.definitions;
+import core.string;
 
 // GLOBAL SPACE
 struct DjehutyPlatformVars
@@ -39,6 +40,8 @@ struct DjehutyPlatformVars
 
 	int argc;
 	char** argv;
+
+	String appPath;
 }
 
 DjehutyPlatformVars _pfvars;
@@ -134,6 +137,11 @@ struct MenuPlatformVars
 struct FilePlatformVars
 {
     FILE* file;
+}
+
+struct DirectoryPlatformVars
+{
+	DIR* dir;
 }
 
 struct SocketPlatformVars

@@ -3,6 +3,7 @@ module platform.unix.main;
 
 import platform.unix.common;
 import platform.unix.vars;
+import platform.unix.scaffolds.directory;
 import core.thread;
 import platform.unix.console;
 
@@ -647,8 +648,21 @@ void AppInit()
 	setlocale(LC_CTYPE, "");
 }
 
-int main()
+int main(char[][] args)
 {
+	foreach_reverse(int i, chr; args[0])
+	{
+		if (chr == '/')
+		{
+			while (i > 0 && args[0][i-1] == '.')
+			{
+				i--;
+			}
+
+			_pfvars.appPath = DirectoryGetCWD() ~ new String(args[0][0..i]);
+		}
+	}
+
 	AppInit();
 
 	ConsoleInit();

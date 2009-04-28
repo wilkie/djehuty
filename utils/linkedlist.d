@@ -11,8 +11,6 @@ class LinkedList(T) : AbstractList!(T)
 	{
 	}
 
-
-
 	// add to the head
 
 	// Description: Will add the data to the head of the list.
@@ -55,6 +53,14 @@ class LinkedList(T) : AbstractList!(T)
 		while(list.getItem(data, irate))
 		{
 			addItem(data);
+		}
+	}
+
+	void addList(T[] list)
+	{
+		foreach(item; list)
+		{
+			addItem(item);
 		}
 	}
 
@@ -199,6 +205,35 @@ class LinkedList(T) : AbstractList!(T)
 		_count--;
 
 		return true;
+	}
+
+	T opIndex(size_t i1)
+	{
+		T ret;
+		getItem(ret, i1);
+
+		return ret;
+	}
+
+	int opIndexAssign(T value, size_t i1)
+	{
+		return 0;
+    }
+
+	int opApply(int delegate(inout T) loopFunc)
+	{
+		int ret;
+		T obj;
+
+		Iterator i = getIterator();
+
+		while(getItem(obj, i))
+		{
+			ret = loopFunc(obj);
+			if (ret) { break; }
+		}
+
+		return ret;
 	}
 
 	uint length()

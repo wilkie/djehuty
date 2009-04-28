@@ -162,6 +162,11 @@ class ConsoleListBox : ConsoleControl, AbstractList!(String)
 		_list.addList(list);
 	}
 
+	void addList(String[] list)
+	{
+		_list.addList(list);
+	}
+
     bool getItem(out String data, uint index)
     {
 		return _list.getItem(data, index);

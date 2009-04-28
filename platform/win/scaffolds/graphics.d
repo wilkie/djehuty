@@ -70,11 +70,6 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint 
 	TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
-void drawTextPtr(ViewPlatformVars* viewVars, int x, int y, Char* str, uint length)
-{
-	TextOutW(viewVars.dc, x, y, str, length);
-}
-
 // Clipped Text
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str)
 {
@@ -96,11 +91,6 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
 }
 
-void drawClippedTextPtr(ViewPlatformVars* viewVars, int x, int y, Rect region, Char* str, uint length)
-{
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str, length, null);
-}
-
 // Text Measurement
 void measureText(ViewPlatformVars* viewVars, String str, out Size sz)
 {
@@ -120,11 +110,6 @@ void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz)
 void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out Size sz)
 {
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
-}
-
-void measureTextPtr(ViewPlatformVars* viewVars, Char* str, uint length, out Size sz)
-{
-	GetTextExtentPoint32W(viewVars.dc, str, length, cast(SIZE*)&sz);
 }
 
 // Text Colors

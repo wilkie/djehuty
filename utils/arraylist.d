@@ -2,8 +2,6 @@ module utils.arraylist;
 
 import interfaces.list;
 
-import console.main;
-
 // Section: Utils
 
 // Description: This template class abstracts the stack data structure. T is the type you wish to store.
@@ -48,6 +46,14 @@ class ArrayList(T) : AbstractList!(T)
 		while(list.getItem(data, irate))
 		{
 			addItem(data);
+		}
+	}
+
+	void addList(T[] list)
+	{
+		foreach(item; list)
+		{
+			addItem(item);
 		}
 	}
 
@@ -124,6 +130,29 @@ class ArrayList(T) : AbstractList!(T)
 
 		return i1;
     }
+
+	T[] opSlice()
+	{
+		return _list;
+	}
+
+	T[] opSlice(size_t start, size_t end)
+	{
+		return _list[start..end];
+	}
+
+	int opApply(int delegate(inout T) loopFunc)
+	{
+		int ret;
+
+		for(int i = 0; i < _count; i++)
+		{
+			ret = loopFunc(_list[i]);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
 
 	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.

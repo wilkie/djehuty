@@ -1,6 +1,4 @@
-
 module platform.unix.common;
-
 
 public import X = platform.unix.x.Xlib;
 
@@ -9,7 +7,6 @@ public import CairoX = platform.unix.cairo.xlib;
 
 public import Pango = platform.unix.pango.pango;
 
-
     const int EOF = -1;
     const int FOPEN_MAX = 16;
     const int FILENAME_MAX = 4095;
@@ -17,9 +14,6 @@ public import Pango = platform.unix.pango.pango;
     const int L_tmpnam = 20;
 
 enum { SEEK_SET, SEEK_CUR, SEEK_END }
-
-
-
 
 /* C long types */
 
@@ -56,6 +50,8 @@ version(LDC)
 }
 
 extern(C):
+
+// Standard C
 
 char *	 tmpnam(char *);	///
 FILE *	 fopen(char *,char *);	///
@@ -104,11 +100,40 @@ int  putchar(int c); ///
 int  getc(FILE *fp); ///
 int  putc(int c,FILE *fp); ///
 
+// Directory Streams
 
+struct __direntry;
+alias __direntry DIR;
 
+struct dirent
+{
+	Culong_t d_ino;
+	Culong_t d_off;
 
+	ushort d_reclen;
+	ubyte d_type;
+	char d_name[256];
+}
 
+struct dirent64
+{
+	ulong d_ino;
+	ulong d_off;
 
+	ushort d_reclen;
+	ubyte d_type;
+	char d_name[256];
+}
+
+DIR* opendir(char* name);
+int closedir(DIR* dp);
+dirent* readdir(DIR* dp);
+dirent64* readdir64(DIR* dp);
+void rewinddir(DIR* dp);
+void seekdir(DIR* dp, Clong_t pos);
+Clong_t telldir(DIR* dp);
+
+// Network
 
 alias uint mode_t;
 alias int pid_t;

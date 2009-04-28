@@ -10,13 +10,14 @@ mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
+import core.directory;
+
 // Section: Core/Streams
 
 // Description: This class wraps common file operations within the context of a Stream.
-class FileImpl(StreamAccess permissions) : StreamImpl!(permissions)
+class File : Stream
 {
 public:
-
 
 	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
@@ -44,13 +45,11 @@ public:
 
 	// Methods //
 
-
-
 	// Inherited Functionality
 
-	alias StreamImpl!(permissions).write write;
-	alias StreamImpl!(permissions).append append;
-	alias StreamImpl!(permissions).read read;
+	alias Stream.write write;
+	alias Stream.append append;
+	alias Stream.read read;
 
 	// Core Functionality
 
@@ -61,11 +60,11 @@ public:
 	// TODO: Exceptions for opening of a file.
     bool open(String filename)
     {
-        _filename = new String(filename);
+        name = new String(filename);
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, _filename);
+        bool r = Scaffold.FileOpen(_pfvars, name);
 
         if (!r)
         {
@@ -86,11 +85,11 @@ public:
 	// TODO: Exceptions for opening of a file.
     bool open(StringLiteral filename)
     {
-        _filename = new String(filename);
+        name = new String(filename);
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, _filename);
+        bool r = Scaffold.FileOpen(_pfvars, name);
 
         if (!r)
         {
@@ -111,220 +110,139 @@ public:
 		{
 	        Scaffold.FileClose(_pfvars);
 	        _inited = false;
-	        _filename = null;
+	        name = null;
 	    }
     }
-
 
     // read
 	override bool read(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				return false;
-			}
-
-			Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
-
-			_curpos += len;
-
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
 			return false;
 		}
+
+		Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
+
+		_curpos += len;
+
+		return true;
 	}
 
 	override bool read(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				return false;
-			}
-
-			stream.write(this, len);
-
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
 			return false;
 		}
+
+		stream.write(this, len);
+
+		return true;
 	}
 
 	override ulong readAny(void* buffer, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				len = cast(uint)(_length - _curpos);
-			}
-
-			if (len == 0) { return 0; }
-
-			Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
-
-			return len;
+			len = cast(uint)(_length - _curpos);
 		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+
+		if (len == 0) { return 0; }
+
+		Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
+
+		return len;
 	}
 
 	override ulong readAny(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & ReadFlag)
+		if (_curpos + len > _length)
 		{
-			if (_curpos + len > _length)
-			{
-				len = cast(uint)(_length - _curpos);
-			}
-
-			if (len == 0) { return 0; }
-
-			stream.write(this, len);
-
-			_curpos += len;
-
-			return len;
+			len = cast(uint)(_length - _curpos);
 		}
-		else
-		{
-			// TODO: throw permission exception
-			return 0;
-		}
+
+		if (len == 0) { return 0; }
+
+		stream.write(this, len);
+
+		_curpos += len;
+
+		return len;
 	}
-
-
 
     // Console.put
 
 	override bool write(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			static if (!((cast(int)permissions) & AppendOnlyFlag))
-			{
-				if (_curpos + len > _length)
-				{
-					// TODO: throw permission exception
-					return false;
-				}
-			}
-
-			Scaffold.FileWrite(_pfvars, bytes, len);
-
-			_curpos += len;
-
-			if (_curpos > _length) { _length = _curpos; }
-			return true;
-		}
-		else
+		if (_curpos + len > _length)
 		{
 			// TODO: throw permission exception
 			return false;
 		}
+
+		Scaffold.FileWrite(_pfvars, bytes, len);
+
+		_curpos += len;
+
+		if (_curpos > _length) { _length = _curpos; }
+		return true;
 	}
 
 	override bool write(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & UpdateFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			ubyte buffer[] = new ubyte[len];
+		ubyte buffer[] = new ubyte[len];
 
-			stream.read(&buffer[0], len);
+		stream.read(&buffer[0], len);
 
-			static if (!((cast(int)permissions) & AppendOnlyFlag))
-			{
-				if (_curpos + len > _length)
-				{
-					// TODO: throw permission exception
-					return false;
-				}
-			}
-
-			Scaffold.FileWrite(_pfvars, &buffer[0], len);
-
-			_curpos += len;
-
-			if (_curpos > _length) { _length = _curpos; }
-			return true;
-		}
-		else
+		if (_curpos + len > _length)
 		{
 			// TODO: throw permission exception
 			return false;
 		}
+
+		Scaffold.FileWrite(_pfvars, &buffer[0], len);
+
+		_curpos += len;
+
+		if (_curpos > _length) { _length = _curpos; }
+		return true;
 	}
-
-
 
     // append
 
 	override bool append(ubyte* bytes, uint len)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			Scaffold.FileAppend(_pfvars, bytes, len);
+		Scaffold.FileAppend(_pfvars, bytes, len);
 
-			_length += len;
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		_length += len;
+		return true;
 	}
 
 	override bool append(AbstractStream stream, uint len)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
-		{
-			if (len <= 0) { return false;}
+		if (len <= 0) { return false;}
 
-			ubyte buffer[] = new ubyte[len];
+		ubyte buffer[] = new ubyte[len];
 
-			stream.read(&buffer[0], len);
-			Scaffold.FileAppend(_pfvars, &buffer[0], len);
+		stream.read(&buffer[0], len);
+		Scaffold.FileAppend(_pfvars, &buffer[0], len);
 
-			_length += len;
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+		_length += len;
+		return true;
 	}
-
-
-
 
 	override ulong getRemaining()
 	{
 		//Console.put("rem: ", _curpos, " ", _length, " ", _length - _curpos);
 		return _length - _curpos;
 	}
-
-
-
 
 	// rewind
 
@@ -361,7 +279,6 @@ public:
 
 		return amount;
 	}
-
 
 	// skip
 
@@ -403,15 +320,11 @@ public:
     String getFilename()
     {
 		if (_inited) {
-	        return new String(_filename);
+	        return new String(name);
 	    }
 
 	    return null;
     }
-
-
-
-
 
 	override bool duplicate(ulong distanceBehind, uint amount)
 	{
@@ -419,10 +332,7 @@ public:
 
 		if (_curpos - distanceBehind < 0) { return false; }
 
-		//Console.put("dupdata");
-
 		// need to store bytes...could be an overlapping array copy!
-
 		ubyte bytes[] = new ubyte[amount];
 
 		read(bytes.ptr, amount);
@@ -432,48 +342,114 @@ public:
 
 	override bool duplicateFromEnd(ulong distanceBehind, uint amount)
 	{
-		static if ((cast(int)permissions) & AppendFlag)
-		{
-			if (amount <= 0) { return false; }
+		if (amount <= 0) { return false; }
 
-			if (_length - distanceBehind < 0) { return false; }
+		if (_length - distanceBehind < 0) { return false; }
 
-	//		Console.put("dupend");
+		ubyte bytes[] = new ubyte[amount];
 
-			// need to store bytes...could be an overlapping array copy!
+		ulong pos = _curpos;
 
+		skip();
+		rewind(distanceBehind);
 
+		read(bytes.ptr, amount);
+		append(bytes.ptr, amount);
 
+		rewind();
+		skip(pos);
 
-			ubyte bytes[] = new ubyte[amount];
+		return true;
+	}
 
-			ulong pos = _curpos;
+	// File logic
 
-			skip();
-			rewind(distanceBehind);
+	Directory getPath()
+	{
+		if (_inited) {
+	        return path;
+	    }
 
-			read(bytes.ptr, amount);
-			append(bytes.ptr, amount);
+		return null;
+	}
 
-			rewind();
-			skip(pos);
+	void move(Directory destination)
+	{
+	}
 
-			return true;
-		}
-		else
-		{
-			// TODO: throw permission exception
-			return false;
-		}
+	void move(String destination)
+	{
+	}
+
+	void copy(Directory destination)
+	{
+	}
+
+	void copy(String destination)
+	{
+	}
+
+	void destroy()
+	{
 	}
 
 protected:
 
     bool _inited = false;
     FilePlatformVars _pfvars;
-    String _filename = null;
+
+	Directory path;
+	String name;
 }
 
-alias FileImpl!(StreamAccess.AllAccess) File;
-alias FileImpl!(StreamAccess.Read) FileReader;
-alias FileImpl!(StreamAccess.Update) FileWriter;
+// Section: Core/Streams
+
+// Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow writes.
+class FileReader : File
+{
+	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// filename: The file to open.
+	this(String filename)
+	{
+		super(filename);
+	}
+
+	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// filename: The file to open.
+	this(StringLiteral filename)
+	{
+		super(filename);
+	}
+
+	// Description: Will create a closed File class. You must open a file to use it as a stream.
+	this()
+	{
+		super();
+	}
+}
+
+// Section: Core/Streams
+
+// Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow reads.
+class FileWriter : File
+{
+	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// filename: The file to open.
+	this(String filename)
+	{
+		super(filename);
+	}
+
+	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// filename: The file to open.
+	this(StringLiteral filename)
+	{
+		super(filename);
+	}
+
+	// Description: Will create a closed File class. You must open a file to use it as a stream.
+	this()
+	{
+		super();
+	}
+}

@@ -5,7 +5,6 @@ module platform.win.common;
 public import std.c.windows.windows;
 public import std.c.windows.winsock;
 
-
 // extra stuff somehow left out of the Phobos libraries
 
 const long GWL_STYLE = -16;
@@ -856,6 +855,18 @@ struct PIXELFORMATDESCRIPTOR {
   uint dwDamageMask;
 }
 
+struct WIN32_FIND_DATAW {
+  DWORD    dwFileAttributes;
+  FILETIME ftCreationTime;
+  FILETIME ftLastAccessTime;
+  FILETIME ftLastWriteTime;
+  DWORD    nFileSizeHigh;
+  DWORD    nFileSizeLow;
+  DWORD    dwReserved0;
+  DWORD    dwReserved1;
+  wchar    cFileName[MAX_PATH];
+  wchar    cAlternateFileName[14];
+}
 
 extern(Windows)
 {
@@ -915,6 +926,9 @@ extern(Windows)
 
 	BOOL FillConsoleOutputCharacterW(HANDLE, WCHAR, DWORD, COORD, DWORD*);
 	BOOL FillConsoleOutputAttribute(HANDLE, WORD, DWORD, COORD, DWORD*);
+	
+	HANDLE FindFirstFileW(LPCWSTR lpFileName, WIN32_FIND_DATAW* lpFindFileData);
+	BOOL FindNextFileW(HANDLE hFindFile, WIN32_FIND_DATAW*);
 
 	BOOL ReadConsoleInputW(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
 	BOOL PeekConsoleInput(HANDLE, INPUT_RECORD*, DWORD, DWORD*);

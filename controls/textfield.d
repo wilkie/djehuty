@@ -113,7 +113,7 @@ public:
 
 				sel_start = _first_char;
 
-				grp.measureTextPtr(_value.ptrAt(_first_char),1, s);
+				grp.measureText(_value[_first_char.._first_char+1],s);
 
 				x_test = (s.x / 2);
 
@@ -123,12 +123,12 @@ public:
 					sel_start++;
 
 					//get length of total string so far
-					grp.measureTextPtr(_value.ptrAt(_first_char), sel_start - _first_char, s);
+					grp.measureText(_value[_first_char..sel_start],s);
 
 					x_test = s.x;
 
 					//get length of current character
-					grp.measureTextPtr(_value.ptrAt(sel_start), 1, s);
+					grp.measureText(_value[sel_start..sel_start+1],s);
 
 					//add half of the current character
 					x_test += (s.x / 2);
@@ -172,8 +172,7 @@ public:
 		Size s;
 
 		_caret_pos = _first_char;
-
-		grp.measureTextPtr(_value.ptrAt(_first_char), 1, s);
+		grp.measureText(_value[_first_char.._first_char+1], s);
 
 		x_test = (s.x / 2);
 
@@ -183,12 +182,12 @@ public:
 			_caret_pos++;
 
 			//get length of total string so far
-			grp.measureTextPtr(_value.ptrAt(_first_char), _caret_pos - _first_char, s);
+			grp.measureText(_value[_first_char.._caret_pos-_first_char], s);
 
 			x_test = s.x;
 
 			//get length of current character
-			grp.measureTextPtr(_value.ptrAt(_caret_pos), 1, s);
+			grp.measureText(_value[_caret_pos.._caret_pos+1], s);
 
 			//add half of the current character
 			x_test += (s.x / 2);
@@ -455,7 +454,7 @@ public:
 		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char))
 		{
 			//no selection visible
-			g.drawTextPtr(_x + 3, _y + 2, _value.ptrAt(_first_char), _value.length - _first_char);
+			g.drawText(_x+3, _y+2, _value[_first_char.._value.length]);
 
 			//Draw Caret
 
@@ -470,7 +469,7 @@ public:
 
 				if (_caret_pos > _first_char)
 				{
-					g.measureTextPtr(_value.ptrAt(_first_char), _caret_pos - _first_char, s);
+					g.measureText(_value[_first_char.._caret_pos],s);
 
 					x += s.x;
 				}
@@ -509,15 +508,15 @@ public:
 				from_pos = _first_char;
 			}
 
-			g.drawTextPtr(x, y, _value.ptrAt(_first_char), from_pos - _first_char);
-			g.measureTextPtr(_value.ptrAt(_first_char), from_pos - _first_char, s);
+			g.drawText(x,y,_value[_first_char..from_pos]);
+			g.measureText(_value[_first_char..from_pos],s);
 
 			x += s.x;
 
 			g.setTextColor(Color.White);
 
 			//draw background rect within the control's bounds
-			g.measureTextPtr(_value.ptrAt(from_pos), to_pos - from_pos, s);
+			g.measureText(_value[from_pos..to_pos],s);
 
 			//get the width of the line above, use that to determine x2, the
 			//width of the selection rectangle.
@@ -537,12 +536,12 @@ public:
 			g.drawRect(x,y,x2,y2);
 
 			//the selection
-			g.drawTextPtr(x,y, _value.ptrAt(from_pos), to_pos - from_pos);
+			g.drawText(x,y,_value[from_pos..to_pos]);
 
 			g.setTextColor(Color.Black);
 
 			//the right side of the selection
-			g.drawTextPtr(x2, y, _value.ptrAt(to_pos), _value.length - to_pos);
+			g.drawText(x2, y, _value[to_pos.._value.length]);
 		}
 	}
 
@@ -573,13 +572,9 @@ private:
 	void RefreshViewport(uint onPos)
 	{
 		//check to see if onPos is already within viewing area
-
 		//check to see what direction we are travelling
-
 		//if left... from onPos go backwards a certain distance
-
 		//if right... from onPos go forwards a certain distance
-
 		//set _first_char accordingly
 
 		if (_caret_pos > _value.length)
@@ -595,13 +590,11 @@ private:
 		uint i;
 
 		Graphics grp = _view.lockDisplay();
-		//grp.setFont(_font);
 
 		if (onPos > _first_char)
 		{
 			//check to see if it is within the viewable area
-
-			grp.measureTextPtr(_value.ptrAt(_first_char), onPos-_first_char, s);
+			grp.measureText(_value[_first_char..onPos], s);
 
 			if ((s.x + 3) < _width)
 			{
@@ -625,7 +618,7 @@ private:
 						break;
 					}
 
-					grp.measureTextPtr(_value.ptrAt(i), 1, s);
+					grp.measureText(_value[i..i+1], s);
 					current_movement += s.x;
 
 					i++;
@@ -647,7 +640,7 @@ private:
 
 					i--;
 
-					grp.measureTextPtr(_value.ptrAt(i), 1, s);
+					grp.measureText(_value[i..i+1],s);
 					current_movement += s.x;
 				}
 
@@ -673,7 +666,7 @@ private:
 
 				i--;
 
-				grp.measureTextPtr(_value.ptrAt(i), 1, s);
+				grp.measureText(_value[i..i+1],s);
 				current_movement += s.x;
 			}
 

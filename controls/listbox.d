@@ -188,7 +188,7 @@ class ListBox : WindowedControl
 	{
 		return m_sel_start;
 	}
-	
+
 	// AbstractList Methods
 
 	void addItem(String data)
@@ -206,6 +206,13 @@ class ListBox : WindowedControl
 	}
 
 	void addList(AbstractList!(String) list)
+	{
+		_list.addList(list);
+
+		_checkScrollBarStatus();
+	}
+
+	void addList(String[] list)
 	{
 		_list.addList(list);
 

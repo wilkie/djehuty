@@ -32,6 +32,7 @@ public import core.sound		: Sound, SoundState;
 public import core.audio		: Audio;
 public import core.time			: Time;
 public import core.color;
+public import core.directory;
 
 // graphics
 public import graphics.brush	: Brush;
