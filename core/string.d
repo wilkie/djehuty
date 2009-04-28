@@ -882,16 +882,96 @@ class String
 	//	return _components[x..y] = val;
 	//}
 
-	//StringLiteral opIndex(size_t i)
-	//{
-	//	return _components[i];
-	//}
+	Char opIndex(size_t i)
+	{
+		return charAt(i);
+	}
 
 	//StringLiteral opIndexAssign(T value, size_t i)
 	//{
 	//	return _components[i] = value;
 	//}
 
+	String opCat(StringLiteral string)
+	{
+		String newStr = new String(this);
+		newStr.append(string);
+
+		return newStr;
+	}
+
+	String opCat(String string)
+	{
+		String newStr = new String(this);
+		newStr.append(string);
+
+		return newStr;
+	}
+
+	int opApply(int delegate(inout dchar) loopFunc)
+	{
+		int ret;
+
+		dchar[] utf32 = toUtf32();
+
+		foreach(chr; utf32)
+		{
+			ret = loopFunc(chr);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApplyReverse(int delegate(inout dchar) loopFunc)
+	{
+		int ret;
+
+		dchar[] utf32 = toUtf32();
+
+		foreach_reverse(chr; utf32)
+		{
+			ret = loopFunc(chr);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApply(int delegate(inout int, inout dchar) loopFunc)
+	{
+		int ret;
+
+		int idx = 0;
+
+		dchar[] utf32 = toUtf32();
+
+		foreach(chr; utf32)
+		{
+			ret = loopFunc(idx,chr);
+			idx++;
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApplyReverse(int delegate(inout int, inout dchar) loopFunc)
+	{
+		int ret;
+		int idx = length();
+
+		dchar[] utf32 = toUtf32();
+
+		foreach_reverse(chr; utf32)
+		{
+			idx--;
+			ret = loopFunc(idx,chr);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
 
 private:
 	uint _length;

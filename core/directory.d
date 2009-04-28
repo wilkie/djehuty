@@ -2,11 +2,14 @@ module core.directory;
 
 import core.string;
 import core.file;
+import core.filesystem;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
+
+import console.main;
 
 class Directory
 {
@@ -21,7 +24,31 @@ class Directory
 	this(String path)
 	{
 		_isRoot = false;
-		name = new String(path);
+		if (path[0] == '/')
+		{
+			// absolute path
+			_path = new String(path);
+		}
+		else
+		{
+			// relative path
+
+			// get the working directory
+			parent = FileSystem.getCurrentDirectory();
+
+			// create an absolute path
+			_path = parent.getPath ~ "/" ~ path;
+		}
+
+		// retrieve name
+		foreach_reverse(int i, chr; _path)
+		{
+			if (chr == '/')
+			{
+				name = new String(_path[i+1.._path.length]);
+				break;
+			}
+		}
 	}
 
 	this(StringLiteral path)
@@ -38,6 +65,13 @@ class Directory
 	String getName()
 	{
 		return new String(name);
+	}
+
+	// Description: This function will return a String representing the path of this directory.
+	// Returns: The path of the directory.
+	String getPath()
+	{
+		return new String(_path);
 	}
 
 	// Description: This function will rename the directory, if possible.
@@ -94,7 +128,7 @@ class Directory
 	// Returns: The child directory specified.
 	Directory traverse(String directoryName)
 	{
-		return null;
+		return new Directory(_path ~ "/directoryName");
 	}
 
 	// Description: This function will return whether or not the object represents the root.
@@ -114,6 +148,7 @@ class Directory
 protected:
 
 	String name;
+	String _path;
 	Directory parent;
 
 //	String[] files;

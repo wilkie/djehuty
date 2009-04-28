@@ -24,6 +24,37 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 	return true;
 }
 
+String DirectoryGetApp()
+{
+	return _pfvars.appPath;
+}
+
+String DirectoryGetCWD()
+{
+	uint len = 512;
+	char[] chrs;
+
+	char* ptr;
+
+	do
+	{
+		chrs = new char[len+1];
+		ptr = getcwd(chrs.ptr, len);
+		len <<= 1;
+	} while (ptr is null);
+
+	foreach (int i, chr; chrs)
+	{
+		if (chr == '\0')
+		{
+			chrs = chrs[0..i];
+			break;
+		}
+	}
+
+	return new String(chrs);
+}
+
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
 	if (!DirectoryOpen(dirVars, path)) { return null; }
