@@ -997,6 +997,10 @@ extern(Windows)
 	// FILE
     HANDLE CreateFileW(    LPCWSTR ,    DWORD ,    DWORD ,    LPSECURITY_ATTRIBUTES ,    DWORD ,    DWORD ,    HANDLE);
 	BOOL GetFileSizeEx(HANDLE, PLARGE_INTEGER);
+	
+	// DIRECTORY
+	DWORD GetCurrentDirectoryW(DWORD, LPCWSTR);
+	DWORD GetModuleFileNameW(HMODULE, LPCWSTR, DWORD);
 
 	// SOCKET
 	int GetAddrInfoW(LPCWSTR pNodeName,LPCWSTR pServiceName,ADDRINFOW* pHints,ADDRINFOW**ppResult);

@@ -22,12 +22,53 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 
 String DirectoryGetApp()
 {
-	return new String("");
+	int size = GetModuleFileNameW(null, null, 0);
+	wchar[] dir = new wchar[size];
+	GetModuleFileNameW(null, dir.ptr, size);
+
+	if(size > 1)
+	{
+		dir[1] = dir[0];
+		dir[0] = '/';
+	}
+
+	int pos;
+
+	foreach(int i, chr; dir)
+	{
+     	if(chr == '\\')
+		{
+         	dir[i] = '/';
+			pos = i;
+		}
+	}
+
+	dir = dir[0..pos];
+
+	return new String(dir);
 }
 
 String DirectoryGetCWD()
 {
-	return new String("");
+	int size = GetCurrentDirectoryW(0, null);
+	wchar[] cwd = new wchar[size];
+	GetCurrentDirectoryW(size, cwd.ptr);
+
+	if(size > 1)
+	{
+		cwd[1] = cwd[0];
+		cwd[0] = '/';
+	}
+
+	foreach(int i, chr; cwd)
+	{
+     	if(chr == '\\')
+		{
+         	cwd[i] = '/';
+		}
+	}
+
+	return new String(cwd);
 }
 
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)

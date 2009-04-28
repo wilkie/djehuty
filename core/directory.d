@@ -35,6 +35,7 @@ class Directory
 
 			// get the working directory
 			parent = FileSystem.getCurrentDirectory();
+			Console.putln(parent._path.array);
 
 			// create an absolute path
 			_path = parent.getPath ~ "/" ~ path;
@@ -142,7 +143,7 @@ class Directory
 	// Returns: An array of filenames.
 	String[] list()
 	{
-		return Scaffold.DirectoryList(_pfVars, name);
+		return Scaffold.DirectoryList(_pfVars, _path);
 	}
 
 protected:
