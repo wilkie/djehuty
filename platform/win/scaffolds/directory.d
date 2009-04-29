@@ -25,25 +25,10 @@ String DirectoryGetApp()
 	int size = GetModuleFileNameW(null, null, 0);
 	wchar[] dir = new wchar[size];
 	GetModuleFileNameW(null, dir.ptr, size);
-
-	if(size > 1)
-	{
-		dir[1] = dir[0];
-		dir[0] = '/';
-	}
-
-	int pos;
-
-	foreach(int i, chr; dir)
-	{
-     	if(chr == '\\')
-		{
-         	dir[i] = '/';
-			pos = i;
-		}
-	}
-
-	dir = dir[0..pos];
+	dir = dir[0..$-1];
+	
+	dir = _SanitizeWindowsPath(dir);
+	dir = _TruncateFileName(dir);
 
 	return new String(dir);
 }
@@ -53,26 +38,73 @@ String DirectoryGetCWD()
 	int size = GetCurrentDirectoryW(0, null);
 	wchar[] cwd = new wchar[size];
 	GetCurrentDirectoryW(size, cwd.ptr);
-
-	if(size > 1)
-	{
-		cwd[1] = cwd[0];
-		cwd[0] = '/';
-	}
-
-	foreach(int i, chr; cwd)
-	{
-     	if(chr == '\\')
-		{
-         	cwd[i] = '/';
-		}
-	}
+	cwd = cwd[0..$-1];
+	
+	cwd = _SanitizeWindowsPath(cwd);
 
 	return new String(cwd);
 }
 
+wchar[] _SanitizeWindowsPath(wchar[] tmp)
+{
+	if (tmp.length == 0) { return tmp; }
+
+	// Change C: to /c
+
+	if (tmp.length > 1 && tmp[0] != '/')
+	{
+		tmp[1] = tmp[0];
+		tmp[0] = '/';
+	}
+
+	// Convert slashes
+
+	foreach(int i, chr; tmp)
+	{
+     	if(chr == '\\')
+		{
+         	tmp[i] = '/';
+		}
+	}
+
+	return tmp;
+}
+
+wchar[] _TruncateFileName(wchar[] tmp)
+{
+	if (tmp.length == 0) { return tmp; }
+
+	foreach_reverse(int i, chr; tmp)
+	{
+     	if(chr == '/')
+		{
+			return tmp[0..i];
+		}
+	}
+	
+	return tmp;
+}
+
+wchar[] _ConvertFrameworkPath(wchar[] tmp)
+{
+	if (tmp.length == 0) { return tmp; }
+
+	// Change /c to C:
+
+	if (tmp.length > 1 && tmp[0] == '/')
+	{
+		tmp[0] = tmp[1];
+		tmp[1] = ':';
+	}
+
+	// No need to convert slashes, windows api accepts POSIX paths
+	
+	return tmp;
+}
+
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
+	path = new String(_ConvertFrameworkPath(path.array));
 	DirectoryOpen(dirVars, path);
 
 	WIN32_FIND_DATAW ffd;

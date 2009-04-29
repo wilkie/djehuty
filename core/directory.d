@@ -35,7 +35,6 @@ class Directory
 
 			// get the working directory
 			parent = FileSystem.getCurrentDirectory();
-			Console.putln(parent._path.array);
 
 			// create an absolute path
 			_path = parent.getPath ~ "/" ~ path;

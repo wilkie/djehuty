@@ -640,6 +640,11 @@ class String
 		{
 			position = 0;
 		}
+		
+		if (_indices.length == 0)
+		{
+			return '\0';
+		}
 
 		// convert the character starting at that position to a dchar
 
