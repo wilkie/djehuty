@@ -926,7 +926,7 @@ extern(Windows)
 
 	BOOL FillConsoleOutputCharacterW(HANDLE, WCHAR, DWORD, COORD, DWORD*);
 	BOOL FillConsoleOutputAttribute(HANDLE, WORD, DWORD, COORD, DWORD*);
-	
+
 	HANDLE FindFirstFileW(LPCWSTR lpFileName, WIN32_FIND_DATAW* lpFindFileData);
 	BOOL FindNextFileW(HANDLE hFindFile, WIN32_FIND_DATAW*);
 
@@ -956,43 +956,29 @@ extern(Windows)
 	BOOL BitBlt(HDC, int, int, int, int, HDC hdcSrc, int x1, int y1, DWORD rop);
 	BOOL Rectangle(HDC , int , int , int , int );
 	BOOL Ellipse(HDC , int , int , int , int );
-
 	BOOL ExtTextOutW( HDC, int, int, UINT, RECT*, LPCWSTR, UINT, INT*);
-
 	HBITMAP CreateDIBSection(HDC,BITMAPINFO*,UINT,VOID**,HANDLE,DWORD);
-
 	BOOL AlphaBlend(HDC, int, int, int, int, HDC, int, int, int, int, BLENDFUNCTION);
-
-	HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);
-
-	BOOL SetWindowTextW(HWND, wchar*);
-	int GetWindowTextW(HWND, LPWSTR, int);
-
-	ATOM RegisterClassW(WNDCLASSW*);
-
-	BOOL PostMessageW(HWND hWnd, UINT Msg,WPARAM wParam,LPARAM lParam);
-
-	void InitCommonControls();
-
-	BOOL SetWindowPos(HWND, HWND, int, int, int, int, UINT);
-
 	BOOL GetTextExtentPoint32W(HDC, LPCWSTR, int, SIZE*);
-
 	COLORREF SetBkColor(HDC, COLORREF);
-
 	HBITMAP CreateCompatibleBitmap(HDC, int, int cy);
 	int ReleaseDC(HWND, HDC);
 	DWORD GetSysColor(int);
-
 	int SwapBuffers(HDC hdc);
-
-
-	int MulDiv(int,int,int);
-
 	HFONT CreateFontIndirectW(LOGFONTW*);
 
+	// WINDOW AND PROCESS MANAGEMENT
+	HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);
+	BOOL SetWindowTextW(HWND, wchar*);
+	int GetWindowTextW(HWND, LPWSTR, int);
+	ATOM RegisterClassW(WNDCLASSW*);
+	BOOL PostMessageW(HWND hWnd, UINT Msg,WPARAM wParam,LPARAM lParam);
+	void InitCommonControls();
+	BOOL SetWindowPos(HWND, HWND, int, int, int, int, UINT);
 	void ExitProcess(uint uExitCode);
 
+	// MISC
+	int MulDiv(int,int,int);
 
 	// FILE
     HANDLE CreateFileW(    LPCWSTR ,    DWORD ,    DWORD ,    LPSECURITY_ATTRIBUTES ,    DWORD ,    DWORD ,    HANDLE);
@@ -1001,6 +987,11 @@ extern(Windows)
 	// DIRECTORY
 	DWORD GetCurrentDirectoryW(DWORD, LPCWSTR);
 	DWORD GetModuleFileNameW(HMODULE, LPCWSTR, DWORD);
+	
+	// VOLUME
+	HANDLE FindFirstVolumeW(LPCWSTR, DWORD);
+	BOOL FindNextVolumeW(HANDLE, LPCWSTR, DWORD);
+	DWORD GetLogicalDrives();
 
 	// SOCKET
 	int GetAddrInfoW(LPCWSTR pNodeName,LPCWSTR pServiceName,ADDRINFOW* pHints,ADDRINFOW**ppResult);

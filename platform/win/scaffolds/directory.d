@@ -131,44 +131,72 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp)
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
 	path = new String(_ConvertFrameworkPath(path.array));
-	DirectoryOpen(dirVars, path);
-
-	WIN32_FIND_DATAW ffd;
-
-	String pn = new String(path);
-	pn.append("/*");
-	pn.appendChar('\0');
-
+	
 	String[] list;
 
-	HANDLE h = FindFirstFileW(pn.ptr, &ffd);
-	bool cont = true;
-
-	while(cont)
+	if (path == "")
 	{
-		// Caculate Length of d_name
-		int len;
+		// root directory listing
+		// that is, list the network folder and all drives
+		
+		int logicaldrives = GetLogicalDrives();
+		
+		wchar[1] curDrive = ['a'];
 
-		foreach(chr; ffd.cFileName)
+		while(logicaldrives != 0)
 		{
-			if (chr == '\0')
+			if ((logicaldrives & 1) == 1)
 			{
-				break;
+				list ~= new String(curDrive);
 			}
-			len++;
+
+			curDrive[0]++;
+			logicaldrives >>= 1;
 		}
 
-		// Add to list
-		if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..")
-		{
-			list ~= new String(ffd.cFileName[0..len]);
-		}
-
-		// Retrieve next item in the directory
-		cont = FindNextFileW(h, &ffd) > 0;
+		list ~= new String("network");
 	}
+	else
+	{
+		// regular directory listing
 
-	DirectoryClose(dirVars);
+		DirectoryOpen(dirVars, path);
+	
+		WIN32_FIND_DATAW ffd;
+	
+		String pn = new String(path);
+		pn.append("/*");
+		pn.appendChar('\0');
+	
+		HANDLE h = FindFirstFileW(pn.ptr, &ffd);
+		bool cont = true;
+	
+		while(cont)
+		{
+			// Caculate Length of d_name
+			int len;
+	
+			foreach(chr; ffd.cFileName)
+			{
+				if (chr == '\0')
+				{
+					break;
+				}
+				len++;
+			}
+	
+			// Add to list
+			if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..")
+			{
+				list ~= new String(ffd.cFileName[0..len]);
+			}
+	
+			// Retrieve next item in the directory
+			cont = FindNextFileW(h, &ffd) > 0;
+		}
+	
+		DirectoryClose(dirVars);
+	}
 
 	return list;
 }

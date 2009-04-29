@@ -17,6 +17,7 @@ class Directory
 	this()
 	{
 		_isRoot = true;
+		_path = new String("");
 	}
 
 	// Description: This constructor will create a Directory object that represents the path, if valid.

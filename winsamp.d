@@ -310,7 +310,8 @@ void InitWindow()
 	Djehuty.addWindow(mainWindow);
 
 	Directory testsDir = FileSystem.getApplicationDirectory;
-	Directory blah = testsDir.getParent();
+//	Directory blah = testsDir.getParent();
+Directory blah = new Directory();
 	testsDir = testsDir.traverse("tests");
 	File config = testsDir.saveFile("config.dat");
 
