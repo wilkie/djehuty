@@ -34,9 +34,9 @@ String DirectoryGetApp()
 		size <<= 2;
 	} while (size == ret)
 
-	if (dir.length > 0)
+	if (ret > 0)
 	{
-		dir = dir[0..$-1];
+		dir = dir[0..ret-1];
 	}
 
 	dir = _SanitizeWindowsPath(dir);
@@ -53,11 +53,6 @@ String DirectoryGetCWD()
 	cwd = cwd[0..$-1];
 	
 	cwd = _SanitizeWindowsPath(cwd);
-
-	wchar[] poop = _SanitizeWindowsPath("\\\\DAVE-PC\\Public\\Favorites");
-	Console.putln(poop);
-	poop = _ConvertFrameworkPath(poop);
-	Console.putln(poop);
 
 	return new String(cwd);
 }
