@@ -42,12 +42,24 @@ String DirectoryGetCWD()
 	
 	cwd = _SanitizeWindowsPath(cwd);
 
+	wchar[] poop = _SanitizeWindowsPath("\\\\DAVE-PC\\Public\\Favorites");
+	Console.putln(poop);
+	poop = _ConvertFrameworkPath(poop);
+	Console.putln(poop);
+
 	return new String(cwd);
 }
 
 wchar[] _SanitizeWindowsPath(wchar[] tmp)
 {
 	if (tmp.length == 0) { return tmp; }
+	
+	// Handle networks
+
+	if (tmp.length > 1 && tmp[0..2] == "\\\\")
+	{
+		tmp = "/network" ~ tmp[1..$];
+	}
 
 	// Change C: to /c
 
@@ -88,6 +100,13 @@ wchar[] _TruncateFileName(wchar[] tmp)
 wchar[] _ConvertFrameworkPath(wchar[] tmp)
 {
 	if (tmp.length == 0) { return tmp; }
+	
+	// Handle networks
+
+	if (tmp.length > 9 && tmp[0..9] == "/network/")
+	{
+		tmp = "\\\\" ~ tmp[9..$];
+	}
 
 	// Change /c to C:
 
