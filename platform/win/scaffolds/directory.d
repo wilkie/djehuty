@@ -22,11 +22,23 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 
 String DirectoryGetApp()
 {
-	int size = GetModuleFileNameW(null, null, 0);
-	wchar[] dir = new wchar[size];
-	GetModuleFileNameW(null, dir.ptr, size);
-	dir = dir[0..$-1];
-	
+	int size = 512;
+	int ret = 0;
+
+	wchar[] dir;
+
+	do
+	{
+		dir = new wchar[size];
+		ret = GetModuleFileNameW(null, dir.ptr, size);
+		size <<= 2;
+	} while (size == ret)
+
+	if (dir.length > 0)
+	{
+		dir = dir[0..$-1];
+	}
+
 	dir = _SanitizeWindowsPath(dir);
 	dir = _TruncateFileName(dir);
 

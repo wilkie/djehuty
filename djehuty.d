@@ -33,6 +33,7 @@ public import core.audio		: Audio;
 public import core.time			: Time;
 public import core.color;
 public import core.directory;
+public import core.filesystem;
 
 // graphics
 public import graphics.brush	: Brush;

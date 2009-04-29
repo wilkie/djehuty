@@ -24,7 +24,7 @@ class Directory
 	this(String path)
 	{
 		_isRoot = false;
-		if (path[0] == '/')
+		if (path.length > 0 && path[0] == '/')
 		{
 			// absolute path
 			_path = new String(path);
@@ -34,10 +34,10 @@ class Directory
 			// relative path
 
 			// get the working directory
-			parent = FileSystem.getCurrentDirectory();
+			Directory cur = FileSystem.getCurrentDirectory();
 
 			// create an absolute path
-			_path = parent.getPath ~ "/" ~ path;
+			_path = cur.getPath ~ "/" ~ path;
 		}
 
 		// retrieve name
@@ -119,6 +119,22 @@ class Directory
 	Directory getParent()
 	{
 		if (isRoot) { return null; }
+		
+		if (parent is null)
+		{
+			Console.putln(_path.array);
+			
+			foreach_reverse(int i, chr; _path)
+			{
+				if (chr == '/')
+				{
+					// truncate
+					Console.putln(_path[0..i]);
+					parent = new Directory(_path[0..i]);
+					return parent;
+				}
+			}
+		}
 
 		return parent;
 	}
@@ -128,7 +144,19 @@ class Directory
 	// Returns: The child directory specified.
 	Directory traverse(String directoryName)
 	{
-		return new Directory(_path ~ "/directoryName");
+		Directory ret = new Directory(_path ~ "/" ~ directoryName);
+		
+		ret.parent = this;
+
+		return ret;
+	}
+
+	// Description: This function will return the Directory representing the directory specified within the current path.
+	// directoryName: The name of the directory.
+	// Returns: The child directory specified.
+	Directory traverse(StringLiteral directoryName)
+	{
+		return new Directory(_path ~ "/" ~ directoryName);
 	}
 
 	// Description: This function will return whether or not the object represents the root.

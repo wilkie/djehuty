@@ -309,10 +309,12 @@ void InitWindow()
 
 	Djehuty.addWindow(mainWindow);
 
-	Directory testsDir = new Directory("tests");
+	Directory testsDir = FileSystem.getApplicationDirectory;
+	Directory blah = testsDir.getParent();
+	testsDir = testsDir.traverse("tests");
 	File config = testsDir.saveFile("config.dat");
 
-	foreach(file; testsDir.list())
+	foreach(file; blah.list())
 	{
 		Console.putln("'", file.array, "'");
 	}
