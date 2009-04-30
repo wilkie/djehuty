@@ -57,6 +57,32 @@ String DirectoryGetCWD()
 	return new String(cwd);
 }
 
+bool DirectoryRename(ref String path, ref String newName)
+{
+	String old = new String(path);
+	old.appendChar('\0');
+	
+	String str;
+
+	foreach_reverse(int i, chr; path)
+	{
+		if (chr == '/')
+		{
+			// truncate
+			str = new String(path[0..i]);
+			break;
+		}
+	}
+	
+	if (str is null) { return false; }
+	
+	str.append(newName);
+	str.appendChar('\0');
+
+	MoveFileW(old.ptr, str.ptr);
+	return true;
+}
+
 wchar[] _SanitizeWindowsPath(wchar[] tmp)
 {
 	if (tmp.length == 0) { return tmp; }
@@ -149,6 +175,8 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 			{
 				list ~= new String(curDrive);
 			}
+			
+			if (curDrive[0] == 'z') { break; }
 
 			curDrive[0]++;
 			logicaldrives >>= 1;

@@ -11,6 +11,9 @@ mixin(PlatformScaffoldImport!());
 
 import console.main;
 
+// Section: Core
+
+// Description: This class represents a file system directory.
 class Directory
 {
 	// Description: This constructor will create a Directory object that represents the root.
@@ -52,6 +55,8 @@ class Directory
 		}
 	}
 
+	// Description: This constructor will create a Directory object that represents the path, if valid.
+	// path: A valid universal path.
 	this(StringLiteral path)
 	{
 		this(new String(path));
@@ -91,7 +96,15 @@ class Directory
 		else
 		{
 			// Change the name of the directory (if possible)
+			Scaffold.DirectoryRename(_path, newName);
 		}
+	}
+
+	// Description: This function will rename the directory, if possible.
+	// newName: The new name for the directory.
+	void setName(StringLiteral newName)
+	{
+		setName(new String(newName));
 	}
 
 	// Description: This function will open the file specified by the parameter if it exists within the directory.
@@ -179,9 +192,6 @@ protected:
 	String name;
 	String _path;
 	Directory parent;
-
-//	String[] files;
-//	Directory[] subDirectories;
 
 	bool _isRoot;
 

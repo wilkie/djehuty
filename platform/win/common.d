@@ -981,8 +981,10 @@ extern(Windows)
 	int MulDiv(int,int,int);
 
 	// FILE
-    HANDLE CreateFileW(    LPCWSTR ,    DWORD ,    DWORD ,    LPSECURITY_ATTRIBUTES ,    DWORD ,    DWORD ,    HANDLE);
+    HANDLE CreateFileW(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 	BOOL GetFileSizeEx(HANDLE, PLARGE_INTEGER);
+	BOOL MoveFileW(LPCWSTR, LPCWSTR);
+	BOOL MoveFileExW(LPCWSTR, LPCWSTR, DWORD);
 	
 	// DIRECTORY
 	DWORD GetCurrentDirectoryW(DWORD, LPCWSTR);
@@ -997,7 +999,6 @@ extern(Windows)
 	int GetAddrInfoW(LPCWSTR pNodeName,LPCWSTR pServiceName,ADDRINFOW* pHints,ADDRINFOW**ppResult);
 
 	// MOUSE CAPTURE
-
 	HWND SetCapture(HWND);
 	BOOL ReleaseCapture();
 
@@ -1009,7 +1010,6 @@ extern(Windows)
 	uint GetRawInputData(HANDLE hRawInput, uint uiCommand, void* pData, uint* pcbSize, uint cbSizeHeader);
 
 	// REGISTRY
-
 	LONG RegOpenKeyExW(HKEY hKey, LPCWSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY* phkResult);
 	LONG RegCloseKey(HKEY hKey);
 	LONG RegQueryValueExW(HKEY hKey, LPCWSTR lpValueName, DWORD* lpReserved, DWORD* lpType, BYTE* lpData, DWORD* lpcbData);
@@ -1019,130 +1019,127 @@ extern(Windows)
 	VOID ExitThread(DWORD);
 	BOOL TerminateThread(HANDLE,DWORD);
 
+	// EVENT (PULSE LOCKS)
 	HANDLE CreateEventW(SECURITY_ATTRIBUTES* lpEventAttributes, BOOL, BOOL, LPCWSTR lpName);
 	BOOL ResetEvent(HANDLE);
 	BOOL PulseEvent(HANDLE);
 	BOOL SetEvent(HANDLE);
 
+	// MUTEXES
 	HANDLE CreateMutexW(SECURITY_ATTRIBUTES* lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName);
-
 	void EnterCriticalSection(CRITICAL_SECTION* lpCriticalSection);
 	void LeaveCriticalSection(CRITICAL_SECTION* lpCriticalSection);
 	void InitializeCriticalSection(CRITICAL_SECTION* lpCriticalSection);
 	void DeleteCriticalSection(CRITICAL_SECTION* lpCriticalSection);
 
 	// MENUS
-
 	BOOL DestroyMenu(HMENU);
 	HMENU CreateMenu();
 	BOOL SetMenu(HWND, HMENU);
 	BOOL AppendMenuW(HMENU, uint, uint*,LPCWSTR);
 	BOOL ModifyMenuW(HMENU, uint, uint, uint*, LPCWSTR);
-
-
-	enum: DWORD
-	{
-		WS_EX_NOPARENTNOTIFY = 0x00000004,
-		WS_EX_ACCEPTFILES = 0x00000010,
-		WS_EX_TRANSPARENT = 0x00000020,
-		WS_EX_RTLREADING = 0x00002000,
-		WS_EX_APPWINDOW = 0x00040000,
-		WS_EX_DLGMODALFRAME = 0x00000001,
-		WS_EX_CONTROLPARENT = 0x00010000,
-		WS_EX_WINDOWEDGE = 0x00000100,
-		WS_EX_CLIENTEDGE = 0x00000200,
-		WS_EX_TOOLWINDOW = 0x00000080,
-		WS_EX_STATICEDGE = 0x00020000,
-		WS_EX_CONTEXTHELP = 0x00000400,
-		WS_EX_MDICHILD = 0x00000040,
-		WS_EX_LAYERED = 0x00080000,
-		WS_EX_TOPMOST = 0x00000008,
-	}
-
-	enum: DWORD
-	{
-		MK_LBUTTON          = 0x0001,
-		MK_RBUTTON          = 0x0002,
-		MK_SHIFT            = 0x0004,
-		MK_CONTROL          = 0x0008,
-		MK_MBUTTON          = 0x0010,
-
-		MK_XBUTTON1         = 0x0020,
-		MK_XBUTTON2         = 0x0040,
-	}
-
-	enum: DWORD
-	{
-		SWP_NOSIZE         = 0x0001,
-		SWP_NOMOVE         = 0x0002,
-		SWP_NOZORDER       = 0x0004,
-		SWP_NOREDRAW       = 0x0008,
-		SWP_NOACTIVATE     = 0x0010,
-		SWP_FRAMECHANGED   = 0x0020, /* The frame changed: send WM_NCCALCSIZE */
-		SWP_SHOWWINDOW     = 0x0040,
-		SWP_HIDEWINDOW     = 0x0080,
-		SWP_NOCOPYBITS     = 0x0100,
-		SWP_NOOWNERZORDER  = 0x0200, /* Don't do owner Z ordering */
-		SWP_NOSENDCHANGING = 0x0400, /* Don't send WM_WINDOWPOSCHANGING */
-	}
-
-	enum: uint
-	{
-		HWND_TOP        = 0,
-		HWND_BOTTOM     = 1,
-		HWND_TOPMOST    = -1,
-		HWND_NOTOPMOST  = -2,
-	}
-
-	enum: uint
-	{
-		VER_MINORVERSION                = 0x0000001,
-		VER_MAJORVERSION                = 0x0000002,
-		VER_BUILDNUMBER                 = 0x0000004,
-		VER_PLATFORMID                  = 0x0000008,
-		VER_SERVICEPACKMINOR            = 0x0000010,
-		VER_SERVICEPACKMAJOR            = 0x0000020,
-		VER_SUITENAME                   = 0x0000040,
-		VER_PRODUCT_TYPE                = 0x0000080,
-
-		//
-		// RtlVerifyVersionInfo() os product type values
-		//
-
-		VER_NT_WORKSTATION              = 0x0000001,
-		VER_NT_DOMAIN_CONTROLLER        = 0x0000002,
-		VER_NT_SERVER                   = 0x0000003,
-
-		//
-		// dwPlatformId defines:
-		//
-
-		VER_PLATFORM_WIN32s             = 0,
-		VER_PLATFORM_WIN32_WINDOWS      = 1,
-		VER_PLATFORM_WIN32_NT           = 2,
-	}
-
-	const auto CTRL_C_EVENT        = 0;
-	const auto CTRL_BREAK_EVENT    = 1;
-	const auto CTRL_CLOSE_EVENT    = 2;
-	// 3 is reserved!
-	// 4 is reserved!
-	const auto CTRL_LOGOFF_EVENT   = 5;
-	const auto CTRL_SHUTDOWN_EVENT = 6;
 }
+
+// FLAGS
+
+enum: DWORD
+{
+	WS_EX_NOPARENTNOTIFY = 0x00000004,
+	WS_EX_ACCEPTFILES = 0x00000010,
+	WS_EX_TRANSPARENT = 0x00000020,
+	WS_EX_RTLREADING = 0x00002000,
+	WS_EX_APPWINDOW = 0x00040000,
+	WS_EX_DLGMODALFRAME = 0x00000001,
+	WS_EX_CONTROLPARENT = 0x00010000,
+	WS_EX_WINDOWEDGE = 0x00000100,
+	WS_EX_CLIENTEDGE = 0x00000200,
+	WS_EX_TOOLWINDOW = 0x00000080,
+	WS_EX_STATICEDGE = 0x00020000,
+	WS_EX_CONTEXTHELP = 0x00000400,
+	WS_EX_MDICHILD = 0x00000040,
+	WS_EX_LAYERED = 0x00080000,
+	WS_EX_TOPMOST = 0x00000008,
+}
+
+enum: DWORD
+{
+	MK_LBUTTON          = 0x0001,
+	MK_RBUTTON          = 0x0002,
+	MK_SHIFT            = 0x0004,
+	MK_CONTROL          = 0x0008,
+	MK_MBUTTON          = 0x0010,
+
+	MK_XBUTTON1         = 0x0020,
+	MK_XBUTTON2         = 0x0040,
+}
+
+enum: DWORD
+{
+	SWP_NOSIZE         = 0x0001,
+	SWP_NOMOVE         = 0x0002,
+	SWP_NOZORDER       = 0x0004,
+	SWP_NOREDRAW       = 0x0008,
+	SWP_NOACTIVATE     = 0x0010,
+	SWP_FRAMECHANGED   = 0x0020, /* The frame changed: send WM_NCCALCSIZE */
+	SWP_SHOWWINDOW     = 0x0040,
+	SWP_HIDEWINDOW     = 0x0080,
+	SWP_NOCOPYBITS     = 0x0100,
+	SWP_NOOWNERZORDER  = 0x0200, /* Don't do owner Z ordering */
+	SWP_NOSENDCHANGING = 0x0400, /* Don't send WM_WINDOWPOSCHANGING */
+}
+
+enum: uint
+{
+	HWND_TOP        = 0,
+	HWND_BOTTOM     = 1,
+	HWND_TOPMOST    = -1,
+	HWND_NOTOPMOST  = -2,
+}
+
+enum: uint
+{
+	VER_MINORVERSION                = 0x0000001,
+	VER_MAJORVERSION                = 0x0000002,
+	VER_BUILDNUMBER                 = 0x0000004,
+	VER_PLATFORMID                  = 0x0000008,
+	VER_SERVICEPACKMINOR            = 0x0000010,
+	VER_SERVICEPACKMAJOR            = 0x0000020,
+	VER_SUITENAME                   = 0x0000040,
+	VER_PRODUCT_TYPE                = 0x0000080,
+
+	//
+	// RtlVerifyVersionInfo() os product type values
+	//
+
+	VER_NT_WORKSTATION              = 0x0000001,
+	VER_NT_DOMAIN_CONTROLLER        = 0x0000002,
+	VER_NT_SERVER                   = 0x0000003,
+
+	//
+	// dwPlatformId defines:
+	//
+
+	VER_PLATFORM_WIN32s             = 0,
+	VER_PLATFORM_WIN32_WINDOWS      = 1,
+	VER_PLATFORM_WIN32_NT           = 2,
+}
+
+const auto CTRL_C_EVENT        = 0;
+const auto CTRL_BREAK_EVENT    = 1;
+const auto CTRL_CLOSE_EVENT    = 2;
+// 3 is reserved!
+// 4 is reserved!
+const auto CTRL_LOGOFF_EVENT   = 5;
+const auto CTRL_SHUTDOWN_EVENT = 6;
 
 const int TRANSPARENT         = 1;
 const int OPAQUE              = 2;
-
-
-
 
 struct SIZE
 {
     int        x;
     int        y;
 }
-
 
 const int IDC_BTNCLICK = 101;
 const int IDC_BTNDONTCLICK = 102;

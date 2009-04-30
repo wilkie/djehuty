@@ -16,6 +16,32 @@ import core.definitions;
 
 import console.main;
 
+bool FileRename(ref String path, ref String newName)
+{
+	String old = new String(path);
+	old.appendChar('\0');
+
+	String str;
+
+	foreach_reverse(int i, chr; path)
+	{
+		if (chr == '/')
+		{
+			// truncate
+			str = new String(path[0..i]);
+			break;
+		}
+	}
+	
+	if (str is null) { return false; }
+	
+	str.append(newName);
+	str.appendChar('\0');
+
+	MoveFileW(old.ptr, str.ptr);
+	return true;
+}
+
 // FILE //
 
 bool FileOpen(ref FilePlatformVars fileVars, ref String filename)
