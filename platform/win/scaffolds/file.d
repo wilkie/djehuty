@@ -13,8 +13,11 @@ import core.string;
 import core.file;
 import core.main;
 import core.definitions;
+import core.directory;
 
 import console.main;
+
+// OPERATIONS //
 
 bool FileRename(ref String path, ref String newName)
 {
@@ -36,6 +39,33 @@ bool FileRename(ref String path, ref String newName)
 	if (str is null) { return false; }
 	
 	str.append(newName);
+	str.appendChar('\0');
+
+	MoveFileW(old.ptr, str.ptr);
+	return true;
+}
+
+bool FileMove(ref String from, ref Directory to)
+{
+	String old = new String(from);
+	old.appendChar('\0');
+
+	String fn;
+
+	foreach_reverse(int i, chr; from)
+	{
+		if (chr == '/')
+		{
+			// truncate (include the slash)
+			fn = new String(from[i..from.length]);
+			break;
+		}
+	}
+
+	if (fn is null) { return false; }
+
+	String str = new String(to.getPath());
+	str.append(fn);
 	str.appendChar('\0');
 
 	MoveFileW(old.ptr, str.ptr);

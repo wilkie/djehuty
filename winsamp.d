@@ -63,6 +63,7 @@ class MyWindow : Window
 
 	void OnAdd()
 	{
+		setState(WindowState.Fullscreen);
 		tf = new TextField(0,0,200,25,"Hello");
 		btn = new Button(200,25,25,25,"!", &btnEvent);
 		addControl(tf);
