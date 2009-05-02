@@ -53,6 +53,8 @@ extern(C):
 
 // Standard C
 
+int system(char*);
+
 char *	 tmpnam(char *);	///
 FILE *	 fopen(char *,char *);	///
 FILE *	 _fsopen(char *,char *,int );	///

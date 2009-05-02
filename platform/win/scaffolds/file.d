@@ -19,7 +19,31 @@ import console.main;
 
 // OPERATIONS //
 
-bool FileRename(ref String path, ref String newName)
+bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
+{
+	String oldPath = new String(oldFullPath);
+	oldPath.appendChar('\0');
+
+	String newPath = new String(newFullPath);
+	newPath.appendChar('\0');
+
+	MoveFileW(oldPath.ptr, newPath.ptr);
+	return true;
+}
+
+bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
+{
+	String oldPath = new String(oldFullPath);
+	oldPath.appendChar('\0');
+
+	String newPath = new String(newFullPath);
+	newPath.appendChar('\0');
+
+	CopyFileW(oldPath.ptr, newPath.ptr);
+	return true;
+}
+
+bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName)
 {
 	String old = new String(path);
 	old.appendChar('\0');
@@ -35,9 +59,9 @@ bool FileRename(ref String path, ref String newName)
 			break;
 		}
 	}
-	
+
 	if (str is null) { return false; }
-	
+
 	str.append(newName);
 	str.appendChar('\0');
 

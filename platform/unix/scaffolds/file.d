@@ -70,15 +70,46 @@ void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
 {
 }
 
-void FileRename(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
+bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
 {
-	String fn = new String(oldFullPath);
-	fn.appendChar('\0');
+	String exec = new String("mv ") ~ oldFullPath ~ " " ~ newFullPath ~ "\0";
 
-	String fn2 = new String(newFullPath);
-	fn.appendChar('\0');
+	system(exec.ptr);
+	return true;
+}
 
-	rename(fn.ptr, fn2.ptr);
+bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
+{
+	String exec = new String("cp ") ~ oldFullPath ~ " " ~ newFullPath ~ "\0";
+
+	system(exec.ptr);
+	return true;
+}
+
+void FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName)
+{
+	String old = new String(path);
+	old.appendChar('\0');
+
+	String str;
+
+	foreach_reverse(int i, chr; path)
+	{
+		if (chr == '/')
+		{
+			// truncate
+			str = new String(path[0..i]);
+			break;
+		}
+	}
+
+	if (str is null) { return false; }
+
+	str.append(newName);
+	str.appendChar('\0');
+
+	rename(old.ptr, str.ptr);
+	return true;
 }
 
 void FileRemove(ref FilePlatformVars fileVars, String fullPath)
