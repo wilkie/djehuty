@@ -39,7 +39,7 @@ bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullP
 	String newPath = new String(newFullPath);
 	newPath.appendChar('\0');
 
-	CopyFileW(oldPath.ptr, newPath.ptr);
+	CopyFileW(oldPath.ptr, newPath.ptr, 0);
 	return true;
 }
 
