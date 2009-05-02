@@ -63,7 +63,6 @@ class MyWindow : Window
 
 	void OnAdd()
 	{
-		setState(WindowState.Fullscreen);
 		tf = new TextField(0,0,200,25,"Hello");
 		btn = new Button(200,25,25,25,"!", &btnEvent);
 		addControl(tf);
@@ -312,9 +311,15 @@ void InitWindow()
 
 	Directory testsDir = FileSystem.getApplicationDirectory;
 //	Directory blah = testsDir.getParent();
+
 	Directory blah = new Directory();
+
 	testsDir = testsDir.traverse("tests");
+
 	File config = testsDir.saveFile("config.dat");
+
+	testsDir.move(testsDir.getParent.traverse("tools"));
+	testsDir.move(testsDir.getParent.getParent);
 
 	foreach(file; blah.list())
 	{

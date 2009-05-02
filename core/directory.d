@@ -66,6 +66,25 @@ class Directory
 	{
 	}
 
+	void move(String path)
+	{
+		if (Scaffold.DirectoryMove(_path, path ~ "/" ~ name))
+		{
+			parent = new Directory(path);
+			_path = path ~ "/" ~ name;
+		}
+	}
+
+	void move(Directory to)
+	{
+		move(to.getPath());
+	}
+
+	void move(StringLiteral path)
+	{
+		move(new String(path));
+	}
+
 	// Description: This function will return a String representing the name of the directory.
 	// Returns: The name of the directory.
 	String getName()
@@ -84,8 +103,6 @@ class Directory
 	// newName: The new name for the directory.
 	void setName(String newName)
 	{
-		name = new String(newName);
-
 		// Rename directory
 
 		// XXX: Do it.
@@ -97,6 +114,8 @@ class Directory
 		{
 			// Change the name of the directory (if possible)
 			Scaffold.DirectoryRename(_path, newName);
+			_path = getParent().getPath() ~ "/" ~ newName;
+			name = new String(newName);
 		}
 	}
 

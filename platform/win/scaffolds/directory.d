@@ -57,11 +57,11 @@ String DirectoryGetCWD()
 	return new String(cwd);
 }
 
-bool DirectoryRename(ref String path, ref String newName)
+bool DirectoryRename(ref String path, String newName)
 {
 	String old = new String(path);
 	old.appendChar('\0');
-	
+
 	String str;
 
 	foreach_reverse(int i, chr; path)
@@ -76,10 +76,44 @@ bool DirectoryRename(ref String path, ref String newName)
 	
 	if (str is null) { return false; }
 	
+	str.appendChar('/');
 	str.append(newName);
 	str.appendChar('\0');
 
-	MoveFileW(old.ptr, str.ptr);
+	wchar[] strArr = _ConvertFrameworkPath(str.array);
+	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+
+	MoveFileW(oldArr.ptr, strArr.ptr);
+	return true;
+}
+
+bool DirectoryMove(ref String path, String newPath)
+{
+	String old = new String(path);
+	old.appendChar('\0');
+	
+	String str = new String(newPath);
+	str.appendChar('\0');
+
+	wchar[] strArr = _ConvertFrameworkPath(str.array);
+	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+
+	MoveFileW(oldArr.ptr, strArr.ptr);
+	return true;
+}
+
+bool DirectoryCopy(ref String path, String newPath)
+{
+	String old = new String(path);
+	old.appendChar('\0');
+	
+	String str = new String(newPath);
+	str.appendChar('\0');
+
+	wchar[] strArr = _ConvertFrameworkPath(str.array);
+	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+
+	CopyFileW(oldArr.ptr, strArr.ptr, 0);
 	return true;
 }
 
