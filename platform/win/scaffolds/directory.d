@@ -91,7 +91,7 @@ bool DirectoryMove(ref String path, String newPath)
 {
 	String old = new String(path);
 	old.appendChar('\0');
-	
+
 	String str = new String(newPath);
 	str.appendChar('\0');
 
@@ -112,6 +112,8 @@ bool DirectoryCopy(ref String path, String newPath)
 
 	wchar[] strArr = _ConvertFrameworkPath(str.array);
 	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+	
+	Console.putln("!!",oldArr, strArr);
 
 	CopyFileW(oldArr.ptr, strArr.ptr, 0);
 	return true;

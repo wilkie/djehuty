@@ -84,6 +84,45 @@ class Directory
 	{
 		move(new String(path));
 	}
+	
+	void copy(String path)
+	{
+		if (Scaffold.DirectoryCopy(_path, path))
+		{
+			parent = null;
+			_path = path;
+
+			// retrieve name
+			foreach_reverse(int i, chr; _path)
+			{
+				if (chr == '/')
+				{
+					name = new String(_path[i+1.._path.length]);
+					break;
+				}
+			}
+		}
+	}
+
+	void copy(StringLiteral path)
+	{
+		copy(new String(path));
+	}
+
+	void copy(Directory to, String newName = null)
+	{
+		if (newName is null) { newName = name; }
+
+		copy(to.getPath() ~ "/" ~ newName);
+	}
+
+	void copy(Directory to, StringLiteral newName = null)
+	{
+		String nname;
+		if (newName is null) { nname = name; } else { nname = new String(newName); }
+		
+		copy(to.getPath() ~ "/" ~ nname);
+	}
 
 	// Description: This function will return a String representing the name of the directory.
 	// Returns: The name of the directory.

@@ -320,6 +320,8 @@ void InitWindow()
 
 	testsDir.move(testsDir.getParent.traverse("tools"));
 	testsDir.move(testsDir.getParent.getParent);
+	
+	testsDir.copy(testsDir.getParent, "tests2");
 
 	foreach(file; blah.list())
 	{
