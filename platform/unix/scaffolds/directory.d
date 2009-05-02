@@ -11,7 +11,16 @@ import utils.arraylist;
 
 bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref String path)
 {
-	String pn = new String(path);
+	String pn;
+	if (path == "")
+	{
+		pn = new String("/");
+	}
+	else
+	{
+		pn = new String(path);
+	}
+
 	pn.appendChar('\0');
 
 	dirVars.dir = opendir(pn.ptr);
@@ -53,6 +62,32 @@ String DirectoryGetCWD()
 	}
 
 	return new String(chrs);
+}
+
+bool DirectoryRename(ref String path, ref String newName)
+{
+	String npath = new String(path);
+	npath.appendChar('\0');
+
+	String str;
+
+	foreach_reverse(int i, chr; path)
+	{
+		if (chr == '/')
+		{
+			// truncate
+			str = new String(path[0..i]);
+			break;
+		}
+	}
+
+	if (str is null) { return false; }
+
+	str.append(newName);
+	str.appendChar('\0');
+
+	rename(npath.ptr, str.ptr);
+	return true;
 }
 
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)

@@ -375,18 +375,38 @@ public:
 
 	void move(Directory destination)
 	{
+		if (Scaffold.FileMove(_pfvars, path.getPath() ~ "/" ~ name, destination.getPath() ~ "/" ~ name))
+		{
+			path = destination;
+		}
 	}
 
 	void move(String destination)
 	{
+		if (Scaffold.FileMove(_pfvars, path.getPath() ~ "/" ~ name, destination ~ "/" ~ name))
+		{
+			path = new Directory(destination);
+		}
 	}
 
-	void copy(Directory destination)
+	File copy(Directory destination)
 	{
+		File ret;
+		if (Scaffold.FileCopy(_pfvars, path.getPath() ~ "/" ~ name, destination.getPath() ~ "/" ~ name))
+		{
+			ret = new File(destination.getPath() ~ "/" ~ name);
+		}
+		return ret;
 	}
 
-	void copy(String destination)
+	File copy(String destination)
 	{
+		File ret;
+		if (Scaffold.FileCopy(_pfvars, path.getPath() ~ "/" ~ name, destination ~ "/" ~ name))
+		{
+			ret = new File(destination ~ "/" ~ name);
+		}
+		return ret;
 	}
 
 	void destroy()
