@@ -27,7 +27,15 @@ public:
 		else
 		{
 			Console.setColor(fgColor.BrightRed);
-			Console.putln("Unhandled Thread Exception: ", e.toString());
+			if (t is null)
+			{
+				Console.putln("Unhandled Main Exception: ", e.toString());
+			}
+			else
+			{
+				Console.putln("Unhandled Thread Exception: ", e.toString());
+			}
+
 			if (w !is null)
 			{
 				// get class name

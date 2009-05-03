@@ -11,6 +11,7 @@ import core.window;
 import core.view;
 import core.menu;
 import core.thread;
+import core.debugger;
 
 import console.window;
 
@@ -1579,9 +1580,7 @@ int WinMain(HINSTANCE hInstance,
     catch (Object o)		// catch any uncaught exceptions
     {
 		// Catch any unhandled exceptions
-		Console.setColor(fgColor.BrightRed);
-		Console.putln("Unhandled Main Exception: ", o.toString());
-		Console.setColor(fgColor.White);
+		Debugger.raiseException(cast(Exception)o);
 
 		result = 0;		// failed
     }
