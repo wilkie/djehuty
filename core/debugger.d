@@ -35,6 +35,15 @@ public:
 			{
 				Console.putln("Unhandled Thread Exception: ", e.toString());
 			}
+			
+			version(LDC)
+			{
+				// Tango provides a traceback for us
+				Console.putln("    from file: ", e.file);
+			}
+			else
+			{
+			}
 
 			if (w !is null)
 			{
@@ -52,6 +61,7 @@ public:
 
 				Console.putln("    from thread: ", className.array);
 			}
+
 			Console.setColor(fgColor.White);
 		}
 	}
