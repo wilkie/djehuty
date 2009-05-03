@@ -228,7 +228,7 @@ version(LDC)
 			catch (Object o)
 			{
 				// Catch any unhandled exceptions
-				Debugger.raiseException(cast(Exception)o, thread.wnd);
+				Debugger.raiseException(cast(Exception)o, thread.wnd, thread);
 			}
 
 			stdThread = null;
@@ -260,7 +260,7 @@ else
 			catch (Object o)
 			{
 				// Catch any unhandled exceptions
-				Debugger.raiseException(cast(Exception)o, thread.wnd);
+				Debugger.raiseException(cast(Exception)o, thread.wnd, thread);
 			}
 
 			stdThread = null;

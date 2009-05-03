@@ -5,6 +5,7 @@ import console.main;
 import core.basewindow;
 import core.string;
 import core.unicode;
+import core.thread;
 
 // Section: Core
 
@@ -17,7 +18,7 @@ class Debugger
 static:
 public:
 
-	void raiseException(Exception e, BaseWindow w = null)
+	void raiseException(Exception e, BaseWindow w = null, Thread t = null)
 	{
 		if (_delegate !is null)
 		{
@@ -35,9 +36,13 @@ public:
 
 				Console.putln("    from window: ", className.array, " [", w.getText().array, "]");
 			}
-			else
+			if (t !is null)
 			{
-				Console.putln("");
+				// get class name
+				ClassInfo ci = t.classinfo;
+				String className = new String(Unicode.toNative(ci.name));
+
+				Console.putln("    from thread: ", className.array);
 			}
 			Console.setColor(fgColor.White);
 		}

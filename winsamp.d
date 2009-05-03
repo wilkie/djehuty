@@ -300,6 +300,15 @@ class MyWindow : GLWindow
 }
 //*/
 
+class MyThread : Thread
+{
+	override void run()
+	{
+		String bugger;
+		bugger.append("das");
+	}
+}
+
 void InitWindow()
 {
 	MyWindow mainWindow;
@@ -315,7 +324,7 @@ void InitWindow()
 	Directory blah = new Directory();
 
 	testsDir = testsDir.traverse("tests");
-	
+
 //	File fle = new File("winsamp.d");
 	//char[] str;
 //	while(fle.readLine(str))
@@ -332,6 +341,9 @@ void InitWindow()
 extern(System) void DjehutyMain()
 {
 	Tests.testAll();
+	
+	MyThread mt = new MyThread;
+	mt.start();
 
 	InitWindow();
 }
