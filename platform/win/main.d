@@ -1578,7 +1578,10 @@ int WinMain(HINSTANCE hInstance,
     }
     catch (Object o)		// catch any uncaught exceptions
     {
-		MessageBoxA(null, cast(char *)o.toString(), "Error", MB_OK | MB_ICONEXCLAMATION);
+		// Catch any unhandled exceptions
+		Console.setColor(fgColor.BrightRed);
+		Console.putln("Unhandled Main Exception: ", o.toString());
+		Console.setColor(fgColor.White);
 
 		result = 0;		// failed
     }

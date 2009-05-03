@@ -15,6 +15,8 @@ import core.string;
 
 import core.basewindow;
 
+import console.main;
+
 import opengl.window;
 import opengl.gl;
 

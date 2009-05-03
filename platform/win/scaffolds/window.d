@@ -50,6 +50,8 @@ void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
 	{
 		windowVars.msgThread = new Thread(&windowVars.msgLoop);
 	}
+	
+	ThreadSetWindow(windowVars.msgThread, window);
 
 	windowVars.msgThread.start();
 

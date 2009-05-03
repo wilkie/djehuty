@@ -1,6 +1,8 @@
 module core.thread;
 
-// TODO: Awww... my only runtime dependency
+import core.basewindow;
+
+// Awww... my only runtime dependency
 version(LDC)
 {
 	import Tango = tango.core.Thread;
@@ -14,6 +16,9 @@ import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
+
+// access to exception handler
+import core.debugger;
 
 // Access to the threads array
 import core.main;
@@ -193,6 +198,8 @@ protected:
 
 	uint startTime;
 	uint time;
+	
+	BaseWindow wnd;
 
 	ThreadPlatformVars _pfvars;
 
@@ -214,7 +221,15 @@ version(LDC)
 
 		void run()
 		{
-			Thread.run();
+			try
+			{
+				Thread.run();
+			}
+			catch (Object o)
+			{
+				// Catch any unhandled exceptions
+				Debugger.raiseException(cast(Exception)o, thread.wnd);
+			}
 
 			stdThread = null;
 
@@ -238,7 +253,15 @@ else
 
 		override int run()
 		{
-			Thread.run();
+			try
+			{
+				Thread.run();
+			}
+			catch (Object o)
+			{
+				// Catch any unhandled exceptions
+				Debugger.raiseException(cast(Exception)o, thread.wnd);
+			}
 
 			stdThread = null;
 
@@ -259,4 +282,9 @@ ThreadPlatformVars* ThreadGetPlatformVars(ref Thread t)
 void ThreadUninit(ref Thread t)
 {
 	t._inited = false;
+}
+
+void ThreadSetWindow(ref Thread t, BaseWindow w)
+{
+	t.wnd = w;
 }
