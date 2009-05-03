@@ -62,8 +62,14 @@ class Directory
 		this(new String(path));
 	}
 
-	~this()
+	bool isDir(String name)
 	{
+		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ name);
+	}
+	
+	bool isDir(StringLiteral name)
+	{
+		return isDir(new String(name));
 	}
 
 	void move(String path)

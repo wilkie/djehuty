@@ -9,12 +9,12 @@
 module specs.test;
 
 import testing.logic;
-import console.main;
+
 import core.string;
 
 class StringTester
 {
-
+	
 		it creation_should_handle_literals()
 	{before_creation();
 try
@@ -81,7 +81,7 @@ try
 	return it.does;
 	}	done before_creation() { }
 
-
+	
 		it trim_should_trim_off_whitespace()
 	{before_trim();
 try
@@ -100,7 +100,7 @@ try
 	return it.does;
 	}	done before_trim() { }
 
-
+	
 		it length_should_account_for_combining_marks()
 	{before_length();
 try
@@ -150,7 +150,7 @@ try
 	return it.does;
 	}	done before_length() { }
 
-
+	
 		it append_should_concatenate_a_string_object()
 	{before_append();
 try
@@ -248,7 +248,7 @@ try
 	{before_append();
 try
 {
-
+			
 
 			String str = new String("hello ");
 			String str2;
@@ -261,7 +261,7 @@ try
 	return it.does;
 	}	done before_append() { }
 
-
+	
 		it toLowercase_should_work_as_expected()
 	{before_toLowercase();
 try
@@ -276,7 +276,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { Console.putln("Exception: ", _exception_.msg); for(;;) {} return it.doesnt; } return it.does;
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -299,7 +299,7 @@ try
 	return it.does;
 	}	done before_toLowercase() { }
 
-
+	
 		it toUppercase_should_work_as_expected()
 	{before_toUppercase();
 try
@@ -422,10 +422,10 @@ this() { before(); }
 		result = tester.append_should_not_fail_on_an_empty_string_literal();
 		test.logResult(result, "append should not fail on an empty string literal", "105");
 
-//		tester = new StringTester();
+		tester = new StringTester();
 
-//		result = tester.append_should_throw_an_exception_for_null_string_object();
-//		test.logResult(result, "append should throw an exception for null string object", "113");
+		result = tester.append_should_throw_an_exception_for_null_string_object();
+		test.logResult(result, "append should throw an exception for null string object", "113");
 
 		test.logSubset("toLowercase");
 
@@ -451,7 +451,7 @@ this() { before(); }
 		result = tester.toUppercase_should_not_fail_on_an_empty_string();
 		test.logResult(result, "toUppercase should not fail on an empty string", "153");
 
-
+	
 	}
 }import core.unicode;
 
@@ -471,7 +471,7 @@ class UnicodeTester
 	StringLiteral16 empty16 = "";
 	StringLiteral8 empty8 = "";
 
-
+	
 		it utflen_should_be_the_same_for_utf8_as_utf32()
 	{before_utflen();
 try
@@ -506,7 +506,6 @@ try
 }
 	return it.does;
 	}
-
 		it utflen_should_account_for_combining_marks_for_utf8()
 	{before_utflen();
 try
@@ -604,7 +603,7 @@ try
 	return it.does;
 	}	done before_utflen() { }
 
-
+	
 		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
 	{before_toUtfChars();
 try
@@ -788,13 +787,13 @@ this() { before(); }
 		result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
 		test.logResult(result, "toUtfChars should account for combining marks for utf8", "113");
 
-
+	
 	}
 }import hashes.digest;
 
 class DigestTester
 {
-
+	
 		it creation_should_allow_for_64_bits()
 	{before_creation();
 try
@@ -868,7 +867,7 @@ try
 	return it.does;
 	}	done before_creation() { }
 
-
+	
 		it comparison_should_work_for_equals_overload()
 	{before_comparison();
 try
@@ -960,13 +959,13 @@ this() { before(); }
 		result = tester.comparison_should_work_for_equals_function();
 		test.logResult(result, "comparison should work for equals function", "49");
 
-
+	
 	}
 }import hashes.md5;
 
 class MD5Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1003,7 +1002,7 @@ try
 	{before_hash();
 try
 {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
 			String s = HashMD5.hash("d").getString();
 			if(!(s == "8277e0910d750195b448797616e091ad"))
 	{
@@ -1020,7 +1019,7 @@ try
 	{before_hash();
 try
 {
-			// Testing a classic MD5
+			// Testing a classic MD5 
 			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
 			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
 
@@ -1078,13 +1077,13 @@ this() { before(); }
 		result = tester.hash_should_work_on_byte_arrays();
 		test.logResult(result, "hash should work on byte arrays", "29");
 
-
+	
 	}
 }import hashes.sha1;
 
 class SHA1Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1163,13 +1162,13 @@ this() { before(); }
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
-
+	
 	}
 }import hashes.sha224;
 
 class SHA224Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1248,13 +1247,13 @@ this() { before(); }
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
-
+	
 	}
 }import hashes.sha256;
 
 class SHA256Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1333,17 +1332,9 @@ this() { before(); }
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
-
+	
 	}
-}import testing.logic;
-
-import core.string;
-
-import core.unicode;
-
-import core.string;
-
-
+}
 class Tests
 {
 	static void testString()

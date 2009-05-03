@@ -1518,6 +1518,41 @@ void initAll()
 	InitCommonControls();
 }
 
+import core.commandline;
+import console.main;
+
+void parseCommandLine()
+{
+	wchar* cmdlne = GetCommandLineW();
+	
+	if (cmdlne is null) { return; }
+
+	// tokenize
+	int last = 0;
+
+	for(int i = 0; ; i++)
+	{
+		auto chr = cmdlne[i];
+
+		if (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\0')
+		{
+			if (last != i)
+			{
+				String token = new String(cmdlne[last..i]);
+
+				CommandLine.addArgument(token);
+			}
+
+			last = i+1;
+		}
+
+		if (chr == '\0')
+		{
+			break;
+		}
+	}
+}
+
 extern (Windows)
 int WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -1536,6 +1571,8 @@ int WinMain(HINSTANCE hInstance,
 
 		registerWindowClass();
 		initAll();
+
+		parseCommandLine();
 
 		result = mainloop();	// insert user code here
     }

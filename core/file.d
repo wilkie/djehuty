@@ -177,11 +177,11 @@ public:
 	{
 		if (len <= 0) { return false;}
 
-		if (_curpos + len > _length)
-		{
+		//if (_curpos + len > _length)
+		//{
 			// TODO: throw permission exception
-			return false;
-		}
+		//	return false;
+		//}
 
 		Scaffold.FileWrite(_pfvars, bytes, len);
 
@@ -199,11 +199,11 @@ public:
 
 		stream.read(&buffer[0], len);
 
-		if (_curpos + len > _length)
-		{
+		//if (_curpos + len > _length)
+		//{
 			// TODO: throw permission exception
-			return false;
-		}
+		//	return false;
+		//}
 
 		Scaffold.FileWrite(_pfvars, &buffer[0], len);
 

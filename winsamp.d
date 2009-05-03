@@ -316,12 +316,12 @@ void InitWindow()
 
 	testsDir = testsDir.traverse("tests");
 	
-	File fle = new File("winsamp.d");
-	char[] str;
-	while(fle.readLine(str))
-	{
-		Console.putln(str);
-	}
+//	File fle = new File("winsamp.d");
+	//char[] str;
+//	while(fle.readLine(str))
+	//{
+	//	Console.putln(str);
+//	}
 
 	foreach(file; blah.list())
 	{

@@ -24,7 +24,7 @@ DFILES_PLATFORM_UNIX = platform/unix/cairo/cairo.d platform/unix/scaffolds/threa
 DFILES_PLATFORM_WIN = platform/win/main.d platform/win/common.d platform/win/scaffold.d platform/win/vars.d platform/win/console.d platform/win/definitions.d platform/win/scaffolds/wave.d platform/win/scaffolds/directory.d platform/win/scaffolds/graphics.d platform/win/scaffolds/thread.d platform/win/scaffolds/menu.d platform/win/scaffolds/window.d platform/win/scaffolds/view.d platform/win/scaffolds/color.d platform/win/scaffolds/file.d platform/win/scaffolds/socket.d platform/win/scaffolds/app.d platform/win/controls/oslistfield.d platform/win/controls/osprogressbar.d platform/win/controls/oslistbox.d platform/win/controls/oshscrollbar.d platform/win/controls/osvscrollbar.d platform/win/controls/osbutton.d platform/win/controls/ostextfield.d platform/win/controls/ostogglefield.d platform/win/controls/ostrackbar.d platform/win/scaffolds/time.d platform/win/oscontrolinterface.d platform/win/scaffolds/opengl.d
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
-DFILES_CORE = core/filesystem.d core/directory.d core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
+DFILES_CORE = core/commandline.d core/filesystem.d core/directory.d core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
 DFILES_CONTROLS = controls/container.d controls/trackbar.d controls/radiogroup.d controls/progressbar.d controls/togglefield.d controls/oscontrol.d controls/listfield.d controls/listbox.d controls/vscrollbar.d controls/hscrollbar.d controls/button.d controls/textfield.d
 DFILES_UTILS = utils/arraylist.d utils/linkedlist.d
 DFILES_PARSERS = parsers/cfg.d
@@ -161,6 +161,19 @@ ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+endif
+endif
+
+dspec: lib
+
+	@echo compiling DSpec and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
+else
+ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	#@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
 endif
 endif
 

@@ -1,16 +1,19 @@
 module filelist;
 
-// import core.string;
-// import core.file;
-// import core.directory;
+import core.definitions;
+import core.string;
+import core.file;
+import core.directory;
+
+import console.main;
 
 // *** delete both
-import std.file;
-import std.string;
+//import std.file;
+//import std.string;
 
 class FileList
 {
-	bool fetch(inout char[] path)
+	bool fetch(inout String path)
 	{
 		sanitizePath(path);
 
@@ -21,12 +24,12 @@ class FileList
 		return true;
 	}
 
-	char[][] opApply()
+	String[] opApply()
 	{
 		return files;
 	}
 
-	int opApply(int delegate(ref char[]) dg)
+	int opApply(int delegate(ref String) dg)
     {
     	int result = 0;
 
@@ -42,19 +45,19 @@ class FileList
 
 protected:
 
-	// *** String[] files;
-	char[][] files;
+	String[] files;
+	//char[][] files;
 
-	void sanitizePath(inout char[] path)
+	void sanitizePath(inout String path)
 	{
 		if (path.length == 0)
 		{
 			return;
 		}
 
-		if (path[length-1] == '.')
+		if (path[path.length-1] == '.')
 		{
-			path = path[0..$-1];
+			path = new String(path[0..path.length-1]);
 		}
 
 		if (path.length == 0)
@@ -62,30 +65,33 @@ protected:
 			return;
 		}
 
-		if (path[length-1] != '/')
+		if (path[path.length-1] != '/')
 		{
 			path ~= '/';
 		}
 	}
 
-	void lookForFiles(char[] path)
+	void lookForFiles(String path)
 	{
+		Console.putln("filelist created");
+
 		sanitizePath(path);
 
-		// *** Directory dir = new Directory(path);
-		// *** auto dirs = dir.list();
-		auto dirs = std.file.listdir(path);
+		Directory dir = new Directory(path);
+		auto dirs = dir.list();
+		//auto dirs = std.file.listdir(path);
 
-		// *** Char[] ext;
-		char[] ext;
+		Char[] ext;
+		//char[] ext;
 
 		foreach (d; dirs)
 		{
-			// *** int pos = d.find('.');
-			int pos = find(d, '.');
+			if (d == "test.d") { continue; }
+			int pos = d.find(new String("."));
+			//int pos = find(d, '.');
 
-			// *** if (dir.isDir(d))
-			if (isdir(path ~ d))
+			if (dir.isDir(d))
+			//if (isdir(path ~ d))
 			{
 				lookForFiles(path ~ d);
 			}
@@ -99,8 +105,8 @@ protected:
 			switch (ext)
 			{
 				case ".d":
-					// files ~= new String(path) ~ d;
-					files ~= path ~ d;
+					files ~= new String(path) ~ d;
+					//files ~= path ~ d;
 					break;
 				default:
 					break;

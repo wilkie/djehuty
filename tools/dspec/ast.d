@@ -1,10 +1,12 @@
 module ast;
 
 // *** import console.main;
+import core.string;
+import console.main;
 
 // *** delete both
-import std.stdio;
-import std.string;
+//import std.stdio;
+//import std.string;
 
 class AST
 {
@@ -39,23 +41,23 @@ class AST
 		data.type = ValueType.Unsigned;
 		data.value.unsigned = val;
 	}
-	
-	void value(char[] s)
+
+	void value(String s)
 	{
 		data.type = ValueType.String;
-		data.value.str = s;
+		data.value.str = new String(s);
 	}
 
-	void hint(char[] s)
+	void hint(String s)
 	{
 		data.type = ValueType.Hint;
-		data.value.str = s;
+		data.value.str = new String(s);
 	}
-	
-	void name(char[] s)
+
+	void name(String s)
 	{
 		data.type = ValueType.Name;
-		data.value.str = s;
+		data.value.str = new String(s);
 	}
 	
 	void walk(uint depth = 0)
@@ -64,22 +66,25 @@ class AST
 		if (data.type == ValueType.Hint)
 		{
 			// *** Console.putln(...);
-			writefln(spaces[0..depth*2], "HINT: ", data.value.str, " [", left, ", ", right, "]");
+			Console.putln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
+			//writefln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
 		}
 		else if (data.type == ValueType.Name)
 		{
 			// *** Console.putln(...);
-			writefln(spaces[0..depth*2], data.value.str, " [", left, ", ", right, "]");
+			Console.putln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
+			//writefln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
 		}
 		else
 		{
 			// *** Console.putln(...);
-			writefln(spaces[0..depth*2], "\"", replace(data.value.str, "\n", " "), "\" [", left, ", ", right, "]");
+			Console.putln(spaces[0..depth*2], "\"", data.value.str.replace('\n', ' '), "\" [", left, ", ", right, "]");
+			//writefln(spaces[0..depth*2], "\"", replace(data.value.str.array, "\n", " "), "\" [", left, ", ", right, "]");
 		}
 		if (left !is null) { left.walk(depth+1); }
 		if (right !is null) { right.walk(depth+1); }
 	}
-	
+
 	enum ValueType
 	{
 		Unsigned,
@@ -96,9 +101,9 @@ class AST
 		return data.type;
 	}
 	
-	void getValue(out char[] value)
+	void getValue(out String value)
 	{
-		value = data.value.str;
+		value = new String(data.value.str);
 	}
 	
 	void getValue(out ulong value)
@@ -122,8 +127,8 @@ protected:
 		long signed;
 		Object object;
 		void* pointer;
-		char[] str;
-		char[] hint;
+		String str;
+		String hint;
 	}
 	
 	valueHolder data;

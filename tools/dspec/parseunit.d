@@ -3,34 +3,43 @@ module parseunit;
 import feeder;
 import ast;
 
-import std.stdio;
-import std.file;
-import std.string;
+import core.string;
+import core.unicode;
+import core.definitions;
+
+import console.main;
+
+//import std.stdio;
+//import std.file;
+//import std.string;
 
 class ParseUnit
-{	
+{
 	final void attachFeeder(Feeder feed)
 	{
 		feeder = feed;
 	}
-	
+
 	final AST parse()
-	{	
+	{
 		// get class name
 		ClassInfo ci = this.classinfo;
-		char[] className = ci.name;
-	
+		String className = new String(Unicode.toNative(ci.name));
+
+		Console.putln("CLASS: ", className.array);
+
 		original = new AST(null,null);
 		parseTree = original;
-		
-		int pos = rfind(className, '.');
+
+		int pos = className.findReverse(new String("."));
 		if (pos > 0)
 		{
-			className = className[pos+1..$];
+			className = new String(className[pos+1..className.length]);
 		}
+		Console.putln("CLASS: ", className.array);
 		
 		parseTree.name = className;
-		
+
 		for(;;)
 		{
 			if (tokens is null)
@@ -40,13 +49,13 @@ class ParseUnit
 
 				if (tokens is null) { return original; }
 			}
-			
+
 			for( ; idx < tokens.length ; idx++)
 			{
 				currentToken = tokens[idx];
-				if (currentToken in parseFunctions)
+				if (currentToken.array in parseFunctions)
 				{
-					parseFunctions[currentToken]();
+					parseFunctions[currentToken.array]();
 				}
 				else
 				{
@@ -77,7 +86,7 @@ class ParseUnit
 		
 		if (parseTree !is original && right !is null && right.valueType == AST.ValueType.Name)
 		{
-			char [] val;
+			String val;
 			right.getValue(val);
 			parseTree.hint = val;
 		}
@@ -86,23 +95,23 @@ class ParseUnit
 protected:
 
 	// feed state
-	static char[][] tokens;
+	static String[] tokens;
 	static uint idx;
-	
+
 	static Feeder feeder;
 
 	alias void delegate() ParseFunction;
-	
-	ParseFunction[char[]] parseFunctions;
-	
+
+	ParseFunction[Char[]] parseFunctions;
+
 	ParseUnit parseUnit;
 	
 	AST parseTree;
 	AST original;
-		
+
 	bool iAmDone;
 	
-	char[] currentToken;
+	String currentToken;
 	
 	AST newParseUnit(ParseUnit newUnit)
 	{
@@ -115,7 +124,12 @@ protected:
 		iAmDone = true;
 	}
 	
-	void registerToken(char[] token, ParseFunction func)
+	void registerToken(String token, ParseFunction func)
+	{
+		parseFunctions[token.array] = func;
+	}
+	
+	void registerToken(StringLiteral token, ParseFunction func)
 	{
 		parseFunctions[token] = func;
 	}

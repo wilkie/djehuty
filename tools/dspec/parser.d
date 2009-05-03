@@ -1,10 +1,10 @@
 module parser;
 
+import core.string;
+import console.main;
+
 import filelist;
 import output;
-
-import std.stdio;
-import std.string;
 
 import feeder;
 import parseunit;
@@ -12,10 +12,10 @@ import ast;
 
 class Parser
 {
-	bool parseFiles(char[] outputPath, FileList files)
-	{			
+	bool parseFiles(String outputPath, FileList files)
+	{
 		output = new Output(outputPath ~ "test.d");
-		
+
 		foreach(f; files)
 		{
 			if (!(parseFile(f)))
@@ -24,6 +24,8 @@ class Parser
 			}
 		}
 		
+		output.finalizeOutput();
+
 		return true;
 	}
 
@@ -31,30 +33,34 @@ protected:
 
 	Output output;
 
-	bool parseFile(char[] path)
-	{
-		
+	bool parseFile(String path)
+	{		
 		Feeder feeder = new Feeder(path);
+
 		// write out intentions
-		writefln("Parsing ... ", path);
-		
+		Console.putln("Parsing ... ", path.array);
+
 		parseUnit = new ParseDSpec();
-		
+
 		parseUnit.attachFeeder(feeder);
-		
+
+		Console.putln("Begin Parsing ... ", path.array);
+
 		AST finished = parseUnit.parse();
-						
-		output.work(finished);
 		
+		Console.putln("Done Parsing");
+
+		output.work(finished);
+
 		return true;
 	}
-	
+
 	// parsing
 	
 	ParseUnit parseUnit;
 }
 
-bool isDelimiter(char[] s)
+bool isDelimiter(String s)
 {
 	if (s.length > 1 || s.length == 0)
 	{
@@ -99,13 +105,14 @@ class ParseDSpec : ParseUnit
 
 class ParseImport : ParseUnit
 {
+	String mod;
+
 	this()
 	{
 		registerToken(";", &parseSemicolon);
+		mod = new String("");
 	}
-	
-	char[] mod = "";
-	
+
 	void parseSemicolon()
 	{
 		AST ast = new AST(null, null);
@@ -128,6 +135,8 @@ class ParseDescribe : ParseUnit
 {
 	this()
 	{
+		working = new String("");
+
 		registerToken("describe", &parseDescribe);
 		registerToken("it", &parseIt);
 		registerToken("done", &parseDone);
@@ -137,15 +146,15 @@ class ParseDescribe : ParseUnit
 	}
 	
 protected:
-	
+
 	bool foundDescribe = false;
 	bool foundName = false;
 	bool foundLeft = false;
 	
-	char[] name;
+	String name;
 	
-	char[] working = "";
-	
+	String working;
+
 	void parseDescribe()
 	{
 		if (foundDescribe)
@@ -156,7 +165,7 @@ protected:
 				ast.value = working;
 				progressTree(ast);
 			
-				working = "";
+				working = new String("");
 			}
 			AST section;
 			section = newParseUnit(new ParseDescribeSection());
@@ -177,7 +186,7 @@ protected:
 			ast.value = working;
 			progressTree(ast);
 
-			working = "";
+			working = new String("");
 		}
 			
 		AST section;
@@ -194,7 +203,7 @@ protected:
 			ast.value = working;
 			progressTree(ast);
 
-			working = "";
+			working = new String("");
 		}
 			
 		AST section;
@@ -202,7 +211,7 @@ protected:
 		
 		progressTree(section);
 	}
-	
+
 	void parseLeft()
 	{
 		if (foundLeft)
@@ -229,8 +238,8 @@ protected:
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
-			
-				working = "";
+
+				working = new String("");
 			}			
 			done();
 		}
@@ -242,10 +251,10 @@ protected:
 		{
 			foundName = true;
 			name = currentToken;
-			writefln("Section: ", name);
-			
+			Console.putln("Section: ", name.array);
+
 			AST meta = new AST(null, new AST(null, null));
-			meta.name = "Identifier";
+			meta.name = new String("Identifier");
 			meta.right.value = name;
 			progressTree(meta);
 		}
@@ -260,6 +269,8 @@ class ParseDescribeSection : ParseUnit
 {
 	this()
 	{
+		working = new String("");
+
 		registerToken("describe", &parseDescribe);
 		registerToken("it", &parseIt);
 		registerToken("done", &parseDone);
@@ -274,9 +285,9 @@ protected:
 	bool foundName = false;
 	bool foundLeft = false;
 	
-	char[] name;
-	
-	char[] working = "";
+	String name;
+
+	String working;
 	
 	void parseDescribe()
 	{
@@ -298,7 +309,7 @@ protected:
 			ast.value = working;
 			progressTree(ast);
 
-			working = "";
+			working = new String("");
 		}
 		
 		AST section;
@@ -333,8 +344,8 @@ protected:
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
-			
-				working = "";
+
+				working = new String("");
 			}
 			done();
 		}
@@ -348,7 +359,7 @@ protected:
 			ast.value = working;
 			progressTree(ast);
 
-			working = "";
+			working = new String("");
 		}
 
 		AST section;
@@ -363,10 +374,10 @@ protected:
 		{
 			foundName = true;
 			name = currentToken;
-			writefln("Class: ", name);
+			Console.putln("Class: ", name.array);
 			
 			AST meta = new AST(null, new AST(null, null));
-			meta.name = "Identifier";
+			meta.name = new String("Identifier");
 			meta.right.value = name;
 			progressTree(meta);
 		}
@@ -396,24 +407,26 @@ class ParseIt : ParseUnit
 {
 	this()
 	{		
+		working = new String("");
+
 		registerToken("{", &parseLeft);
 		registerToken("}", &parseRight);
-		
+
 		registerToken("it", &parseIt);
-		
+
 		registerToken("should", &parseShould);
 		registerToken("shouldNot", &parseShould);
 		registerToken("shouldThrow", &parseShould);
 	}
-	
+
 	bool foundIt = false;
 	bool foundName = false;
 	bool foundLeft = false;
-	
-	char[] name;
-	
-	char[] working = "";
-	
+
+	String name;
+
+	String working;
+
 	void parseShould()
 	{
 		if(!foundIt)
@@ -428,7 +441,7 @@ class ParseIt : ParseUnit
 				ast.value = working;
 				progressTree(ast);
 
-				working = "";
+				working = new String("");
 			}
 
 			AST section;
@@ -484,7 +497,7 @@ class ParseIt : ParseUnit
 				ast.value = working;
 				progressTree(ast);
 
-				working = "";
+				working = new String("");
 			}
 			done();
 		}
@@ -496,16 +509,16 @@ class ParseIt : ParseUnit
 		{
 			foundName = true;
 			name = currentToken;
-			writefln("It: ", name);
+			Console.putln("It: ", name.array);
 			
 			AST meta = new AST(null, new AST(null, null));
-			meta.name = "Identifier";
+			meta.name = new String("Identifier");
 			meta.right.value = name;
 			progressTree(meta);
-			
+
 			ulong lnum = feeder.getLineNumber();
 			meta = new AST(null, new AST(null, null));
-			meta.name = "LineNumber";
+			meta.name = new String("LineNumber");
 			meta.right.value = lnum;
 			progressTree(meta);
 		}
@@ -520,6 +533,8 @@ class ParseShould : ParseUnit
 {
 	this()
 	{
+		working = new String("");
+
 		registerToken("(", &parseLeft);
 		registerToken(")", &parseRight);
 	}
@@ -528,7 +543,7 @@ class ParseShould : ParseUnit
 	
 	uint parens = 0;
 	
-	char[] working;
+	String working;
 	
 	void parseLeft()
 	{
@@ -551,7 +566,7 @@ class ParseShould : ParseUnit
 				ast.value = working;
 				progressTree(ast);
 
-				working = "";
+				working = new String("");
 			}
 			done();
 		}
@@ -605,7 +620,7 @@ class ParseDone : ParseUnit
 	bool foundDone = false;
 	bool foundBefore = false;
 	
-	char[] working;
+	String working;
 	
 	void parseDone()
 	{
@@ -646,7 +661,7 @@ class ParseDone : ParseUnit
 				ast.value = working;
 				progressTree(ast);
 
-				working = "";
+				working = new String("");
 			}
 			done();
 		}

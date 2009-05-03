@@ -879,7 +879,8 @@ extern(Windows)
 
 	int ChoosePixelFormat(HDC hdc, PIXELFORMATDESCRIPTOR* ppfd);
 	BOOL SetPixelFormat(HDC hdc, int iPixelFormat, PIXELFORMATDESCRIPTOR* ppfd);
-
+	
+	LPWSTR GetCommandLineW();
 
 	HMODULE LoadLibraryW(LPCWSTR);
 	FARPROC GetProcAddress (HMODULE,LPCSTR);
@@ -986,6 +987,7 @@ extern(Windows)
 	BOOL MoveFileW(LPCWSTR, LPCWSTR);
 	BOOL MoveFileExW(LPCWSTR, LPCWSTR, DWORD);
 	BOOL CopyFileW(LPCWSTR, LPCWSTR, BOOL);
+	DWORD GetFileAttributesW(LPCWSTR lpFileName);
 
 	// DIRECTORY
 	DWORD GetCurrentDirectoryW(DWORD, LPCWSTR);

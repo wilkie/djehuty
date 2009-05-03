@@ -5,44 +5,54 @@
  *
  */
 
-// *** delete
-import std.stdio;
+import console.main;
 
-// *** import console.main;
+import core.string;
+import core.unicode;
+import core.commandline;
 
 import filelist;
 import parser;
- 
-char[] usage = `dspec rev0
+
+char[] usage = `dspec rev1
 
 USAGE: dspec [-I<PATH>]
 EXAMPLE: dspec -Ispecs/.
 `;
- 
-int main(string args[])
-{	
+
+extern(System) void DjehutyMain()
+{
+	String[] args = CommandLine.getArguments();
+
 	// Interpret arguments
 	if (args.length != 2 || args[1].length < 3 || args[1][0..2] != "-I")
 	{
-		// *** Console.putln(usage);
-		writefln(usage);
-		return -1;
+		Console.putln(usage);
+		return;
 	}
 
-	char[] path = args[1][2..$];
+	String path = new String(args[1][2..args[1].length]);
+
+	Console.putln("starting");
 
 	// Get the list of spec files
 	FileList files = new FileList();
 	if (!(files.fetch(path)))
 	{
-		return -1;
+		Console.putln("error");
+		return;
 	}
-	
+
+	Console.putln("filelist created");
+
 	Parser parser = new Parser();
 	if (!(parser.parseFiles(path, files)))
 	{
-		return -1;
+		Console.putln("error");
+		return;
 	}
-		
-	return 0;
+
+	Console.putln("done");
+
+	return;
 }

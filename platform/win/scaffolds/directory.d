@@ -57,6 +57,16 @@ String DirectoryGetCWD()
 	return new String(cwd);
 }
 
+bool DirectoryFileIsDir(String path)
+{
+	String newPath = new String(path);
+	newPath.appendChar('\0');
+	
+	DWORD ret = GetFileAttributesW(newPath.ptr);
+	
+	return (ret & FILE_ATTRIBUTE_DIRECTORY) > 0;
+}
+
 bool DirectoryRename(ref String path, String newName)
 {
 	String old = new String(path);
