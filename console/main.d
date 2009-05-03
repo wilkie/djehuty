@@ -225,139 +225,145 @@ class Console
 
 	static void putln(...)
 	{
-		String toParse;
-
-		for(int curArg = 0; curArg < _arguments.length; curArg++)
+		synchronized
 		{
-			//toParse = new String(va_arg!(_arguments[curArg]));
-			if (_arguments[curArg] == typeid(long))
+			String toParse;
+	
+			for(int curArg = 0; curArg < _arguments.length; curArg++)
 			{
-				ulong argval = cast(ulong)va_arg!(long)(_argptr);
-				toParse = new String(argval);
+				//toParse = new String(va_arg!(_arguments[curArg]));
+				if (_arguments[curArg] == typeid(long))
+				{
+					ulong argval = cast(ulong)va_arg!(long)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ulong))
+				{
+					ulong argval = va_arg!(ulong)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(int))
+				{
+					int argval = cast(int)va_arg!(int)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(uint))
+				{
+					uint argval = cast(uint)va_arg!(uint)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(short))
+				{
+					short argval = cast(short)va_arg!(short)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ushort))
+				{
+					ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(byte))
+				{
+					byte argval = cast(byte)va_arg!(byte)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ubyte))
+				{
+					ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(char[]))
+				{
+					char[] chrs = va_arg!(char[])(_argptr);
+					toParse = new String(Unicode.toNative(chrs));
+				}
+				else if (_arguments[curArg] == typeid(wchar[]))
+				{
+					wchar[] chrs = va_arg!(wchar[])(_argptr);
+					toParse = new String(Unicode.toNative(chrs));
+				}
+				else if (_arguments[curArg] == typeid(dchar[]))
+				{
+					dchar[] chrs = va_arg!(dchar[])(_argptr);
+					toParse = new String(Unicode.toNative(chrs));
+				}
+				else
+				{
+					toParse = null;
+				}
+	
+				if (toParse !is null)
+				{
+					ConsolePutString(toParse.toUtf32());
+				}
 			}
-			else if (_arguments[curArg] == typeid(ulong))
-			{
-				ulong argval = va_arg!(ulong)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(int))
-			{
-				int argval = cast(int)va_arg!(int)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(uint))
-			{
-				uint argval = cast(uint)va_arg!(uint)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(short))
-			{
-				short argval = cast(short)va_arg!(short)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(ushort))
-			{
-				ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(byte))
-			{
-				byte argval = cast(byte)va_arg!(byte)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(ubyte))
-			{
-				ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(char[]))
-			{
-				char[] chrs = va_arg!(char[])(_argptr);
-				toParse = new String(Unicode.toNative(chrs));
-			}
-			else if (_arguments[curArg] == typeid(wchar[]))
-			{
-				wchar[] chrs = va_arg!(wchar[])(_argptr);
-				toParse = new String(Unicode.toNative(chrs));
-			}
-			else if (_arguments[curArg] == typeid(dchar[]))
-			{
-				dchar[] chrs = va_arg!(dchar[])(_argptr);
-				toParse = new String(Unicode.toNative(chrs));
-			}
-			else
-			{
-				toParse = null;
-			}
-
-			if (toParse !is null)
-			{
-				ConsolePutString(toParse.toUtf32());
-			}
+	
+			putChar('\n');
 		}
-
-		putChar('\n');
 	}
 
 	static void put(...)
 	{
-		String toParse;
-
-		for(int curArg = 0; curArg < _arguments.length; curArg++)
+		synchronized
 		{
-			if (_arguments[curArg] == typeid(long))
+			String toParse;
+	
+			for(int curArg = 0; curArg < _arguments.length; curArg++)
 			{
-				ulong argval = cast(ulong)va_arg!(long)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(ulong))
-			{
-				ulong argval = va_arg!(ulong)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(int))
-			{
-				int argval = cast(int)va_arg!(int)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(uint))
-			{
-				uint argval = cast(uint)va_arg!(uint)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(short))
-			{
-				short argval = cast(short)va_arg!(short)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(ushort))
-			{
-				ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(byte))
-			{
-				byte argval = cast(byte)va_arg!(byte)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(ubyte))
-			{
-				ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
-				toParse = new String(argval);
-			}
-			else if (_arguments[curArg] == typeid(char[]))
-			{
-				char[] chrs = va_arg!(char[])(_argptr);
-				toParse = new String(Unicode.toNative(chrs));
-			}
-			else
-			{
-				toParse = null;
-			}
-
-			if (toParse !is null)
-			{
-				ConsolePutString(toParse.toUtf32());
+				if (_arguments[curArg] == typeid(long))
+				{
+					ulong argval = cast(ulong)va_arg!(long)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ulong))
+				{
+					ulong argval = va_arg!(ulong)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(int))
+				{
+					int argval = cast(int)va_arg!(int)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(uint))
+				{
+					uint argval = cast(uint)va_arg!(uint)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(short))
+				{
+					short argval = cast(short)va_arg!(short)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ushort))
+				{
+					ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(byte))
+				{
+					byte argval = cast(byte)va_arg!(byte)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(ubyte))
+				{
+					ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
+					toParse = new String(argval);
+				}
+				else if (_arguments[curArg] == typeid(char[]))
+				{
+					char[] chrs = va_arg!(char[])(_argptr);
+					toParse = new String(Unicode.toNative(chrs));
+				}
+				else
+				{
+					toParse = null;
+				}
+	
+				if (toParse !is null)
+				{
+					ConsolePutString(toParse.toUtf32());
+				}
 			}
 		}
 	}
