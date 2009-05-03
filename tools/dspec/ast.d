@@ -1,5 +1,8 @@
 module ast;
 
+// *** import console.main;
+
+// *** delete both
 import std.stdio;
 import std.string;
 
@@ -30,7 +33,7 @@ class AST
 	{
 		return children[1];
 	}
-	
+
 	void value(ulong val)
 	{
 		data.type = ValueType.Unsigned;
@@ -42,7 +45,7 @@ class AST
 		data.type = ValueType.String;
 		data.value.str = s;
 	}
-	
+
 	void hint(char[] s)
 	{
 		data.type = ValueType.Hint;
@@ -60,14 +63,17 @@ class AST
 		static char[] spaces = "`---------------------------------------------------------------------------";
 		if (data.type == ValueType.Hint)
 		{
+			// *** Console.putln(...);
 			writefln(spaces[0..depth*2], "HINT: ", data.value.str, " [", left, ", ", right, "]");
 		}
 		else if (data.type == ValueType.Name)
 		{
+			// *** Console.putln(...);
 			writefln(spaces[0..depth*2], data.value.str, " [", left, ", ", right, "]");
 		}
 		else
 		{
+			// *** Console.putln(...);
 			writefln(spaces[0..depth*2], "\"", replace(data.value.str, "\n", " "), "\" [", left, ", ", right, "]");
 		}
 		if (left !is null) { left.walk(depth+1); }

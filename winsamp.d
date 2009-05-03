@@ -315,13 +315,13 @@ void InitWindow()
 	Directory blah = new Directory();
 
 	testsDir = testsDir.traverse("tests");
-
-	File config = testsDir.saveFile("config.dat");
-
-	testsDir.move(testsDir.getParent.traverse("tools"));
-	testsDir.move(testsDir.getParent.getParent);
 	
-	testsDir.copy(testsDir.getParent, "tests2");
+	File fle = new File("winsamp.d");
+	char[] str;
+	while(fle.readLine(str))
+	{
+		Console.putln(str);
+	}
 
 	foreach(file; blah.list())
 	{

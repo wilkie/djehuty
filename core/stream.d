@@ -637,9 +637,35 @@ public:
 		return read(cast(ubyte*)&toFloat, 4);
 	}
 
-	bool readUTF8(out char toByte)
+	bool readLine(out char[] line)
 	{
-		return false;
+		ubyte inByte;
+
+		for(;;)
+		{
+			if (!read(inByte))
+			{
+				// done
+				if (line is null) { return false; }
+				break;
+			}
+			else if (inByte == cast(ubyte)'\r')
+			{
+				// ignore
+			}
+			else if (inByte == cast(ubyte)'\n')
+			{
+				// done
+				break;
+			}
+			else
+			{
+				// add to the string
+				line ~= cast(char)inByte;
+			}
+		}
+
+		return true;
 	}
 
 	bool read(ref ubyte[] toBuffer)

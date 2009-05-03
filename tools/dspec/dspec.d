@@ -4,8 +4,11 @@
  * This tool will use the parser to parse specifications and produce tests
  *
  */
- 
+
+// *** delete
 import std.stdio;
+
+// *** import console.main;
 
 import filelist;
 import parser;
@@ -21,12 +24,13 @@ int main(string args[])
 	// Interpret arguments
 	if (args.length != 2 || args[1].length < 3 || args[1][0..2] != "-I")
 	{
+		// *** Console.putln(usage);
 		writefln(usage);
 		return -1;
 	}
-	
+
 	char[] path = args[1][2..$];
-	
+
 	// Get the list of spec files
 	FileList files = new FileList();
 	if (!(files.fetch(path)))

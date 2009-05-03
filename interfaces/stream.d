@@ -315,7 +315,10 @@ interface AbstractStream
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
 	bool read(out float toFloat);
 
-	bool readUTF8(out char toByte);
+	// Description: This function will read in a line of UTF8 from a file.
+	// line: The character array read from the file up until a newline or EOF.
+	// Returns: Will return true upon success and false when the Stream does not have enough data.
+	bool readLine(out char[] line);
 
 	bool read(ref ubyte[] toBuffer);
 

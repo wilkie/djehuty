@@ -1,5 +1,10 @@
 module output;
 
+// *** import core.file;
+// *** import core.string;
+// *** import console.main;
+
+// *** delete both
 import std.stdio;
 import std.string;
 
@@ -79,6 +84,7 @@ class Output
 	
 protected:
 
+	// *** File outfp;
 	_iobuf* outfp;
 	char[] className;
 	char[][] tests;
