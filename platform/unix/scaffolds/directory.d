@@ -33,6 +33,52 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 	return true;
 }
 
+String DirectoryGetBinary()
+{
+	return new String("/usr/bin");
+}
+
+String DirectoryGetAppData()
+{
+	return new String("/usr/share/") ~ Djehuty.getApplicationName();
+}
+
+String DirectoryGetTempData()
+{
+	return new String("/tmp/djp") ~ getpid();
+}
+
+String DirectoryGetUserData()
+{
+	static String cached;
+
+	// user data: $HOME/.{appname}
+	
+	if (cached is null)
+	{
+		char* result;
+		result = getenv("HOME\0"c.ptr);
+
+		char[] homePath;
+
+		char* cur = result;
+
+		for(int i = 0; *cur != '\0'; cur++, i++) {}
+
+		if (i != 0)
+		{
+			homePath = result[0..i];
+			cached = new String(homePath) ~ "/." ~ Djehuty.getApplicationName();
+		}
+		else
+		{
+			cached = new String("");
+		}
+	}
+
+	return cached;
+}
+
 String DirectoryGetApp()
 {
 	// Store result

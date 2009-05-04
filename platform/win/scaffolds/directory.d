@@ -20,6 +20,95 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 	return false;
 }
 
+String DirectoryGetBinary()
+{
+	static String cached;
+
+	// %PROGRAMFILES%
+
+	if (cached is null)
+	{
+		wchar[] str;
+	
+		int ret = GetEnvironmentVariableW("PROGRAMFILES\0"w.ptr, null, 0);
+	
+		str = new wchar[ret];
+		ret = GetEnvironmentVariableW("PROGRAMFILES\0"w.ptr, str.ptr, ret);
+
+		str = _SanitizeWindowsPath(str[0..ret]);
+
+		cached = new String(str) ~ "/" ~ Djehuty.getApplicationName();
+	}
+
+	return cached;
+}
+
+String DirectoryGetAppData()
+{
+	static String cached;
+
+	// %PROGRAMFILES%
+
+	if (cached is null)
+	{
+		wchar[] str = new wchar[5];
+	
+		int ret = GetEnvironmentVariableW("PROGRAMFILES\0"w.ptr, str.ptr, 0);
+	
+		str = new wchar[ret];
+		ret = GetEnvironmentVariableW("PROGRAMFILES\0"w.ptr, str.ptr, ret);
+
+		str = _SanitizeWindowsPath(str[0..ret]);
+
+		cached = new String(str) ~ "/" ~ Djehuty.getApplicationName();
+	}
+
+	return cached;
+}
+
+String DirectoryGetTempData()
+{
+	static String cached;
+	
+	if (cached is null)
+	{
+		int ret = GetTempPathW(0, null);
+		ret++;
+
+		wchar[] str = new wchar[ret];
+
+		ret = GetTempPathW(ret, str.ptr);
+		str = _SanitizeWindowsPath(str[0..ret]);
+
+		cached = new String(str) ~ "/dpj" ~ new String(GetCurrentProcessId());
+	}
+	
+	return cached;
+}
+
+String DirectoryGetUserData()
+{
+	static String cached;
+
+	// %APPDATA%
+	
+	if (cached is null)
+	{
+		wchar[] str;
+	
+		int ret = GetEnvironmentVariableW("APPDATA\0"w.ptr, null, 0);
+	
+		str = new wchar[ret];
+		ret = GetEnvironmentVariableW("APPDATA\0"w.ptr, str.ptr, ret);
+
+		str = _SanitizeWindowsPath(str[0..ret]);
+
+		cached = new String(str) ~ "/" ~ Djehuty.getApplicationName();
+	}
+
+	return cached;
+}
+
 String DirectoryGetApp()
 {
 	int size = 512;
@@ -156,6 +245,12 @@ wchar[] _SanitizeWindowsPath(wchar[] tmp)
 		{
          	tmp[i] = '/';
 		}
+	}
+	
+	// Remove final slash
+	if (tmp[tmp.length-1] == '/')
+	{
+		tmp = tmp[0..tmp.length-1];
 	}
 
 	return tmp;

@@ -20,6 +20,10 @@ mixin(PlatformGenericImport!("vars"));
 void DjehutyStart()
 {
 	DjehutyMain();
+	if (Djehuty.appName is null)
+	{
+		throw new Exception("No Application Name");
+	}
 
 	if (!Djehuty._hasStarted)
 	{
@@ -91,6 +95,32 @@ class Djehuty
 			// Draw Window
 			ConsoleWindowOnSet(_curConsoleWindow);
 		}
+		
+		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
+		// applicationName: The name of the application.
+		static void setApplicationName(String applicationName)
+		{
+			if (appName !is null)
+			{
+				throw new Exception("Application Name Already Set");
+			}
+
+			appName = new String(applicationName);
+		}
+
+		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
+		// applicationName: The name of the application.
+		static void setApplicationName(StringLiteral applicationName)
+		{
+			setApplicationName(new String(applicationName));
+		}
+		
+		// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
+		// Returns: The application name.
+		static String getApplicationName()
+		{
+			return new String(appName);
+		}
 
 	private:
 		static BaseWindow _windowListHead = null;
@@ -106,7 +136,8 @@ class Djehuty
 		static bool _hasStarted = false;
 
 		static Thread[] _threads;
-
+		
+		static String appName;
 }
 
 void RegisterThread(ref Thread thread)
