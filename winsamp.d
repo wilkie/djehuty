@@ -318,7 +318,7 @@ void InitWindow()
 
 	Djehuty.addWindow(mainWindow);
 
-	Directory testsDir = FileSystem.getApplicationDirectory;
+	Directory testsDir = FileSystem.getApplicationDir;
 //	Directory blah = testsDir.getParent();
 
 	Directory blah = new Directory();
@@ -340,13 +340,26 @@ void InitWindow()
 
 extern(System) void DjehutyMain()
 {
+	Djehuty.setApplicationName("djehutyTestApp");
+
 	Tests.testAll();
+
+	Directory dir;
+
+	dir = FileSystem.getTempDir();
+	Console.putln("TEMP: ", dir.getPath.array);
+
+	dir = FileSystem.getAppDataDir();
+	Console.putln("APP:  ", dir.getPath.array);
+
+	dir = FileSystem.getUserDataDir();
+	Console.putln("USER: ", dir.getPath.array);
 
 	Directory myDir = FileSystem.getApplicationDirectory;
 	Console.putln(myDir.getPath.array);
 
-	MyThread mt = new MyThread;
-	//mt.start();
+	dir = FileSystem.getBinaryDir();
+	Console.putln("BIN:  ", dir.getPath.array);
 
 	InitWindow();
 }

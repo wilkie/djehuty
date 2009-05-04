@@ -38,7 +38,7 @@ class Directory
 			// relative path
 
 			// get the working directory
-			Directory cur = FileSystem.getCurrentDirectory();
+			Directory cur = FileSystem.getCurrentDir();
 
 			// create an absolute path
 			_path = cur.getPath ~ "/" ~ path;
@@ -66,7 +66,7 @@ class Directory
 	{
 		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ name);
 	}
-	
+
 	bool isDir(StringLiteral name)
 	{
 		return isDir(new String(name));

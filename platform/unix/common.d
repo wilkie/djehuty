@@ -105,6 +105,8 @@ int  putc(int c,FILE *fp); ///
 size_t readlink(char* path, char* buf, size_t len);
 int getpid();
 
+char* getenv(char*);
+
 // Directory Streams
 
 struct __direntry;

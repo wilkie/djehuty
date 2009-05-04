@@ -879,7 +879,7 @@ extern(Windows)
 
 	int ChoosePixelFormat(HDC hdc, PIXELFORMATDESCRIPTOR* ppfd);
 	BOOL SetPixelFormat(HDC hdc, int iPixelFormat, PIXELFORMATDESCRIPTOR* ppfd);
-	
+
 	LPWSTR GetCommandLineW();
 
 	HMODULE LoadLibraryW(LPCWSTR);
@@ -997,6 +997,7 @@ extern(Windows)
 	HANDLE FindFirstVolumeW(LPCWSTR, DWORD);
 	BOOL FindNextVolumeW(HANDLE, LPCWSTR, DWORD);
 	DWORD GetLogicalDrives();
+	DWORD GetTempPathW(DWORD, LPWSTR);
 
 	// SOCKET
 	int GetAddrInfoW(LPCWSTR pNodeName,LPCWSTR pServiceName,ADDRINFOW* pHints,ADDRINFOW**ppResult);
@@ -1016,6 +1017,12 @@ extern(Windows)
 	LONG RegOpenKeyExW(HKEY hKey, LPCWSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY* phkResult);
 	LONG RegCloseKey(HKEY hKey);
 	LONG RegQueryValueExW(HKEY hKey, LPCWSTR lpValueName, DWORD* lpReserved, DWORD* lpType, BYTE* lpData, DWORD* lpcbData);
+
+	// ENVIRONMENT VARIABLES
+	DWORD GetEnvironmentVariableW(LPCWSTR, LPWSTR, DWORD);
+
+	// PROCESS
+	DWORD GetCurrentProcessId();
 
 	// THREAD
 	HANDLE CreateThread(LPSECURITY_ATTRIBUTES,uint,DWORD function(LPVOID),LPVOID,DWORD,LPDWORD);
