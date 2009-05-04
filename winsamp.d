@@ -342,6 +342,9 @@ extern(System) void DjehutyMain()
 {
 	Tests.testAll();
 
+	Directory myDir = FileSystem.getApplicationDirectory;
+	Console.putln(myDir.getPath.array);
+
 	MyThread mt = new MyThread;
 	//mt.start();
 
