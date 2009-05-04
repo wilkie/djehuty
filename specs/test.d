@@ -253,7 +253,7 @@ try
 			String str = new String("hello ");
 			String str2;
 
-			//str.append(str2);
+			str.append(str2);
 		}catch(Exception _exception_)
 {
 	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
