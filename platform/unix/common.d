@@ -102,6 +102,9 @@ int  putchar(int c); ///
 int  getc(FILE *fp); ///
 int  putc(int c,FILE *fp); ///
 
+size_t readlink(char* path, char* buf, size_t len);
+int getpid();
+
 // Directory Streams
 
 struct __direntry;

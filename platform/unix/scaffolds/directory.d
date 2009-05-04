@@ -35,7 +35,34 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars)
 
 String DirectoryGetApp()
 {
-	return _pfvars.appPath;
+	// Store result
+	static String ret = null;
+
+	if (ret is null)
+	{
+		String procPath = new String("/proc/") ~ getpid() ~ "/exe\0";
+	
+		size_t ret = -1;
+		int len = 256;
+		char[] path;
+	
+		while (ret == -1)
+		{
+			path = new char[len];
+			ret = readlink(procPath.ptr, path, len-1);
+			len <<= 1;
+			if (ret == -1 && len > 32000)
+			{
+				// Error, path is too long
+				ret = new String("");
+				return ret;
+			}
+		}
+
+		ret = new String(path[0..ret]);
+	}
+
+	return ret;
 }
 
 String DirectoryGetCWD()

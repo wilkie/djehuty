@@ -660,19 +660,6 @@ void AppInit()
 
 int main(char[][] args)
 {
-	foreach_reverse(int i, chr; args[0])
-	{
-		if (chr == '/')
-		{
-			while (i > 0 && args[0][i-1] == '.')
-			{
-				i--;
-			}
-
-			_pfvars.appPath = DirectoryGetCWD() ~ new String(args[0][0..i]);
-		}
-	}
-
 	try
 	{
 

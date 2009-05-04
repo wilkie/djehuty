@@ -40,8 +40,6 @@ struct DjehutyPlatformVars
 
 	int argc;
 	char** argv;
-
-	String appPath;
 }
 
 DjehutyPlatformVars _pfvars;
