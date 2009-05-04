@@ -763,6 +763,45 @@ union sigval {
 
 const int __SIGEV_PAD_SIZE = 13;
 
+// signals
+
+alias void function(int) sighandler_t;
+
+extern(C)
+sighandler_t signal(int signum, sighandler_t handler);
+
+enum
+{
+	SIGHUP = 1,
+	SIGINT,
+	SIGQUIT,
+	SIGILL,
+	SIGTRAP,
+	SIGABRT,
+	SIGBUS,
+	SIGFPE,
+	SIGKILL,
+	SIGUSR1,
+	SIGSEGV,
+	SIGUSR2,
+	SIGPIPE,
+	SIGALRM,
+	SIGTERM,
+	SIGSTKFLT,
+	SIGCHLD,
+	SIGCONT,
+	SIGSTOP,
+	SIGTSTP,
+	SIGTTIN,
+	SIGTTOU,
+	SIGURG,
+	SIGXCPU,
+	SIGXFSZ,
+	SIGVALRM,
+	SIGPROF,
+	SIGWINCH,
+	SIGIO
+}
 
 /* c_iflag bits */
 const auto IGNBRK	= 0000001;

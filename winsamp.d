@@ -341,9 +341,9 @@ void InitWindow()
 extern(System) void DjehutyMain()
 {
 	Tests.testAll();
-	
+
 	MyThread mt = new MyThread;
-	mt.start();
+	//mt.start();
 
 	InitWindow();
 }

@@ -12,6 +12,7 @@ import core.definitions;
 import core.window;
 import core.view;
 import core.basewindow;
+import core.debugger;
 
 import console.main;
 import console.window;
@@ -26,6 +27,12 @@ extern(C) void mousetimerproc(sigval val)
 	p_mouseProps = cast(Mouse*)val.sival_ptr;
 
 	p_mouseProps.clicks = 1;
+}
+
+// segfault handler
+extern(C) void segfault_handler(int signum)
+{
+	throw new Exception("Access Violation");
 }
 
 void eventLoop()
@@ -646,6 +653,9 @@ void AppInit()
 	// UTF-8 SUPPORT
 //	_pfvars.wm_name = X.XInternAtom(_pfvars.display, "_NET_WM_NAME\0"c.ptr, X.Bool.True);
 	setlocale(LC_CTYPE, "");
+
+	// segfault handler
+	signal(SIGSEGV, &segfault_handler);
 }
 
 int main(char[][] args)
@@ -663,23 +673,31 @@ int main(char[][] args)
 		}
 	}
 
-	AppInit();
-
-	ConsoleInit();
-	DjehutyStart();
-
-	if (Djehuty._console_inited)
+	try
 	{
-		consoleLoop();
+
+		AppInit();
+
+		ConsoleInit();
+		DjehutyStart();
+
+		if (Djehuty._console_inited)
+		{
+			consoleLoop();
+		}
+		else
+		{
+			eventLoop();
+		}
+
+		ConsoleUninit();
 	}
-	else
+	catch(Object o)
 	{
-		eventLoop();
+		Debugger.raiseException(cast(Exception)o);
 	}
 
-	ConsoleUninit();
-
-	X.XCloseDisplay(_pfvars.display);
+		X.XCloseDisplay(_pfvars.display);
 
 	return 0;
 }
