@@ -11,8 +11,6 @@ import core.unicode;
 import core.format;
 
 
-	import std.stdio;
-
 public import core.stringliteral;
 
 template _StringFormat()
@@ -592,7 +590,7 @@ class String
 
 		return -1;
 	}
-	
+
 	String replace(dchar find, dchar replace)
 	{
 		String ret = new String(this);
@@ -618,7 +616,7 @@ class String
 				ret._calcIndices = true;
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -681,8 +679,6 @@ class String
 	// len: The length of the slice.  Pass -1 to get the remaining string.
 	String subString(int start, int len = -1)
 	{
-		writefln("len: ", len);
-
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
@@ -693,7 +689,7 @@ class String
 		{
 			return new String("");
 		}
-		
+
 		if (len < 0) { len = -1; }
 
 		if (len >= 0 && start + len >= _indices.length)
@@ -735,7 +731,7 @@ class String
 		{
 			position = 0;
 		}
-		
+
 		if (_indices.length == 0)
 		{
 			return '\0';
@@ -745,7 +741,7 @@ class String
 
 		return Unicode.toUtf32Char(cast(StringLiteral)_data[_indices[position]..$]);
 	}
-	
+
 	void setCharAt(uint position, dchar value)
 	{
 		if (!_calcIndices)
@@ -758,7 +754,7 @@ class String
 		{
 			position = 0;
 		}
-		
+
 		if (_indices.length == 0)
 		{
 			return;
@@ -1045,12 +1041,12 @@ class String
 	{
 		append(str);
 	}
-	
+
 	String opCat(dchar chr)
 	{
 		String newStr = new String(this);
 		newStr.appendChar(chr);
-		
+
 		return newStr;
 	}
 
