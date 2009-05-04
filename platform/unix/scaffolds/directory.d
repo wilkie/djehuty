@@ -64,6 +64,40 @@ String DirectoryGetCWD()
 	return new String(chrs);
 }
 
+bool DirectoryFileIsDir(String path)
+{
+	String newPath = new String(path);
+	newPath.appendChar('\0');
+
+	struct_stat inode;
+
+	if (stat(newPath.ptr, &inode) != -1)
+	{
+		if (S_ISDIR(inode.st_mode))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool DirectoryMove(ref String path, String newPath)
+{
+	String exec = new String("mv ") ~ path ~ " " ~ newPath ~ "\0";
+
+	system(exec.ptr);
+	return true;
+}
+
+bool DirectoryCopy(ref String path, String newPath)
+{
+	String exec = new String("cp -r ") ~ path ~ " " ~ newPath ~ "\0";
+
+	system(exec.ptr);
+	return true;
+}
+
 bool DirectoryRename(ref String path, ref String newName)
 {
 	String npath = new String(path);

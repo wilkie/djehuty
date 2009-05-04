@@ -266,7 +266,6 @@ struct utimbuf
     long modtime;
 }
 
-
 struct struct_stat
 {
     ulong st_dev;
@@ -288,6 +287,52 @@ struct struct_stat
    ubyte[32] __pad4;
 }
 
+const auto S_IFMT	= 0x0170000;
+const auto S_IFSOCK	= 0x0140000;
+const auto S_IFLNK	= 0x0120000;
+const auto S_IFREG	= 0x0100000;
+const auto S_IFBLK	= 0x0060000;
+const auto S_IFDIR	= 0x0040000;
+const auto S_IFCHR	= 0x0020000;
+const auto S_IFIFO	= 0x0010000;
+const auto S_ISUID	= 0x0004000;
+const auto S_ISGID	= 0x0002000;
+const auto S_ISVTX	= 0x0001000;
+
+bool S_ISLNK(uint mode)
+{
+	return (mode & S_IFMT) == S_IFLNK;
+}
+
+bool S_ISREG(uint mode)
+{
+	return (mode & S_IFMT) == S_IFREG;
+}
+
+bool S_ISDIR(uint mode)
+{
+	return (mode & S_IFMT) == S_IFDIR;
+}
+
+bool S_ISCHR(uint mode)
+{
+	return (mode & S_IFMT) == S_IFCHR;
+}
+
+bool S_ISBLK(uint mode)
+{
+	return (mode & S_IFMT) == S_IFBLK;
+}
+
+bool S_ISFIFO(uint mode)
+{
+	return (mode & S_IFMT) == S_IFIFO;
+}
+
+bool S_ISSOCK(uint mode)
+{
+	return (mode & S_IFMT) == S_IFSOCK;
+}
 
 struct sigaction_t
 {

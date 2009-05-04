@@ -173,7 +173,7 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
-	#@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d  $(OBJS_LINUX)
 endif
 endif
 
