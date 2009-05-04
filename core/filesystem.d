@@ -8,6 +8,7 @@ mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
+// Description: This class facilitates retrieving information about the underlying file system available on the system. File System structure should be respected in an operating system. This set of functions will help the application know where it can and should place its data.
 class FileSystem
 {
 public:
