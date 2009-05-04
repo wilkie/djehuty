@@ -82,9 +82,9 @@ String DirectoryGetUserData()
 String DirectoryGetApp()
 {
 	// Store result
-	static String ret = null;
+	static String cached = null;
 
-	if (ret is null)
+	if (cached is null)
 	{
 		String procPath = new String("/proc/") ~ getpid() ~ "/exe\0";
 	
@@ -100,12 +100,12 @@ String DirectoryGetApp()
 			if (ret == -1 && len > 32000)
 			{
 				// Error, path is too long
-				ret = new String("");
-				return ret;
+				cached = new String("");
+				return cached;
 			}
 		}
 
-		ret = new String(path[0..ret]);
+		cached = new String(path[0..ret]);
 	}
 
 	return ret;
