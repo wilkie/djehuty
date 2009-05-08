@@ -55,6 +55,9 @@ OBJS_WIN = $(OBJS_CORE:.o=.obj) $(DFILES_PLATFORM_WIN:.d=.obj)
 
 OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
+TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
+TOOLS_DSCRIBE = tools/dscribe/main.d
+
 libdeps_linux: $(OBJS_LINUX)
 	@echo ">> framework compilation complete. <<"
 
@@ -125,9 +128,6 @@ endif
 
 
 
-
-
-
 app: libdeps_xomb
 
 	@echo compiling test program...
@@ -171,9 +171,22 @@ ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d $(OBJS_WIN) $(LFLAGS_WIN)
+	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
 else
-	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d  $(OBJS_LINUX)
+	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux $(TOOLS_DSPEC) $(OBJS_LINUX)
+endif
+endif
+
+dscribe: lib
+
+	@echo compiling DScribe and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
+else
+ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
 endif
 endif
 
