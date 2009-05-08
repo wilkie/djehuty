@@ -22,48 +22,56 @@ public:
 	{
 		if (_delegate !is null)
 		{
-			_delegate(e);
+			// Wouldn't it be ridiculous if the handler threw an exception?
+			try
+			{
+				_delegate(e);
+				return;
+			}
+			catch(Exception exp)
+			{
+				// no chance for the handler to be reentered in this case
+				e = exp;
+			}
+		}
+
+		Console.setColor(fgColor.BrightRed);
+		if (t is null)
+		{
+			Console.putln("Unhandled Main Exception: ", e.toString());
 		}
 		else
 		{
-			Console.setColor(fgColor.BrightRed);
-			if (t is null)
-			{
-				Console.putln("Unhandled Main Exception: ", e.toString());
-			}
-			else
-			{
-				Console.putln("Unhandled Thread Exception: ", e.toString());
-			}
-			
-			version(LDC)
-			{
-				// Tango provides a traceback for us
-				Console.putln("    from file: ", e.file);
-			}
-			else
-			{
-			}
-
-			if (w !is null)
-			{
-				// get class name
-				ClassInfo ci = w.classinfo;
-				String className = new String(Unicode.toNative(ci.name));
-
-				Console.putln("    from window: ", className.array, " [", w.getText().array, "]");
-			}
-			if (t !is null)
-			{
-				// get class name
-				ClassInfo ci = t.classinfo;
-				String className = new String(Unicode.toNative(ci.name));
-
-				Console.putln("    from thread: ", className.array);
-			}
-
-			Console.setColor(fgColor.White);
+			Console.putln("Unhandled Thread Exception: ", e.toString());
 		}
+		
+		version(LDC)
+		{
+			// Tango provides a traceback for us
+			Console.putln("    from file: ", e.file);
+		}
+		else
+		{
+		}
+
+		if (w !is null)
+		{
+			// get class name
+			ClassInfo ci = w.classinfo;
+			String className = new String(Unicode.toNative(ci.name));
+
+			Console.putln("    from window: ", className.array, " [", w.getText().array, "]");
+		}
+		if (t !is null)
+		{
+			// get class name
+			ClassInfo ci = t.classinfo;
+			String className = new String(Unicode.toNative(ci.name));
+
+			Console.putln("    from thread: ", className.array);
+		}
+
+		Console.setColor(fgColor.White);
 	}
 
 	void setDelegate(void delegate(Exception) newDelegate)
