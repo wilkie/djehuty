@@ -7,9 +7,10 @@
 
 import console.main;
 
+import core.main;
 import core.string;
 import core.unicode;
-import core.commandline;
+import core.arguments;
 
 import filelist;
 import parser;
@@ -20,18 +21,25 @@ USAGE: dspec [-I<PATH>]
 EXAMPLE: dspec -Ispecs/.
 `;
 
-extern(System) void DjehutyMain()
+extern(System) void DjehutyMain(Arguments args)
 {
-	String[] args = CommandLine.getArguments();
+	Djehuty.setApplicationName("djehuty-dspec");
+
+	String[] argList = args.getList();
+	
+	foreach(str; argList)
+	{
+		Console.putln(str.array);
+	}
 
 	// Interpret arguments
-	if (args.length != 2 || args[1].length < 3 || args[1][0..2] != "-I")
+	if (argList.length != 2 || argList[1].length < 3 || argList[1][0..2] != "-I")
 	{
 		Console.putln(usage);
 		return;
 	}
 
-	String path = new String(args[1][2..args[1].length]);
+	String path = new String(argList[1][2..argList[1].length]);
 
 	Console.putln("starting");
 

@@ -1519,14 +1519,16 @@ void initAll()
 	InitCommonControls();
 }
 
-import core.commandline;
+import core.arguments;
 import console.main;
 
 void parseCommandLine()
 {
 	wchar* cmdlne = GetCommandLineW();
-	
+
 	if (cmdlne is null) { return; }
+	
+	Arguments args = Arguments.getInstance();
 
 	// tokenize
 	int last = 0;
@@ -1541,7 +1543,7 @@ void parseCommandLine()
 			{
 				String token = new String(cmdlne[last..i]);
 
-				CommandLine.addArgument(token);
+				args.addItem(token);
 			}
 
 			last = i+1;
@@ -1571,9 +1573,9 @@ int WinMain(HINSTANCE hInstance,
 		_moduleUnitTests();	// run unit tests (optional)
 
 		registerWindowClass();
-		initAll();
 
 		parseCommandLine();
+		initAll();
 
 		result = mainloop();	// insert user code here
     }

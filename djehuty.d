@@ -34,6 +34,7 @@ public import core.time			: Time;
 public import core.color;
 public import core.directory;
 public import core.filesystem;
+public import core.arguments;
 
 // graphics
 public import graphics.brush	: Brush;

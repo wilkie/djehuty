@@ -56,6 +56,11 @@ class ArrayList(T) : AbstractList!(T)
 			addItem(item);
 		}
 	}
+	
+	T[] getList()
+	{
+		return _list[0.._count].dup;
+	}
 
     bool getItem(out T data, uint index)
     {
@@ -133,7 +138,7 @@ class ArrayList(T) : AbstractList!(T)
 
 	T[] opSlice()
 	{
-		return _list;
+		return getList();
 	}
 
 	T[] opSlice(size_t start, size_t end)
@@ -179,15 +184,15 @@ class ArrayList(T) : AbstractList!(T)
 		return false;
 	}
 
+	uint length()
+	{
+	   return _count;
+	}
+
 	void clear()
 	{
 		_list = new T[_capacity];
 		_count = 0;
-	}
-
-	uint length()
-	{
-	   return _count;
 	}
 
 protected:
