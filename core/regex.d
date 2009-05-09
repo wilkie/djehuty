@@ -52,7 +52,7 @@ class Regex
 		int flags;
 		
 		const int PLUS_OK = 1;
-		const int LAZY_KLEEN = 2;
+		const int LAZY_KLEENE = 2;
 		
 		bool hasFlag(int flag)
 		{
@@ -127,7 +127,7 @@ class Regex
 				if ((regexPos < regex.length - 1) && regex[regexPos+1] == '?')
 				{
 					// lazy *
-					if (hasFlag(LAZY_KLEEN))
+					if (hasFlag(LAZY_KLEENE))
 					{
 						// it must match here
 						if (matchMade)
@@ -136,9 +136,9 @@ class Regex
 							
 							// the matcher matched the character
 							// strPos points to the next to-be-matched character
-							// and regexPos points to the kleen
-							
-							// here, the next step to match the kleen with another
+							// and regexPos points to the kleene
+
+							// here, the next step to match the kleene with another
 							// character (in strPos)
 							
 							// the next step in this computation path is to match
@@ -164,7 +164,7 @@ class Regex
 						// and the strPos should point to the next item
 						//Console.putln("ok(*?) s:", strPos, " r:", regexPos);
 						
-						setFlag(LAZY_KLEEN);
+						setFlag(LAZY_KLEENE);
 
 						stack.push(regexPos-1);
 						stack.push(strPos+1);
@@ -252,7 +252,7 @@ class Regex
 				{
 					matchMade = false;
 				}
-				else if (!hasFlag(LAZY_KLEEN) && (regexPos < regex.length - 2) && regex[regexPos+1] == '*' && regex[regexPos+2] == '?')
+				else if (!hasFlag(LAZY_KLEENE) && (regexPos < regex.length - 2) && regex[regexPos+1] == '*' && regex[regexPos+2] == '?')
 				{
 					// lazy *
 					//Console.putln("match(*?)[epsilon] s:", strPos, " r:", regexPos);
