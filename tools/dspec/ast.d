@@ -1,12 +1,7 @@
 module ast;
 
-// *** import console.main;
 import core.string;
 import console.main;
-
-// *** delete both
-//import std.stdio;
-//import std.string;
 
 class AST
 {

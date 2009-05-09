@@ -343,6 +343,22 @@ extern(System) void DjehutyMain(Arguments args)
 	Djehuty.setApplicationName("djehutyTestApp");
 
 	Tests.testAll();
+
+//	String str = new String("baaabaaabb");
+	//String regex = new String("ba+bb");
+	String str = new String("<aaa>aaa>aaa>aaa>EM>some text</EM>");
+	String regex = new String("<.*?>");
+
+	String s = Regex.work(str,regex);
+
+	if (s !is null)
+	{
+		Console.putln("result: ", s.array);
+	}
+	else
+	{
+		Console.putln("result: null");
+	}
 	
 	Directory dir;
 

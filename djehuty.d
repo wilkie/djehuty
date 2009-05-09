@@ -35,6 +35,7 @@ public import core.color;
 public import core.directory;
 public import core.filesystem;
 public import core.arguments;
+public import core.regex;
 
 // graphics
 public import graphics.brush	: Brush;

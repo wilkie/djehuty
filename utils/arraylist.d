@@ -105,7 +105,7 @@ class ArrayList(T) : AbstractList!(T)
 		return false;
     }
 
-	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
+	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a last-in-first-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.
 	bool remove(out T data)
 	{
