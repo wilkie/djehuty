@@ -347,7 +347,7 @@ extern(System) void DjehutyMain(Arguments args)
 //	String str = new String("baaabaaabb");
 	//String regex = new String("ba+bb");
 
-	String s = Regex.work("<>EM>Asdfasfsdf</EM>", `<.*?>`);
+	String s = Regex.work("", `^$`);
 
 	if (s !is null)
 	{

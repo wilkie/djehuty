@@ -1432,6 +1432,7 @@ class Tests
 		testSHA1();
 		testSHA224();
 		testSHA256();
+		Test.done();
 	}
 }
 

@@ -188,7 +188,7 @@ class Regex
 			else if (regex[regexPos] == '$')
 			{
 				//Console.putln("$ found at s:", strPos);
-				if (strPos == str.length)
+				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r')
 				{
 					matchMade = true;
 				}
@@ -203,7 +203,7 @@ class Regex
 			}
 			else if (regex[regexPos] == '^')
 			{
-				if (strPos == 0)
+				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r')
 				{
 					matchMade = true;
 				}
@@ -725,8 +725,12 @@ class Regex
 		}
 
 		// Return the result
-		if (matchMade && strPosStart < str.length)
+		if (matchMade && strPosStart <= str.length)
 		{
+			if (strPos-strPosStart == 0)
+			{
+				return new String("");
+			}
 			return str.subString(strPosStart, strPos-strPosStart);
 		}
 		

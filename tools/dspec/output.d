@@ -122,6 +122,8 @@ class Output
 			outfp.write("();\n"c);
 			//fwritef(outfp, "%s", "\t\ttest", className, "();\n");
 		}
+		
+		outfp.write("\t\tTest.done();\n"c);
 
 		outfp.write("\t}\n"c);
 		//fwritef(outfp, "%s", "\t}\n");
