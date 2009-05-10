@@ -26,4 +26,11 @@ class Stack(T) : ArrayList!(T)
 	{
 		addItem(item);
 	}
+	
+	T peek()
+	{
+		T ret;
+		getItem(ret, length-1);
+		return ret;
+	}
 }

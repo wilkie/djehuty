@@ -789,6 +789,51 @@ this() { before(); }
 
 	
 	}
+}import core.string;
+
+import core.regex;
+
+class RegexTester
+{
+	
+		it work_should_handle_kleene_star()
+	{before_work();
+try
+{
+			String str = Regex.work("<EM>some text</EM>", `<.*>`);
+			if(!(str == "<EM>some text</EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_work() { }
+done before() { }
+
+this() { before(); }
+
+
+	static void test()
+	{
+		RegexTester tester = new RegexTester();
+
+		Test test = new Test("Regex");
+
+		it result;
+
+		test.logSubset("work");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_kleene_star();
+		test.logResult(result, "work should handle kleene star", "11");
+
+	
+	}
 }import hashes.digest;
 
 class DigestTester
@@ -1347,6 +1392,11 @@ class Tests
 		UnicodeTester.test();
 	}
 
+	static void testRegex()
+	{
+		RegexTester.test();
+	}
+
 	static void testDigest()
 	{
 		DigestTester.test();
@@ -1376,6 +1426,7 @@ class Tests
 	{
 		testString();
 		testUnicode();
+		testRegex();
 		testDigest();
 		testMD5();
 		testSHA1();

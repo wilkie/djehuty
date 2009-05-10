@@ -346,10 +346,8 @@ extern(System) void DjehutyMain(Arguments args)
 
 //	String str = new String("baaabaaabb");
 	//String regex = new String("ba+bb");
-	String str = new String("<aaa>aaa>aaa>aaa>EM>some text</EM>");
-	String regex = new String("<.*?>");
 
-	String s = Regex.work(str,regex);
+	String s = Regex.work("<abcc>", `<abc?>`);
 
 	if (s !is null)
 	{
@@ -359,7 +357,7 @@ extern(System) void DjehutyMain(Arguments args)
 	{
 		Console.putln("result: null");
 	}
-	
+
 	Directory dir;
 
 	dir = FileSystem.getTempDir();

@@ -46,37 +46,75 @@ class Regex
 		int strPos;
 		int regexPos;
 
+		int currentGroupIdx = -1;
 		int strPosStart;
 		int regexPosStart;
-		
+		int regexFlagPotential;
+
 		int flags;
-		
+
 		const int PLUS_OK = 1;
 		const int LAZY_KLEENE = 2;
+		const int KLEENE_MATCHED = 4;
 		
-		bool hasFlag(int flag)
+		struct GroupInfo
 		{
-			return (flags & flag) > 0;
-		}
-		
-		void setFlag(int flag)
-		{
-			flags |= flag;
-		}
-		
-		void resetFlag(int flag)
-		{
-			flags &= ~flag;
+			int startPos;
+			int endPos;
+			int strStartPos;
+			int strPos;
+			int parent;
 		}
 
+		GroupInfo[int] groupInfo;
+		int[int] operatorFlag;
+
+		Stack!(int) groupStart = new Stack!(int)();
 		Stack!(int) stack = new Stack!(int)();
-		stack.push(0);
-		stack.push(0);
-		stack.push(0);
 
 		bool running = true;
 		bool matchMade = true;
 		bool backtrack = false;
+		bool noMatch = false;
+		int noMatchUntilClosedAtPos = 0;
+
+		void setBacktrack(int newRegexPos, int newStrPos)
+		{
+			stack.push(newRegexPos);
+			stack.push(newStrPos);
+			stack.push(regexFlagPotential);
+		}
+		
+		int findBackupRegexPosition()
+		{
+			int ret = regexPos - 1;
+			if (ret in groupInfo)
+			{
+				ret = groupInfo[ret].startPos;
+			}
+			else
+			{
+				if (ret > 0 && regex[ret-1] == '\\')
+				{
+					ret--;
+				}
+			}
+			return ret;
+		}
+
+		int findBackupPosition()
+		{
+			if (regexPos-1 in groupInfo)
+			{
+				return groupInfo[groupInfo[regexPos-1].startPos].strStartPos;
+			}
+			else
+			{
+				return strPos-1;
+			}
+		}
+
+		setBacktrack(0,0);
 
 		// a+b in "bbaaaaaaabb" matches "aaaaaaaab"
 		//Console.putln("attempting s:", strPos, " r:", regexPos);
@@ -89,7 +127,7 @@ class Regex
 				// therefore the matchMade flag is always set
 				matchMade = true;
 
-				flags = stack.pop();
+				regexFlagPotential = stack.pop();
 				strPos = stack.pop();
 				regexPos = stack.pop();
 				if (regexPos == 0)
@@ -106,7 +144,7 @@ class Regex
 				}
 
 				backtrack = false;
-				//Console.putln("backtracking s:", strPos, " r:", regexPos);
+				Console.putln("backtracking s:", strPos, " r:", regexPos);
 			}
 
 			if (regexPos >= regex.length)
@@ -122,171 +160,493 @@ class Regex
 					backtrack = true;
 				}
 			}
+			else if (regex[regexPos] == '(' && (matchMade || noMatch))
+			{	// group start
+				if (!(regexPos in groupInfo))
+				{
+					GroupInfo newGroup;
+					newGroup.startPos = regexPos;
+					newGroup.endPos = -1;
+					newGroup.strPos = strPos;
+					newGroup.strStartPos = strPos;
+					newGroup.parent = currentGroupIdx;
+
+					groupInfo[regexPos] = newGroup;
+				}
+
+				if (regexPos < regex.length - 2 && regex[regexPos+1] == '?')
+				{
+					switch(regex[regexPos+2])
+					{
+						case '#':
+							// comments
+							break;
+							
+						case '>':
+							// atomic grouping
+							break;
+
+						case ':':
+							// non-capturing
+							break;
+
+						case '=':
+							// zero-width positive lookahead
+							break;
+
+						case '!':
+							// zero-width negative lookahead
+							break;
+							
+						case '<':
+							// zero-width lookbehind
+							if (regexPos < regex.length - 3)
+							{
+								if (regex[regexPos+3] == '=')
+								{
+									// positive
+								}
+								else if (regex[regexPos+3] == '!')
+								{
+									// negative
+								}
+							}
+							break;
+
+						default:
+							break;
+					}
+				}
+				
+				Console.putln("group r:" , regexPos, " entered at s:", strPos);
+				
+				groupInfo[regexPos].strPos = strPos;
+				currentGroupIdx = regexPos;
+				regexPos++;
+			}
+			else if (regex[regexPos] == ')')
+			{	// group end
+				if (!(regexPos in groupInfo))
+				{
+					groupInfo[currentGroupIdx].endPos = regexPos;
+					groupInfo[regexPos] = groupInfo[currentGroupIdx];
+
+					Console.putln("group map: ", currentGroupIdx, " -> ", regexPos);
+
+					if (currentGroupIdx == noMatchUntilClosedAtPos)
+					{
+						noMatch = false;
+					}
+				}
+
+				if (noMatch && noMatchUntilClosedAtPos == groupInfo[regexPos].startPos)
+				{
+					noMatch = false;
+				}
+
+				if (matchMade)
+				{
+					Console.putln("group r:", groupInfo[regexPos].startPos, " match s:", strPos, " r:", regexPos);
+					groupInfo[groupInfo[regexPos].startPos].strPos = strPos;
+				}
+				else
+				{
+					Console.putln("group r:", groupInfo[regexPos].startPos, " fail s:", strPos, " r:", regexPos);
+					strPos = groupInfo[groupInfo[regexPos].startPos].strPos;
+				}
+
+				currentGroupIdx = groupInfo[regexPos].parent;
+				if (currentGroupIdx == -1)
+				{
+					Console.putln("currentGroupIdx: -1");
+				}
+				else
+				{
+					Console.putln("currentGroupIdx: ", currentGroupIdx);
+				}
+				regexPos++;
+				Console.putln("attempting s:", strPos, " r:", regexPos);
+			}
+			else if (noMatch)
+			{
+				regexPos++;
+			}
 			else if (regex[regexPos] == '*')
 			{
-				if ((regexPos < regex.length - 1) && regex[regexPos+1] == '?')
-				{
-					// lazy *
-					if (hasFlag(LAZY_KLEENE))
-					{
-						// it must match here
-						if (matchMade)
-						{
-							// good
-							
-							// the matcher matched the character
-							// strPos points to the next to-be-matched character
-							// and regexPos points to the kleene
+				// kleene star
 
-							// here, the next step to match the kleene with another
-							// character (in strPos)
-							
-							// the next step in this computation path is to match
-							// the current charcter with the next regex operator
-							//Console.putln("ok(*?) s:", strPos, " r:", regexPos);
-							stack.push(regexPos-1);
-							stack.push(strPos);
-							stack.push(flags);
-		
-							// still processing
+				Console.putln("kleene* s:", strPos, " r:", regexPos);
+
+				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
+				{
+					// this is a lazy kleene
+
+					Console.putln("kleene*? s:", strPos, " r:", regexPos);
+
+					// it may have matched something, but it should ignore the work
+					// for now that it had done and save it as part of the lazy operator
+
+					if (matchMade)
+					{
+						// set backtrack to do another computation
+						setBacktrack(findBackupRegexPosition(), strPos);
+						
+						if (!(regexPos in operatorFlag))
+						{
+							// we have made a match, but have not attempted
+							// to try not matching anything first
+
+							// set the flag so that this operator knows that it has
+							// already found a match
+							operatorFlag[regexPos] = strPos;
+							regexFlagPotential = regexPos;
+
+							// set backtrack to start where this one would have
+							// continued to
+							setBacktrack(regexPos+2, strPos);
+
+							// and then start all over by assuming nothing is taken
+							strPos = findBackupPosition();
 							regexPos+=2;
 						}
 						else
 						{
-							// bad
-							backtrack = true;
+							// we have already found a match
+							// just continue on our way
+							regexPos+=2;
 						}
 					}
 					else
 					{
-						// the matcher below simply accepts nothing for lazy *
-						// so the backtrack should point to the next to match
-						// and the strPos should point to the next item
-						//Console.putln("ok(*?) s:", strPos, " r:", regexPos);
-						
-						setFlag(LAZY_KLEENE);
-
-						stack.push(regexPos-1);
-						stack.push(strPos+1);
-						stack.push(flags);
-	
-						regexPos+=2;
-						
+						// the group fails, it is ok
 						matchMade = true;
+						regexPos+=2;
 					}
-				}	// greedy *
+				}
 				else if (matchMade)
 				{
-					//Console.putln("ok(*) s:", strPos, " r:", regexPos);
-					stack.push(regexPos+1);
-					stack.push(strPos);
-					stack.push(flags);
-
-					// still processing
-					regexPos--;
-				}
-				else
-				{
-					// that is ok
-					matchMade = true;
-					regexPos++;
-				}
-			}
-			else if (regex[regexPos] == '+')
-			{
-				if ((regexPos < regex.length - 1) && regex[regexPos+1] == '?')
-				{
-					// lazy +
-					if (matchMade)
+					// this is a greedy kleene
+					
+					// the backtrack will suggest to just go to the next regex
+					// character at this same string. this computation path,
+					// however, will be attempting to match the previous group
+					// as much as possible
+					
+					// we need to set a backtrack for having not matched anything even though
+					// something was just matched. It could be that what we matched belongs to
+					// another section of the regex.
+					if (!(regexPos in operatorFlag) || regexFlagPotential < regexPos)
 					{
-						//Console.putln("ok(+?) s:", strPos, " r:", regexPos);
-						stack.push(regexPos-1);
-						stack.push(strPos);
-						stack.push(flags);
+						// set a backtrack for having nothing found
+						setBacktrack(regexPos+1,findBackupPosition());
+					}
 
-						regexPos+=2;
+					operatorFlag[regexPos] = 1;
+
+					setBacktrack(regexPos+1, strPos);
+					regexPos--;
+					if (regexPos in groupInfo)
+					{
+						regexPos = groupInfo[regexPos].startPos;
+						currentGroupIdx = regexPos;
 					}
 					else
 					{
-						//Console.putln("fail(+?) s:", strPos, " r:", regexPos);
-						backtrack = true;
-						matchMade = false;
+						if (regexPos > 0 && regex[regexPos-1] == '\\')
+						{
+							regexPos--;
+						}
 					}
-				}	// greedy +
-				else if (matchMade)
-				{
-					//Console.putln("ok(+) s:", strPos, " r:", regexPos);
-					stack.push(regexPos+1);
-					stack.push(strPos);
-					stack.push(flags);
-
-					// still processing
-					setFlag(PLUS_OK);
-
-					regexPos--;
-				}
-				else if (hasFlag(PLUS_OK))
-				{
-					// no match (at least one found)
-					//Console.putln("match(+) s:", strPos, " r:", regexPos);
-					matchMade = true;
-					// reset + status
-					resetFlag(PLUS_OK);
-					regexPos++;
 				}
 				else
 				{
-					// no match (zero found)
-					//Console.putln("fail(+) s:", strPos, " r:", regexPos);
-					backtrack = true;
-					matchMade = false;
+					// it is ok
+					matchMade = true;
+					regexPos++;
 				}
+				Console.putln("attempting s:", strPos, " r:", regexPos);
+			}
+			else if (regex[regexPos] == '+')
+			{
+				// kleene plus
+
+				Console.putln("kleene+ s:", strPos, " r:", regexPos);
+				
+				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
+				{
+					// this is a lazy kleene
+
+					Console.putln("kleene+? s:", strPos, " r:", regexPos);
+
+					if (matchMade)
+					{
+						// good, continue and set a backtrack to attempt another
+						// match on this kleene
+
+						// set the flag so that this operator knows that it has
+						// already found a match
+						operatorFlag[regexPos] = 1;
+						regexFlagPotential = regexPos;
+
+						// set the backtrace
+						int newRegexPos = regexPos+2;
+
+						regexPos--;
+						if (regexPos in groupInfo)
+						{
+							regexPos = groupInfo[regexPos].startPos;
+							currentGroupIdx = regexPos;
+						}
+						else
+						{
+							if (regexPos > 0 && regex[regexPos-1] == '\\')
+							{
+								regexPos--;
+							}
+						}
+
+						setBacktrack(regexPos, strPos);
+
+						regexPos = newRegexPos;
+					}
+					else
+					{
+						if (regexPos in operatorFlag && regexFlagPotential >= regexPos)
+						{
+							// we have not found any matches at all
+							// fail the op
+							backtrack = true;
+						}
+						else
+						{
+							// it is ok, we found at least one
+							matchMade = true;
+							regexPos+=2;
+						}
+					}
+				}
+				else if (matchMade)
+				{
+					// this is a greedy kleene
+					
+					// the backtrack will suggest to just go to the next regex
+					// character at this same string. this computation path,
+					// however, will be attempting to match the previous group
+					// as much as possible
+
+					setBacktrack(regexPos+1, strPos);
+
+					// set the flag so that this operator knows that it has
+					// already found a match
+					operatorFlag[regexPos] = 1;
+					regexFlagPotential = regexPos;
+
+					regexPos--;
+					if (regexPos in groupInfo)
+					{
+						regexPos = groupInfo[regexPos].startPos;
+						currentGroupIdx = regexPos;
+					}
+					else
+					{
+						if (regexPos > 0 && regex[regexPos-1] == '\\')
+						{
+							regexPos--;
+						}
+					}
+				}
+				else
+				{
+					// it is ok
+					if (regexPos in operatorFlag && regexFlagPotential >= regexPos)
+					{
+						// good
+						matchMade = true;
+						regexPos++;
+					}
+					else
+					{
+						// fail the op
+						backtrack = true;
+					}
+				}
+				Console.putln("attempting s:", strPos, " r:", regexPos);
+			}
+			else if (regex[regexPos] == '?')
+			{
+				// option
+				regexPos++;
+				if (regexPos < regex.length && regex[regexPos] == '?')
+				{
+					// lazy option
+					regexPos++;
+					if (matchMade)
+					{
+						// unfortunately, this work that has been done
+						// has been done in vain. We want to attempt to
+						// not consume this option.
+
+						// set the backtrack to backtrack to the current
+						// situation (taking the option)
+						setBacktrack(regexPos, strPos);
+						
+						// now, attempt to carry on to the next part of
+						// the regex while undoing the last group
+						strPos = findBackupPosition();
+					}
+					else
+					{
+						// very good, only one possible outcome: no match
+						matchMade = true;
+					}
+				}
+				else if (matchMade)
+				{
+					// greedy option
+
+					// backtrack to not taking the option
+					setBacktrack(regexPos, findBackupPosition());
+				}
+				else
+				{
+					// greedy option
+					matchMade = true;
+				}
+			}
+			else if (!matchMade)
+			{
+				// the group fails if a concatentation fails
+				if (currentGroupIdx >= 0)
+				{
+					Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+					if (groupInfo[currentGroupIdx].endPos >= 0)
+					{
+						regexPos = groupInfo[currentGroupIdx].endPos;
+					}
+					else
+					{
+						noMatch = true;
+						noMatchUntilClosedAtPos = currentGroupIdx;
+					}
+				}
+				else
+				{
+					Console.putln("failed outside group");
+					backtrack = true;
+				}
+			}
+			else if (strPos >= str.length)
+			{
+				matchMade = false;
 			}
 			else
 			{
-				if (!matchMade)
+				// concatentation
+				if (regex[regexPos] == '\\' && regexPos < regex.length-1)
 				{
-					backtrack = true;
-				}
-				else if (strPos >= str.length)
-				{
-					matchMade = false;
-				}
-				else if (!hasFlag(LAZY_KLEENE) && (regexPos < regex.length - 2) && regex[regexPos+1] == '*' && regex[regexPos+2] == '?')
-				{
-					// lazy *
-					//Console.putln("match(*?)[epsilon] s:", strPos, " r:", regexPos);
-					matchMade = true;
 					regexPos++;
-					//Console.putln("attempting s:", strPos, " r:", regexPos);
+					switch(regex[regexPos])
+					{
+						case 'd':
+							matchMade = (str[strPos] >= '0' && str[strPos] <= '9');
+							break;
+
+						case 'D':
+							matchMade = !(str[strPos] >= '0' && str[strPos] <= '9');
+							break;
+
+						case 's':
+							matchMade = (str[strPos] == ' '
+										|| str[strPos] == '\t'
+										|| str[strPos] == '\r'
+										|| str[strPos] == '\n'
+										|| str[strPos] == '\v'
+										|| str[strPos] == '\f');
+							break;
+							
+						case 'S':
+							matchMade = (str[strPos] != ' '
+										&& str[strPos] != '\t'
+										&& str[strPos] != '\r'
+										&& str[strPos] != '\n'
+										&& str[strPos] != '\v'
+										&& str[strPos] != '\f');
+							break;
+
+						case 'w':
+							matchMade = (str[strPos] == '_'
+										|| (str[strPos] >= 'a' && str[strPos] <= 'z')
+										|| (str[strPos] >= 'A' && str[strPos] <= 'Z'));
+							break;
+							
+						case 'W':
+							matchMade = (str[strPos] != '_'
+										&& (str[strPos] < 'a' || str[strPos] > 'z')
+										&& (str[strPos] < 'A' || str[strPos] > 'Z'));
+							break;
+							
+						case 'n':
+							matchMade = str[strPos] == '\n';
+							break;
+
+						case 'e':
+							matchMade = str[strPos] == '\x1b';
+							break;
+
+						case 'v':
+							matchMade = str[strPos] == '\v';
+							break;
+
+						case 't':
+							matchMade = str[strPos] == '\t';
+							break;
+
+						case 'r':
+							matchMade = str[strPos] == '\r';
+							break;
+
+						case 'a':
+							matchMade = str[strPos] == '\a';
+							break;
+
+						default:
+							matchMade = str[strPos] == regex[regexPos];
+							break;
+					}
 				}
 				else if ((str[strPos] == regex[regexPos]) || (regex[regexPos] == '.'))
 				{
-					//Console.putln("match s:", strPos, " r:", regexPos);
+					// match made
+					matchMade = true;
+				}
+				else
+				{
+					// no match made
+					matchMade = false;
+				}
+				
+				if (matchMade)
+				{
+					Console.putln("match s:", strPos, " r:", regexPos);
 
 					// match made
 					matchMade = true;
 
 					// consume input string
 					strPos++;
-
-					// consume regular expression
-					regexPos++;
-					//Console.putln("attempting s:", strPos, " r:", regexPos);
+					Console.putln("attempting s:", strPos, " r:", regexPos+1);
 				}
 				else
 				{
-					//Console.putln("fail s:", strPos, " r:", regexPos);
-
-					// no match made
-					matchMade = false;
-
-					// consume regular expression
-					regexPos++;
+					Console.putln("fail s:", strPos, " r:", regexPos);
 				}
+
+				// consume
+				regexPos++;
 			}
 		}
 
+		// Return the result
 		if (matchMade && strPosStart < str.length)
 		{
 			return str.subString(strPosStart, strPos-strPosStart);
