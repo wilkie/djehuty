@@ -64,6 +64,7 @@ class Regex
 			int strStartPos;
 			int strPos;
 			int parent;
+			int[int] failTable;
 		}
 
 		GroupInfo[int] groupInfo;
@@ -115,17 +116,39 @@ class Regex
 		}
 
 		setBacktrack(0,0);
+		
+		int[][] memoizer = new int[][](str.length, regex.length);
 
 		// a+b in "bbaaaaaaabb" matches "aaaaaaaab"
 		//Console.putln("attempting s:", strPos, " r:", regexPos);
 
 		while(running)
 		{
+			//Console.putln("attempting s:", strPos, " r:", regexPos);
+			if (strPos < str.length && regexPos < regex.length && matchMade)
+			{
+				if (memoizer[strPos][regexPos] == 1)
+				{
+					// we have been here before
+					backtrack = true;
+				}
+				else
+				{
+					memoizer[strPos][regexPos] = 1;
+				}
+			}
+
 			if (backtrack)
 			{
 				// steps are saved after successful matches
 				// therefore the matchMade flag is always set
 				matchMade = true;
+				
+				if (regexPos in groupInfo)
+				{
+					//Console.putln("Setting group fail info! r:", regexPos, " s:", groupInfo[regexPos].strStartPos);
+					groupInfo[regexPos].failTable[groupInfo[regexPos].strStartPos] = 1;
+				}
 
 				regexFlagPotential = stack.pop();
 				strPos = stack.pop();
@@ -144,21 +167,54 @@ class Regex
 				}
 
 				backtrack = false;
-				Console.putln("backtracking s:", strPos, " r:", regexPos);
+				//Console.putln("backtracking s:", strPos, " r:", regexPos);
 			}
-
 			if (regexPos >= regex.length)
 			{
 				if (matchMade)
 				{
+					//Console.putln("good end");
 					// good
 					running = false;
 				}
 				else
 				{
 					// backtrack
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
 					backtrack = true;
 				}
+			}
+			else if (regex[regexPos] == '$')
+			{
+				//Console.putln("$ found at s:", strPos);
+				if (strPos == str.length)
+				{
+					matchMade = true;
+				}
+				else
+				{
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
+					backtrack = true;
+					continue;
+				}
+				regexPos++;
+			}
+			else if (regex[regexPos] == '^')
+			{
+				if (strPos == 0)
+				{
+					matchMade = true;
+				}
+				else
+				{
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
+					backtrack = true;
+					continue;
+				}
+				regexPos++;
 			}
 			else if (regex[regexPos] == '(' && (matchMade || noMatch))
 			{	// group start
@@ -172,6 +228,17 @@ class Regex
 					newGroup.parent = currentGroupIdx;
 
 					groupInfo[regexPos] = newGroup;
+				}
+				else
+				{
+					// Memoizer for group failures
+					if (strPos in groupInfo[regexPos].failTable)
+					{
+						//Console.putln("This group will have much fail");
+						// this group will also fail
+						backtrack = true;
+						continue;
+					}
 				}
 
 				if (regexPos < regex.length - 2 && regex[regexPos+1] == '?')
@@ -218,7 +285,7 @@ class Regex
 					}
 				}
 				
-				Console.putln("group r:" , regexPos, " entered at s:", strPos);
+				///Console.putln("group r:" , regexPos, " entered at s:", strPos);
 				
 				groupInfo[regexPos].strPos = strPos;
 				currentGroupIdx = regexPos;
@@ -231,7 +298,7 @@ class Regex
 					groupInfo[currentGroupIdx].endPos = regexPos;
 					groupInfo[regexPos] = groupInfo[currentGroupIdx];
 
-					Console.putln("group map: ", currentGroupIdx, " -> ", regexPos);
+					//Console.putln("group map: ", currentGroupIdx, " -> ", regexPos);
 
 					if (currentGroupIdx == noMatchUntilClosedAtPos)
 					{
@@ -246,26 +313,26 @@ class Regex
 
 				if (matchMade)
 				{
-					Console.putln("group r:", groupInfo[regexPos].startPos, " match s:", strPos, " r:", regexPos);
+					//Console.putln("group r:", groupInfo[regexPos].startPos, " match s:", strPos, " r:", regexPos);
 					groupInfo[groupInfo[regexPos].startPos].strPos = strPos;
 				}
 				else
 				{
-					Console.putln("group r:", groupInfo[regexPos].startPos, " fail s:", strPos, " r:", regexPos);
+					//Console.putln("group r:", groupInfo[regexPos].startPos, " fail s:", strPos, " r:", regexPos);
 					strPos = groupInfo[groupInfo[regexPos].startPos].strPos;
 				}
 
 				currentGroupIdx = groupInfo[regexPos].parent;
 				if (currentGroupIdx == -1)
 				{
-					Console.putln("currentGroupIdx: -1");
+					//Console.putln("currentGroupIdx: -1");
 				}
 				else
 				{
-					Console.putln("currentGroupIdx: ", currentGroupIdx);
+					//Console.putln("currentGroupIdx: ", currentGroupIdx);
 				}
 				regexPos++;
-				Console.putln("attempting s:", strPos, " r:", regexPos);
+				//Console.putln("attempting s:", strPos, " r:", regexPos);
 			}
 			else if (noMatch)
 			{
@@ -275,13 +342,13 @@ class Regex
 			{
 				// kleene star
 
-				Console.putln("kleene* s:", strPos, " r:", regexPos);
+				//Console.putln("kleene* s:", strPos, " r:", regexPos);
 
 				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
 				{
 					// this is a lazy kleene
 
-					Console.putln("kleene*? s:", strPos, " r:", regexPos);
+					//Console.putln("kleene*? s:", strPos, " r:", regexPos);
 
 					// it may have matched something, but it should ignore the work
 					// for now that it had done and save it as part of the lazy operator
@@ -364,19 +431,19 @@ class Regex
 					matchMade = true;
 					regexPos++;
 				}
-				Console.putln("attempting s:", strPos, " r:", regexPos);
+				//Console.putln("attempting s:", strPos, " r:", regexPos);
 			}
 			else if (regex[regexPos] == '+')
 			{
 				// kleene plus
 
-				Console.putln("kleene+ s:", strPos, " r:", regexPos);
+				//Console.putln("kleene+ s:", strPos, " r:", regexPos);
 				
 				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
 				{
 					// this is a lazy kleene
 
-					Console.putln("kleene+? s:", strPos, " r:", regexPos);
+					//Console.putln("kleene+? s:", strPos, " r:", regexPos);
 
 					if (matchMade)
 					{
@@ -415,7 +482,10 @@ class Regex
 						{
 							// we have not found any matches at all
 							// fail the op
+							//regexPos = findBackupRegexPosition();
+							//strPos = findBackupPosition();
 							backtrack = true;
+							continue;
 						}
 						else
 						{
@@ -428,7 +498,7 @@ class Regex
 				else if (matchMade)
 				{
 					// this is a greedy kleene
-					
+
 					// the backtrack will suggest to just go to the next regex
 					// character at this same string. this computation path,
 					// however, will be attempting to match the previous group
@@ -467,10 +537,13 @@ class Regex
 					else
 					{
 						// fail the op
+						//regexPos = findBackupRegexPosition();
+						//strPos = findBackupPosition();
 						backtrack = true;
+						continue;
 					}
 				}
-				Console.putln("attempting s:", strPos, " r:", regexPos);
+				//Console.putln("attempting s:", strPos, " r:", regexPos);
 			}
 			else if (regex[regexPos] == '?')
 			{
@@ -518,7 +591,7 @@ class Regex
 				// the group fails if a concatentation fails
 				if (currentGroupIdx >= 0)
 				{
-					Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+					//Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
 					if (groupInfo[currentGroupIdx].endPos >= 0)
 					{
 						regexPos = groupInfo[currentGroupIdx].endPos;
@@ -531,13 +604,12 @@ class Regex
 				}
 				else
 				{
-					Console.putln("failed outside group");
+					//Console.putln("failed outside group");
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
 					backtrack = true;
+					continue;
 				}
-			}
-			else if (strPos >= str.length)
-			{
-				matchMade = false;
 			}
 			else
 			{
@@ -545,76 +617,83 @@ class Regex
 				if (regex[regexPos] == '\\' && regexPos < regex.length-1)
 				{
 					regexPos++;
-					switch(regex[regexPos])
+					if (strPos >= str.length)
 					{
-						case 'd':
-							matchMade = (str[strPos] >= '0' && str[strPos] <= '9');
-							break;
-
-						case 'D':
-							matchMade = !(str[strPos] >= '0' && str[strPos] <= '9');
-							break;
-
-						case 's':
-							matchMade = (str[strPos] == ' '
-										|| str[strPos] == '\t'
-										|| str[strPos] == '\r'
-										|| str[strPos] == '\n'
-										|| str[strPos] == '\v'
-										|| str[strPos] == '\f');
-							break;
-							
-						case 'S':
-							matchMade = (str[strPos] != ' '
-										&& str[strPos] != '\t'
-										&& str[strPos] != '\r'
-										&& str[strPos] != '\n'
-										&& str[strPos] != '\v'
-										&& str[strPos] != '\f');
-							break;
-
-						case 'w':
-							matchMade = (str[strPos] == '_'
-										|| (str[strPos] >= 'a' && str[strPos] <= 'z')
-										|| (str[strPos] >= 'A' && str[strPos] <= 'Z'));
-							break;
-							
-						case 'W':
-							matchMade = (str[strPos] != '_'
-										&& (str[strPos] < 'a' || str[strPos] > 'z')
-										&& (str[strPos] < 'A' || str[strPos] > 'Z'));
-							break;
-							
-						case 'n':
-							matchMade = str[strPos] == '\n';
-							break;
-
-						case 'e':
-							matchMade = str[strPos] == '\x1b';
-							break;
-
-						case 'v':
-							matchMade = str[strPos] == '\v';
-							break;
-
-						case 't':
-							matchMade = str[strPos] == '\t';
-							break;
-
-						case 'r':
-							matchMade = str[strPos] == '\r';
-							break;
-
-						case 'a':
-							matchMade = str[strPos] == '\a';
-							break;
-
-						default:
-							matchMade = str[strPos] == regex[regexPos];
-							break;
+						matchMade = false;
+					}
+					else
+					{
+						switch(regex[regexPos])
+						{
+							case 'd':
+								matchMade = (str[strPos] >= '0' && str[strPos] <= '9');
+								break;
+	
+							case 'D':
+								matchMade = !(str[strPos] >= '0' && str[strPos] <= '9');
+								break;
+	
+							case 's':
+								matchMade = (str[strPos] == ' '
+											|| str[strPos] == '\t'
+											|| str[strPos] == '\r'
+											|| str[strPos] == '\n'
+											|| str[strPos] == '\v'
+											|| str[strPos] == '\f');
+								break;
+								
+							case 'S':
+								matchMade = (str[strPos] != ' '
+											&& str[strPos] != '\t'
+											&& str[strPos] != '\r'
+											&& str[strPos] != '\n'
+											&& str[strPos] != '\v'
+											&& str[strPos] != '\f');
+								break;
+	
+							case 'w':
+								matchMade = (str[strPos] == '_'
+											|| (str[strPos] >= 'a' && str[strPos] <= 'z')
+											|| (str[strPos] >= 'A' && str[strPos] <= 'Z'));
+								break;
+								
+							case 'W':
+								matchMade = (str[strPos] != '_'
+											&& (str[strPos] < 'a' || str[strPos] > 'z')
+											&& (str[strPos] < 'A' || str[strPos] > 'Z'));
+								break;
+								
+							case 'n':
+								matchMade = str[strPos] == '\n';
+								break;
+	
+							case 'e':
+								matchMade = str[strPos] == '\x1b';
+								break;
+	
+							case 'v':
+								matchMade = str[strPos] == '\v';
+								break;
+	
+							case 't':
+								matchMade = str[strPos] == '\t';
+								break;
+	
+							case 'r':
+								matchMade = str[strPos] == '\r';
+								break;
+	
+							case 'a':
+								matchMade = str[strPos] == '\a';
+								break;
+	
+							default:
+								matchMade = str[strPos] == regex[regexPos];
+								break;
+						}
 					}
 				}
-				else if ((str[strPos] == regex[regexPos]) || (regex[regexPos] == '.'))
+				else if (strPos < str.length && ((str[strPos] == regex[regexPos]) || (regex[regexPos] == '.')))
 				{
 					// match made
 					matchMade = true;
@@ -624,21 +703,20 @@ class Regex
 					// no match made
 					matchMade = false;
 				}
-				
+
 				if (matchMade)
 				{
-					Console.putln("match s:", strPos, " r:", regexPos);
+					//Console.putln("match s:", strPos, " r:", regexPos);
 
 					// match made
 					matchMade = true;
 
 					// consume input string
 					strPos++;
-					Console.putln("attempting s:", strPos, " r:", regexPos+1);
 				}
 				else
 				{
-					Console.putln("fail s:", strPos, " r:", regexPos);
+					//Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume
