@@ -50,7 +50,10 @@ class Regex
 		int strPosStart;
 		int regexPosStart;
 		int regexFlagPotential;
-		
+
+		int nextUnionPos = -1;
+		int currentUnionPos = -1;
+
 		int currentClassStart;
 
 		int flags;
@@ -66,7 +69,7 @@ class Regex
 			int strStartPos;
 			int strPos;
 			int parent;
-			int backtracks;
+			int unionPos;
 		}
 
 		GroupInfo[int] groupInfo;
@@ -129,7 +132,7 @@ class Regex
 
 		while(running)
 		{
-			//Console.putln("attempting s:", strPos, " r:", regexPos);
+		//	Console.putln("attempting s:", strPos, " r:", regexPos);
 
 			if (strPos < str.length && regexPos < regex.length && matchMade)
 			{
@@ -149,25 +152,41 @@ class Regex
 				// steps are saved after successful matches
 				// therefore the matchMade flag is always set
 				matchMade = true;
+				
+				int oldRegexPos = regexPos;
 
 				regexFlagPotential = stack.pop();
 				strPos = stack.pop();
 				regexPos = stack.pop();
+
 				if (regexPos == 0)
 				{
-					strPosStart++;
-					strPos = strPosStart;
+					// we could attempt to find a union
+					while(oldRegexPos < regex.length && regex[oldRegexPos] != '|') { oldRegexPos++; }
 
-					if (strPosStart >= str.length)
+					if (oldRegexPos < regex.length)
 					{
-						// bad
-						matchMade = false;
-						running = false;
+						Console.putln("found union r:", oldRegexPos);
+						regexPos = oldRegexPos+1;
 					}
+					else
+					{
+						strPosStart++;
+						strPos = strPosStart;
+
+						if (strPosStart >= str.length)
+						{
+							// bad
+							matchMade = false;
+							running = false;
+						}
+					}
+
+					setBacktrack(0, strPos);
 				}
 
 				backtrack = false;
-				//Console.putln("backtracking s:", strPos, " r:", regexPos);
+			//	Console.putln("backtracking s:", strPos, " r:", regexPos);
 			}
 
 			if (regexPos >= regex.length)
@@ -186,6 +205,79 @@ class Regex
 					backtrack = true;
 				}
 			}
+			else if (regex[regexPos] == '|')
+			{
+				// union
+
+				if (currentGroupIdx >= 0)
+				{
+					//Console.putln("union within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+					if (groupInfo[currentGroupIdx].unionPos >= 0)
+					{
+						// the current group already has at least one union
+						// use the current unionPos to append to the list
+						if (!(currentUnionPos in operatorFlag) && regexPos > currentUnionPos)
+						{
+							operatorFlag[currentUnionPos] = regexPos;
+						}
+					}
+					else
+					{
+						// this is the first union of the current group
+						groupInfo[currentGroupIdx].unionPos = regexPos;
+					}
+					
+					if (matchMade)
+					{
+						// do not take this union
+						// declare this group as good
+
+						// but set a backtrack just in case
+						// this will start the regular expression search from the next regex
+						// point, but undoing the actions of the group thus far
+						setBacktrack(regexPos+1, groupInfo[currentGroupIdx].strStartPos);
+
+						//Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+						if (groupInfo[currentGroupIdx].endPos >= 0)
+						{
+							regexPos = groupInfo[currentGroupIdx].endPos;
+						}
+						else
+						{
+							noMatch = true;
+							noMatchUntilClosedAtPos = currentGroupIdx;
+						}
+					}
+					else
+					{
+						// undo actions
+						//Console.putln("taking union path", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+						strPos = groupInfo[currentGroupIdx].strPos;
+						
+						noMatch = false;
+						matchMade = true;
+					}
+				}
+				else
+				{
+					// union is in the main regex
+					
+					if (matchMade)
+					{
+						// accept the regular expression
+						running = false;
+						break;
+					}
+					else
+					{
+						// we start anew, but at this regular expression
+						strPos = strPosStart;
+					}
+				}
+
+				currentUnionPos = regexPos;
+				regexPos++;
+			}
 			else if (regex[regexPos] == '(' && (matchMade || noMatch))
 			{	// group start
 				if (!(regexPos in groupInfo))
@@ -196,6 +288,7 @@ class Regex
 					newGroup.strPos = strPos;
 					newGroup.strStartPos = strPos;
 					newGroup.parent = currentGroupIdx;
+					newGroup.unionPos = -1;
 
 					groupInfo[regexPos] = newGroup;
 				}
@@ -576,7 +669,28 @@ class Regex
 				if (currentGroupIdx >= 0)
 				{
 					//Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
-					if (groupInfo[currentGroupIdx].endPos >= 0)
+					int curUnionPos = -1;
+					if (groupInfo[currentGroupIdx].unionPos >= 0)
+					{
+						curUnionPos = groupInfo[currentGroupIdx].unionPos;
+
+						while(curUnionPos < regexPos && curUnionPos in operatorFlag)
+						{
+							//Console.putln("inner loopo pos:", curUnionPos);
+							curUnionPos = operatorFlag[curUnionPos];
+						}
+
+						if (curUnionPos < regexPos)
+						{
+							curUnionPos = -1;
+						}
+					}
+
+					if (curUnionPos >= 0)
+					{
+						regexPos = curUnionPos;
+					}
+					else if (groupInfo[currentGroupIdx].endPos >= 0)
 					{
 						regexPos = groupInfo[currentGroupIdx].endPos;
 					}
@@ -706,7 +820,7 @@ class Regex
 												|| str[strPos] == '\v'
 												|| str[strPos] == '\f');
 									break;
-									
+
 								case 'S':
 									matchMade = (str[strPos] != ' '
 												&& str[strPos] != '\t'
@@ -804,7 +918,7 @@ class Regex
 
 					// consume input string
 					strPos++;
-					
+
 					if (matchClass)
 					{
 						if (currentClassStart in operatorFlag)
@@ -815,9 +929,9 @@ class Regex
 						{
 							// dang, need to search for it
 							while(regexPos < regex.length && regex[regexPos] != ']') { regexPos++; }
-							
+
 							if (regexPos >= regex.length) { continue; }
-							
+
 							operatorFlag[currentClassStart] = regexPos;
 							operatorFlag[regexPos] = currentClassStart;
 						}
@@ -826,7 +940,7 @@ class Regex
 				}
 				else
 				{
-					//Console.putln("fail s:", strPos, " r:", regexPos);
+				//	Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume
