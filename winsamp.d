@@ -347,7 +347,7 @@ extern(System) void DjehutyMain(Arguments args)
 //	String str = new String("baaabaaabb");
 	//String regex = new String("ba+bb");
 
-	String s = Regex.work("", `^$`);
+	String s = Regex.work("ab\nabc\nac", `^abc$`);
 
 	if (s !is null)
 	{

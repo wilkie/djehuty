@@ -124,7 +124,7 @@ class Regex
 
 		while(running)
 		{
-			//Console.putln("attempting s:", strPos, " r:", regexPos);
+			Console.putln("attempting s:", strPos, " r:", regexPos);
 			if (strPos < str.length && regexPos < regex.length && matchMade)
 			{
 				if (memoizer[strPos][regexPos] == 1)
@@ -167,7 +167,7 @@ class Regex
 				}
 
 				backtrack = false;
-				//Console.putln("backtracking s:", strPos, " r:", regexPos);
+				Console.putln("backtracking s:", strPos, " r:", regexPos);
 			}
 			if (regexPos >= regex.length)
 			{
@@ -184,37 +184,6 @@ class Regex
 					//strPos = findBackupPosition();
 					backtrack = true;
 				}
-			}
-			else if (regex[regexPos] == '$')
-			{
-				//Console.putln("$ found at s:", strPos);
-				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r')
-				{
-					matchMade = true;
-				}
-				else
-				{
-					//regexPos = findBackupRegexPosition();
-					//strPos = findBackupPosition();
-					backtrack = true;
-					continue;
-				}
-				regexPos++;
-			}
-			else if (regex[regexPos] == '^')
-			{
-				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r')
-				{
-					matchMade = true;
-				}
-				else
-				{
-					//regexPos = findBackupRegexPosition();
-					//strPos = findBackupPosition();
-					backtrack = true;
-					continue;
-				}
-				regexPos++;
 			}
 			else if (regex[regexPos] == '(' && (matchMade || noMatch))
 			{	// group start
@@ -611,6 +580,37 @@ class Regex
 					continue;
 				}
 			}
+			else if (regex[regexPos] == '$')
+			{
+				//Console.putln("$ found at s:", strPos);
+				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r')
+				{
+					matchMade = true;
+				}
+				else
+				{
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
+					backtrack = true;
+					continue;
+				}
+				regexPos++;
+			}
+			else if (regex[regexPos] == '^')
+			{
+				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r')
+				{
+					matchMade = true;
+				}
+				else
+				{
+					//regexPos = findBackupRegexPosition();
+					//strPos = findBackupPosition();
+					backtrack = true;
+					continue;
+				}
+				regexPos++;
+			}
 			else
 			{
 				// concatentation
@@ -706,7 +706,7 @@ class Regex
 
 				if (matchMade)
 				{
-					//Console.putln("match s:", strPos, " r:", regexPos);
+					Console.putln("match s:", strPos, " r:", regexPos);
 
 					// match made
 					matchMade = true;
@@ -716,7 +716,7 @@ class Regex
 				}
 				else
 				{
-					//Console.putln("fail s:", strPos, " r:", regexPos);
+					Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume
