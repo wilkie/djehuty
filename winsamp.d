@@ -347,7 +347,7 @@ extern(System) void DjehutyMain(Arguments args)
 //	String str = new String("baaabaaabb");
 	//String regex = new String("ba+bb");
 
-	String s = Regex.work("foo foo foo foo foo foo foo foo foo foo foo foo foo", `^(\s*foo\s*)*$`);
+	String s = Regex.work("abcdef", `abc(egg)?def`);
 
 	if (s !is null)
 	{

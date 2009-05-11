@@ -132,9 +132,9 @@ class Regex
 
 		while(running)
 		{
-		//	Console.putln("attempting s:", strPos, " r:", regexPos);
+			//Console.putln("attempting s:", strPos, " r:", regexPos);
 
-			if (strPos < str.length && regexPos < regex.length && matchMade)
+			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch)
 			{
 				if (memoizer[strPos][regexPos] == 1)
 				{
@@ -166,7 +166,7 @@ class Regex
 
 					if (oldRegexPos < regex.length)
 					{
-						Console.putln("found union r:", oldRegexPos);
+//						Console.putln("found union r:", oldRegexPos);
 						regexPos = oldRegexPos+1;
 					}
 					else
@@ -226,7 +226,7 @@ class Regex
 						// this is the first union of the current group
 						groupInfo[currentGroupIdx].unionPos = regexPos;
 					}
-					
+
 					if (matchMade)
 					{
 						// do not take this union
@@ -261,7 +261,7 @@ class Regex
 				else
 				{
 					// union is in the main regex
-					
+
 					if (matchMade)
 					{
 						// accept the regular expression
@@ -382,9 +382,11 @@ class Regex
 				}
 				else
 				{
+					//Console.putln("group r:", groupInfo[regexPos].startPos, " fail s:", strPos, " r:", regexPos);
 					// if we can backtrack to make another decision in this group, do so
 					// that would effectively undo moves that this group had made
-					backtrack = true;
+					strPos = groupInfo[groupInfo[regexPos].startPos].strPos;
+					//backtrack = true;
 				}
 
 				currentGroupIdx = groupInfo[regexPos].parent;
@@ -626,6 +628,7 @@ class Regex
 			{
 				// option
 				regexPos++;
+//				Console.putln("?");
 				if (regexPos < regex.length && regex[regexPos] == '?')
 				{
 					// lazy option
@@ -639,7 +642,7 @@ class Regex
 						// set the backtrack to backtrack to the current
 						// situation (taking the option)
 						setBacktrack(regexPos, strPos);
-						
+
 						// now, attempt to carry on to the next part of
 						// the regex while undoing the last group
 						strPos = findBackupPosition();
@@ -668,7 +671,7 @@ class Regex
 				// the group fails if a concatenation fails
 				if (currentGroupIdx >= 0)
 				{
-					//Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+				//	Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
 					int curUnionPos = -1;
 					if (groupInfo[currentGroupIdx].unionPos >= 0)
 					{
@@ -940,7 +943,7 @@ class Regex
 				}
 				else
 				{
-				//	Console.putln("fail s:", strPos, " r:", regexPos);
+					//Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume

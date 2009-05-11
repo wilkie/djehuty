@@ -811,6 +811,249 @@ try
 	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
+	}
+		it work_should_handle_lazy_kleene_star()
+	{before_work();
+try
+{
+			String str = Regex.work("<EM>some text</EM>", `<.*?>`);
+			if(!(str == "<EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_kleene_plus()
+	{before_work();
+try
+{
+			String str = Regex.work("<>EM>some text</EM>", `<.+>`);
+			if(!(str == "<>EM>some text</EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_lazy_kleene_plus()
+	{before_work();
+try
+{
+			String str = Regex.work("<>EM>some text</EM>", `<.+?>`);
+			if(!(str == "<>EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_options()
+	{before_work();
+try
+{
+			String str = Regex.work("abc", `a?abc`);
+			if(!(str == "abc"))
+	{
+		return it.doesnt;
+	}
+
+			
+			str = Regex.work("aabc", `a?abc`);
+			if(!(str == "aabc"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.work("ababbababababbbc", `(a?b)*c`);
+			if(!(str == "ababbababababbbc"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_optional_groups()
+	{before_work();
+try
+{
+			String str = Regex.work("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
+			if(!(str == "abcdefeggfoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_union_at_base_level()
+	{before_work();
+try
+{
+			String str = Regex.work("dogbert", `cat|dog`);
+			if(!(str == "dog"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_union_at_group_level()
+	{before_work();
+try
+{
+			String str = Regex.work("bacd", `(bac|b)acd`);
+			if(!(str == "bacd"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_union_with_kleene_star()
+	{before_work();
+try
+{
+			String str = Regex.work("catdog", `(cat|dog)*`);
+			if(!(str == "catdog"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_nested_groups()
+	{before_work();
+try
+{
+			String str = Regex.work("catbert", `(cat(bert))`);
+			if(!(str == "catbert"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_nested_groups_with_union()
+	{before_work();
+try
+{
+			String str = Regex.work("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_character_classes()
+	{before_work();
+try
+{
+			String str = Regex.work("daccabaaccbg", `d[abc]*g`);
+			if(!(str == "daccabaaccbg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.work("daccabadaccbg", `d[abc]*g`);
+			if(!(str == "daccbg"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}		
+		it work_should_handle_dollar_sign()
+	{before_work();
+try
+{
+			String str = Regex.work("root woot moot foot", `.oot$`);
+			if(!(str == "foot"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.work("root\nwoot\nmoot\nfoot", `.oot$`);
+			if(!(str == "root"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it work_should_handle_beginning_of_line_caret()
+	{before_work();
+try
+{
+			String str = Regex.work("root woot moot foot", `^.oot`);
+			if(!(str == "root"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.work(" root\nwoot\nmoot\nfoot", `^.oot`);
+			if(!(str == "woot"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
 	}	done before_work() { }
 done before() { }
 
@@ -831,6 +1074,71 @@ this() { before(); }
 
 		result = tester.work_should_handle_kleene_star();
 		test.logResult(result, "work should handle kleene star", "11");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_lazy_kleene_star();
+		test.logResult(result, "work should handle lazy kleene star", "17");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_kleene_plus();
+		test.logResult(result, "work should handle kleene plus", "23");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_lazy_kleene_plus();
+		test.logResult(result, "work should handle lazy kleene plus", "29");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_options();
+		test.logResult(result, "work should handle options", "39");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_optional_groups();
+		test.logResult(result, "work should handle optional groups", "49");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_union_at_base_level();
+		test.logResult(result, "work should handle union at base level", "55");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_union_at_group_level();
+		test.logResult(result, "work should handle union at group level", "61");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_union_with_kleene_star();
+		test.logResult(result, "work should handle union with kleene star", "70");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_nested_groups();
+		test.logResult(result, "work should handle nested groups", "80");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_nested_groups_with_union();
+		test.logResult(result, "work should handle nested groups with union", "88");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_character_classes();
+		test.logResult(result, "work should handle character classes", "96");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_dollar_sign();
+		test.logResult(result, "work should handle dollar sign", "105");
+
+		tester = new RegexTester();
+
+		result = tester.work_should_handle_beginning_of_line_caret();
+		test.logResult(result, "work should handle beginning of line caret", "113");
 
 	
 	}
