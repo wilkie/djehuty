@@ -27,21 +27,21 @@ class Regex
 	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
 	// str: The String to run the regular expression upon.
 	// Returns: The matched substring or null when no match could be found.
-	String work(String str)
+	String eval(String str)
 	{
 		return null;
 	}
 
-	String work(StringLiteral str)
+	String eval(StringLiteral str)
 	{
-		return work(new String(str));
+		return eval(new String(str));
 	}
 
 	// Description: This function will return a matched regular expression on the given String. Single use regular expression functions, such as this one, use a backtracking algorithm.
 	// str: The String to run the regular expression upon.
 	// regex: The regular expression to use.
 	// Returns: The matched substring or null when no match could be found.
-	static String work(String str, String regex)
+	static String eval(String str, String regex)
 	{
 		int strPos;
 		int regexPos;
@@ -101,6 +101,10 @@ class Regex
 			{
 				ret = groupInfo[ret].startPos;
 			}
+			else if (ret < regex.length && regex[ret] == ']' && ret in operatorFlag)
+			{
+				ret = operatorFlag[ret];
+			}
 			else
 			{
 				if (ret > 0 && regex[ret-1] == '\\')
@@ -132,7 +136,7 @@ class Regex
 
 		while(running)
 		{
-			//Console.putln("attempting s:", strPos, " r:", regexPos);
+		//	Console.putln("attempting s:", strPos, " r:", regexPos);
 
 			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch)
 			{
@@ -186,7 +190,7 @@ class Regex
 				}
 
 				backtrack = false;
-			//	Console.putln("backtracking s:", strPos, " r:", regexPos);
+				//Console.putln("backtracking s:", strPos, " r:", regexPos);
 			}
 
 			if (regexPos >= regex.length)
@@ -747,6 +751,7 @@ class Regex
 				if (regex[regexPos] == '[')
 				{
 					currentClassStart = regexPos;
+					//Console.putln("[ found");
 					matchClass = true;
 
 					regexPos++;
@@ -769,8 +774,10 @@ class Regex
 
 				do
 				{
+					//Console.putln("inner loop s:", strPos, " r:", regexPos);
 					if (matchClass && regex[regexPos] == ']')
 					{
+					//	Console.putln("crap!");
 						operatorFlag[currentClassStart] = regexPos;
 						operatorFlag[regexPos] = currentClassStart;
 						if (matchInverse && !matchMade)
@@ -852,7 +859,7 @@ class Regex
 								case 'n':
 									matchMade = str[strPos] == '\n';
 									break;
-		
+
 								case 'e':
 									matchMade = str[strPos] == '\x1b';
 									break;
@@ -883,24 +890,26 @@ class Regex
 							}
 						}
 					}
-					else if (strPos < str.length && ((str[strPos] == regex[regexPos]) || (!matchClass && regex[regexPos] == '.' && str[strPos] != '\n' && str[strPos] != '\r')))
+					else if (regexPos < regex.length && strPos < str.length && ((str[strPos] == regex[regexPos]) || (!matchClass && regex[regexPos] == '.' && str[strPos] != '\n' && str[strPos] != '\r')))
 					{
 						// match made
 						matchMade = true;
 					}
 					else
 					{
+						//Console.putln("false!");
 						// no match made
 						matchMade = false;
 					}
-					
-					if (matchMade && matchInverse)
+
+					if ((matchMade && matchInverse) || (matchInverse && strPos >= str.length))
 					{
+						//Console.putln("OK!");
 						matchMade = false;
 						break;
 					}
 
-					if (matchClass && !matchMade)
+					if (matchClass && !matchMade && regexPos < regex.length)
 					{
 						regexPos++;
 						continue;
@@ -911,6 +920,7 @@ class Regex
 				} while (true);
 				
 				matchRange = false;
+				matchInverse = false;
 
 				if (matchMade)
 				{
@@ -924,9 +934,12 @@ class Regex
 
 					if (matchClass)
 					{
+						matchClass = false;
+
 						if (currentClassStart in operatorFlag)
 						{
 							regexPos = operatorFlag[currentClassStart];
+							//Console.putln("] at r:", regexPos);
 						}
 						else
 						{
@@ -937,13 +950,14 @@ class Regex
 
 							operatorFlag[currentClassStart] = regexPos;
 							operatorFlag[regexPos] = currentClassStart;
+							//Console.putln("] at r:", regexPos);
 						}
-						matchClass = false;
 					}
 				}
 				else
 				{
-					//Console.putln("fail s:", strPos, " r:", regexPos);
+					matchClass = false;
+				//	Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume
@@ -964,19 +978,19 @@ class Regex
 		return null;
 	}
 
-	static String work(StringLiteral str, String regex)
+	static String eval(StringLiteral str, String regex)
 	{
-		return work(new String(str), regex);
+		return eval(new String(str), regex);
 	}
 
-	static String work(String str, StringLiteral regex)
+	static String eval(String str, StringLiteral regex)
 	{
-		return work(str, new String(regex));
+		return eval(str, new String(regex));
 	}
 
-	static String work(StringLiteral str, StringLiteral regex)
+	static String eval(StringLiteral str, StringLiteral regex)
 	{
-		return work(new String(str), new String(regex));
+		return eval(new String(str), new String(regex));
 	}
 	
 protected:

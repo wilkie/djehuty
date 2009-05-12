@@ -796,11 +796,11 @@ import core.regex;
 class RegexTester
 {
 	
-		it work_should_handle_kleene_star()
-	{before_work();
+		it eval_should_handle_kleene_star()
+	{before_eval();
 try
 {
-			String str = Regex.work("<EM>some text</EM>", `<.*>`);
+			String str = Regex.eval("<EM>some text</EM>", `<.*>`);
 			if(!(str == "<EM>some text</EM>"))
 	{
 		return it.doesnt;
@@ -812,11 +812,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_lazy_kleene_star()
-	{before_work();
+		it eval_should_handle_lazy_kleene_star()
+	{before_eval();
 try
 {
-			String str = Regex.work("<EM>some text</EM>", `<.*?>`);
+			String str = Regex.eval("<EM>some text</EM>", `<.*?>`);
 			if(!(str == "<EM>"))
 	{
 		return it.doesnt;
@@ -828,11 +828,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_kleene_plus()
-	{before_work();
+		it eval_should_handle_kleene_plus()
+	{before_eval();
 try
 {
-			String str = Regex.work("<>EM>some text</EM>", `<.+>`);
+			String str = Regex.eval("<>EM>some text</EM>", `<.+>`);
 			if(!(str == "<>EM>some text</EM>"))
 	{
 		return it.doesnt;
@@ -844,11 +844,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_lazy_kleene_plus()
-	{before_work();
+		it eval_should_handle_lazy_kleene_plus()
+	{before_eval();
 try
 {
-			String str = Regex.work("<>EM>some text</EM>", `<.+?>`);
+			String str = Regex.eval("<>EM>some text</EM>", `<.+?>`);
 			if(!(str == "<>EM>"))
 	{
 		return it.doesnt;
@@ -860,25 +860,25 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_options()
-	{before_work();
+		it eval_should_handle_options()
+	{before_eval();
 try
 {
-			String str = Regex.work("abc", `a?abc`);
+			String str = Regex.eval("abc", `a?abc`);
 			if(!(str == "abc"))
 	{
 		return it.doesnt;
 	}
 
 			
-			str = Regex.work("aabc", `a?abc`);
+			str = Regex.eval("aabc", `a?abc`);
 			if(!(str == "aabc"))
 	{
 		return it.doesnt;
 	}
 
 
-			str = Regex.work("ababbababababbbc", `(a?b)*c`);
+			str = Regex.eval("ababbababababbbc", `(a?b)*c`);
 			if(!(str == "ababbababababbbc"))
 	{
 		return it.doesnt;
@@ -890,11 +890,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_optional_groups()
-	{before_work();
+		it eval_should_handle_optional_groups()
+	{before_eval();
 try
 {
-			String str = Regex.work("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
+			String str = Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
 			if(!(str == "abcdefeggfoo"))
 	{
 		return it.doesnt;
@@ -906,11 +906,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_union_at_base_level()
-	{before_work();
+		it eval_should_handle_union_at_base_level()
+	{before_eval();
 try
 {
-			String str = Regex.work("dogbert", `cat|dog`);
+			String str = Regex.eval("dogbert", `cat|dog`);
 			if(!(str == "dog"))
 	{
 		return it.doesnt;
@@ -922,11 +922,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_union_at_group_level()
-	{before_work();
+		it eval_should_handle_union_at_group_level()
+	{before_eval();
 try
 {
-			String str = Regex.work("bacd", `(bac|b)acd`);
+			String str = Regex.eval("bacd", `(bac|b)acd`);
 			if(!(str == "bacd"))
 	{
 		return it.doesnt;
@@ -938,12 +938,12 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_union_with_kleene_star()
-	{before_work();
+		it eval_should_handle_union_with_kleene_star()
+	{before_eval();
 try
 {
-			String str = Regex.work("catdog", `(cat|dog)*`);
-			if(!(str == "catdog"))
+			String str = Regex.eval("catdogdogcatbert", `(cat|dog)*`);
+			if(!(str == "catdogdogcat"))
 	{
 		return it.doesnt;
 	}
@@ -954,11 +954,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_nested_groups()
-	{before_work();
+		it eval_should_handle_nested_groups()
+	{before_eval();
 try
 {
-			String str = Regex.work("catbert", `(cat(bert))`);
+			String str = Regex.eval("catbert", `(cat(bert))`);
 			if(!(str == "catbert"))
 	{
 		return it.doesnt;
@@ -970,11 +970,11 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_nested_groups_with_union()
-	{before_work();
+		it eval_should_handle_nested_groups_with_union()
+	{before_eval();
 try
 {
-			String str = Regex.work("dogpoo", `(dog(bert|poo))`);
+			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
 			if(!(str == "dogpoo"))
 	{
 		return it.doesnt;
@@ -986,19 +986,26 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_character_classes()
-	{before_work();
+		it eval_should_handle_character_classes()
+	{before_eval();
 try
 {
-			String str = Regex.work("daccabaaccbg", `d[abc]*g`);
+			String str = Regex.eval("daccabaaccbg", `d[abc]*g`);
 			if(!(str == "daccabaaccbg"))
 	{
 		return it.doesnt;
 	}
 
 
-			str = Regex.work("daccabadaccbg", `d[abc]*g`);
+			str = Regex.eval("daccabadaccbg", `d[abc]*g`);
 			if(!(str == "daccbg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("daccabadaccbg", `^d[abc]*g`);
+			if(!(str is null))
 	{
 		return it.doesnt;
 	}
@@ -1009,18 +1016,48 @@ try
 }
 	return it.does;
 	}		
-		it work_should_handle_dollar_sign()
-	{before_work();
+		it eval_should_handle_inverse_character_classes()
+	{before_eval();
 try
 {
-			String str = Regex.work("root woot moot foot", `.oot$`);
+			String str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*g`);
+			if(!(str == "ddeffegggdefeddfeg"))
+	{
+		return it.doesnt;
+	}
+
+			
+			str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "ddeffeg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("ddeffeagggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "defeddfeg"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}		
+		it eval_should_handle_dollar_sign()
+	{before_eval();
+try
+{
+			String str = Regex.eval("root woot moot foot", `.oot$`);
 			if(!(str == "foot"))
 	{
 		return it.doesnt;
 	}
 
 
-			str = Regex.work("root\nwoot\nmoot\nfoot", `.oot$`);
+			str = Regex.eval("root\nwoot\nmoot\nfoot", `.oot$`);
 			if(!(str == "root"))
 	{
 		return it.doesnt;
@@ -1032,18 +1069,18 @@ try
 }
 	return it.does;
 	}
-		it work_should_handle_beginning_of_line_caret()
-	{before_work();
+		it eval_should_handle_beginning_of_line_caret()
+	{before_eval();
 try
 {
-			String str = Regex.work("root woot moot foot", `^.oot`);
+			String str = Regex.eval("root woot moot foot", `^.oot`);
 			if(!(str == "root"))
 	{
 		return it.doesnt;
 	}
 
 
-			str = Regex.work(" root\nwoot\nmoot\nfoot", `^.oot`);
+			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`);
 			if(!(str == "woot"))
 	{
 		return it.doesnt;
@@ -1054,7 +1091,7 @@ try
 	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
-	}	done before_work() { }
+	}	done before_eval() { }
 done before() { }
 
 this() { before(); }
@@ -1068,77 +1105,82 @@ this() { before(); }
 
 		it result;
 
-		test.logSubset("work");
+		test.logSubset("eval");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_kleene_star();
-		test.logResult(result, "work should handle kleene star", "11");
+		result = tester.eval_should_handle_kleene_star();
+		test.logResult(result, "eval should handle kleene star", "11");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_lazy_kleene_star();
-		test.logResult(result, "work should handle lazy kleene star", "17");
+		result = tester.eval_should_handle_lazy_kleene_star();
+		test.logResult(result, "eval should handle lazy kleene star", "17");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_kleene_plus();
-		test.logResult(result, "work should handle kleene plus", "23");
+		result = tester.eval_should_handle_kleene_plus();
+		test.logResult(result, "eval should handle kleene plus", "23");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_lazy_kleene_plus();
-		test.logResult(result, "work should handle lazy kleene plus", "29");
+		result = tester.eval_should_handle_lazy_kleene_plus();
+		test.logResult(result, "eval should handle lazy kleene plus", "29");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_options();
-		test.logResult(result, "work should handle options", "39");
+		result = tester.eval_should_handle_options();
+		test.logResult(result, "eval should handle options", "39");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_optional_groups();
-		test.logResult(result, "work should handle optional groups", "49");
+		result = tester.eval_should_handle_optional_groups();
+		test.logResult(result, "eval should handle optional groups", "49");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_union_at_base_level();
-		test.logResult(result, "work should handle union at base level", "55");
+		result = tester.eval_should_handle_union_at_base_level();
+		test.logResult(result, "eval should handle union at base level", "55");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_union_at_group_level();
-		test.logResult(result, "work should handle union at group level", "61");
+		result = tester.eval_should_handle_union_at_group_level();
+		test.logResult(result, "eval should handle union at group level", "61");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_union_with_kleene_star();
-		test.logResult(result, "work should handle union with kleene star", "70");
+		result = tester.eval_should_handle_union_with_kleene_star();
+		test.logResult(result, "eval should handle union with kleene star", "70");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_nested_groups();
-		test.logResult(result, "work should handle nested groups", "80");
+		result = tester.eval_should_handle_nested_groups();
+		test.logResult(result, "eval should handle nested groups", "80");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_nested_groups_with_union();
-		test.logResult(result, "work should handle nested groups with union", "88");
+		result = tester.eval_should_handle_nested_groups_with_union();
+		test.logResult(result, "eval should handle nested groups with union", "88");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_character_classes();
-		test.logResult(result, "work should handle character classes", "96");
+		result = tester.eval_should_handle_character_classes();
+		test.logResult(result, "eval should handle character classes", "96");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_dollar_sign();
-		test.logResult(result, "work should handle dollar sign", "105");
+		result = tester.eval_should_handle_inverse_character_classes();
+		test.logResult(result, "eval should handle inverse character classes", "105");
 
 		tester = new RegexTester();
 
-		result = tester.work_should_handle_beginning_of_line_caret();
-		test.logResult(result, "work should handle beginning of line caret", "113");
+		result = tester.eval_should_handle_dollar_sign();
+		test.logResult(result, "eval should handle dollar sign", "113");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_beginning_of_line_caret();
+		test.logResult(result, "eval should handle beginning of line caret", "126");
 
 	
 	}

@@ -92,6 +92,7 @@ public import opengl.texture;
 // parsers
 
 public import parsers.cfg;
+public import parsers.lexer;
 
 // math
 public import math.common;

@@ -346,17 +346,30 @@ extern(System) void DjehutyMain(Arguments args)
 
 //	String str = new String("baaabaaabb");
 	//String regex = new String("ba+bb");
+	
+	Token ignore()
+	{
+		return null;
+	}
 
-	String s = Regex.work("abcdef", `abc(egg)?def`);
+ 	Lexer lex = new Lexer();
+ 	lex.addRule(`^\s*`, &ignore);
+ 	lex.addRules([`^if`,`^\(`,`^\)`,`^[a-z_A-Z][a-z_A-Z0-9]*`, `^(0x[0-9a-fA-F]+|[0-9]+)`]);
+ 	lex.work();
 
-	if (s !is null)
+//	StringLiteral[] rules = [`^\s*`,`^if`,`^\(`,`^\)`,`^[a-z_A-Z][a-z_A-Z0-9]*`, `^(0x[0-9a-fA-F]+|[0-9]+)`];
+
+
+//	String s =  Regex.eval(str, `^[a-z_A-Z][a-z_A-Z0-9]*`);
+
+	/* if (s !is null)
 	{
 		Console.putln("result: ", s.array);
 	}
 	else
 	{
 		Console.putln("result: null");
-	}
+	} */
 
 	Directory dir;
 
