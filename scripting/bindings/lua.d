@@ -315,7 +315,7 @@ size_t lua_strlen(lua_State* L, int idx) {
 }
 
 void lua_pop(lua_State* L, int idx) {
-	lua_settop(L, -(idx)-1);
+	lua_settop(L, -idx-1);
 }
 
 bool lua_isfunction(lua_State* L, int idx) {
@@ -371,7 +371,8 @@ void lua_getglobal(lua_State* L, char* s)
 
 char* lua_tostring(lua_State* L, int idx)
 {
-	return lua_tolstring(L, idx, null);
+	size_t bugger;
+	return lua_tolstring(L, idx, &bugger);
 }
 
 // -- LUA LIB (lualib.h) -- //

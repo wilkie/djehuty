@@ -309,8 +309,13 @@ class MyThread : Thread
 	}
 }
 
+import scripting.lua;
+
 void InitWindow()
 {
+	LuaScript lua = new LuaScript();
+	lua.evalFile("hello.lua");
+
 	MyWindow mainWindow;
 
 	mainWindow = new MyWindow();

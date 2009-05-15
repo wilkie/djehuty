@@ -18,19 +18,21 @@ import scripting.bindings.lua;
 import core.string;
 import core.unicode;
 
+// print
+import console.main;
+
 // A Helper class
 class LuaScript {
 
 	this() {
 		L = luaL_newstate();
+		luaL_openlibs(L);
+	}
 
-	    luaopen_io(L); // provides io.*
-	    luaopen_base(L);
-	    luaopen_table(L);
-	    luaopen_string(L);
-	    luaopen_math(L);
-	    luaopen_package(L);
-	    luaL_openlibs(L);
+	~this() {
+		// XXX: fails to execute
+		// Thread issue? or Lua issue?
+		//lua_close(L);
 	}
 
 	void eval(String code) {
@@ -53,7 +55,10 @@ class LuaScript {
 		if (s > 0) {
 			// errors!
 			String error = luaToString(-1);
-		    lua_pop(L, 1); // remove error message
+			Console.setColor(fgColor.BrightRed);
+			Console.putln(error.array);
+			Console.setColor(fgColor.White);
+		    //lua_pop(L, 1); // remove error message
 		}
 	}
 
