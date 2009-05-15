@@ -37,6 +37,7 @@ DFILES_SOCKPUPPETS = sockpuppets/http.d sockpuppets/telnet.d sockpuppets/irc.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/telnet.d console/buffer.d console/vt100.d console/prompt.d console/listbox.d console/textfield.d console/label.d console/control.d console/main.d console/window.d
+DFILES_SCRIPTING = scripting/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d interfaces/stream.d
 DFILES_MATH = math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d
@@ -45,7 +46,7 @@ DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
 
 DFILES_RESOURCE = staticrsc.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
+OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 

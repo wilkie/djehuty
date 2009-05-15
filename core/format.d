@@ -1,6 +1,5 @@
 module core.format;
 
-
 // Imposed variadic
 version(LDC)
 {
@@ -9,4 +8,5 @@ version(LDC)
 else
 {
 	public import std.stdarg;
+	public import C = std.c.stdarg;
 }
