@@ -10,7 +10,7 @@ PLATFORM = PlatformWindows
 
 LFLAGS_LINUX = -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation
-LFLAGS_WIN = platform/win/lib/gdi32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib
+LFLAGS_WIN = platform/win/lib/gdi32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
 
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
@@ -37,7 +37,7 @@ DFILES_SOCKPUPPETS = sockpuppets/http.d sockpuppets/telnet.d sockpuppets/irc.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/telnet.d console/buffer.d console/vt100.d console/prompt.d console/listbox.d console/textfield.d console/label.d console/control.d console/main.d console/window.d
-DFILES_SCRIPTING = scripting/lua.d
+DFILES_SCRIPTING = scripting/bindings/lua.d scripting/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d interfaces/stream.d
 DFILES_MATH = math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d
