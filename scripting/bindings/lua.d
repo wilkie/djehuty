@@ -315,7 +315,9 @@ size_t lua_strlen(lua_State* L, int idx) {
 }
 
 void lua_pop(lua_State* L, int idx) {
-	lua_settop(L, -idx-1);
+//	Console.putln("good", idx);
+	lua_settop(L, 0);
+	//Console.putln("what?");
 }
 
 bool lua_isfunction(lua_State* L, int idx) {

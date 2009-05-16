@@ -25,14 +25,25 @@ import console.main;
 class LuaScript {
 
 	this() {
+		initialize();
+	}
+
+	~this() {
+		uninitialize();
+	}
+
+	void initialize() {
+		uninitialize();
+
 		L = luaL_newstate();
 		luaL_openlibs(L);
 	}
 
-	~this() {
-		// XXX: fails to execute
-		// Thread issue? or Lua issue?
-		//lua_close(L);
+	void uninitialize() {
+		if (L !is null) {
+			lua_close(L);
+			L = null;
+		}
 	}
 
 	void eval(String code) {
@@ -43,11 +54,12 @@ class LuaScript {
 	}
 
 	void evalFile(String filename) {
+
 		char[] chrs = Unicode.toUtf8(filename.array) ~ "\0";
 
 		int s = luaL_loadfile(L, chrs.ptr);
 
-		if (s==0) {
+		if (s == 0) {
 			// execute Lua program
 			s = lua_pcall(L, 0, LUA_MULTRET, 0);
 		}
@@ -58,7 +70,7 @@ class LuaScript {
 			Console.setColor(fgColor.BrightRed);
 			Console.putln(error.array);
 			Console.setColor(fgColor.White);
-		    //lua_pop(L, 1); // remove error message
+			lua_settop(L, 0); // remove error message
 		}
 	}
 
