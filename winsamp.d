@@ -355,7 +355,7 @@ extern(System) void DjehutyMain()
 	dir = FileSystem.getUserDataDir();
 	Console.putln("USER: ", dir.getPath.array);
 
-	Directory myDir = FileSystem.getApplicationDirectory;
+	Directory myDir = FileSystem.getApplicationDir();
 	Console.putln(myDir.getPath.array);
 
 	dir = FileSystem.getBinaryDir();

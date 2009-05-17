@@ -45,7 +45,7 @@ String DirectoryGetAppData()
 
 String DirectoryGetTempData()
 {
-	return new String("/tmp/djp") ~ getpid();
+	return new String("/tmp/djp") ~ new String(getpid());
 }
 
 String DirectoryGetUserData()
@@ -63,7 +63,8 @@ String DirectoryGetUserData()
 
 		char* cur = result;
 
-		for(int i = 0; *cur != '\0'; cur++, i++) {}
+		int i;
+		for(i = 0; *cur != '\0'; cur++, i++) {}
 
 		if (i != 0)
 		{
