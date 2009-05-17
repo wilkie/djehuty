@@ -338,7 +338,7 @@ void InitWindow()
 	}
 }
 
-extern(System) void DjehutyMain()
+extern(System) void DjehutyMain(Arguments args)
 {
 	Djehuty.setApplicationName("djehutyTestApp");
 
