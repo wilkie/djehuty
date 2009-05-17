@@ -1,7 +1,5 @@
 module core.main;
 
-extern(System) void DjehutyMain();
-
 import core.basewindow;
 import core.window;
 import core.string;
@@ -10,6 +8,7 @@ import console.window;
 import console.main;
 
 import core.thread;
+import core.arguments;
 
 import platform.imports;
 mixin(PlatformScaffoldImport!());
@@ -17,20 +16,33 @@ mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("console"));
 mixin(PlatformGenericImport!("vars"));
 
+extern(System) void DjehutyMain(Arguments);
+
 void DjehutyStart()
 {
-	DjehutyMain();
+	// Can only start the framework once
+	if (!Djehuty._hasStarted)
+	{
+		Djehuty._hasStarted = true;
+	}
+	else
+	{
+		throw new Exception("Framework Already Started");
+	}
+
+	// Call the main function provided by the application
+	DjehutyMain(Arguments.getInstance());
+
+	// Check to make sure the app provided a suitable name
 	if (Djehuty.appName is null)
 	{
 		throw new Exception("No Application Name");
 	}
 
-	if (!Djehuty._hasStarted)
-	{
-		Scaffold.AppStart();
-		Djehuty._hasStarted = true;
-	}
+	// Start the application proper (from platform's point of view)
+	Scaffold.AppStart();
 
+	// If no event controllers are in play, then end
 	if (Djehuty._windowCount == 0 && Djehuty._console_inited == false)
 	{
 		DjehutyEnd();
@@ -45,12 +57,13 @@ void DjehutyEnd()
 		th.pleaseStop();
 	}
 
+	// End the application proper (from the platform's point of view)
 	Scaffold.AppEnd();
 }
 
 // Section: Core
 
-// Description: This class is the main class for the framework.  You should construct one within DjehutyMain() and then use this to add windows.
+// Description: This class is the main class for the framework. It provides base functionality.
 class Djehuty
 {
 	public:

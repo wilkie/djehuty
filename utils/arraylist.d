@@ -57,6 +57,11 @@ class ArrayList(T) : AbstractList!(T)
 		}
 	}
 
+	T[] getList()
+	{
+		return _list[0.._count].dup;
+	}
+
     bool getItem(out T data, uint index)
     {
         if (index < _count)
@@ -100,7 +105,7 @@ class ArrayList(T) : AbstractList!(T)
 		return false;
     }
 
-	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
+	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a last-in-first-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.
 	bool remove(out T data)
 	{
@@ -133,7 +138,7 @@ class ArrayList(T) : AbstractList!(T)
 
 	T[] opSlice()
 	{
-		return _list;
+		return getList();
 	}
 
 	T[] opSlice(size_t start, size_t end)
@@ -148,6 +153,19 @@ class ArrayList(T) : AbstractList!(T)
 		for(int i = 0; i < _count; i++)
 		{
 			ret = loopFunc(_list[i]);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApply(int delegate(inout int, inout T) loopFunc)
+	{
+		int ret;
+
+		for(int i = 0; i < _count; i++)
+		{
+			ret = loopFunc(i,_list[i]);
 			if (ret) { break; }
 		}
 
@@ -175,8 +193,12 @@ class ArrayList(T) : AbstractList!(T)
 			return true;
 		}
 
-
 		return false;
+	}
+
+	uint length()
+	{
+	   return _count;
 	}
 
 	void clear()
@@ -185,15 +207,9 @@ class ArrayList(T) : AbstractList!(T)
 		_count = 0;
 	}
 
-	uint length()
-	{
-	   return _count;
-	}
-
 protected:
 
 	T _list[] = null;
 	uint _capacity = 10;
 	uint _count = 0;
 }
-

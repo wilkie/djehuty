@@ -729,7 +729,7 @@ class String
 
 		if (position >= _indices.length)
 		{
-			position = 0;
+			return '\0';
 		}
 
 		if (_indices.length == 0)

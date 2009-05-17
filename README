@@ -1,0 +1,10 @@
+Djehuty
+--------------
+
+Abstract
+
+The Djehuty framework will provide a basis of multi-platform multi-purpose
+application development. It will focus, initially, on desktop application
+development providing means to quickly develop GUI, CUI, and CLI apps. The
+framework is also a master library of useful implementations of generic
+algorithms and provisions for utilizing common resources.

@@ -10,7 +10,7 @@ PLATFORM = PlatformWindows
 
 LFLAGS_LINUX = -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation
-LFLAGS_WIN = platform/win/lib/gdi32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib
+LFLAGS_WIN = platform/win/lib/gdi32.lib platform/win/lib/user32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
 
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
@@ -24,10 +24,10 @@ DFILES_PLATFORM_UNIX = platform/unix/cairo/cairo.d platform/unix/scaffolds/threa
 DFILES_PLATFORM_WIN = platform/win/main.d platform/win/common.d platform/win/scaffold.d platform/win/vars.d platform/win/console.d platform/win/definitions.d platform/win/scaffolds/wave.d platform/win/scaffolds/directory.d platform/win/scaffolds/graphics.d platform/win/scaffolds/thread.d platform/win/scaffolds/menu.d platform/win/scaffolds/window.d platform/win/scaffolds/view.d platform/win/scaffolds/color.d platform/win/scaffolds/file.d platform/win/scaffolds/socket.d platform/win/scaffolds/app.d platform/win/controls/oslistfield.d platform/win/controls/osprogressbar.d platform/win/controls/oslistbox.d platform/win/controls/oshscrollbar.d platform/win/controls/osvscrollbar.d platform/win/controls/osbutton.d platform/win/controls/ostextfield.d platform/win/controls/ostogglefield.d platform/win/controls/ostrackbar.d platform/win/scaffolds/time.d platform/win/oscontrolinterface.d platform/win/scaffolds/opengl.d
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
-DFILES_CORE = core/debugger.d core/commandline.d core/filesystem.d core/directory.d core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
+DFILES_CORE = core/regex.d core/debugger.d core/arguments.d core/filesystem.d core/directory.d core/definitions.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/script.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
 DFILES_CONTROLS = controls/container.d controls/trackbar.d controls/radiogroup.d controls/progressbar.d controls/togglefield.d controls/oscontrol.d controls/listfield.d controls/listbox.d controls/vscrollbar.d controls/hscrollbar.d controls/button.d controls/textfield.d
-DFILES_UTILS = utils/arraylist.d utils/linkedlist.d
-DFILES_PARSERS = parsers/cfg.d
+DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
+DFILES_PARSERS = parsers/lexer.d parsers/cfg.d
 DFILES = djehuty.d
 DFILES_BINARY_CODECS = codecs/binary/codec.d codecs/binary/base64.d codecs/binary/yEnc.d codecs/binary/deflate.d codecs/binary/zlib.d
 DFILES_IMAGE_CODECS = codecs/image/codec.d codecs/image/all.d codecs/image/bmp.d codecs/image/png.d codecs/image/gif.d codecs/image/jpeg.d
@@ -37,6 +37,7 @@ DFILES_SOCKPUPPETS = sockpuppets/http.d sockpuppets/telnet.d sockpuppets/irc.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/telnet.d console/buffer.d console/vt100.d console/prompt.d console/listbox.d console/textfield.d console/label.d console/control.d console/main.d console/window.d
+DFILES_SCRIPTING = scripting/bindings/lua.d scripting/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d interfaces/stream.d
 DFILES_MATH = math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d
@@ -45,7 +46,7 @@ DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
 
 DFILES_RESOURCE = staticrsc.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
+OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 
@@ -54,6 +55,9 @@ OBJS_LINUX = $(OBJS_CORE) $(DFILES_PLATFORM_UNIX:.d=.o)
 OBJS_WIN = $(OBJS_CORE:.o=.obj) $(DFILES_PLATFORM_WIN:.d=.obj)
 
 OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
+
+TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
+TOOLS_DSCRIBE = tools/dscribe/main.d
 
 libdeps_linux: $(OBJS_LINUX)
 	@echo ">> framework compilation complete. <<"
@@ -125,9 +129,6 @@ endif
 
 
 
-
-
-
 app: libdeps_xomb
 
 	@echo compiling test program...
@@ -171,9 +172,22 @@ ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d $(OBJS_WIN) $(LFLAGS_WIN)
+	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
 else
-	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d  $(OBJS_LINUX)
+	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux $(TOOLS_DSPEC) $(OBJS_LINUX)
+endif
+endif
+
+dscribe: lib
+
+	@echo compiling DScribe and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
+else
+ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
 endif
 endif
 

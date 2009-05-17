@@ -34,6 +34,8 @@ public import core.time			: Time;
 public import core.color;
 public import core.directory;
 public import core.filesystem;
+public import core.arguments;
+public import core.regex;
 
 // graphics
 public import graphics.brush	: Brush;
@@ -90,6 +92,7 @@ public import opengl.texture;
 // parsers
 
 public import parsers.cfg;
+public import parsers.lexer;
 
 // math
 public import math.common;
