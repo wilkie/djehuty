@@ -338,6 +338,8 @@ void InitWindow()
 	}
 }
 
+import scripting.lua;
+
 extern(System) void DjehutyMain(Arguments args)
 {
 	Djehuty.setApplicationName("djehutyTestApp");
@@ -360,6 +362,9 @@ extern(System) void DjehutyMain(Arguments args)
 
 	dir = FileSystem.getBinaryDir();
 	Console.putln("BIN:  ", dir.getPath.array);
+
+	LuaScript lua = new LuaScript();
+	lua.evalFile("hello.lua");
 
 	InitWindow();
 }
