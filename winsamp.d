@@ -27,19 +27,119 @@ import specs.test;
 //	|  | GLU
 //	|  | Texture
 
+class Field : View {
+	this() {
+		CreateDIB(1024,768);
+	}
+
+	void random(long seed = -1) {
+		void* ptr;
+		ulong len;
+
+		lockBuffer(&ptr, len);
+
+		data = cast(uint*)ptr;
+		len /= 4;
+		max = data + len;
+
+		Random rnd = new Random(seed);
+		long height = rnd.next((_height / 4) * 3);
+		long width = 0;
+
+		Console.putln("height: ", height);
+
+		long state = 0; // plateau
+		double slope = 1.0;
+		long slopeState;
+
+		for(int i = 0; i < _width; i++) {
+
+			if (state == 0) {
+				// plateau
+				double step = rnd.nextDouble();
+				if (step < 0.4) {
+					state = -1;
+				}
+				else if (step > 0.6) {
+					state = 1;
+				}
+				else {
+					state = 2;
+				}
+
+				slopeState = rnd.next(2);
+			}
+			else {
+				double slopeChange = rnd.nextDouble();
+
+				if (state == -1) {
+					// up hill
+					height += cast(long)(4.0 * slope);
+				}
+				else if (state == 2) {
+					height += cast(long)(2 - rnd.next(4));
+				}
+				else {
+					// down hill
+					height -= cast(long)(4.0 * slope);
+					if (height < 0) { height = 0; }
+				}
+
+				if (slopeState == 0) {
+					slope -= slopeChange;
+					if (slope < 0.0) {
+						state = 0;
+					}
+				}
+				else {
+					slope += slopeChange;
+					if (slope > 1.0) {
+						state = 0;
+					}
+				}
+			}
+			drawLine(i, height);
+		}
+
+		unlockBuffer();
+
+	}
+
+	void drawLine(long x, long height) {
+		// draw line
+		if (height > _height) { height = _height - 1; }
+		if (x > _width) { x = _width - 1; }
+		uint* curLine = data + ((_height - height) * _width) + x;
+
+		for( ; curLine < max; curLine += _width) {
+			*curLine = 0xff00;
+		}
+	}
+
+	void explode(int x, int y, int intensity) {
+	}
+protected:
+	uint* data;
+	uint* max;
+}
+
 class MyControl : WindowedControl
 {
 	Image img;
+	Field fld;
 
 	this()
 	{
 		super(0,0,48,48);
 		img = new Image("tiles.png");
+		fld = new Field();
+		fld.random();
 	}
 
 	void OnDraw(ref Graphics g)
 	{
 		g.drawImage(50,50,img);
+		g.drawView(0,0,fld);
 	}
 }
 
@@ -48,8 +148,8 @@ class MyWindow : Window
 	this()
 	{
 		super("Blarg !!! AND A HALF!!!", WindowStyle.Fixed, Color.Black, 0, 0,
-			300,		// width
-			300			// height
+			1024,		// width
+			768			// height
 		);
 	}
 
@@ -63,6 +163,7 @@ class MyWindow : Window
 
 	void OnAdd()
 	{
+		setState(WindowState.Fullscreen);
 		tf = new TextField(0,0,200,25,"Hello");
 		btn = new Button(200,25,25,25,"!", &btnEvent);
 		addControl(tf);
@@ -365,6 +466,13 @@ extern(System) void DjehutyMain(Arguments args)
 
 	LuaScript lua = new LuaScript();
 	lua.evalFile("hello.lua");
+
+Random rnd = new Random(-1);
+Console.putln(rnd.next());
+Console.putln(rnd.next());
+Console.putln(rnd.next());
+Console.putln(rnd.next());
+Console.putln(rnd.next());
 
 	InitWindow();
 }

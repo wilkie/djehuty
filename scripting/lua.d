@@ -24,6 +24,8 @@ import console.main;
 // A Helper class
 class LuaScript {
 
+	alias lua_CFunction Callback;
+
 	this() {
 		initialize();
 	}
@@ -53,6 +55,24 @@ class LuaScript {
 		eval(new String(code));
 	}
 
+	// Description: This function will map a function of the type int(LuaBindings.lua_State) to be called whenever the function specified by the second parameter is called within a Lua script.
+	// func: The callback function to execute.
+	// functionName: The name of the function within the Lua script to map.
+	void registerFunction(Callback func, String functionName) {
+		char[] funcStr = functionName.toUtf8() ~ "\0";
+		//lua_pushcfunction(L, func);
+		//lua_setglobal(L, funcStr.ptr);
+	}
+
+	// Description: This function will map a function of the type int(LuaBindings.lua_State) to be called whenever the function specified by the second parameter is called within a Lua script.
+	// func: The callback function to execute.
+	// functionName: The name of the function within the Lua script to map.
+	void registerFunction(Callback func, StringLiteral functionName) {
+		registerFunction(func, new String(functionName));
+	}
+
+	// Description: This function will evaluate the Lua script located at the path provided.
+	// filename: A Lua script to evaluate.
 	void evalFile(String filename) {
 
 		char[] chrs = Unicode.toUtf8(filename.array) ~ "\0";
@@ -74,6 +94,8 @@ class LuaScript {
 		}
 	}
 
+	// Description: This function will evaluate the Lua script located at the path provided.
+	// filename: A Lua script to evaluate.
 	void evalFile(StringLiteral filename) {
 		evalFile(new String(filename));
 	}

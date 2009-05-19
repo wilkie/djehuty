@@ -243,7 +243,7 @@ class Graphics
 	// x: The x coordinate to place the top-left corner of the image.
 	// y: The y coordinate to place the top-left corner of the image.
 	// view: The view in which to draw.
-	void drawView(int x, int y, ref View view)
+	void drawView(int x, int y, View view)
 	{
 		view.lockDisplay();
 
@@ -260,7 +260,7 @@ class Graphics
 	// view: The view in which to draw.
 	// viewX: The x coordinate to crop the image.  Everything from this X to X + viewWidth of the view will be drawn.
 	// viewY: The y coordinate to crop the image.  Everything from this Y to Y + viewHeight of the view will be drawn.
-	void drawView(int x, int y, ref View view, int viewX, int viewY)
+	void drawView(int x, int y, View view, int viewX, int viewY)
 	{
 		view.lockDisplay();
 
@@ -279,7 +279,7 @@ class Graphics
 	// viewY: The y coordinate to crop the image.  Everything from this Y to Y + viewHeight of the view will be drawn.
 	// viewWidth: The width of the region to crop from the source image.
 	// viewHeight: The height of the region to crop from the source image.
-	void drawView(int x, int y, ref View view, int viewX, int viewY, int viewWidth, int viewHeight)
+	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight)
 	{
 		view.lockDisplay();
 
@@ -295,7 +295,7 @@ class Graphics
 	// y: The y coordinate to place the top-left corner of the image.
 	// view: The view in which to draw.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawView(int x, int y, ref View view, double opacity)
+	void drawView(int x, int y, View view, double opacity)
 	{
 		view.lockDisplay();
 
@@ -313,7 +313,7 @@ class Graphics
 	// viewX: The x coordinate to crop the image.  Everything from this X to X + viewWidth of the view will be drawn.
 	// viewY: The y coordinate to crop the image.  Everything from this Y to Y + viewHeight of the view will be drawn.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawView(int x, int y, ref View view, int viewX, int viewY, double opacity)
+	void drawView(int x, int y, View view, int viewX, int viewY, double opacity)
 	{
 		view.lockDisplay();
 
@@ -333,7 +333,7 @@ class Graphics
 	// viewWidth: The width of the region to crop from the source image.
 	// viewHeight: The height of the region to crop from the source image.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawView(int x, int y, ref View view, int viewX, int viewY, int viewWidth, int viewHeight, double opacity)
+	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight, double opacity)
 	{
 		view.lockDisplay();
 
@@ -350,7 +350,7 @@ class Graphics
 	// x: The x coordinate to place the top-left corner of the image.
 	// y: The y coordinate to place the top-left corner of the image.
 	// image: The image to draw.
-	void drawImage(int x, int y, ref Image image)
+	void drawImage(int x, int y, Image image)
 	{
 		ImageLock(image);
 		View v = image.getView();
@@ -367,7 +367,7 @@ class Graphics
 	// image: The image to draw.
 	// srcX: The x coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
-	void drawImage(int x, int y, ref Image image, int srcX, int srcY)
+	void drawImage(int x, int y, Image image, int srcX, int srcY)
 	{
 		ImageLock(image);
 		View v = image.getView();
@@ -386,7 +386,7 @@ class Graphics
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// srcW: The width of the cropped region.
 	// srcH: The height of the cropped region.
-	void drawImage(int x, int y, ref Image image, int srcX, int srcY, int srcW, int srcH)
+	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH)
 	{
 		ImageLock(image);
 		View v = image.getView();
@@ -402,7 +402,7 @@ class Graphics
 	// y: The y coordinate to place the top-left corner of the image.
 	// image: The image to draw.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawImage(int x, int y, ref Image image, double opacity)
+	void drawImage(int x, int y, Image image, double opacity)
 	{
 		ImageLock(image);
 		View v = image.getView();
@@ -420,7 +420,7 @@ class Graphics
 	// srcX: The x coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawImage(int x, int y, ref Image image, int srcX, int srcY, double opacity)
+	void drawImage(int x, int y, Image image, int srcX, int srcY, double opacity)
 	{
 		ImageLock(image);
 		View v = image.getView();
@@ -440,7 +440,7 @@ class Graphics
 	// srcW: The width of the cropped region.
 	// srcH: The height of the cropped region.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
-	void drawImage(int x, int y, ref Image image, int srcX, int srcY, int srcW, int srcH, double opacity)
+	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH, double opacity)
 	{
 		ImageLock(image);
 		View v = image.getView();

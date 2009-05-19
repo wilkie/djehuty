@@ -13,6 +13,7 @@ public import core.definitions;
 // import main classes
 
 public import core.string 		;
+public import core.random		: Random;
 public import core.window 		: Window;
 public import core.stream 		: Stream;
 public import core.stream		: StreamData;
@@ -31,6 +32,7 @@ public import core.semaphore	: Semaphore;
 public import core.sound		: Sound, SoundState;
 public import core.audio		: Audio;
 public import core.time			: Time;
+public import core.view			: View;
 public import core.color;
 public import core.directory;
 public import core.filesystem;
