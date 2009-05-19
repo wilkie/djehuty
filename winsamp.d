@@ -418,25 +418,6 @@ void InitWindow()
 	mainWindow.setVisibility(true);
 
 	Djehuty.addWindow(mainWindow);
-
-	Directory testsDir = FileSystem.getApplicationDir;
-//	Directory blah = testsDir.getParent();
-
-	Directory blah = new Directory();
-
-	testsDir = testsDir.traverse("tests");
-
-//	File fle = new File("winsamp.d");
-	//char[] str;
-//	while(fle.readLine(str))
-	//{
-	//	Console.putln(str);
-//	}
-
-	foreach(file; blah.list())
-	{
-		Console.putln("'", file.array, "'");
-	}
 }
 
 import scripting.lua;
@@ -477,6 +458,13 @@ extern(System) void DjehutyMain(Arguments args)
 	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
 	Console.putln("total memory: ", System.Memory.getTotal());
 	Console.putln("avail memory: ", System.Memory.getAvailable());
+	
+	if (Djehuty.isInstalled) {
+		Console.putln("is installed");
+	}
+	else {
+		Console.putln("is not installed");
+	}
 
 	InitWindow();
 }

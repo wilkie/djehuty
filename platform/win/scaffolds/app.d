@@ -34,22 +34,7 @@ void AppEnd()
 		// I think this is wrong: PostQuitMessage(0);
 
 		// This is (albeit horrible) better:
-
 		_appEnd = true;
-
-		//gc_term();			// run finalizers; terminate garbage collector
-
-		// end all threads
-		// cleanup
-
-		//Thread[] threads = Thread.getAll();
-
-		//foreach(th; threads)
-		//{
-		//	delete th;
-		//}
-
-		//ExitProcess(0);
 	}
 	else
 	{
