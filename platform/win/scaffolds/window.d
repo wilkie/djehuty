@@ -1,25 +1,22 @@
 module platform.win.scaffolds.window;
 
-
-
+import platform.win.scaffolds.system;
 
 import platform.win.vars;
 import platform.win.common;
+import platform.win.main;
 
 import core.view;
 import core.graphics;
 import core.color;
-
 import core.basewindow;
 import core.window;
-import platform.win.main;
 import core.string;
 import core.file;
+import core.main;
+import core.definitions;
 
 import opengl.window;
-import core.main;
-
-import core.definitions;
 
 import core.thread;
 
@@ -169,7 +166,7 @@ void WindowSetState(ref BaseWindow window, WindowPlatformVars* windowVars)
 		windowVars.supress_WM_SIZE = false;
 		windowVars.supress_WM_MOVE = false;
 
-		SetWindowPos(windowVars.hWnd, null, 0,0, 1280, 1024, SWP_NOOWNERZORDER | SWP_NOZORDER);
+		SetWindowPos(windowVars.hWnd, null, 0,0, SystemGetScreenWidth(SystemGetPrimaryScreen()), SystemGetScreenHeight(SystemGetPrimaryScreen()), SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 		SetWindowX(window, 0);
 		SetWindowY(window, 0);

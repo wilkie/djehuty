@@ -38,3 +38,6 @@ public import platform.win.scaffolds.time;
 
 // GL
 public import platform.win.scaffolds.opengl;
+
+// System
+public import platform.win.scaffolds.system;

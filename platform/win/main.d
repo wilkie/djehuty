@@ -33,7 +33,6 @@ HMODULE win_uxThemeMod;
 
 bool console_loop = true;
 
-
 const uint MI_WP_SIGNATURE = 0xFF515700;
 const uint SIGNATURE_MASK = 0xFFFFFF00;
 

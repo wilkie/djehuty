@@ -634,6 +634,9 @@ struct HDRVR
 	int unused;
 }
 
+// used for EnumDisplayMonitors callback
+alias HANDLE HMONITOR;
+
 /* flags used with waveOutOpen(), waveInOpen(), midiInOpen(), and */
 /* midiOutOpen() to specify the type of the dwCallback parameter. */
 
@@ -868,6 +871,35 @@ struct WIN32_FIND_DATAW {
   wchar    cAlternateFileName[14];
 }
 
+struct MONITORINFO {
+  DWORD cbSize = MONITORINFO.sizeof;
+  RECT  rcMonitor;
+  RECT  rcWork;
+  DWORD dwFlags;
+}
+
+const auto CCHDEVICENAME = 32;
+
+struct MONITORINFOEXW {
+  DWORD cbSize = MONITORINFOEXW.sizeof;
+  RECT  rcMonitor;
+  RECT  rcWork;
+  DWORD dwFlags;
+  wchar szDevice[CCHDEVICENAME];
+}
+
+struct MONITORINFOEXA {
+  DWORD cbSize = MONITORINFOEXA.sizeof;
+  RECT  rcMonitor;
+  RECT  rcWork;
+  DWORD dwFlags;
+  char szDevice[CCHDEVICENAME];
+}
+
+alias MONITORINFO* LPMONITORINFO;
+
+const auto MONITORINFOF_PRIMARY = 0x01;
+
 extern(Windows)
 {
 	DWORD timeGetTime();
@@ -941,6 +973,11 @@ extern(Windows)
 	BOOL WriteConsoleW(HANDLE, VOID*, DWORD, DWORD*, VOID*);
 
 	BOOL SetConsoleOutputCP(UINT);
+	
+	// DISPLAY POLLING
+
+	BOOL EnumDisplayMonitors(HDC, LPRECT, BOOL function(HMONITOR, HDC, LPRECT, LPARAM), LPARAM);
+	BOOL GetMonitorInfoW(HMONITOR, LPMONITORINFO);
 
 	// AUDIO FUNCTION
 	MMRESULT waveOutOpen(HWAVEOUT*, UINT*, WAVEFORMATEX*, void function(HWAVEOUT, UINT, DWORD, DWORD, DWORD), DWORD, DWORD);
@@ -977,6 +1014,7 @@ extern(Windows)
 	void InitCommonControls();
 	BOOL SetWindowPos(HWND, HWND, int, int, int, int, UINT);
 	void ExitProcess(uint uExitCode);
+	DWORD GetCurrentProcessId();
 
 	// MISC
 	int MulDiv(int,int,int);
@@ -1020,9 +1058,6 @@ extern(Windows)
 
 	// ENVIRONMENT VARIABLES
 	DWORD GetEnvironmentVariableW(LPCWSTR, LPWSTR, DWORD);
-
-	// PROCESS
-	DWORD GetCurrentProcessId();
 
 	// THREAD
 	HANDLE CreateThread(LPSECURITY_ATTRIBUTES,uint,DWORD function(LPVOID),LPVOID,DWORD,LPDWORD);
