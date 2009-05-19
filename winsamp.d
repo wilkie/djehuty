@@ -147,7 +147,7 @@ class MyWindow : Window
 {
 	this()
 	{
-		super("Blarg !!! AND A HALF!!!", WindowStyle.Fixed, Color.Black, 0, 0,
+		super("Hell yeah, Scorched Earth", WindowStyle.Fixed, Color.Black, 0, 0,
 			1024,		// width
 			768			// height
 		);
@@ -163,7 +163,7 @@ class MyWindow : Window
 
 	void OnAdd()
 	{
-		setState(WindowState.Fullscreen);
+		//setState(WindowState.Fullscreen);
 		tf = new TextField(0,0,200,25,"Hello");
 		btn = new Button(200,25,25,25,"!", &btnEvent);
 		addControl(tf);
@@ -459,7 +459,7 @@ extern(System) void DjehutyMain(Arguments args)
 	Console.putln("USER: ", dir.getPath.array);
 
 	Directory myDir = FileSystem.getApplicationDir();
-	Console.putln(myDir.getPath.array);
+	Console.putln("EXE:  ", myDir.getPath.array);
 
 	dir = FileSystem.getBinaryDir();
 	Console.putln("BIN:  ", dir.getPath.array);
@@ -467,12 +467,12 @@ extern(System) void DjehutyMain(Arguments args)
 	LuaScript lua = new LuaScript();
 	lua.evalFile("hello.lua");
 
-Random rnd = new Random(-1);
-Console.putln(rnd.next());
-Console.putln(rnd.next());
-Console.putln(rnd.next());
-Console.putln(rnd.next());
-Console.putln(rnd.next());
+	Random rnd = new Random(-1);
+	Console.putln(rnd.next());
+	Console.putln(rnd.next());
+	Console.putln(rnd.next());
+	Console.putln(rnd.next());
+	Console.putln(rnd.next());
 
 	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
 	Console.putln("total memory: ", System.Memory.getTotal());

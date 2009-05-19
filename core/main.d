@@ -3,12 +3,12 @@ module core.main;
 import core.basewindow;
 import core.window;
 import core.string;
+import core.thread;
+import core.arguments;
+import core.filesystem;
 
 import console.window;
 import console.main;
-
-import core.thread;
-import core.arguments;
 
 import platform.imports;
 mixin(PlatformScaffoldImport!());
@@ -18,15 +18,12 @@ mixin(PlatformGenericImport!("vars"));
 
 extern(System) void DjehutyMain(Arguments);
 
-void DjehutyStart()
-{
+void DjehutyStart() {
 	// Can only start the framework once
-	if (!Djehuty._hasStarted)
-	{
+	if (!Djehuty._hasStarted) {
 		Djehuty._hasStarted = true;
 	}
-	else
-	{
+	else {
 		throw new Exception("Framework Already Started");
 	}
 
@@ -34,8 +31,7 @@ void DjehutyStart()
 	DjehutyMain(Arguments.getInstance());
 
 	// Check to make sure the app provided a suitable name
-	if (Djehuty.appName is null)
-	{
+	if (Djehuty.appName is null) {
 		throw new Exception("No Application Name");
 	}
 
@@ -43,17 +39,14 @@ void DjehutyStart()
 	Scaffold.AppStart();
 
 	// If no event controllers are in play, then end
-	if (Djehuty._windowCount == 0 && Djehuty._console_inited == false)
-	{
+	if (Djehuty._windowCount == 0 && Djehuty._console_inited == false) {
 		DjehutyEnd();
 	}
 }
 
-void DjehutyEnd()
-{
+void DjehutyEnd() {
 	// Tell all running threads that they should end to allow shutdown to commense
-	foreach(th; Djehuty._threads)
-	{
+	foreach(th; Djehuty._threads) {
 		th.pleaseStop();
 	}
 
@@ -64,14 +57,13 @@ void DjehutyEnd()
 // Section: Core
 
 // Description: This class is the main class for the framework. It provides base functionality.
-class Djehuty
-{
+class Djehuty {
+	static:
 	public:
 
 		// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
 		// window: An instance of a BaseWindow class, or any the inherit from BaseWindow.
-		static void addWindow(BaseWindow window)
-		{
+		void addWindow(BaseWindow window) {
 			WindowPlatformVars* wpv = WindowGetPlatformVars(window);
 
 			synchronized {
@@ -83,21 +75,17 @@ class Djehuty
 
 				// create the window through platform calls
 				Scaffold.WindowCreate(window, wpv);
-
 			}
 
-			if (window.getVisibility())
-			{
+			if (window.getVisibility()) {
 				Scaffold.WindowSetVisible(window, wpv, true);
 			}
 		}
 
 		// Description: Will initialize the console and set the current console window to be the one specified.
 		// window: An instance of a ConsoleWindow class that will set up a context and replace any that had previously been set.
-		static void setConsoleWindow(ConsoleWindow window)
-		{
-			if (!_console_inited)
-			{
+		void setConsoleWindow(ConsoleWindow window) {
+			if (!_console_inited) {
 				//ConsoleInit();
 
 				_console_inited = true;
@@ -111,46 +99,50 @@ class Djehuty
 
 		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
 		// applicationName: The name of the application.
-		static void setApplicationName(String applicationName)
-		{
-			if (appName !is null)
-			{
+		void setApplicationName(String applicationName) {
+			if (appName !is null) {
 				throw new Exception("Application Name Already Set");
 			}
 
 			appName = new String(applicationName);
 		}
 
+		// Description: This function will return true when the application being executed has been installed and is running from the installation directory.
+		// Returns: Will return true when the app being ran has been installed, and false otherwise.
+		bool isInstalled() {
+			// return true when the executable currently being executed is
+			// located in the filesystem's installed binaries directory
+			return (FileSystem.getBinaryDir() == FileSystem.getApplicationDir());
+		}
+
 		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
 		// applicationName: The name of the application.
-		static void setApplicationName(StringLiteral applicationName)
-		{
+		void setApplicationName(StringLiteral applicationName) {
 			setApplicationName(new String(applicationName));
 		}
 
 		// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
 		// Returns: The application name.
-		static String getApplicationName()
-		{
+		String getApplicationName() {
 			return new String(appName);
 		}
 
 	private:
-		static BaseWindow _windowListHead = null;
-		static BaseWindow _windowListTail = null;
+		BaseWindow _windowListHead = null;
+		BaseWindow _windowListTail = null;
 
-		static int _windowCount;
-		static int _windowVisibleCount;
+		int _windowCount;
+		int _windowVisibleCount;
 
-		static bool _console_inited = false;
+		bool _console_inited = false;
 
-		static ConsoleWindow _curConsoleWindow;
+		ConsoleWindow _curConsoleWindow;
 
-		static bool _hasStarted = false;
+		bool _hasStarted = false;
 
-		static Thread[] _threads;
+		Thread[] _threads;
 
-		static String appName;
+		String appName;
 }
 
 void RegisterThread(ref Thread thread)
