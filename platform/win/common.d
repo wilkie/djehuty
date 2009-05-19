@@ -7,6 +7,8 @@ public import std.c.windows.winsock;
 
 // extra stuff somehow left out of the Phobos libraries
 
+alias ulong DWORDLONG;
+
 const long GWL_STYLE = -16;
 const long GWL_EXSTYLE = -20;
 const long GWLP_HINSTANCE = (-6);
@@ -900,6 +902,21 @@ alias MONITORINFO* LPMONITORINFO;
 
 const auto MONITORINFOF_PRIMARY = 0x01;
 
+// used by GlobalMemoryStatusEx
+struct MEMORYSTATUSEX {
+  DWORD     dwLength = MEMORYSTATUSEX.sizeof;
+  DWORD     dwMemoryLoad;
+  DWORDLONG ullTotalPhys;
+  DWORDLONG ullAvailPhys;
+  DWORDLONG ullTotalPageFile;
+  DWORDLONG ullAvailPageFile;
+  DWORDLONG ullTotalVirtual;
+  DWORDLONG ullAvailVirtual;
+  DWORDLONG ullAvailExtendedVirtual;
+}
+
+alias MEMORYSTATUSEX* LPMEMORYSTATUSEX;
+
 extern(Windows)
 {
 	DWORD timeGetTime();
@@ -978,6 +995,10 @@ extern(Windows)
 
 	BOOL EnumDisplayMonitors(HDC, LPRECT, BOOL function(HMONITOR, HDC, LPRECT, LPARAM), LPARAM);
 	BOOL GetMonitorInfoW(HMONITOR, LPMONITORINFO);
+	
+	// SYSTEM POLLING
+
+	BOOL GlobalMemoryStatusEx(LPMEMORYSTATUSEX);
 
 	// AUDIO FUNCTION
 	MMRESULT waveOutOpen(HWAVEOUT*, UINT*, WAVEFORMATEX*, void function(HWAVEOUT, UINT, DWORD, DWORD, DWORD), DWORD, DWORD);

@@ -42,11 +42,11 @@ private {
 	DisplayInfo[] displays;
 }
 
-int SystemGetScreenWidth(uint screen) {
+int SystemGetDisplayWidth(uint screen) {
 	if (count == 0) {
-		SystemGetScreenCount();
+		SystemGetDisplayCount();
 	}
-	
+
 	if (screen > count || screen < 0) {
 		return -1;
 	}
@@ -57,9 +57,9 @@ int SystemGetScreenWidth(uint screen) {
 	return (mInfo.rcMonitor.right - mInfo.rcMonitor.left);
 }
 
-int SystemGetScreenHeight(uint screen) {
+int SystemGetDisplayHeight(uint screen) {
 	if (count == 0) {
-		SystemGetScreenCount();
+		SystemGetDisplayCount();
 	}
 
 	if (screen > count) {
@@ -72,15 +72,15 @@ int SystemGetScreenHeight(uint screen) {
 	return (mInfo.rcMonitor.bottom - mInfo.rcMonitor.top);
 }
 
-uint SystemGetPrimaryScreen() {
+uint SystemGetPrimaryDisplay() {
 	if (count == 0) {
-		SystemGetScreenCount();
+		SystemGetDisplayCount();
 	}
 	
 	return primary;
 }
 
-long SystemGetScreenCount() {
+uint SystemGetDisplayCount() {
 	// reset parameters
 	count = 0;
 	primary = 0;
@@ -91,4 +91,18 @@ long SystemGetScreenCount() {
 
 	// return the count
 	return count;
+}
+
+ulong SystemGetTotalMemory() {
+	MEMORYSTATUSEX stats;
+	GlobalMemoryStatusEx(&stats);
+	
+	return stats.ullTotalPhys;
+}
+
+ulong SystemGetAvailableMemory() {
+	MEMORYSTATUSEX stats;
+	GlobalMemoryStatusEx(&stats);
+
+	return stats.ullAvailPhys;
 }

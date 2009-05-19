@@ -38,6 +38,7 @@ public import core.directory;
 public import core.filesystem;
 public import core.arguments;
 public import core.regex;
+public import core.system;
 
 // graphics
 public import graphics.brush	: Brush;

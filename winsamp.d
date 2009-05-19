@@ -474,5 +474,9 @@ Console.putln(rnd.next());
 Console.putln(rnd.next());
 Console.putln(rnd.next());
 
+	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
+	Console.putln("total memory: ", System.Memory.getTotal());
+	Console.putln("avail memory: ", System.Memory.getAvailable());
+
 	InitWindow();
 }

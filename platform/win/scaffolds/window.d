@@ -166,7 +166,7 @@ void WindowSetState(ref BaseWindow window, WindowPlatformVars* windowVars)
 		windowVars.supress_WM_SIZE = false;
 		windowVars.supress_WM_MOVE = false;
 
-		SetWindowPos(windowVars.hWnd, null, 0,0, SystemGetScreenWidth(SystemGetPrimaryScreen()), SystemGetScreenHeight(SystemGetPrimaryScreen()), SWP_NOOWNERZORDER | SWP_NOZORDER);
+		SetWindowPos(windowVars.hWnd, null, 0,0, SystemGetDisplayWidth(SystemGetPrimaryDisplay()), SystemGetDisplayHeight(SystemGetPrimaryDisplay()), SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 		SetWindowX(window, 0);
 		SetWindowY(window, 0);
