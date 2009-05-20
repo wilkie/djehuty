@@ -422,42 +422,48 @@ void InitWindow()
 
 import scripting.lua;
 
-extern(System) void DjehutyMain(Arguments args)
-{
-	Djehuty.setApplicationName("djehutyTestApp");
+static DjehutyTestApp app;
 
-	Tests.testAll();
+static this() {
+	app = new DjehutyTestApp();
+}
 
-	Directory dir;
+class DjehutyTestApp : Application {
 
-	dir = FileSystem.getTempDir();
-	Console.putln("TEMP: ", dir.getPath.array);
-
-	dir = FileSystem.getAppDataDir();
-	Console.putln("APP:  ", dir.getPath.array);
-
-	dir = FileSystem.getUserDataDir();
-	Console.putln("USER: ", dir.getPath.array);
-
-	Directory myDir = FileSystem.getApplicationDir();
-	Console.putln("EXE:  ", myDir.getPath.array);
-
-	dir = FileSystem.getBinaryDir();
-	Console.putln("BIN:  ", dir.getPath.array);
-
-	LuaScript lua = new LuaScript();
-	lua.evalFile("hello.lua");
+	override void OnApplicationStart() {
+		Tests.testAll();
 	
-	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
-	Console.putln("total memory: ", System.Memory.getTotal());
-	Console.putln("avail memory: ", System.Memory.getAvailable());
+		Directory dir;
+	
+		dir = FileSystem.getTempDir();
+		Console.putln("TEMP: ", dir.getPath.array);
+	
+		dir = FileSystem.getAppDataDir();
+		Console.putln("APP:  ", dir.getPath.array);
+	
+		dir = FileSystem.getUserDataDir();
+		Console.putln("USER: ", dir.getPath.array);
 
-	if (Djehuty.isInstalled) {
-		Console.putln("is installed");
-	}
-	else {
-		Console.putln("is not installed");
-	}
+		Directory myDir = FileSystem.getApplicationDir();
+		Console.putln("EXE:  ", myDir.getPath.array);
 
-	InitWindow();
+		dir = FileSystem.getBinaryDir();
+		Console.putln("BIN:  ", dir.getPath.array);
+
+		LuaScript lua = new LuaScript();
+		lua.evalFile("hello.lua");
+		
+		Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
+		Console.putln("total memory: ", System.Memory.getTotal());
+		Console.putln("avail memory: ", System.Memory.getAvailable());
+	
+		if (isInstalled) {
+			Console.putln("is installed");
+		}
+		else {
+			Console.putln("is not installed");
+		}
+	
+		InitWindow();
+	}
 }

@@ -33,6 +33,7 @@ public import core.sound		: Sound, SoundState;
 public import core.audio		: Audio;
 public import core.time			: Time;
 public import core.view			: View;
+public import core.application	: Application;
 public import core.color;
 public import core.directory;
 public import core.filesystem;

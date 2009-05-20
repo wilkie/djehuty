@@ -16,6 +16,7 @@ import core.string;
 import core.thread;
 import core.arguments;
 import core.filesystem;
+import core.application;
 
 import console.window;
 import console.main;
@@ -26,8 +27,6 @@ mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("console"));
 mixin(PlatformGenericImport!("vars"));
 
-extern(System) void DjehutyMain(Arguments);
-
 void DjehutyStart() {
 	// Can only start the framework once
 	if (!Djehuty._hasStarted) {
@@ -37,12 +36,14 @@ void DjehutyStart() {
 		throw new Exception("Framework Already Started");
 	}
 
-	// Call the main function provided by the application
-	DjehutyMain(Arguments.getInstance());
-
 	// Check to make sure the app provided a suitable name
-	if (Djehuty.appName is null) {
-		throw new Exception("No Application Name");
+	if (Djehuty.app is null) {
+	//	throw new Exception("No Application Class");
+	}
+	else
+	{
+		Djehuty.app.setArguments(Arguments.getInstance());
+		Djehuty.app.OnApplicationStart();
 	}
 
 	// Start the application proper (from platform's point of view)
@@ -106,35 +107,13 @@ class Djehuty {
 			// Draw Window
 			ConsoleWindowOnSet(_curConsoleWindow);
 		}
-
-		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
-		// applicationName: The name of the application.
-		void setApplicationName(String applicationName) {
-			if (appName !is null) {
-				throw new Exception("Application Name Already Set");
+		
+		void setApplication(Application application) {
+			if (app !is null) {
+				throw new Exception("Application Already Spawned");
 			}
 
-			appName = new String(applicationName);
-		}
-
-		// Description: This function will return true when the application being executed has been installed and is running from the installation directory.
-		// Returns: Will return true when the app being ran has been installed, and false otherwise.
-		bool isInstalled() {
-			// return true when the executable currently being executed is
-			// located in the filesystem's installed binaries directory
-			return (FileSystem.getBinaryDir() == FileSystem.getApplicationDir());
-		}
-
-		// Description: This function will set the application name for the program. This will be used by the app for directory structures and installation.
-		// applicationName: The name of the application.
-		void setApplicationName(StringLiteral applicationName) {
-			setApplicationName(new String(applicationName));
-		}
-
-		// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
-		// Returns: The application name.
-		String getApplicationName() {
-			return new String(appName);
+			app = application;
 		}
 
 	private:
@@ -152,7 +131,7 @@ class Djehuty {
 
 		Thread[] _threads;
 
-		String appName;
+		Application app;
 }
 
 void RegisterThread(ref Thread thread)
