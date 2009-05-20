@@ -1,3 +1,12 @@
+/*
+ * scaffold.d
+ *
+ * This file imports the entire Scaffold for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffold;
 
 // Application Loop

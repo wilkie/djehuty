@@ -1,18 +1,25 @@
+/*
+ * vars.d
+ *
+ * This file holds implementations for the Platform Variables for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.vars;
 
 import platform.win.common;
 import platform.win.scaffolds.opengl;
+import platform.win.main;
 
 import core.definitions;
 import core.thread;
-import platform.win.main;
-
 import core.semaphore;
 import core.audio;
 import core.stream;
 import core.main;
 import core.string;
-
 import core.basewindow;
 
 import console.main;
@@ -21,9 +28,6 @@ import opengl.window;
 import opengl.gl;
 
 import utils.linkedlist;
-
-import std.stdio;
-
 
 // platform vars
 

@@ -1,3 +1,11 @@
+/*
+ * oscontrolinterface.d
+ *
+ * This file holds the OSControl interface that must be a part of an OSControl.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module platform.win.oscontrolinterface;
 

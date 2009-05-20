@@ -1,3 +1,13 @@
+/*
+ * console.d
+ *
+ * This file holds the implementation of the console functionality
+ * for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.console;
 
 import core.main;

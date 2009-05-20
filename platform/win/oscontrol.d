@@ -1,3 +1,12 @@
+/*
+ * oscontrol.d
+ *
+ * This file gives the hint to whether or not a control has been implemented.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.oscontrol;
 
 import core.literals;

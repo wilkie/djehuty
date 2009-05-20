@@ -1,3 +1,12 @@
+/*
+ * definitions.d
+ *
+ * This file holds common definitions to programmable parameters for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.definitions;
 
 import platform.win.common;

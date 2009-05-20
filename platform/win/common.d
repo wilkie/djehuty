@@ -1,3 +1,11 @@
+/*
+ * common.d
+ *
+ * This file holds bindings to the Windows API.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module platform.win.common;
 

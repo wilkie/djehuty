@@ -1,3 +1,13 @@
+/*
+ * main.d
+ *
+ * This file has the main functionality to start an Application in Windows.
+ * This file has the entry point for a Windows program.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.main;
 
 import platform.win.common;
