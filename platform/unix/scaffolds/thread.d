@@ -1,24 +1,27 @@
+/*
+ * thread.d
+ *
+ * This Scaffold holds the Thread implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.thread;
 
 import core.view;
-
 import core.string;
 import core.file;
 import core.graphics;
 import core.color;
-
 import core.main;
-
 import core.definitions;
-
 import core.string;
 import core.thread;
 
 import platform.unix.common;
 import platform.unix.definitions;
 import platform.unix.vars;
-
-
 
 void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 {

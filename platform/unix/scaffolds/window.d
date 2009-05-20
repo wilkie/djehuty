@@ -1,3 +1,12 @@
+/*
+ * window.d
+ *
+ * This Scaffold holds the Window implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.window;
 
 import platform.unix.vars;
@@ -18,9 +27,6 @@ import core.main;
 import core.definitions;
 
 import console.main;
-
-
-
 
 struct MWMHints {
   Clong flags;

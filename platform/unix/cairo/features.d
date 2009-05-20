@@ -1,10 +1,15 @@
+/*
+ * features.d
+ *
+ * This file holds bindings to cairo's cairo-features.h.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 /* Converted to D from cairo-features.h by htod */
 
 module platform.unix.cairo.features;
-
-
-
-
 
 const auto CAIRO_VERSION_MAJOR = 1;
 

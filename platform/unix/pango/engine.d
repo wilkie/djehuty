@@ -1,3 +1,13 @@
+/*
+ * engine.d
+ *
+ * This file holds bindings to pango's pango-engine.h. The original copyright
+ * is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.engine;
 
 /* Pango

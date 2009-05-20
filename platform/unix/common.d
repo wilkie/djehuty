@@ -1,3 +1,14 @@
+/*
+ * common.d
+ *
+ * This file gives the external references for libraries and native APIs.
+ * For the UNIX environment, this is largely the C standard library. Some
+ * magic goes into hinting to the runtime in place.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.common;
 
 public import X = platform.unix.x.Xlib;

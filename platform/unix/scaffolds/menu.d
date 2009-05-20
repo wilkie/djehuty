@@ -1,3 +1,12 @@
+/*
+ * menu.d
+ *
+ * This Scaffold holds the Menu implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.menu;
 
 import platform.unix.vars;

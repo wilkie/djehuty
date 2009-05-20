@@ -1,3 +1,13 @@
+/*
+ * xlibrender.d
+ *
+ * This file holds bindings to cairo's xlibrender.h. The original copyright
+ * is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.cairo.xlibrender;
 
 /* cairo - a vector graphics library with display and print output

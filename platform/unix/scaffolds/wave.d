@@ -1,3 +1,12 @@
+/*
+ * wave.d
+ *
+ * This Scaffold holds the Wave implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.wave;
 
 import platform.unix.vars;

@@ -1,3 +1,14 @@
+/*
+ * Xrender.d
+ *
+ * This file holds bindings to Xrender. This file was created from xrender.h
+ * which is provided with Xrender proper. The original copyright notice is
+ * displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.x.Xrender;
 
 /*

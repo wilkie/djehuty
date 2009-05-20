@@ -447,14 +447,7 @@ extern(System) void DjehutyMain(Arguments args)
 
 	LuaScript lua = new LuaScript();
 	lua.evalFile("hello.lua");
-
-	Random rnd = new Random(-1);
-	Console.putln(rnd.next());
-	Console.putln(rnd.next());
-	Console.putln(rnd.next());
-	Console.putln(rnd.next());
-	Console.putln(rnd.next());
-
+	
 	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
 	Console.putln("total memory: ", System.Memory.getTotal());
 	Console.putln("avail memory: ", System.Memory.getAvailable());

@@ -1,5 +1,14 @@
-module platform.unix.scaffolds.time;
+/*
+ * time.d
+ *
+ * This Scaffold holds the Time implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ * Originated: May 19th, 2009
+ *
+ */
 
+module platform.unix.scaffolds.time;
 
 import platform.unix.common;
 import platform.unix.definitions;

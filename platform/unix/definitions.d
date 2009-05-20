@@ -1,3 +1,12 @@
+/*
+ * definitions.d
+ *
+ * This file gives the definition hints for several properties.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.definitions;
 
 version(PlatformLinux)

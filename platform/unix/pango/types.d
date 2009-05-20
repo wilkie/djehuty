@@ -1,3 +1,12 @@
+/*
+ * types.d
+ *
+ * This file holds bindings to pango's types.h.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.types;
 
 enum PangoDirection {

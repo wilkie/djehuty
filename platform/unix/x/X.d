@@ -1,3 +1,14 @@
+/*
+ * X.d
+ *
+ * This file holds X bindings. Much of this file was taken from bindings
+ * by Teissier Sylvere's alpha release. I have fixed the errors. His
+ * original copyright notice is below.
+ *
+ * Author: Teissier Sylvere, Dave Wilkinson
+ *
+ */
+
 /* 	Xlib binding for D language
 	Copyright 2007 TEISSIER Sylvere sligor(at)free.fr
 	version 0.1 2007/08/29

@@ -1,3 +1,12 @@
+/*
+ * color.d
+ *
+ * This Scaffold holds the Color implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.color;
 
 import platform.unix.vars;

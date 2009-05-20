@@ -1,3 +1,13 @@
+/*
+ * cairo.d
+ *
+ * This file holds bindings to cairo. The original copyright
+ * is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 /* Converted to D from cairo.h by htod */
 
 module platform.unix.cairo.cairo;

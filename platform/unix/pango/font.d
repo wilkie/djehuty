@@ -1,3 +1,12 @@
+/*
+ * font.d
+ *
+ * This file holds bindings to pango's pango-font.h.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.font;
 
 //extern(C) struct _PangoFontDescription;

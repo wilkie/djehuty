@@ -1,3 +1,12 @@
+/*
+ * main.d
+ *
+ * This file implements the main routines for the Linux system.
+ * This file is the entry point for a Linux application.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module platform.unix.main;
 

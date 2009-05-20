@@ -1,30 +1,28 @@
+/*
+ * view.d
+ *
+ * This Scaffold holds the View implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.view;
-
-
-
 
 import platform.unix.vars;
 import platform.unix.common;
+import platform.unix.main;
 
 import core.view;
 import core.graphics;
-
 import core.basewindow;
 import core.window;
-import platform.unix.main;
 import core.string;
 import core.file;
-
 import core.main;
-
 import core.definitions;
 
-
-
-import console.main;
-
-
-
+//import console.main;
 
 // views
 void ViewCreate(ref View view, ref ViewPlatformVars viewVars)

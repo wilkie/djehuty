@@ -1,3 +1,12 @@
+/*
+ * vars.d
+ *
+ * This file implements the Platform Variables for the Linux system.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.vars;
 
 import platform.unix.common;

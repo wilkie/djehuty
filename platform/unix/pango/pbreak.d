@@ -1,3 +1,12 @@
+/*
+ * pbreak.d
+ *
+ * This file holds bindings to pango's pango-pbreak.h.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.pbreak;
 
 import platform.unix.pango.types;

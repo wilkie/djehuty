@@ -1,7 +1,13 @@
+/*
+ * socket.d
+ *
+ * This Scaffold holds the Socket implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.socket;
-
-
-
 
 import platform.unix.vars;
 import platform.unix.common;
@@ -11,12 +17,6 @@ import core.main;
 import core.definitions;
 
 import console.main;
-
-
-
-
-
-
 
 // SOCKET
 

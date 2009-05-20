@@ -1,3 +1,13 @@
+/*
+ * audio.d
+ *
+ * This file implements the Audio class. This class faciliates low-level access
+ * to the audio device. The Sound class, however, is a higher-level accessor.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.audio;
 
 import core.stream;

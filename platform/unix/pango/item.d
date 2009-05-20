@@ -1,3 +1,13 @@
+/*
+ * item.d
+ *
+ * This file holds bindings to pango's pango-item.h. The original
+ * copyright is displayed below.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.item;
 
 /* Pango

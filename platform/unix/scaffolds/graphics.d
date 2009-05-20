@@ -1,22 +1,28 @@
+/*
+ * graphics.d
+ *
+ * This Scaffold holds the Graphics implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.graphics;
 
 import core.view;
-
 import core.string;
 import core.file;
 import core.graphics;
 import core.color;
-import graphics.region;
 import core.main;
-
 import core.definitions;
-
 import core.string;
 
 import platform.unix.common;
 import platform.unix.definitions;
 import platform.unix.vars;
 
+import graphics.region;
 
 
 // Shapes

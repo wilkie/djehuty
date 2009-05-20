@@ -1,3 +1,12 @@
+/*
+ * file.d
+ *
+ * This Scaffold holds the File implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.file;
 
 import platform.unix.vars;

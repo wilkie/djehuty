@@ -1,5 +1,13 @@
-module platform.unix.scaffold;
+/*
+ * scaffold.d
+ *
+ * This file loads the Scaffolds for the Linux system.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
+module platform.unix.scaffold;
 
 // Application Loop
 public import platform.unix.scaffolds.app;

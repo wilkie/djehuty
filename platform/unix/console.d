@@ -1,3 +1,12 @@
+/*
+ * console.d
+ *
+ * This file implements the Console interfaces for the Linux system.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.console;
 
 import core.main;

@@ -1,5 +1,14 @@
-module platform.unix.pango.script;
+/*
+ * script.d
+ *
+ * This file holds bindings to pango's pango-script.h. The original
+ * copyright is displayed below.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
+module platform.unix.pango.script;
 
 import platform.unix.pango.types;
 

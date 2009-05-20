@@ -1,3 +1,13 @@
+/*
+ * pango.d
+ *
+ * This file holds bindings to pango. It will import all of the pango
+ * packages available.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.pango;
 
 public import platform.unix.pango.font;

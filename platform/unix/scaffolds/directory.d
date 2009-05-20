@@ -1,3 +1,12 @@
+/*
+ * directory.d
+ *
+ * This Scaffold holds the Directory implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.directory;
 
 import platform.unix.vars;

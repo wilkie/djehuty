@@ -1,3 +1,12 @@
+/*
+ * app.d
+ *
+ * This Scaffold holds the Application implementations for the Linux platform
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.scaffolds.app;
 
 import platform.unix.vars;

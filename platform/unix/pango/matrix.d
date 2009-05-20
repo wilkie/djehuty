@@ -1,3 +1,13 @@
+/*
+ * matrix.d
+ *
+ * This file holds bindings to pango's pango-matrix.h. The original
+ * copyright is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.matrix;
 
 /* Pango

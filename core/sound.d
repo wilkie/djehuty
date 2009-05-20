@@ -1,3 +1,13 @@
+/*
+ * sound.d
+ *
+ * This file implements the Sound class. This class is a high-level accessor
+ * of the audio device. It will play audio files.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.sound;
 
 import interfaces.stream;

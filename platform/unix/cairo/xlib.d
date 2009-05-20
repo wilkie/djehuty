@@ -1,3 +1,13 @@
+/*
+ * xlib.d
+ *
+ * This file holds bindings to cairo's xlib.h. The original copyright
+ * is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.cairo.xlib;
 
 /* cairo - a vector graphics library with display and print output

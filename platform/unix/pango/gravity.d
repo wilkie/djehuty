@@ -1,3 +1,13 @@
+/*
+ * gravity.d
+ *
+ * This file holds bindings to pango's pango-gravity.h. The original
+ * copyright is displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.unix.pango.gravity;
 
 /* Pango

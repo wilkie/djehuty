@@ -1,3 +1,14 @@
+/*
+ * render.d
+ *
+ * This file holds bindings to 'render'. This file was created from render.h
+ * which is provided with xrender proper. The original copyright notice is
+ * displayed below, but does not pertain to this file.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 /* Converted to D from render.h by htod */
 
 module platform.unix.x.render;
