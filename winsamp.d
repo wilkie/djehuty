@@ -112,7 +112,7 @@ class Field : View {
 		uint* curLine = data + ((_height - height) * _width) + x;
 
 		for( ; curLine < max; curLine += _width) {
-			*curLine = 0xff00;
+			*curLine = 0xff00ff00;
 		}
 	}
 
@@ -138,7 +138,7 @@ class MyControl : WindowedControl
 
 	void OnDraw(ref Graphics g)
 	{
-		g.drawImage(50,50,img);
+	//	g.drawImage(50,50,img);
 		g.drawView(0,0,fld);
 	}
 }
@@ -166,8 +166,8 @@ class MyWindow : Window
 		//setState(WindowState.Fullscreen);
 		tf = new TextField(0,0,200,25,"Hello");
 		btn = new Button(200,25,25,25,"!", &btnEvent);
-		addControl(tf);
-		addControl(btn);
+		//addControl(tf);
+		//addControl(btn);
 
 		addControl(new MyControl());
 
@@ -458,7 +458,7 @@ extern(System) void DjehutyMain(Arguments args)
 	Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
 	Console.putln("total memory: ", System.Memory.getTotal());
 	Console.putln("avail memory: ", System.Memory.getAvailable());
-	
+
 	if (Djehuty.isInstalled) {
 		Console.putln("is installed");
 	}

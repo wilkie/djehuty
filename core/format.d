@@ -4,6 +4,7 @@ module core.format;
 version(LDC)
 {
 	public import ldc.vararg;
+	public import C = ldc.cstdarg;
 }
 else
 {
