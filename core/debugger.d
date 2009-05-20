@@ -1,3 +1,12 @@
+/*
+ * debugger.d
+ *
+ * This file contains the exception sink and other helpful debugging routines.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.debugger;
 
 import console.main;

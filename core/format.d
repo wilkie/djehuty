@@ -1,3 +1,13 @@
+/*
+ * format.d
+ *
+ * This file imports what is necessary for standard variadic arguments in both
+ * C and D.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.format;
 
 // Imposed variadic

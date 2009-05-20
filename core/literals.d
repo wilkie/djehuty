@@ -1,3 +1,12 @@
+/*
+ * literals.d
+ *
+ * This file contains the wrapper for a string literal in D.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.literals;
 
 static const char _lit_types[][] = ["char", "wchar", "dchar", "Char"];

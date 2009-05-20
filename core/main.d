@@ -1,3 +1,13 @@
+/*
+ * main.d
+ *
+ * This file contains the main logic and the main class for handling
+ * an Application.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.main;
 
 import core.basewindow;

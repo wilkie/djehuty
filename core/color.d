@@ -1,3 +1,12 @@
+/*
+ * color.d
+ *
+ * This file has an implementation of a platform neutral Color datatype.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.color;
 
 import core.definitions;

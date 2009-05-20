@@ -1,3 +1,13 @@
+/*
+ * resource.d
+ *
+ * This file has the logic behind loading a resource from a resource file or
+ * a resource stream.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.resource;
 
 import core.string;
@@ -9,9 +19,6 @@ import core.stream;
 import core.unicode;
 
 import console.main;
-
-import platform.imports;
-mixin(PlatformGenericImport!("definitions"));
 
 static const bool flagCheckForMenuRecursion = true;
 

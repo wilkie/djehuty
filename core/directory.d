@@ -1,3 +1,13 @@
+/*
+ * directory.d
+ *
+ * This file contains the logic for the Directory class, which allows
+ * traversal of the filesystem.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.directory;
 
 import core.string;

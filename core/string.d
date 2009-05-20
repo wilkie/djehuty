@@ -1,3 +1,13 @@
+/*
+ * string.d
+ *
+ * This file contains the native String class. A string class that wraps a
+ * string that is represented in the native preferred unicode class.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.string;
 
 // a class to encapsulate the expected string format for

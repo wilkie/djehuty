@@ -1,3 +1,13 @@
+/*
+ * regex.d
+ *
+ * This file contains the logic behind a regular expression parser.
+ *
+ * Author: Dave Wilkinson
+ * Originated: May 9th, 2009
+ *
+ */
+
 module core.regex;
 
 import core.string;

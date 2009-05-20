@@ -1,3 +1,12 @@
+/*
+ * image.d
+ *
+ * This file contains the magic behind Image.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.image;
 
 import interfaces.stream;

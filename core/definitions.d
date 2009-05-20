@@ -1,15 +1,19 @@
-module core.definitions;
+/*
+ * definitions.d
+ *
+ * This file contains the core definitions, structures, and datatypes
+ * taking into account some platform-specific properties.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
+module core.definitions;
 
 import platform.imports;
 mixin(PlatformGenericPublicImport!("definitions"));
 
-
-
-
 // Section: Types
-
-
 
 // Platform Types:
 

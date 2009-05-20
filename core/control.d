@@ -1,3 +1,11 @@
+/*
+ * control.d
+ *
+ * This file contains the magic behind a Control class.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module core.control;
 

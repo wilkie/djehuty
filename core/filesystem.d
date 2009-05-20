@@ -1,3 +1,13 @@
+/*
+ * filesystem.d
+ *
+ * This file contains the FileSystem static class which allows for querying
+ * about specifics of the file system hierarchy.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.filesystem;
 
 import core.directory;

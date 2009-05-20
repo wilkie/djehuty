@@ -1,3 +1,12 @@
+/*
+ * endian.d
+ *
+ * This file contains some simple code to switch endian.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.endian;
 
 

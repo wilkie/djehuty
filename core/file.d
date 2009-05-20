@@ -1,3 +1,12 @@
+/*
+ * file.d
+ *
+ * This file contains the magic behind File.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module core.file;
 
 import interfaces.stream;

@@ -1,3 +1,11 @@
+/*
+ * graphics.d
+ *
+ * This file contains the logic behind functions that draw to a View.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module core.graphics;
 
