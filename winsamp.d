@@ -410,6 +410,14 @@ class MyThread : Thread
 	}
 }
 
+
+
+
+// -------------
+
+import scripting.lua;
+// import mywindow;
+
 void InitWindow()
 {
 	MyWindow mainWindow;
@@ -420,27 +428,22 @@ void InitWindow()
 	Djehuty.addWindow(mainWindow);
 }
 
-import scripting.lua;
-
-static DjehutyTestApp app;
-
-static this() {
-	app = new DjehutyTestApp();
-}
-
 class DjehutyTestApp : Application {
+
+	// Start an application instance
+	static this() { new DjehutyTestApp(); }
 
 	override void OnApplicationStart() {
 		Tests.testAll();
-	
+
 		Directory dir;
-	
+
 		dir = FileSystem.getTempDir();
 		Console.putln("TEMP: ", dir.getPath.array);
-	
+
 		dir = FileSystem.getAppDataDir();
 		Console.putln("APP:  ", dir.getPath.array);
-	
+
 		dir = FileSystem.getUserDataDir();
 		Console.putln("USER: ", dir.getPath.array);
 
@@ -452,7 +455,7 @@ class DjehutyTestApp : Application {
 
 		LuaScript lua = new LuaScript();
 		lua.evalFile("hello.lua");
-		
+
 		Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
 		Console.putln("total memory: ", System.Memory.getTotal());
 		Console.putln("avail memory: ", System.Memory.getAvailable());
@@ -463,7 +466,9 @@ class DjehutyTestApp : Application {
 		else {
 			Console.putln("is not installed");
 		}
-	
+
 		InitWindow();
 	}
 }
+
+// ------------

@@ -1,3 +1,13 @@
+/*
+ * directory.d
+ *
+ * This file implements the Scaffold for platform specific Directory
+ * traversal in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.directory;
 
 import platform.win.vars;

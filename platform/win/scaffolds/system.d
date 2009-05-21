@@ -1,3 +1,13 @@
+/*
+ * system.d
+ *
+ * This file implements the Scaffold for platform specific System
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.system;
 
 import platform.win.vars;

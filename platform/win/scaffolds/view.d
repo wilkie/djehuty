@@ -1,22 +1,26 @@
+/*
+ * view.d
+ *
+ * This file implements the Scaffold for platform specific View
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.view;
-
-
-
 
 import platform.win.vars;
 import platform.win.common;
+import platform.win.main;
 
 import core.view;
 import core.graphics;
-
 import core.basewindow;
 import core.window;
-import platform.win.main;
 import core.string;
 import core.file;
-
 import core.main;
-
 import core.definitions;
 
 import utils.linkedlist;

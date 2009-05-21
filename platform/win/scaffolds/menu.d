@@ -1,21 +1,27 @@
+/*
+ * menu.d
+ *
+ * This file implements the Scaffold for platform specific Menu
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.menu;
 
 import platform.win.scaffolds.window;
-
 import platform.win.vars;
 import platform.win.common;
+import platform.win.main;
 
 import core.view;
 import core.graphics;
-
 import core.window;
-import platform.win.main;
 import core.string;
 import core.menu;
 import core.basewindow;
-
 import core.main;
-
 import core.definitions;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)

@@ -1,27 +1,31 @@
+/*
+ * graphics.d
+ *
+ * This file implements the Scaffold for platform specific Graphics
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.graphics;
 
 import core.view;
-
-
 import core.window;
-import platform.win.main;
 import core.string;
 import core.file;
 import core.graphics;
 import core.color;
-import graphics.region;
-
 import core.main;
-
 import core.definitions;
-
 import core.string;
 
+import graphics.region;
+
+import platform.win.main;
 import platform.win.common;
 import platform.win.definitions;
 import platform.win.vars;
-
-
 
 // Shapes
 

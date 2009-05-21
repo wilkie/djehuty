@@ -1,3 +1,13 @@
+/*
+ * opengl.d
+ *
+ * This file implements the Scaffold for platform specific OpenGL
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.opengl;
 
 import opengl.gl;

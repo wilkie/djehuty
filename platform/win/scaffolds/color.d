@@ -1,3 +1,12 @@
+/*
+ * color.d
+ *
+ * This file implements the Scaffold for platform specific Color for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.color;
 
 import platform.win.vars;

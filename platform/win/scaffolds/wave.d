@@ -1,6 +1,14 @@
+/*
+ * wave.d
+ *
+ * This file implements the Scaffold for platform specific Wave
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.wave;
-
-
 
 import platform.win.vars;
 import platform.win.common;

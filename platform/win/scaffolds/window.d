@@ -1,3 +1,13 @@
+/*
+ * window.d
+ *
+ * This file implements the Scaffold for platform specific Window
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.window;
 
 import platform.win.scaffolds.system;

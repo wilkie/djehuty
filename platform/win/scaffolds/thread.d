@@ -1,21 +1,27 @@
+/*
+ * thread.d
+ *
+ * This file implements the Scaffold for platform specific Thread
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.thread;
 
 import core.view;
-
 import core.window;
-import platform.win.main;
 import core.string;
 import core.file;
 import core.graphics;
 import core.color;
-
 import core.main;
-
 import core.definitions;
-
 import core.string;
 import core.thread;
 
+import platform.win.main;
 import platform.win.common;
 import platform.win.definitions;
 import platform.win.vars;

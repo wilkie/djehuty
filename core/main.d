@@ -36,7 +36,7 @@ void DjehutyStart() {
 		throw new Exception("Framework Already Started");
 	}
 
-	// Check to make sure the app provided a suitable name
+	// Check to make sure the app provided a suitable class to use
 	if (Djehuty.app is null) {
 	//	throw new Exception("No Application Class");
 	}

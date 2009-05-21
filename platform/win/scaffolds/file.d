@@ -1,3 +1,12 @@
+/*
+ * file.d
+ *
+ * This file implements the Scaffold for platform specific File for Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.file;
 
 import interfaces.stream;

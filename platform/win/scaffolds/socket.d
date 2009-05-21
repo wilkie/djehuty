@@ -1,7 +1,14 @@
+/*
+ * socket.d
+ *
+ * This file implements the Scaffold for platform specific Socket
+ * operations in Windows.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module platform.win.scaffolds.socket;
-
-
-
 
 import platform.win.vars;
 import platform.win.common;
