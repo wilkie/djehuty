@@ -1,14 +1,12 @@
-// Djehuty Module
-// ---------------------------------
-// Build: 1.2.0
-// ---------------------------------
-// Description: MD5 Hash Module
-// ---------------------------------
-// Authors: Lindsey Bieda, Dave Wilkinson
-// ---------------------------------
-// Date Created: January 13th 2009
-// Date Edited: January 13th 2009
-// ---------------------------------
+/*
+ * md5.d
+ *
+ * This module implements the MD5 digest
+ *
+ * Author: Dave Wilkinson, Lindsey Bieda
+ * Originated: January 13th, 2009
+ *
+ */
 
 module hashes.md5;
 

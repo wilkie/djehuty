@@ -1,14 +1,12 @@
-// Djehuty Module
-// ---------------------------------
-// Build: 1.2.0
-// ---------------------------------
-// Description: SHA-1 Hash Module
-// ---------------------------------
-// Authors: Dave Wilkinson
-// ---------------------------------
-// Date Created: January 19th 2009
-// Date Edited: January 19th 2009
-// ---------------------------------
+/*
+ * sha256.d
+ *
+ * This module implements the SHA256 digest
+ *
+ * Author: Dave Wilkinson
+ * Originated: January 19th, 2009
+ *
+ */
 
 module hashes.sha256;
 
