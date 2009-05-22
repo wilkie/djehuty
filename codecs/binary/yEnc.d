@@ -1,33 +1,44 @@
+/*
+ * yEnc.d
+ *
+ * This file implements the yEnc algorithm.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.binary.yEnc;
 
 import core.endian;
-import interfaces.stream;
-
 import core.literals;
 
+import interfaces.stream;
+
 import codecs.binary.codec;
-import codecs.codec;
 
-const auto YENC_STATE_INIT 				= 0;
+private {
 
-const auto YENC_STATE_READHEADER 		= 1;
-const auto YENC_STATE_READHEADERVALUE 	= 2;
-const auto YENC_STATE_READHEADERNAME 	= 3;
+	const auto YENC_STATE_INIT 				= 0;
 
-const auto YENC_STATE_READLINE_START 	= 4;
-const auto YENC_STATE_READLINE 			= 5;
+	const auto YENC_STATE_READHEADER 		= 1;
+	const auto YENC_STATE_READHEADERVALUE 	= 2;
+	const auto YENC_STATE_READHEADERNAME 	= 3;
 
-const auto YENC_STATE_READ_ESCAPE 		= 6;
+	const auto YENC_STATE_READLINE_START 	= 4;
+	const auto YENC_STATE_READLINE 			= 5;
 
-const auto YENC_STATE_READFOOTER 		= 7;
+	const auto YENC_STATE_READ_ESCAPE 		= 6;
+
+	const auto YENC_STATE_READFOOTER 		= 7;
+
+}
 
 // Section: Codecs/Binary
 
 // Description: This represents the yEnc Codec.
-class yEncCodec : BinaryCodec
-{
-	StreamData decode(AbstractStream stream, AbstractStream toStream)
-	{
+class yEncCodec : BinaryCodec {
+
+	StreamData decode(AbstractStream stream, AbstractStream toStream) {
 		ushort chunk;
 		char linestr[257];
 		uint line;
@@ -39,30 +50,28 @@ class yEncCodec : BinaryCodec
 		ubyte headeroption = 0;
 
 
-		for (;;)
-		{
-			switch (decoderState)
-			{
+		for (;;) {
+
+			switch (decoderState) {
+
 				case YENC_STATE_INIT:
 
 					decoderState = YENC_STATE_READHEADER;
 
-					if(!stream.read(chunk))
-					{
+					if(!stream.read(chunk)) {
 						return StreamData.Required;
 					}
 
-					if (chunk == ('=' | ('y'<<8)))
-					{
+					if (chunk == ('=' | ('y'<<8))) {
 						//escape sequence (valid header)
 
 						linepos = 0;
 						decoderState = YENC_STATE_READHEADER;
 					}
-					else
-					{
+					else {
 						return StreamData.Invalid;
 					}
+
 					continue;
 
 
@@ -71,48 +80,40 @@ class yEncCodec : BinaryCodec
 				case YENC_STATE_READHEADER:
 
 					// read the rest of the line
-					if(!stream.read(chr))
-					{
+					if(!stream.read(chr)) {
 						return StreamData.Required;
 					}
 
-					if ((chr == ' ') || (chr == '='))
-					{
+					if ((chr == ' ') || (chr == '=')) {
 						// delimiter
 						linestr[linepos] = 0;
 						linepos = 0;
 
 						// get the token
-						if (!(linestr == "line"))
-						{
+						if (!(linestr == "line")) {
 							decoderState = YENC_STATE_READHEADERVALUE;
 							headeroption = 0;
 							continue;
 						}
-						else if (!(linestr == "size"))
-						{
+						else if (!(linestr == "size")) {
 							decoderState = YENC_STATE_READHEADERVALUE;
 							headeroption = 1;
 							continue;
 						}
-						else if (!(linestr == "name"))
-						{
+						else if (!(linestr == "name")) {
 							decoderState = YENC_STATE_READHEADERNAME;
 							headeroption = 2;
 							continue;
 						}
 					}
-					else if (chr == '\r')
-					{
+					else if (chr == '\r') {
 						continue;
 					}
-					else if (chr == '\n')
-					{
+					else if (chr == '\n') {
 						decoderState = YENC_STATE_READLINE_START;
 						continue;
 					}
-					else
-					{
+					else {
 						linestr[linepos] = chr;
 						linepos++;
 					}
@@ -125,16 +126,13 @@ class yEncCodec : BinaryCodec
 
 
 					// read the rest of the line
-					if(!stream.read(chr))
-					{
+					if(!stream.read(chr)) {
 						return StreamData.Required;
 					}
 
 
-					if ((chr == ' ') || (chr == '=') || (chr == '\n') || (chr == '\r'))
-					{
-						if (linepos == 0)
-						{
+					if ((chr == ' ') || (chr == '=') || (chr == '\n') || (chr == '\r')) {
+						if (linepos == 0) {
 							// ignore this
 							continue;
 						}
@@ -143,8 +141,7 @@ class yEncCodec : BinaryCodec
 						linestr[linepos] = 0;
 
 						// get the token
-						if (headeroption == 0)
-						{
+						if (headeroption == 0) {
 							// TODO: Int to String Functions
 							//line = cast(uint)atoi(cast(StringLiteral8)linestr);
 						} else {
@@ -152,17 +149,14 @@ class yEncCodec : BinaryCodec
 							//size = cast(uint)atoi(cast(StringLiteral8)linestr);
 						}
 
-						if (chr == '\r')
-						{
+						if (chr == '\r') {
 							continue;
 						}
-						else if (chr == '\n')
-						{
+						else if (chr == '\n') {
 							decoderState = YENC_STATE_READLINE_START;
 							continue;
 						}
-						else
-						{
+						else {
 							linepos = 0;
 							decoderState = YENC_STATE_READHEADER;
 						}
@@ -182,16 +176,13 @@ class yEncCodec : BinaryCodec
 
 
 					// read the rest of the line
-					if(!stream.read(chr))
-					{
+					if(!stream.read(chr)) {
 						return StreamData.Required;
 					}
 
 
-					if ((chr == ' ') || (chr == '=') || (chr == '\n') || (chr == '\r'))
-					{
-						if (linepos == 0)
-						{
+					if ((chr == ' ') || (chr == '=') || (chr == '\n') || (chr == '\r')) {
+						if (linepos == 0) {
 							// ignore this
 							continue;
 						}
@@ -207,17 +198,14 @@ class yEncCodec : BinaryCodec
 						//	size = atoi(linestr);
 						//}
 
-						if (chr == '\r')
-						{
+						if (chr == '\r') {
 							continue;
 						}
-						else if (chr == '\n')
-						{
+						else if (chr == '\n') {
 							decoderState = YENC_STATE_READLINE_START;
 							continue;
 						}
-						else
-						{
+						else {
 							linepos = 0;
 							decoderState = YENC_STATE_READHEADER;
 						}
@@ -234,34 +222,29 @@ class yEncCodec : BinaryCodec
 
 				case YENC_STATE_READLINE_START:
 
-					if(!stream.read(chunk))
-					{
+					if(!stream.read(chunk)) {
 						return StreamData.Required;
 					}
 
-					if (chunk == ('=' | ('y'<<8)))
-					{
+					if (chunk == ('=' | ('y'<<8))) {
 						//escape sequence (valid footer)
 
 						linepos = 0;
 						decoderState = YENC_STATE_READFOOTER;
 						continue;
 					}
-					else
-					{
+					else {
 						// decode these two bytes
 
 						// DECODE!
 						chr = cast(ubyte)(chunk & 0xFF);
-						if (chr == '=')
-						{
+						if (chr == '=') {
 							chr = cast(ubyte)(chunk >> 8);
 							chr -= 64;
 
 							toStream.write(&chr, 1);
 						}
-						else
-						{
+						else {
 							chr -= 42;
 							toStream.write(&chr, 1);
 							chr = cast(ubyte)(chunk >> 8);
@@ -288,19 +271,16 @@ class yEncCodec : BinaryCodec
 
 					// pull a byte, decode it!
 
-					if(!stream.read(chr))
-					{
+					if(!stream.read(chr)) {
 						return StreamData.Required;
 					}
 
-					if (chr == '\r')
-					{
+					if (chr == '\r') {
 						// ignore carriage returns
 						continue;
 					}
 
-					if (chr == '\n')
-					{
+					if (chr == '\n') {
 						// line feeds... goto next line!
 						// check for accuracy?
 
@@ -308,8 +288,7 @@ class yEncCodec : BinaryCodec
 						continue;
 					}
 
-					if (chr == '=')
-					{
+					if (chr == '=') {
 						decoderState = YENC_STATE_READ_ESCAPE;
 						continue;
 					}
@@ -323,8 +302,7 @@ class yEncCodec : BinaryCodec
 
 				case YENC_STATE_READ_ESCAPE:
 
-					if(!stream.read(chr))
-					{
+					if(!stream.read(chr)) {
 						return StreamData.Required;
 					}
 
@@ -347,29 +325,3 @@ class yEncCodec : BinaryCodec
 		return StreamData.Invalid;
 	}
 }
-
-
-
-
-//documentation interests
-
-//DJEHUTYDOC
-
-//CODEC:yEnc
-//DESC:This codec will decode and encode using the yEnc algorithm.
-
-//METHODS
-
-//NAME:decode(Stream stream, Stream toStream, CodecState decoder)
-//DESC:Decodes the stream given by 'stream' and writes it to the stream given by 'toStream'.  A CodecState is given to store information in case of partial decoding.  As such, use this function to decode from a partial stream.
-//RETURNS:StreamData
-//DESC:Will return the state of the stream and whether it is accepted successfully.
-
-//NAME:decode(Stream stream, Stream toStream)
-//DESC:Decodes the stream given by 'stream' and writes it to the stream given by 'toStream'.  Use this function to decode from what you expect to be a complete stream.
-//RETURNS:StreamData
-//DESC:Will return the state of the stream and whether it is accepted successfully.
-
-
-
-//DJEHUTYDOCEND

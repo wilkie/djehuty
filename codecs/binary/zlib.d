@@ -1,31 +1,33 @@
+/*
+ * zlib.d
+ *
+ * This file implements the ZLIB standard. ZLIB is basically a wrapper around
+ * the DEFLATE algorithm.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.binary.zlib;
 
 import codecs.binary.codec;
-import codecs.codec;
 import codecs.binary.deflate;
 
 import interfaces.stream;
 
 private
 {
-
-
 	const auto ZLIB_STATE_INIT						= 0;
 
 	const auto ZLIB_STATE_READ_HEADER				= 1;
-
 	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
-
 	const auto ZLIB_STATE_READ_ADLER32				= 3;
-
 
 	align(1) struct _zlib_cmf_flg_header
 	{
 		ubyte zlibCMF;
 		ubyte zlibFLG;
 	};
-
-
 }
 
 // Section: Codecs/Binary

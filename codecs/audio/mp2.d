@@ -1,3 +1,12 @@
+/*
+ * mp2.d
+ *
+ * This file implements the MP2 audio standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.audio.mp2;
 
 import codecs.audio.codec;

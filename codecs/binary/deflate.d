@@ -1,10 +1,19 @@
+/*
+ * deflate.d
+ *
+ * This file implements the DEFLATE compression algorithm.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.binary.deflate;
 
 import core.endian;
+
 import interfaces.stream;
 
 import codecs.binary.codec;
-import codecs.codec;
 
 private
 {
@@ -64,39 +73,34 @@ private
 
 
 
-	struct _huffman_range
-	{
+	struct _huffman_range {
 		ushort _huffman_base;			// base
 
 		ushort huffmanMinorCode;		// minimum code can be
 		ushort huffmanMajorCode;		// maximum code can be
-	};
+	}
 
-	struct _huffman_entry
-	{
+	struct _huffman_entry {
 		ushort huffmanRangesCount;		// number of ranges
 
 		_huffman_range huffmanRanges[144];	// ranges
-	};
+	}
 
-	struct _huffman_table
-	{
+	struct _huffman_table {
 		// tables listed by bit length (1 -- 16 bits)
 		_huffman_entry huffman_entries[16];
-	};
+	}
 
 
-	struct _deflate_block_info
-	{
+	struct _deflate_block_info {
 		int deflateIsLastBlock;
 		int deflateBlockType;
-	};
+	}
 
-	struct _deflate_length_entry
-	{
+	struct _deflate_length_entry {
 		ubyte deflateLengthExtraBits;
 		ushort deflateLengthBase;
-	};
+	}
 
 	static const _huffman_table deflateFixedHuffmanTable  = { [
 
@@ -197,17 +201,13 @@ private
 // Section: Codecs/Binary
 
 // Description: This represents the DEFLATE Codec.
-class DEFLATECodec : BinaryCodec
-{
+class DEFLATECodec : BinaryCodec {
 
-	StreamData decode(AbstractStream stream, AbstractStream toStream)
-	{
+	StreamData decode(AbstractStream stream, AbstractStream toStream) {
 		uint counter;
 
-		for (;;)
-		{
-			switch (decoderState)
-			{
+		for (;;) {
+			switch (decoderState) {
 
 				// INIT DECODER //
 			case DEFLATE_STATE_INIT:
@@ -237,8 +237,7 @@ class DEFLATECodec : BinaryCodec
 
 				//writeln("read byte", stream.length());
 
-				if (!(stream.read(deflateCurByte)))
-				{
+				if (!(stream.read(deflateCurByte))) {
 
 				//writeln("read byte (return)");
 				////OutputDebugString(String(toStream.getRemaining()) + S(" EHHH??? \n"));
@@ -261,36 +260,30 @@ class DEFLATECodec : BinaryCodec
 
 			case DEFLATE_STATE_READ_BITS:
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BITS;
 					break;
 				}
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					//////OutputDebugString(String(deflateCurValue) + S("\n"));
 					//////OutputDebugString(String(deflateCurBit) + S(" - ") + String(deflateCurValueBit) + S("\n"));
-					if (deflateCurBit > deflateCurValueBit)
-					{
+					if (deflateCurBit > deflateCurValueBit) {
 						deflateCurValue |= ((deflateCurByte & deflateCurMask) >> (deflateCurBit - deflateCurValueBit));
 					}
-					else if (deflateCurBit == deflateCurValueBit)
-					{
+					else if (deflateCurBit == deflateCurValueBit) {
 						deflateCurValue |= (deflateCurByte & deflateCurMask);
 					}
-					else
-					{
+					else {
 						deflateCurValue |= ((deflateCurByte & deflateCurMask) << (deflateCurValueBit - deflateCurBit));
 					}
 
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 					//////OutputDebugString(String(deflateCurValue) + S("\n"));
 				}
-				else
-				{
+				else {
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
 
@@ -300,8 +293,7 @@ class DEFLATECodec : BinaryCodec
 				deflateCurBit++;
 				deflateCurValueBit++;
 
-				if (deflateBitsLeft == 0)
-				{
+				if (deflateBitsLeft == 0) {
 					decoderState = deflateLastState;
 				}
 
@@ -310,8 +302,7 @@ class DEFLATECodec : BinaryCodec
 			case DEFLATE_STATE_READ_BIT:
 
 				//writeln("read bit");
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BIT;
@@ -319,25 +310,20 @@ class DEFLATECodec : BinaryCodec
 					break;
 				}
 
-				if (deflateCurByte & deflateCurMask)
-				{
-					if (deflateCurBit > deflateCurValueBit)
-					{
+				if (deflateCurByte & deflateCurMask) {
+					if (deflateCurBit > deflateCurValueBit) {
 						deflateCurValue |= ((deflateCurByte & deflateCurMask) >> (deflateCurBit - deflateCurValueBit));
 					}
-					else if (deflateCurBit == deflateCurValueBit)
-					{
+					else if (deflateCurBit == deflateCurValueBit) {
 						deflateCurValue |= (deflateCurByte & deflateCurMask);
 					}
-					else
-					{
+					else {
 						deflateCurValue |= ((deflateCurByte & deflateCurMask) << (deflateCurValueBit - deflateCurBit));
 					}
 
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 				}
-				else
-				{
+				else {
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
 
@@ -367,8 +353,7 @@ class DEFLATECodec : BinaryCodec
 
 			case DEFLATE_STATE_READ_BITS_REV:
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BITS_REV;
@@ -377,14 +362,12 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCurValue <<= 1;
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					deflateCurValue++;
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 					//////OutputDebugString(String(deflateCurValue) + S("\n"));
 				}
-				else
-				{
+				else {
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
 
@@ -393,8 +376,7 @@ class DEFLATECodec : BinaryCodec
 
 				deflateBitsLeft--;
 
-				if (deflateBitsLeft == 0)
-				{
+				if (deflateBitsLeft == 0) {
 					decoderState = deflateLastState;
 				}
 
@@ -402,8 +384,7 @@ class DEFLATECodec : BinaryCodec
 
 			case DEFLATE_STATE_READ_BIT_REV:
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BIT_REV;
@@ -412,14 +393,12 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCurValue <<= 1;
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					deflateCurValue++;
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 					//////OutputDebugString(String(deflateCurValue) + S("\n"));
 				}
-				else
-				{
+				else {
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
 				//////OutputDebugString(String(deflateCurValue) + S(": code\n"));
@@ -454,12 +433,10 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCurBlock.deflateIsLastBlock = deflateCurValue;
 
-				if (deflateCurBlock.deflateIsLastBlock)
-				{
+				if (deflateCurBlock.deflateIsLastBlock) {
 					//////OutputDebugStringA("deflate - this is final block\n");
 				}
-				else
-				{
+				else {
 					//////OutputDebugStringA("deflate - this is not the final block\n");
 				}
 
@@ -487,8 +464,7 @@ class DEFLATECodec : BinaryCodec
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				switch (deflateCurBlock.deflateBlockType)
-				{
+				switch (deflateCurBlock.deflateBlockType) {
 
 					// NO COMPRESSION INIT //
 				case DEFLATE_COMPRESSION_NO_COMPRESSION:
@@ -555,8 +531,7 @@ class DEFLATECodec : BinaryCodec
 				////OutputDebugStringA("deflate - decoding (no compression)\n");
 
 				// GET THE DATA LENGTH
-				if (!(stream.read(&deflateDataLength, 2)))
-				{
+				if (!(stream.read(&deflateDataLength, 2))) {
 					return StreamData.Required;
 				}
 
@@ -567,8 +542,7 @@ class DEFLATECodec : BinaryCodec
 				// SKIP NLEN //
 			case DEFLATE_STATE_DEFLATE_NO_COMPRESSION_SKIP:
 
-				if (!(stream.skip(2)))
-				{
+				if (!(stream.skip(2))) {
 					return StreamData.Required;
 				}
 
@@ -578,15 +552,13 @@ class DEFLATECodec : BinaryCodec
 
 			case DEFLATE_STATE_DEFLATE_NO_COMPRESSION_COPY:
 
-				if (!(toStream.append(stream, deflateDataLength)))
-				{
+				if (!(toStream.append(stream, deflateDataLength))) {
 					return StreamData.Required;
 				}
 
 				////OutputDebugStringA("deflate - block decompression done\n");
 
-				if (deflateCurBlock.deflateIsLastBlock)
-				{
+				if (deflateCurBlock.deflateIsLastBlock) {
 					////OutputDebugStringA("deflate - decompression done\n");
 	//				writeln("deflate - copy - done");
 					return StreamData.Complete;
@@ -620,19 +592,16 @@ class DEFLATECodec : BinaryCodec
 				// UNLESS CURRENT BIT IS THE 7th BIT
 			case DEFLATE_STATE_DEFLATE_FIXED_CHECK_CODE:
 
-				for (deflateCounter = 0; deflateCounter < deflateCurHuffmanEntry.huffmanRangesCount; deflateCounter++)
-				{
+				for (deflateCounter = 0; deflateCounter < deflateCurHuffmanEntry.huffmanRangesCount; deflateCounter++) {
 					if ( (deflateCurValue >= deflateCurHuffmanEntry.huffmanRanges[deflateCounter].huffmanMinorCode) &&
-						 (deflateCurValue <= deflateCurHuffmanEntry.huffmanRanges[deflateCounter].huffmanMajorCode) )
-					{
+						 (deflateCurValue <= deflateCurHuffmanEntry.huffmanRanges[deflateCounter].huffmanMajorCode) ) {
 						// THIS IS A VALID CODE
 						// GET THE DECODED LITERAL VALUE
 
 						deflateCurCode = deflateCurValue - deflateCurHuffmanEntry.huffmanRanges[deflateCounter].huffmanMinorCode;
 						deflateCurCode += deflateCurHuffmanEntry.huffmanRanges[deflateCounter]._huffman_base;
 
-						if (deflateCurCode < 256)
-						{
+						if (deflateCurCode < 256) {
 							// IT IS A LITERAL CODE
 
 							// ADD CODE TO OUTPUT STREAM
@@ -652,8 +621,7 @@ class DEFLATECodec : BinaryCodec
 							//////OutputDebugString(S("deflate - code found: ") + String(deflateCurCode) + S("\n"));
 
 						}
-						else if (deflateCurCode == 256)
-						{
+						else if (deflateCurCode == 256) {
 							// END OF BLOCK CODE
 
 							// RETURN TO GATHERING BLOCKS
@@ -661,8 +629,7 @@ class DEFLATECodec : BinaryCodec
 
 							////OutputDebugString(S("deflate - end of code found: ") + String(deflateCurCode) + S("\n"));
 
-							if (deflateCurBlock.deflateIsLastBlock)
-							{
+							if (deflateCurBlock.deflateIsLastBlock) {
 	//							writeln("deflate - fixed - done");
 								return StreamData.Complete;
 							}
@@ -675,8 +642,7 @@ class DEFLATECodec : BinaryCodec
 
 							decoderState = DEFLATE_STATE_READ_BIT;
 						}
-						else
-						{
+						else {
 							// LENGTH CODE
 
 							// CALCULATE THE TRUE LENGTH
@@ -689,14 +655,12 @@ class DEFLATECodec : BinaryCodec
 							deflateCurValue = 0;
 							deflateCurValueBit = 0;
 
-							if (deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits > 0)
-							{
+							if (deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits > 0) {
 								decoderState = DEFLATE_STATE_READ_BITS;
 								deflateBitsLeft = deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits;
 								deflateLastState = DEFLATE_STATE_DEFLATE_FIXED_GET_LENGTH;
 							}
-							else
-							{
+							else {
 								// WE HAVE THE LENGTH, FIND THE DISTANCE
 
 								// IN FIXED-HUFFMAN, THE DISTANCE IS A FIXED 5 BIT VALUE, PLUS ANY EXTRA BITS
@@ -710,8 +674,7 @@ class DEFLATECodec : BinaryCodec
 						break;
 					}
 				}
-				if (decoderState == DEFLATE_STATE_DEFLATE_FIXED_CHECK_CODE)
-				{
+				if (decoderState == DEFLATE_STATE_DEFLATE_FIXED_CHECK_CODE) {
 					//////OutputDebugStringA("deflate - Huffman code not found, reading another bit\n");
 					// READ IN ANOTHER BIT
 					// INCREMENT HUFFMAN ENTRY COUNTER
@@ -720,8 +683,7 @@ class DEFLATECodec : BinaryCodec
 
 					decoderState = DEFLATE_STATE_READ_BIT_REV;
 
-					if (deflateCurHuffmanBitLength == 16)
-					{
+					if (deflateCurHuffmanBitLength == 16) {
 						//////OutputDebugStringA("deflate - Huffman maximum code length exceeded\n");
 						return StreamData.Invalid;
 					}
@@ -766,8 +728,7 @@ class DEFLATECodec : BinaryCodec
 				deflateDistance = globalDeflateDistanceTable[deflateCurValue].deflateLengthBase;
 				//////OutputDebugString(S("deflate - distance base: ") + String(deflateDistance) + S("\n"));
 
-				if (globalDeflateDistanceTable[deflateCurValue].deflateLengthExtraBits > 0)
-				{
+				if (globalDeflateDistanceTable[deflateCurValue].deflateLengthExtraBits > 0) {
 					decoderState = DEFLATE_STATE_READ_BITS;
 
 					deflateBitsLeft = globalDeflateDistanceTable[deflateCurValue].deflateLengthExtraBits;
@@ -776,8 +737,7 @@ class DEFLATECodec : BinaryCodec
 					deflateCurValue = 0;
 					deflateCurValueBit = 0;
 				}
-				else
-				{
+				else {
 					// THE DISTANCE REQUIRES NO OTHER INPUT
 
 					// ADD TO THE DATA STREAM BY USING INTERPRET STATE
@@ -794,8 +754,7 @@ class DEFLATECodec : BinaryCodec
 
 					//////OutputDebugString(S("deflate - code found: <len ") + String(deflateLength) + S(", dis ") + String(deflateDistance) + S(">\n"));
 
-					if (!toStream.duplicateFromEnd(deflateDistance, deflateLength))
-					{
+					if (!toStream.duplicateFromEnd(deflateDistance, deflateLength)) {
 						//////OutputDebugStringA("deflate - corrupt data - distance, length forced decoder out of range\n");
 						return StreamData.Invalid;
 					}
@@ -823,8 +782,7 @@ class DEFLATECodec : BinaryCodec
 
 				//////OutputDebugString(S("deflate - code found: <len ") + String(deflateLength) + S(", dis ") + String(deflateDistance) + S(">\n"));
 
-				if (!toStream.duplicateFromEnd(deflateDistance, deflateLength))
-				{
+				if (!toStream.duplicateFromEnd(deflateDistance, deflateLength)) {
 					//////OutputDebugStringA("deflate - corrupt data - distance, length forced decoder out of range\n");
 					return StreamData.Invalid;
 				}
@@ -853,19 +811,16 @@ class DEFLATECodec : BinaryCodec
 				////OutputDebugString(S("HLIT: ") + String(deflateHLIT) + S("\n"));
 
 				// INITIALIZE CODE LENGTH HUFFMAN TABLE
-				for (deflateCounter=0; deflateCounter < 16; deflateCounter++)
-				{
+				for (deflateCounter=0; deflateCounter < 16; deflateCounter++) {
 					deflateCodeLengthTable.huffman_entries[deflateCounter].huffmanRangesCount = 0;
 				}
 
 				// INITIALIZE THE CODE LENGTH COUNT
-				for (deflateCounter=0; deflateCounter < 7; deflateCounter++)
-				{
+				for (deflateCounter=0; deflateCounter < 7; deflateCounter++) {
 					deflateCodeLengthCount[deflateCounter] = 0;
 				}
 
-				for (deflateCounter=0; deflateCounter < 8; deflateCounter++)
-				{
+				for (deflateCounter=0; deflateCounter < 8; deflateCounter++) {
 					deflateHuffmanLengthCounts[deflateCounter] = 0;
 				}
 
@@ -920,8 +875,7 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCodeLengths[deflateCodeLengthsReference[deflateCounter]] = cast(ubyte)deflateCurValue;
 
-				if (deflateCurValue != 0)
-				{
+				if (deflateCurValue != 0) {
 					deflateCodeLengthCount[deflateCurValue-1]++;
 				}
 
@@ -935,22 +889,18 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCounter++;
 
-				if (deflateCounter != deflateCounterMax)
-				{
+				if (deflateCounter != deflateCounterMax) {
 					// READ 3 MORE BITS
 					deflateBitsLeft = 3;
 					decoderState = DEFLATE_STATE_READ_BITS;
 				}
-				else
-				{
-					for ( ; deflateCounter < 19; deflateCounter++)
-					{
+				else {
+					for ( ; deflateCounter < 19; deflateCounter++) {
 						deflateCodeLengths[deflateCodeLengthsReference[deflateCounter]] = 0;
 						deflateHuffmanLengthCounts[0]++;
 					}
 
-					for (deflateCounter = 0; deflateCounter < 578; deflateCounter++)
-					{
+					for (deflateCounter = 0; deflateCounter < 578; deflateCounter++) {
 						deflateHuffmanTable[deflateCounter] = 0xFFFF;
 					}
 
@@ -973,8 +923,7 @@ class DEFLATECodec : BinaryCodec
 
 					uint p,o,curentry;
 
-					for ( p=1; p < 16; p++)
-					{
+					for ( p=1; p < 16; p++) {
 						//////OutputDebugString(String(deflateHuffmanLengthCounts[p]) + S(" <-- len\n"));
 						deflateHuffmanNextCodes[p] = cast(ushort)((deflateHuffmanNextCodes[p-1] + deflateHuffmanLengthCounts[p-1]) * 2);
 						//////OutputDebugString(String(deflateHuffmanNextCodes[p]) + S(" <-- next code\n"));
@@ -983,8 +932,7 @@ class DEFLATECodec : BinaryCodec
 					pos = 0;
 					filled = 0;
 
-					for ( ; deflateCounter < 19; deflateCounter++)
-					{
+					for ( ; deflateCounter < 19; deflateCounter++) {
 						//////OutputDebugString(String(deflateCounter) + S(": (") + String(deflateCodeLengths[deflateCounter]) + S(") ") + String(deflateHuffmanNextCodes[deflateCodeLengths[deflateCounter]]) + S("\n"));
 						curentry = deflateHuffmanNextCodes[deflateCodeLengths[deflateCounter]]++;
 
@@ -992,24 +940,20 @@ class DEFLATECodec : BinaryCodec
 						//////OutputDebugString(S("start - ") + String(pos) + S(",,, ") + String(deflateCodeLengths[deflateCounter]) + S("\n"));
 
 						// GO THROUGH EVERY BIT
-						for (o=0; o < deflateCodeLengths[deflateCounter]; o++)
-						{
+						for (o=0; o < deflateCodeLengths[deflateCounter]; o++) {
 							bit = cast(ubyte)((curentry >> (deflateCodeLengths[deflateCounter] - o - 1)) & 1);
 
 							pos_exp = (2 * pos) + bit;
 						//////OutputDebugString(S("pos_exp - ") + String(pos_exp) + S("\n"));
 
 
-							if ((o + 1) > (19 - 2))
-							{
+							if ((o + 1) > (19 - 2)) {
 								//////OutputDebugStringA("error - tree is mishaped\n");
 							}
-							else if (deflateHuffmanTable[pos_exp] == 0xFFFF)
-							{
+							else if (deflateHuffmanTable[pos_exp] == 0xFFFF) {
 								//////OutputDebugStringA("not in tree\n");
 								// IS THIS THE LAST BIT?
-								if (o + 1 == deflateCodeLengths[deflateCounter])
-								{
+								if (o + 1 == deflateCodeLengths[deflateCounter]) {
 									// JUST OUTPUT THE CODE
 									//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(deflateCounter) + S(" (code)\n"));
 
@@ -1017,16 +961,14 @@ class DEFLATECodec : BinaryCodec
 
 									pos = 0;
 								}
-								else
-								{
+								else {
 									filled++;
 									//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(filled + 19) + S(" (address)\n"));
 									deflateHuffmanTable[pos_exp] = cast(ushort)(filled + 19);
 									pos = filled;
 								}
 							}
-							else
-							{
+							else {
 								//////OutputDebugStringA("is in tree\n");
 								pos = deflateHuffmanTable[pos_exp] - 19;
 								//////OutputDebugString(S("now - ") + String(pos) + S("\n"));
@@ -1043,8 +985,7 @@ class DEFLATECodec : BinaryCodec
 					deflateCounter = 0;
 					deflateCounterMax = deflateHLIT + 257;
 
-					for (counter=0; counter<16; counter++)
-					{
+					for (counter=0; counter<16; counter++) {
 						deflateHuffmanLengthCounts[counter] = 0;
 						deflateDistanceLengthCounts[counter] = 0;
 					}
@@ -1089,21 +1030,18 @@ class DEFLATECodec : BinaryCodec
 
 				//////OutputDebugStringA("deflate - decoding lengths\n");
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LENS;
 					break;
 				}
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					deflateCurValue = 1;
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 				}
-				else
-				{
+				else {
 					deflateCurValue = 0;
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
@@ -1112,32 +1050,28 @@ class DEFLATECodec : BinaryCodec
 				deflateCurBit++;
 
 				// CHECK IN TREE
-				if(deflateTreePosition >= 19)
-				{
+				if(deflateTreePosition >= 19) {
 					////OutputDebugStringA("deflate - corrupt data\n");
 					return StreamData.Invalid;
 				}
 
 				deflateCurCode = deflateHuffmanTable[(2 * deflateTreePosition) + deflateCurValue];
 
-				if (deflateCurCode < 19)
-				{
+				if (deflateCurCode < 19) {
 					deflateTreePosition = 0;
 				}
-				else
-				{
+				else {
 					deflateTreePosition = cast(ushort)(deflateCurCode - 19);
 				}
 
-				if (deflateTreePosition == 0)
-				{
+				if (deflateTreePosition == 0) {
 					//////OutputDebugStringA("deflate - found length code: ");
 					//////OutputDebugString(String(deflateCurCode) + S("\n"));
 
 					// INTERPRET CODE
 
-					if (deflateCurCode < 16) // 0...15 - LITERAL LENGTHS //
-					{
+					if (deflateCurCode < 16) {
+						// 0...15 - LITERAL LENGTHS //
 
 						// JUST INSERT INTO ARRAY
 						deflateCurLengthArray[deflateCounter] = cast(ubyte)deflateCurCode;
@@ -1167,8 +1101,7 @@ class DEFLATECodec : BinaryCodec
 
 						//decoderState = DEFLATE_STATE_READ_BITS_REV;
 					}
-					else if (deflateCurCode == 16)
-					{
+					else if (deflateCurCode == 16) {
 
 						// COPY PREVIOUS LENGTH 3 - 6 TIMES //
 						// NEXT TWO [2] BITS DETERMINE LENGTH ( bits[2] + 3 ) //
@@ -1181,8 +1114,7 @@ class DEFLATECodec : BinaryCodec
 						deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN16;
 						break;
 					}
-					else if (deflateCurCode == 17)
-					{
+					else if (deflateCurCode == 17) {
 						// REPEAT CODE LENGTH OF 0 FOR 3 - 10 TIMES
 						// NEXT THREE [3] BITS DETERMINE LENGTH //
 
@@ -1194,8 +1126,7 @@ class DEFLATECodec : BinaryCodec
 						deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN17;
 						break;
 					}
-					else if (deflateCurCode == 18)
-					{
+					else if (deflateCurCode == 18) {
 						// REPEAT CODE LENGTH OF 0 FOR 11 - 138 TIMES
 						// NEXT SEVEN [7] BITS DETERMINE LENGTH //
 
@@ -1221,12 +1152,10 @@ class DEFLATECodec : BinaryCodec
 
 				//////OutputDebugString(String(deflateCurValue) + S("\n"));
 
-				if (deflateCounter != 0)
-				{
+				if (deflateCounter != 0) {
 					deflateCurCode = deflateCurLengthArray[deflateCounter-1];
 				}
-				else
-				{
+				else {
 					////OutputDebugStringA("deflate - corrupt data\n");
 					return StreamData.Invalid;
 				}
@@ -1241,15 +1170,13 @@ class DEFLATECodec : BinaryCodec
 
 				decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LENS;
 
-				for (counter=0 ; counter<deflateCurValue; counter++)
-				{
+				for (counter=0 ; counter<deflateCurValue; counter++) {
 					deflateCurLengthArray[deflateCounter] = cast(ubyte)deflateCurCode;
 					deflateCurLengthCountArray[deflateCurCode]++;
 
 					deflateCounter++;
 
-					if (deflateCounter == deflateCounterMax)
-					{
+					if (deflateCounter == deflateCounterMax) {
 						// WE CANNOT REPEAT THE VALUE
 
 						decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_DIST;
@@ -1287,15 +1214,13 @@ class DEFLATECodec : BinaryCodec
 
 				decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LENS;
 
-				for (counter=0 ; counter<deflateCurValue; counter++)
-				{
+				for (counter=0 ; counter<deflateCurValue; counter++) {
 					deflateCurLengthArray[deflateCounter] = 0;
 					deflateCurLengthCountArray[0]++;
 
 					deflateCounter++;
 
-					if (deflateCounter == deflateCounterMax)
-					{
+					if (deflateCounter == deflateCounterMax) {
 						// WE CANNOT REPEAT THE VALUE
 						// JUST STOP
 						//////OutputDebugStringA("deflate - attempted to write a code out of bounds, continuing anyway\n");
@@ -1313,13 +1238,11 @@ class DEFLATECodec : BinaryCodec
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_DIST:
 				//----writeln("deflate dynamic decode dist");
 
-				if (deflateCurLengthArray == deflateDistanceLengths.ptr)
-				{
+				if (deflateCurLengthArray == deflateDistanceLengths.ptr) {
 					// FINISH INITIALIZING THE REST OF THE DISTANCE CODE LENGTH ARRAY //
 
 					//write out rest of entries to 0
-					for (; deflateCounter < 32; deflateCounter++)
-					{
+					for (; deflateCounter < 32; deflateCounter++) {
 						deflateDistanceLengths[deflateCounter] = 0;
 						deflateDistanceLengthCounts[0]++;
 					}
@@ -1336,8 +1259,7 @@ class DEFLATECodec : BinaryCodec
 				// FINISH INITIALIZING THE REST OF THE HUFFMAN CODE LENGTH ARRAY //
 
 				//write out rest of entries to 0
-				for (; deflateCounter < 288; deflateCounter++)
-				{
+				for (; deflateCounter < 288; deflateCounter++) {
 					deflateHuffmanLengths[deflateCounter] = 0;
 					deflateHuffmanLengthCounts[0]++;
 				}
@@ -1377,13 +1299,11 @@ class DEFLATECodec : BinaryCodec
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_BUILD_TREE:
 				//----writeln("deflate dynamic build tree");
 
-				for (deflateCounter = 0; deflateCounter < 578; deflateCounter++)
-				{
+				for (deflateCounter = 0; deflateCounter < 578; deflateCounter++) {
 					deflateHuffmanTable[deflateCounter] = 0xFFFF;
 				}
 
-				for (deflateCounter = 0; deflateCounter < 68; deflateCounter++)
-				{
+				for (deflateCounter = 0; deflateCounter < 68; deflateCounter++) {
 					deflateDistanceTable[deflateCounter] = 0xFFFF;
 				}
 
@@ -1404,8 +1324,7 @@ class DEFLATECodec : BinaryCodec
 				//////OutputDebugString(String(deflateHuffmanLengthCounts[0]) + S(" <-- len\n"));
 				//////OutputDebugString(String(deflateHuffmanNextCodes[0]) + S("\n"));
 
-				for ( p=1; p < 16; p++)
-				{
+				for ( p=1; p < 16; p++) {
 					//////OutputDebugString(String(deflateHuffmanLengthCounts[p]) + S(" <-- len\n"));
 					deflateHuffmanNextCodes[p] = cast(ushort)((deflateHuffmanNextCodes[p-1] + deflateHuffmanLengthCounts[p-1]) * 2);
 					//////OutputDebugString(String(deflateHuffmanNextCodes[p]) + S(" <-- next code\n"));
@@ -1416,30 +1335,25 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCounter = 0;
 
-				for ( ; deflateCounter < 288; deflateCounter++)
-				{
+				for ( ; deflateCounter < 288; deflateCounter++) {
 					//////OutputDebugString(String(deflateCounter) + S(": (") + String(deflateHuffmanLengths[deflateCounter]) + S(") ") + String(deflateHuffmanNextCodes[deflateHuffmanLengths[deflateCounter]]) + S("\n"));
 					curentry = deflateHuffmanNextCodes[deflateHuffmanLengths[deflateCounter]]++;
 
 					//////OutputDebugStringA("deflate - curentry read\n");
 
 					// GO THROUGH EVERY BIT
-					for (o=0; o < deflateHuffmanLengths[deflateCounter]; o++)
-					{
+					for (o=0; o < deflateHuffmanLengths[deflateCounter]; o++) {
 						bit = cast(ubyte)((curentry >> (deflateHuffmanLengths[deflateCounter] - o - 1)) & 1);
 
 						pos_exp = (2 * pos) + bit;
 
-						if ((o + 1) > (288 - 2))
-						{
+						if ((o + 1) > (288 - 2)) {
 							//////OutputDebugStringA("error - tree is mishaped\n");
 						}
-						else if (deflateHuffmanTable[pos_exp] == 0xFFFF)
-						{
+						else if (deflateHuffmanTable[pos_exp] == 0xFFFF) {
 							//////OutputDebugStringA("not in tree\n");
 							// IS THIS THE LAST BIT?
-							if (o + 1 == deflateHuffmanLengths[deflateCounter])
-							{
+							if (o + 1 == deflateHuffmanLengths[deflateCounter]) {
 								// JUST OUTPUT THE CODE
 								//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(deflateCounter) + S(" (code)\n"));
 
@@ -1447,16 +1361,14 @@ class DEFLATECodec : BinaryCodec
 
 								pos = 0;
 							}
-							else
-							{
+							else {
 								filled++;
 								//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(filled + 288) + S(" (address)\n"));
 								deflateHuffmanTable[pos_exp] = cast(ushort)(filled + 288);
 								pos = filled;
 							}
 						}
-						else
-						{
+						else {
 							//////OutputDebugStringA("is in tree\n");
 							pos = deflateHuffmanTable[pos_exp] - 288;
 						}
@@ -1471,8 +1383,7 @@ class DEFLATECodec : BinaryCodec
 				//////OutputDebugString(String(deflateDistanceLengthCounts[0]) + S(" <-- len\n"));
 				//////OutputDebugString(String(deflateHuffmanNextCodes[0]) + S("\n"));
 
-				for ( p=1; p < 16; p++)
-				{
+				for ( p=1; p < 16; p++) {
 					//////OutputDebugString(String(deflateDistanceLengthCounts[p]) + S(" <-- len\n"));
 					deflateHuffmanNextCodes[p] = cast(ushort)((deflateHuffmanNextCodes[p-1] + deflateDistanceLengthCounts[p-1]) * 2);
 					//////OutputDebugString(String(deflateHuffmanNextCodes[p]) + S(" <-- next code\n"));
@@ -1483,30 +1394,25 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCounter = 0;
 
-				for ( ; deflateCounter < 32; deflateCounter++)
-				{
+				for ( ; deflateCounter < 32; deflateCounter++) {
 					//////OutputDebugString(String(deflateCounter) + S(": (") + String(deflateDistanceLengths[deflateCounter]) + S(") ") + String(deflateHuffmanNextCodes[deflateDistanceLengths[deflateCounter]]) + S("\n"));
 					curentry = deflateHuffmanNextCodes[deflateDistanceLengths[deflateCounter]]++;
 
 					//////OutputDebugStringA("deflate - curentry read\n");
 
 					// GO THROUGH EVERY BIT
-					for (o=0; o < deflateDistanceLengths[deflateCounter]; o++)
-					{
+					for (o=0; o < deflateDistanceLengths[deflateCounter]; o++) {
 						bit = cast(ubyte)((curentry >> (deflateDistanceLengths[deflateCounter] - o - 1)) & 1);
 
 						pos_exp = (2 * pos) + bit;
 
-						if ((o + 1) > (32 - 2))
-						{
+						if ((o + 1) > (32 - 2)) {
 							//////OutputDebugStringA("error - tree is mishaped\n");
 						}
-						else if (deflateDistanceTable[pos_exp] == 0xFFFF)
-						{
+						else if (deflateDistanceTable[pos_exp] == 0xFFFF) {
 							//////OutputDebugStringA("not in tree\n");
 							// IS THIS THE LAST BIT?
-							if (o + 1 == deflateDistanceLengths[deflateCounter])
-							{
+							if (o + 1 == deflateDistanceLengths[deflateCounter]) {
 								// JUST OUTPUT THE CODE
 								//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(deflateCounter) + S(" (code)\n"));
 
@@ -1514,16 +1420,14 @@ class DEFLATECodec : BinaryCodec
 
 								pos = 0;
 							}
-							else
-							{
+							else {
 								filled++;
 								//////OutputDebugString(S(":") + String(pos_exp) + S(": ") + String(filled + 32) + S(" (address)\n"));
 								deflateDistanceTable[pos_exp] = cast(ushort)(filled + 32);
 								pos = filled;
 							}
 						}
-						else
-						{
+						else {
 							//////OutputDebugStringA("is in tree\n");
 							pos = deflateDistanceTable[pos_exp] - 32;
 						}
@@ -1534,13 +1438,11 @@ class DEFLATECodec : BinaryCodec
 
 				//////OutputDebugStringA("deflate - building code trees\n");
 
-				for (counter = 0; counter < 16; counter++)
-				{
+				for (counter = 0; counter < 16; counter++) {
 					//////OutputDebugString(String(counter+1) + S(" (length): ") + String(deflateHuffmanLengthCounts[counter]) + S("\n"));
 				}
 
-				for (counter = 0; counter < 16; counter++)
-				{
+				for (counter = 0; counter < 16; counter++) {
 					//////OutputDebugString(String(counter+1) + S(" (distance): ") + String(deflateDistanceLengthCounts[counter]) + S("\n"));
 				}
 
@@ -1571,8 +1473,7 @@ class DEFLATECodec : BinaryCodec
 				//////OutputDebugString(S("1: ") + String(deflateHuffmanLengthCounts[0]) + S("\n"));
 				// GET BIT
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODER;
@@ -1580,13 +1481,11 @@ class DEFLATECodec : BinaryCodec
 					break;
 				}
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					deflateCurValue = 1;
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 				}
-				else
-				{
+				else {
 					deflateCurValue = 0;
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
@@ -1600,25 +1499,21 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCurCode = deflateHuffmanTable[(2 * deflateTreePosition) + deflateCurValue];
 
-				if (deflateCurCode < 288)
-				{
+				if (deflateCurCode < 288) {
 					deflateTreePosition = 0;
 				}
-				else
-				{
+				else {
 					deflateTreePosition = cast(ushort)(deflateCurCode - 288);
 				}
 
 
-				if (deflateTreePosition == 0)
-				{
+				if (deflateTreePosition == 0) {
 					//////OutputDebugStringA("deflate - found code: ");
 					//////OutputDebugString(String(deflateCurCode) + S("\n"));
 
 					// INTERPRET CODE
 
-					if (deflateCurCode < 256)
-					{
+					if (deflateCurCode < 256) {
 						// IT IS A LITERAL CODE
 
 						// ADD CODE TO OUTPUT STREAM
@@ -1639,8 +1534,7 @@ class DEFLATECodec : BinaryCodec
 						//////OutputDebugString(S("output: ") + String(deflateCurCode) + S("\n"));
 
 					}
-					else if (deflateCurCode == 256)
-					{
+					else if (deflateCurCode == 256) {
 						// END OF BLOCK CODE
 
 						// RETURN TO GATHERING BLOCKS
@@ -1648,8 +1542,7 @@ class DEFLATECodec : BinaryCodec
 
 						////OutputDebugString(S("deflate - end of code found: ") + String(deflateCurCode) + S("\n"));
 
-						if (deflateCurBlock.deflateIsLastBlock)
-						{
+						if (deflateCurBlock.deflateIsLastBlock) {
 							//////OutputDebugStringA("deflate - done\n");
 	//						writeln("deflate - dynamic - done");
 				//writeln("deflate dynamic decoder done (return)");
@@ -1666,8 +1559,7 @@ class DEFLATECodec : BinaryCodec
 				//writeln("deflate dynamic decoder done (break2)");
 						break;
 					}
-					else
-					{
+					else {
 						// LENGTH CODE
 
 						// CALCULATE THE TRUE LENGTH
@@ -1680,16 +1572,14 @@ class DEFLATECodec : BinaryCodec
 						deflateCurValueBit = 0;
 
 						//----writeln("b2");
-						if (deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits > 0)
-						{
+						if (deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits > 0) {
 							//----writeln("c1");
 							//////OutputDebugString(S("deflate - length code reading extra bits: ") + String(deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits) + S("\n"));
 							decoderState = DEFLATE_STATE_READ_BITS;
 							deflateBitsLeft = deflateLengthTable[deflateCurCode - 257].deflateLengthExtraBits;
 							deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_GET_LENGTH;
 						}
-						else
-						{
+						else {
 							// WE ALREADY HAVE THE LENGTH, FIND THE DISTANCE
 							//////OutputDebugString(S("deflate - length: ") + String(deflateLength) + S("\n"));
 
@@ -1742,21 +1632,18 @@ class DEFLATECodec : BinaryCodec
 				//////OutputDebugString(String(deflateCurValue) + S("\n"));
 				// GET BIT
 
-				if (deflateCurMask == 0)
-				{
+				if (deflateCurMask == 0) {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_GET_DISTANCE;
 					break;
 				}
 
-				if (deflateCurByte & deflateCurMask)
-				{
+				if (deflateCurByte & deflateCurMask) {
 					deflateCurValue = 1;
 					//////OutputDebugStringA("deflate - read bit: 1\n");
 				}
-				else
-				{
+				else {
 					deflateCurValue = 0;
 					//////OutputDebugStringA("deflate - read bit: 0\n");
 				}
@@ -1769,17 +1656,14 @@ class DEFLATECodec : BinaryCodec
 
 				deflateCurCode = deflateDistanceTable[(2 * deflateTreePosition) + deflateCurValue];
 
-				if (deflateCurCode < 32)
-				{
+				if (deflateCurCode < 32) {
 					deflateTreePosition = 0;
 				}
-				else
-				{
+				else {
 					deflateTreePosition = cast(ushort)(deflateCurCode - 32);
 				}
 
-				if (deflateTreePosition == 0)
-				{
+				if (deflateTreePosition == 0) {
 					//////OutputDebugStringA("deflate - found distance code: ");
 					//////OutputDebugString(String(deflateCurCode) + S("\n"));
 
@@ -1788,8 +1672,7 @@ class DEFLATECodec : BinaryCodec
 					deflateDistance = globalDeflateDistanceTable[deflateCurCode].deflateLengthBase;
 					//////OutputDebugString(S("deflate - distance base: ") + String(deflateDistance) + S("\n"));
 
-					if (globalDeflateDistanceTable[deflateCurCode].deflateLengthExtraBits > 0)
-					{
+					if (globalDeflateDistanceTable[deflateCurCode].deflateLengthExtraBits > 0) {
 						decoderState = DEFLATE_STATE_READ_BITS;
 
 						deflateBitsLeft = globalDeflateDistanceTable[deflateCurCode].deflateLengthExtraBits;
@@ -1798,8 +1681,7 @@ class DEFLATECodec : BinaryCodec
 						deflateCurValue = 0;
 						deflateCurValueBit = 0;
 					}
-					else
-					{
+					else {
 						// THE DISTANCE REQUIRES NO OTHER INPUT
 
 						// ADD TO THE DATA STREAM
@@ -1813,8 +1695,7 @@ class DEFLATECodec : BinaryCodec
 
 						//deflateBitsLeft = deflateCodeLengthCodeSize;
 
-						if (!toStream.duplicateFromEnd(deflateDistance, deflateLength))
-						{
+						if (!toStream.duplicateFromEnd(deflateDistance, deflateLength)) {
 							//////OutputDebugStringA("deflate - corrupt data - distance, length forced decoder out of range\n");
 							return StreamData.Invalid;
 						}
@@ -1845,8 +1726,7 @@ class DEFLATECodec : BinaryCodec
 
 				deflateBitsLeft = deflateCodeLengthCodeSize;
 
-				if (!toStream.duplicateFromEnd(deflateDistance, deflateLength))
-				{
+				if (!toStream.duplicateFromEnd(deflateDistance, deflateLength)) {
 					//////OutputDebugStringA("deflate - corrupt data - distance, length forced decoder out of range\n");
 					return StreamData.Invalid;
 				}

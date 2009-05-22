@@ -98,7 +98,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
-	dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -unittest $<
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -unittest $<
 else
 endif
 endif

@@ -1,13 +1,18 @@
+/*
+ * codec.d
+ *
+ * This file implements the base class for all codecs.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.codec;
 
 import interfaces.stream;
 
 import core.time;
 import core.string;
-
-class BaseCodecProgress
-{
-}
 
 // Description: Base class for all codecs
 class Codec

@@ -1,3 +1,14 @@
+/*
+ * wav.d
+ *
+ * This file implements the WAV audio standard. A "wave" is a chunked format
+ * and a container format. It contains audio data in a myriad of different
+ * encodings.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.audio.wav;
 
 import codecs.audio.codec;

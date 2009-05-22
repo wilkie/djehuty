@@ -1,3 +1,12 @@
+/*
+ * codec.d
+ *
+ * This file implements the abstraction for an audio codec.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.audio.codec;
 
 import codecs.codec;
@@ -28,7 +37,7 @@ public:
 
 	override String getName()
 	{
-		return new String("Unknown Image Codec");
+		return new String("Unknown Audio Codec");
 	}
 
 	Time getCurrentTime()
