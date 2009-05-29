@@ -939,9 +939,6 @@ extern(Windows)
 
 	LPWSTR GetCommandLineW();
 
-	HMODULE LoadLibraryW(LPCWSTR);
-	FARPROC GetProcAddress (HMODULE,LPCSTR);
-
 	LRESULT DefWindowProcW(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 	HBRUSH CreateSolidBrush(COLORREF color);
@@ -1044,6 +1041,10 @@ extern(Windows)
 	BOOL SetWindowPos(HWND, HWND, int, int, int, int, UINT);
 	void ExitProcess(uint uExitCode);
 	DWORD GetCurrentProcessId();
+	HMODULE LoadLibraryW(LPCWSTR lpFileName);
+	HMODULE LoadLibraryA(LPCTSTR lpFileName);
+	FARPROC GetProcAddressW (HMODULE,LPCWSTR);
+	FARPROC GetProcAddressA (HMODULE,LPCSTR);
 
 	// MISC
 	int MulDiv(int,int,int);

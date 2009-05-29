@@ -11,6 +11,7 @@
 module platform.unix.scaffolds.system;
 
 import core.definitions;
+import core.string;
 
 // Querying displays:
 
@@ -43,4 +44,26 @@ ulong SystemGetTotalMemory() {
 
 ulong SystemGetAvailableMemory() {
 	return 0;
+}
+
+bool SystemLoadLibrary(ref LibraryPlatformVars vars, String libraryPath) {
+	char[] path = libraryPath.array ~ "\0";
+	//vars.handle = dlopen(path.ptr,RTLD_LAZY);
+	return vars.handle !is null;
+}
+
+void SystemFreeLibrary(ref LibraryPlatformVars vars) {
+	if (vars.handle is null) { return; }
+	//dlclose(vars.handle);
+	vars.handle = null;
+}
+
+void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
+	if (vars.handle is null) {
+		return null;
+	}
+
+	char[] proc = procName.array ~ "\0";
+	//return cast(void*)dlsym(vars.handle, proc.ptr);
+	return null;
 }

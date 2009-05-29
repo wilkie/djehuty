@@ -13,7 +13,10 @@ module platform.win.scaffolds.system;
 import platform.win.vars;
 import platform.win.common;
 
+import platform.win.scaffolds.directory;
+
 import core.definitions;
+import core.string;
 
 private {
 	uint count;
@@ -115,4 +118,28 @@ ulong SystemGetAvailableMemory() {
 	GlobalMemoryStatusEx(&stats);
 
 	return stats.ullAvailPhys;
+}
+
+bool SystemLoadLibrary(ref LibraryPlatformVars vars, String libraryPath) {
+	wchar[] path = _ConvertFrameworkPath(libraryPath.array ~ "\0");
+
+	vars.hmodule = LoadLibraryW(path.ptr);
+	return vars.hmodule !is null;
+}
+
+void SystemFreeLibrary(ref LibraryPlatformVars vars) {
+	if (vars.hmodule is null) { return; }
+	
+	FreeLibrary(vars.hmodule);
+	vars.hmodule = null;
+}
+
+void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
+	if (vars.hmodule is null) {
+		return null;
+	}
+
+	String pn = new String(procName);
+	pn.appendChar('\0');
+	return cast(void*)GetProcAddressW(vars.hmodule, pn.ptr);
 }

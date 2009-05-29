@@ -159,3 +159,8 @@ struct SocketPlatformVars
 struct WavePlatformVars
 {
 }
+
+struct LibraryPlatformVars
+{
+	void* handle;
+}

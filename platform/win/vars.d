@@ -543,3 +543,8 @@ protected:
 	// the number of items in the list
 	uint _count;
 }
+
+struct LibraryPlatformVars
+{
+	HMODULE hmodule;
+}
