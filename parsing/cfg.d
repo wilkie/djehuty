@@ -1,4 +1,4 @@
-module parsers.cfg;
+module parsing.cfg;
 
 import core.string;
 

@@ -9,7 +9,7 @@
  *
  */
 
-module parsers.lexer;
+module parsing.lexer;
 
 import core.string;
 import core.regex;

@@ -1,4 +1,13 @@
-module sockpuppets.http;
+/*
+ * http.d
+ *
+ * This file implements the HTTP standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
+module networking.http;
 
 import core.socket;
 import core.string;

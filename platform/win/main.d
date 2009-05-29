@@ -20,11 +20,11 @@ import core.window;
 import core.view;
 import core.menu;
 import core.thread;
-import core.debugger;
+import core.basewindow;
+
+import analyzing.debugger;
 
 import console.window;
-
-import core.basewindow;
 
 // import strings
 import core.string;

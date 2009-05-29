@@ -80,11 +80,11 @@ public import hashes.sha1;
 public import hashes.sha256;
 public import hashes.sha224;
 
-// sockpuppets
+// networking
 
-public import sockpuppets.telnet;
-public import sockpuppets.http;
-public import sockpuppets.irc;
+public import networking.telnet;
+public import networking.http;
+public import networking.irc;
 
 // opengl
 
@@ -93,10 +93,10 @@ public import opengl.glu;
 public import opengl.window;
 public import opengl.texture;
 
-// parsers
+// parsing
 
-public import parsers.cfg;
-public import parsers.lexer;
+public import parsing.cfg;
+public import parsing.lexer;
 
 // math
 public import math.common;

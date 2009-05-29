@@ -9,7 +9,7 @@
  *
  */
 
- module scripting.bindings.lua;
+module binding.lua;
 
  // lib: liblua5.1
 

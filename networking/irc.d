@@ -1,12 +1,20 @@
-// IRC Sockpuppet Module
+/*
+ * irc.d
+ *
+ * This file implements the IRC standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
-module sockpuppets.irc;
+module networking.irc;
 
 import core.string;
 import core.socket;
 import core.stream;
 import core.thread;
 import core.unicode;
+
 import console.main;
 
 struct IRC

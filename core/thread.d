@@ -18,7 +18,7 @@ mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
 // access to exception handler
-import core.debugger;
+import analyzing.debugger;
 
 // Access to the threads array
 import core.main;

@@ -12,7 +12,7 @@
 module scripting.lua;
 
 // import bindings
-import scripting.bindings.lua;
+import binding.lua;
 
 // common
 import core.string;

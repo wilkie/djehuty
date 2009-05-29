@@ -1,4 +1,13 @@
-module sockpuppets.telnet;
+/*
+ * telnet.d
+ *
+ * This file implements the telnet standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
+module networking.telnet;
 
 import core.literals;
 import core.string;

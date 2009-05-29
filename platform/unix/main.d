@@ -13,21 +13,20 @@ module platform.unix.main;
 import platform.unix.common;
 import platform.unix.vars;
 import platform.unix.scaffolds.directory;
-import core.thread;
 import platform.unix.console;
 
-import core.main;
-import core.definitions;
-import core.window;
-import core.view;
 import core.basewindow;
-import core.debugger;
+import core.definitions;
+import core.main;
+import core.string;
+import core.thread;
+import core.view;
+import core.window;
+
+import analyzing.debugger;
 
 import console.main;
 import console.window;
-
-// import strings
-import core.string;
 
 extern(C) void mousetimerproc(sigval val)
 {

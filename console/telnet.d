@@ -2,8 +2,10 @@ module console.telnet;
 
 import console.vt100;
 import console.buffer;
+
 import core.string;
-import sockpuppets.telnet;
+
+import networking.telnet;
 
 // Section: Console
 
