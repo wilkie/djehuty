@@ -36,6 +36,19 @@ class System {
 			return Scaffold.SystemGetDisplayHeight(index);
 		}
 	}
+	
+	class Display {
+		static:
+		public:
+
+		int getWidth() {
+			return Scaffold.SystemGetDisplayWidth(Displays.getPrimary());
+		}
+
+		int getHeight() {
+			return Scaffold.SystemGetDisplayHeight(Displays.getPrimary());
+		}
+	}
 
 	class Memory {
 		static:

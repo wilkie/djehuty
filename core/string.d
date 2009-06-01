@@ -20,7 +20,6 @@ import core.definitions;
 import core.unicode;
 import core.format;
 
-
 public import core.stringliteral;
 
 template _StringFormat()
@@ -1128,6 +1127,11 @@ class String
 		}
 
 		return ret;
+	}
+	
+	override char[] toString()
+	{
+		return Unicode.toUtf8(_data);
 	}
 
 private:

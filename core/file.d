@@ -421,6 +421,10 @@ public:
 	void destroy()
 	{
 	}
+	
+	override char[] toString() {
+		return (path.getPath() ~ "/" ~ name).toString();
+	}
 
 protected:
 

@@ -439,27 +439,27 @@ class DjehutyTestApp : Application {
 		Directory dir;
 
 		dir = FileSystem.getTempDir();
-		Console.putln("TEMP: ", dir.getPath.array);
+		Console.putln("TEMP: ", dir);
 
 		dir = FileSystem.getAppDataDir();
-		Console.putln("APP:  ", dir.getPath.array);
+		Console.putln("APP:  ", dir);
 
 		dir = FileSystem.getUserDataDir();
-		Console.putln("USER: ", dir.getPath.array);
+		Console.putln("USER: ", dir);
 
 		Directory myDir = FileSystem.getApplicationDir();
-		Console.putln("EXE:  ", myDir.getPath.array);
+		Console.putln("EXE:  ", myDir);
 
 		dir = FileSystem.getBinaryDir();
-		Console.putln("BIN:  ", dir.getPath.array);
+		Console.putln("BIN:  ", dir);
 
 		LuaScript lua = new LuaScript();
 		lua.evalFile("hello.lua");
 
-		Console.putln("width: ", System.Displays.getWidth(System.Displays.getPrimary()), " height: ", System.Displays.getHeight(System.Displays.getPrimary()));
+		Console.putln("width: ", System.Display.getWidth(), " height: ", System.Display.getHeight());
 		Console.putln("total memory: ", System.Memory.getTotal());
 		Console.putln("avail memory: ", System.Memory.getAvailable());
-	
+
 		if (isInstalled) {
 			Console.putln("is installed");
 		}

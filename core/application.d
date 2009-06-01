@@ -70,6 +70,12 @@ class Application {
 	Arguments getArguments() {
 		return arguments;
 	}
+	
+	// Overrides //
+	
+	override char[] toString() {
+		return appName.toString();
+	}
 
 	// Events //
 

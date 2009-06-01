@@ -238,6 +238,10 @@ class Directory
 
 	// this should work:
 	alias Object.opEquals opEquals;
+	
+	override char[] toString() {
+		return getPath().toString();
+	}
 
 protected:
 
