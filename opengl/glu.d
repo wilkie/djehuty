@@ -1,7 +1,15 @@
+/*
+ * glu.d
+ *
+ * This module contains bindings for opengl and was adapted from GLU.h
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module opengl.glu;
 
 import opengl.gl;
-
 
 // The functions supported by opengl
 template _GLUFunctionPrototypes()

@@ -1,7 +1,11 @@
-// opengl.window
-//
-// This module implements a window extension that uses opengl
-
+/*
+ * window.d
+ *
+ * This module implements a window extension that uses opengl
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module opengl.window;
 
@@ -61,8 +65,6 @@ class GLWindow : BaseWindow
 		_tv0 = 0;
 		_tv1 = 1;
 	}
-
-
 
 	// Description: This function will enable textures using glEnable.
 	void enableTextures()

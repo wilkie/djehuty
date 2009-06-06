@@ -1,3 +1,12 @@
+/*
+ * texture.d
+ *
+ * This module wraps the Image class specifically for GL usage as a texture.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module opengl.texture;
 
 import opengl.gl;
@@ -11,7 +20,6 @@ import core.view;
 // Description: This class implements an interface for an OpenGL texture.
 class Texture
 {
-
 	// Description: This constructor will create a texture out of the image passed in. Optionally, it can divide the image up into equal sized frames.
 	// filename: The name of the image to load.
 	// frameRows: The number of rows contained in the image.

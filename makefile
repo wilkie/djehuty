@@ -42,7 +42,7 @@ DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d interfaces/stream.d
 DFILES_MATH = math/common.d math/vector.d math/matrix.d math/mathobject.d
-DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d
+DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d opengl/light.d
 DFILES_SPECS = specs/test.d
 DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
 

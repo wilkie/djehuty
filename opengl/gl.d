@@ -1,4 +1,12 @@
-/* Converted to D from GL.H by htod */
+/*
+ * gl.d
+ *
+ * This module contains bindings for opengl and was adapted from GL.h
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module opengl.gl;
 
 // The functions supported by opengl
