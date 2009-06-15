@@ -313,6 +313,8 @@ struct ViewPlatformVars
 
 	void* bits;
 	int length;
+	
+	int penClr;
 
 	_clipList clipRegions;
 }
@@ -403,11 +405,16 @@ struct BrushPlatformVars
 struct PenPlatformVars
 {
 	HPEN penHandle;
+	int clr;
 }
 
 struct FontPlatformVars
 {
 	HFONT fontHandle;
+}
+
+struct RegionPlatformVars {
+	HRGN regionHandle;
 }
 
 

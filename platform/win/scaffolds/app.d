@@ -26,18 +26,8 @@ void AppStart()
 {
 }
 
-void AppEnd()
-{
-	if (!Djehuty._console_inited)
-	{
-		// I think this is wrong: PostQuitMessage(0);
-
-		// This is (albeit horrible) better:
-		_appEnd = true;
-	}
-	else
-	{
-		console_loop = false;
-	}
+void AppEnd() {
+	console_loop = false;
+	_appEnd = true;
 }
 

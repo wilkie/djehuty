@@ -63,13 +63,33 @@ class Graphics
 	}
 
 	// Description: Draws the region given.
+	// x: The amount to translate the region in the x direction.
+	// y: The amount to translate the region in the y direction.
 	// rgn: The region to draw.
-	void drawRegion(Region rgn)
+	void drawRegion(int x, int y, Region rgn)
 	{
+		Scaffold.drawRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
+	}
+
+	// Description: Fills the region given.
+	// x: The amount to translate the region in the x direction.
+	// y: The amount to translate the region in the y direction.
+	// rgn: The region to fill.
+	void fillRegion(int x, int y, Region rgn)
+	{
+		Scaffold.fillRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
+	}
+
+	// Description: Outlines the region given.
+	// x: The amount to translate the region in the x direction.
+	// y: The amount to translate the region in the y direction.
+	// rgn: The region to stroke.
+	void strokeRegion(int x, int y, Region rgn)
+	{
+		Scaffold.strokeRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
 	}
 
 // Text
-
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y).
 	// x: The x coordinate to start rendering the text.

@@ -25,6 +25,7 @@ import core.basewindow;
 import analyzing.debugger;
 
 import console.window;
+import console.application;
 
 // import strings
 import core.string;
@@ -1055,7 +1056,7 @@ BOOL ConsoleProc( DWORD fdwCtrlType )
     // CTRL-CLOSE: confirm that the user wants to exit.
     case CTRL_C_EVENT:
     case CTRL_CLOSE_EVENT:
-      printf( "Ctrl-Close event\n\n" );
+      Console.putln( "Ctrl-Close event\n\n" );
 
       DjehutyEnd();
 
@@ -1150,6 +1151,8 @@ int mainloop()
 		                    break;
 
 		                case MOUSE_EVENT: // mouse input
+		                
+		                	ConsoleWindow cwnd = (cast(ConsoleApplication)Djehuty.app).getConsoleWindow();
 
 							uint curbutton=0;
 							bool isPressed = true;
@@ -1162,104 +1165,104 @@ int mainloop()
 							if (!(irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED ||
 								  irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED ))
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.x != irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left)
+								if (cwnd.mouseProps.x != irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left)
 								{
-									Djehuty._curConsoleWindow.mouseProps.x = irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left;
+									cwnd.mouseProps.x = irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left;
 									isMovement = true;
 								}
-								if (Djehuty._curConsoleWindow.mouseProps.y != irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top)
+								if (cwnd.mouseProps.y != irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top)
 								{
-									Djehuty._curConsoleWindow.mouseProps.y = irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top;
+									cwnd.mouseProps.y = irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top;
 									isMovement = true;
 								}
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED)
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.leftDown == false)
+								if (cwnd.mouseProps.leftDown == false)
 								{
 									curbutton = 1;
-									Djehuty._curConsoleWindow.mouseProps.leftDown = true;
+									cwnd.mouseProps.leftDown = true;
 								}
 							}
 							else
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.leftDown == true)
+								if (cwnd.mouseProps.leftDown == true)
 								{
 									curbutton = 1;
-									Djehuty._curConsoleWindow.mouseProps.leftDown = false;
+									cwnd.mouseProps.leftDown = false;
 									isPressed = false;
 								}
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_2ND_BUTTON_PRESSED)
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.middleDown == false)
+								if (cwnd.mouseProps.middleDown == false)
 								{
 									curbutton = 2;
-									Djehuty._curConsoleWindow.mouseProps.middleDown = true;
+									cwnd.mouseProps.middleDown = true;
 								}
 							}
 							else
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.middleDown == true)
+								if (cwnd.mouseProps.middleDown == true)
 								{
 									curbutton = 2;
-									Djehuty._curConsoleWindow.mouseProps.middleDown = false;
+									cwnd.mouseProps.middleDown = false;
 									isPressed = false;
 								}
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_3RD_BUTTON_PRESSED)
 							{
-							/* 	if (Djehuty._curConsoleWindow.mouseProps.leftDown == false)
+							/* 	if (cwnd.mouseProps.leftDown == false)
 								{
 									curbutton = 3;
-									Djehuty._curConsoleWindow.mouseProps.leftDown = true;
+									cwnd.mouseProps.leftDown = true;
 								} */
 							}
 							else
 							{
-								/* if (Djehuty._curConsoleWindow.mouseProps.rightDown == true)
+								/* if (cwnd.mouseProps.rightDown == true)
 								{
 									curbutton = 5;
-									Djehuty._curConsoleWindow.mouseProps.rightDown = false;
+									cwnd.mouseProps.rightDown = false;
 									isPressed = false;
 								} */
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_4TH_BUTTON_PRESSED)
 							{
-								/* if (Djehuty._curConsoleWindow.mouseProps.leftDown == false)
+								/* if (cwnd.mouseProps.leftDown == false)
 								{
 									curbutton = 3;
-									Djehuty._curConsoleWindow.mouseProps.leftDown = true;
+									cwnd.mouseProps.leftDown = true;
 								} */
 							}
 							else
 							{
-								/* if (Djehuty._curConsoleWindow.mouseProps.rightDown == true)
+								/* if (cwnd.mouseProps.rightDown == true)
 								{
 									curbutton = 5;
-									Djehuty._curConsoleWindow.mouseProps.rightDown = false;
+									cwnd.mouseProps.rightDown = false;
 									isPressed = false;
 								} */
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED)
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.rightDown == false)
+								if (cwnd.mouseProps.rightDown == false)
 								{
 									curbutton = 5;
-									Djehuty._curConsoleWindow.mouseProps.rightDown = true;
+									cwnd.mouseProps.rightDown = true;
 								}
 							}
 							else
 							{
-								if (Djehuty._curConsoleWindow.mouseProps.rightDown == true)
+								if (cwnd.mouseProps.rightDown == true)
 								{
 									curbutton = 5;
-									Djehuty._curConsoleWindow.mouseProps.rightDown = false;
+									cwnd.mouseProps.rightDown = false;
 									isPressed = false;
 								}
 							}
@@ -1350,35 +1353,38 @@ int mainloop()
 			printf("Fatal Error: Cannot Initialize the Console Handler\n");
 		}
 	}
-	else
-	{
-		// main message thread
+	// main message thread
 
-		//MSG msg;
-		//while (GetMessageW(&msg, cast(HWND) null, 0, 0))
-		//{
-		//	TranslateMessage(&msg);
-		//	DispatchMessageW(&msg);
-		//}
+	//MSG msg;
+	//while (GetMessageW(&msg, cast(HWND) null, 0, 0))
+	//{
+	//	TranslateMessage(&msg);
+	//	DispatchMessageW(&msg);
+	//}
 
-		// HOW AWFUL IS THIS: ?!
-		bool close = false;
-		for(;;) {
-			std.thread.Thread[] threads = std.thread.Thread.getAll();
-			//writefln("threadcnt: ", threads.length);
-			close = true;
-			foreach(th;threads)
-			{
-				if (th !is null && th !is std.thread.Thread.getThis())
-				{
-					close = false;
-				}
-			}
-			if (close) { break; }
-			//if (threads.length <= 1 && _appEnd) { break; }
-			Sleep(1);
-		}
+	// HOW AWFUL IS THIS: ?!
+
+	while(!_appEnd) {
+		Sleep(1);
 	}
+	PostQuitMessage(0);
+
+	/*
+	bool close = false;
+	for(;;) {
+		std.thread.Thread[] threads = std.thread.Thread.getAll();
+		close = true;
+		foreach(th;threads)
+		{
+			if (th !is null && th !is std.thread.Thread.getThis())
+			{
+				close = false;
+			}
+		}
+		if (close) { break; }
+		//if (threads.length <= 1 && _appEnd) { break; }
+		Sleep(1);
+	}	*/
 
 	return 1;
 }

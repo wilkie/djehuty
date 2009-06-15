@@ -1,3 +1,10 @@
+/*
+ * stream.d
+ *
+ * This module implements a stream.
+ *
+ */
+
 module core.stream;
 
 import interfaces.stream;
@@ -7,8 +14,7 @@ import core.string;
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));
 
-// TODO: allow ENORMOUS ARRAYS gracefully (> 4GB)
-
+// TODO: allow ENORMOUS ARRAYS gracefully (> 4GB... switch to a Map)
 // TODO: Read and Write distinction, stream permissions
 
 // Section: Core/Streams
@@ -928,13 +934,5 @@ class BufferWriter : Stream
 	this(ubyte[] fromArray)
 	{
 		super(fromArray);
-	}
-
-	// Exceptions:
-
-	override bool write(byte value)
-	{
-		//throw new Exception("Stream Permission");
-		return false;
 	}
 }

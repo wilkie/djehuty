@@ -10,16 +10,15 @@
 
 module platform.win.console;
 
+import platform.win.common;
+
 import core.main;
+import core.literals;
+import core.thread;
+import core.unicode;
 
 import console.window;
-
-import core.literals;
-
-import platform.win.common;
-import core.thread;
-
-import core.unicode;
+import console.application;
 
 ushort _fgclrvalues[] =
 [
@@ -56,7 +55,7 @@ int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 	switch(uMsg)
 	{
 		case WM_SIZE:
-			Djehuty._curConsoleWindow.OnResize();
+			(cast(ConsoleApplication)Djehuty.app).getConsoleWindow().OnResize();
 			return 0;
 
 		default:
@@ -96,7 +95,7 @@ void thread_proc(bool pleaseStop)
 			_console_x = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
 			_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
 
-			Djehuty._curConsoleWindow.OnResize();
+			(cast(ConsoleApplication)Djehuty.app).getConsoleWindow().OnResize();
 		}
 
 		t.sleep(100);

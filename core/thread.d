@@ -23,6 +23,8 @@ import analyzing.debugger;
 // Access to the threads array
 import core.main;
 
+import console.main;
+
 // Section: Core/Synchronization
 
 // Description: This class represents a thread.  You can create and override the call function to use, or use a delegate to specify an external function to call.
@@ -126,10 +128,9 @@ public:
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.
 	void start()
 	{
-		RegisterThread(this);
-
 		if (!_inited)
 		{
+			RegisterThread(this);
 			//Scaffold.ThreadStart(_pfvars, this);
 
 			startTime = time = Scaffold.TimeGet();
@@ -151,6 +152,7 @@ public:
 		{
 			//Scaffold.ThreadStop(_pfvars);
 			stdThread = null;
+			UnregisterThread(this);
 		}
 		_inited = false;
 	}

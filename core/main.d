@@ -17,6 +17,7 @@ import core.thread;
 import core.arguments;
 import core.filesystem;
 import core.application;
+import core.semaphore;
 
 import console.window;
 import console.main;
@@ -57,8 +58,14 @@ void DjehutyStart() {
 
 void DjehutyEnd() {
 	// Tell all running threads that they should end to allow shutdown to commense
-	foreach(th; Djehuty._threads) {
-		th.pleaseStop();
+	if (Djehuty._threads !is null) {
+		Djehuty._threadRegisterSemaphore.down();
+
+		foreach(th; Djehuty._threads) {
+			th.pleaseStop();
+		}
+
+		Djehuty._threadRegisterSemaphore.up();
 	}
 
 	// End the application proper (from the platform's point of view)
@@ -93,21 +100,6 @@ class Djehuty {
 			}
 		}
 
-		// Description: Will initialize the console and set the current console window to be the one specified.
-		// window: An instance of a ConsoleWindow class that will set up a context and replace any that had previously been set.
-		void setConsoleWindow(ConsoleWindow window) {
-			if (!_console_inited) {
-				//ConsoleInit();
-
-				_console_inited = true;
-			}
-
-			_curConsoleWindow = window;
-
-			// Draw Window
-			ConsoleWindowOnSet(_curConsoleWindow);
-		}
-		
 		void setApplication(Application application) {
 			if (app !is null) {
 				throw new Exception("Application Already Spawned");
@@ -125,30 +117,46 @@ class Djehuty {
 
 		bool _console_inited = false;
 
-		ConsoleWindow _curConsoleWindow;
-
 		bool _hasStarted = false;
 
 		Thread[] _threads;
+
+		Semaphore _threadRegisterSemaphore;
 
 		Application app;
 }
 
 void RegisterThread(ref Thread thread)
 {
+	if (Djehuty._threadRegisterSemaphore is null) {
+		Djehuty._threadRegisterSemaphore = new Semaphore(1);
+	}
+
+	Djehuty._threadRegisterSemaphore.down();
 	Djehuty._threads ~= thread;
+	Djehuty._threadRegisterSemaphore.up();
 }
 
 void UnregisterThread(ref Thread thread)
 {
-	synchronized
-	{
-		foreach(i,th; Djehuty._threads)
-		{
-			if (th is thread)
-			{
-				Djehuty._threads = Djehuty._threads[0..i] ~ Djehuty._threads[i+1..$];
+	Djehuty._threadRegisterSemaphore.down();
+
+	if (Djehuty._threads !is null) {
+		foreach(i, th; Djehuty._threads) {
+			if (th is thread) {
+				if (Djehuty._threads.length == 1) {
+					Djehuty._threads = null;
+				}
+				else if (i >= Djehuty._threads.length - 1) {
+					Djehuty._threads = Djehuty._threads[0..i];
+				}
+				else {
+					Djehuty._threads = Djehuty._threads[0..i] ~ Djehuty._threads[i+1..$];
+				}
+				break;
 			}
 		}
 	}
+
+	Djehuty._threadRegisterSemaphore.up();
 }

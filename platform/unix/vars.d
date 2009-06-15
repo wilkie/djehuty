@@ -123,6 +123,9 @@ struct FontPlatformVars
 	Pango.PangoFontDescription* pangoFont;
 }
 
+struct RegionPlatformVars {
+}
+
 struct SemaphorePlatformVars
 {
 	sem_t sem_id;

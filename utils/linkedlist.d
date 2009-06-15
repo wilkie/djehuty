@@ -2,13 +2,17 @@ module utils.linkedlist;
 
 import interfaces.list;
 
+import core.semaphore;
+
+import std.stdio;
+
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
 class LinkedList(T) : AbstractList!(T)
 {
-	this()
-	{
+	this() {
+		lock = new Semaphore(1);
 	}
 
 	// add to the head
@@ -17,6 +21,9 @@ class LinkedList(T) : AbstractList!(T)
 	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
 	void addItem(T data)
 	{
+		lock.down();
+		scope(exit) lock.up();
+
 		LinkedListNode* newNode = new LinkedListNode;
 		newNode.data = data;
 
@@ -66,6 +73,9 @@ class LinkedList(T) : AbstractList!(T)
 
 	bool getItem(out T data, uint index)
 	{
+		lock.down();
+		scope(exit) lock.up();
+
 		if (index < _count)
 		{
 			if (index == 0)
@@ -124,6 +134,7 @@ class LinkedList(T) : AbstractList!(T)
             // keep cache of last accessed item
             last = curnode;
             lastIndex = index;
+
             return true;
         }
 
@@ -132,20 +143,34 @@ class LinkedList(T) : AbstractList!(T)
 
 	Iterator getIterator()
 	{
+		lock.down();
+		scope(exit) lock.up();
+
 		Iterator irate = new Iterator;
-		irate.irate_ptr = head;
 		irate.irate_int = 0;
 		irate.irate_cnt = 0;
+		irate.irate_ptr = head;
 
 		return irate;
 	}
 
 	bool getItem(out T data, ref Iterator irate)
 	{
+		lock.down();
+		scope(exit) lock.up();
+
+		writefln("getItem");
 		if (irate.irate_ptr !is null)
 		{
-			irate.irate_ptr = cast(void*)(cast(LinkedListNode*)irate.irate_ptr).next;
+		writefln("item got");
 			data = (cast(LinkedListNode*)irate.irate_ptr).data;
+			if ((cast(LinkedListNode*)irate.irate_ptr).next is head) {
+		writefln("null");
+				irate.irate_ptr = null;
+			}
+			else {
+				irate.irate_ptr = cast(void*)(cast(LinkedListNode*)irate.irate_ptr).next;
+			}
 			return true;
 		}
 		return false;
@@ -157,6 +182,9 @@ class LinkedList(T) : AbstractList!(T)
 	// data: Will be set to the data retreived.
 	bool remove(out T data)
 	{
+		lock.down();
+		scope(exit) lock.up();
+
 		if (tail == null) {
 			return false;
 		}
@@ -174,6 +202,8 @@ class LinkedList(T) : AbstractList!(T)
 		}
 		else
 		{
+			tail.prev.next = tail.next;
+			tail.next.prev = tail.prev;
 			tail = tail.prev;
 		}
 
@@ -182,8 +212,48 @@ class LinkedList(T) : AbstractList!(T)
 		return true;
 	}
 
+	bool removeItem(T item) {
+
+		lock.down();
+		scope(exit) lock.up();
+
+		if (head is null) { return false; }
+
+		LinkedListNode* curnode = null;
+
+		curnode = head;
+		do {
+			if (curnode.data == item) {
+				// remove this item
+
+				if (head is tail)
+				{
+					// unlink all
+					head = null;
+					tail = null;
+				}
+				else
+				{
+					curnode.prev.next = curnode.next;
+					curnode.next.prev = curnode.prev;
+				}
+		
+				_count--;
+
+				return true;
+			}
+
+			curnode = curnode.next;
+		} while (curnode !is head);
+
+        return false;
+	}
+
 	bool remove()
 	{
+		lock.down();
+		scope(exit) lock.up();
+		
 		if (tail == null) {
 			return false;
 		}
@@ -219,6 +289,24 @@ class LinkedList(T) : AbstractList!(T)
 	{
 		return 0;
     }
+    
+    T[] opSlice() {
+
+    	writefln("boo");
+		T[] ret;
+		T obj;
+
+		Iterator i = getIterator();
+    	writefln("boo!!!");
+
+		while(getItem(obj, i))
+		{
+    		writefln("iterate");
+			ret ~= obj;
+		}
+
+		return ret;
+    }
 
 	int opApply(int delegate(inout T) loopFunc)
 	{
@@ -229,7 +317,27 @@ class LinkedList(T) : AbstractList!(T)
 
 		while(getItem(obj, i))
 		{
+			//Console.putln("blarg");
+			writefln("blarg");
 			ret = loopFunc(obj);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApply(int delegate(inout int, inout T) loopFunc)
+	{
+		int ret;
+		T obj;
+
+		Iterator i = getIterator();
+		int idx = 0;
+
+		while(getItem(obj, i))
+		{
+			ret = loopFunc(idx, obj);
+			idx++;
 			if (ret) { break; }
 		}
 
@@ -261,4 +369,6 @@ protected:
 
 	// the number of items in the list
 	uint _count;
+	
+	Semaphore lock;
 }

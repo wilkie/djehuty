@@ -79,6 +79,11 @@ const auto RIDEV_EXMODEMASK = 0x000000F0;
 
 const auto ERROR_MORE_DATA = 234;
 
+// Region
+
+const auto ALTERNATE	= 1;
+const auto WINDING		= 2;
+
 	// REGISTRY
 
 const HANDLE HKEY_CLASSES_ROOT           = cast(HANDLE)-2147483648;
@@ -1030,6 +1035,9 @@ extern(Windows)
 	DWORD GetSysColor(int);
 	int SwapBuffers(HDC hdc);
 	HFONT CreateFontIndirectW(LOGFONTW*);
+	HRGN CreatePolygonRgn(POINT*, int, int);
+	BOOL PaintRgn(HDC, HRGN);
+	BOOL FrameRgn(HDC, HRGN, HBRUSH, int, int);
 
 	// WINDOW AND PROCESS MANAGEMENT
 	HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);

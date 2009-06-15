@@ -15,7 +15,15 @@ import console.window;
 // Description: This class abstracts part of the console's screen.  When attached to a window, this class will receive input through the events.  Keyboard events will be passed only when the control is activated.  A control can decide not to be activatable by setting it's _isTabStop to false.
 class ConsoleControl
 {
-
+	this() {
+	}
+	
+	this(int x, int y, int width, int height) {
+		_x = x;
+		_y = y;
+		_width = width;
+		_height = height;
+	}
 
 	// Events
 
@@ -32,8 +40,6 @@ class ConsoleControl
 	{
 	}
 
-
-
 	void OnGotFocus()
 	{
 	}
@@ -42,13 +48,9 @@ class ConsoleControl
 	{
 	}
 
-
-
 	void OnResize()
 	{
 	}
-
-
 
 	void OnKeyDown(uint keyCode)
 	{
@@ -61,8 +63,6 @@ class ConsoleControl
 	void OnKeyUp(uint keyCode)
 	{
 	}
-
-
 
 	void OnPrimaryMouseDown()
 	{
@@ -101,11 +101,18 @@ class ConsoleControl
 	}
 
 protected:
+
 	// control list
 	ConsoleControl _nextControl;
 	ConsoleControl _prevControl;
 
 	ConsoleWindow _window;
+
+	uint _x = 0;
+	uint _y = 0;
+
+	uint _width = 0;
+	uint _height = 0;
 
 	bool _isTabStop = false;
 }
@@ -145,38 +152,3 @@ ConsoleControl ControlGetNext(ref ConsoleControl ctrl)
 {
 	return ctrl._nextControl;
 }
-
-
-//DJEHUTYDOC
-
-//CONSOLE:ConsoleControl
-//EXTENDS:Object
-//DESC:
-
-//EVENTS
-
-
-//NAME:OnKeyDown(uint keyCode)
-//DESC:Called when the control is focused during a key press.
-//PARAM:keyCode
-//DESC:The ID of the code.
-//RETURNS:bool
-//DESC:Return true when the control should be redrawn.
-
-//NAME:OnKeyUp(uint keyCode)
-//DESC:Called when the control is focused during a key release.
-//PARAM:keyCode
-//DESC:The ID of the code.
-//RETURNS:bool
-//DESC:Return true when the control should be redrawn.
-
-//NAME:OnKeyChar(dchar keyChar)
-//DESC:Called when the control is focused during a key press that results in a printable character.
-//PARAM:keyChar
-//DESC:The character in standard UTF-32.
-//RETURNS:bool
-//DESC:Return true when the control should be redrawn.
-
-
-
-//ENDDJEHUTYDOC

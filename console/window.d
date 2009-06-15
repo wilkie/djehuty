@@ -11,6 +11,7 @@ import core.literals;
 
 import console.main;
 import console.control;
+import console.application;
 
 // Section: Console
 
@@ -18,8 +19,10 @@ import console.control;
 class ConsoleWindow
 {
 
-
 	// Constructor
+
+	this() {
+	}
 
 	this(bgColor bgClr)
 	{
@@ -35,8 +38,6 @@ class ConsoleWindow
 	{
 	}
 
-
-
 	void OnKeyDown(uint keyCode)
 	{
 	}
@@ -48,8 +49,6 @@ class ConsoleWindow
 	void OnKeyUp(uint keyCode)
 	{
 	}
-
-
 
 	void OnPrimaryMouseDown()
 	{
@@ -127,18 +126,18 @@ class ConsoleWindow
 
 		control.OnAdd();
 
-		if (Djehuty._curConsoleWindow is this)
+		if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow() is this)
 		{
 			control.OnInit();
 		}
 	}
 
-	bgColor GetBackgroundColor()
+	bgColor getBackgroundColor()
 	{
 		return _bgClr;
 	}
 
-	void TabForward()
+	void tabForward()
 	{
 		// activate the next control
 		ConsoleControl _curFocus = _focused_control;
@@ -156,7 +155,7 @@ class ConsoleWindow
 		} while (_focused_control !is _curFocus);
 	}
 
-	void TabBackward()
+	void tabBackward()
 	{
 		// activate the previous control
 		_focused_control = ControlGetNext(_focused_control);
@@ -167,7 +166,7 @@ class ConsoleWindow
 	Mouse mouseProps;
 
 protected:
-	bgColor _bgClr;
+	bgColor _bgClr = bgColor.Black;
 
 	// head and tail of the control linked list
 	ConsoleControl _firstControl = null;	//head
@@ -183,7 +182,7 @@ void ConsoleWindowOnSet(ref ConsoleWindow cwindow)
 {
 	// go through control list, init
 
-	Console.setColor(cwindow.GetBackgroundColor());
+	Console.setColor(cwindow.getBackgroundColor());
 	Console.clear();
 
 	ConsoleControl c = cwindow._firstControl;
@@ -218,11 +217,11 @@ template ConsoleWindowGenericNoParam(StringLiteral8 eventName)
 	void ConsoleWindow` ~ eventName ~ `()
 	{
 
-		if (Djehuty._curConsoleWindow._focused_control !is null)
+		if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 		{
-			Djehuty._curConsoleWindow._focused_control.` ~ eventName ~ `();
+			(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.` ~ eventName ~ `();
 		}
-		Djehuty._curConsoleWindow.` ~ eventName ~ `();
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.` ~ eventName ~ `();
 
 	}
 
@@ -240,118 +239,54 @@ mixin(ConsoleWindowGenericNoParam!("OnMouseMove"));
 void ConsoleWindowOnKeyDown(uint keyCode)
 {
 
-	if (Djehuty._curConsoleWindow._focused_control !is null)
+	if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 	{
-		Djehuty._curConsoleWindow._focused_control.OnKeyDown(keyCode);
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.OnKeyDown(keyCode);
 	}
-	Djehuty._curConsoleWindow.OnKeyDown(keyCode);
+	(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.OnKeyDown(keyCode);
 
 }
 
 void ConsoleWindowOnKeyUp(uint keyCode)
 {
 
-	if (Djehuty._curConsoleWindow._focused_control !is null)
+	if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 	{
-		Djehuty._curConsoleWindow._focused_control.OnKeyUp(keyCode);
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.OnKeyUp(keyCode);
 	}
-	Djehuty._curConsoleWindow.OnKeyUp(keyCode);
+	(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.OnKeyUp(keyCode);
 
 }
 
 void ConsoleWindowOnKeyChar(dchar keyChar)
 {
 
-	if (Djehuty._curConsoleWindow._focused_control !is null)
+	if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 	{
-		Djehuty._curConsoleWindow._focused_control.OnKeyChar(keyChar);
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.OnKeyChar(keyChar);
 	}
-	Djehuty._curConsoleWindow.OnKeyChar(keyChar);
+	(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.OnKeyChar(keyChar);
 
 }
 
 void ConsoleWindowOnMouseWheelY(uint amount)
 {
 
-	if (Djehuty._curConsoleWindow._focused_control !is null)
+	if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 	{
-		Djehuty._curConsoleWindow._focused_control.OnMouseWheelY(amount);
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.OnMouseWheelY(amount);
 	}
-	Djehuty._curConsoleWindow.OnMouseWheelY(amount);
+	(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.OnMouseWheelY(amount);
 
 }
 
 void ConsoleWindowOnMouseWheelX(uint amount)
 {
 
-	if (Djehuty._curConsoleWindow._focused_control !is null)
+	if ((cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control !is null)
 	{
-		Djehuty._curConsoleWindow._focused_control.OnMouseWheelX(amount);
+		(cast(ConsoleApplication)Djehuty.app).getConsoleWindow._focused_control.OnMouseWheelX(amount);
 	}
-	Djehuty._curConsoleWindow.OnMouseWheelX(amount);
+	(cast(ConsoleApplication)Djehuty.app).getConsoleWindow.OnMouseWheelX(amount);
 
 }
-
-
-//DJEHUTYDOC
-
-//CONSOLE:ConsoleWindow
-//EXTENDS:Object
-//DESC:This class abstracts the console's screen.  The window will clear the screen and draw many console controls.  Any input is passed to the controls in a way similar to normal applications.
-
-//EVENTS
-
-//NAME:OnKeyDown(uint keyCode)
-//DESC:This event is called when a key is pressed over the window, when focused.  LATER I WILL NOTE THE KEYS
-//PARAM:keyCode
-//DESC:the key identifier
-
-//NAME:OnKeyUp(uint keyCode)
-//DESC:This event is called when a key is released over the window, when focused.  LATER I WILL NOTE THE KEYS
-//PARAM:keyCode
-//DESC:the key identifier
-
-//NAME:OnKeyChar(dchar keyChar)
-//DESC:This event is called when a character is processed by keyboard input over the focused window.
-//PARAM:keyChar
-//DESC:the character in UTF-32 format.
-
-
-
-//NAME:OnPrimaryMouseDown()
-//DESC:called when the primary mouse button (often times the left button) is pressed down over the window
-
-//NAME:OnPrimaryMouseUp()
-//DESC:called when the primary mouse button (often times the left button) is released over the window
-
-//NAME:OnSecondaryMouseDown()
-//DESC:called when the secondary mouse button (often times the right button) is pressed down over the window
-
-//NAME:OnSecondaryMouseUp()
-//DESC:called when the secondary mouse button (often times the right button) is released over the window
-
-//NAME:OnTertiaryMouseDown()
-//DESC:called when the tertiary mouse button (usually the middle button) is pressed down over the window
-
-//NAME:OnTertiaryMouseUp()
-//DESC:called when the tertiary mouse button (usually the middle button) is released over the window
-
-//NAME:OnMouseWheelY(uint amount)
-//DESC:called when the mouse wheel is scrolled vertically (the common scroll method)
-//PARAM:amount
-//DESC:the number of standard 'ticks' that the scroll wheel makes
-
-//NAME:OnMouseWheelX(uint amount)
-//DESC:called when the mouse wheel is scrolled horizontally (a less common scroll method)
-//PARAM:amount
-//DESC:the number of standard 'ticks' that the scroll wheel makes
-
-
-//METHODS
-
-//NAME:addControl(ConsoleControl control)
-//DESC:This method will add the control passed to it to the window if the control has not been added previously.
-//PARAM:control
-//DESC:The control to add.
-
-//ENDDJEHUTYDOC

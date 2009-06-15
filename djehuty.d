@@ -42,10 +42,11 @@ public import core.regex;
 public import core.system;
 
 // graphics
-public import graphics.brush	: Brush;
-public import graphics.pen		: Pen;
-public import graphics.font		: Font;
-public import graphics.region	: Region;
+public import graphics.brush		: Brush;
+public import graphics.pen			: Pen;
+public import graphics.font			: Font;
+public import graphics.region		: Region;
+public import graphics.convexhull	: ConvexHull;
 
 // unicode library
 public import core.unicode;
@@ -131,3 +132,4 @@ public import console.prompt;
 public import console.buffer;
 public import console.vt100;
 public import console.telnet;
+public import console.application;

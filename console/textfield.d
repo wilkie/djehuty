@@ -75,7 +75,7 @@ class ConsoleTextField : ConsoleControl
 		}
 		else if (keyCode == KeyTab || keyCode == KeyReturn || keyCode == 10)
 		{
-			_window.TabForward();
+			_window.tabForward();
 		}
 	}
 

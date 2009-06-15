@@ -30,112 +30,89 @@ import platform.win.vars;
 // Shapes
 
 // Draw a line
-void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	MoveToEx(viewVars.dc, x, y, null);
 
 	LineTo(viewVars.dc, x2, y2);
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
-void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Rectangle(viewVars.dc, x, y, x2, y2);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
-void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Ellipse(viewVars.dc, x, y, x2, y2);
 }
 
-
-
-
-
 // Text
-void drawText(ViewPlatformVars* viewVars, int x, int y, String str)
-{
+void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
 	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str)
-{
+void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str) {
 	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length)
-{
+void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length) {
 	TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint length)
-{
+void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint length) {
 	TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
 // Clipped Text
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str)
-{
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str) {
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, str.length, null);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str)
-{
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str) {
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, str.length, null);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str, uint length)
-{
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str, uint length) {
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str, uint length)
-{
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str, uint length) {
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
 }
 
 // Text Measurement
-void measureText(ViewPlatformVars* viewVars, String str, out Size sz)
-{
+void measureText(ViewPlatformVars* viewVars, String str, out Size sz) {
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
 }
 
-void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size sz)
-{
+void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size sz) {
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz)
-{
+void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz) {
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out Size sz)
-{
+void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out Size sz) {
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
 }
 
 // Text Colors
-void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor)
-{
+void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
 	SetBkColor(viewVars.dc, ColorGetValue(textColor));
 }
 
-void setTextColor(ViewPlatformVars* viewVars, ref Color textColor)
-{
+void setTextColor(ViewPlatformVars* viewVars, ref Color textColor) {
 	platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
 }
 
 // Text States
 
-void setTextModeTransparent(ViewPlatformVars* viewVars)
-{
+void setTextModeTransparent(ViewPlatformVars* viewVars) {
 	SetBkMode(viewVars.dc, TRANSPARENT);
 }
 
-void setTextModeOpaque(ViewPlatformVars* viewVars)
-{
+void setTextModeOpaque(ViewPlatformVars* viewVars) {
 	SetBkMode(viewVars.dc, OPAQUE);
 }
 
@@ -144,16 +121,14 @@ void setTextModeOpaque(ViewPlatformVars* viewVars)
 
 // Fonts
 
-void createFont(FontPlatformVars* font, StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-{
+void createFont(FontPlatformVars* font, StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 	String s = new String(fontname ~ cast(Char)'\0');
 	HDC dcz = GetDC(cast(HWND)0);
 	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, s.ptr);
 	ReleaseDC(cast(HWND)0, dcz);
 }
 
-void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-{
+void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 	fontname = new String(fontname);
 	fontname.appendChar('\0');
 	HDC dcz = GetDC(cast(HWND)0);
@@ -161,47 +136,42 @@ void createFont(FontPlatformVars* font, String fontname, int fontsize, int weigh
 	ReleaseDC(cast(HWND)0, dcz);
 }
 
-void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font)
-{
+void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font) {
 	SelectObject(viewVars.dc, font.fontHandle);
 }
 
-void destroyFont(FontPlatformVars* font)
-{
+void destroyFont(FontPlatformVars* font) {
 	DeleteObject(font.fontHandle);
 }
 
 
 // Brushes
 
-void createBrush(BrushPlatformVars* brush, ref Color clr)
-{
+void createBrush(BrushPlatformVars* brush, ref Color clr) {
 	brush.brushHandle = CreateSolidBrush(ColorGetValue(clr) & 0xFFFFFF);
 }
 
-void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush)
-{
+void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
 	SelectObject(viewVars.dc, brush.brushHandle);
 }
-void destroyBrush(BrushPlatformVars* brush)
-{
+
+void destroyBrush(BrushPlatformVars* brush) {
 	DeleteObject(brush.brushHandle);
 }
 
 // Pens
 
-void createPen(PenPlatformVars* pen, ref Color clr)
-{
-	pen.penHandle = platform.win.common.CreatePen(0,1,ColorGetValue(clr) & 0xFFFFFF);
+void createPen(PenPlatformVars* pen, ref Color clr) {
+	pen.clr = ColorGetValue(clr) & 0xFFFFFF;
+	pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
 }
 
-void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen)
-{
+void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
+	viewVars.penClr = pen.clr;
 	SelectObject(viewVars.dc, pen.penHandle);
 }
 
-void destroyPen(PenPlatformVars* pen)
-{
+void destroyPen(PenPlatformVars* pen) {
 	DeleteObject(pen.penHandle);
 }
 
@@ -211,111 +181,89 @@ void destroyPen(PenPlatformVars* pen)
 
 // View Interfacing
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag())
-	{
+	if (srcView.getAlphaFlag()) {
 		uint viewWidth = srcView.getWidth();
 		uint viewHeight = srcView.getHeight();
-		if (x + viewWidth > view.getWidth())
-		{
+		if (x + viewWidth > view.getWidth()) {
 			viewWidth = view.getWidth() - x;
 		}
 
-		if (y + viewHeight > view.getHeight())
-		{
+		if (y + viewHeight > view.getHeight()) {
 			viewHeight = view.getHeight() - y;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0, viewWidth, viewHeight, bf);
 	}
-	else
-	{
+	else {
 		BitBlt(viewVars.dc, x, y, srcView.getWidth(), srcView.getHeight(), viewVarsSrc.dc, 0,0,SRCCOPY);
 	}
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag())
-	{
+	if (srcView.getAlphaFlag()) {
 		uint viewWidth = srcView.getWidth();
 		uint viewHeight = srcView.getHeight();
-		if (x + viewWidth > view.getWidth())
-		{
+		if (x + viewWidth > view.getWidth()) {
 			viewWidth = view.getWidth() - x;
 		}
 
-		if (y + viewHeight > view.getHeight())
-		{
+		if (y + viewHeight > view.getHeight()) {
 			viewHeight = view.getHeight() - y;
 		}
 
-		if (viewX + viewWidth > srcView.getWidth())
-		{
+		if (viewX + viewWidth > srcView.getWidth()) {
 			viewWidth = srcView.getWidth() - viewX;
 		}
 
-		if (viewY + viewHeight > srcView.getHeight())
-		{
+		if (viewY + viewHeight > srcView.getHeight()) {
 			viewHeight = srcView.getHeight() - viewY;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 	}
-	else
-	{
+	else {
 		BitBlt(viewVars.dc, x, y, srcView.getWidth(), srcView.getHeight(), viewVarsSrc.dc, viewX,viewY,SRCCOPY);
 	}
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag())
-	{
-		if (viewWidth > srcView.getWidth())
-		{
+	if (srcView.getAlphaFlag()) {
+		if (viewWidth > srcView.getWidth()) {
 			viewWidth = srcView.getWidth();
 		}
 
-		if (viewHeight > srcView.getHeight())
-		{
+		if (viewHeight > srcView.getHeight()) {
 			viewHeight = srcView.getHeight();
 		}
 
-		if (x + viewWidth > view.getWidth())
-		{
+		if (x + viewWidth > view.getWidth()) {
 			viewWidth = view.getWidth() - x;
 		}
 
-		if (y + viewHeight > view.getHeight())
-		{
+		if (y + viewHeight > view.getHeight()) {
 			viewHeight = view.getHeight() - y;
 		}
 
-		if (viewX + viewWidth > srcView.getWidth())
-		{
+		if (viewX + viewWidth > srcView.getWidth()) {
 			viewWidth = srcView.getWidth() - viewX;
 		}
 
-		if (viewY + viewHeight > srcView.getHeight())
-		{
+		if (viewY + viewHeight > srcView.getHeight()) {
 			viewHeight = srcView.getHeight() - viewY;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 	}
-	else
-	{
+	else {
 		BitBlt(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,SRCCOPY);
 	}
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
 	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
@@ -323,95 +271,128 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 
 	uint viewWidth = srcView.getWidth();
 	uint viewHeight = srcView.getHeight();
-	if (x + viewWidth > view.getWidth())
-	{
+	if (x + viewWidth > view.getWidth()) {
 		viewWidth = view.getWidth() - x;
 	}
 
-	if (y + viewHeight > view.getHeight())
-	{
+	if (y + viewHeight > view.getHeight()) {
 		viewHeight = view.getHeight() - y;
 	}
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0,viewWidth, viewHeight, bf);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
 	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
 
 	uint viewWidth = srcView.getWidth();
 	uint viewHeight = srcView.getHeight();
-	if (x + viewWidth > view.getWidth())
-	{
+	if (x + viewWidth > view.getWidth()) {
 		viewWidth = view.getWidth() - x;
 	}
 
-	if (y + viewHeight > view.getHeight())
-	{
+	if (y + viewHeight > view.getHeight()) {
 		viewHeight = view.getHeight() - y;
 	}
 
-	if (viewX + viewWidth > srcView.getWidth())
-	{
+	if (viewX + viewWidth > srcView.getWidth()) {
 		viewWidth = srcView.getWidth() - viewX;
 	}
 
-	if (viewY + viewHeight > srcView.getHeight())
-	{
+	if (viewY + viewHeight > srcView.getHeight()) {
 		viewHeight = srcView.getHeight() - viewY;
 	}
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity)
-{
+void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
 	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
 
-	if (viewWidth > srcView.getWidth())
-	{
+	if (viewWidth > srcView.getWidth()) {
 		viewWidth = srcView.getWidth();
 	}
 
-	if (viewHeight > srcView.getHeight())
-	{
+	if (viewHeight > srcView.getHeight()) {
 		viewHeight = srcView.getHeight();
 	}
 
-	if (x + viewWidth > view.getWidth())
-	{
+	if (x + viewWidth > view.getWidth()) {
 		viewWidth = view.getWidth() - x;
 	}
 
-	if (y + viewHeight > view.getHeight())
-	{
+	if (y + viewHeight > view.getHeight()) {
 		viewHeight = view.getHeight() - y;
 	}
 
-	if (viewX + viewWidth > srcView.getWidth())
-	{
+	if (viewX + viewWidth > srcView.getWidth()) {
 		viewWidth = srcView.getWidth() - viewX;
 	}
 
-	if (viewY + viewHeight > srcView.getHeight())
-	{
+	if (viewY + viewHeight > srcView.getHeight()) {
 		viewHeight = srcView.getHeight() - viewY;
 	}
 
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 }
 
-void clipSave(ViewPlatformVars* viewVars)
-{
-	if (viewVars.clipRegions.length == 0)
-	{
+void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
+	// destroy old region data
+	if (rgnVars.regionHandle !is null) {
+		DeleteObject(rgnVars.regionHandle);
+	}
+
+	// compute a platform graphics api version of the region
+	POINT[] pts = new POINT[](rgn.numPoints);
+
+	foreach(i, pt; rgn) {
+		pts[i].x = pt.x + x;
+		pts[i].y = pt.y + y;
+	}
+	
+	// call the platform to create a region object from the points
+	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.numPoints, ALTERNATE);
+}
+
+void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+	if (rgnPlatformDirty) {
+		_createRegion(rgnVars, rgn, x, y);
+	}
+
+	// paint the region
+	PaintRgn(viewVars.dc, rgnVars.regionHandle);
+}
+
+void strokeRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+	if (rgnPlatformDirty) {
+		_createRegion(rgnVars, rgn, x, y);
+	}
+
+	// frame the region
+	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
+	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
+	DeleteObject(brsh);
+}
+
+void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+	if (rgnPlatformDirty) {
+		_createRegion(rgnVars, rgn, x, y);
+	}
+
+	// paint and frame the region
+	PaintRgn(viewVars.dc, rgnVars.regionHandle);
+	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
+	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
+	DeleteObject(brsh);
+}
+
+void clipSave(ViewPlatformVars* viewVars) {
+	if (viewVars.clipRegions.length == 0) {
 		viewVars.clipRegions.addItem(null);
 	}
-	else
-	{
+	else {
 		HRGN rgn = CreateRectRgn(0,0,0,0);
 
 		GetClipRgn(viewVars.dc, rgn);
@@ -420,20 +401,17 @@ void clipSave(ViewPlatformVars* viewVars)
 	}
 }
 
-void clipRestore(ViewPlatformVars* viewVars)
-{
+void clipRestore(ViewPlatformVars* viewVars) {
 	HRGN rgn;
 
-	if (viewVars.clipRegions.remove(rgn))
-	{
+	if (viewVars.clipRegions.remove(rgn)) {
 		SelectClipRgn(viewVars.dc, rgn);
 
 		DeleteObject(rgn);
 	}
 }
 
-void clipRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void clipRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	HRGN rgn = CreateRectRgn(x,y,x2,y2);
 
 	ExtSelectClipRgn(viewVars.dc, rgn, RGN_AND);
@@ -441,6 +419,5 @@ void clipRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
 	DeleteObject(rgn);
 }
 
-void clipRegion(ViewPlatformVars* viewVars, Region region)
-{
+void clipRegion(ViewPlatformVars* viewVars, Region region) {
 }

@@ -1,8 +1,5 @@
 module console.listbox;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 import core.string;
 import core.main;
 import core.definitions;
@@ -76,7 +73,7 @@ class ConsoleListBox : ConsoleControl, AbstractList!(String)
 	{
 		if (keyCode == KeyTab)
 		{
-			_window.TabForward();
+			_window.tabForward();
 		}
 		else if (keyCode == KeyArrowUp)
 		{
@@ -194,12 +191,6 @@ class ConsoleListBox : ConsoleControl, AbstractList!(String)
 
 
 protected:
-
-	uint _x = 0;
-	uint _y = 0;
-
-	uint _width = 0;
-	uint _height = 0;
 
 	uint _pos = 0;
 

@@ -1,8 +1,5 @@
 module console.label;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 import core.string;
 import core.main;
 import core.definitions;
@@ -14,40 +11,75 @@ import console.control;
 // Section: Console
 
 // Description: This console control abstracts a simple static text field.
-class ConsoleLabel : ConsoleControl
-{
-	this( uint x, uint y, String text )
+class ConsoleLabel : ConsoleControl {
+
+	this( uint x, uint y, uint width, String text,
+		  fgColor fgclr = fgColor.BrightBlue, 
+		  bgColor bgclr = bgColor.Black )
 	{
-		_x = x;
-		_y = y;
+		super(x,y,width,1);
+
+		forecolor = fgclr;
+		backcolor = bgclr;
 
 		_value = new String(text);
 	}
 
-	this( uint x, uint y, StringLiteral text )
+	this( uint x, uint y, uint width, StringLiteral text,
+		  fgColor fgclr = fgColor.BrightBlue, 
+		  bgColor bgclr = bgColor.Black )
 	{
-		_x = x;
-		_y = y;
+		super(x,y,width,1);
+
+		forecolor = fgclr;
+		backcolor = bgclr;
 
 		_value = new String(text);
 	}
 
-	override void OnAdd()
-	{
+	override void OnAdd() {
 	}
 
-	override void OnInit()
-	{
-		Console.setPosition(_x, _y);
-		Console.setColor(fgColor.BrightBlue, bgColor.Black);
+	override void OnInit() {
+		draw();
+	}
 
-		Console.put(_value.array);
+	void setText(String newValue) {
+		_value = new String(newValue);
+		draw();
+	}
+
+	void setText(StringLiteral newValue) {
+		_value = new String(newValue);
+		draw();
+	}
+
+	void setForeColor(fgColor fgclr) {
+		forecolor = fgclr;
+	}
+	
+	void setBackColor(bgColor bgclr) {
+		backcolor = bgclr;
 	}
 
 protected:
 
-	uint _x = 0;
-	uint _y = 0;
+	void draw() {
+		Console.setPosition(_x, _y);
+		Console.setColor(forecolor, backcolor);
+
+		// draw as much as we can
+
+		if (_value.length > _width) {
+			Console.put((new String(_value[0.._width])));
+		}
+		else {
+			Console.put(_value);
+		}
+	}
+
+	fgColor forecolor = fgColor.BrightBlue;
+	bgColor backcolor = bgColor.Black;
 
 	String _value;
 }
