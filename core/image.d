@@ -14,7 +14,8 @@ import interfaces.stream;
 import core.string;
 import core.view;
 import core.file;
-import core.semaphore;
+
+import synch.semaphore;
 
 // import the codec information
 import codecs.image.codec;

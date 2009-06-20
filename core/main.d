@@ -10,23 +10,16 @@
 
 module core.main;
 
-import core.basewindow;
 import core.window;
 import core.string;
-import core.thread;
 import core.arguments;
 import core.filesystem;
 import core.application;
-import core.semaphore;
 
-import console.window;
+import synch.semaphore;
+import synch.thread;
+
 import console.main;
-
-import platform.imports;
-mixin(PlatformScaffoldImport!());
-mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformGenericImport!("console"));
-mixin(PlatformGenericImport!("vars"));
 
 void DjehutyStart() {
 	// Can only start the framework once
@@ -39,7 +32,7 @@ void DjehutyStart() {
 
 	// Check to make sure the app provided a suitable class to use
 	if (Djehuty.app is null) {
-	//	throw new Exception("No Application Class");
+		throw new Exception("No Application Class");
 	}
 	else
 	{
@@ -51,7 +44,7 @@ void DjehutyStart() {
 	Scaffold.AppStart();
 
 	// If no event controllers are in play, then end
-	if (Djehuty._windowCount == 0 && Djehuty._console_inited == false) {
+	if (Djehuty.app.isZombie() && Djehuty._console_inited == false) {
 		DjehutyEnd();
 	}
 }
@@ -67,9 +60,13 @@ void DjehutyEnd() {
 
 		Djehuty._threadRegisterSemaphore.up();
 	}
+	
+	Djehuty.app.OnApplicationEnd();
 
 	// End the application proper (from the platform's point of view)
 	Scaffold.AppEnd();
+
+	Console.setColor(fgColor.White, bgColor.Black);
 }
 
 // Section: Core
@@ -79,42 +76,15 @@ class Djehuty {
 	static:
 	public:
 
-		// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
-		// window: An instance of a BaseWindow class, or any the inherit from BaseWindow.
-		void addWindow(BaseWindow window) {
-			WindowPlatformVars* wpv = WindowGetPlatformVars(window);
-
-			synchronized {
-				// update the window linked list
-				UpdateWindowList(window);
-
-				// increase global window count
-				_windowCount++;
-
-				// create the window through platform calls
-				Scaffold.WindowCreate(window, wpv);
-			}
-
-			if (window.getVisibility()) {
-				Scaffold.WindowSetVisible(window, wpv, true);
-			}
+	void setApplication(Application application) {
+		if (app !is null) {
+			throw new Exception("Application Already Spawned");
 		}
 
-		void setApplication(Application application) {
-			if (app !is null) {
-				throw new Exception("Application Already Spawned");
-			}
-
-			app = application;
-		}
+		app = application;
+	}
 
 	private:
-		BaseWindow _windowListHead = null;
-		BaseWindow _windowListTail = null;
-
-		int _windowCount;
-		int _windowVisibleCount;
-
 		bool _console_inited = false;
 
 		bool _hasStarted = false;

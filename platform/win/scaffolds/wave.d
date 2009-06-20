@@ -20,12 +20,13 @@ import core.window;
 import core.string;
 import core.file;
 import core.stream;
-import core.thread;
-import core.semaphore;
 import core.time;
 import core.audio;
 import core.main;
 import core.definitions;
+
+import synch.thread;
+import synch.semaphore;
 
 import console.main;
 

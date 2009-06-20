@@ -2,7 +2,7 @@ module utils.linkedlist;
 
 import interfaces.list;
 
-import core.semaphore;
+import synch.semaphore;
 
 import std.stdio;
 

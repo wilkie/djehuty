@@ -16,7 +16,7 @@ import core.unicode;
 
 import console.main;
 
-import core.thread;
+import synch.thread;
 
 private
 {

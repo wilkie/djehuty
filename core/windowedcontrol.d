@@ -1,7 +1,7 @@
 module core.windowedcontrol;
 
-import core.control;
 import core.string;
+import gui.core;
 
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));

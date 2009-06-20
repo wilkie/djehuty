@@ -17,10 +17,9 @@ import platform.win.main;
 
 import core.view;
 import core.graphics;
-import core.window;
+import gui.core;
 import core.string;
 import core.menu;
-import core.basewindow;
 import core.main;
 import core.definitions;
 
@@ -68,6 +67,5 @@ void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, r
 	SetMenu(windVars.hWnd, mnuVars.hMenu);
 
 	// resize to adapt client area
-	BaseWindow bw = cast(BaseWindow)wnd;
-	WindowRebound(bw,&windVars);
+	WindowRebound(wnd,&windVars);
 }

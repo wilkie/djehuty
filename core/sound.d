@@ -17,8 +17,10 @@ import core.file;
 import core.string;
 import core.audio;
 import core.wavelet;
-import core.thread;
-import core.timer;
+import core.event;
+
+import synch.thread;
+import synch.timer;
 
 import codecs.audio.codec;
 import codecs.audio.all;
@@ -41,17 +43,15 @@ enum SoundState
 // Section: Core/Resources
 
 // Description: This class will abstract away the low-level Audio class.  It can load an audio file and control its playback with simple and common interactions.
-class Sound
+class Sound : Responder
 {
 
 
 	// Only temporary.. the user will be expected to do this themselves.
 	Timer tmr;
 
-	bool timerProc(Timer tmr)
-	{
+	void timerProc() {
 		getPositionString();
-		return true;
 	}
 
 	// Description: This constructor will create the object and load the file using the filename passed.
@@ -63,7 +63,8 @@ class Sound
 
 		tmr = new Timer();
 		tmr.setInterval(1);
-		tmr.setDelegate(&timerProc);
+
+		push(tmr);
 
 		load(filename);
 	}
@@ -71,6 +72,13 @@ class Sound
 	~this()
 	{
 		tmr.stop();
+	}
+	
+	bool OnSignal(Dispatcher dsp, uint signal) {
+		if (dsp is tmr) {
+			timerProc();
+		}
+		return true;
 	}
 
 	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.

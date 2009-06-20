@@ -11,20 +11,25 @@ module analyzing.debugger;
 
 import console.main;
 
-import core.basewindow;
+import gui.core;
+
 import core.string;
 import core.unicode;
-import core.thread;
 
-// Description: This class provides a set of functions to facilitate common debugging functions and capabilities to profile code.
-// Feature: Provides a method of logging all debug information to a file. (Functionality)
-// Feature: The log file can be easily parsed and the information easily extracted. (Usability)
+import synch.thread;
+
+// Description: This class provides a set of functions to facilitate common
+//	debugging functions and capabilities to profile code.
+// Feature: Provides a method of logging all debug information to a file.
+//	(Functionality)
+// Feature: The log file can be easily parsed and the information easily
+//	extracted. (Usability)
 class Debugger
 {
 static:
 public:
 
-	void raiseException(Exception e, BaseWindow w = null, Thread t = null)
+	void raiseException(Exception e, Window w = null, Thread t = null)
 	{
 		if (_delegate !is null)
 		{
@@ -83,6 +88,9 @@ public:
 	void setDelegate(void delegate(Exception) newDelegate)
 	{
 		_delegate = newDelegate;
+	}
+
+	void raiseSignal(uint signal) {
 	}
 
 protected:

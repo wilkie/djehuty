@@ -1,6 +1,6 @@
 module platform.win.controls.ostogglefield;
 
-import controls.togglefield;
+import gui.togglefield;
 import core.string;
 
 import platform.win.definitions;
@@ -10,9 +10,7 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import core.control;
-
-import core.basewindow;
+import gui.core;
 
 class OSToggleField : ToggleField, OSControl
 {

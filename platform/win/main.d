@@ -16,16 +16,18 @@ import platform.win.oscontrolinterface;
 
 import core.main;
 import core.definitions;
-import core.window;
 import core.view;
 import core.menu;
-import core.thread;
-import core.basewindow;
+
+import gui.core;
+
+import opengl.window;
+
+import synch.thread;
 
 import analyzing.debugger;
 
-import console.window;
-import console.application;
+import tui.core;
 
 // import strings
 import core.string;
@@ -272,7 +274,7 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 	if (uMsg == WM_CREATE)
 	{
-		BaseWindow w = cast(BaseWindow)cs.lpCreateParams;
+		Window w = cast(Window)cs.lpCreateParams;
 
 		SetWindowLongW(hWnd, GWLP_WNDPROC, cast(ulong)&WindowProc);
 		SetWindowLongW(hWnd, GWLP_USERDATA, cast(ulong)cs.lpCreateParams);
@@ -307,7 +309,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 {
 	// resolve the window class reference:
 	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
-	BaseWindow w = cast(BaseWindow)(wind_in);
+	Window w = cast(Window)(wind_in);
 
 	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
 
@@ -315,7 +317,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 	int ret = IsWindowUnicode(windowVars.hWnd);
 
-	if (WindowHasView(w))
+	if (true)
 	{
 		viewW = cast(Window)w;
 	}
@@ -861,8 +863,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				SetWindowSize(w, rt.right, rt.bottom);
 				w.OnResize();
 
-				if (windowVars._hasGL)
-				{
+				if (cast(GLWindow)w !is null) {
 					windowVars.gameLoopCallResize();
 				}
 
@@ -994,7 +995,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void _TestNumberOfClicks(ref BaseWindow w, int x, int y, int clickType)
+void _TestNumberOfClicks(ref Window w, int x, int y, int clickType)
 {
 	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
 	//check for double click first and within close proximity
@@ -1033,7 +1034,7 @@ void _TestNumberOfClicks(ref BaseWindow w, int x, int y, int clickType)
 	w.mouseProps.clicks = windowVars.doubleClickAmount;
 }
 
-void _TestNumberOfClicksUp(ref BaseWindow w, int clickType)
+void _TestNumberOfClicksUp(ref Window w, int clickType)
 {
 	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
 
@@ -1126,6 +1127,7 @@ int mainloop()
 
 				for (i=0; i<cNumRead; i++)
 				{
+					TuiWindow curWindow = (cast(TuiApplication)Djehuty.app).getWindow();
 					switch(irInBuf[i].EventType)
 					{
 						case KEY_EVENT: // keyboard input
@@ -1134,11 +1136,11 @@ int mainloop()
 								// KeyDown
 
 								// The Current Console View Receives the Event
-								ConsoleWindowOnKeyDown( irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
+								curWindow.OnKeyDown(irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
 
 								if (irInBuf[i].Event.KeyEvent.uChar.UnicodeChar > 0)
 								{
-									ConsoleWindowOnKeyChar( irInBuf[i].Event.KeyEvent.uChar.UnicodeChar );
+									curWindow.OnKeyChar(irInBuf[i].Event.KeyEvent.uChar.UnicodeChar);
 								}
 							}
 							else
@@ -1146,13 +1148,11 @@ int mainloop()
 								// KeyUp
 
 								// The Current Console View Receives the Event
-								ConsoleWindowOnKeyUp( irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
+								curWindow.OnKeyUp(irInBuf[i].Event.KeyEvent.wVirtualKeyCode);
 							}
 		                    break;
 
 		                case MOUSE_EVENT: // mouse input
-		                
-		                	ConsoleWindow cwnd = (cast(ConsoleApplication)Djehuty.app).getConsoleWindow();
 
 							uint curbutton=0;
 							bool isPressed = true;
@@ -1165,50 +1165,50 @@ int mainloop()
 							if (!(irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED ||
 								  irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED ))
 							{
-								if (cwnd.mouseProps.x != irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left)
+								if (curWindow.mouseProps.x != irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left)
 								{
-									cwnd.mouseProps.x = irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left;
+									curWindow.mouseProps.x = irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left;
 									isMovement = true;
 								}
-								if (cwnd.mouseProps.y != irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top)
+								if (curWindow.mouseProps.y != irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top)
 								{
-									cwnd.mouseProps.y = irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top;
+									curWindow.mouseProps.y = irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top;
 									isMovement = true;
 								}
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED)
 							{
-								if (cwnd.mouseProps.leftDown == false)
+								if (curWindow.mouseProps.leftDown == false)
 								{
 									curbutton = 1;
-									cwnd.mouseProps.leftDown = true;
+									curWindow.mouseProps.leftDown = true;
 								}
 							}
 							else
 							{
-								if (cwnd.mouseProps.leftDown == true)
+								if (curWindow.mouseProps.leftDown == true)
 								{
 									curbutton = 1;
-									cwnd.mouseProps.leftDown = false;
+									curWindow.mouseProps.leftDown = false;
 									isPressed = false;
 								}
 							}
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_2ND_BUTTON_PRESSED)
 							{
-								if (cwnd.mouseProps.middleDown == false)
+								if (curWindow.mouseProps.middleDown == false)
 								{
 									curbutton = 2;
-									cwnd.mouseProps.middleDown = true;
+									curWindow.mouseProps.middleDown = true;
 								}
 							}
 							else
 							{
-								if (cwnd.mouseProps.middleDown == true)
+								if (curWindow.mouseProps.middleDown == true)
 								{
 									curbutton = 2;
-									cwnd.mouseProps.middleDown = false;
+									curWindow.mouseProps.middleDown = false;
 									isPressed = false;
 								}
 							}
@@ -1251,18 +1251,18 @@ int mainloop()
 
 							if (irInBuf[i].Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED)
 							{
-								if (cwnd.mouseProps.rightDown == false)
+								if (curWindow.mouseProps.rightDown == false)
 								{
 									curbutton = 5;
-									cwnd.mouseProps.rightDown = true;
+									curWindow.mouseProps.rightDown = true;
 								}
 							}
 							else
 							{
-								if (cwnd.mouseProps.rightDown == true)
+								if (curWindow.mouseProps.rightDown == true)
 								{
 									curbutton = 5;
-									cwnd.mouseProps.rightDown = false;
+									curWindow.mouseProps.rightDown = false;
 									isPressed = false;
 								}
 							}
@@ -1272,17 +1272,17 @@ int mainloop()
 								if (curbutton == 1)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnPrimaryMouseUp();
+									curWindow.OnPrimaryMouseUp();
 								}
 								else if (curbutton == 2)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnTertiaryMouseUp();
+									curWindow.OnTertiaryMouseUp();
 								}
 								else if (curbutton == 5)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnSecondaryMouseUp();
+									curWindow.OnSecondaryMouseUp();
 								}
 							}
 							else if (curbutton > 0)
@@ -1290,17 +1290,17 @@ int mainloop()
 								if (curbutton == 1)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnPrimaryMouseDown();
+									curWindow.OnPrimaryMouseDown();
 								}
 								else if (curbutton == 2)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnTertiaryMouseDown();
+									curWindow.OnTertiaryMouseDown();
 								}
 								else if (curbutton == 5)
 								{
 									_last_was_mousepress = true;
-									ConsoleWindowOnSecondaryMouseDown();
+									curWindow.OnSecondaryMouseDown();
 								}
 							}
 							else
@@ -1310,7 +1310,7 @@ int mainloop()
 									case MOUSE_MOVED:
 										if (isMovement && !_last_was_mousepress)
 										{
-											ConsoleWindowOnMouseMove();
+											curWindow.OnMouseMove();
 										}
 										_last_was_mousepress = false;
 										break;
@@ -1320,7 +1320,7 @@ int mainloop()
 
 										delta /= 120;
 
-										ConsoleWindowOnMouseWheelY(delta);
+										curWindow.OnMouseWheelY(delta);
 										break;
 									case MOUSE_HWHEELED:
 
@@ -1328,7 +1328,7 @@ int mainloop()
 
 										delta /= 120;
 
-										ConsoleWindowOnMouseWheelX(delta);
+										curWindow.OnMouseWheelX(delta);
 										break;
 									default:
 										break;

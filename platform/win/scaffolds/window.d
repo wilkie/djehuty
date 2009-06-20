@@ -19,19 +19,19 @@ import platform.win.main;
 import core.view;
 import core.graphics;
 import core.color;
-import core.basewindow;
-import core.window;
 import core.string;
 import core.file;
 import core.main;
 import core.definitions;
 
+import gui.core;
+
 import opengl.window;
 
-import core.thread;
+import synch.thread;
 
 // all windows
-void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 {
 	windowVars.oldWidth = window.getWidth();
 	windowVars.oldHeight = window.getHeight();
@@ -49,7 +49,7 @@ void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
 
 	windowVars.windowClass = window;
 
-	if (windowVars._hasGL)
+	if (cast(GLWindow)window !is null)
 	{
 		windowVars.msgThread = new Thread(&windowVars.gameLoop);
 	}
@@ -72,7 +72,7 @@ void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
 	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
 }
 
-void WindowCreate(ref BaseWindow parent, WindowPlatformVars* parentVars, ref BaseWindow window, ref WindowPlatformVars windowVars)
+void WindowCreate(ref Window parent, WindowPlatformVars* parentVars, ref Window window, ref WindowPlatformVars windowVars)
 {
 	int width, height, x, y;
 
@@ -108,7 +108,7 @@ void WindowCreate(ref BaseWindow parent, WindowPlatformVars* parentVars, ref Bas
 	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
 }
 
-void WindowSetStyle(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 {
 	bool wasMaximized = false;
 
@@ -149,12 +149,12 @@ void WindowSetStyle(ref BaseWindow window, WindowPlatformVars* windowVars)
 	}
 }
 
-void WindowReposition(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
 {
 	SetWindowPos(windowVars.hWnd, null, window.getX(),window.getY(), 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
-void WindowSetState(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 {
 	if (window.getState() == WindowState.Fullscreen)
 	{
@@ -241,7 +241,7 @@ void WindowSetState(ref BaseWindow window, WindowPlatformVars* windowVars)
 	}
 }
 
-void _GatherStyleInformation(ref BaseWindow window, ref uint istyle, ref uint iexstyle)
+void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexstyle)
 {
 	if (window.getStyle() == WindowStyle.Fixed)
 	{
@@ -276,7 +276,7 @@ void _GatherStyleInformation(ref BaseWindow window, ref uint istyle, ref uint ie
 	}
 }
 
-void _ClientSizeToWindowSize(ref BaseWindow window, ref int width, ref int height)
+void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 {
 	if (width == Default) { width = CW_USEDEFAULT; }
 	else
@@ -314,7 +314,7 @@ void _ClientSizeToWindowSize(ref BaseWindow window, ref int width, ref int heigh
 	}
 }
 
-void WindowRebound(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 {
 	int width, height;
 
@@ -327,12 +327,12 @@ void WindowRebound(ref BaseWindow window, WindowPlatformVars* windowVars)
 	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER);
 }
 
-void WindowDestroy(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 {
 	PostMessageW(windowVars.hWnd, WM_CLOSE, 0,0);
 }
 
-void WindowSetVisible(ref BaseWindow window, WindowPlatformVars* windowVars, bool bShow)
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
 {
 	if (bShow)
 	{
@@ -344,7 +344,7 @@ void WindowSetVisible(ref BaseWindow window, WindowPlatformVars* windowVars, boo
 	}
 }
 
-void WindowSetTitle(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 {
 	String s = new String(window.getText());
 	s.appendChar('\0');
@@ -356,7 +356,7 @@ void WindowSetTitle(ref BaseWindow window, WindowPlatformVars* windowVars)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref int x, ref int y)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
 {
 	Coord pt = {x,y};
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
@@ -364,12 +364,12 @@ void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars,
 	y = pt.y;
 }
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref Coord pt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
 {
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
 }
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref Rect rt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
 {
 // could optimize by directly accessing a point worth from the rect
 	Coord pt = {rt.left,rt.top};

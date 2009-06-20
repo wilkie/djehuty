@@ -12,7 +12,8 @@ module core.audio;
 
 import core.stream;
 import core.time;
-import core.semaphore;
+
+import synch.semaphore;
 
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));

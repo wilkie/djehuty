@@ -9,18 +9,9 @@
 
 module platform.win.scaffolds.app;
 
-import platform.win.vars;
-import platform.win.common;
 import platform.win.main;
 
-import core.view;
-import core.graphics;
-import core.basewindow;
-import core.window;
-import core.string;
-import core.file;
 import core.main;
-import core.definitions;
 
 void AppStart()
 {

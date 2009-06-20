@@ -1,6 +1,6 @@
 module platform.win.controls.ostrackbar;
 
-import controls.trackbar;
+import gui.trackbar;
 import core.string;
 
 import platform.win.definitions;
@@ -10,9 +10,7 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import core.control;
-
-import core.basewindow;
+import gui.core;
 
 class OSTrackBar : TrackBar, OSControl
 {

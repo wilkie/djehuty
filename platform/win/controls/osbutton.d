@@ -1,6 +1,6 @@
 module platform.win.controls.osbutton;
 
-import controls.button;
+import gui.button;
 import core.string;
 
 import platform.win.definitions;
@@ -8,11 +8,9 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.oscontrolinterface;
 
-import core.basewindow;
-
 import platform.win.main;
 import core.view;
-import core.control;
+import gui.core;
 
 class OSButton : Button, OSControl
 {
@@ -28,7 +26,7 @@ public:
 	}
 
 	// support Events
-	mixin(ControlAddDelegateSupport!("OSButton", "ButtonEvent"));
+	mixin(ControlAddDelegateSupport!("OSButton", "Button.Event"));
 
 	override void OnAdd()
 	{
@@ -55,7 +53,7 @@ protected:
 	{
 		if (message == WM_COMMAND)
 		{
-			FireEvent(ButtonEvent.Selected);
+			FireEvent(Button.Event.Selected);
 			return 0;
 		}
 

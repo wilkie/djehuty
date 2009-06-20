@@ -9,11 +9,9 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import core.control;
+import gui.core;
 
-import core.basewindow;
-
-import controls.vscrollbar;
+import gui.vscrollbar;
 
 class OSVScrollBar : VScrollBar, OSControl
 {

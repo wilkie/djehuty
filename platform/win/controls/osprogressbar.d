@@ -1,6 +1,6 @@
 module platform.win.controls.osprogressbar;
 
-import controls.progressbar;
+import gui.progressbar;
 import core.string;
 
 import platform.win.definitions;
@@ -10,9 +10,7 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import core.control;
-
-import core.basewindow;
+import gui.core;
 
 class OSProgressBar : ProgressBar, OSControl
 {

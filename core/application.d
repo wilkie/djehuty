@@ -15,9 +15,18 @@ import core.unicode;
 import core.main;
 import core.filesystem;
 import core.arguments;
+import core.event;
+
+import platform.imports;
+mixin(PlatformScaffoldImport!());
+mixin(PlatformGenericImport!("definitions"));
+mixin(PlatformGenericImport!("console"));
+mixin(PlatformGenericImport!("vars"));
+
+import analyzing.debugger;
 
 // Description: This class represents the application instance.
-class Application {
+class Application : Responder {
 
 	this() {
 		// go by classinfo to the application name
@@ -79,11 +88,29 @@ class Application {
 
 	// Events //
 
-	// Description: This event will be fired when the application has finished loading.
+	// Description: This event will be fired when the application has
+	//	finished loading.
 	void OnApplicationStart() {
+	}
+
+	// Description: This event will be fired when the application is about
+	//	to close.
+	void OnApplicationEnd() {
+	}
+	
+	// Description: Detects whether or not the application is a Zombie app;
+	//	that is, whether or not it is in a state of no improvement and is
+	//	merely sucking up resources.
+	bool isZombie() {
+		return false;
 	}
 
 protected:
 	String appName;
 	Arguments arguments;
+	
+	override bool raiseSignal(uint signal) {
+		Debugger.raiseSignal(signal);
+		return false;
+	}
 }

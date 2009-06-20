@@ -25,8 +25,8 @@ DFILES_PLATFORM_WIN = platform/win/scaffolds/system.d platform/win/main.d platfo
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
 DFILES_ANALYZING = analyzing/debugger.d
-DFILES_CORE = core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/filesystem.d core/directory.d core/definitions.d core/application.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/mutex.d core/sound.d core/unicode.d core/semaphore.d core/thread.d core/graphics.d core/resource.d core/menu.d core/timer.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/window.d core/main.d core/view.d core/control.d core/color.d core/basewindow.d core/windowedcontrol.d
-DFILES_CONTROLS = controls/container.d controls/trackbar.d controls/radiogroup.d controls/progressbar.d controls/togglefield.d controls/oscontrol.d controls/listfield.d controls/listbox.d controls/vscrollbar.d controls/hscrollbar.d controls/button.d controls/textfield.d
+DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/filesystem.d core/directory.d core/definitions.d core/application.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/sound.d core/unicode.d core/graphics.d core/resource.d core/menu.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/main.d core/view.d core/color.d core/windowedcontrol.d
+DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/oscontrol.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/core.d
 DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
 DFILES_PARSING = parsing/lexer.d parsing/cfg.d
 DFILES = djehuty.d
@@ -37,7 +37,8 @@ DFILES_GRAPHICS = graphics/convexhull.d graphics/region.d graphics/brush.d graph
 DFILES_NETWORKING = networking/http.d networking/telnet.d networking/irc.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
-DFILES_CONSOLE = console/application.d console/telnet.d console/buffer.d console/vt100.d console/prompt.d console/listbox.d console/textfield.d console/label.d console/control.d console/main.d console/window.d
+DFILES_CONSOLE = console/prompt.d console/main.d
+DFILES_TUI = tui/core.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d
 DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d interfaces/stream.d
@@ -45,10 +46,11 @@ DFILES_MATH = math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d opengl/light.d
 DFILES_SPECS = specs/test.d
 DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
+DFILES_SYNCH = synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RESOURCE = staticrsc.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_ANALYZING:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_BINDING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_CONTROLS:.d=.o) $(DFILES_PARSERS:.d=.o)
+OBJS_CORE = $(DFILES:.d=.o) $(DFILES_SYNCH:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_TUI:.d=.o) $(DFILES_ANALYZING:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_BINDING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_SOCKPUPPETS:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_GUI:.d=.o) $(DFILES_PARSERS:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 
@@ -60,6 +62,8 @@ OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d
+
+EXAMPLES_TUITETRIS = examples/tuitetris/app.d examples/tuitetris/gamewindow.d examples/tuitetris/tetris.d examples/tuitetris/gamecontrol.d
 
 libdeps_linux: $(OBJS_LINUX)
 	@echo ">> framework compilation complete. <<"
@@ -192,6 +196,21 @@ else
 	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
 endif
 endif
+
+tuitetris: lib
+
+	@echo compiling TuiTetris example and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o tuitetris winsamp.o $(OBJS_MAC)
+else
+ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -oftuitetris -d-version=PlatformLinux $(EXAMPLES_TUITETRIS) $(OBJS_LINUX)
+endif
+endif
+
+
 
 clean:
 ifeq (${MY_ARCH},Darwin)

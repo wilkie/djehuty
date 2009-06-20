@@ -4,7 +4,10 @@ module core.view;
 
 import core.window;
 import core.graphics;
-import core.semaphore;
+
+import synch.semaphore;
+
+import gui.core;
 
 import console.main;
 
@@ -250,7 +253,7 @@ protected:
 	ViewPlatformVars _pfvars;
 
 	bool _fromWindow = false;
-	Window _window = null;
+	Window _window;
 
 	bool _inited = false;
 
@@ -310,7 +313,7 @@ protected:
 
 
 
-
+import gui.core;
 
 ViewPlatformVars* ViewGetPlatformVars(ref View view)
 {
@@ -320,7 +323,6 @@ ViewPlatformVars* ViewGetPlatformVars(ref View view)
 void ViewCreateForWindow(ref View view, ref Window window)
 {
 	view._fromWindow = true;
-	view._window = window;
 
 	view.create(window.getWidth(), window.getHeight());
 

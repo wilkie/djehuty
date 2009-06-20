@@ -14,13 +14,15 @@ import platform.win.scaffolds.opengl;
 import platform.win.main;
 
 import core.definitions;
-import core.thread;
-import core.semaphore;
 import core.audio;
 import core.stream;
 import core.main;
 import core.string;
-import core.basewindow;
+
+import synch.thread;
+import synch.semaphore;
+
+import gui.core;
 
 import console.main;
 
@@ -33,13 +35,6 @@ import utils.linkedlist;
 
 struct WindowPlatformVars
 {
-	// required parameters:
-
-	bool _hasGL;		// is a GLWindow
-	bool _hasView;		// is a Window
-
-	// -----
-
 	HWND hWnd;
 	HDC windhDC;
 
@@ -81,7 +76,7 @@ struct WindowPlatformVars
 
 	String oldTitle;
 
-	BaseWindow windowClass;
+	Window windowClass;
 
 	// ----
 
