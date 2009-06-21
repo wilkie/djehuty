@@ -65,7 +65,7 @@ void UninitializeWindow(Window w)
 		app._windowVisibleCount--;
 
 		// If there are no visible windows, quit (for now)
-		if (app.isZombie() == 0)
+		if (app.isZombie())
 		{
 			// just kill the app
 			app.destroyAllWindows();

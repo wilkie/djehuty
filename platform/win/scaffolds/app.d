@@ -12,6 +12,7 @@ module platform.win.scaffolds.app;
 import platform.win.main;
 
 import core.main;
+import console.main;
 
 void AppStart()
 {
