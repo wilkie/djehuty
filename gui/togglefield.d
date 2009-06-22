@@ -6,8 +6,6 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import core.windowedcontrol;
-
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
@@ -19,7 +17,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,value);
 	}
-`;
+	`;
 }
 
 enum ToggleFieldEvent : uint
@@ -29,7 +27,7 @@ enum ToggleFieldEvent : uint
 }
 
 // Description: This control provides a standard toggle field.  When grouped, these will act as a exclusive list of options, essentially a 'radio' or 'option' field.  Otherwise they are 'check' fields.
-class ToggleField : WindowedControl
+class ToggleField : Widget
 {
 	this(int x, int y, int width, int height, String value)
 	{

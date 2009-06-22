@@ -15,7 +15,6 @@ import core.menu;
 import core.graphics;
 import core.color;
 import core.event;
-import core.windowedcontrol;
 import core.application;
 
 import core.literals;
@@ -317,7 +316,7 @@ public:
 		remove();
 	}
 
-	// Control Container Margins
+	// Widget Container Margins
 
 	int getBaseX()
 	{
@@ -689,7 +688,7 @@ public:
 
 			Scaffold.WindowStartDraw(this, &_pfvars, _view, *viewVars);
 
-			Control c = _firstControl;
+			Widget c = _firstControl;
 
 			if (c !is null)
 			{
@@ -759,7 +758,7 @@ public:
 	void OnMouseMove()
 	{
 		//select the control to send the message to
-		Control control;
+		Widget control;
 
 		if (_captured_control !is null)
 		{
@@ -865,7 +864,7 @@ public:
 
 		`void On` ~ type ~ `(` ~ otherDecl ~ `)
 		{
-			Control control;
+			Widget control;
 
 			if (_captured_control !is null)
 			{
@@ -908,7 +907,7 @@ public:
 
 	// Description: Called when the primary mouse button (usually the left button) is pressed.
 	void OnPrimaryMouseDown() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnPrimaryMouseDown(mouseProps)) {
 			OnDraw();
 		}
@@ -916,7 +915,7 @@ public:
 
 	// Description: Called when the primary mouse button (usually the left button) is released.
 	void OnPrimaryMouseUp() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnPrimaryMouseUp(mouseProps)) {
 			OnDraw();
 		}
@@ -924,7 +923,7 @@ public:
 
 	// Description: Called when the secondary mouse button (usually the right button) is pressed.
 	void OnSecondaryMouseDown() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnSecondaryMouseDown(mouseProps)) {
 			OnDraw();
 		}
@@ -932,7 +931,7 @@ public:
 
 	// Description: Called when the secondary mouse button (usually the right button) is released.
 	void OnSecondaryMouseUp() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnSecondaryMouseUp(mouseProps)) {
 			OnDraw();
 		}
@@ -940,7 +939,7 @@ public:
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is pressed.
 	void OnTertiaryMouseDown() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnTertiaryMouseDown(mouseProps)) {
 			OnDraw();
 		}
@@ -948,7 +947,7 @@ public:
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is released.
 	void OnTertiaryMouseUp() {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnTertiaryMouseUp(mouseProps)) {
 			OnDraw();
 		}
@@ -957,7 +956,7 @@ public:
 	// Description: This event is called when another uncommon mouse button is pressed down over the window.
 	// button: The identifier of this button.
 	void OnOtherMouseDown(uint button) {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnOtherMouseDown(mouseProps, button)) {
 			OnDraw();
 		}
@@ -966,7 +965,7 @@ public:
 	// Description: This event is called when another uncommon mouse button is released over the window.
 	// button: The identifier of this button.
 	void OnOtherMouseUp(uint button) {
-		Control target;
+		Widget target;
 		if(mouseEventCommon(target) | target.OnOtherMouseUp(mouseProps, button)) {
 			OnDraw();
 		}
@@ -1027,15 +1026,15 @@ public:
 		OnDraw();
 	}
 
-	// Control Maintenance //
+	// Widget Maintenance //
 
 	// Description: This function will return the visible control at the point given.
 	// x: The x coordinate to start the search.
 	// y: The y coordinate to start the search.
 	// Returns: The top-most visible control at the point (x,y) or null.
-	Control controlAtPoint(int x, int y)
+	Widget controlAtPoint(int x, int y)
 	{
-		Control ctrl = _firstControl;
+		Widget ctrl = _firstControl;
 
 		if (ctrl !is null)
 		{
@@ -1045,7 +1044,7 @@ public:
 				{
 					if (ctrl.isContainer())
 					{
-						Control innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
+						Widget innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
 						if (innerCtrl !is null) { return innerCtrl; }
 					}
 					else
@@ -1061,8 +1060,8 @@ public:
 	}
 	
 	override void push(Dispatcher dsp) {
-		if (cast(Control)dsp !is null) {
-			Control control = cast(Control)dsp;
+		if (cast(Widget)dsp !is null) {
+			Widget control = cast(Widget)dsp;
 
 			// do not add a control that is already part of another window
 			if (control.getParent() !is null) { return; }
@@ -1108,7 +1107,7 @@ public:
 
 	// Description: Removes the control as long as this control is a part of the current window.
 	// control: A reference to the control that should be removed from the window.
-	void removeControl(Control control)
+	void removeControl(Widget control)
 	{
 		if (control.isOfWindow(this))
 		{
@@ -1177,7 +1176,7 @@ public:
 
 protected:
 
-	bool mouseEventCommon(out Control target) {
+	bool mouseEventCommon(out Widget target) {
 		if (_captured_control !is null)
 		{
 			target = _captured_control;
@@ -1232,13 +1231,13 @@ protected:
 private:
 
 	// head and tail of the control linked list
-	Control _firstControl = null;	//head
-	Control _lastControl = null;	//tail
+	Widget _firstControl = null;	//head
+	Widget _lastControl = null;	//tail
 	int _numControls = 0;
 
-	Control _captured_control = null;
-	Control _last_control = null;
-	Control _focused_control = null;
+	Widget _captured_control = null;
+	Widget _last_control = null;
+	Widget _focused_control = null;
 
 	Menu _mainMenu = null;
 
@@ -1323,8 +1322,29 @@ template ControlAddDelegateSupport(StringLiteral8 ControlClass, StringLiteral8 C
 }
 
 // Description: This class implements and abstracts a control, which is a special container that can be drawn and added to a Window.  The control receives many events for different tasks, and allows reusable components within the static version of an application.
-class Control : Responder
+class Widget : Responder
 {
+	// Description: This constructor will create the widget at the location
+	//	indicated by x and y and the size indicated by width and height.
+	// x: The x coordinate for the widget.
+	// y: The y coordinate for the widget.
+	// width: The width of the widget.
+	// height: The height of the widget.
+	this(int x, int y, int width, int height)
+	{
+		_subX = x;
+		_x = x;
+
+		_subY = y;
+		_y = y;
+
+		_r = _x + width;
+		_b = _y + height;
+
+		_width = width;
+		_height = height;
+	}
+
 	// Deconstructor //
 
 	~this() {
@@ -1519,13 +1539,9 @@ class Control : Responder
 		_visible = bVisible;
 	}
 
-	// Control type information
+	// Widget type information
 
 	bool isContainer() {
-		return false;
-	}
-
-	bool isWindowed() {
 		return false;
 	}
 	
@@ -1536,11 +1552,69 @@ class Control : Responder
 	bool isFocused() {
 		return _focused;
 	}
+	void setEnabled(bool bEnable)
+	{
+		_enabled = bEnable;
+	}
+
+	bool getEnabled()
+	{
+		return _enabled;
+	}
+
+	uint getWidth()
+	{
+		return _width;
+	}
+
+	uint getHeight()
+	{
+		return _height;
+	}
+
+	int getX()
+	{
+		return _subX;
+	}
+
+	int getY()
+	{
+		return _subY;
+	}
+
+	void resize(uint width, uint height)
+	{
+		_width = width;
+		_height = height;
+
+		_r = _x + width;
+		_b = _y + height;
+	}
+
+	void move(int x, int y)
+	{
+		if (_container !is null)
+		{
+			_x = x + _container.getBaseX();
+			_y = y + _container.getBaseY();
+		}
+		else
+		{
+			_x = x;
+			_y = y;
+		}
+
+		_subX = x;
+		_subY = y;
+
+		_r = _x + _width;
+		_b = _y + _height;
+	}
 
 protected:
 
 	Window _window = null;
-	Control _parent = null;
+	Widget _parent = null;
 	AbstractContainer _container = null;
 
 	View _view = null;
@@ -1595,12 +1669,12 @@ private:
 	}
 
 	// control list
-	Control _nextControl;
-	Control _prevControl;
+	Widget _nextControl;
+	Widget _prevControl;
 }
 
 // Description: This control will provide a simple push button.
-class Container : WindowedControl, AbstractContainer
+class Container : Widget, AbstractContainer
 {
 	// Description: This will create a button with the specified dimensions and text.
 	this(int x, int y, int width, int height)
@@ -1618,7 +1692,7 @@ class Container : WindowedControl, AbstractContainer
 
 		g.clipRect(_x,_y,_r,_b);
 
-		Control c = _firstControl;
+		Widget c = _firstControl;
 
 		if (c !is null)
 		{
@@ -1638,7 +1712,7 @@ class Container : WindowedControl, AbstractContainer
 		return true;
 	}
 
-	void addControl(Control control)
+	void addControl(Widget control)
 	{
 		// do not add a control that is already part of another window
 		if (control.getParent() !is null) { return; }
@@ -1678,14 +1752,10 @@ class Container : WindowedControl, AbstractContainer
 
 		control.OnAdd();
 
-		if (control.isWindowed())
-		{
-			WindowedControl wctrl = cast(WindowedControl)control;
-			wctrl.move(wctrl.getX(), wctrl.getY());
-		}
+		control.move(control.getX(), control.getY());
 	}
 
-	void removeControl(Control control)
+	void removeControl(Widget control)
 	{
 		if (control.isOfContainer(this))
 		{
@@ -1716,9 +1786,9 @@ class Container : WindowedControl, AbstractContainer
 		}
 	}
 
-	Control controlAtPoint(int x, int y)
+	Widget controlAtPoint(int x, int y)
 	{
-		Control ctrl = _firstControl;
+		Widget ctrl = _firstControl;
 
 		if (ctrl !is null)
 		{
@@ -1728,7 +1798,7 @@ class Container : WindowedControl, AbstractContainer
 				{
 					if (ctrl.isContainer())
 					{
-						Control innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
+						Widget innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
 						if (innerCtrl !is null) { return innerCtrl; }
 					}
 					else
@@ -1747,17 +1817,13 @@ class Container : WindowedControl, AbstractContainer
 	{
 		super.move(x,y);
 
-		Control ctrl = _firstControl;
+		Widget ctrl = _firstControl;
 
 		if (ctrl !is null)
 		{
 			do
 			{
-				if (ctrl.isWindowed())
-				{
-					WindowedControl wctrl = cast(WindowedControl)ctrl;
-					wctrl.move(wctrl.getX(), wctrl.getY());
-				}
+				ctrl.move(ctrl.getX(), ctrl.getY());
 
 				ctrl = ctrl._nextControl;
 			} while (ctrl !is _firstControl)
@@ -1777,21 +1843,21 @@ class Container : WindowedControl, AbstractContainer
 protected:
 
 	// head and tail of the control linked list
-	Control _firstControl = null;	//head
-	Control _lastControl = null;	//tail
+	Widget _firstControl = null;	//head
+	Widget _lastControl = null;	//tail
 	int _numControls = 0;
 
-	Control _captured_control = null;
-	Control _last_control = null;
-	Control _focused_control = null;
+	Widget _captured_control = null;
+	Widget _last_control = null;
+	Widget _focused_control = null;
 }
 
 void WindowRemoveAllControls(ref Window window)
 {
 	// will go through and remove all of the controls
 
-	Control c = window._firstControl;
-	Control tmp;
+	Widget c = window._firstControl;
+	Widget tmp;
 
 	if (c is null) { return; }
 
@@ -1828,14 +1894,14 @@ long WindowGetConstraintY(ref Window window)
 	return window._constraint_y;
 }
 
-void WindowCaptureMouse(ref Window window, ref Control control)
+void WindowCaptureMouse(ref Window window, ref Widget control)
 {
 	window._captured_control = control;
 
 	Scaffold.WindowCaptureMouse(window, &window._pfvars);
 }
 
-void WindowReleaseMouse(ref Window window, ref Control control)
+void WindowReleaseMouse(ref Window window, ref Widget control)
 {
 	if (window._captured_control is control)
 	{

@@ -6,8 +6,6 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import core.windowedcontrol;
-
 import graphics.brush;
 
 template ControlPrintCSTRList()
@@ -21,13 +19,11 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,value);
 	}
-`;
+	`;
 }
 
-// Section: Controls
-
 // Description: This control will provide a simple push button.
-class Button : WindowedControl
+class Button : Widget
 {
 	enum Event : uint
 	{

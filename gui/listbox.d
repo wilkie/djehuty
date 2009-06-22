@@ -11,7 +11,6 @@ import utils.arraylist;
 import interfaces.list;
 
 import gui.vscrollbar;
-import core.windowedcontrol;
 
 template ControlPrintCSTRList()
 {
@@ -20,7 +19,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,list);
 	}
-`;
+	`;
 }
 
 enum ListBoxEvent : uint
@@ -30,7 +29,7 @@ enum ListBoxEvent : uint
 }
 
 // Description: This control provides a standard list selection box.
-class ListBox : WindowedControl
+class ListBox : Widget
 {
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{

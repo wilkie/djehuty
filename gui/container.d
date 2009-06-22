@@ -1,7 +1,6 @@
 module gui.container;
 
 import interfaces.container;
-import core.windowedcontrol;
 
 import gui.core;
 import core.color;

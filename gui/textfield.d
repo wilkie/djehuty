@@ -7,8 +7,6 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import core.windowedcontrol;
-
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
@@ -20,7 +18,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,value);
 	}
-`;
+	`;
 }
 
 enum TextFieldEvent : uint
@@ -31,7 +29,7 @@ enum TextFieldEvent : uint
 }
 
 // Description: This control provides a standard one line text field.
-class TextField : WindowedControl
+class TextField : Widget
 {
 
 public:

@@ -6,8 +6,6 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import core.windowedcontrol;
-
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
@@ -17,7 +15,7 @@ template ControlPrintCSTRList()
 	}
 
 
-`;
+	`;
 }
 
 enum TrackBarEvent : uint
@@ -25,7 +23,7 @@ enum TrackBarEvent : uint
 	Changed,
 }
 
-class TrackBar : WindowedControl
+class TrackBar : Widget
 {
 	// support Events
 	mixin(ControlAddDelegateSupport!("TrackBar", "TrackBarEvent"));

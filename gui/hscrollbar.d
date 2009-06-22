@@ -10,8 +10,6 @@ import core.event;
 
 import synch.timer;
 
-import core.windowedcontrol;
-
 enum ScrollEvent : uint
 {
 	Selected,
@@ -26,12 +24,12 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height);
 	}
-`;
+	`;
 }
 
 
 // Description: This control provides a standard horizontal scroll bar.
-class HScrollBar : WindowedControl
+class HScrollBar : Widget
 {
 public:
 
@@ -65,7 +63,7 @@ public:
 		m_whatishovered = 0;
 		m_isclicked=0;
 	}
-	
+
 	override bool OnSignal(Dispatcher dsp, uint signal) {
 		if (dsp is _readyTimer) {
 			readyTimerProc();

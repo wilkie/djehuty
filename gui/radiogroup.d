@@ -8,9 +8,12 @@ import core.event;
 import gui.togglefield;
 
 // Description: This control provides a method of grouping together toggle fields to form a collection of mutually exclusive 'radio' fields.
-class RadioGroup : Control
+class RadioGroup : Widget
 {
 public:
+	this() {
+		super(0,0,0,0);
+	}
 
 	override void OnAdd()
 	{

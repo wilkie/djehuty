@@ -49,7 +49,7 @@ String DirectoryGetBinary()
 
 String DirectoryGetAppData()
 {
-	return new String("/usr/share/") ~ Djehuty.getApplicationName();
+	return new String("/usr/share/") ~ Djehuty.app.getApplicationName();
 }
 
 String DirectoryGetTempData()
@@ -78,7 +78,7 @@ String DirectoryGetUserData()
 		if (i != 0)
 		{
 			homePath = result[0..i];
-			cached = new String(homePath) ~ "/." ~ Djehuty.getApplicationName();
+			cached = new String(homePath) ~ "/." ~ Djehuty.app.getApplicationName();
 		}
 		else
 		{

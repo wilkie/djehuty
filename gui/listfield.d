@@ -9,8 +9,6 @@ import core.window;
 
 import utils.arraylist;
 
-import core.windowedcontrol;
-
 import gui.button;
 import gui.listbox;
 
@@ -29,7 +27,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,list);
 	}
-`;
+	`;
 }
 
 class ListFieldWindow : Window
@@ -48,7 +46,7 @@ class ListFieldWindow : Window
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : WindowedControl, AbstractList!(String)
+class ListField : Widget, AbstractList!(String)
 {
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{

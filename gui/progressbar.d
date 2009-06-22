@@ -6,8 +6,6 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-import core.windowedcontrol;
-
 template ControlPrintCSTRList()
 {
 	const char[] ControlPrintCSTRList = `
@@ -17,10 +15,10 @@ template ControlPrintCSTRList()
 	}
 
 
-`;
+	`;
 }
 
-class ProgressBar : WindowedControl
+class ProgressBar : Widget
 {
 	// Description: This will create a button with the specified dimensions and text.
 	this(int x, int y, int width, int height)

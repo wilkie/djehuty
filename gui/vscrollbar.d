@@ -10,8 +10,6 @@ import core.event;
 
 import synch.timer;
 
-import core.windowedcontrol;
-
 enum ScrollEvent : uint
 {
 	Selected,
@@ -26,12 +24,12 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height);
 	}
-`;
+	`;
 }
 
 
 // Description: This control provides a standard vertical scroll bar.
-class VScrollBar : WindowedControl
+class VScrollBar : Widget
 {
 public:
 
