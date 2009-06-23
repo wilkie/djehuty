@@ -64,6 +64,8 @@ extern(C):
 
 // Standard C
 
+void exit(int);
+
 int system(char*);
 
 char *	 tmpnam(char *);	///

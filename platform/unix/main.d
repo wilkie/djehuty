@@ -15,18 +15,20 @@ import platform.unix.vars;
 import platform.unix.scaffolds.directory;
 import platform.unix.console;
 
-import core.basewindow;
+import gui.core;
+
 import core.definitions;
 import core.main;
 import core.string;
-import core.thread;
 import core.view;
-import core.window;
+
+import synch.thread;
 
 import analyzing.debugger;
 
 import console.main;
-import console.window;
+
+import tui.core;
 
 extern(C) void mousetimerproc(sigval val)
 {
@@ -47,8 +49,8 @@ void eventLoop()
 {
 	//for the iterator
 
-	BaseWindow window_test;
-	BaseWindow window;
+	Window window_test;
+	Window window;
 	Window viewWindow;
 
 	WindowPlatformVars* windowVars;
@@ -59,6 +61,8 @@ void eventLoop()
 
 	uint i;
 
+	GuiApplication app = cast(GuiApplication)Djehuty.app;
+
 	while(_pfvars.running)
 	{
 		X.XNextEvent(_pfvars.display,&event);
@@ -67,7 +71,7 @@ void eventLoop()
 
 		//find the window
 
-		window_test = Djehuty._windowListHead;
+		window_test = app.getFirstWindow();
 		window = null;
 
 		if (window_test is null)
@@ -83,8 +87,8 @@ void eventLoop()
 				window = window_test;
 				break;
 			}
-			window_test = WindowGetNext(window_test);
-		} while (window_test !is Djehuty._windowListHead);
+			window_test = window_test.getNextWindow();
+		} while (window_test !is app.getFirstWindow());
 
 		if ( window is null )
 		{
@@ -104,10 +108,7 @@ void eventLoop()
 		}
 		else
 		{
-			if (WindowHasView(window))
-			{
-				viewWindow = cast(Window)window;
-			}
+			viewWindow = cast(Window)window;
 
 			switch (event.type)
 			{
@@ -602,15 +603,17 @@ void consoleLoop()
 
 		ulong ky; uint tky;
 		ky = consoleGetKey();
+		TuiApplication app = cast(TuiApplication)Djehuty.app;
+		TuiWindow window = app.getWindow();
 		tky = consoleTranslateKey(ky);
 
 		if (ky < 0xfffffff) {
-			ConsoleWindowOnKeyDown(tky);
+			window.OnKeyDown(tky);
 
 			if (tky != KeyBackspace && tky != KeyArrowLeft && tky != KeyArrowRight
 				&& tky != KeyArrowUp && tky != KeyArrowDown)
 			{
-				ConsoleWindowOnKeyChar(cast(uint)ky);
+				window.OnKeyChar(cast(uint)ky);
 			}
         }
 

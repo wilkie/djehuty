@@ -10,6 +10,8 @@
 
 module platform.unix.scaffolds.system;
 
+import platform.unix.vars;
+
 import core.definitions;
 import core.string;
 

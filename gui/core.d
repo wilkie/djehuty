@@ -1,3 +1,12 @@
+/*
+ * core.d
+ *
+ * This module implements the core code behind a GUI application.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module gui.core;
 
 import platform.imports;
@@ -34,9 +43,9 @@ void UninitializeWindow(Window w)
 
 	// destroy the window's view object
 	w.OnUninitialize();
-	
+
 	GuiApplication app = cast(GuiApplication)w.responder;
-	
+
 	if (app._windowListHead is w && app._windowListTail is w) {
 		app._windowListHead = null;
 		app._windowListTail = null;
@@ -126,7 +135,7 @@ void UninitializeWindow(Window w)
 
 class GuiApplication : Application {
 public:
-	
+
 	override void push(Dispatcher dsp) {
 		if (cast(Window)dsp !is null) {
 			addWindow(cast(Window)dsp);
@@ -145,6 +154,10 @@ public:
 
 	override bool isZombie() {
 		return _windowVisibleCount == 0;
+	}
+
+	Window getFirstWindow() {
+		return _windowListHead;
 	}
 
 protected:
@@ -175,10 +188,10 @@ private:
 			Scaffold.WindowSetVisible(window, wpv, true);
 		}
 	}
-	
+
 	void updateWindowList(Window window) {
 		window._inited = true;
-	
+
 		if (_windowListHead is null)
 		{
 			_windowListHead = window;
@@ -194,7 +207,7 @@ private:
 
 			_windowListHead._prevWindow = window;
 			_windowListTail._nextWindow = window;
-			
+
 			_windowListHead = window;
 		}
 
@@ -222,7 +235,7 @@ private:
 			w = w._nextWindow;
 
 		} while (w !is tmp)
-		
+
 		_windowCount = 0;
 		_windowVisibleCount = 0;
 	}
@@ -340,7 +353,7 @@ public:
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void setText(ref String str)
+	void setText(String str)
 	{
 		_window_title = new String(str);
 
@@ -356,6 +369,10 @@ public:
 
 		if (!_inited) { return; }
 		Scaffold.WindowSetTitle(this, &this._pfvars);
+	}
+
+	Window getNextWindow() {
+		return _nextWindow;
 	}
 
 	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
@@ -1058,21 +1075,21 @@ public:
 
 		return null;
 	}
-	
+
 	override void push(Dispatcher dsp) {
 		if (cast(Widget)dsp !is null) {
 			Widget control = cast(Widget)dsp;
 
 			// do not add a control that is already part of another window
 			if (control.getParent() !is null) { return; }
-	
+
 			// add to the control linked list
 			if (_firstControl is null && _lastControl is null) {
 				// first control
 
 				_firstControl = control;
 				_lastControl = control;
-				
+
 				control._nextControl = control;
 				control._prevControl = control;
 			}
@@ -1080,7 +1097,7 @@ public:
 				// next control
 				control._nextControl = _firstControl;
 				control._prevControl = _lastControl;
-				
+
 				_firstControl._prevControl = control;
 				_lastControl._nextControl = control;
 
@@ -1093,7 +1110,7 @@ public:
 			// set the control's parent
 			control._view = _view;
 			control._container = this;
-			
+
 			super.push(control);
 
 			// call the control's event
@@ -1544,7 +1561,7 @@ class Widget : Responder
 	bool isContainer() {
 		return false;
 	}
-	
+
 	bool isHovered() {
 		return _hovered;
 	}
@@ -1733,7 +1750,7 @@ class Container : Widget, AbstractContainer
 			// next control
 			control._nextControl = _firstControl;
 			control._prevControl = _lastControl;
-			
+
 			_firstControl._prevControl = control;
 			_lastControl._nextControl = control;
 
@@ -1864,7 +1881,7 @@ void WindowRemoveAllControls(ref Window window)
 	do
 	{
 		tmp = c._nextControl;
-		
+
 		c.removeControl();
 
 		c = tmp;

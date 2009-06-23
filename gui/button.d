@@ -1,3 +1,12 @@
+/*
+ * button.d
+ *
+ * This module implements a GUI push button widget.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module gui.button;
 
 import gui.core;
@@ -25,32 +34,25 @@ template ControlPrintCSTRList()
 // Description: This control will provide a simple push button.
 class Button : Widget
 {
-	enum Event : uint
+	enum Signal : uint
 	{
 		Pressed,
 		Released,
 		Selected,
 	}
 
-	// support Events
-	mixin(ControlAddDelegateSupport!("Button", "Event"));
-
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, String value, ControlCallback callback = null)
+	this(int x, int y, int width, int height, String value)
 	{
 		super(x,y,width,height);
 		_value = new String(value);
-
-		setDelegate(callback);
 	}
 
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, StringLiteral value, ControlCallback callback = null)
+	this(int x, int y, int width, int height, StringLiteral value)
 	{
 		super(x,y,width,height);
 		_value = new String(value);
-
-		setDelegate(callback);
 	}
 
 	override void OnAdd()
@@ -95,7 +97,7 @@ class Button : Widget
 	{
 		requestCapture();
 
-		FireEvent(Event.Pressed);
+		raiseSignal(Signal.Pressed);
 
 		return true;
 	}
@@ -104,10 +106,10 @@ class Button : Widget
 	{
 		if (_hovered)
 		{
-			FireEvent(Event.Selected);
+			raiseSignal(Signal.Selected);
 		}
 
-		FireEvent(Event.Released);
+		raiseSignal(Signal.Released);
 
 		requestRelease();
 

@@ -484,8 +484,18 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Cairo.cairo_restore(viewVars.cr);
 }
 
+void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+}
+
+void strokeRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+}
+
+void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+}
+
 void clipSave(ViewPlatformVars* viewVars)
-{}
+{
+}
 
 void clipRestore(ViewPlatformVars* viewVars)
 {

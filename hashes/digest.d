@@ -1,7 +1,18 @@
+/*
+ * digest.d
+ *
+ * This module houses the Digest class used as a return value for all
+ * hashing algorithms.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module hashes.digest;
 
 import core.string;
 
+// Description: This class holds the computed digest from a hashing algorithm.
 class Digest
 {
 public:
@@ -22,10 +33,10 @@ public:
 		return ret;
 	}
 
-//	override string toString()
-//	{
-//		return getString().toString();
-//	}
+	override char[] toString()
+	{
+		return getString().toString();
+	}
 
 	// operator overloads
 

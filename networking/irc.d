@@ -12,7 +12,7 @@ module networking.irc;
 import core.string;
 import core.socket;
 import core.stream;
-import core.thread;
+import synch.thread;
 import core.unicode;
 
 import console.main;

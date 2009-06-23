@@ -7,7 +7,8 @@ import interfaces.list;
 // Section: Controls
 
 
-mixin(PlatformControlGeneration!("OSButton", "Button.Event"));
+//mixin(PlatformControlGeneration!("OSButton", "Button.Event"));
+mixin(PlatformControlGenerationEventless!("OSButton"));
 
 //documentation interests:
 

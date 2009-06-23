@@ -1,3 +1,12 @@
+/*
+ * listfield.d
+ *
+ * This module implements a GUI drop-down list widget.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module gui.listfield;
 
 import gui.core;
@@ -68,7 +77,7 @@ class ListField : Widget, AbstractList!(String)
 			control_listbox = new ListBox(0,0, _width,_width / 2);
 			control_window = new ListFieldWindow(_width);
 
-			control_button.setDelegate(&_ButtonEvents);
+//			control_button.setDelegate(&_ButtonEvents);
 			control_listbox.setDelegate(&_ListBoxEvents);
 
 			if (_list !is null)
@@ -205,7 +214,7 @@ protected:
 
 	ArrayList!(String) _list;
 
-	void _ButtonEvents(Button button, Button.Event evt)
+	/*void _ButtonEvents(Button button, Button.Event evt)
 	{
 		if (evt == Button.Event.Pressed)
 		{
@@ -221,7 +230,7 @@ protected:
 			control_window.setVisibility(true);
 			control_window.push(control_listbox);
 		}
-	}
+	}*/
 
 	void _ListBoxEvents(ListBox list, ListBoxEvent evt)
 	{

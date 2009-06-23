@@ -17,16 +17,13 @@ import core.graphics;
 import core.string;
 import core.file;
 import core.stream;
-import core.thread;
-import core.semaphore;
 import core.time;
-
 import core.audio;
-
 import core.main;
-
 import core.definitions;
 
+import synch.thread;
+import synch.semaphore;
 
 void WaveOpenDevice(ref Audio wave, ref WavePlatformVars waveVars, ref AudioFormat wf)
 {

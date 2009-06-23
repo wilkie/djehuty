@@ -22,6 +22,8 @@ import core.literals;
 
 import console.main;
 
+import interfaces.list;
+
 // Section: Console
 
 // Description: This class represents a Text User Interface application (TUI).
@@ -90,10 +92,10 @@ class TuiWindow : Responder
 	void OnInitialize()
 	{
 		// go through control list, init
-	
+
 		Console.setColor(getBackgroundColor());
 		Console.clear();
-	
+
 		TuiWidget c = _firstControl;
 
 		if (c !is null)
@@ -104,9 +106,9 @@ class TuiWindow : Responder
 
 				c.OnInit();
 			} while (c !is _firstControl)
-	
+
 			_focused_control = c;
-	
+
 			do
 			{
 				_focused_control = _focused_control._prevControl;
@@ -128,7 +130,7 @@ class TuiWindow : Responder
 	}
 
 	void OnKeyDown(uint keyCode)
-	{	
+	{
 		if (_focused_control !is null)
 		{
 			_focused_control.OnKeyDown(keyCode);
@@ -222,7 +224,7 @@ class TuiWindow : Responder
 			_focused_control.OnMouseMove();
 		}
 	}
-	
+
 	// Description: This event will be called by any Control tied to this window that raises an event.
 	// source: The Control that raised the event.
 	// event: The event that was issued.
@@ -232,18 +234,18 @@ class TuiWindow : Responder
 	}
 
 	// Methods
-	
+
 	override void push(Dispatcher dsp) {
 		if (cast(TuiWidget)dsp !is null) {
 			// do not add a control that is already part of another window
 			TuiWidget control = cast(TuiWidget)dsp;
 			if (control._nextControl !is null) { return; }
-	
+
 			// add to the control linked list
 			if (_firstControl is null && _lastControl is null)
 			{
 				// first control
-	
+
 				_firstControl = control;
 				_lastControl = control;
 
@@ -256,16 +258,16 @@ class TuiWindow : Responder
 
 				control._nextControl = _firstControl;
 				control._prevControl = _lastControl;
-				
+
 				_firstControl._prevControl = control;
 				_lastControl._nextControl = control;
-	
+
 				_firstControl = control;
 			}
 
 			// increase the number of controls
 			_numControls++;
-			
+
 			super.push(control);
 		}
 		else {
@@ -336,7 +338,7 @@ class TuiWidget : Responder
 {
 	this() {
 	}
-	
+
 	this(int x, int y, int width, int height) {
 		_x = x;
 		_y = y;
@@ -418,13 +420,13 @@ class TuiWidget : Responder
 	void OnMouseMove()
 	{
 	}
-	
+
 	override void OnPush(Responder rsp) {
 		// Did we get pushed to a TuiWindow?
 		if (cast(TuiWindow)rsp !is null) {
 			// Set the window we are attached
 			_window = cast(TuiWindow)rsp;
-			
+
 			// Call event
 			OnAdd();
 
@@ -435,7 +437,7 @@ class TuiWidget : Responder
 			}
 		}
 	}
-	
+
 	bool isTabStop() {
 		return false;
 	}

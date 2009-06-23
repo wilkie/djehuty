@@ -311,7 +311,7 @@ class Console
 		synchronized
 		{
 			String toParse;
-	
+
 			for(int curArg = 0; curArg < _arguments.length; curArg++)
 			{
 				if (_arguments[curArg] is typeid(String))
@@ -368,7 +368,7 @@ class Console
 					Object obj = va_arg!(Object)(_argptr);
 					toParse = new String(Unicode.toNative(obj.toString()));
 				}
-	
+
 				if (toParse !is null)
 				{
 					ConsolePutString(toParse.toUtf32());

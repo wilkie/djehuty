@@ -10,15 +10,15 @@
 module platform.unix.console;
 
 import core.main;
-
-import console.window;
+import core.unicode;
+import core.definitions;
 
 import platform.unix.common;
 import platform.unix.main;
-import core.definitions;
-import core.thread;
 
-import core.unicode;
+import synch.thread;
+
+import tui.core;
 
 void ConsoleSetColors(uint fg, uint bg, int bright)
 {
@@ -61,6 +61,15 @@ termios m_term_info_working;
 
 //signal handler for terminal Size
 
+extern(C) void close_sig_handler(int signal) {
+	DjehutyEnd();
+	for(int i=0; i<256; i++) {
+		printf("\x1B[48;5;%dm ", i);
+	}
+	ConsoleUninit();
+	exit(0);
+}
+
 extern(C) void size_sig_handler(int signal) {
 
     ioctl(STDIN, TIOCGWINSZ, &m_winsize_working);
@@ -88,7 +97,8 @@ extern(C) void size_sig_handler(int signal) {
     }
 
     //fire Size event
-	Djehuty._curConsoleWindow.OnResize();
+	TuiApplication app = cast(TuiApplication)Djehuty.app;
+	app.getWindow().OnResize();
 }
 
 void ConsoleInit()
@@ -110,6 +120,9 @@ void ConsoleInit()
 
     //direct the Size signal to the internal function
     sigset(SIGWINCH, &size_sig_handler);
+	sigset(SIGINT, &close_sig_handler);
+	//sigset(SIGKILL, &close_sig_handler);
+	//sigset(SIGTERM, &close_sig_handler);
 
 	// set buffer to print without newline
 	setvbuf (stdout, null, _IONBF, 0);
@@ -139,25 +152,27 @@ void ConsoleClear()
 
 void ConsoleSetRelative(int x, int y)
 {
-/*
 	if (x < 0)
 	{
 		// move left
+		printf("\x1D[%dB", -x);
 	}
 	else if (x > 0)
 	{
 		// move right
+		printf("\x1C[%dB", x);
 	}
 
 	if (y < 0)
 	{
 		// move up
+		printf("\x1A[%dB", -y);
 	}
 	else if (y > 0)
 	{
 		// move down
-	} */
-
+		printf("\x1B[%dB", y);
+	}
 }
 
 void ConsoleSetPosition(uint x, uint y)
@@ -195,8 +210,7 @@ void ConsoleShowCaret()
 
 void ConsoleSetHome()
 {
-	printf("\n");
-	printf("\x1B[0E");
+	printf("\x1B[0G");
 }
 
 void ConsolePutString(dchar[] chrs)
@@ -208,7 +222,6 @@ void ConsolePutString(dchar[] chrs)
 
 void ConsolePutChar(dchar chr)
 {
-	printf("\n\n");
 	dchar[] chrarray = [ chr, '\0' ];
 	char[] chrs = Unicode.toUtf8(chrarray);
 

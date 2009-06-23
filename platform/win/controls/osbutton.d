@@ -25,9 +25,6 @@ public:
 		super(x,y,width,height,value);
 	}
 
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSButton", "Button.Event"));
-
 	override void OnAdd()
 	{
 		 _hWnd = CreateWindowExW(0,
@@ -53,7 +50,7 @@ protected:
 	{
 		if (message == WM_COMMAND)
 		{
-			FireEvent(Button.Event.Selected);
+			raiseSignal(Button.Signal.Selected);
 			return 0;
 		}
 

@@ -105,12 +105,12 @@ template PlatformControlGeneration(StringLiteral8 className, StringLiteral8 clas
 	{
 		public
 		{
-			import Control` ~ className[2..$] ~ ` = controls.` ~ ToLower!(className)[2..$] ~ `;
+			import Control` ~ className[2..$] ~ ` = gui.` ~ ToLower!(className)[2..$] ~ `;
 
 			` ~ PlatformGenericImport!("definitions") ~ `
 
 			import core.string;
-			import core.control;
+			import gui.core;
 
 			class ` ~ className ~ ` : Control` ~ className[2..$] ~ `.` ~ className[2..$] ~ `
 			{
@@ -133,12 +133,12 @@ template PlatformControlGenerationEventless(StringLiteral8 className)
 	}
 	else
 	{
-		import ` ~ className ~ `_SCOPE = controls.` ~ ToLower!(className)[2..$] ~ `;
+		import ` ~ className ~ `_SCOPE = gui.` ~ ToLower!(className)[2..$] ~ `;
 
 		` ~ PlatformGenericImport!("definitions") ~ `
 
 		import core.string;
-		import core.control;
+		import gui.core;
 
 		class ` ~ className ~ ` : ` ~ className ~ `_SCOPE.` ~ className[2..$] ~ `
 		{

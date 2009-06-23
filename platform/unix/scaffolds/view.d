@@ -15,12 +15,12 @@ import platform.unix.main;
 
 import core.view;
 import core.graphics;
-import core.basewindow;
-import core.window;
 import core.string;
 import core.file;
 import core.main;
 import core.definitions;
+
+import gui.core;
 
 //import console.main;
 

@@ -12,8 +12,8 @@ module networking.http;
 import core.socket;
 import core.string;
 import core.definitions;
-import core.thread;
-import core.semaphore;
+import synch.thread;
+import synch.semaphore;
 import core.stream;
 import core.unicode;
 

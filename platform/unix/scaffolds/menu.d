@@ -14,15 +14,12 @@ import platform.unix.common;
 
 import core.view;
 import core.graphics;
-
-import core.basewindow;
-import core.window;
 import core.string;
 import core.menu;
-
 import core.main;
-
 import core.definitions;
+
+import gui.core;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
 {

@@ -4,8 +4,6 @@ import interfaces.list;
 
 import synch.semaphore;
 
-import std.stdio;
-
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
@@ -159,13 +157,10 @@ class LinkedList(T) : AbstractList!(T)
 		lock.down();
 		scope(exit) lock.up();
 
-		writefln("getItem");
 		if (irate.irate_ptr !is null)
 		{
-		writefln("item got");
 			data = (cast(LinkedListNode*)irate.irate_ptr).data;
 			if ((cast(LinkedListNode*)irate.irate_ptr).next is head) {
-		writefln("null");
 				irate.irate_ptr = null;
 			}
 			else {
@@ -237,7 +232,7 @@ class LinkedList(T) : AbstractList!(T)
 					curnode.prev.next = curnode.next;
 					curnode.next.prev = curnode.prev;
 				}
-		
+
 				_count--;
 
 				return true;
@@ -253,7 +248,7 @@ class LinkedList(T) : AbstractList!(T)
 	{
 		lock.down();
 		scope(exit) lock.up();
-		
+
 		if (tail == null) {
 			return false;
 		}
@@ -289,19 +284,16 @@ class LinkedList(T) : AbstractList!(T)
 	{
 		return 0;
     }
-    
+
     T[] opSlice() {
 
-    	writefln("boo");
 		T[] ret;
 		T obj;
 
 		Iterator i = getIterator();
-    	writefln("boo!!!");
 
 		while(getItem(obj, i))
 		{
-    		writefln("iterate");
 			ret ~= obj;
 		}
 
@@ -317,8 +309,6 @@ class LinkedList(T) : AbstractList!(T)
 
 		while(getItem(obj, i))
 		{
-			//Console.putln("blarg");
-			writefln("blarg");
 			ret = loopFunc(obj);
 			if (ret) { break; }
 		}
@@ -369,6 +359,6 @@ protected:
 
 	// the number of items in the list
 	uint _count;
-	
+
 	Semaphore lock;
 }

@@ -16,14 +16,12 @@ import core.view;
 import core.graphics;
 import core.color;
 
-import core.basewindow;
-import core.window;
 import platform.unix.main;
 import core.string;
 import core.file;
-
 import core.main;
 
+import gui.core;
 import core.definitions;
 
 import console.main;
@@ -88,7 +86,7 @@ const int PAllHints     = (PPosition|PSize|
 
 
 // all windows
-void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to create the window
 	windowVars.destroy_called = false;
@@ -140,7 +138,7 @@ void WindowCreate(ref BaseWindow window, WindowPlatformVars* windowVars)
 	window.OnAdd();
 }
 
-void WindowCreate(ref BaseWindow parent, WindowPlatformVars* parentVars, ref BaseWindow window, ref WindowPlatformVars windowVars)
+void WindowCreate(ref Window parent, WindowPlatformVars* parentVars, ref Window window, ref WindowPlatformVars windowVars)
 {
 	// code to create a child window
 	//int screen;
@@ -149,22 +147,22 @@ void WindowCreate(ref BaseWindow parent, WindowPlatformVars* parentVars, ref Bas
 	return;
 }
 
-void WindowSetStyle(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to change the style of a window
 }
 
-void WindowReposition(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to move a window
 }
 
-void WindowSetState(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to change the state of a window
 }
 
-void WindowRebound(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to Size a window
 	int width, height;
@@ -236,7 +234,7 @@ void WindowRebound(ref BaseWindow window, WindowPlatformVars* windowVars)
 	}
 }
 
-void WindowDestroy(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to destroy a window
 	windowVars.destroy_called = true;
@@ -245,7 +243,7 @@ void WindowDestroy(ref BaseWindow window, WindowPlatformVars* windowVars)
 	X.XDestroyWindow(_pfvars.display, windowVars.window);
 }
 
-void WindowSetVisible(ref BaseWindow window, WindowPlatformVars* windowVars, bool bShow)
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
 {
 	// code to show or hide a window
 	if (bShow)
@@ -258,7 +256,7 @@ void WindowSetVisible(ref BaseWindow window, WindowPlatformVars* windowVars, boo
 	}
 }
 
-void WindowSetTitle(ref BaseWindow window, WindowPlatformVars* windowVars)
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to change a window's title
 
@@ -305,7 +303,7 @@ void WindowSetTitle(ref BaseWindow window, WindowPlatformVars* windowVars)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref int x, ref int y)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
 {
 	//Coord pt = {x,y};
 	//ClientToScreen(windowVars.hWnd, &pt);
@@ -314,7 +312,7 @@ void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars,
 		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref Coord pt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
 {
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
@@ -322,7 +320,7 @@ void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars,
 		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref BaseWindow window, WindowPlatformVars* windowVars, ref Rect rt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
 {
 }
 
