@@ -75,7 +75,8 @@ const auto RIDEV_DEVNOTIFY = 0x00002000;
 const auto RIDEV_EXMODEMASK = 0x000000F0;
 //const auto RIDEV_EXMODE(mode) ((mode) & RIDEV_EXMODEMASK)
 
-
+const auto WM_USER         = 0x0400;
+const auto WM_INPUT        = 0x00FF;
 
 const auto ERROR_MORE_DATA = 234;
 
@@ -149,6 +150,12 @@ union LARGE_INTEGER {
 
   ulong QuadPart;
 }
+
+/*
+ * Access Rights
+ */
+ 
+const auto PROCESS_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0xFFFF);
 
 /*
  * Track Bar Styles
@@ -226,6 +233,61 @@ const auto MOUSE_MOVED   	= 0x0001;
 const auto DOUBLE_CLICK  	= 0x0002;
 const auto MOUSE_WHEELED 	= 0x0004;
 const auto MOUSE_HWHEELED 	= 0x0008;
+
+// Undocumented Console structure
+align(1) struct CONSOLE_INFO
+{
+   ULONG    Length = CONSOLE_INFO.sizeof;
+   COORD    ScreenBufferSize;
+   COORD    WindowSize;
+   ULONG    WindowPosX;
+   ULONG    WindowPosY;
+
+   COORD    FontSize;
+   ULONG    FontFamily;
+   ULONG    FontWeight;
+   WCHAR    FaceName[32];
+
+   ULONG    CursorSize;
+   ULONG    FullScreen;
+   ULONG    QuickEdit;
+   ULONG    AutoPosition;
+   ULONG    InsertMode;
+
+   USHORT   ScreenColors;
+   USHORT   PopupColors;
+   ULONG    HistoryNoDup;
+   ULONG    HistoryBufferSize;
+   ULONG    NumberOfHistoryBuffers;
+
+   COLORREF ColorTable[16];
+
+   ULONG    CodePage;
+   HWND     Hwnd;
+
+   WCHAR    ConsoleTitle[0x100];
+}
+
+struct CONSOLE_FONT_INFO {
+	DWORD nFont;
+	COORD dwFontSize;
+}
+
+const auto LF_FACESIZE = 32;
+
+struct CONSOLE_FONT_INFOEX {
+  ULONG cbSize = CONSOLE_FONT_INFOEX.sizeof;
+  DWORD nFont;
+  COORD dwFontSize;
+  UINT  FontFamily;
+  UINT  FontWeight;
+  WCHAR FaceName[LF_FACESIZE];
+}
+
+alias extern(Windows) DWORD function(LPVOID) threadProc;
+
+// Undocumented console message
+const auto WM_SETCONSOLEINFO = (WM_USER+201);
 
 /*
  * Listbox Styles
@@ -802,9 +864,6 @@ const auto TIME_SMPTE      = 0x0008;  /* SMPTE time */
 const auto TIME_MIDI       = 0x0010;  /* MIDI time */
 const auto TIME_TICKS      = 0x0020;  /* Ticks within MIDI stream */
 
-const auto WM_USER         = 0x0400;
-const auto WM_INPUT        = 0x00FF;
-
 /*
  * Progress Bar Messages
  */
@@ -930,6 +989,11 @@ struct MEMORYSTATUSEX {
 
 alias MEMORYSTATUSEX* LPMEMORYSTATUSEX;
 
+
+
+const auto DUPLICATE_CLOSE_SOURCE  = 1;
+const auto DUPLICATE_SAME_ACCESS   = 2;
+
 extern(Windows)
 {
 	DWORD timeGetTime();
@@ -967,6 +1031,8 @@ extern(Windows)
 
 	LRESULT CallWindowProcW(WNDPROC, HWND, uint, WPARAM, LPARAM);
 	BOOL GetScrollInfo(HWND,int,SCROLLINFO*);
+	
+	BOOL CloseHandle(HANDLE);
 
 	// CONSOLE
 	HANDLE GetStdHandle(DWORD);
@@ -1000,6 +1066,10 @@ extern(Windows)
 	BOOL WriteConsoleW(HANDLE, VOID*, DWORD, DWORD*, VOID*);
 
 	BOOL SetConsoleOutputCP(UINT);
+	
+	COORD GetConsoleFontSize(HANDLE, DWORD);
+	BOOL GetCurrentConsoleFont(HANDLE, BOOL, CONSOLE_FONT_INFO*);
+	BOOL GetCurrentConsoleFontEx(HANDLE, BOOL, CONSOLE_FONT_INFOEX*);
 	
 	// DISPLAY POLLING
 
@@ -1053,6 +1123,13 @@ extern(Windows)
 	HMODULE LoadLibraryA(LPCTSTR lpFileName);
 	FARPROC GetProcAddressW (HMODULE,LPCWSTR);
 	FARPROC GetProcAddressA (HMODULE,LPCSTR);
+	DWORD GetWindowThreadProcessId(HWND, LPDWORD);
+	HANDLE OpenProcess(DWORD, BOOL, DWORD);
+	HANDLE CreateFileMappingW(HANDLE, LPSECURITY_ATTRIBUTES, DWORD, DWORD, DWORD, LPCWSTR);
+	LPVOID MapViewOfFile(HANDLE, DWORD, DWORD, DWORD, size_t);
+	BOOL UnmapViewOfFile(LPCVOID);
+	BOOL DuplicateHandle(HANDLE, HANDLE, HANDLE, HANDLE*, DWORD, BOOL, DWORD);
+	HANDLE CreateRemoteThread(HANDLE, LPSECURITY_ATTRIBUTES, size_t, threadProc, LPVOID, DWORD, LPDWORD);
 
 	// MISC
 	int MulDiv(int,int,int);
@@ -1278,7 +1355,6 @@ struct OSVERSIONINFOEXW {
     byte  wReserved;
 }
 
-const int LF_FACESIZE        = 32;
 struct LOGFONTW
 {
     long      lfHeight;

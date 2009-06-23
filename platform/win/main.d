@@ -19,6 +19,8 @@ import core.definitions;
 import core.view;
 import core.menu;
 
+import graphics.font;
+
 import gui.core;
 
 import opengl.window;
@@ -1367,6 +1369,166 @@ int mainloop()
 	while(!_appEnd) {
 		Sleep(1);
 	}
+
+
+
+
+	// THIS CODE PRINTS TO THE CONSOLE WINDOW USING GDI
+
+	HWND hwndConsole = GetConsoleWindow();
+	HDC dc = GetDC(hwndConsole);
+
+   CONSOLE_FONT_INFO cfi ;
+   COORD fsize ;
+   HANDLE hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+   GetCurrentConsoleFont(hConsoleOut, FALSE, &cfi);
+
+	Font fnt = new Font("Terminal", 10, 400, false, false, false);
+	FontPlatformVars* fvars = FontGetPlatformVars(fnt);
+
+	SetBkMode(dc, TRANSPARENT);
+	SetTextColor(dc, 0xf800f8);
+
+	SelectObject(dc, fvars.fontHandle);
+	TextOutW(dc, 0,0, "Your Score was:\0"w.ptr, 16);
+
+
+
+/*
+	// THIS CODE WILL SET THE CONSOLE PALETTE
+
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	//_curAttribs = cast(ushort)(_fgclrvalues[fg] | _bgclrvalues[bg] | (FOREGROUND_INTENSITY * cast(ushort)bright));
+	//SetConsoleTextAttribute(hStdout, _curAttribs);
+
+	CONSOLE_INFO ci;
+
+	CONSOLE_SCREEN_BUFFER_INFO csbi; HWND hwndConsole = GetConsoleWindow();
+
+	GetConsoleScreenBufferInfo(hStdout, &csbi);
+
+   ci.ScreenBufferSize = csbi.dwSize;
+   ci.WindowSize.X     = cast(short)(csbi.srWindow.Right - csbi.srWindow.Left + 1);
+   ci.WindowSize.Y     = cast(short)(csbi.srWindow.Bottom - csbi.srWindow.Top + 1);
+   ci.WindowPosX       = cast(short)(csbi.srWindow.Left);
+   ci.WindowPosY       = cast(short)(csbi.srWindow.Top);
+
+   CONSOLE_FONT_INFO cfi ;
+   COORD fsize ;
+   HANDLE hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+   GetCurrentConsoleFont(hConsoleOut, FALSE, &cfi) ;
+   fsize = GetConsoleFontSize(hConsoleOut, cfi.nFont) ;
+
+   ci.FontSize.X = fsize.X ;
+   ci.FontSize.Y = fsize.Y ;
+
+   // wsprintf(tempstr, "Font Size= X%u Y%u\n", fsize.X, fsize.Y) ;
+   // OutputDebugString(tempstr) ;
+
+   // set these to zero to keep current settings
+   ci.FontFamily = 0;//0x30;//FF_MODERN|FIXED_PITCH;//0x30;
+   ci.FontWeight = 0;//0x400;
+   ci.FaceName[0]          = '\0';
+ COLORREF DefaultColors[16] =
+ [
+	0x00000000, 0x00800000, 0x00008000, 0x00808000,
+	0x00000080, 0x00800080, 0x00008080, 0x00c0c0c0,
+	0x00808080,	0x00ff0000, 0x0000ff00, 0x00ffff00,
+	0x000000ff, 0x00ff00ff,	0x0000ffff, 0x00ffffff
+ ];
+	// colour table
+	for(i = 0; i < 16; i++) {
+		ci.ColorTable[i] = DefaultColors[i];
+	}
+
+   ci.CodePage             = 0;//0x352;
+	ci.Hwnd						= hwndConsole;
+ci.ConsoleTitle[0] = '\0';
+
+
+
+
+	DWORD   dwConsoleOwnerPid;
+	HANDLE  hProcess;
+	HANDLE	hSection, hDupSection;
+	ubyte*   ptrView = null;
+	HANDLE  hThread;
+
+	//
+	//	Open the process which "owns" the console
+	//
+	GetWindowThreadProcessId(hwndConsole, &dwConsoleOwnerPid);
+
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwConsoleOwnerPid);
+   if (hProcess is null) {
+	Console.putln("boo a");
+      return FALSE;
+   }
+
+	//
+	// Create a SECTION object backed by page-file, then map a view of
+	// this section into the owner process so we can write the contents
+	// of the CONSOLE_INFO buffer into it
+	//
+	hSection = CreateFileMappingW(INVALID_HANDLE_VALUE, null, PAGE_READWRITE, 0, ci.Length, null);
+   if (hSection is null) {
+	Console.putln("boo b");
+      return FALSE;
+   }
+
+	//
+	//	Copy our console structure into the section-object
+	//
+	ptrView = cast(ubyte*)MapViewOfFile(hSection, FILE_MAP_WRITE|FILE_MAP_READ, 0, 0, ci.Length);
+   if (ptrView is null) {
+	Console.putln("boo c");
+      return FALSE;
+   }
+
+	ptrView[0..ci.Length] = (cast(ubyte*)&ci)[0..ci.Length];
+
+   if (!UnmapViewOfFile(ptrView)) {
+	Console.putln("boo d");
+      return FALSE;
+   }
+
+	//
+	//	Map the memory into owner process
+	//
+   if (!DuplicateHandle(GetCurrentProcess(), hSection, hProcess, &hDupSection, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
+	
+	Console.putln("boo ");
+	Console.putln("boo e");
+      return FALSE;
+   }
+
+	Console.putln("woo e");
+	//  Send console window the "update" message
+	SendMessageW(hwndConsole, WM_SETCONSOLEINFO, cast(WPARAM)hDupSection, 0);
+
+	//
+	// clean up
+	//
+   hThread = CreateRemoteThread(hProcess, null, 0,
+      cast(threadProc)&CloseHandle, hDupSection, 0, null);
+
+   if (hThread is null) {
+	Console.putln("boo f");
+      return FALSE;
+   }
+
+	CloseHandle(hThread);
+	CloseHandle(hSection);
+	CloseHandle(hProcess);
+
+*/
+
+
+
+//	SetConsoleInfo(hwndConsole, &ci);
+
 	PostQuitMessage(0);
 
 	/*
@@ -1389,6 +1551,9 @@ int mainloop()
 	return 1;
 }
 
+DWORD threadPoo(void* boo) {
+	return 0;
+}
 
 /**********************************************************/
 
