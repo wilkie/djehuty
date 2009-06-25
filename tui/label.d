@@ -6,7 +6,7 @@ import core.definitions;
 
 import console.main;
 
-import tui.core;
+import tui.widget;
 
 // Section: Console
 

@@ -11,7 +11,7 @@ import synch.semaphore;
 
 import console.main;
 
-import tui.core;
+import tui.widget;
 
 import utils.arraylist;
 

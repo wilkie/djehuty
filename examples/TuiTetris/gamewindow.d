@@ -1,4 +1,4 @@
-import tui.core;
+import tui.window;
 import tui.label;
 import console.main;
 
@@ -17,7 +17,7 @@ class GameWindow : TuiWindow {
 	}
 
 	override bool OnSignal(Dispatcher source, uint signal) {
-   		if (source is game) {
+		if (source is game) {
 			if(signal == GameControl.Event.ScoreUpdated) {
 				scoreLabel.setText(new String(game.getScore()));
 				return true;
@@ -26,7 +26,7 @@ class GameWindow : TuiWindow {
 
 		return false;
 	}
-	
+
 	int getScore() {
 		return game.getScore();
 	}

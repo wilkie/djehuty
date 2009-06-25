@@ -18,7 +18,8 @@ import core.unicode;
 
 import synch.thread;
 
-import tui.core;
+import tui.application;
+import tui.window;
 
 ushort _fgclrvalues[] =
 [

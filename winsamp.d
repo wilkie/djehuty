@@ -11,7 +11,8 @@ import gui.widget;
 import core.graphics;
 import core.image;
 
-import tui.core;
+import tui.application;
+import tui.window;
 
 import console.main;
 

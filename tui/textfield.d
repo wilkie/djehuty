@@ -1,15 +1,12 @@
 module tui.textfield;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 import core.string;
 import core.main;
 import core.definitions;
 
 import console.main;
 
-import tui.core;
+import tui.widget;
 
 // Section: Console
 

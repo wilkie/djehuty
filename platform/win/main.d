@@ -28,7 +28,8 @@ import synch.thread;
 
 import analyzing.debugger;
 
-import tui.core;
+import tui.application;
+import tui.window;
 
 // import strings
 import core.string;
@@ -1386,7 +1387,8 @@ int mainloop()
 	Font fnt = new Font("Terminal", 10, 400, false, false, false);
 	FontPlatformVars* fvars = FontGetPlatformVars(fnt);
 
-	SetBkMode(dc, TRANSPARENT);
+	SetBkMode(dc, OPAQUE);
+	SetBkColor(dc, 0x339933);
 	SetTextColor(dc, 0xf800f8);
 
 	SelectObject(dc, fvars.fontHandle);

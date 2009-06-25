@@ -1,6 +1,6 @@
 import djehuty;
 
-import tui.core;
+import tui.widget;
 import synch.timer;
 import synch.semaphore;
 import console.main;
@@ -87,14 +87,14 @@ class GameControl : TuiWidget {
 			tmr.start();
 		}
 	}
-	
+
 	bool OnSignal(Dispatcher dsp, uint signal) {
 		if (dsp is tmr) {
 			timerProc();
 		}
 		return true;
 	}
-	
+
 	int getScore() {
 		return board.getScore();
 	}

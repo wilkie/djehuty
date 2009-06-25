@@ -1,4 +1,4 @@
-import tui.core;
+import tui.application;
 import console.main;
 
 import gamewindow;

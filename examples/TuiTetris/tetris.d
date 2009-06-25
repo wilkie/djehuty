@@ -36,11 +36,11 @@ class Tetris {
 	Coord[] getPiece() {
 		return pieces[currentPiece][currentDirection];
 	}
-	
+
 	Coord getPosition() {
 		return currentPos;
 	}
-	
+
 	int moveDown() {
 		if (canMoveDown()) {
 			currentPos.y++;
@@ -66,7 +66,7 @@ class Tetris {
 		}
 		return false;
 	}
-	
+
 	bool moveRight() {
 		if (canMoveRight()) {
 			currentPos.x++;
@@ -74,7 +74,7 @@ class Tetris {
 		}
 		return false;
 	}
-	
+
 	bool rotate() {
 		if (canRotate()) {
 			currentDirection = (currentDirection+1) % 4;
@@ -82,7 +82,7 @@ class Tetris {
 		}
 		return false;
 	}
-	
+
 	int getScore() {
 		return score;
 	}
@@ -109,11 +109,11 @@ protected:
 				}
 			}
 		}
-		
+
 		if (rows !is null) {
 			// look at rows from top to bottom
 			rows.sort;
-			
+
 			int rowsCleared;
 
 			foreach(row; rows) {
@@ -203,7 +203,7 @@ protected:
 
 		return true;
 	}
-	
+
 	bool rowFilled(int rowIndex) {
 		for(int i; i < 10; i++) {
 			if (board[i][rowIndex] == 0) {
@@ -214,7 +214,7 @@ protected:
 
 		return true;
 	}
-	
+
 	void clearRow(int rowIndex) {
 		for (int j = rowIndex; j > 0; j--) {
 			for(int i; i < 10; i++) {
@@ -233,7 +233,7 @@ protected:
 	int currentDirection;
 
 	Coord currentPos;
-	
+
 	int score;
 
 	static const Coord pieces[][][] =
