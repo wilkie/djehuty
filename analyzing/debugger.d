@@ -11,7 +11,7 @@ module analyzing.debugger;
 
 import console.main;
 
-import gui.core;
+import gui.window;
 
 import core.string;
 import core.unicode;

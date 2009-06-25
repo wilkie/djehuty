@@ -19,7 +19,7 @@ import core.definitions;
 import core.view;
 import core.menu;
 
-import gui.core;
+import gui.window;
 
 import opengl.window;
 

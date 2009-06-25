@@ -1,13 +1,11 @@
-
 module core.view;
-
 
 import core.window;
 import core.graphics;
 
 import synch.semaphore;
 
-import gui.core;
+import gui.window;
 
 import console.main;
 
@@ -291,29 +289,6 @@ protected:
 	Brush _brush;
 	Pen _pen;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import gui.core;
 
 ViewPlatformVars* ViewGetPlatformVars(ref View view)
 {

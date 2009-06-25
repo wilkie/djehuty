@@ -1,6 +1,7 @@
 module gui.trackbar;
 
-import gui.core;
+import gui.widget;
+
 import core.color;
 import core.definitions;
 import core.string;
@@ -18,15 +19,13 @@ template ControlPrintCSTRList()
 	`;
 }
 
-enum TrackBarEvent : uint
-{
-	Changed,
-}
-
 class TrackBar : Widget
 {
-	// support Events
-	mixin(ControlAddDelegateSupport!("TrackBar", "TrackBarEvent"));
+
+	enum Signal : uint
+	{
+		Changed,
+	}
 
 	// Description: This will create a button with the specified dimensions and text.
 	this(int x, int y, int width, int height)

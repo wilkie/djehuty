@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 class OSProgressBar : ProgressBar, OSControl
 {

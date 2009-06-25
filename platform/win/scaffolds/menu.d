@@ -17,11 +17,12 @@ import platform.win.main;
 
 import core.view;
 import core.graphics;
-import gui.core;
 import core.string;
 import core.menu;
 import core.main;
 import core.definitions;
+
+import gui.window;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
 {

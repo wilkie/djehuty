@@ -24,7 +24,7 @@ import core.file;
 import core.main;
 import core.definitions;
 
-import gui.core;
+import gui.window;
 
 import opengl.window;
 
@@ -57,7 +57,7 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 	{
 		windowVars.msgThread = new Thread(&windowVars.msgLoop);
 	}
-	
+
 	ThreadSetWindow(windowVars.msgThread, window);
 
 	windowVars.msgThread.start();

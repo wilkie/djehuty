@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 import interfaces.list;
 
@@ -22,9 +23,6 @@ public:
 	{
 		super(x,y,width,height,list);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSListBox", "ListBoxEvent"));
 
 	override void OnAdd()
 	{

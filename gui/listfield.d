@@ -9,7 +9,6 @@
 
 module gui.listfield;
 
-import gui.core;
 import core.color;
 import core.definitions;
 import core.string;
@@ -18,16 +17,12 @@ import core.window;
 
 import utils.arraylist;
 
+import gui.widget;
+import gui.window;
 import gui.button;
 import gui.listbox;
 
 import interfaces.list;
-
-enum ListFieldEvent : uint
-{
-	Selected,
-	Unselected
-}
 
 template ControlPrintCSTRList()
 {
@@ -57,6 +52,13 @@ class ListFieldWindow : Window
 // Description: This control provides a standard dropdown list selection box.
 class ListField : Widget, AbstractList!(String)
 {
+
+	enum Signal : uint
+	{
+		Selected,
+		Unselected
+	}
+
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
 		super(x,y,width,height);
@@ -64,9 +66,6 @@ class ListField : Widget, AbstractList!(String)
 		_list = new ArrayList!(String)();
 		if (list !is null) { _list.addList(list); }
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("ListField", "ListFieldEvent"));
 
 	// handle events
 	override void OnAdd()
@@ -76,9 +75,6 @@ class ListField : Widget, AbstractList!(String)
 			control_button = new Button(_r - _height,_y, _height, _height, "V");
 			control_listbox = new ListBox(0,0, _width,_width / 2);
 			control_window = new ListFieldWindow(_width);
-
-//			control_button.setDelegate(&_ButtonEvents);
-			control_listbox.setDelegate(&_ListBoxEvents);
 
 			if (_list !is null)
 			{
@@ -232,7 +228,7 @@ protected:
 		}
 	}*/
 
-	void _ListBoxEvents(ListBox list, ListBoxEvent evt)
+	/*void _ListBoxEvents(ListBox list, ListBoxEvent evt)
 	{
 		if (evt == ListBoxEvent.Selected)
 		{
@@ -241,5 +237,5 @@ protected:
 			String data;
 			control_listbox.getItem(data, control_listbox.getSelectionStart());
 		}
-	}
+	}*/
 }

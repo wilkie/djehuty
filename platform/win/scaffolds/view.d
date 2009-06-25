@@ -14,9 +14,10 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
 
+import gui.window;
+
 import core.view;
 import core.graphics;
-import gui.core;
 import core.string;
 import core.file;
 import core.main;

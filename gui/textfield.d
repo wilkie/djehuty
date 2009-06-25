@@ -1,7 +1,8 @@
 
 module gui.textfield;
 
-import gui.core;
+import gui.widget;
+
 import core.color;
 import core.definitions;
 import core.string;
@@ -21,18 +22,17 @@ template ControlPrintCSTRList()
 	`;
 }
 
-enum TextFieldEvent : uint
-{
-	Selected,
-	Unselected,
-	Changed,
-}
-
 // Description: This control provides a standard one line text field.
 class TextField : Widget
 {
-
 public:
+
+	enum Signal : uint
+	{
+		Selected,
+		Unselected,
+		Changed,
+	}
 
 	this(int x, int y, int width, int height, String value)
 	{
@@ -542,9 +542,6 @@ public:
 			g.drawText(x2, y, _value[to_pos.._value.length]);
 		}
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("TextField", "TextFieldEvent"));
 
 	void setText(String newTitle)
 	{

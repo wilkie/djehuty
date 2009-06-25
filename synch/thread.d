@@ -1,6 +1,6 @@
 module synch.thread;
 
-import gui.core;
+import gui.window;
 
 // Awww... my only runtime dependency
 version(LDC)

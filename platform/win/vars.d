@@ -22,7 +22,7 @@ import core.string;
 import synch.thread;
 import synch.semaphore;
 
-import gui.core;
+import gui.window;
 
 import console.main;
 
@@ -308,7 +308,7 @@ struct ViewPlatformVars
 
 	void* bits;
 	int length;
-	
+
 	int penClr;
 
 	_clipList clipRegions;

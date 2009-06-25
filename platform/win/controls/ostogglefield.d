@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 class OSToggleField : ToggleField, OSControl
 {
@@ -24,9 +25,6 @@ public:
 	{
 		super(x,y,width,height,value);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSToggleField", "ToggleFieldEvent"));
 
 	override void OnAdd()
 	{
@@ -133,7 +131,7 @@ protected:
 	{
 		if (message == WM_COMMAND)
 		{
-			FireEvent(ToggleFieldEvent.Selected);
+			raiseSignal(Signal.Selected);
 			return 0;
 		}
 

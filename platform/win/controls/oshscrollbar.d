@@ -9,7 +9,9 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+
+import gui.widget;
+import gui.window;
 
 import gui.hscrollbar;
 
@@ -20,9 +22,6 @@ public:
 	{
 		super(x,y,width,height);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSHScrollBar", "ScrollEvent"));
 
 	override void OnAdd()
 	{
@@ -81,7 +80,7 @@ protected:
 
 			SetScrollPos (_hWnd, SB_CTL, cast(uint)m_value, 1) ;
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			_window.redraw();
 

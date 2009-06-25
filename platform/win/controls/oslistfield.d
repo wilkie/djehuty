@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 import interfaces.list;
 
@@ -24,9 +25,6 @@ public:
 	{
 		super(x,y,width,height,null);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSListField", "ListFieldEvent"));
 
 	override void OnAdd()
 	{

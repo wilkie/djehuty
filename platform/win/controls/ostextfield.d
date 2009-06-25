@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 class OSTextField : TextField, OSControl
 {
@@ -24,9 +25,6 @@ public:
 	{
 		super(x,y,width,height,value);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSTextField", "TextFieldEvent"));
 
 	override void OnAdd()
 	{
@@ -109,7 +107,7 @@ protected:
 		switch (message)
 		{
 		case EN_CHANGE:
-			FireEvent(TextFieldEvent.Changed);
+			raiseSignal(Signal.Changed);
 			break;
 		default:
 			break;

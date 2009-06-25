@@ -1,6 +1,7 @@
 module gui.listbox;
 
-import gui.core;
+import gui.widget;
+
 import core.color;
 import core.definitions;
 import core.string;
@@ -22,15 +23,15 @@ template ControlPrintCSTRList()
 	`;
 }
 
-enum ListBoxEvent : uint
-{
-	Selected,
-	Unselected
-}
-
 // Description: This control provides a standard list selection box.
 class ListBox : Widget
 {
+	enum Signal : uint
+	{
+		Selected,
+		Unselected
+	}
+
 	this(int x, int y, int width, int height, AbstractList!(String) list = null)
 	{
 		super(x,y,width,height);
@@ -38,9 +39,6 @@ class ListBox : Widget
 		_list = new ArrayList!(String)();
 		if (list !is null) { _list.addList(list); }
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("ListBox", "ListBoxEvent"));
 
 	// handle events
 	override void OnAdd()
@@ -164,12 +162,12 @@ class ListBox : Widget
 			{
 				m_sel_start = curEntry;
 
-				FireEvent(ListBoxEvent.Selected);
+				raiseSignal(Signal.Selected);
 
 				return true;
 			}
 
-			FireEvent(ListBoxEvent.Selected);
+			raiseSignal(Signal.Selected);
 		}
 		else
 		{

@@ -1,11 +1,11 @@
 module gui.radiogroup;
 
-import gui.core;
+import gui.widget;
+import gui.togglefield;
+
 import core.string;
 import core.graphics;
 import core.event;
-
-import gui.togglefield;
 
 // Description: This control provides a method of grouping together toggle fields to form a collection of mutually exclusive 'radio' fields.
 class RadioGroup : Widget
@@ -19,17 +19,24 @@ public:
 	{
 		for (uint i = 0; i<_count; i++)
 		{
-			//writeln("hey!");
-			//_toggleFields[i].setDelegate(&ControlProc);
-			//writeln("hey!");
 			_window.push(_toggleFields[i]);
 		}
+	}
+
+	override bool OnSignal(Dispatcher dsp, uint signal) {
+		if (signal == ToggleField.Signal.Selected) {
+			for (uint i = 0; i<_count; i++) {
+				if (_toggleFields[i] !is dsp) {
+					_toggleFields[i].unselect();
+				}
+			}
+		}
+		return false;
 	}
 
 	// Description: This function will add a toggle field control to the group.
 	override void push(Dispatcher dsp) {
 		if (cast(ToggleField)dsp !is null) {
-
 		}
 		else {
 			// error
@@ -37,20 +44,6 @@ public:
 	}
 
 private:
-
-	void ControlProc(ToggleField ctrl, ToggleFieldEvent evt)
-	{
-		// go through each, and unselect, whilst keeping selected the current control
-
-		for (uint i = 0; i<_count; i++)
-		{
-			if (_toggleFields[i] !is ctrl)
-			{
-				_toggleFields[i].unselect();
-			}
-		}
-	}
-
 	ToggleField _toggleFields[] = null;
 
 	uint _capacity = 10;
@@ -76,8 +69,6 @@ private:
 		_count++;
 
 		ToggleFieldSetGrouped(inctrl, true);
-
-		inctrl.setDelegate(&ControlProc);
 
 		if (_window !is null)
 		{

@@ -1,6 +1,6 @@
 module interfaces.container;
 
-import gui.core;
+import gui.widget;
 
 // Section: Interfaces
 

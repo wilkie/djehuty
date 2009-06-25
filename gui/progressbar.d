@@ -1,6 +1,7 @@
 module gui.progressbar;
 
-import gui.core;
+import gui.widget;
+
 import core.color;
 import core.definitions;
 import core.string;

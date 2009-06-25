@@ -9,7 +9,7 @@
 
 module opengl.window;
 
-import gui.core;
+import gui.window;
 
 import core.string;
 import core.definitions;

@@ -10,7 +10,8 @@ import platform.win.oscontrolinterface;
 
 import platform.win.main;
 import core.view;
-import gui.core;
+import gui.widget;
+import gui.window;
 
 class OSTrackBar : TrackBar, OSControl
 {
@@ -19,9 +20,6 @@ public:
 	{
 		super(x,y,width,height);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("OSTrackBar", "TrackBarEvent"));
 
 	override void OnAdd()
 	{

@@ -26,7 +26,7 @@ DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb
 
 DFILES_ANALYZING = analyzing/debugger.d
 DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/filesystem.d core/directory.d core/definitions.d core/application.d core/stringliteral.d core/format.d core/wavelet.d core/time.d core/audio.d core/sound.d core/unicode.d core/graphics.d core/resource.d core/menu.d core/socket.d core/endian.d core/image.d core/file.d core/stream.d core/string.d core/main.d core/view.d core/color.d
-DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/oscontrol.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/core.d
+DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/oscontrol.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
 DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
 DFILES_PARSING = parsing/lexer.d parsing/cfg.d
 DFILES = djehuty.d

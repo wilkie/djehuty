@@ -1,3 +1,12 @@
+/*
+ * jpeg.d
+ *
+ * This module implements the JPEG image standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module codecs.image.jpeg;
 
 import interfaces.stream;
@@ -9,10 +18,9 @@ import core.endian;
 import codecs.image.codec;
 import codecs.codec;
 
-//------------------------
-
 private
 {
+	// Decoder States
 	enum
 	{
 		JPEG_STATE_INIT_PROGRESS,
@@ -78,14 +86,14 @@ private
 	struct SCAN_COMPONENT_SELECTOR
 	{
 		ubyte Cs;
-		ubyte DC_index; //dc huffman table index
-		ubyte AC_index; //ac huffman table index
-		ubyte C;     //component identifier
-		ubyte H;     //horizontal sampling factor
-		ubyte V;     //vertical sampling factor
-		ubyte Tq; //quantization table index
-		ushort HxV;  //number of data sections
-		short[] data;   //data section, allocate by (scs.H * scs.V) * 64;
+		ubyte DC_index;	//dc huffman table index
+		ubyte AC_index;	//ac huffman table index
+		ubyte C;		//component identifier
+		ubyte H;		//horizontal sampling factor
+		ubyte V;		//vertical sampling factor
+		ubyte Tq;		//quantization table index
+		ushort HxV;		//number of data sections
+		short[] data;	//data section, allocate by (scs.H * scs.V) * 64;
 		short lastDC;
 	}
 
@@ -365,8 +373,7 @@ class JPEGCodec : ImageCodec
 
 					if (test_byte == 0xD9)
 					{
-						// EOI
-						//writefln("jpeg - EOI");
+						// EOI (End Of Image)
 						return StreamData.Accepted;
 					}
 
@@ -379,15 +386,11 @@ class JPEGCodec : ImageCodec
 				// and places them in bits_read
 				case JPEG_STATE_READ_BITS:
 
-					//writefln("jpeg - decode - read bits - ", bits_to_read);
-
 					// cur_bit_pos tells us how many bits remain in cur_byte
 					// read what we can until aligned, and then read a byte
 
 					for (; cur_bit_pos < 8 && bits_to_read > 0; cur_bit_pos++, bits_to_read--)
 					{
-						//printf("%d\n", (cur_byte & bit_mask[cur_bit_pos]) >> (7-cur_bit_pos));
-
 						if (first_bit == 0)
 						{
 							if (cur_byte & bit_mask[cur_bit_pos])
@@ -408,8 +411,6 @@ class JPEGCodec : ImageCodec
 						{
 							bits_read |= 1;
 						}
-
-						//printf("%d\n", bits_read);
 					}
 
 					if (cur_bit_pos == 8)
@@ -432,14 +433,9 @@ class JPEGCodec : ImageCodec
 
 					continue;
 
-
-
-
-
 				case JPEG_STATE_INIT_PROGRESS:
 
 					decoderState = JPEG_STATE_READ_HEADER;
-					//writefln("jpeg - init");
 
 					/* fall through */
 
@@ -450,12 +446,10 @@ class JPEGCodec : ImageCodec
 						return StreamData.Required;
 					}
 
-					//writefln("jpeg - ??  header");
 					if (header == FromBigEndian16(0xFFD8))
 					{
 						// SOI (Start of Image)
 
-						//writefln("jpeg - accepted header");
 						decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					}
 					else
@@ -477,8 +471,6 @@ class JPEGCodec : ImageCodec
 
 					chunkType = FromBigEndian16(chunkType);
 
-					//printf("jpeg - chunk type = %x\n", chunkType);
-
 					//grabbing info from block headers \ initing huffman tables
 
 					//determine the block size
@@ -487,7 +479,6 @@ class JPEGCodec : ImageCodec
 					/* follow through */
 
 				case JPEG_STATE_READ_CHUNK_SIZE:
-					//writeln("jpeg - reading chunk size");
 
 					// get chunk size
 
@@ -501,65 +492,49 @@ class JPEGCodec : ImageCodec
 
 					// interpret chunk type
 					decoderState = JPEG_STATE_INTERPRET_CHUNK;
-					//writeln("jpeg - chunk size = ", chunkLength);
 
 					/* follow through */
 
 				case JPEG_STATE_INTERPRET_CHUNK:
-					//writeln("jpeg - interpreting chunk");
 
 					switch(chunkType)
 					{
 						case 0xFFC0: // SOF0	(start of frame 0 - Baseline DCT)
 							decoderState = JPEG_STATE_CHUNK_SOF0;
-							//writefln("jpeg - SOF0");
 							break;
 						case 0xFFC2: // SOF2	(start of frame 2 - Progressive DCT)
 							decoderState = JPEG_STATE_CHUNK_SOF2;
-							//writefln("jpeg - SOF2");
 							break;
 						case 0xFFC4: // DHT (define huffman tables)
 							decoderState = JPEG_STATE_CHUNK_DHT;
-							//writefln("jpeg - DHT");
 							break;
 						case 0xFFCC: // DAC (define arithmetic coding conditionings)
-							//writefln("jpeg - DAC");
 							break;
 						case 0xFFE0: // APP0	(signifies the JFIF spec is being utilized
 							decoderState = JPEG_STATE_CHUNK_APP0;
-							//writefln("jpeg - APP0");
 							break;
 						case 0xFFFE: // COM	(comment)
 							decoderState = JPEG_STATE_CHUNK_COM;
-							//writefln("jpeg - COM");
 							break;
 						case 0xFFD8: // SOI (start of image)
-							//writefln("jpeg - SOI");
 							break;
 						case 0xFFD9: // EOI (end of image)
-							//writefln("jpeg - EOI");
 							break;
 						case 0xFFDA: // SOS (start of scan)
 							decoderState = JPEG_STATE_CHUNK_SOS;
-							//writefln("jpeg - SOS");
 							break;
 						case 0xFFDB: // DQT	(define quantization table)
 							decoderState = JPEG_STATE_CHUNK_DQT;
-							//writefln("jpeg - DQT");
 							break;
 						case 0xFFDC: // DNL (define number of lines)
 							decoderState = JPEG_STATE_CHUNK_DNL;
-							//writefln("jpeg - DNL");
 							break;
 						case 0xFFDD: // DRI	(define restart interval)
 							decoderState = JPEG_STATE_CHUNK_DRI;
-							//writefln("jpeg - DRI");
 							break;
 						case 0xFFDE: // DHP (define hierarchical progression)
-							//writefln("jpeg - DHP");
 							break;
 						case 0xFFDF: // EXP (expand reference components)
-							//writefln("jpeg - EXP");
 							break;
 						default:
 							// just ignore unknown blocks
@@ -574,7 +549,6 @@ class JPEGCodec : ImageCodec
 
 					continue;
 
-
 				case JPEG_STATE_CHUNK_COM:
 				case JPEG_STATE_SKIP_CHUNK:
 
@@ -586,33 +560,26 @@ class JPEGCodec : ImageCodec
 
 					continue;
 
-
-
-
-
-
-
-
-
-
-
 				// SOF0 - start of frame 0
 				case JPEG_STATE_CHUNK_SOF0:
 
+					// get information about the frame (dimensions)
 					if (!stream.read(&sof, sof.sizeof))
 					{
 						return StreamData.Required;
 					}
 
+					// enforce endian
 					sof.num_lines = FromBigEndian16(sof.num_lines);
 					sof.num_samples_per_line = FromBigEndian16(sof.num_samples_per_line);
 
 					decoderState = JPEG_STATE_CHUNK_SOF_READ_COMPONENTS;
 
-					//writefln("jpeg - SOF - number of image components = ", sof.num_image_components);
+					/* follow through */
 
 				case JPEG_STATE_CHUNK_SOF_READ_COMPONENTS:
 
+					// read the image components
 					if (stream.getRemaining() < (sof.num_image_components * 3))
 					{
 						return StreamData.Required;
@@ -677,9 +644,6 @@ class JPEGCodec : ImageCodec
 						actual_image_height = sof.num_lines + ((Vmajor * 8)-(sof.num_lines % (Vmajor * 8)));
 					}
 
-					//writefln("jpeg - image - ", sof.num_samples_per_line, " x ", sof.num_lines);
-					//writefln("jpeg - image - ", actual_image_width, " x ", actual_image_height);
-
 					block_width = actual_image_width / (Hmajor * 8);
 					block_height = actual_image_height / (Vmajor * 8);
 
@@ -705,10 +669,6 @@ class JPEGCodec : ImageCodec
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					continue;
 
-
-
-
-
 				// APP0 - JFIF Specifications
 				case JPEG_STATE_CHUNK_APP0:
 
@@ -723,7 +683,6 @@ class JPEGCodec : ImageCodec
 					switch (signature)
 					{
 						case "JFIF\0":
-							//writefln("jpeg - APP0 - JFIF");
 							decoderState = JPEG_STATE_CHUNK_APP0_JFIF;
 							break;
 
@@ -740,8 +699,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_APP0_JFIF:
 
 					// skip the unknown app extension
-					if (!stream.read(&jfif, jfif.sizeof))
-					{
+					if (!stream.read(&jfif, jfif.sizeof)) {
 						return StreamData.Required;
 					}
 
@@ -754,8 +712,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_APP0_UNKNOWN:
 
 					// skip the unknown app extension
-					if (!stream.skip(chunkLength - 5))
-					{
+					if (!stream.skip(chunkLength - 5)) {
 						return StreamData.Required;
 					}
 
@@ -771,8 +728,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_DHT:
 
 					ubyte table_id;
-					if (!stream.read(table_id))
-					{
+					if (!stream.read(table_id)) {
 						return StreamData.Required;
 					}
 
@@ -794,14 +750,12 @@ class JPEGCodec : ImageCodec
 
 					chunkLength -= 17;
 
-					if (!stream.read(cur_ht.lengths.ptr, 16))
-					{
+					if (!stream.read(cur_ht.lengths.ptr, 16)) {
 						return StreamData.Required;
 					}
 
 					//load the lengths into the specified table
-					for (int a=0; a<16; a++)
-					{
+					for (int a=0; a<16; a++) {
 						int size = cur_ht.lengths[a];
 						cur_ht.data[a] = new ubyte[size];
 						cur_ht.data_pos[a] = 0;
@@ -815,10 +769,8 @@ class JPEGCodec : ImageCodec
 
 					bytesToRead = 0;
 
-					for (int a=0; a<chunkLength; a++)
-					{
-						while (n == cur_ht.lengths[o])
-						{
+					for (int a=0; a<chunkLength; a++) {
+						while (n == cur_ht.lengths[o]) {
 							o++;
 							n=0;
 
@@ -836,8 +788,7 @@ class JPEGCodec : ImageCodec
 
 					ubyte[] bytesRead = new ubyte[bytesToRead];
 
-					if (!stream.read(bytesRead.ptr, bytesToRead))
-					{
+					if (!stream.read(bytesRead.ptr, bytesToRead)) {
 						return StreamData.Required;
 					}
 
@@ -846,10 +797,8 @@ class JPEGCodec : ImageCodec
 					int n=0;
 					int q=0;
 
-					for (int a=0; a<chunkLength; a++)
-					{
-						while (n == cur_ht.lengths[o])
-						{
+					for (int a=0; a<chunkLength; a++) {
+						while (n == cur_ht.lengths[o]) {
 							o++;
 							n=0;
 
@@ -864,14 +813,12 @@ class JPEGCodec : ImageCodec
 
 					//aquire minor and major codes
 					o=0;
-					for (int a=0; a<16; a++)
-					{
+					for (int a=0; a<16; a++) {
 						cur_ht.minor_code[a] = cast(ushort)(o);
 						o += cur_ht.lengths[a];
 						cur_ht.major_code[a] = cast(ushort)(o-1);
 						o = o << 1;
-						if (cur_ht.lengths[a] == 0)
-						{
+						if (cur_ht.lengths[a] == 0) {
 							cur_ht.minor_code[a] = 0xFFFF;
 							cur_ht.major_code[a] = 0x0000;
 						}
@@ -880,11 +827,6 @@ class JPEGCodec : ImageCodec
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					continue;
 
-
-
-
-
-
 				// DQT - define quantization tables
 				case JPEG_STATE_CHUNK_DQT:
 
@@ -892,8 +834,7 @@ class JPEGCodec : ImageCodec
 
 					ubyte quantization_type;
 
-					if (!stream.read(quantization_type))
-					{
+					if (!stream.read(quantization_type)) {
 						return StreamData.Required;
 					}
 
@@ -912,17 +853,14 @@ class JPEGCodec : ImageCodec
 
 				case JPEG_STATE_CHUNK_DQT_READ_TABLE:
 
-					if (quantization_precision==0)
-					{
+					if (quantization_precision==0) {
 						ubyte[64] bytesRead;
 
-						if (!stream.read(bytesRead.ptr, 64))
-						{
+						if (!stream.read(bytesRead.ptr, 64)) {
 							return StreamData.Required;
 						}
 
-						for (int n = 0; n < 64; n++)
-						{
+						for (int n = 0; n < 64; n++) {
 							quantization_table[quantization_destination][n] = bytesRead[n];
 						}
 					}
@@ -930,13 +868,11 @@ class JPEGCodec : ImageCodec
 					{
 						ushort[64] bytesRead;
 
-						if (!stream.read(bytesRead.ptr, 128))
-						{
+						if (!stream.read(bytesRead.ptr, 128)) {
 							return StreamData.Required;
 						}
 
-						for (int n = 0; n < 64; n++)
-						{
+						for (int n = 0; n < 64; n++) {
 							quantization_table[quantization_destination][n] = FromBigEndian16(bytesRead[n]);
 						}
 					}
@@ -944,19 +880,12 @@ class JPEGCodec : ImageCodec
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					continue;
 
-
-
-
-
-
-
 				// SOS - start of scan
 				case JPEG_STATE_CHUNK_SOS:
 
 					// read the number of image components in the scan
 					// (a subset of the frame image components)
-					if (!stream.read(&sos, sos.sizeof))
-					{
+					if (!stream.read(&sos, sos.sizeof)) {
 						return StreamData.Required;
 					}
 
@@ -966,8 +895,7 @@ class JPEGCodec : ImageCodec
 
 				case JPEG_STATE_CHUNK_SOS_READ_COMPONENTS:
 
-					if (stream.getRemaining < (sos.num_image_components * 2))
-					{
+					if (stream.getRemaining < (sos.num_image_components * 2)) {
 						return StreamData.Required;
 					}
 
@@ -978,18 +906,15 @@ class JPEGCodec : ImageCodec
 					//get the number of source components
 										//jpeg_vars->Ns = in_bytes[file_counter];
 					/*
-					if (jpeg_vars->Ns < 1 || jpeg_vars->Ns > 4)
-					{
+					if (jpeg_vars->Ns < 1 || jpeg_vars->Ns > 4) {
 						break;
 					}
 
-					if (jpeg_vars->scan_components != NULL)
-					{
+					if (jpeg_vars->scan_components != NULL) {
 						if (jpeg_vars->num_image_components != jpeg_vars->Ns)
 						{ delete jpeg_vars->scan_components; jpeg_vars->scan_components = new SCAN_COMPONENT_SELECTOR[jpeg_vars->Ns];}
 					}
-					else
-					{
+					else {
 						jpeg_vars->scan_components = new SCAN_COMPONENT_SELECTOR[jpeg_vars->Ns];
 					}*/
 
@@ -1021,52 +946,36 @@ class JPEGCodec : ImageCodec
 
 					/* follow through */
 
-
-
-
-
-
-
 				case JPEG_STATE_DECODE_INIT:
 
-					//writefln("jpeg - decode - init");
-
-					//file = new ubyte[cast(uint)stream.getRemaining()];
-
-					//stream.read(file.ptr, file.length);
+					// decode init
 
 					cb_upsample_lookup = new ubyte[64 * Hmajor * Vmajor];
 					cr_upsample_lookup = new ubyte[64 * Hmajor * Vmajor];
 
-					for (int a=0; a<3;a++)
-					{
-
+					for (int a=0; a<3;a++) {
 						sof_comp[a].lastDC = 0;
 
 						int d0,d1,d2,d3;
 
 						//create sampling lookup tables
-						if (sof_comp[a].C == 1)
-						{
+						if (sof_comp[a].C == 1) {
 							//Y component
 						}
-						else if (sof_comp[a].C == 2)
-						{   //cb
+						else if (sof_comp[a].C == 2) {
+							//ch
+
 							d0 = 0;
 							d2 = (8*Hmajor);
-							for (int n=0; n<Hmajor; n++)
-							{
-								for (int q=0; q<Vmajor; q++)
-								{
+							for (int n=0; n<Hmajor; n++) {
+								for (int q=0; q<Vmajor; q++) {
 									//starting coords for the block
 									d1 = (q*8) + (n*64*Hmajor);
 
 									//for every 8x8 block in the MCU
-									for (int o=0; o<8;o++)
-									{
+									for (int o=0; o<8;o++) {
 										d3 = d1;
-										for (int p=0; p<8; p++)
-										{
+										for (int p=0; p<8; p++) {
 											cb_upsample_lookup[d0] = cast(ubyte)(cast(int)(d3 / (d2 * Vmajor) * 8) + cast(int)((d3 % d2)/Vmajor));
 											//printf("cb %d, %d\n", cb_upsample_lookup[d0], d0);
 											d3++;
@@ -1078,23 +987,19 @@ class JPEGCodec : ImageCodec
 								}
 							}
 						}
-						else if (sof_comp[a].C == 3)
-						{	//cr
+						else if (sof_comp[a].C == 3) {
+							//cr
 							d0 = 0;
 							d2 = (8*Hmajor);
-							for (int n=0; n<Hmajor; n++)
-							{
-								for (int q=0; q<Vmajor; q++)
-								{
+							for (int n=0; n<Hmajor; n++) {
+								for (int q=0; q<Vmajor; q++) {
 									//starting coords for the block
 									d1 = (q*8) + (n*64*Hmajor);
 
 									//for every 8x8 block in the MCU
-									for (int o=0; o<8;o++)
-									{
+									for (int o=0; o<8;o++) {
 										d3 = d1;
-										for (int p=0; p<8; p++)
-										{
+										for (int p=0; p<8; p++) {
 											cr_upsample_lookup[d0] = cast(ubyte)(cast(int)(d3 / (d2 * Vmajor) * 8) + cast(int)((d3 % d2)/Vmajor));
 											//printf("cr %d, %d\n", cr_upsample_lookup[d0], d0);
 											d3++;
@@ -1118,21 +1023,11 @@ class JPEGCodec : ImageCodec
 
 					continue;
 
-
-
-
-
-
-
-
-
 				case JPEG_STATE_DECODE_HUFFMAN_INIT:
-
 
 					data_start_pos = 64 * component_sample_counter;
 
 					cur_ht = &HT_DC[sof_comp[component_counter].DC_index];
-
 
 					huffman_code = 0;
 					huffman_bits = 0;
@@ -1145,39 +1040,35 @@ class JPEGCodec : ImageCodec
 
 					// Get DC Component
 
-					if (huffman_bits == 16)
-					{
+					if (huffman_bits == 16) {
 						decoderState = JPEG_STATE_DECODE_HUFFMAN_DC_READ;
 
 						huffman_code = 0;
 						huffman_bits = 0;
 					}
-					else
-					{
-						if (cur_bit_pos == 8)
-						{
+					else {
+						if (cur_bit_pos == 8) {
 							decoderNextState = JPEG_STATE_DECODE_HUFFMAN_DC;
 							decoderState = JPEG_STATE_READ_BYTE;
 							continue;
 						}
 
 						huffman_code <<= 1;
-						if (cur_byte & bit_mask[cur_bit_pos])
-						{
+						if (cur_byte & bit_mask[cur_bit_pos]) {
 							huffman_code |= 1;
 						}
 
 						cur_bit_pos++;
 
-						if (huffman_code >= cur_ht.minor_code[huffman_bits]  && huffman_code <= cur_ht.major_code[huffman_bits])
-						{ //valid code
+						if (huffman_code >= cur_ht.minor_code[huffman_bits]  && huffman_code <= cur_ht.major_code[huffman_bits]) {
+
+							//valid code
 
 							huffman_code -= cur_ht.minor_code[huffman_bits]; //get its position within that range of length!
 							huffman_code = cur_ht.data[huffman_bits][huffman_code];
 
 							//huffman_code == the # of bits following the code to read in
-							if (huffman_code == 0)
-							{
+							if (huffman_code == 0) {
 								sof_comp[component_counter].data[data_start_pos] = sof_comp[component_counter].lastDC;
 								sof_comp[component_counter].data[data_start_pos] *= quantization_table[sof_comp[component_counter].Tq][0];
 
@@ -1188,8 +1079,7 @@ class JPEGCodec : ImageCodec
 
 								cur_ac = 1;
 							}
-							else
-							{
+							else {
 								bits_read = 0;
 								bits_to_read = huffman_code;
 								first_bit = 0;
@@ -1201,8 +1091,7 @@ class JPEGCodec : ImageCodec
 							huffman_code = 0;
 							huffman_bits = 0;
 						}
-						else
-						{
+						else {
 							huffman_bits++;
 						}
 
@@ -1237,8 +1126,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_DECODE_HUFFMAN_AC:
 
 					// Get AC Components
-					if (cur_ac >= 64)
-					{
+					if (cur_ac >= 64) {
 						// HUFFMAN CODING END
 						decoderState = JPEG_STATE_DECODE_IDCT;
 						huffman_code = 0;
@@ -1249,32 +1137,30 @@ class JPEGCodec : ImageCodec
 
 					//from the next bits in the stream...find the first valid huffman code
 
-					if (huffman_bits == 16)
-					{
+					if (huffman_bits == 16) {
 						decoderState = JPEG_STATE_DECODE_HUFFMAN_AC_READ;
 
 						huffman_code = 0;
 						huffman_bits = 0;
 					}
-					else
-					{
-						if (cur_bit_pos == 8)
-						{
+					else {
+						if (cur_bit_pos == 8) {
 							decoderNextState = JPEG_STATE_DECODE_HUFFMAN_AC;
 							decoderState = JPEG_STATE_READ_BYTE;
 							continue;
 						}
 
 						huffman_code <<= 1;
-						if (cur_byte & bit_mask[cur_bit_pos])
-						{
+						if (cur_byte & bit_mask[cur_bit_pos]) {
 							huffman_code |= 1;
 						}
 
 						cur_bit_pos++;
 
-						if (huffman_code >= cur_ht.minor_code[huffman_bits]  && huffman_code <= cur_ht.major_code[huffman_bits])
-						{ //valid code
+						if (huffman_code >= cur_ht.minor_code[huffman_bits]  && huffman_code <= cur_ht.major_code[huffman_bits]) {
+
+							//valid code
+
 							huffman_code -= cur_ht.minor_code[huffman_bits]; //get its position within that range of length!
 							huffman_code = cur_ht.data[huffman_bits][huffman_code];
 
@@ -1282,56 +1168,45 @@ class JPEGCodec : ImageCodec
 							int q=huffman_code & 0xF;	//bit_count
 							int o=huffman_code >> 4;	//zero_count
 
-							if (q == 0)
-							{
-								if (o == 0)
-								{
+							if (q == 0) {
+								if (o == 0) {
 									//code: (0, 0)
 									//end of data
 									//the rest are zeroes
 									o = 64;
 
-									while (cur_ac!=o)
-									{
+									while (cur_ac!=o) {
 										sof_comp[component_counter].data[data_start_pos+zig_zag_reference[cur_ac]] = 0;
 										cur_ac++;
 									}
 								}
-								else if (o==0xF)
-								{
+								else if (o==0xF) {
 									// code: (15, 0)
 									//next 16 spaces of data are zeroes!
-									if (cur_ac+16 > 64)
-									{
+									if (cur_ac+16 > 64) {
 										o = 64;
 									}
-									else
-									{
+									else {
 										o = cur_ac+16;
 									}
 
-									while (cur_ac!=o)
-									{
+									while (cur_ac!=o) {
 										sof_comp[component_counter].data[data_start_pos+zig_zag_reference[cur_ac]] = 0;
 										cur_ac++;
 									}
 								}
 							}
-							else
-							{
+							else {
 								//set zeroes in all the spaces marked in zero_count
-								if (cur_ac+o > 64)
-								{
+								if (cur_ac+o > 64) {
 									o = 64;
 								}
-								else
-								{
+								else {
 									o = cur_ac+o;
 								}
 
 								//set the items from p to o
-								while (cur_ac!=o)
-								{
+								while (cur_ac!=o) {
 									sof_comp[component_counter].data[data_start_pos+zig_zag_reference[cur_ac]] = 0;
 									cur_ac++;
 								}
@@ -1345,13 +1220,11 @@ class JPEGCodec : ImageCodec
 								decoderState = JPEG_STATE_READ_BITS;
 							}
 
-
 							huffman_code = 0;
 							huffman_bits = 0;
 							break;
 						}
-						else
-						{
+						else {
 							huffman_bits++;
 						}
 					}
@@ -1362,8 +1235,7 @@ class JPEGCodec : ImageCodec
 
 					//bits_read is actually the value of the data
 
-					if (cur_ac < 64)
-					{
+					if (cur_ac < 64) {
 						sof_comp[component_counter].data[data_start_pos+zig_zag_reference[cur_ac]] = cast(short)(cast(short)bits_read * quantization_table[sof_comp[component_counter].Tq][cur_ac]);
 						cur_ac++;
 					}
@@ -1374,11 +1246,6 @@ class JPEGCodec : ImageCodec
 
 					continue;
 
-
-
-
-
-
 				case JPEG_STATE_DECODE_IDCT:
 					// integer, fixed point implementation of IDCT
 
@@ -1386,13 +1253,11 @@ class JPEGCodec : ImageCodec
 
 					//IDCT
 
-					//printf("-- %d\n", component_counter);
 					short* dataRef = &sof_comp[component_counter].data[data_start_pos];
 
 					int d0,d1,d2,d3,d4,d5,d6,d7,tmp;
 
-					for (int o=0; o<8; o++)
-					{
+					for (int o=0; o<8; o++) {
 						d4 = dataRef[7]; d5 = dataRef[5]; d6 = dataRef[3]; d7 = dataRef[1];
 
 						d2 = d4 + d6; d3 = d5 + d7;
@@ -1435,15 +1300,12 @@ class JPEGCodec : ImageCodec
 
 						dataRef[3] = cast(short)(d3 >> 13); dataRef[4] = cast(short)(d4 >> 13);
 
-						//printf("%d, %d, %d, %d, %d, %d, %d, %d\n", dataRef[0], dataRef[1], dataRef[2], dataRef[3], dataRef[4], dataRef[5], dataRef[6], dataRef[7]);
-
 						dataRef += 8;
 					}
 
 					dataRef = &sof_comp[component_counter].data[data_start_pos];
 
-					for (int o=0; o<8; o++)
-					{
+					for (int o=0; o<8; o++) {
 						// odd
 
 						d4 = dataRef[56]; d5 = dataRef[40]; d6 = dataRef[24]; d7 = dataRef[8];
@@ -1479,56 +1341,50 @@ class JPEGCodec : ImageCodec
 
 						//526870912 is 128 << 22
 
-						d0 += 536870912; dataRef[0] = cast(short)(d0 >> 22) ;
+						d0 += (128 << 22); dataRef[0] = cast(short)(d0 >> 22) ;
 						if (dataRef[0] > 255) { dataRef[0] = 255; } else if (dataRef[0] < 0) { dataRef[0] = 0;}
 
-						d7 += 536870912; dataRef[56] = cast(short)(d7 >> 22) ;
+						d7 += (128 << 22); dataRef[56] = cast(short)(d7 >> 22) ;
 						if (dataRef[56] > 255) { dataRef[56] = 255; } else if (dataRef[56] < 0) { dataRef[56] = 0;}
 
 						d0 = d1 + d6; d6 = d1 - d6; d1 = d0;
 
-						d1 += 536870912; dataRef[8] = cast(short)(d1 >> 22) ;
+						d1 += (128 << 22); dataRef[8] = cast(short)(d1 >> 22) ;
 						if (dataRef[8] > 255) { dataRef[8] = 255; } else if (dataRef[8] < 0) { dataRef[8] = 0;}
 
-						d6 += 536870912; dataRef[48] = cast(short)(d6 >> 22) ;
+						d6 += (128 << 22); dataRef[48] = cast(short)(d6 >> 22) ;
 						if (dataRef[48] > 255) { dataRef[48] = 255; } else if (dataRef[48] < 0) { dataRef[48] = 0;}
 
 						d0 = d2 + d5; d5 = d2 - d5; d2 = d0;
 
-						d2 += 536870912;
+						d2 += (128 << 22);
 						dataRef[16] = cast(short)(d2 >> 22) ;
 						if (dataRef[16] > 255) { dataRef[16] = 255; } else if (dataRef[16] < 0) { dataRef[16] = 0;}
 
-						d5 += 536870912; dataRef[40] = cast(short)(d5 >> 22) ;
+						d5 += (128 << 22); dataRef[40] = cast(short)(d5 >> 22) ;
 						if (dataRef[40] > 255) { dataRef[40] = 255; } else if (dataRef[40] < 0) { dataRef[40] = 0;}
 
 						d0 = d3 + d4; d4 = d3 - d4; d3 = d0;
 
-						d3 += 536870912; dataRef[24] = cast(short)(d3 >> 22) ;
+						d3 += (128 << 22); dataRef[24] = cast(short)(d3 >> 22) ;
 						if (dataRef[24] > 255) { dataRef[24] = 255; } else if (dataRef[24] < 0) { dataRef[24] = 0;}
 
-						d4 += 536870912; dataRef[32] = cast(short)(d4 >> 22) ;
+						d4 += (128 << 22); dataRef[32] = cast(short)(d4 >> 22) ;
 						if (dataRef[32] > 255) { dataRef[32] = 255; } else if (dataRef[32] < 0) { dataRef[32] = 0;}
-
-						//printf("%d, %d, %d, %d, %d, %d, %d, %d\n", dataRef[0], dataRef[1], dataRef[2], dataRef[3], dataRef[4], dataRef[5], dataRef[6], dataRef[7]);
 
 						dataRef++;
 					}
-
-					//l++;
 
 					//the IDCT has been done...we now have uncompressed data for this 8x8, 8 bit component
 
 					//goto the next sample or next component to complete the scan
 					component_sample_counter++;
-					if (component_sample_counter == sof_comp[component_counter].HxV)
-					{
+					if (component_sample_counter == sof_comp[component_counter].HxV) {
 						component_counter++;
 						component_sample_counter=0;
 					}
 
-					if (component_counter != sof.num_image_components)
-					{
+					if (component_counter != sof.num_image_components) {
 						// continue decoding components
 						decoderState = JPEG_STATE_DECODE_HUFFMAN_INIT;
 						continue;
@@ -1567,24 +1423,19 @@ class JPEGCodec : ImageCodec
 
 					int a;
 
-					for (a=0; a<3; a++)
-					{
-						if (sof_comp[a].C == 1)
-						{
+					for (a=0; a<3; a++) {
+						if (sof_comp[a].C == 1) {
 							//Y component
-							//writefln("Y comp");
 							d0_pos = cast(ushort*)sof_comp[a].data.ptr;
 							d3=a;
 						}
-						else if (sof_comp[a].C == 2)
-						{ //cb
-							//writefln("CB comp");
+						else if (sof_comp[a].C == 2) {
+							//cb
 							d1_pos = cast(ushort*)sof_comp[a].data.ptr;
 							d4=a;
 						}
-						else if (sof_comp[a].C == 3)
-						{ //cr
-							//writefln("CR comp");
+						else if (sof_comp[a].C == 3) {
+							//cr
 							d2_pos = cast(ushort*)sof_comp[a].data.ptr;
 							d5=a;
 						}
@@ -1592,10 +1443,8 @@ class JPEGCodec : ImageCodec
 
 					a=0;
 
-					while (a<Vmajor)
-					{
-						for (int q=0;q<Hmajor;q++)
-						{
+					while (a<Vmajor) {
+						for (int q=0;q<Hmajor;q++) {
 							//code will be run through for every 8x8 block represented by this MCU
 							//in this order:
 							// /-------\
@@ -1609,12 +1458,9 @@ class JPEGCodec : ImageCodec
 
 							float ab;
 
-							if (sof.num_image_components == 1)
-							{
-								for (int n=0; n<8; n++)
-								{
-									for (int p=0; p<8; p++)
-									{
+							if (sof.num_image_components == 1) {
+								for (int n=0; n<8; n++) {
+									for (int p=0; p<8; p++) {
 										ubyte r,g,b;
 
 										//write at the RGBA of intermediate_imgPos;
@@ -1626,18 +1472,12 @@ class JPEGCodec : ImageCodec
 
 										intermediate_imgPos+=4;
 									}
-
 									intermediate_imgPos+=imgylinemovement-32;
 								}
-
 							}
-							else
-							{
-
-								for (int n=0; n<8; n++)
-								{
-									for (int p=0; p<8; p++)
-									{
+							else {
+								for (int n=0; n<8; n++) {
+									for (int p=0; p<8; p++) {
 										ubyte r,g,b;
 
 										//write at the RGBA of intermediate_imgPos;
@@ -1659,7 +1499,6 @@ class JPEGCodec : ImageCodec
 
 										intermediate_imgPos+=4;
 									}
-
 									intermediate_imgPos+=imgylinemovement-32;
 								}
 							}
@@ -1679,53 +1518,31 @@ class JPEGCodec : ImageCodec
 					//move image buffer pointer to point at coords of next MCU block
 
 					cur_block_x++;
-					if (cur_block_x == block_width)
-					{
+					if (cur_block_x == block_width) {
 						cur_block_x = 0;
 						cur_block_y++;
 
 						image_ptr_offset = (cur_block_y * imgylinemovement_block_start);
 
-						if(cur_block_y == block_height)
-						{
+						if(cur_block_y == block_height) {
 							//we should be done
 							//we have decoded the frame
-//							writefln("jpeg - done");
 
-							if (intermediate_imgPos_Start !is null)
-							{
+							if (intermediate_imgPos_Start !is null) {
 								intermediate_imgPos_Start = null;
 								view.unlockBuffer();
 							}
 							return StreamData.Accepted;
 						}
 					}
-					else
-					{
+					else {
 						image_ptr_offset += imgxlinemovement_block_start;
 					}
 
 					component_counter=0;
 
 					decoderState = JPEG_STATE_DECODE_HUFFMAN_INIT;
-
-
-
 					continue;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 				default:
 					return StreamData.Invalid;
@@ -1736,8 +1553,6 @@ class JPEGCodec : ImageCodec
 	}
 
 protected:
-
-
 
 	JPEG_RENDER_INFO jpeg_vars;
 
@@ -1808,5 +1623,4 @@ protected:
 
 	uint cur_block_x;
 	uint cur_block_y;
-
 }

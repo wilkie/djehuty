@@ -1,6 +1,6 @@
 module gui.vscrollbar;
 
-import gui.core;
+import gui.widget;
 
 import core.color;
 import core.definitions;
@@ -9,13 +9,6 @@ import core.graphics;
 import core.event;
 
 import synch.timer;
-
-enum ScrollEvent : uint
-{
-	Selected,
-	Unselected,
-	Scrolled,
-}
 
 template ControlPrintCSTRList()
 {
@@ -32,6 +25,13 @@ template ControlPrintCSTRList()
 class VScrollBar : Widget
 {
 public:
+
+	enum Signal : uint
+	{
+		Selected,
+		Unselected,
+		Scrolled,
+	}
 
 	this(int x, int y, int width, int height)
 	{
@@ -61,9 +61,6 @@ public:
 		push(_readyTimer);
 		push(_clickTimer);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("VScrollBar", "ScrollEvent"));
 
 	override void OnAdd()
 	{
@@ -424,7 +421,7 @@ public:
 			m_value = ( cast(int) ( ( cast(float)(mouseProps.y - _y-_width) / cast(float)(m_area) ) * cast(float)(m_max - m_min) ) ) + m_min;
 
 			if (m_value != old_value) {
-				FireEvent(ScrollEvent.Scrolled);
+				raiseSignal(Signal.Scrolled);
 				return true;
 			} else {
 				return false;
@@ -689,14 +686,14 @@ protected:
 			m_value -= m_small_change;
 			if (m_value<m_min) { m_value = m_min; }
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 		case 2: //right button
 			m_value += m_small_change;
 			if (m_value>m_max) { m_value = m_max; }
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 		case 4: //inner area UP
@@ -731,7 +728,7 @@ protected:
 				_clickTimer.stop();
 			}
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 
@@ -767,7 +764,7 @@ protected:
 				_clickTimer.stop();
 			}
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 

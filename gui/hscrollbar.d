@@ -1,6 +1,6 @@
 module gui.hscrollbar;
 
-import gui.core;
+import gui.widget;
 
 import core.color;
 import core.definitions;
@@ -9,13 +9,6 @@ import core.graphics;
 import core.event;
 
 import synch.timer;
-
-enum ScrollEvent : uint
-{
-	Selected,
-	Unselected,
-	Scrolled,
-}
 
 template ControlPrintCSTRList()
 {
@@ -32,6 +25,13 @@ template ControlPrintCSTRList()
 class HScrollBar : Widget
 {
 public:
+
+	enum Signal : uint
+	{
+		Selected,
+		Unselected,
+		Scrolled,
+	}
 
 	this(int x, int y, int width, int height)
 	{
@@ -54,9 +54,6 @@ public:
 		push(_readyTimer);
 		push(_clickTimer);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("HScrollBar", "ScrollEvent"));
 
 	override void OnAdd()
 	{
@@ -424,7 +421,7 @@ public:
 			m_value = ( cast(long) ( ( cast(float)(mouseProps.x - _x - _height) / cast(float)(m_area) ) * cast(float)(m_max - m_min) ) ) + m_min;
 
 			if (m_value != old_value) {
-				FireEvent(ScrollEvent.Scrolled);
+				raiseSignal(Signal.Scrolled);
 				return true;
 			}
 
@@ -688,14 +685,14 @@ protected:
 			m_value -= m_small_change;
 			if (m_value<m_min) { m_value = m_min; }
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 		case 2: //right button
 			m_value += m_small_change;
 			if (m_value>m_max) { m_value = m_max; }
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 		case 4: //inner area UP
@@ -730,7 +727,7 @@ protected:
 				_clickTimer.stop();
 			}
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 
@@ -766,7 +763,7 @@ protected:
 				_clickTimer.stop();
 			}
 
-			FireEvent(ScrollEvent.Scrolled);
+			raiseSignal(Signal.Scrolled);
 
 			break;
 

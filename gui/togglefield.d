@@ -1,6 +1,7 @@
 module gui.togglefield;
 
-import gui.core;
+import gui.widget;
+
 import core.color;
 import core.definitions;
 import core.string;
@@ -20,15 +21,15 @@ template ControlPrintCSTRList()
 	`;
 }
 
-enum ToggleFieldEvent : uint
-{
-	Selected,
-	Unselected,
-}
-
 // Description: This control provides a standard toggle field.  When grouped, these will act as a exclusive list of options, essentially a 'radio' or 'option' field.  Otherwise they are 'check' fields.
 class ToggleField : Widget
 {
+	enum Signal : uint
+	{
+		Selected,
+		Unselected,
+	}
+
 	this(int x, int y, int width, int height, String value)
 	{
 		super(x,y,width,height);
@@ -42,9 +43,6 @@ class ToggleField : Widget
 
 		_value = new String(value);
 	}
-
-	// support Events
-	mixin(ControlAddDelegateSupport!("ToggleField", "ToggleFieldEvent"));
 
 	void unselect()
 	{
@@ -260,7 +258,7 @@ class ToggleField : Widget
 			if (!(_is_grouped && _btnstate))
 			{
 				_btnstate = !_btnstate;
-				FireEvent(ToggleFieldEvent.Selected);
+				raiseSignal(Signal.Selected);
 			}
 		}
 

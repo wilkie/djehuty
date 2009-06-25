@@ -1,3 +1,13 @@
+/*
+ * gif.d
+ *
+ * This module implements the GIF 89a standard.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
+
 module codecs.image.gif;
 
 import interfaces.stream;
@@ -7,16 +17,18 @@ import core.string;
 import codecs.image.codec;
 import codecs.codec;
 
-private
-{
-	align(1) struct _djehuty_image_gif_header
-	{
+// For debugging
+import console.main;
+
+// The structures define structures found in the standard and utilized
+// when reading the file or stream.
+private {
+	align(1) struct _djehuty_image_gif_header {
 		ubyte gifSignature[3];
 		ubyte gifVersion[3];
 	}
 
-	align(1) struct _djehuty_image_gif_logical_screen
-	{
+	align(1) struct _djehuty_image_gif_logical_screen {
 		ushort gifLogicalScreenWidth;
 		ushort gifLogicalScreenHeight;
 		ubyte gifPackedFields;
@@ -24,15 +36,13 @@ private
 		ubyte gifPixelAspectRatio;
 	}
 
-	align(1) struct _djehuty_image_gif_color
-	{
+	align(1) struct _djehuty_image_gif_color {
 		ubyte red;
 		ubyte green;
 		ubyte blue;
 	}
 
-	align(1) struct _djehuty_image_gif_image_descriptor
-	{
+	align(1) struct _djehuty_image_gif_image_descriptor {
 		ushort gifImageLeftPos;
 		ushort gifImageTopPos;
 		ushort gifImageWidth;
@@ -40,8 +50,7 @@ private
 		ubyte gifPackedFields;
 	}
 
-	align(1) struct _djehuty_image_gif_graphics_extension
-	{
+	align(1) struct _djehuty_image_gif_graphics_extension {
 		ubyte gifBlockSize;
 
 		ubyte gifPackedFields;
@@ -51,11 +60,10 @@ private
 		ubyte gifBlockTerminator;
 	}
 
-	struct _djehuty_image_gif_lzw_dictionary_entry
-	{
-	short code;
-	short hops;
-	short output;
+	struct _djehuty_image_gif_lzw_dictionary_entry {
+		short code;
+		short hops;
+		short output;
 	}
 
 	const ubyte gifMasks[] =
@@ -92,7 +100,7 @@ private
 	//global constants
 	const int _djehuty_image_gif_size_of_global_color_table_ref[] = [2,4,8,16,32,64,128,256];
 
-
+	// Decoder States
 	const auto GIF_STATE_INIT						= 0;
 
 	const auto GIF_STATE_READ_HEADERS				= 1;
@@ -105,24 +113,15 @@ private
 	const auto GIF_STATE_READ_LZW_CODESIZE			= 6;
 
 	const auto GIF_STATE_DECODE						= 7;
-
-
 }
 
-import console.main;
-
-// Section: Codecs/Image
-
 // Description: The GIF Codec
-class GIFCodec : ImageCodec
-{
-	override String getName()
-	{
+class GIFCodec : ImageCodec {
+	override String getName() {
 		return new String("Graphics Interchange Format");
 	}
 
-	StreamData decode(AbstractStream stream, ref View view)
-	{
+	StreamData decode(AbstractStream stream, ref View view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -130,20 +129,15 @@ class GIFCodec : ImageCodec
 
 		// will read headers and such
 
-		StreamData ret=StreamData.Accepted;
+		StreamData ret = StreamData.Accepted;
 
-		while (ret==StreamData.Accepted)
-		{
-			////////OutputDebugStringA("in decoder\n");
+		while (ret == StreamData.Accepted) {
+
 			ret = Decoder(stream, view, imageDesc);
 
-			////////OutputDebugString(String(ret) + S(" - ret\n"));
-			if (ret == StreamData.Accepted)
-			{
-			//////OutputDebugStringA("new image found\n");
+			if (ret == StreamData.Accepted) {
 				// the image frame will be next
-				if (!gifIsFirst)
-				{
+				if (!gifIsFirst) {
 					// stop, since we got what we needed
 					// which is the first frame
 
@@ -151,8 +145,7 @@ class GIFCodec : ImageCodec
 					hasMultipleFrames = 1;
 					return StreamData.Complete;
 				}
-				else
-				{
+				else {
 					gifIsFirst = 0;
 				}
 			}
@@ -162,10 +155,7 @@ class GIFCodec : ImageCodec
 		return ret;
 	}
 
-
-
-	StreamData DecodeFrame(AbstractStream stream, ref View view)
-	{
+	StreamData DecodeFrame(AbstractStream stream, ref View view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -175,16 +165,14 @@ class GIFCodec : ImageCodec
 
 		ret = Decoder(stream, view, imageDesc);
 
-		if (ret == 2)
-		{
+		if (ret == 2) {
 
 			view.setAlphaFlag(true);
 
 			// another frame will occur
 			return StreamData.Accepted;
 		}
-		else if (ret == 1)
-		{
+		else if (ret == 1) {
 			// we are done
 			imageDesc.clearFirst = gifFirstClear;
 			imageDesc.clearColor = gifFirstClearColor;
@@ -198,11 +186,7 @@ class GIFCodec : ImageCodec
 		return StreamData.Required;
 	}
 
-
-
-
-	StreamData Decoder(ref AbstractStream stream, ref View view, ref ImageFrameDescription imageDesc)
-	{
+	StreamData Decoder(ref AbstractStream stream, ref View view, ref ImageFrameDescription imageDesc) {
 		uint q;
 
 		ushort gifCode;
@@ -210,11 +194,9 @@ class GIFCodec : ImageCodec
 
 		ulong ptr_len;
 
-		for (;;)
-		{
+		for (;;) {
 			// READ HEADERS
-			switch(decoderState)
-			{
+			switch(decoderState) {
 
 				// READ HEADERS //
 
@@ -230,32 +212,24 @@ class GIFCodec : ImageCodec
 			case GIF_STATE_READ_HEADERS:
 				// READ FILE HEADER
 
-				switch(decoderSubState)
-				{
+				switch(decoderSubState) {
 
 				// READ GIF HEADER
 				case 0:
 
-					if (!stream.read(&gifHeader, _djehuty_image_gif_header.sizeof))
-					{
+					if (!stream.read(&gifHeader, _djehuty_image_gif_header.sizeof)) {
 						return StreamData.Required;
 					}
 
 					if (!(gifHeader.gifSignature[0] == 'G' &&
 						gifHeader.gifSignature[1] == 'I' &&
-						gifHeader.gifSignature[2] == 'F'))
-					{
-						//bad
-						//////OutputDebugStringA("gif - header corrupt, probably not gif file\n");
+						gifHeader.gifSignature[2] == 'F')) {
 						return StreamData.Invalid;
 					}
 
 					if (!(gifHeader.gifVersion[0] == '8' &&
 						gifHeader.gifVersion[1] == '9' &&
-						gifHeader.gifVersion[2] == 'a'))
-					{
-						//bad
-						//////OutputDebugStringA("gif - version not supported\n");
+						gifHeader.gifVersion[2] == 'a')) {
 						return StreamData.Invalid;
 					}
 
@@ -266,28 +240,20 @@ class GIFCodec : ImageCodec
 				// READ LOGICAL SCREEN DESCRIPTOR
 				case 1:
 
-					if(!(stream.read(&gifScreen, _djehuty_image_gif_logical_screen.sizeof)))
-					{
+					if(!(stream.read(&gifScreen, _djehuty_image_gif_logical_screen.sizeof))) {
 						return StreamData.Required;
 					}
 
-					//////OutputDebugStringA("gif - logical screen descriptor loaded\n");
-
 					// DETERMINE WHETHER OR NOT WE GET A GLOBAL COLOR TABLE
-					if (gifScreen.gifPackedFields & 128)
-					{
-						//////OutputDebugStringA("gif - global color table present\n");
+					if (gifScreen.gifPackedFields & 128) {
+						// global color table present
 
 						gifGlobalColorTableSize = _djehuty_image_gif_size_of_global_color_table_ref[ gifScreen.gifPackedFields & 0x7 ];
-						//gifGlobalColorTable = new _djehuty_image_gif_color[gifGlobalColorTableSize];
-
-						//////OutputDebugString(S("gif - global color table size: ") + String(gifGlobalColorTableSize) + S("\n"));
 
 						decoderSubState = 2;
 					}
-					else
-					{
-						//////OutputDebugStringA("gif - global color table not present\n");
+					else {
+						// global color table not present
 
 						gifGlobalColorTableSize = 0;
 
@@ -302,18 +268,13 @@ class GIFCodec : ImageCodec
 
 				// READ IN GLOBAL COLOR TABLE WHEN PRESENT
 				case 2:
-					//Global Color Table is present
-					//load it
-
-					if(!(stream.read(gifGlobalColorTable.ptr, 3 * gifGlobalColorTableSize)))
-					{
+					//Global Color Table is present; load it
+					if(!(stream.read(gifGlobalColorTable.ptr, 3 * gifGlobalColorTableSize))) {
 						return StreamData.Required;
 					}
 
-					//////OutputDebugStringA("gif - color table loaded\n");
-
-					for (q=0; q<gifGlobalColorTableSize; q++)
-					{
+					// Compute a 32bit argb color
+					for (q=0; q<gifGlobalColorTableSize; q++) {
 						gifGlobalColorTableComputed[q] = 0xFF000000 | (gifGlobalColorTable[q].red << 16) | ((gifGlobalColorTable[q].green << 8) | (gifGlobalColorTable[q].blue));
 					}
 
@@ -335,110 +296,84 @@ class GIFCodec : ImageCodec
 			// READS IN ALL EXTENSIONS
 			case GIF_STATE_READ_GRAPHIC_CONTROL:
 
-				switch(decoderSubState)
-				{
+				switch(decoderSubState) {
 				//READ EXTENSION INTRODUCER
 				case 0:
-
-					//////OutputDebugStringA("gif - reading extension introducer\n");
-
-					if(!(stream.read(&gifExtensionIntroducer, 1)))
-					{
+					if(!(stream.read(&gifExtensionIntroducer, 1))) {
 						return StreamData.Required;
 					}
 
-					if (gifExtensionIntroducer == 0x3B)
-					{
-						//////OutputDebugStringA("gif - trailer\n");
+					if (gifExtensionIntroducer == 0x3B) {
 						// no more blocks
 						return StreamData.Complete;
 					}
-					else if (gifExtensionIntroducer == 0x21)
-					{
-						//////OutputDebugStringA("gif - image is next\n");
+					else if (gifExtensionIntroducer == 0x21) {
 						//this is an extension
 						decoderSubState = 1;
 					}
-					else if (gifExtensionIntroducer == 0x2C)
-					{
-						//////OutputDebugStringA("gif - image is next\n");
+					else if (gifExtensionIntroducer == 0x2C) {
+						// the image is next
 						decoderState = GIF_STATE_DECODE_IMAGE;
 
-						if (gifGraphicControl.gifBlockSize == 4)
-						{
-							if (gifIsFirst)
-							{
+						if (gifGraphicControl.gifBlockSize == 4) {
+							if (gifIsFirst) {
+
 								gifFirstTime = (gifGraphicControl.gifDelayTime * 10);
 
-								if ((gifGraphicControl.gifPackedFields & 0x1C) == 0x08)
-								{
+								if ((gifGraphicControl.gifPackedFields & 0x1C) == 0x08) {
 									gifFirstClear = 1;
 								}
-								else
-								{
+								else {
 									gifFirstClear = 0;
 								}
 
-								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize)
-								{
+								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
 									gifFirstClearColor = 0;
 								}
-								else
-								{
-									// IF TRANSPARENT is set, clear color is transparent
-									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) )
-									{
+								else {
+									// if TRANSPARENT is set, clear color is transparent
+									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
 										gifFirstClearColor = 0;
 									}
-									else
-									{
+									else {
 										gifFirstClearColor = gifGlobalColorTableComputed[gifScreen.gifBackgroundColorIndex];
 									}
 								}
 							}
-							else
-							{
+							else {
 								imageDesc.time = (gifGraphicControl.gifDelayTime * 10);
 
-								if ((gifGraphicControl.gifPackedFields & 0x1C) == 0x08)
-								{
+								if ((gifGraphicControl.gifPackedFields & 0x1C) == 0x08) {
 									imageDesc.clearFirst = 1;
 								}
-								else
-								{
+								else {
 									imageDesc.clearFirst = 0;
 								}
 
-								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize)
-								{
+								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
 									imageDesc.clearColor = 0;
 								}
-								else
-								{
-									// IF TRANSPARENT is set, clear color is transparent
-									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) )
-									{
+								else {
+									// iF TRANSPARENT is set, clear color is transparent
+									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
 										imageDesc.clearColor = 0;
 									}
-									else
-									{
+									else {
 										imageDesc.clearColor = gifGlobalColorTableComputed[gifScreen.gifBackgroundColorIndex];
 									}
 								}
 							}
 						}
-						else
-						{
-							if (gifIsFirst)
-							{
+						else {
+							if (gifIsFirst) {
 								gifFirstClear = 0;
 							}
-							else
-							{
+							else {
 								imageDesc.clearFirst = 0;
 							}
 						}
-	//////OutputDebugStringA("image is next, new frame\n");
+
+						// image data is next, there is another frame
 						return StreamData.Accepted; // indicate frame is next
 					}
 
@@ -447,21 +382,16 @@ class GIFCodec : ImageCodec
 				//READ EXTENSION LABEL
 				case 1:
 
-					//////OutputDebugStringA("gif - reading extension label\n");
-
 					//otherwise, it is the table's lzw minimum code size
-					if(!(stream.read(&gifExtensionLabel, 1)))
-					{
+					if(!(stream.read(&gifExtensionLabel, 1))) {
 						return StreamData.Required;
 					}
 
-					if (gifExtensionLabel == 0xF9)
-					{
+					if (gifExtensionLabel == 0xF9) {
 						// IS A GRAPHIC CONTROL EXTENSION
 						decoderSubState = 2;
 					}
-					else
-					{
+					else {
 						// READ THE BLOCK SIZE
 						// SKIP THAT MANY BYTES
 						decoderSubState = 3;
@@ -471,10 +401,7 @@ class GIFCodec : ImageCodec
 				//READ IN GRAPHIC CONTROL EXTENSION
 				case 2:
 
-					//////OutputDebugStringA("gif - reading graphic control extension\n");
-
-					if(!(stream.read(&gifGraphicControl, _djehuty_image_gif_graphics_extension.sizeof)))
-					{
+					if(!(stream.read(&gifGraphicControl, _djehuty_image_gif_graphics_extension.sizeof))) {
 						return StreamData.Required;
 					}
 
@@ -491,8 +418,7 @@ class GIFCodec : ImageCodec
 
 				//FIND EXTENSION SIZE
 				case 3:
-					if (!(stream.read(&gifExtensionLabel, 1)))
-					{
+					if (!(stream.read(&gifExtensionLabel, 1))) {
 						return StreamData.Required;
 					}
 
@@ -500,8 +426,7 @@ class GIFCodec : ImageCodec
 
 				//SKIP EXTENSION LABEL
 				case 4:
-					if(!(stream.skip(gifExtensionLabel)))
-					{
+					if(!(stream.skip(gifExtensionLabel))) {
 						return StreamData.Required;
 					}
 
@@ -512,8 +437,7 @@ class GIFCodec : ImageCodec
 				case 5:
 					// NOW READ IN ALL SUB-DATA BLOCKS
 					// AND SKIP THEM
-					if (!(stream.read(&gifExtensionLabel, 1)))
-					{
+					if (!(stream.read(&gifExtensionLabel, 1))) {
 						return StreamData.Required;
 					}
 
@@ -521,13 +445,11 @@ class GIFCodec : ImageCodec
 
 				case 6:
 
-					if (gifExtensionLabel > 0)
-					{
+					if (gifExtensionLabel > 0) {
 						stream.skip(gifExtensionLabel);
 						decoderSubState = 5;
 					}
-					else
-					{
+					else {
 						decoderSubState = 0;
 					}
 
@@ -536,73 +458,50 @@ class GIFCodec : ImageCodec
 
 				break;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			// READ IN IMAGE DESCRIPTOR
 			case GIF_STATE_DECODE_IMAGE:
-
-
-
 				//DecodeImage(stream, view, imageDesc, idp);
-
 				//return StreamData.Required;
-
-
-				//////OutputDebugString(S("gif - ") + String(gifScreen.gifLogicalScreenWidth) + S(" x ") + String(gifScreen.gifLogicalScreenHeight) + S("\n"));
 
 				// READ IN IMAGE DESCRIPTOR
 
-				if(!(stream.read(&gifImage, _djehuty_image_gif_image_descriptor.sizeof)))
-				{
+				if(!(stream.read(&gifImage, _djehuty_image_gif_image_descriptor.sizeof))) {
 					return StreamData.Required;
 				}
 
-				if (gifImage.gifPackedFields & 128)
-				{
-					//////OutputDebugStringA("gif - local color table present\n");
+				if (gifImage.gifPackedFields & 128) {
+					// local color table present
 
 					gifLocalColorTableSize = _djehuty_image_gif_size_of_global_color_table_ref[ gifImage.gifPackedFields & 0x7 ];
 					decoderState = GIF_STATE_READ_LOCAL_COLOR_TABLE;
-					//////OutputDebugString(S("gif - local color table size: ") + String(gifLocalColorTableSize) + S("\n"));
+
+					// ... note we will drop through ... //
 				}
-				else
-				{
+				else {
 					decoderState = GIF_STATE_INIT_DECODER;
 
-					//////OutputDebugStringA("gif - local color table not present\n");
-					gifLocalColorTableSize = 0;
+					// local color table is not present
 
+					gifLocalColorTableSize = 0;
 					gifCurColorTable = gifGlobalColorTableComputed.ptr;
 
 					break;
 				}
 
+				// ... drop through WHEN there is a local color table ... //
+
 			// READ IN LOCAL COLOR TABLE WHEN PRESENT
 			case GIF_STATE_READ_LOCAL_COLOR_TABLE:
 				//local Color Table is present
 
-				if(!(stream.read(gifLocalColorTable.ptr, 3 * gifLocalColorTableSize)))
-				{
+				if(!(stream.read(gifLocalColorTable.ptr, 3 * gifLocalColorTableSize))) {
 					return StreamData.Required;
 				}
 
 				//compute values
 				uint i;
 
-				for (i=0; i<gifLocalColorTableSize; i++)
-				{
+				for (i=0; i<gifLocalColorTableSize; i++) {
 					gifLocalColorTableComputed[i] = 0xFF000000 | (gifLocalColorTable[i].red << 16) | ((gifLocalColorTable[i].green << 8) | (gifLocalColorTable[i].blue));
 				}
 
@@ -610,14 +509,9 @@ class GIFCodec : ImageCodec
 
 				decoderState = GIF_STATE_INIT_DECODER;
 
-
-
 			case GIF_STATE_INIT_DECODER:
 				// UPDATE Transparent Color INDEX IN THE COLOR TABLE (if present)
-					//////OutputDebugStringA("WE WANT TO SET ZE TRANS COLOR\n");
-				if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1))
-				{
-					//////OutputDebugStringA("WE SET ZE TRANS COLOR\n");
+				if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1)) {
 					gifCurColorTable[gifGraphicControl.gifTransparentColorIndex] = 0;
 				}
 
@@ -626,47 +520,30 @@ class GIFCodec : ImageCodec
 				imageDesc.yoffset = gifImage.gifImageTopPos;
 
 				// CHECK TO SEE IF IMAGE IS INTERLACED
-
 				gifIsInterlaced = (gifImage.gifPackedFields & 64);
 
-				if (gifIsInterlaced)
-				{
-					//////OutputDebugStringA("gif - is interlaced\n");
-				}
-				else
-				{
-					//////OutputDebugStringA("gif - is not interlaced\n");
-				}
-
 				decoderState = GIF_STATE_READ_LZW_CODESIZE;
-
-
-
 
 			case GIF_STATE_READ_LZW_CODESIZE:
 
 				// READ IN THE LZW MINIMUM CODE SIZE
 
-				if (!(stream.read(&gifExtensionIntroducer, 1)))
-				{
+				if (!(stream.read(&gifExtensionIntroducer, 1))) {
 					return StreamData.Required;
 				}
 
-				//////OutputDebugStringA("gif - lzw min code size: ");
-				//////OutputDebugString(String(gifExtensionIntroducer) + S("\n"));
-
 				if (gifExtensionIntroducer < 2)
 				{
-					//////OutputDebugStringA("gif - lzw min size incorrect\n");
+					// incorrect lzw min size
 					return StreamData.Invalid;
 				}
 
 				// we start from code size + 1 when reading in data
-				gifExtensionIntroducer++;
 				// so we increment the code size
+				gifExtensionIntroducer++;
 
+				// set the default dictionary size
 				gifDictionarySize = _djehuty_image_gif_size_of_global_color_table_ref[gifExtensionIntroducer-2];
-				//////OutputDebugString(S("gif - dictionary start size: ") + String(gifDictionarySize) + S("\n"));
 
 				// BUILD INITIAL LZW DICTIONARY
 
@@ -699,8 +576,6 @@ class GIFCodec : ImageCodec
 				gifMaskIntermediate = gifCurMaskArray[1];
 				gifMaskEnd = gifCurMaskArray[2];
 
-				////////OutputDebugString(String((gifCodeSize - 2) * 24));
-
 				lzw_isFirstEntry = 0;
 
 				gifInterlaceState = 0; //the state of the interlacing
@@ -716,14 +591,11 @@ class GIFCodec : ImageCodec
 				decoderState = GIF_STATE_DECODE;
 				decoderSubState = 0;
 
-
-
-
-
+				// ... drop through ... //
 
 			case GIF_STATE_DECODE:
+				// start decoding
 
-				////////OutputDebugStringA("gif - decoding\n");
 				view.lockBuffer(cast(void**)&ptr_start, ptr_len);
 
 				ptr = ptr_start;
@@ -735,11 +607,9 @@ class GIFCodec : ImageCodec
 
 				ptr += ptrPos;
 
-				while(decoderState == GIF_STATE_DECODE)
-				{
+				while(decoderState == GIF_STATE_DECODE) {
 
-					switch(decoderSubState)
-					{
+					switch(decoderSubState) {
 
 					//READ IN BLOCK SIZE
 					case 0:
@@ -751,17 +621,13 @@ class GIFCodec : ImageCodec
 
 					case 1:
 
-						if (!(stream.read(&gifBlockSize, 1)))
-						{
+						if (!(stream.read(&gifBlockSize, 1))) {
 							view.unlockBuffer();
 							return StreamData.Required;
 						}
 
-						if (gifBlockSize == 0)
-						{
-							// block terminator found
-
-							//////OutputDebugStringA("gif - end of blocks\n");
+						if (gifBlockSize == 0) {
+							// block terminator found (end of blocks)
 
 							// PERHAPS THERE WILL BE ANOTHER FRAME
 							decoderState = GIF_STATE_READ_GRAPHIC_CONTROL;
@@ -769,57 +635,44 @@ class GIFCodec : ImageCodec
 
 							view.unlockBuffer();
 
-							//////OutputDebugStringA("gif - proceeding\n");
-
 							break;
 						}
 						else
 						{
 							decoderSubState = 2;
+
+							// ... drop through ... //
 						}
 
 					// READ IN IMAGE DATA BLOCK
 					// APPEND, IF NEEDED, TO OLD BLOCK
 					case 2:
 
-						////////OutputDebugStringA("gif - image data block found\n");
+						// decode this image block
 
-						////////OutputDebugString(String(gifBlockSize) + S(" - ") + String(gifLastBlockSize) + S("\n"));
-
-						if ((gifBlockCounter==gifLastBlockSize-1))
-						{
+						if ((gifBlockCounter==gifLastBlockSize-1)) {
 							gifImageData[0] = gifImageData[gifBlockCounter];
-							if(!(stream.read(&gifImageData[1], gifBlockSize)))
-							{
+							if(!(stream.read(&gifImageData[1], gifBlockSize))) {
 								view.unlockBuffer();
 								return StreamData.Required;
 							}
 							gifBlockSize++;
-							////////OutputDebugStringA("read, 1 save\n");
 						}
-						else if ((gifBlockCounter==gifLastBlockSize-2))
-						{
+						else if ((gifBlockCounter==gifLastBlockSize-2)) {
 							gifImageData[0] = gifImageData[gifBlockCounter];
 							gifImageData[1] = gifImageData[gifBlockCounter+1];
-							if (!(stream.read(&gifImageData[2], gifBlockSize)))
-							{
+							if (!(stream.read(&gifImageData[2], gifBlockSize))) {
 								view.unlockBuffer();
 								return StreamData.Required;
 							}
 							gifBlockSize+=2;
-							////////OutputDebugStringA("read, 2 saves\n");
 						}
-						else
-						{
-							if (!(stream.read(gifImageData.ptr, gifBlockSize)))
-							{
+						else {
+							if (!(stream.read(gifImageData.ptr, gifBlockSize))) {
 								view.unlockBuffer();
 								return StreamData.Required;
 							}
-							////////OutputDebugStringA("read, 0 saves\n");
 						}
-
-						////////OutputDebugStringA("block read\n");
 
 						gifBlockCounter = 0;
 
@@ -829,12 +682,10 @@ class GIFCodec : ImageCodec
 						//get a code
 						decoderSubState = 3;
 
-						if (gifIsInterlaced)
-						{
+						if (gifIsInterlaced) {
 							decoderNextSubState = 5;
 						}
-						else
-						{
+						else {
 							//DECODER FOR NON INTERLACED IMAGES
 							decoderNextSubState = 4;
 						}
@@ -843,37 +694,21 @@ class GIFCodec : ImageCodec
 					// READ IN CODE
 					case 3:
 
-
-						////////OutputDebugStringA("gif - read code\n");
-
 						// get next code
-						uint old_blockcounter;
-
-						old_blockcounter = gifBlockCounter;
-
-						////////OutputDebugString(String(gifMaskStart) + S(", ") + String(gifMaskIntermediate) + S(", ") + String(gifMaskEnd) + S("\n"));
+						uint old_blockcounter = gifBlockCounter;
 
 						gifCode = cast(ushort)(gifImageData[gifBlockCounter] & gifMaskStart);
 
-						////////OutputDebugString(String(gifMaskStart));
+						// reading in a code
 
-						////////OutputDebugStringA("gif - reading code...\n");
-
-						if (gifCurMaskIndex)
-						{
+						if (gifCurMaskIndex) {
 							gifCode >>= gifCurMaskIndex;
 						}
 
-						////////OutputDebugString(String(gifCurMaskIndex) + S("...\n"));
-
-						////////OutputDebugString(String(gifCode) + S(" x ") + String(gifCodeTemp) + S("!!\n"));
-
-						if (gifMaskIntermediate)
-						{
+						if (gifMaskIntermediate) {
 							// go to next byte
 							gifBlockCounter++;
-							if (gifBlockCounter>=gifBlockSize)
-							{
+							if (gifBlockCounter>=gifBlockSize) {
 								gifBlockCounter = old_blockcounter;
 
 								decoderSubState = 0;
@@ -882,22 +717,18 @@ class GIFCodec : ImageCodec
 
 							gifCodeTemp = cast(ushort)(gifImageData[gifBlockCounter] & gifMaskIntermediate);
 
-							if (8 - gifCurMaskIndex)
-							{
+							if (8 - gifCurMaskIndex) {
 								gifCodeTemp <<= (8 - gifCurMaskIndex);
 							}
 
 							gifCode |= gifCodeTemp;
 						}
-						else
-						{
+						else {
 							//goto next byte when gifMaskStart's first bit is 1
-							if (gifMaskStart & 128)
-							{
+							if (gifMaskStart & 128) {
 								//goto next byte
 								gifBlockCounter++;
-								if (gifBlockCounter>=gifBlockSize)
-								{
+								if (gifBlockCounter>=gifBlockSize) {
 									gifBlockCounter=old_blockcounter;
 
 									decoderSubState = 0;
@@ -906,16 +737,10 @@ class GIFCodec : ImageCodec
 							}
 						}
 
-						////////OutputDebugString(String(gifCode) + S(" x ") + String(gifCodeTemp) + S("!!\n"));
-
-						if (gifMaskEnd)
-						{
-
+						if (gifMaskEnd) {
 							// go to ultimate byte
-							////////OutputDebugStringA("using mask end\n");
 							gifBlockCounter++;
-							if (gifBlockCounter>=gifBlockSize)
-							{
+							if (gifBlockCounter>=gifBlockSize) {
 								gifBlockCounter=old_blockcounter;
 
 								decoderSubState = 0;
@@ -924,8 +749,7 @@ class GIFCodec : ImageCodec
 
 							gifCodeTemp = cast(ushort)(gifImageData[gifBlockCounter] & gifMaskEnd);
 
-							if (8-gifCurMaskIndex)
-							{
+							if (8-gifCurMaskIndex) {
 								gifCodeTemp <<= (8-gifCurMaskIndex);
 							}
 
@@ -933,15 +757,12 @@ class GIFCodec : ImageCodec
 
 							gifCode |= gifCodeTemp;
 						}
-						else
-						{
+						else {
 							//goto next byte when gifMaskIntermediate's first bit is 1
-							if (gifMaskIntermediate & 128)
-							{
+							if (gifMaskIntermediate & 128) {
 								//goto next byte
 								gifBlockCounter++;
-								if (gifBlockCounter>=gifBlockSize)
-								{
+								if (gifBlockCounter>=gifBlockSize) {
 									gifBlockCounter=old_blockcounter;
 
 									decoderSubState = 0;
@@ -958,57 +779,38 @@ class GIFCodec : ImageCodec
 						gifMaskIntermediate = gifCurMaskArray[gifCurMaskIndexComp+1];
 						gifMaskEnd = gifCurMaskArray[gifCurMaskIndexComp+2];
 
-						////////OutputDebugString(String(gifCode) + S(" x ") + String(gifCodeTemp) + S("!!\n"));
-
 						// GOTO LZW DECODER
 						decoderSubState = decoderNextSubState;
 
 						break;
-
-
-
-
-
-
 
 					// DECODER (non-interlaced)
 					case 4:
 
 						decoderSubState = 3;
 
-						////////OutputDebugStringA("gif - interpreting code\n");
-
 						// THIS IS THE LZW DECOMPRESSOR FOR UNINTERLACED IMAGES
 
 						// INTERPRET gifCode
 
-						if (gifCode == gifEOICode)
-						{
-							// stop decoding
-							//////OutputDebugStringA("gif - eoi code\n");
+						if (gifCode == gifEOICode) {
+							// stop decoding (End Of Image)
 
 							decoderNextState = 0;
 
 							break;
 						}
 
-						if (lzw_isFirstEntry==0)
-						{
-							////////OutputDebugStringA("gif - first entry\n");
+						if (lzw_isFirstEntry==0) {
 							//init LZW decompressor	(first entry)
 
 							lzw_isFirstEntry=1;
-
-							////////OutputDebugString(String(gifImageDataLen) + S(" - image data len\n"));
 
 							lzw_curEntry = gifCode;
 
 							// INTERPRET CODE AS PIXEL
 
-							if (gifCode < gifClearCode)
-							{
-								////////OutputDebugStringA("gif - printing first pixel\n");
-
+							if (gifCode < gifClearCode) {
 								ptr[0] = gifCurColorTable[gifCode];
 
 								ptr++;
@@ -1019,9 +821,8 @@ class GIFCodec : ImageCodec
 							}
 						}
 
-						if (gifCode == gifClearCode)
-						{
-							//CLEAR CODE
+						if (gifCode == gifClearCode) {
+							//CLEAR CODE (reset dictionary)
 							lzw_nextEntry = cast(ushort)(gifClearCode + 2);
 
 							gifDictionarySize = gifClearCode * 2;
@@ -1041,14 +842,12 @@ class GIFCodec : ImageCodec
 							break;
 						}
 
-						if (gifCode >= lzw_nextEntry)
-						{
+						if (gifCode >= lzw_nextEntry) {
 							// PRINT OUT LAST CODE FROM DICTIONARY
 							gifCodeTemp = lzw_curEntry;
 							q = gifDictionary[gifCodeTemp].hops;
 
-							for (;;)
-							{
+							for (;;) {
 								ptr[q] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 
 								if (gifCodeTemp < gifClearCode) { break; }
@@ -1063,14 +862,12 @@ class GIFCodec : ImageCodec
 
 							ptrPos += gifDictionary[lzw_curEntry].hops + 2;
 						}
-						else
-						{
-							// PRINT OUT CODE FROM DICTIONARY
+						else {
+							// print code from dictionary
 							gifCodeTemp = gifCode;
 							q = gifDictionary[gifCodeTemp].hops;
 
-							for (;;)
-							{
+							for (;;) {
 								ptr[q] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 
 								if (gifCodeTemp < gifClearCode) { break; }
@@ -1081,14 +878,10 @@ class GIFCodec : ImageCodec
 
 							ptr += gifDictionary[gifCode].hops+1;
 							ptrPos += gifDictionary[gifCode].hops+1;
-
-								////////OutputDebugString(S("x") + String(ptr_max_page - ptr) + S("\n"));
 						}
 
-						if (lzw_nextEntry < 4096)
-						{
-							////////OutputDebugString(String(lzw_nextEntry) + S(" = {") + String(lzw_curEntry) + S(", ") + String(gifDictionary[gifCodeTemp].output) + S(", ") + String(gifDictionary[lzw_curEntry].hops + 1) + S(" - gif adding to dictionary\n"));
-
+						if (lzw_nextEntry < 4096) {
+							// add this entry to the dictionary
 							gifDictionary[lzw_nextEntry].code = cast(short)lzw_curEntry;
 							gifDictionary[lzw_nextEntry].output = cast(short)gifDictionary[gifCodeTemp].output;
 							gifDictionary[lzw_nextEntry].hops = cast(short)(gifDictionary[lzw_curEntry].hops + 1);
@@ -1097,10 +890,8 @@ class GIFCodec : ImageCodec
 
 							lzw_curEntry = gifCode;
 
-							if (lzw_nextEntry != 4096)
-							{
-								if (lzw_nextEntry >= gifDictionarySize)
-								{
+							if (lzw_nextEntry != 4096) {
+								if (lzw_nextEntry >= gifDictionarySize) {
 									gifDictionarySize *= 2;
 									gifCodeSize++;
 
@@ -1127,50 +918,37 @@ class GIFCodec : ImageCodec
 
 						decoderSubState = 3;
 
-						////////OutputDebugStringA("gif - interpreting code\n");
-
 						// THIS IS THE LZW DECOMPRESSOR FOR UNINTERLACED IMAGES
 
 						// INTERPRET gifCode
 
-						if (gifCode == gifEOICode)
-						{
-							// stop decoding
-							//////OutputDebugStringA("gif - eoi code\n");
+						if (gifCode == gifEOICode) {
+							// stop decoding (End Of Image)
 
 							decoderNextState = 0;
 
 							break;
 						}
 
-						if (lzw_isFirstEntry==0)
-						{
-							////////OutputDebugStringA("gif - first entry\n");
+						if (lzw_isFirstEntry==0) {
 							//init LZW decompressor	(first entry)
 
 							lzw_isFirstEntry=1;
-
-							////////OutputDebugString(String(gifImageDataLen) + S(" - image data len\n"));
 
 							lzw_curEntry = gifCode;
 
 							// INTERPRET CODE AS PIXEL
 
-							if (gifCode < gifClearCode)
-							{
-								////////OutputDebugStringA("gif - printing first pixel\n");
-								//ptr[0] = 0x883333ff;
+							if (gifCode < gifClearCode) {
 								ptr[0] = gifCurColorTable[gifCode];
 
 								// draw surrounding pixels?
-								if (gifInterlaceState < 3)
-								{
+								if (gifInterlaceState < 3) {
 									uint* ptrInterlaced = ptr + gifImage.gifImageWidth;
 
 									uint* ptrLast = void;
 
-									switch (gifInterlaceState)
-									{
+									switch (gifInterlaceState) {
 										case 0:
 											ptrLast = ptrInterlaced + (gifImage.gifImageWidth * 7);
 											break;
@@ -1185,8 +963,7 @@ class GIFCodec : ImageCodec
 
 									if (ptr_max_page < ptrLast) { ptrLast = ptr_max_page; }
 
-									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth)
-									{
+									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth) {
 										ptrInterlaced[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 									}
 								}
@@ -1194,8 +971,7 @@ class GIFCodec : ImageCodec
 								ptr++;
 								ptrPos++;
 
-								if (ptr == ptr_max_line)
-								{
+								if (ptr == ptr_max_line) {
 									//change the line
 									ptrPos=0;
 									ptrLine++;
@@ -1207,11 +983,8 @@ class GIFCodec : ImageCodec
 							}
 						}
 
-						if (gifCode == gifClearCode)
-						{
+						if (gifCode == gifClearCode) {
 							//CLEAR CODE
-							////////OutputDebugStringA("gif - clear code found\n");
-
 							lzw_nextEntry = cast(ushort)(gifClearCode + 2);
 
 							gifDictionarySize = gifClearCode * 2;
@@ -1231,14 +1004,12 @@ class GIFCodec : ImageCodec
 							break;
 						}
 
-						if (gifCode >= lzw_nextEntry)
-						{
+						if (gifCode >= lzw_nextEntry) {
 							// PRINT OUT LAST CODE FROM DICTIONARY
 							gifCodeTemp = lzw_curEntry;
 							q = gifDictionary[gifCodeTemp].hops;
 
-							for (;;)
-							{
+							for (;;) {
 								gifUncompressed[q] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 
 								if (gifCodeTemp < gifClearCode) { break; }
@@ -1250,14 +1021,12 @@ class GIFCodec : ImageCodec
 							ptr[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 
 							// draw surrounding pixels?
-							if (gifInterlaceState < 3)
-							{
+							if (gifInterlaceState < 3) {
 								uint* ptrInterlaced = ptr + gifImage.gifImageWidth;
 
 								uint* ptrLast = void;
 
-								switch (gifInterlaceState)
-								{
+								switch (gifInterlaceState) {
 									case 0:
 										ptrLast = ptrInterlaced + (gifImage.gifImageWidth * 7);
 										break;
@@ -1272,8 +1041,7 @@ class GIFCodec : ImageCodec
 
 								if (ptr_max_page < ptrLast) { ptrLast = ptr_max_page; }
 
-								for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth)
-								{
+								for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth) {
 									ptrInterlaced[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 								}
 							}
@@ -1281,20 +1049,17 @@ class GIFCodec : ImageCodec
 							ptr++;
 							ptrPos++;
 
-							if (ptr == ptr_max_line)
-							{
+							if (ptr == ptr_max_line) {
 								//change the line
 								ptrPos=0;
 
 								// draw surrounding pixels?
-								if (gifInterlaceState < 3)
-								{
+								if (gifInterlaceState < 3) {
 									uint* ptrInterlaced = ptr + gifImage.gifImageWidth;
 
 									uint* ptrLast = void;
 
-									switch (gifInterlaceState)
-									{
+									switch (gifInterlaceState) {
 										case 0:
 											ptrLast = ptrInterlaced + (gifImage.gifImageWidth * 7);
 											break;
@@ -1309,8 +1074,7 @@ class GIFCodec : ImageCodec
 
 									if (ptr_max_page < ptrLast) { ptrLast = ptr_max_page; }
 
-									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth)
-									{
+									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth) {
 										ptrInterlaced[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 									}
 								}
@@ -1319,19 +1083,16 @@ class GIFCodec : ImageCodec
 								InterlaceIncrement();
 							}
 
-							for (q=0; q<=gifDictionary[lzw_curEntry].hops; q++)
-							{
+							for (q=0; q<=gifDictionary[lzw_curEntry].hops; q++) {
 								ptr[0] = gifUncompressed[q];
 
 								// draw surrounding pixels?
-								if (gifInterlaceState < 3)
-								{
+								if (gifInterlaceState < 3) {
 									uint* ptrInterlaced = ptr + gifImage.gifImageWidth;
 
 									uint* ptrLast = void;
 
-									switch (gifInterlaceState)
-									{
+									switch (gifInterlaceState) {
 										case 0:
 											ptrLast = ptrInterlaced + (gifImage.gifImageWidth * 7);
 											break;
@@ -1346,8 +1107,7 @@ class GIFCodec : ImageCodec
 
 									if (ptr_max_page < ptrLast) { ptrLast = ptr_max_page; }
 
-									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth)
-									{
+									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth) {
 										ptrInterlaced[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 									}
 								}
@@ -1355,8 +1115,7 @@ class GIFCodec : ImageCodec
 								ptr++;
 								ptrPos++;
 
-								if (ptr == ptr_max_line)
-								{
+								if (ptr == ptr_max_line) {
 									//change the line
 									ptrPos=0;
 									ptrLine++;
@@ -1370,8 +1129,7 @@ class GIFCodec : ImageCodec
 							gifCodeTemp = gifCode;
 							q = gifDictionary[gifCodeTemp].hops;
 
-							for (;;)
-							{
+							for (;;) {
 								gifUncompressed[q] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 
 								if (gifCodeTemp < gifClearCode) { break; }
@@ -1380,19 +1138,16 @@ class GIFCodec : ImageCodec
 								q--;
 							}
 
-							for (q=0; q<=gifDictionary[gifCode].hops; q++)
-							{
+							for (q=0; q<=gifDictionary[gifCode].hops; q++) {
 								ptr[0] = gifUncompressed[q];
 
 								// draw surrounding pixels?
-								if (gifInterlaceState < 3)
-								{
+								if (gifInterlaceState < 3) {
 									uint* ptrInterlaced = ptr + gifImage.gifImageWidth;
 
 									uint* ptrLast = void;
 
-									switch (gifInterlaceState)
-									{
+									switch (gifInterlaceState) {
 										case 0:
 											ptrLast = ptrInterlaced + (gifImage.gifImageWidth * 7);
 											break;
@@ -1407,8 +1162,7 @@ class GIFCodec : ImageCodec
 
 									if (ptr_max_page < ptrLast) { ptrLast = ptr_max_page; }
 
-									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth)
-									{
+									for ( ; ptrInterlaced < ptrLast ; ptrInterlaced += gifImage.gifImageWidth) {
 										ptrInterlaced[0] = gifCurColorTable[gifDictionary[gifCodeTemp].output];
 									}
 								}
@@ -1416,22 +1170,17 @@ class GIFCodec : ImageCodec
 								ptr++;
 								ptrPos++;
 
-								if (ptr == ptr_max_line)
-								{
+								if (ptr == ptr_max_line) {
 									//change the line
 									ptrPos = 0;
 									ptrLine++;
 									InterlaceIncrement();
 								}
 							}
-
-								////////OutputDebugString(S("x") + String(ptr_max_page - ptr) + S("\n"));
 						}
 
-						if (lzw_nextEntry < 4096)
-						{
-							////////OutputDebugString(String(lzw_nextEntry) + S(" = {") + String(lzw_curEntry) + S(", ") + String(gifDictionary[gifCodeTemp].output) + S(", ") + String(gifDictionary[lzw_curEntry].hops + 1) + S(" - gif adding to dictionary\n"));
-
+						if (lzw_nextEntry < 4096) {
+							// add this entry to the dictionary
 							gifDictionary[lzw_nextEntry].code = cast(short)lzw_curEntry;
 							gifDictionary[lzw_nextEntry].output = gifDictionary[gifCodeTemp].output;
 							gifDictionary[lzw_nextEntry].hops = cast(short)(gifDictionary[lzw_curEntry].hops + 1);
@@ -1440,10 +1189,8 @@ class GIFCodec : ImageCodec
 
 							lzw_curEntry = gifCode;
 
-							if (lzw_nextEntry != 4096)
-							{
-								if (lzw_nextEntry >= gifDictionarySize)
-								{
+							if (lzw_nextEntry != 4096) {
+								if (lzw_nextEntry >= gifDictionarySize) {
 									gifDictionarySize *= 2;
 									gifCodeSize++;
 
@@ -1477,8 +1224,7 @@ class GIFCodec : ImageCodec
 protected:
 
 
-	void InterlaceIncrement()
-	{
+	void InterlaceIncrement() {
 		//ptr will be at the end of the current row
 		//essentially in the beginning of the next row
 
@@ -1487,8 +1233,7 @@ protected:
 		//increment n-1 rows, where n is the number of
 		//rows that the current state is interlaced
 
-		switch (gifInterlaceState)
-		{
+		switch (gifInterlaceState) {
 		case 0:
 		case 1:
 			//increase 8 lines
@@ -1510,13 +1255,11 @@ protected:
 			break;
 		}
 
-		if (ptr >= ptr_max_page)
-		{
+		if (ptr >= ptr_max_page) {
 			//we start over again
 			gifInterlaceState++;
 
-			switch(gifInterlaceState)
-			{
+			switch(gifInterlaceState) {
 			case 1:
 				//start at row 4
 				ptrLine = 4;
@@ -1537,7 +1280,6 @@ protected:
 				break;
 			}
 		}
-
 		ptr_max_line = ptr + gifImage.gifImageWidth;
 	}
 
@@ -1562,14 +1304,10 @@ protected:
 	//the pointer to the current color table in use
 	uint* gifCurColorTable;
 
-
-
 	uint gifUncompressed[4096];
 
 	uint gifCodeSize;
 	uint gifStartCodeSize;
-
-
 
 	_djehuty_image_gif_header gifHeader;
 	_djehuty_image_gif_logical_screen gifScreen;
@@ -1614,15 +1352,11 @@ protected:
 	ushort lzw_curEntry;
 	ushort lzw_isFirstEntry;
 
-
 	uint* ptr_start;		//ptr of the first pixel
 
 	uint* ptr;			//current ptr in image data
 	uint* ptr_max_line;	//ptr of the next line
 	uint* ptr_max_page;	//ptr outside of image bounds
-
-
-
 
 	uint ptrLine;		//the current scan line of the image (y)
 	uint ptrPos;		//the current pixel of the line (x)
