@@ -5,7 +5,6 @@ import core.event;
 import gui.application;
 import gui.window;
 import gui.button;
-import gui.oscontrol;
 import gui.widget;
 
 import core.graphics;
@@ -13,6 +12,10 @@ import core.image;
 
 import tui.application;
 import tui.window;
+
+import networking.irc;
+
+import platform.win.controls.osbutton;
 
 import console.main;
 
@@ -37,17 +40,33 @@ protected:
 class MyWindow : Window {
 	this() {
 		super("Hello", WindowStyle.Fixed, Color.Red, 100,100,300,300);
+
+		irc = new IRC.Client();
 	}
+
+	IRC.Client irc;
 
 	override void OnAdd() {
 		push(button = new Button(0,0,100,50,"OK"));
 		push(new MyControl());
+		push(closeButton = new OSButton(100,0,100,50,"Close"));
+		push(button = new Button(50,25,100,50,"OK"));
 	}
 
 	override bool OnSignal(Dispatcher source, uint signal) {
-		if (source is button) {
+		if (source is closeButton) {
 			if (signal == Button.Signal.Selected) {
-				setText("bugger");
+				remove();
+				return true;
+			}
+		}
+		else if (source is button) {
+			if (signal == Button.Signal.Selected) {
+				setText("oh bugger");
+				/*irc.connect("irc.freenode.net");
+				irc.authenticate("djehuty", "Djehuty");
+				irc.join("#d.djehuty");*/
+
 				return true;
 			}
 		}
@@ -56,6 +75,7 @@ class MyWindow : Window {
 
 private:
 
+	Button closeButton;
 	Button button;
 }
 

@@ -113,7 +113,7 @@ struct WindowPlatformVars
 		}
 
 		oldTitle.appendChar('\0');
-		hWnd = CreateWindowExW(iexstyle, djehutyClassName.ptr,oldTitle.ptr, istyle | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		hWnd = CreateWindowExW(iexstyle, djehutyClassName.ptr,oldTitle.ptr, istyle,// | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 			oldX, oldY, oldWidth, oldHeight, null,
 			cast(HMENU) null, null, cast(void*)userData);
 

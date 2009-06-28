@@ -14,6 +14,7 @@ import gui.window;
 import core.string;
 import core.definitions;
 import core.color;
+import core.event;
 
 import opengl.texture;
 import opengl.gl;
@@ -33,6 +34,10 @@ class GLWindow : Window
 	}
 
 	override void OnDraw() {
+	}
+
+	override void push(Dispatcher dsp) {
+		Responder.push(dsp);
 	}
 
 	void OnDraw(double deltaTime) {

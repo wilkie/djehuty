@@ -1,3 +1,13 @@
+/*
+ * window.d
+ *
+ * This module implements a GUI Window class. Widgets can be pushed to this window.
+ *
+ * Author: Dave Wilkinson
+ * Originated: June 24th, 2009
+ *
+ */
+
 module gui.window;
 
 import gui.widget;
@@ -17,112 +27,6 @@ import core.main;
 import core.graphics;
 
 import interfaces.container;
-
-
-void UninitializeWindow(Window w)
-{
-	if (w._nextWindow is null) { return; }
-
-	w.OnRemove();
-
-	WindowRemoveAllControls(w);
-
-	w._prevWindow._nextWindow = w._nextWindow;
-	w._nextWindow._prevWindow = w._prevWindow;
-
-	// destroy the window's view object
-	w.OnUninitialize();
-
-	GuiApplication app = cast(GuiApplication)w.responder;
-
-	if (app._windowListHead is w && app._windowListTail is w) {
-		app._windowListHead = null;
-		app._windowListTail = null;
-	}
-	else {
-		if (app._windowListHead is w) {
-			app._windowListHead = app._windowListHead._nextWindow;
-		}
-
-		if (app._windowListTail is w) {
-			app._windowListTail = app._windowListHead._prevWindow;
-		}
-	}
-
-	w._nextWindow = null;
-	w._prevWindow = null;
-
-	// Decrement Window length
-	app._windowCount--;
-
-	// Check to see if this was invisible
-	if (w._visible)
-	{
-		// Decrement Window Visible length
-		app._windowVisibleCount--;
-
-		// If there are no visible windows, quit (for now)
-		if (app.isZombie())
-		{
-			// just kill the app
-			app.destroyAllWindows();
-			DjehutyEnd();
-		}
-	}
-
-	// is it a parent window of some kind?
-	// destroy and uninitialize all children
-	if (w._firstChild !is null)
-	{
-		Window child = w._firstChild;
-
-		do
-		{
-			child.remove();
-			child = child._nextSibling;
-		} while (child !is w._firstChild)
-	}
-
-	// is it a child window of some kind?
-	// unlink it within the sibling list
-	if (w._parent !is null)
-	{
-		Window p = w._parent;
-
-		p._numChildren--;
-
-		w._prevSibling._nextSibling = w._nextSibling;
-		w._nextSibling._prevSibling = w._prevSibling;
-
-		if (p._firstChild is w && p._lastChild is w)
-		{
-			// unreference this, the last child
-			// the parent now has no children
-			p._firstChild = null;
-			p._lastChild = null;
-		}
-		else
-		{
-			if (p._firstChild is w)
-			{
-				p._firstChild = p._firstChild._nextSibling;
-			}
-
-			if (p._lastChild is w)
-			{
-				p._lastChild = p._lastChild._prevSibling;
-			}
-		}
-	}
-
-	w._parent = null;
-	w._nextSibling = null;
-	w._prevSibling = null;
-	w._firstChild = null;
-	w._lastChild = null;
-}
-
-
 
 // Description: This class implements and abstracts a common window.  This window is a control container and a view canvas.
 class Window : Responder, AbstractContainer
@@ -147,6 +51,9 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+
+		windowHelper = new WindowHelper();
+		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -166,6 +73,9 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+
+		windowHelper = new WindowHelper();
+		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -185,6 +95,9 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+
+		windowHelper = new WindowHelper();
+		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -204,11 +117,14 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+
+		windowHelper = new WindowHelper();
+		windowHelper.window = this;
 	}
 
 	~this()
 	{
-		UninitializeWindow(this);
+		uninitialize();
 		remove();
 	}
 
@@ -241,7 +157,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, &this._pfvars);
+		Scaffold.WindowSetTitle(this, windowHelper);
 	}
 
 	// Description: Will set the title of the window.
@@ -251,7 +167,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, &this._pfvars);
+		Scaffold.WindowSetTitle(this, windowHelper);
 	}
 
 	Window getNextWindow() {
@@ -271,7 +187,7 @@ public:
 
 		_inited = false;
 
-		Scaffold.WindowDestroy(this, &this._pfvars);
+		Scaffold.WindowDestroy(this, windowHelper);
 	}
 
 	// Description: Sets the flag to make the window hidden or visible.
@@ -294,7 +210,7 @@ public:
 				app._windowVisibleCount++;
 			}
 
-			Scaffold.WindowSetVisible(this, &this._pfvars,bShow);
+			Scaffold.WindowSetVisible(this, windowHelper, bShow);
 
 			// safe guard:
 			// fights off infection from ZOMBIE PROCESSES!!!
@@ -325,7 +241,7 @@ public:
 
 		if (_nextWindow !is null)
 		{
-			Scaffold.WindowSetState(this, &this._pfvars);
+			Scaffold.WindowSetState(this, windowHelper);
 		}
 
 		OnStateChange();
@@ -349,7 +265,7 @@ public:
 
 		if (_nextWindow !is null)
 		{
-			Scaffold.WindowSetStyle(this, &this._pfvars);
+			Scaffold.WindowSetStyle(this, windowHelper);
 		}
 	}
 
@@ -372,7 +288,7 @@ public:
 
 		if (_inited)
 		{
-			Scaffold.WindowRebound(this, &this._pfvars);
+			Scaffold.WindowRebound(this, windowHelper);
 		}
 
 		OnResize();
@@ -388,7 +304,7 @@ public:
 
 		if (_inited)
 		{
-			Scaffold.WindowReposition(this, &this._pfvars);
+			Scaffold.WindowReposition(this, windowHelper);
 		}
 
 		OnMove();
@@ -429,19 +345,19 @@ public:
 	void ClientToScreen(ref int x, ref int y)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &this._pfvars, x, y);
+		Scaffold.WindowClientToScreen(this, windowHelper, x, y);
 	}
 
 	void ClientToScreen(ref Coord pt)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &this._pfvars, pt);
+		Scaffold.WindowClientToScreen(this, windowHelper, pt);
 	}
 
 	void ClientToScreen(ref Rect rt)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &this._pfvars, rt);
+		Scaffold.WindowClientToScreen(this, windowHelper, rt);
 	}
 
 
@@ -586,7 +502,7 @@ public:
 
 			Graphics g = _view.lockDisplay();
 
-			Scaffold.WindowStartDraw(this, &_pfvars, _view, *viewVars);
+			Scaffold.WindowStartDraw(this, windowHelper, _view, *viewVars);
 
 			Widget c = _firstControl;
 
@@ -600,7 +516,7 @@ public:
 				} while (c !is _firstControl)
 			}
 
-			Scaffold.WindowEndDraw(this, &_pfvars, _view, *viewVars);
+			Scaffold.WindowEndDraw(this, windowHelper, _view, *viewVars);
 
 			_view.unlockDisplay();
 		}
@@ -664,7 +580,7 @@ public:
 		{
 			control = _captured_control;
 
-			if (control.containsPoint(mouseProps.x, mouseProps.y) && control.getVisibility())
+			if (controlAtPoint(mouseProps.x, mouseProps.y) is control && control.getVisibility())
 			{
 				//within bounds of control
 				if (!control._hovered)
@@ -760,7 +676,11 @@ public:
 	// Description: Called when the primary mouse button (usually the left button) is pressed.
 	void OnPrimaryMouseDown() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnPrimaryMouseDown(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = target;
+
+		if((target !is null) && (ret | target.OnPrimaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -768,7 +688,11 @@ public:
 	// Description: Called when the primary mouse button (usually the left button) is released.
 	void OnPrimaryMouseUp() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnPrimaryMouseUp(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = null;
+
+		if((target !is null) && (ret | target.OnPrimaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -776,7 +700,11 @@ public:
 	// Description: Called when the secondary mouse button (usually the right button) is pressed.
 	void OnSecondaryMouseDown() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnSecondaryMouseDown(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = target;
+
+		if((target !is null) && (ret | target.OnSecondaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -784,7 +712,11 @@ public:
 	// Description: Called when the secondary mouse button (usually the right button) is released.
 	void OnSecondaryMouseUp() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnSecondaryMouseUp(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = null;
+
+		if((target !is null) && (ret | target.OnSecondaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -792,7 +724,11 @@ public:
 	// Description: Called when the tertiary mouse button (usually the middle button) is pressed.
 	void OnTertiaryMouseDown() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnTertiaryMouseDown(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = target;
+
+		if((target !is null) && (ret | target.OnTertiaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -800,7 +736,11 @@ public:
 	// Description: Called when the tertiary mouse button (usually the middle button) is released.
 	void OnTertiaryMouseUp() {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnTertiaryMouseUp(mouseProps)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = null;
+
+		if((target !is null) && (ret | target.OnTertiaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -809,7 +749,11 @@ public:
 	// button: The identifier of this button.
 	void OnOtherMouseDown(uint button) {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnOtherMouseDown(mouseProps, button)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = target;
+
+		if((target !is null) && (ret | target.OnOtherMouseDown(mouseProps, button))) {
 			OnDraw();
 		}
 	}
@@ -818,7 +762,11 @@ public:
 	// button: The identifier of this button.
 	void OnOtherMouseUp(uint button) {
 		Widget target;
-		if(mouseEventCommon(target) | target.OnOtherMouseUp(mouseProps, button)) {
+		bool ret = mouseEventCommon(target);
+
+		_captured_control = null;
+
+		if((target !is null) && (ret | target.OnOtherMouseUp(mouseProps, button))) {
 			OnDraw();
 		}
 	}
@@ -913,9 +861,13 @@ public:
 	override void push(Dispatcher dsp) {
 		if (cast(Widget)dsp !is null) {
 			Widget control = cast(Widget)dsp;
+			control._windowHelper = windowHelper;
 
 			// do not add a control that is already part of another window
 			if (control.getParent() !is null) { return; }
+
+			// Set the window it belongs to
+			control._window = this;
 
 			// add to the control linked list
 			if (_firstControl is null && _lastControl is null) {
@@ -989,6 +941,27 @@ public:
 		}
 	}
 
+	void removeAll() {
+		// will go through and remove all of the controls
+
+		Widget c = _firstControl;
+		Widget tmp;
+
+		if (c is null) { return; }
+
+		do
+		{
+			tmp = c._nextControl;
+
+			c.removeControl();
+
+			c = tmp;
+		} while (c !is _firstControl);
+
+		_firstControl = null;
+		_lastControl = null;
+	}
+
 
 
 	// Menus //
@@ -1010,7 +983,7 @@ public:
 
 			// platform specific
 			MenuPlatformVars mnuVars = MenuGetPlatformVars(mnuMain);
-			Scaffold.WindowSetMenu(mnuMain, mnuVars, this, _pfvars);
+			Scaffold.WindowSetMenu(mnuMain, mnuVars, this, windowHelper);
 		}
 	}
 
@@ -1062,6 +1035,109 @@ protected:
 		return false;
 	}
 
+	void uninitialize()
+	{
+		if (_nextWindow is null) { return; }
+
+		OnRemove();
+
+		removeAll();
+
+		_prevWindow._nextWindow = _nextWindow;
+		_nextWindow._prevWindow = _prevWindow;
+
+		// destroy the window's view object
+		OnUninitialize();
+
+		GuiApplication app = cast(GuiApplication)responder;
+
+		if (app._windowListHead is this && app._windowListTail is this) {
+			app._windowListHead = null;
+			app._windowListTail = null;
+		}
+		else {
+			if (app._windowListHead is this) {
+				app._windowListHead = app._windowListHead._nextWindow;
+			}
+
+			if (app._windowListTail is this) {
+				app._windowListTail = app._windowListHead._prevWindow;
+			}
+		}
+
+		_nextWindow = null;
+		_prevWindow = null;
+
+		// Decrement Window length
+		app._windowCount--;
+
+		// Check to see if this was invisible
+		if (_visible)
+		{
+			// Decrement Window Visible length
+			app._windowVisibleCount--;
+
+			// If there are no visible windows, quit (for now)
+			if (app.isZombie())
+			{
+				// just kill the app
+				app.destroyAllWindows();
+				DjehutyEnd();
+			}
+		}
+
+		// is it a parent window of some kind?
+		// destroy and uninitialize all children
+		if (_firstChild !is null)
+		{
+			Window child = _firstChild;
+
+			do
+			{
+				child.remove();
+				child = child._nextSibling;
+			} while (child !is _firstChild)
+		}
+
+		// is it a child window of some kind?
+		// unlink it within the sibling list
+		if (_parent !is null)
+		{
+			Window p = _parent;
+
+			p._numChildren--;
+
+			_prevSibling._nextSibling = _nextSibling;
+			_nextSibling._prevSibling = _prevSibling;
+
+			if (p._firstChild is this && p._lastChild is this)
+			{
+				// unreference this, the last child
+				// the parent now has no children
+				p._firstChild = null;
+				p._lastChild = null;
+			}
+			else
+			{
+				if (p._firstChild is this)
+				{
+					p._firstChild = p._firstChild._nextSibling;
+				}
+
+				if (p._lastChild is this)
+				{
+					p._lastChild = p._lastChild._prevSibling;
+				}
+			}
+		}
+
+		_parent = null;
+		_nextSibling = null;
+		_prevSibling = null;
+		_firstChild = null;
+		_lastChild = null;
+	}
+
 	View _view = null;
 
 	Color _color;
@@ -1076,8 +1152,6 @@ protected:
 
 	WindowStyle _style;
 	WindowState _state;
-
-	WindowPlatformVars _pfvars;
 
 private:
 
@@ -1114,117 +1188,106 @@ private:
 	bool _fullscreen = false;
 
 	package bool _inited = false;
+
+	package WindowHelper windowHelper;
 }
 
+class WindowHelper {
 
-
-
-void WindowRemoveAllControls(ref Window window)
-{
-	// will go through and remove all of the controls
-
-	Widget c = window._firstControl;
-	Widget tmp;
-
-	if (c is null) { return; }
-
-	do
-	{
-		tmp = c._nextControl;
-
-		c.removeControl();
-
-		c = tmp;
-	} while (c !is window._firstControl);
-
-	window._firstControl = null;
-	window._lastControl = null;
-}
-
-void WindowSetConstraintX(ref Window window, long constraint_x)
-{
-	window._constraint_x = constraint_x;
-}
-
-void WindowSetConstraintY(ref Window window, long constraint_y)
-{
-	window._constraint_y = constraint_y;
-}
-
-long WindowGetConstraintX(ref Window window)
-{
-	return window._constraint_x;
-}
-
-long WindowGetConstraintY(ref Window window)
-{
-	return window._constraint_y;
-}
-
-void WindowCaptureMouse(ref Window window, ref Widget control)
-{
-	window._captured_control = control;
-
-	Scaffold.WindowCaptureMouse(window, &window._pfvars);
-}
-
-void WindowReleaseMouse(ref Window window, ref Widget control)
-{
-	if (window._captured_control is control)
-	{
-		window._captured_control = null;
-
-		Scaffold.WindowReleaseMouse(window, &window._pfvars);
+	Window getWindow() {
+		return window;
 	}
-}
 
-View* WindowGetView(ref Window window)
-{
-	return &window._view;
-}
+	void setConstraintX(long constraint_x) {
+		window._constraint_x = constraint_x;
+	}
 
-WindowPlatformVars* WindowGetPlatformVars(ref Window window)
-{
-	return &window._pfvars;
-}
+	void setConstraintY(long constraint_y)
+	{
+		window._constraint_y = constraint_y;
+	}
 
+	long WindowGetConstraintX()
+	{
+		return window._constraint_x;
+	}
 
-void SetWindowXY(ref Window w, int x, int y)
-{
-	w._x = x;
-	w._y = y;
-}
+	long getConstraintY()
+	{
+		return window._constraint_y;
+	}
 
-void SetWindowX(ref Window w, int x)
-{
-	w._x = x;
-}
+	void captureMouse(ref Widget control)
+	{
+		window._captured_control = control;
 
-void SetWindowY(ref Window w, int y)
-{
-	w._y = y;
-}
+		Scaffold.WindowCaptureMouse(window, this);
+	}
 
+	void releaseMouse(ref Widget control)
+	{
+		if (window._captured_control is control)
+		{
+			window._captured_control = null;
 
+			Scaffold.WindowReleaseMouse(window, this);
+		}
+	}
 
-void SetWindowSize(ref Window w, uint width, uint height)
-{
-	w._width = width;
-	w._height = height;
-}
+	View* getView()
+	{
+		return &window._view;
+	}
 
-void SetWindowWidth(ref Window w, uint width)
-{
-	w._width = width;
-}
+	WindowPlatformVars* getPlatformVars()
+	{
+		return &_pfvars;
+	}
 
-void SetWindowHeight(ref Window w, uint height)
-{
-	w._height = height;
-}
+	void setWindowXY(int x, int y)
+	{
+		window._x = x;
+		window._y = y;
+	}
 
-void CallStateChange(ref Window w, WindowState newState)
-{
-	w._state = newState;
-	w.OnStateChange();
+	void setWindowX(int x)
+	{
+		window._x = x;
+	}
+
+	void setWindowY(int y)
+	{
+		window._y = y;
+	}
+
+	void setWindowSize(uint width, uint height)
+	{
+		window._width = width;
+		window._height = height;
+	}
+
+	void setWindowWidth(uint width)
+	{
+		window._width = width;
+	}
+
+	void setWindowHeight(uint height)
+	{
+		window._height = height;
+	}
+
+	void callStateChange(WindowState newState)
+	{
+		window._state = newState;
+		window.OnStateChange();
+	}
+
+	void uninitialize() {
+		window.uninitialize();
+	}
+
+	WindowPlatformVars _pfvars;
+
+private:
+	Window window;
 }

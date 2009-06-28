@@ -1,3 +1,15 @@
+/*
+ * application.d
+ *
+ * This module implements the GUI application class that will be the starting
+ * point for a GUI application. From this, Window classes with Widgets can be
+ * created and pushed.
+ *
+ * Author: Dave Wilkinson
+ * Originated: June 24th, 2009
+ *
+ */
+
 module gui.application;
 
 import core.application;
@@ -48,7 +60,7 @@ private:
 	// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
 	// window: An instance of a Window class, or any the inherit from Window.
 	void addWindow(Window window) {
-		WindowPlatformVars* wpv = WindowGetPlatformVars(window);
+		WindowPlatformVars* wpv = window.windowHelper.getPlatformVars();
 
 		synchronized {
 			// update the window linked list
@@ -58,11 +70,11 @@ private:
 			_windowCount++;
 
 			// create the window through platform calls
-			Scaffold.WindowCreate(window, wpv);
+			Scaffold.WindowCreate(window, window.windowHelper);
 		}
 
 		if (window.getVisibility()) {
-			Scaffold.WindowSetVisible(window, wpv, true);
+			Scaffold.WindowSetVisible(window, window.windowHelper, true);
 		}
 	}
 

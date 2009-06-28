@@ -12,12 +12,15 @@ module platform.win.main;
 
 import platform.win.common;
 import platform.win.vars;
-import platform.win.oscontrolinterface;
+import platform.win.widget;
 
 import core.main;
 import core.definitions;
 import core.view;
 import core.menu;
+import core.string;
+
+import console.main;
 
 import gui.window;
 import graphics.font;
@@ -30,9 +33,6 @@ import analyzing.debugger;
 
 import tui.application;
 import tui.window;
-
-// import strings
-import core.string;
 
 import std.stdio;
 import std.thread;
@@ -67,12 +67,176 @@ CloseThemeDataFunc CloseThemeDataDLL;
 // extern (C) alias FILE* function(int, char*) _fdopen_func;
 // _open_osfhandle_func _open_osfhandleDLL;
 // _fdopen_func _fdopenDLL;
-//
-
 
 bool _appEnd = false;
 
 int win_osVersion = -1;
+
+bool Hook(char* mod, char* proc, ref uint syscall_id, ref ubyte* pProc, void* pNewProc)
+{
+    HINSTANCE hMod = GetModuleHandleA(mod);
+
+    if (hMod is null) {
+		hMod = LoadLibraryA(mod);
+		Console.putln("not loaded");
+	    if (hMod is null) {
+			Console.putln("bad");
+			return false;
+		}
+	}
+
+    pProc = cast(ubyte*)GetProcAddress(hMod, proc);
+
+    if (pProc is null) {
+		Console.putln("procnotfound");
+		return false;
+    }
+
+    ubyte[5] oldCode;
+    oldCode[0..5] = pProc[0..5];
+
+    if ( true || pProc[0] == 0xB8 ) {
+        syscall_id = *cast(uint*)(pProc + 1);
+
+        DWORD flOldProtect;
+
+        VirtualProtect(pProc, 5, PAGE_EXECUTE_READWRITE, & flOldProtect);
+
+        pProc[0] = 0xE9;
+        *cast(uint*)(pProc+1) = cast(uint)pNewProc - cast(uint)(pProc+5);
+
+        pProc += 5;
+
+        VirtualProtect(pProc, 5, flOldProtect, & flOldProtect);
+
+        return true;
+    }
+    else {
+        return false;
+	}
+}
+
+extern(C) HDC HookBeginPaint(HWND hWnd, LPPAINTSTRUCT lpPaint) {
+
+	HDC ret;
+
+	// normal operations:
+	asm {
+        mov     EAX, syscall_BeginPaint;
+        push    lpPaint;
+        push    hWnd;
+		call    pBeginPaint;
+        mov		ret, EAX;
+	}
+
+	// abnormal operations:
+	if (hWnd == button_hWnd) {
+
+		//Console.putln("BeginPaint");
+
+		//lpPaint.hdc = button_hdc;
+		//ret = button_hdc;
+	}
+
+	return ret;
+}
+
+void HookBeginPaintImpl() {
+	asm {
+		mov EAX, syscall_BeginPaint;
+		call pBeginPaint;
+		ret;
+	}
+}
+
+template UXThemePrologue() {
+	const char[] UXThemePrologue =
+	`
+		asm {
+			naked;
+
+			mov		EDI,EDI;
+			push	EBP;
+			mov		EBP,ESP;
+		}
+		`;
+}
+
+extern(C) void HookBeginBufferedPaint() {
+
+	mixin(UXThemePrologue!());
+	//Console.putln("BeginBufferedPaint");
+
+	asm {
+        jmp		pBeginBufferedPaint;
+	}
+
+	return;
+}
+
+extern(C) void HookBeginBufferedAnimation() {
+
+	mixin(UXThemePrologue!());
+
+	//Console.putln("BeginBufferedAnimation");
+	asm {
+		//mov EAX, button_hdc;
+		//mov [EBP+12], EAX;
+	}
+
+	asm {
+        jmp		pBeginBufferedAnimation;
+	}
+
+	return;
+}
+
+extern(C) void HookEndBufferedAnimation() {
+
+	mixin(UXThemePrologue!());
+
+	//Console.putln("EndBufferedAnimation");
+
+	asm {
+        jmp		pEndBufferedAnimation;
+	}
+
+	return;
+}
+
+extern(C) void HookBufferedPaintRenderAnimation() {
+
+	mixin(UXThemePrologue!());
+
+	//Console.putln("BufferedPaintRenderAnimation");
+
+	asm {
+		mov EAX, button_hdc;
+		mov [EBP+12], EAX;
+	}
+
+	asm {
+        jmp		pBufferedPaintRenderAnimation;
+	}
+
+	return;
+}
+
+extern(C) BOOL HookEndPaint(HWND hWnd, LPPAINTSTRUCT lpPaint) {
+	// abnormal operations:
+	if (hWnd == button_hWnd) {
+		//Console.putln("End Paint");
+//		return true;
+	}
+
+	// normal operations:
+	asm {
+        mov     EAX, syscall_EndPaint;
+        push    lpPaint;
+        push    hWnd;
+        call    pEndPaint;
+	}
+}
 
 void GetWindowsVersion()
 {
@@ -272,6 +436,7 @@ void LoadThemingData()
 extern(Windows)
 int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 {
+//			Console.putln("def proc");
 	CREATESTRUCTW* cs = cast(CREATESTRUCTW*)lParam;
 
 	if (uMsg == WM_CREATE)
@@ -294,26 +459,38 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 extern(Windows)
 int CtrlProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 {
+//			Console.putln("ctrl proc");
 	void* ctrl_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
 
 	if (ctrl_in !is null)
 	{
-		OSControl _ctrlvars = cast(OSControl)ctrl_in;
+		WinWidget _ctrlvars = cast(WinWidget)ctrl_in;
 
-		return CallControlAppLoopMessage(_ctrlvars, uMsg, wParam, lParam);
+		return CallAppLoopMessage(_ctrlvars, uMsg, wParam, lParam);
 	}
 
 	return 0;
 }
 
+HWND button_hWnd;
+HDC button_hdc;
+int button_width;
+int button_height;
+int button_x;
+int button_y;
+
+bool indraw;
+
 extern(Windows)
 int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 {
+			//Console.putln("window proc: ", new String("%x", uMsg));
 	// resolve the window class reference:
 	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
-	Window w = cast(Window)(wind_in);
+	WindowHelper wHelper = cast(WindowHelper)(wind_in);
+	Window w = wHelper.getWindow();
 
-	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
+	WindowPlatformVars* windowVars = wHelper.getPlatformVars();
 
 	Window viewW;
 
@@ -354,11 +531,12 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 				wind_in = cast(void*)GetWindowLongW(cast(HWND)lParam, GWLP_USERDATA);
 
-				OSControl ctrl = cast(OSControl)wind_in;
+				WinWidget ctrl = cast(WinWidget)wind_in;
 
 				wParam &= 0xFFFF;
 
-				CallControlAppLoopMessage(ctrl, uMsg, wParam, lParam);
+//				ctrl._AppLoopMessage(uMsg, wParam, lParam);
+				return CallAppLoopMessage(ctrl, uMsg, wParam, lParam);
 			}
 
 			break;
@@ -367,9 +545,11 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_CTLCOLORBTN:
 		case WM_CTLCOLORSTATIC:
 
+		/*	Console.putln("ctrl back");
+
 			wind_in = cast(void*)GetWindowLongW(cast(HWND)lParam, GWLP_USERDATA);
 
-			OSControl ctrl = cast(OSControl)wind_in;
+			WinWidget ctrl = cast(WinWidget)wind_in;
 
 			// SET FOREGROUND AND BACKGROUND COLORS FOR CONTROLS HERE:
 			// TO SUPPORT BACKGROUND AND FOREGROUND CHANGES
@@ -380,9 +560,11 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			int x, y, width, height;
 
-			View ctrl_view = CallControlReturnView(ctrl, x, y, width, height);
+			View ctrl_view = CallReturnView(ctrl,x,y,width,height); //ctrl._ReturnView(x, y, width, height);
 
-			ctrl_view.lockDisplay();
+			if (!indraw) {
+				ctrl_view.lockDisplay();
+			}
 
 			ViewPlatformVars* viewVars = ViewGetPlatformVars(ctrl_view);
 
@@ -394,9 +576,12 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				x, y,
 				SRCCOPY);
 
-			ctrl_view.unlockDisplay();
+			if (!indraw) {
+				ctrl_view.unlockDisplay();
+			}*/
 
 	        return cast(LRESULT)GetStockObject(NULL_BRUSH);
+
 
 
 
@@ -411,31 +596,27 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 		case WM_PAINT:
 
+			View* view = wHelper.getView();
+			ViewPlatformVars* viewVars = ViewGetPlatformVars(*view);
+
+			indraw = true;
+
+			viewW.OnDraw();
+
+			view.lockDisplay();
+
 			PAINTSTRUCT ps;
 			HDC dc = BeginPaint(hWnd, &ps);
-
-			if (viewW !is null)
-			{
-				View* view = WindowGetView(viewW);
-				ViewPlatformVars* viewVars = ViewGetPlatformVars(*view);
-
-				viewW.OnDraw();
-
-				view.lockDisplay();
-
-				BitBlt(ps.hdc, 0, 0, w.getWidth(), w.getHeight(), viewVars.dc, 0, 0, SRCCOPY);
-
-				view.unlockDisplay();
-
-			}
-
+			BitBlt(ps.hdc, 0, 0, w.getWidth(), w.getHeight(), viewVars.dc, 0, 0, SRCCOPY);
 			EndPaint(hWnd, &ps);
+
+			view.unlockDisplay();
 
 			break;
 
 	    case WM_DESTROY:
 
-			UninitializeWindow(w);
+			wHelper.uninitialize();
 			break;
 
 
@@ -486,12 +667,14 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			break;
 
-
+		case WM_CAPTURECHANGED:
+			break;
 
 
 		case WM_LBUTTONDOWN:
 
 			SetFocus(hWnd);
+			SetCapture(hWnd);
 
 			uint lp = GetMessageExtraInfo();
 			if ((lp & SIGNATURE_MASK) == MI_WP_SIGNATURE)
@@ -517,17 +700,19 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
 
-			_TestNumberOfClicks(w,x,y,1);
+			_TestNumberOfClicks(wHelper,x,y,1);
 
 			w.OnPrimaryMouseDown();
 			break;
 
 		case WM_LBUTTONUP:
 
+			ReleaseCapture();
+
 			//window.mouseProps.rightDown = 0;
 
 			//check for double click first
-			_TestNumberOfClicksUp(w,1);
+			_TestNumberOfClicksUp(wHelper,1);
 
 			//fill _mouseProps
 			int x, y;
@@ -552,6 +737,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_RBUTTONDOWN:
 
 			SetFocus(hWnd);
+			SetCapture(hWnd);
 
 			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
 
@@ -569,17 +755,18 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = true;
 			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
 
-			_TestNumberOfClicks(w,x,y,2);
+			_TestNumberOfClicks(wHelper,x,y,2);
 
 			w.OnSecondaryMouseDown();
 			break;
 
 		case WM_RBUTTONUP:
 
+			ReleaseCapture();
 			//window.mouseProps.rightDown = 0;
 
 			//check for double click first
-			_TestNumberOfClicksUp(w,2);
+			_TestNumberOfClicksUp(wHelper,2);
 
 			//fill _mouseProps
 			int x, y;
@@ -601,6 +788,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_MBUTTONDOWN:
 
 			SetFocus(hWnd);
+			SetCapture(hWnd);
 
 			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
 
@@ -618,17 +806,18 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 			w.mouseProps.middleDown = true;
 
-			_TestNumberOfClicks(w,x,y,3);
+			_TestNumberOfClicks(wHelper,x,y,3);
 
 			w.OnTertiaryMouseDown();
 			break;
 
 		case WM_MBUTTONUP:
 
+			ReleaseCapture();
 			//window.mouseProps.rightDown = 0;
 
 			//check for double click first
-			_TestNumberOfClicksUp(w,3);
+			_TestNumberOfClicksUp(wHelper,3);
 
 			//fill _mouseProps
 			int x, y;
@@ -650,6 +839,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_XBUTTONDOWN:
 
 			SetFocus(hWnd);
+			SetCapture(hWnd);
 
 			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
 
@@ -668,7 +858,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				wParam--;
 
-				_TestNumberOfClicks(w,x,y,4 + cast(uint)wParam);
+				_TestNumberOfClicks(wHelper,x,y,4 + cast(uint)wParam);
 
 				w.OnOtherMouseDown(cast(uint)wParam);
 			}
@@ -676,6 +866,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 		case WM_XBUTTONUP:
 
+			ReleaseCapture();
 			//window.mouseProps.rightDown = 0;
 
 			//fill _mouseProps
@@ -691,7 +882,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				wParam--;
 
 				//check for double click
-				_TestNumberOfClicksUp(w,4 + cast(uint)wParam);
+				_TestNumberOfClicksUp(wHelper,4 + cast(uint)wParam);
 
 				w.OnOtherMouseUp(cast(uint)wParam);
 			}
@@ -729,6 +920,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.x = x;
 			y = (lParam >> 16) & 0xffff;
 			w.mouseProps.y = y;
+		//	Console.putln("mouse move window! x:", x, "y:", y);
 
 			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
@@ -778,7 +970,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (!windowVars.supress_WM_MOVE)
 			{
-				SetWindowXY(w, rt.left, rt.top);
+				wHelper.setWindowXY(rt.left, rt.top);
 				w.OnMove();
 				windowVars.supress_WM_MOVE = false;
 			}
@@ -862,7 +1054,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (!windowVars.supress_WM_SIZE)
 			{
-				SetWindowSize(w, rt.right, rt.bottom);
+				wHelper.setWindowSize(rt.right, rt.bottom);
 				w.OnResize();
 
 				if (cast(GLWindow)w !is null) {
@@ -880,7 +1072,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
-						CallStateChange(w, WindowState.Maximized);
+						wHelper.callStateChange(WindowState.Maximized);
 						windowVars.supress_WM_SIZE_state = false;
 					}
 				}
@@ -888,7 +1080,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
-						CallStateChange(w, WindowState.Minimized);
+						wHelper.callStateChange(WindowState.Minimized);
 						windowVars.supress_WM_SIZE_state = false;
 					}
 				}
@@ -896,7 +1088,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
-						CallStateChange(w, WindowState.Normal);
+						wHelper.callStateChange(WindowState.Normal);
 						windowVars.supress_WM_SIZE_state = false;
 					}
 				}
@@ -997,9 +1189,9 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void _TestNumberOfClicks(ref Window w, int x, int y, int clickType)
+void _TestNumberOfClicks(ref WindowHelper w, int x, int y, int clickType)
 {
-	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
+	WindowPlatformVars* windowVars = w.getPlatformVars();
 	//check for double click first and within close proximity
 	//of the last click
 
@@ -1033,21 +1225,21 @@ void _TestNumberOfClicks(ref Window w, int x, int y, int clickType)
 
 	SetTimer(windowVars.hWnd, 1, GetDoubleClickTime(), null);
 
-	w.mouseProps.clicks = windowVars.doubleClickAmount;
+	w.getWindow().mouseProps.clicks = windowVars.doubleClickAmount;
 }
 
-void _TestNumberOfClicksUp(ref Window w, int clickType)
+void _TestNumberOfClicksUp(ref WindowHelper w, int clickType)
 {
-	WindowPlatformVars* windowVars = WindowGetPlatformVars(w);
+	WindowPlatformVars* windowVars = w.getPlatformVars();
 
 	if (windowVars.doubleClickTimerSet == clickType)
 	{
 		//double click may have occured
-		w.mouseProps.clicks = windowVars.doubleClickAmount;
+		w.getWindow().mouseProps.clicks = windowVars.doubleClickAmount;
 	}
 	else
 	{
-		w.mouseProps.clicks = 1;
+		w.getWindow().mouseProps.clicks = 1;
 	}
 }
 
@@ -1735,6 +1927,18 @@ void parseCommandLine()
 	}
 }
 
+alias extern(C) HDC function(HWND, LPPAINTSTRUCT) BeginPaintFunc;
+BeginPaintFunc pBeginPaint;
+uint syscall_BeginPaint;
+alias extern(C) BOOL function(HWND, LPPAINTSTRUCT) EndPaintFunc;
+EndPaintFunc pEndPaint;
+uint syscall_EndPaint;
+
+void* pBufferedPaintRenderAnimation;
+void* pBeginBufferedPaint;
+void* pEndBufferedAnimation;
+void* pBeginBufferedAnimation;
+
 extern (Windows)
 int WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -1754,7 +1958,23 @@ int WinMain(HINSTANCE hInstance,
 		registerWindowClass();
 
 		parseCommandLine();
+
 		initAll();
+
+		ubyte* bleh; uint dontcare;
+
+		Hook("USER32.DLL\0"c.ptr, "BeginPaint\0"c.ptr, syscall_BeginPaint, bleh, cast(void*)&HookBeginPaint);
+		pBeginPaint = cast(BeginPaintFunc)bleh;
+		Hook("USER32.DLL\0"c.ptr, "EndPaint\0"c.ptr, syscall_EndPaint, bleh, cast(void*)&HookEndPaint);
+		pEndPaint = cast(EndPaintFunc)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BufferedPaintRenderAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBufferedPaintRenderAnimation);
+		pBufferedPaintRenderAnimation = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
+		pBeginBufferedPaint = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "EndBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookEndBufferedAnimation);
+		pEndBufferedAnimation = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedAnimation);
+		pBeginBufferedAnimation = cast(void*)bleh;
 
 		result = mainloop();	// insert user code here
     }

@@ -204,7 +204,7 @@ struct IRC
 		{
 			if (_connected)
 			{
-				_skt.writeUtf8("PASS hashmash\r\n");
+//				_skt.writeUtf8("PASS hashmash\r\n");
 				_skt.writeUtf8("NICK " ~ Unicode.toUtf8(nickname) ~ "\r\n");
 				_skt.writeUtf8("USER " ~ Unicode.toUtf8(nickname) ~ " 0 * :" ~ Unicode.toUtf8(realname) ~ "\r\n");
 			}

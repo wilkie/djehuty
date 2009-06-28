@@ -75,8 +75,20 @@ const auto RIDEV_DEVNOTIFY = 0x00002000;
 const auto RIDEV_EXMODEMASK = 0x000000F0;
 //const auto RIDEV_EXMODE(mode) ((mode) & RIDEV_EXMODEMASK)
 
-const auto WM_USER         = 0x0400;
-const auto WM_INPUT        = 0x00FF;
+const auto WM_USER			= 0x0400;
+const auto WM_INPUT			= 0x00FF;
+const auto WM_CAPTURECHANGED = 0x215;
+const auto WM_PRINT			= 0x0317;
+const auto WM_PRINTCLIENT	= 0x0318;
+
+// WM_PRINT flags
+
+const auto PRF_CHECKVISIBLE	= 0x00000001;
+const auto PRF_NONCLIENT	= 0x00000002;
+const auto PRF_CLIENT		= 0x00000004;
+const auto PRF_ERASEBKGND	= 0x00000008;
+const auto PRF_CHILDREN		= 0x00000010;
+const auto PRF_OWNED		= 0x00000020;
 
 const auto ERROR_MORE_DATA = 234;
 
@@ -974,6 +986,23 @@ alias MONITORINFO* LPMONITORINFO;
 
 const auto MONITORINFOF_PRIMARY = 0x01;
 
+enum BP_BUFFERFORMAT : uint {
+    BPBF_COMPATIBLEBITMAP,
+    BPBF_DIB,
+    BPBF_TOPDOWNDIB,
+    BPBF_TOPDOWNMONODIB
+}
+
+struct BP_PAINTPARAMS {
+    DWORD cbSize;
+    DWORD dwFlags;
+    RECT *prcExclude;
+    BLENDFUNCTION *pBlendFunction;
+}
+
+alias HANDLE HPAINTBUFFER;
+
+
 // used by GlobalMemoryStatusEx
 struct MEMORYSTATUSEX {
   DWORD     dwLength = MEMORYSTATUSEX.sizeof;
@@ -1112,6 +1141,7 @@ extern(Windows)
 	// WINDOW AND PROCESS MANAGEMENT
 	HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID);
 	BOOL SetWindowTextW(HWND, wchar*);
+	HWND GetParent(HWND);
 	int GetWindowTextW(HWND, LPWSTR, int);
 	ATOM RegisterClassW(WNDCLASSW*);
 	BOOL PostMessageW(HWND hWnd, UINT Msg,WPARAM wParam,LPARAM lParam);
@@ -1130,6 +1160,8 @@ extern(Windows)
 	BOOL UnmapViewOfFile(LPCVOID);
 	BOOL DuplicateHandle(HANDLE, HANDLE, HANDLE, HANDLE*, DWORD, BOOL, DWORD);
 	HANDLE CreateRemoteThread(HANDLE, LPSECURITY_ATTRIBUTES, size_t, threadProc, LPVOID, DWORD, LPDWORD);
+	HMODULE GetModuleHandleA(char*);
+	HMODULE GetModuleHandleW(wchar*);
 
 	// MISC
 	int MulDiv(int,int,int);
@@ -1307,13 +1339,18 @@ const int IDC_BTNDONTCLICK = 102;
 const int GWLP_USERDATA = -21;
 const int GWLP_WNDPROC = -4;
 
+const int WM_NCHITTEST = 0x084;
+
 const int WM_MOUSEWHEEL = 0x20A;
 const int WM_MOUSEHWHEEL = 0x020E;
+
+const int WM_MOUSEFIRST = 0x0200;
 
 const int WM_XBUTTONDOWN = 0x020B;
 const int WM_XBUTTONUP = 0x020C;
 
-const int WM_MOUSELEAVE = 0x0402;
+const int WM_MOUSELEAVE = 0x02a3;
+const int WM_MOUSEHOVER = 0x02a1;
 
 const int WM_UNICHAR = 0x0109;
 

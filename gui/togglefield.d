@@ -1,3 +1,12 @@
+/*
+ * togglefield.d
+ *
+ * This module implements a GUI widget for an optional selection.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
+
 module gui.togglefield;
 
 import gui.widget;

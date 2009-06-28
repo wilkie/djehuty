@@ -321,7 +321,8 @@ class Widget : Responder
 protected:
 
 	package Window _window = null;
-	package Widget _parent = null;
+	package WindowHelper _windowHelper;
+
 	package AbstractContainer _container = null;
 
 	package View _view = null;
