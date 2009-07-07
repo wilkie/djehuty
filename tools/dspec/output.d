@@ -325,7 +325,7 @@ protected:
 			working = working.left;
 		}
 		
-		print("}catch(Exception _exception_)\n{\n\t");
+		print("}catch(Exception _exception_)\n{\n");
 		if (shouldThrow)
 		{
 			Console.putln("!!", exception.array);
@@ -375,21 +375,21 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		print("))\n\t{\n\t\treturn it.doesnt;\n\t}\n");
-		
+
 		return true;
 	}
-	
+
 	bool printShouldNot(AST tree)
 	{
 		AST working = tree;
 		AST node;
-		
+
 		print("if(");
-		
+
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -406,21 +406,21 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		print(")\n{ return it.doesnt; }\n");
-		
+
 		return true;
 	}
-	
+
 	bool printShouldThrow(AST tree)
 	{
 		AST working = tree;
 		AST node;
-		
+
 		exception = new String("");
-				
+
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -437,23 +437,23 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		shouldThrow = true;
-		
+
 		return true;
 	}
-	
+
 	bool printDescribeSection(AST tree)
 	{
 		AST working = tree;
 		AST node;
-		
+
 		String describing;
-		
+
 		bool hasDone = false;
-		
+
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -488,7 +488,7 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		if (!hasDone)
 		{
 			print(new String("done before_") ~ describing ~ "() { }\n");
@@ -558,14 +558,14 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		if (!hasDone)
 		{
 			print("done before() { }\n\n");
 		}
-		
+
 		print("this() { before(); }\n\n");
-		
+
 		// do tests
 
 		Console.putln("className: ", className.array, " len " , className.length);
@@ -573,42 +573,42 @@ protected:
 		Console.putln("className::", classNameFixed.array);
 		Console.putln("className::", className[0..className.length-6]);
 
-		print ("\n\tstatic void test()\n\t{\n\t");
+		print ("\n\tstatic void test()\n\t{\n");
 
-		print (new String("\t") ~ className ~ " tester = new " ~ className ~ "();\n\n\t");
-		print (new String("\tTest test = new Test(\"") ~ classNameFixed ~ "\");\n\n\t");
-		print (new String("\tit result;\n\n\t"));
-		
+		print (new String("\t") ~ className ~ " tester = new " ~ className ~ "();\n\n");
+		print (new String("\tTest test = new Test(\"") ~ classNameFixed ~ "\");\n\n");
+		print (new String("\tit result;\n\n"));
+
 		String currentSection = new String("");
-		
+
 		foreach(i, test; tests)
 		{
 			int pos = test.find(new String("_"));
 			String section = new String(test[0..pos]);
-			
+
 			if (currentSection != section)
 			{
-				print(new String("\ttest.logSubset(\"") ~ section ~ "\");\n\n\t");
+				print(new String("\ttest.logSubset(\"") ~ section ~ "\");\n\n");
 				currentSection = section;
 			}
-			
-			print(new String("\ttester = new ") ~ className ~ "();\n\n\t");
+
+			print(new String("\ttester = new ") ~ className ~ "();\n\n");
 			print(new String("\tresult = tester.") ~ test ~ "();\n\t");
 			print(new String("\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
 			print(new String(lines[i]));
 			//fwritef(outfp, "", lines[i]);
-			print("\");\n\n\t");
+			print("\");\n\n");
 		}
-		
+
 		print("\n\t}");
-		
+
 		print("\n}");
-		
+
 		classes ~= classNameFixed;
-		
+
 		return true;
 	}
-	
+
 	bool print(StringLiteral stuff)
 	{
 		return outfp.write(Unicode.toUtf8(stuff));

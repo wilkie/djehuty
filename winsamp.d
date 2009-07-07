@@ -2,13 +2,15 @@ import core.definitions;
 import core.color;
 import core.event;
 
-import gui.application;
+import gui . application;
 import gui.window;
 import gui.button;
 import gui.widget;
 
 import core.graphics;
 import core.image;
+import core.regex;
+import core.string;
 
 import tui.application;
 import tui.window;
@@ -20,6 +22,8 @@ import platform.win.controls.osbutton;
 import console.main;
 
 import hashes.md5;
+
+import specs.test;
 
 class MyControl : Widget {
 
@@ -61,15 +65,17 @@ class MyWindow : Window {
 			}
 		}
 		else if (source is button) {
+		}
 			if (signal == Button.Signal.Selected) {
-				setText("oh bugger");
-				/*irc.connect("irc.freenode.net");
-				irc.authenticate("djehuty", "Djehuty");
-				irc.join("#d.djehuty");*/
+
+				Tests.testAll();
+
+				Console.putln(Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`));
+//				Console.putln(Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`));
+				Console.putln(_1, " ... ", _2, " ... ", _3, " ... ", _4);
 
 				return true;
 			}
-		}
 		return false;
 	}
 

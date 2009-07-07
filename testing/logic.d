@@ -12,12 +12,6 @@ enum it
 
 class Test
 {
-	static int testsOk;
-	static int testsFailcopter;
-
-	char[] currentTest;
-	char[] currentRegion;
-
 	this(char[] testClass)
 	{
 		currentTest = testClass;
@@ -68,5 +62,30 @@ class Test
 			Console.setColor(fgColor.White);
 		}
 		Console.putln("");
+
+		lastOk = testsOk;
+		lastFailcopter = testsFailcopter;
+
+		testsFailcopter = 0;
+		testsOk = 0;
 	}
+
+	static int getSuccessCount() {
+		return lastOk;
+	}
+
+	static int getFailureCount() {
+		return lastFailcopter;
+	}
+
+private:
+
+	static int testsOk;
+	static int testsFailcopter;
+
+	static int lastOk;
+	static int lastFailcopter;
+
+	char[] currentTest;
+	char[] currentRegion;
 }

@@ -30,6 +30,9 @@ void DjehutyStart() {
 		throw new Exception("Framework Already Started");
 	}
 
+	// Constitute the main thread class
+	ThreadModuleInit();
+
 	// Check to make sure the app provided a suitable class to use
 	if (Djehuty.app is null) {
 		throw new Exception("No Application Class");
@@ -60,7 +63,7 @@ void DjehutyEnd() {
 
 		Djehuty._threadRegisterSemaphore.up();
 	}
-	
+
 	Djehuty.app.OnApplicationEnd();
 
 	// End the application proper (from the platform's point of view)

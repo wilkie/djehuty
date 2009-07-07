@@ -11,24 +11,98 @@
 module core.regex;
 
 import core.string;
+import synch.thread;
 
 import console.main;
 
 import utils.stack;
 
-class Regex
-{
+// This provides thread-local access to regex variables set via
+// Regex groups.
+
+String _1() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][0];
+	}
+
+	return new String("");
+}
+
+String _2() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][1];
+	}
+
+	return new String("");
+}
+
+String _3() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][2];
+	}
+
+	return new String("");
+}
+
+String _4() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][3];
+	}
+
+	return new String("");
+}
+
+String _5() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][4];
+	}
+
+	return new String("");
+}
+
+String _6() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][5];
+	}
+
+	return new String("");
+}
+
+String _7() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][6];
+	}
+
+	return new String("");
+}
+
+String _8() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][7];
+	}
+
+	return new String("");
+}
+
+String _9() {
+	if (Thread.getCurrent() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.getCurrent()][8];
+	}
+
+	return new String("");
+}
+
+class Regex {
+
 	// Description: This constructor will create an instance of a Regex that will efficiently compute the regular expression given.
 	// regex: The regular expression to utilize.
-	this(String regex)
-	{
+	this(String regex) {
 		regularExpression = new String(regex);
 
 		buildDFA();
 	}
 
-	this(StringLiteral regex)
-	{
+	this(StringLiteral regex) {
 		regularExpression = new String(regex);
 
 		buildDFA();
@@ -37,13 +111,11 @@ class Regex
 	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
 	// str: The String to run the regular expression upon.
 	// Returns: The matched substring or null when no match could be found.
-	String eval(String str)
-	{
+	String eval(String str) {
 		return null;
 	}
 
-	String eval(StringLiteral str)
-	{
+	String eval(StringLiteral str) {
 		return eval(new String(str));
 	}
 
@@ -51,20 +123,23 @@ class Regex
 	// str: The String to run the regular expression upon.
 	// regex: The regular expression to use.
 	// Returns: The matched substring or null when no match could be found.
-	static String eval(String str, String regex)
-	{
+	static String eval(String str, String regex) {
 		int strPos;
 		int regexPos;
 
 		int currentGroupIdx = -1;
+
 		int strPosStart;
 		int regexPosStart;
+		int regexGroupStart = int.max;
 		int regexFlagPotential;
 
 		int nextUnionPos = -1;
 		int currentUnionPos = -1;
 
 		int currentClassStart;
+
+		int groupCount;
 
 		int flags;
 
@@ -80,14 +155,22 @@ class Regex
 			int strPos;
 			int parent;
 			int unionPos;
+			int groupId;
 		}
 
+		// This hash table contains information about a grouping
+		// for a specific position in the regex.
 		GroupInfo[int] groupInfo;
+
+		// This hash table contains information that aids operators
+		// for a specific position in the regex.
 		int[int] operatorFlag;
 
+		// This is a stack of the groupings currently in context.
 		Stack!(int) groupStart = new Stack!(int)();
 		Stack!(int) stack = new Stack!(int)();
 
+		// Running flags
 		bool running = true;
 		bool matchMade = true;
 		bool backtrack = false;
@@ -95,15 +178,23 @@ class Regex
 		bool matchClass = false;
 		bool matchInverse = false;
 		bool matchRange = false;
-		int noMatchUntilClosedAtPos = 0;
 
+		regexRefs[Thread.getCurrent()] = new String[](9);
+
+		// Suppresses group matching until a position is reached.
+		int noMatchUntilClosedAtPos = -1;
+		int noMatchUntilUnionForPos = -1;
+
+		// This function will set a backtracking point in the regex.
 		void setBacktrack(int newRegexPos, int newStrPos)
 		{
 			stack.push(newRegexPos);
 			stack.push(newStrPos);
+			stack.push(regexGroupStart);
 			stack.push(regexFlagPotential);
 		}
 
+		// This function finds the regex position that will undo the last move.
 		int findBackupRegexPosition()
 		{
 			int ret = regexPos - 1;
@@ -125,6 +216,7 @@ class Regex
 			return ret;
 		}
 
+		// Like above, but for the working position.
 		int findBackupPosition()
 		{
 			if (regexPos-1 in groupInfo)
@@ -137,32 +229,34 @@ class Regex
 			}
 		}
 
+		// Set a backtrack that will return to the front of both strings.
 		setBacktrack(0,0);
 
+		// This structure hopes to minimize work already done by merely setting
+		// a flag whenever a position in each string is reached. Since this
+		// denotes that the regex will be parsing from the same state, and the
+		// regex is pure, it will not have to repeat the work.
 		int[][] memoizer = new int[][](str.length, regex.length);
 
-		// a+b in "bbaaaaaaabb" matches "aaaaaaaab"
-		//Console.putln("attempting s:", strPos, " r:", regexPos);
+		// Alright, main loop! This won't be broken until either a match is
+		// found or nothing can be found.
+		while(running) {
 
-		while(running)
-		{
-		//	Console.putln("attempting s:", strPos, " r:", regexPos);
-
-			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch)
-			{
-				if (memoizer[strPos][regexPos] == 1)
-				{
+			// This is the mechanics for the memoizer. If a valid match has
+			// been made and the regex positions are valid, set this position
+			// pair in the memoizer indicating we've done this work before.
+			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch) {
+				if (memoizer[strPos][regexPos] == 1) {
 					// we have been here before
-					backtrack = true;
+					//backtrack = true;
 				}
-				else
-				{
+				else {
 					memoizer[strPos][regexPos] = 1;
 				}
 			}
 
-			if (backtrack)
-			{
+			// If we are meant to backtrack this turn, this code path is taken.
+			if (backtrack) {
 				// steps are saved after successful matches
 				// therefore the matchMade flag is always set
 				matchMade = true;
@@ -170,79 +264,97 @@ class Regex
 				int oldRegexPos = regexPos;
 
 				regexFlagPotential = stack.pop();
+				regexGroupStart = stack.pop();
 				strPos = stack.pop();
 				regexPos = stack.pop();
 
-				if (regexPos == 0)
-				{
-					// we could attempt to find a union
-					while(oldRegexPos < regex.length && regex[oldRegexPos] != '|') { oldRegexPos++; }
+				if (regexPos == 0) {
+					// We have gone back to the beginning...
 
-					if (oldRegexPos < regex.length)
-					{
-//						Console.putln("found union r:", oldRegexPos);
-						regexPos = oldRegexPos+1;
-					}
-					else
-					{
+					// we could attempt to find a union
+					noMatch = true;
+					noMatchUntilClosedAtPos = -1;
+					noMatchUntilUnionForPos = -1;
+
+					regexPos = oldRegexPos;
+				}
+
+				// OMG; Do not want to backtrack twice!
+				backtrack = false;
+			}
+
+			if (regexPos >= regex.length) {
+				// The regex has been consumed.
+
+				if (noMatch) {
+					if (noMatchUntilClosedAtPos == -1) {
+						// No union, so just start the regex at the next character in the string.
 						strPosStart++;
 						strPos = strPosStart;
 
-						if (strPosStart >= str.length)
-						{
+						if (strPosStart >= str.length) {
 							// bad
 							matchMade = false;
 							running = false;
+							continue;
 						}
+
+						// start from a good state
+						matchMade = true;
+
+						// turn off find mode
+						noMatch = false;
+
+						regexPos = 0;
+
+						// Set the backtrack to point to the start of the regex
+						// with the new working position.
+						setBacktrack(0, strPos);
 					}
-
-					setBacktrack(0, strPos);
+					else {
+						// bad
+						matchMade = false;
+						running = false;
+					}
 				}
-
-				backtrack = false;
-				//Console.putln("backtracking s:", strPos, " r:", regexPos);
-			}
-
-			if (regexPos >= regex.length)
-			{
-				if (matchMade)
-				{
-					//Console.putln("good end");
+				else if (matchMade) {
 					// good
 					running = false;
+					break;
 				}
-				else
-				{
+				else {
 					// backtrack
 					//regexPos = findBackupRegexPosition();
 					//strPos = findBackupPosition();
 					backtrack = true;
 				}
+				continue;
 			}
-			else if (regex[regexPos] == '|')
-			{
-				// union
+			else if (regex[regexPos] == '|') {
 
-				if (currentGroupIdx >= 0)
-				{
-					//Console.putln("union within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
-					if (groupInfo[currentGroupIdx].unionPos >= 0)
-					{
+				// A union operator.
+
+				if (currentGroupIdx >= 0) {
+					if (groupInfo[currentGroupIdx].unionPos >= 0) {
 						// the current group already has at least one union
 						// use the current unionPos to append to the list
-						if (!(currentUnionPos in operatorFlag) && regexPos > currentUnionPos)
-						{
+						if (!(currentUnionPos in operatorFlag) && regexPos > currentUnionPos) {
 							operatorFlag[currentUnionPos] = regexPos;
 						}
 					}
-					else
-					{
+					else {
 						// this is the first union of the current group
 						groupInfo[currentGroupIdx].unionPos = regexPos;
 					}
 
-					if (matchMade)
-					{
+					if (noMatch && noMatchUntilUnionForPos != -1 && groupInfo[currentGroupIdx].startPos == noMatchUntilClosedAtPos) {
+						// turn off find mode
+						noMatch = false;
+
+						// start from a good state
+						matchMade = true;
+					}
+					else if (matchMade && !noMatch) {
 						// do not take this union
 						// declare this group as good
 
@@ -251,39 +363,53 @@ class Regex
 						// point, but undoing the actions of the group thus far
 						setBacktrack(regexPos+1, groupInfo[currentGroupIdx].strStartPos);
 
-						//Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
-						if (groupInfo[currentGroupIdx].endPos >= 0)
-						{
-							regexPos = groupInfo[currentGroupIdx].endPos;
+						if (groupInfo[currentGroupIdx].endPos >= 0) {
+							regexPos = groupInfo[currentGroupIdx].endPos-1;
 						}
-						else
-						{
+						else {
 							noMatch = true;
 							noMatchUntilClosedAtPos = currentGroupIdx;
+							noMatchUntilUnionForPos = -1;
 						}
 					}
-					else
-					{
+					else {
 						// undo actions
-						//Console.putln("taking union path", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
 						strPos = groupInfo[currentGroupIdx].strPos;
 
 						noMatch = false;
 						matchMade = true;
 					}
 				}
-				else
-				{
-					// union is in the main regex
+				else {
+					// union operator is in the main regex (top level)
 
-					if (matchMade)
-					{
+					// If we are searching for a union to continue a failed search
+					// We will enter the next code path. We have found a top level
+					// union operator.
+					if (noMatch && noMatchUntilClosedAtPos == -1 && noMatchUntilUnionForPos == -1) {
+						// Set the backtrack to point to the start of the regex
+						// with the new working position.
+						setBacktrack(0, strPos);
+
+						// turn off find mode
+						noMatch = false;
+
+						// start from a good state
+						matchMade = true;
+					}
+					else if (noMatch && noMatchUntilUnionForPos != -1) {
+						// turn off find mode
+						noMatch = false;
+
+						// start from a good state
+						matchMade = true;
+					}
+					else if (matchMade) {
 						// accept the regular expression
 						running = false;
 						break;
 					}
-					else
-					{
+					else {
 						// we start anew, but at this regular expression
 						strPos = strPosStart;
 					}
@@ -292,10 +418,13 @@ class Regex
 				currentUnionPos = regexPos;
 				regexPos++;
 			}
-			else if (regex[regexPos] == '(' && (matchMade || noMatch))
-			{	// group start
-				if (!(regexPos in groupInfo))
-				{
+			else if (regex[regexPos] == '(' && (matchMade || noMatch) ) {
+
+				// The start of a grouping.
+
+				bool isNew;
+
+				if (!(regexPos in groupInfo)) {
 					GroupInfo newGroup;
 					newGroup.startPos = regexPos;
 					newGroup.endPos = -1;
@@ -304,27 +433,34 @@ class Regex
 					newGroup.parent = currentGroupIdx;
 					newGroup.unionPos = -1;
 
+					// This assumes that all groups will be visited
+					// in order from left to right.
+					newGroup.groupId = groupCount;
+					groupCount++;
+
 					groupInfo[regexPos] = newGroup;
+
+					isNew = true;
 				}
 
+				groupInfo[regexPos].strStartPos = strPos;
 				groupInfo[regexPos].strPos = strPos;
+
 				currentGroupIdx = regexPos;
 				regexPos++;
 
-				if (regexPos < regex.length - 1 && regex[regexPos] == '?')
-				{
-					switch(regex[regexPos+1])
-					{
+				if (regexPos < regex.length - 1 && regex[regexPos] == '?') {
+					switch(regex[regexPos+1]) {
 						case '#':
 							// comments
-							if (groupInfo[currentGroupIdx].endPos > 0)
-							{
+							if (groupInfo[currentGroupIdx].endPos > 0) {
 								regexPos = groupInfo[currentGroupIdx].endPos;
 							}
-							else
-							{
+							else {
 								// find the end of the group, ignoring everything
-								while(regexPos < regex.length && regex[regexPos] != ')') { regexPos++; }
+								while(regexPos < regex.length && regex[regexPos] != ')') {
+									regexPos++;
+								}
 
 								// save the result
 								groupInfo[currentGroupIdx].endPos = regexPos;
@@ -337,6 +473,11 @@ class Regex
 
 						case ':':
 							// non-capturing
+							if (isNew) {
+								groupInfo[currentGroupIdx].groupId = int.max;
+								groupCount--;
+							}
+							regexPos+=2;
 							break;
 
 						case '=':
@@ -349,54 +490,55 @@ class Regex
 
 						case '<':
 							// zero-width lookbehind
-							if (regexPos < regex.length - 3)
-							{
-								if (regex[regexPos+3] == '=')
-								{
+							if (regexPos < regex.length - 3) {
+								if (regex[regexPos+3] == '=') {
 									// positive
 								}
-								else if (regex[regexPos+3] == '!')
-								{
+								else if (regex[regexPos+3] == '!') {
 									// negative
 								}
 							}
+							regexPos+=2;
 							break;
 
 						default:
 							break;
 					}
 				}
-
-				///Console.putln("group r:" , regexPos, " entered at s:", strPos);
 			}
-			else if (regex[regexPos] == ')')
-			{	// group end
-				if (!(regexPos in groupInfo))
-				{
+			else if (regex[regexPos] == ')') {
+
+				// A group is ending.
+
+				if (!(regexPos in groupInfo)) {
 					groupInfo[currentGroupIdx].endPos = regexPos;
 					groupInfo[regexPos] = groupInfo[currentGroupIdx];
 
-					//Console.putln("group map: ", currentGroupIdx, " -> ", regexPos);
-
-					if (currentGroupIdx == noMatchUntilClosedAtPos)
-					{
+					if (currentGroupIdx == noMatchUntilClosedAtPos) {
 						noMatch = false;
 					}
 				}
 
-				if (noMatch && noMatchUntilClosedAtPos == groupInfo[regexPos].startPos)
-				{
+				if (noMatch && noMatchUntilClosedAtPos == groupInfo[regexPos].startPos) {
 					noMatch = false;
 				}
 
-				if (matchMade)
-				{
-					//Console.putln("group r:", groupInfo[regexPos].startPos, " match s:", strPos, " r:", regexPos);
+				if (matchMade || noMatch) {
 					groupInfo[groupInfo[regexPos].startPos].strPos = strPos;
+
+					regexGroupStart = groupInfo[groupInfo[regexPos].startPos].groupId;
+
+					// set consumption string
+
+					if (!noMatch) {
+						if (regexGroupStart < 9) {
+							String consumed = new String(str[groupInfo[groupInfo[regexPos].startPos].strStartPos..strPos]);
+							regexRefs[Thread.getCurrent()][regexGroupStart] = consumed;
+							regexGroupStart++;
+						}
+					}
 				}
-				else
-				{
-					//Console.putln("group r:", groupInfo[regexPos].startPos, " fail s:", strPos, " r:", regexPos);
+				else {
 					// if we can backtrack to make another decision in this group, do so
 					// that would effectively undo moves that this group had made
 					strPos = groupInfo[groupInfo[regexPos].startPos].strPos;
@@ -404,43 +546,27 @@ class Regex
 				}
 
 				currentGroupIdx = groupInfo[regexPos].parent;
-				if (currentGroupIdx == -1)
-				{
-					//Console.putln("currentGroupIdx: -1");
-				}
-				else
-				{
-					//Console.putln("currentGroupIdx: ", currentGroupIdx);
-				}
-				regexPos++;
-				//Console.putln("attempting s:", strPos, " r:", regexPos);
-			}
-			else if (noMatch)
-			{
 				regexPos++;
 			}
-			else if (regex[regexPos] == '*')
-			{
-				// kleene star
+			else if (noMatch) {
+				regexPos++;
+			}
+			else if (regex[regexPos] == '*') {
 
-				//Console.putln("kleene* s:", strPos, " r:", regexPos);
+				// Kleene star operator.
 
-				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
-				{
+				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?') {
 					// this is a lazy kleene
-
-					//Console.putln("kleene*? s:", strPos, " r:", regexPos);
 
 					// it may have matched something, but it should ignore the work
 					// for now that it had done and save it as part of the lazy operator
 
-					if (matchMade)
-					{
+					if (matchMade) {
 						// set backtrack to do another computation
 						setBacktrack(findBackupRegexPosition(), strPos);
 
-						if (!(regexPos in operatorFlag))
-						{
+						//if (!(regexPos in operatorFlag)) {
+						if (regexFlagPotential < regexPos) {
 							// we have made a match, but have not attempted
 							// to try not matching anything first
 
@@ -457,22 +583,19 @@ class Regex
 							strPos = findBackupPosition();
 							regexPos+=2;
 						}
-						else
-						{
+						else {
 							// we have already found a match
 							// just continue on our way
 							regexPos+=2;
 						}
 					}
-					else
-					{
+					else {
 						// the group fails, it is ok
 						matchMade = true;
 						regexPos+=2;
 					}
 				}
-				else if (matchMade)
-				{
+				else if (matchMade) {
 					// this is a greedy kleene
 
 					// the backtrack will suggest to just go to the next regex
@@ -483,8 +606,8 @@ class Regex
 					// we need to set a backtrack for having not matched anything even though
 					// something was just matched. It could be that what we matched belongs to
 					// another section of the regex.
-					if (!(regexPos in operatorFlag) || regexFlagPotential < regexPos)
-					{
+
+					if (!(regexPos in operatorFlag) || regexFlagPotential < regexPos) {
 						// set a backtrack for having nothing found
 						setBacktrack(regexPos+1,findBackupPosition());
 					}
@@ -493,45 +616,34 @@ class Regex
 
 					setBacktrack(regexPos+1, strPos);
 					regexPos--;
-					if (regexPos in groupInfo)
-					{
+
+					if (regexPos in groupInfo) {
 						regexPos = groupInfo[regexPos].startPos;
 						currentGroupIdx = regexPos;
 					}
-					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag)
-					{
+					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
 						regexPos = operatorFlag[regexPos];
 					}
-					else
-					{
-						if (regexPos > 0 && regex[regexPos-1] == '\\')
-						{
+					else {
+						if (regexPos > 0 && regex[regexPos-1] == '\\') {
 							regexPos--;
 						}
 					}
 				}
-				else
-				{
+				else {
 					// it is ok
 					matchMade = true;
 					regexPos++;
 				}
-				//Console.putln("attempting s:", strPos, " r:", regexPos);
 			}
-			else if (regex[regexPos] == '+')
-			{
-				// kleene plus
+			else if (regex[regexPos] == '+') {
 
-				//Console.putln("kleene+ s:", strPos, " r:", regexPos);
+				// Kleene plus operator.
 
-				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?')
-				{
+				if (regexPos < regex.length - 1 && regex[regexPos+1] == '?') {
 					// this is a lazy kleene
 
-					//Console.putln("kleene+? s:", strPos, " r:", regexPos);
-
-					if (matchMade)
-					{
+					if (matchMade) {
 						// good, continue and set a backtrack to attempt another
 						// match on this kleene
 
@@ -544,19 +656,15 @@ class Regex
 						int newRegexPos = regexPos+2;
 
 						regexPos--;
-						if (regexPos in groupInfo)
-						{
+						if (regexPos in groupInfo) {
 							regexPos = groupInfo[regexPos].startPos;
 							currentGroupIdx = regexPos;
 						}
-						else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag)
-						{
+						else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
 							regexPos = operatorFlag[regexPos];
 						}
-						else
-						{
-							if (regexPos > 0 && regex[regexPos-1] == '\\')
-							{
+						else {
+							if (regexPos > 0 && regex[regexPos-1] == '\\') {
 								regexPos--;
 							}
 						}
@@ -565,27 +673,24 @@ class Regex
 
 						regexPos = newRegexPos;
 					}
-					else
-					{
-						if (regexPos in operatorFlag && regexFlagPotential >= regexPos)
-						{
+					else {
+						if (regexFlagPotential < regexPos) {
 							// we have not found any matches at all
 							// fail the op
+
 							//regexPos = findBackupRegexPosition();
 							//strPos = findBackupPosition();
 							backtrack = true;
 							continue;
 						}
-						else
-						{
+						else {
 							// it is ok, we found at least one
 							matchMade = true;
 							regexPos+=2;
 						}
 					}
 				}
-				else if (matchMade)
-				{
+				else if (matchMade) {
 					// this is a greedy kleene
 
 					// the backtrack will suggest to just go to the next regex
@@ -601,34 +706,27 @@ class Regex
 					regexFlagPotential = regexPos;
 
 					regexPos--;
-					if (regexPos in groupInfo)
-					{
+					if (regexPos in groupInfo) {
 						regexPos = groupInfo[regexPos].startPos;
 						currentGroupIdx = regexPos;
 					}
-					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag)
-					{
+					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
 						regexPos = operatorFlag[regexPos];
 					}
-					else
-					{
-						if (regexPos > 0 && regex[regexPos-1] == '\\')
-						{
+					else {
+						if (regexPos > 0 && regex[regexPos-1] == '\\') {
 							regexPos--;
 						}
 					}
 				}
-				else
-				{
+				else {
 					// it is ok
-					if (regexPos in operatorFlag && regexFlagPotential >= regexPos)
-					{
+					if (regexPos in operatorFlag && regexFlagPotential >= regexPos) {
 						// good
 						matchMade = true;
 						regexPos++;
 					}
-					else
-					{
+					else {
 						// fail the op
 						//regexPos = findBackupRegexPosition();
 						//strPos = findBackupPosition();
@@ -636,19 +734,15 @@ class Regex
 						continue;
 					}
 				}
-				//Console.putln("attempting s:", strPos, " r:", regexPos);
 			}
-			else if (regex[regexPos] == '?')
-			{
+			else if (regex[regexPos] == '?') {
 				// option
 				regexPos++;
-//				Console.putln("?");
-				if (regexPos < regex.length && regex[regexPos] == '?')
-				{
+
+				if (regexPos < regex.length && regex[regexPos] == '?') {
 					// lazy option
 					regexPos++;
-					if (matchMade)
-					{
+					if (matchMade) {
 						// unfortunately, this work that has been done
 						// has been done in vain. We want to attempt to
 						// not consume this option.
@@ -661,77 +755,63 @@ class Regex
 						// the regex while undoing the last group
 						strPos = findBackupPosition();
 					}
-					else
-					{
+					else {
 						// very good, only one possible outcome: no match
 						matchMade = true;
 					}
 				}
-				else if (matchMade)
-				{
+				else if (matchMade) {
 					// greedy option
 
 					// backtrack to not taking the option
 					setBacktrack(regexPos, findBackupPosition());
 				}
-				else
-				{
+				else {
 					// greedy option
 					matchMade = true;
 				}
 			}
-			else if (!matchMade)
-			{
+			else if (!matchMade) {
 				// the group fails if a concatenation fails
-				if (currentGroupIdx >= 0)
-				{
-				//	Console.putln("failed within group group:", currentGroupIdx, " endPos:", groupInfo[currentGroupIdx].endPos);
+				if (currentGroupIdx >= 0) {
 					int curUnionPos = -1;
-					if (groupInfo[currentGroupIdx].unionPos >= 0)
-					{
+
+					if (groupInfo[currentGroupIdx].unionPos >= 0) {
 						curUnionPos = groupInfo[currentGroupIdx].unionPos;
 
-						while(curUnionPos < regexPos && curUnionPos in operatorFlag)
-						{
-							//Console.putln("inner loopo pos:", curUnionPos);
+						while(curUnionPos < regexPos && curUnionPos in operatorFlag) {
 							curUnionPos = operatorFlag[curUnionPos];
 						}
 
-						if (curUnionPos < regexPos)
-						{
+						if (curUnionPos < regexPos) {
 							curUnionPos = -1;
 						}
 					}
 
-					if (curUnionPos >= 0)
-					{
+					if (curUnionPos >= 0) {
 						regexPos = curUnionPos;
 					}
-					else if (groupInfo[currentGroupIdx].endPos >= 0)
-					{
+					else if (groupInfo[currentGroupIdx].endPos >= 0) {
 						regexPos = groupInfo[currentGroupIdx].endPos;
 					}
-					else
-					{
+					else {
+						// need to find either a union for this group
+						// or the group end
 						noMatch = true;
 						noMatchUntilClosedAtPos = currentGroupIdx;
+						noMatchUntilUnionForPos = currentGroupIdx;
 					}
 				}
-				else
-				{
+				else {
 					backtrack = true;
 					continue;
 				}
 			}
-			else if (regex[regexPos] == '$')
-			{
-				//Console.putln("$ found at s:", strPos);
-				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r')
-				{
+			else if (regex[regexPos] == '$') {
+				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r') {
 					matchMade = true;
 				}
-				else
-				{
+				else {
 					//regexPos = findBackupRegexPosition();
 					//strPos = findBackupPosition();
 					backtrack = true;
@@ -739,14 +819,11 @@ class Regex
 				}
 				regexPos++;
 			}
-			else if (regex[regexPos] == '^')
-			{
-				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r')
-				{
+			else if (regex[regexPos] == '^') {
+				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r') {
 					matchMade = true;
 				}
-				else
-				{
+				else {
 					//regexPos = findBackupRegexPosition();
 					//strPos = findBackupPosition();
 					backtrack = true;
@@ -754,51 +831,40 @@ class Regex
 				}
 				regexPos++;
 			}
-			else
-			{
+			else {
 				// concatentation
 
-				if (regex[regexPos] == '[')
-				{
+				if (regex[regexPos] == '[') {
 					currentClassStart = regexPos;
-					//Console.putln("[ found");
+
 					matchClass = true;
 
 					regexPos++;
-					if (regexPos < regex.length && regex[regexPos] == '^')
-					{
+					if (regexPos < regex.length && regex[regexPos] == '^') {
 						matchInverse = true;
 						regexPos++;
 					}
-					else
-					{
+					else {
 						matchInverse = false;
 					}
 
 					// cancel when we run out of space
-					if (regexPos == regex.length)
-					{
+					if (regexPos == regex.length) {
 						continue;
 					}
 				}
 
-				do
-				{
-					//Console.putln("inner loop s:", strPos, " r:", regexPos);
-					if (matchClass && regex[regexPos] == ']')
-					{
-					//	Console.putln("crap!");
+				do {
+					if (matchClass && regex[regexPos] == ']') {
 						operatorFlag[currentClassStart] = regexPos;
 						operatorFlag[regexPos] = currentClassStart;
-						if (matchInverse && !matchMade)
-						{
+						if (matchInverse && !matchMade) {
 							matchMade = true;
 							matchInverse = false;
 						}
 						matchClass = false;
 					}
-					else if (matchClass && regexPos < regex.length - 1 && regex[regexPos+1] == '-')
-					{
+					else if (matchClass && regexPos < regex.length - 1 && regex[regexPos+1] == '-') {
 						// character class range, use the last character
 						// and build a range of possible values
 
@@ -806,24 +872,62 @@ class Regex
 						regexPos+=2;
 						continue;
 					}
-					else if (matchRange)
-					{
+					else if (matchRange) {
 						matchMade = strPos < str.length && str[strPos] >= regex[regexPos-2] && str[strPos] <= regex[regexPos];
 
 						// no more ranges!
 						matchRange = false;
 					}
-					else if (regex[regexPos] == '\\' && regexPos < regex.length-1)
-					{
+					else if (regex[regexPos] == '\\' && regexPos < regex.length-1) {
 						regexPos++;
-						if (strPos >= str.length)
-						{
+						if (strPos >= str.length) {
 							matchMade = false;
 						}
-						else
-						{
-							switch(regex[regexPos])
-							{
+						else {
+							switch(regex[regexPos]) {
+								case '1':
+								case '2':
+								case '3':
+								case '4':
+								case '5':
+								case '6':
+								case '7':
+								case '8':
+								case '9':
+									int refIndex = cast(uint)regex[regexPos] - cast(uint)'1';
+									// forward and backward references
+
+									if (Thread.getCurrent() in regexRefs) {
+										if (regexRefs[Thread.getCurrent()][refIndex] !is null) {
+											matchMade = true;
+
+											foreach(int i, chr; regexRefs[Thread.getCurrent()][refIndex]) {
+
+												if (strPos >= str.length) {
+													matchMade = false;
+													break;
+												}
+
+												if (str[strPos] != chr) {
+													matchMade = false;
+													break;
+												}
+
+												strPos++;
+											}
+
+											if (matchMade) {
+												strPos--;
+											}
+										}
+										else {
+											matchMade = false;
+										}
+									}
+									else {
+										matchMade = false;
+									}
+									break;
 								case 'd':
 									matchMade = (str[strPos] >= '0' && str[strPos] <= '9');
 									break;
@@ -900,27 +1004,24 @@ class Regex
 							}
 						}
 					}
-					else if (regexPos < regex.length && strPos < str.length && ((str[strPos] == regex[regexPos]) || (!matchClass && regex[regexPos] == '.' && str[strPos] != '\n' && str[strPos] != '\r')))
-					{
+					else if (regexPos < regex.length && strPos < str.length
+							&& ((str[strPos] == regex[regexPos])
+							|| (!matchClass && regex[regexPos] == '.'
+							&& str[strPos] != '\n' && str[strPos] != '\r'))) {
 						// match made
 						matchMade = true;
 					}
-					else
-					{
-						//Console.putln("false!");
+					else {
 						// no match made
 						matchMade = false;
 					}
 
-					if ((matchMade && matchInverse) || (matchInverse && strPos >= str.length))
-					{
-						//Console.putln("OK!");
+					if ((matchMade && matchInverse) || (matchInverse && strPos >= str.length)) {
 						matchMade = false;
 						break;
 					}
 
-					if (matchClass && !matchMade && regexPos < regex.length)
-					{
+					if (matchClass && !matchMade && regexPos < regex.length) {
 						regexPos++;
 						continue;
 					}
@@ -932,42 +1033,27 @@ class Regex
 				matchRange = false;
 				matchInverse = false;
 
-				if (matchMade)
-				{
-					//Console.putln("match s:", strPos, " r:", regexPos);
+				if (matchClass) {
+					matchClass = false;
 
-					// match made
-					matchMade = true;
+					if (currentClassStart in operatorFlag) {
+						regexPos = operatorFlag[currentClassStart];
+					}
+					else {
+						// dang, need to search for it
+						while(regexPos < regex.length && regex[regexPos] != ']') { regexPos++; }
+
+						if (regexPos >= regex.length) { continue; }
+
+						operatorFlag[currentClassStart] = regexPos;
+						operatorFlag[regexPos] = currentClassStart;
+					}
+				}
+
+				if (matchMade) {
 
 					// consume input string
 					strPos++;
-
-					if (matchClass)
-					{
-						matchClass = false;
-
-						if (currentClassStart in operatorFlag)
-						{
-							regexPos = operatorFlag[currentClassStart];
-							//Console.putln("] at r:", regexPos);
-						}
-						else
-						{
-							// dang, need to search for it
-							while(regexPos < regex.length && regex[regexPos] != ']') { regexPos++; }
-
-							if (regexPos >= regex.length) { continue; }
-
-							operatorFlag[currentClassStart] = regexPos;
-							operatorFlag[regexPos] = currentClassStart;
-							//Console.putln("] at r:", regexPos);
-						}
-					}
-				}
-				else
-				{
-					matchClass = false;
-				//	Console.putln("fail s:", strPos, " r:", regexPos);
 				}
 
 				// consume
@@ -975,11 +1061,17 @@ class Regex
 			}
 		}
 
+		// Null out any outstanding groups
+		if (Thread.getCurrent() in regexRefs) {
+			for( ; regexGroupStart < 9 ; regexGroupStart++ ) {
+			//	regexRefs[Thread.getCurrent()][regexGroupStart]
+				//	= null;
+			}
+		}
+
 		// Return the result
-		if (matchMade && strPosStart <= str.length)
-		{
-			if (strPos-strPosStart == 0)
-			{
+		if (matchMade && strPosStart <= str.length) {
+			if (strPos-strPosStart == 0) {
 				return new String("");
 			}
 			return str.subString(strPosStart, strPos-strPosStart);
@@ -988,18 +1080,15 @@ class Regex
 		return null;
 	}
 
-	static String eval(StringLiteral str, String regex)
-	{
+	static String eval(StringLiteral str, String regex) {
 		return eval(new String(str), regex);
 	}
 
-	static String eval(String str, StringLiteral regex)
-	{
+	static String eval(String str, StringLiteral regex) {
 		return eval(str, new String(regex));
 	}
 
-	static String eval(StringLiteral str, StringLiteral regex)
-	{
+	static String eval(StringLiteral str, StringLiteral regex) {
 		return eval(new String(str), new String(regex));
 	}
 
@@ -1011,7 +1100,11 @@ protected:
 	// Holds the regular expression for the instance
 	String regularExpression;
 
-	void buildDFA()
-	{
+	void buildDFA() {
 	}
+
+private:
+
+	static String[][Thread] regexRefs;
+
 }
