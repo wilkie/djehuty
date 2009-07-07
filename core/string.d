@@ -965,6 +965,8 @@ class String
 			end = _indices[end];
 		}
 
+		if (start > end) { return ""; }
+
 		return _data[start..end];
 	}
 
@@ -986,6 +988,8 @@ class String
 		{
 			end = _indices[end];
 		}
+
+		if (start > end) { return ""; }
 
 		return _data[start..end];
 	}

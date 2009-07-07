@@ -42,7 +42,7 @@ class Application : Responder {
 		if (className == "Application") {
 			throw new Exception("Must inherit new instance of Application");
 		}
-		
+
 		this(className);
 	}
 
@@ -55,7 +55,7 @@ class Application : Responder {
 		this.appName = new String(appName);
 		Djehuty.setApplication(this);
 	}
-	
+
 	// Properties //
 
 	// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
@@ -79,9 +79,9 @@ class Application : Responder {
 	Arguments getArguments() {
 		return arguments;
 	}
-	
+
 	// Overrides //
-	
+
 	override char[] toString() {
 		return appName.toString();
 	}
@@ -97,18 +97,18 @@ class Application : Responder {
 	//	to close.
 	void OnApplicationEnd() {
 	}
-	
+
 	// Description: Detects whether or not the application is a Zombie app;
 	//	that is, whether or not it is in a state of no improvement and is
 	//	merely sucking up resources.
 	bool isZombie() {
-		return false;
+		return true;
 	}
 
 protected:
 	String appName;
 	Arguments arguments;
-	
+
 	override bool raiseSignal(uint signal) {
 		Debugger.raiseSignal(signal);
 		return false;

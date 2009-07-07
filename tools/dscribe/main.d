@@ -11,16 +11,37 @@ import core.main;
 import core.string;
 import core.unicode;
 import core.arguments;
+import core.application;
 
-char[] usage = `dscribe rev0
+import tools.dscribe.lexer;
+
+char[] usage = `
+dscribe rev0
 
 USAGE: dscribe [-I<PATH>] -o<PATH>
-EXAMPLE: dscribe -odocs/.
-`;
+EXAMPLE: dscribe -odocs/.`;
 
-extern(System) void DjehutyMain(Arguments args)
-{
-	Djehuty.setApplicationName("djehuty-dscribe");
+class DScribe : Application {
+	static this() { new DScribe(); }
 
-	Console.putln(usage);
+	this() {
+		super("djehuty-dscribe");
+	}
+
+	void OnApplicationStart() {
+		Console.putln(usage);
+
+		Console.putln("lexer");
+
+		lexer = new LexerD();
+
+		Console.putln("lexer push");
+		push(lexer);
+
+		Console.putln("lexer work");
+		lexer.work();
+	}
+
+private:
+	LexerD lexer;
 }

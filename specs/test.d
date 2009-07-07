@@ -1,3 +1,4 @@
+
 /*
  * test.d
  *
@@ -26,7 +27,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -42,7 +43,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -58,7 +59,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -75,7 +76,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}	done before_creation() { }
@@ -94,7 +95,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}	done before_trim() { }
@@ -112,7 +113,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -128,7 +129,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -144,7 +145,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}	done before_length() { }
@@ -166,7 +167,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -184,7 +185,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -202,7 +203,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -221,7 +222,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -239,7 +240,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	return it.doesnt;
+return it.doesnt;
 }
 	return it.does;
 	}
@@ -255,7 +256,7 @@ try
 			str.append(str2);
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_append() { }
@@ -275,7 +276,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -293,7 +294,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_toLowercase() { }
@@ -313,7 +314,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -331,7 +332,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_toUppercase() { }
@@ -342,112 +343,112 @@ this() { before(); }
 
 	static void test()
 	{
-		StringTester tester = new StringTester();
+	StringTester tester = new StringTester();
 
-		Test test = new Test("String");
+	Test test = new Test("String");
 
-		it result;
+	it result;
 
-		test.logSubset("creation");
+	test.logSubset("creation");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.creation_should_handle_literals();
+	result = tester.creation_should_handle_literals();
 		test.logResult(result, "creation should handle literals", "11");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.creation_should_handle_integers();
+	result = tester.creation_should_handle_integers();
 		test.logResult(result, "creation should handle integers", "17");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.creation_should_handle_formatting();
+	result = tester.creation_should_handle_formatting();
 		test.logResult(result, "creation should handle formatting", "23");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.creation_should_handle_string_objects();
+	result = tester.creation_should_handle_string_objects();
 		test.logResult(result, "creation should handle string objects", "29");
 
-		test.logSubset("trim");
+	test.logSubset("trim");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.trim_should_trim_off_whitespace();
+	result = tester.trim_should_trim_off_whitespace();
 		test.logResult(result, "trim should trim off whitespace", "39");
 
-		test.logSubset("length");
+	test.logSubset("length");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.length_should_account_for_combining_marks();
+	result = tester.length_should_account_for_combining_marks();
 		test.logResult(result, "length should account for combining marks", "49");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.length_should_return_the_number_of_characters();
+	result = tester.length_should_return_the_number_of_characters();
 		test.logResult(result, "length should return the number of characters", "55");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.length_should_not_fail_on_an_empty_string();
+	result = tester.length_should_not_fail_on_an_empty_string();
 		test.logResult(result, "length should not fail on an empty string", "61");
 
-		test.logSubset("append");
+	test.logSubset("append");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_concatenate_a_string_object();
+	result = tester.append_should_concatenate_a_string_object();
 		test.logResult(result, "append should concatenate a string object", "70");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_concatenate_a_string_literal();
+	result = tester.append_should_concatenate_a_string_literal();
 		test.logResult(result, "append should concatenate a string literal", "80");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_concatenate_a_formatted_string_literal();
+	result = tester.append_should_concatenate_a_formatted_string_literal();
 		test.logResult(result, "append should concatenate a formatted string literal", "88");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_not_fail_on_an_empty_string_object();
+	result = tester.append_should_not_fail_on_an_empty_string_object();
 		test.logResult(result, "append should not fail on an empty string object", "96");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_not_fail_on_an_empty_string_literal();
+	result = tester.append_should_not_fail_on_an_empty_string_literal();
 		test.logResult(result, "append should not fail on an empty string literal", "105");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.append_should_throw_an_exception_for_null_string_object();
+	result = tester.append_should_throw_an_exception_for_null_string_object();
 		test.logResult(result, "append should throw an exception for null string object", "113");
 
-		test.logSubset("toLowercase");
+	test.logSubset("toLowercase");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.toLowercase_should_work_as_expected();
+	result = tester.toLowercase_should_work_as_expected();
 		test.logResult(result, "toLowercase should work as expected", "126");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.toLowercase_should_not_fail_on_an_empty_string();
+	result = tester.toLowercase_should_not_fail_on_an_empty_string();
 		test.logResult(result, "toLowercase should not fail on an empty string", "134");
 
-		test.logSubset("toUppercase");
+	test.logSubset("toUppercase");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.toUppercase_should_work_as_expected();
+	result = tester.toUppercase_should_work_as_expected();
 		test.logResult(result, "toUppercase should work as expected", "145");
 
-		tester = new StringTester();
+	tester = new StringTester();
 
-		result = tester.toUppercase_should_not_fail_on_an_empty_string();
+	result = tester.toUppercase_should_not_fail_on_an_empty_string();
 		test.logResult(result, "toUppercase should not fail on an empty string", "153");
 
 
@@ -484,7 +485,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -501,7 +502,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -517,7 +518,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -533,7 +534,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -549,7 +550,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -565,7 +566,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -581,7 +582,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -597,7 +598,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_utflen() { }
@@ -615,7 +616,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -631,7 +632,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -647,7 +648,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -663,7 +664,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -679,7 +680,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -695,7 +696,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_toUtfChars() { }
@@ -706,84 +707,84 @@ this() { before(); }
 
 	static void test()
 	{
-		UnicodeTester tester = new UnicodeTester();
+	UnicodeTester tester = new UnicodeTester();
 
-		Test test = new Test("Unicode");
+	Test test = new Test("Unicode");
 
-		it result;
+	it result;
 
-		test.logSubset("utflen");
+	test.logSubset("utflen");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
+	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
 		test.logResult(result, "utflen should be the same for utf8 as utf32", "11");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
+	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
 		test.logResult(result, "utflen should be the same for utf16 as utf32", "17");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_combining_marks_for_utf8();
+	result = tester.utflen_should_account_for_combining_marks_for_utf8();
 		test.logResult(result, "utflen should account for combining marks for utf8", "23");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_combining_marks_for_utf16();
+	result = tester.utflen_should_account_for_combining_marks_for_utf16();
 		test.logResult(result, "utflen should account for combining marks for utf16", "29");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_combining_marks_for_utf32();
+	result = tester.utflen_should_account_for_combining_marks_for_utf32();
 		test.logResult(result, "utflen should account for combining marks for utf32", "39");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_empty_strings_for_utf8();
+	result = tester.utflen_should_account_for_empty_strings_for_utf8();
 		test.logResult(result, "utflen should account for empty strings for utf8", "49");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_empty_strings_for_utf16();
+	result = tester.utflen_should_account_for_empty_strings_for_utf16();
 		test.logResult(result, "utflen should account for empty strings for utf16", "55");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.utflen_should_account_for_empty_strings_for_utf32();
+	result = tester.utflen_should_account_for_empty_strings_for_utf32();
 		test.logResult(result, "utflen should account for empty strings for utf32", "61");
 
-		test.logSubset("toUtfChars");
+	test.logSubset("toUtfChars");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
 		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "70");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
 		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "80");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
 		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "88");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
 		test.logResult(result, "toUtfChars should account for combining marks for utf32", "96");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
 		test.logResult(result, "toUtfChars should account for combining marks for utf16", "105");
 
-		tester = new UnicodeTester();
+	tester = new UnicodeTester();
 
-		result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
 		test.logResult(result, "toUtfChars should account for combining marks for utf8", "113");
 
 
@@ -807,7 +808,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -823,7 +824,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -839,7 +840,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -855,7 +856,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -885,7 +886,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -901,7 +902,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -917,7 +918,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -933,7 +934,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -949,7 +950,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -957,15 +958,25 @@ try
 	{before_eval();
 try
 {
-			String str = Regex.eval("catbert", `(cat(bert))`);
-			if(!(str == "catbert"))
+			String str = Regex.eval("acatbert", `a(cat(bert))`);
+			if(!(str == "acatbert"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_1 == "catbert"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "bert"))
 	{
 		return it.doesnt;
 	}
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -981,7 +992,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1011,7 +1022,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1041,7 +1052,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1064,7 +1075,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1087,7 +1098,131 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_group_consumption()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "poo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_group_reconsumption()
+	{before_eval();
+try
+{
+			String str = Regex.eval("bertpoopoobertpoo", `(bert|poo)+`);
+			if(!(str == "bertpoopoobertpoo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "poo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_backreferences()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogpoo=dogpoo", `(dogpoo)=\1`);
+			if(!(str == "dogpoo=dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_1 == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_forwardreferences()
+	{before_eval();
+try
+{
+			String str = Regex.eval("oneonetwo", `(\2two|(one))+`);
+			if(!(str == "oneonetwo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "onetwo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "one"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_complicated_constructions()
+	{before_eval();
+try
+{
+			String str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
+			if(!(str == `#line 43 "foo\bar"`))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "43"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == `"foo\bar"`))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_eval() { }
@@ -1098,88 +1233,113 @@ this() { before(); }
 
 	static void test()
 	{
-		RegexTester tester = new RegexTester();
+	RegexTester tester = new RegexTester();
 
-		Test test = new Test("Regex");
+	Test test = new Test("Regex");
 
-		it result;
+	it result;
 
-		test.logSubset("eval");
+	test.logSubset("eval");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_kleene_star();
+	result = tester.eval_should_handle_kleene_star();
 		test.logResult(result, "eval should handle kleene star", "11");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_lazy_kleene_star();
+	result = tester.eval_should_handle_lazy_kleene_star();
 		test.logResult(result, "eval should handle lazy kleene star", "17");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_kleene_plus();
+	result = tester.eval_should_handle_kleene_plus();
 		test.logResult(result, "eval should handle kleene plus", "23");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_lazy_kleene_plus();
+	result = tester.eval_should_handle_lazy_kleene_plus();
 		test.logResult(result, "eval should handle lazy kleene plus", "29");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_options();
+	result = tester.eval_should_handle_options();
 		test.logResult(result, "eval should handle options", "39");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_optional_groups();
+	result = tester.eval_should_handle_optional_groups();
 		test.logResult(result, "eval should handle optional groups", "49");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_union_at_base_level();
+	result = tester.eval_should_handle_union_at_base_level();
 		test.logResult(result, "eval should handle union at base level", "55");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_union_at_group_level();
+	result = tester.eval_should_handle_union_at_group_level();
 		test.logResult(result, "eval should handle union at group level", "61");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_union_with_kleene_star();
+	result = tester.eval_should_handle_union_with_kleene_star();
 		test.logResult(result, "eval should handle union with kleene star", "70");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_nested_groups();
+	result = tester.eval_should_handle_nested_groups();
 		test.logResult(result, "eval should handle nested groups", "80");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_nested_groups_with_union();
+	result = tester.eval_should_handle_nested_groups_with_union();
 		test.logResult(result, "eval should handle nested groups with union", "88");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_character_classes();
+	result = tester.eval_should_handle_character_classes();
 		test.logResult(result, "eval should handle character classes", "96");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_inverse_character_classes();
+	result = tester.eval_should_handle_inverse_character_classes();
 		test.logResult(result, "eval should handle inverse character classes", "105");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_dollar_sign();
+	result = tester.eval_should_handle_dollar_sign();
 		test.logResult(result, "eval should handle dollar sign", "113");
 
-		tester = new RegexTester();
+	tester = new RegexTester();
 
-		result = tester.eval_should_handle_beginning_of_line_caret();
+	result = tester.eval_should_handle_beginning_of_line_caret();
 		test.logResult(result, "eval should handle beginning of line caret", "126");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_group_consumption();
+		test.logResult(result, "eval should handle group consumption", "134");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_group_reconsumption();
+		test.logResult(result, "eval should handle group reconsumption", "145");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_backreferences();
+		test.logResult(result, "eval should handle backreferences", "153");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_forwardreferences();
+		test.logResult(result, "eval should handle forwardreferences", "24");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_complicated_constructions();
+		test.logResult(result, "eval should handle complicated constructions", "31");
 
 
 	}
@@ -1202,7 +1362,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1220,7 +1380,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1238,7 +1398,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1256,7 +1416,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_creation() { }
@@ -1280,7 +1440,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1302,7 +1462,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_comparison() { }
@@ -1313,44 +1473,44 @@ this() { before(); }
 
 	static void test()
 	{
-		DigestTester tester = new DigestTester();
+	DigestTester tester = new DigestTester();
 
-		Test test = new Test("Digest");
+	Test test = new Test("Digest");
 
-		it result;
+	it result;
 
-		test.logSubset("creation");
+	test.logSubset("creation");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.creation_should_allow_for_64_bits();
+	result = tester.creation_should_allow_for_64_bits();
 		test.logResult(result, "creation should allow for 64 bits", "11");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.creation_should_allow_for_128_bits();
+	result = tester.creation_should_allow_for_128_bits();
 		test.logResult(result, "creation should allow for 128 bits", "17");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.creation_should_allow_for_160_bits();
+	result = tester.creation_should_allow_for_160_bits();
 		test.logResult(result, "creation should allow for 160 bits", "23");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.creation_should_allow_for_192_bits();
+	result = tester.creation_should_allow_for_192_bits();
 		test.logResult(result, "creation should allow for 192 bits", "29");
 
-		test.logSubset("comparison");
+	test.logSubset("comparison");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.comparison_should_work_for_equals_overload();
+	result = tester.comparison_should_work_for_equals_overload();
 		test.logResult(result, "comparison should work for equals overload", "39");
 
-		tester = new DigestTester();
+	tester = new DigestTester();
 
-		result = tester.comparison_should_work_for_equals_function();
+	result = tester.comparison_should_work_for_equals_function();
 		test.logResult(result, "comparison should work for equals function", "49");
 
 
@@ -1372,7 +1532,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1388,7 +1548,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1405,7 +1565,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1432,7 +1592,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_hash() { }
@@ -1443,32 +1603,32 @@ this() { before(); }
 
 	static void test()
 	{
-		MD5Tester tester = new MD5Tester();
+	MD5Tester tester = new MD5Tester();
 
-		Test test = new Test("MD5");
+	Test test = new Test("MD5");
 
-		it result;
+	it result;
 
-		test.logSubset("hash");
+	test.logSubset("hash");
 
-		tester = new MD5Tester();
+	tester = new MD5Tester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
+	result = tester.hash_should_hash_as_expected_for_String_objects();
 		test.logResult(result, "hash should hash as expected for String objects", "11");
 
-		tester = new MD5Tester();
+	tester = new MD5Tester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
+	result = tester.hash_should_hash_as_expected_for_string_literals();
 		test.logResult(result, "hash should hash as expected for string literals", "17");
 
-		tester = new MD5Tester();
+	tester = new MD5Tester();
 
-		result = tester.hash_should_respect_leading_zeroes();
+	result = tester.hash_should_respect_leading_zeroes();
 		test.logResult(result, "hash should respect leading zeroes", "23");
 
-		tester = new MD5Tester();
+	tester = new MD5Tester();
 
-		result = tester.hash_should_work_on_byte_arrays();
+	result = tester.hash_should_work_on_byte_arrays();
 		test.logResult(result, "hash should work on byte arrays", "29");
 
 
@@ -1490,7 +1650,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1506,7 +1666,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1522,7 +1682,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_hash() { }
@@ -1533,27 +1693,27 @@ this() { before(); }
 
 	static void test()
 	{
-		SHA1Tester tester = new SHA1Tester();
+	SHA1Tester tester = new SHA1Tester();
 
-		Test test = new Test("SHA1");
+	Test test = new Test("SHA1");
 
-		it result;
+	it result;
 
-		test.logSubset("hash");
+	test.logSubset("hash");
 
-		tester = new SHA1Tester();
+	tester = new SHA1Tester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
+	result = tester.hash_should_hash_as_expected_for_String_objects();
 		test.logResult(result, "hash should hash as expected for String objects", "11");
 
-		tester = new SHA1Tester();
+	tester = new SHA1Tester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
+	result = tester.hash_should_hash_as_expected_for_string_literals();
 		test.logResult(result, "hash should hash as expected for string literals", "17");
 
-		tester = new SHA1Tester();
+	tester = new SHA1Tester();
 
-		result = tester.hash_should_hash_the_empty_string();
+	result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
 
@@ -1575,7 +1735,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1591,7 +1751,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1607,7 +1767,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_hash() { }
@@ -1618,27 +1778,27 @@ this() { before(); }
 
 	static void test()
 	{
-		SHA224Tester tester = new SHA224Tester();
+	SHA224Tester tester = new SHA224Tester();
 
-		Test test = new Test("SHA224");
+	Test test = new Test("SHA224");
 
-		it result;
+	it result;
 
-		test.logSubset("hash");
+	test.logSubset("hash");
 
-		tester = new SHA224Tester();
+	tester = new SHA224Tester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
+	result = tester.hash_should_hash_as_expected_for_String_objects();
 		test.logResult(result, "hash should hash as expected for String objects", "11");
 
-		tester = new SHA224Tester();
+	tester = new SHA224Tester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
+	result = tester.hash_should_hash_as_expected_for_string_literals();
 		test.logResult(result, "hash should hash as expected for string literals", "17");
 
-		tester = new SHA224Tester();
+	tester = new SHA224Tester();
 
-		result = tester.hash_should_hash_the_empty_string();
+	result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
 
@@ -1660,7 +1820,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1676,7 +1836,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
@@ -1692,7 +1852,7 @@ try
 
 		}catch(Exception _exception_)
 {
-	if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}	done before_hash() { }
@@ -1703,27 +1863,27 @@ this() { before(); }
 
 	static void test()
 	{
-		SHA256Tester tester = new SHA256Tester();
+	SHA256Tester tester = new SHA256Tester();
 
-		Test test = new Test("SHA256");
+	Test test = new Test("SHA256");
 
-		it result;
+	it result;
 
-		test.logSubset("hash");
+	test.logSubset("hash");
 
-		tester = new SHA256Tester();
+	tester = new SHA256Tester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
+	result = tester.hash_should_hash_as_expected_for_String_objects();
 		test.logResult(result, "hash should hash as expected for String objects", "11");
 
-		tester = new SHA256Tester();
+	tester = new SHA256Tester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
+	result = tester.hash_should_hash_as_expected_for_string_literals();
 		test.logResult(result, "hash should hash as expected for string literals", "17");
 
-		tester = new SHA256Tester();
+	tester = new SHA256Tester();
 
-		result = tester.hash_should_hash_the_empty_string();
+	result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "23");
 
 

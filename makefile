@@ -50,7 +50,7 @@ DFILES_SYNCH = synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RESOURCE = staticrsc.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_SYNCH:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_TUI:.d=.o) $(DFILES_ANALYZING:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_BINDING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_NETWORKING:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_GUI:.d=.o) $(DFILES_PARSERS:.d=.o)
+OBJS_CORE = $(DFILES:.d=.o) $(DFILES_SYNCH:.d=.o) $(DFILES_PARSING:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_TUI:.d=.o) $(DFILES_ANALYZING:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_BINDING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_NETWORKING:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_UTILS:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_GUI:.d=.o) $(DFILES_PARSERS:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 
@@ -61,7 +61,7 @@ OBJS_WIN = $(OBJS_CORE:.o=.obj) $(DFILES_PLATFORM_WIN:.d=.obj)
 OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
-TOOLS_DSCRIBE = tools/dscribe/main.d
+TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
 
 EXAMPLES_TUITETRIS = examples/tuitetris/app.d examples/tuitetris/gamewindow.d examples/tuitetris/tetris.d examples/tuitetris/gamecontrol.d
 
