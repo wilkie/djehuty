@@ -151,6 +151,11 @@ describe regex()
 			should(_2 == "one");
 		}
 
+		it should_handle_comments() {
+			String str = Regex.eval("bleh", `bl(?#comment here)eh`);
+			should(str == "bleh");
+		}
+
 		it should_handle_complicated_constructions() {
 			String str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
 			should(str == `#line 43 "foo\bar"`);
