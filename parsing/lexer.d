@@ -108,7 +108,7 @@ class Lexer : Responder
 		static String workString;
 
 		if (workString is null) { workString = new String(
-		`if else "boooo" r"asdfasdf"
+		`if else "bo\"ooo" r"asdfasdf"
 		/+ asfasdf dfasdfsdf
 		asfdasdfasdf asfdasdf +/
 		// asdfads

@@ -25,49 +25,18 @@ class LexerD : Lexer {
 
 		// Wysiwyg String Literal
 
-		addRule(Lex.WysiwygStringLiteralStart, "`");
-
-		wysiwygLiteralState = newState();
-
-		addRule(Lex.StringLiteral, "[^`]*");
-		addRule(Lex.WysiwygStringLiteralEnd, "`");
-
-		setState(normalState);
-
-		// Wysiwyg String Literal (r prefix)
-
-		addRule(Lex.WysiwygRStringLiteralStart, `r"`);
-
-		wysiwygRLiteralState = newState();
-
-		addRule(Lex.StringLiteral, `[^"]*`);
-		addRule(Lex.WysiwygRStringLiteralEnd, `"`);
-
-		setState(normalState);
+		addRule(Lex.WysiwygString, "`([^`]*)`");
+		addRule(Lex.WysiwygString, `r"([^"]*)"`);
 
 		// String Literal
 
-		addRule(Lex.StringLiteralStart, `"`);
-
-		stringLiteralState = newState();
-
-		addRule(Lex.StringLiteral, `([^\\"](?:\\.)?)*`);
-		addRule(Lex.StringLiteralEnd, `"`);
-
-		setState(normalState);
+		addRule(Lex.DoubleQuotedString, `"((?:[^\"](?:\\["'?\\abfnrtv])?)*)"`);
 
 		// Comment Line
 		addRule(Lex.CommentLine, `//([^\n\r]*)`);
 
 		// Comment Blocks
-		addRule(Lex.CommentBlockStart, `/\*`);
-
-		commentBlockState = newState(); // For within comment blocks
-
-		addRule(Lex.CommentBlockEnd, `\*/`);
-		addRule(Lex.Comment, `([^\*](?:\*[^/])?)*`);
-
-		setState(normalState);
+		addRule(Lex.CommentBlock, `/\*([^\*](?:\*[^/])?)*\*/`);
 
 		// Nested Comment Blocks
 		addRule(Lex.CommentNestedStart, `/\+`);
@@ -90,6 +59,40 @@ class LexerD : Lexer {
 		addRule(Lex.OctalLiteral, `0[_0-7]+`);
 		addRule(Lex.IntegerLiteral, `([1-9][_0-9]*|0)`);
 
+		// Operators
+		addRule(Lex.DivAssign, `/=`);
+		addRule(Lex.Div, `/`);
+
+		addRule(Lex.MulAssign, `\*=`);
+		addRule(Lex.Mul, `\*`);
+
+		addRule(Lex.AddAdd, `\+\+`);
+		addRule(Lex.AddAssign, `+=`);
+		addRule(Lex.Add, `\+`);
+
+		addRule(Lex.SubSub, `--`);
+		addRule(Lex.SubAssign, `-=`);
+		addRule(Lex.Sub, `-`);
+
+		addRule(Lex.AndAnd, `&&`);
+		addRule(Lex.AndAssign, `&=`);
+		addRule(Lex.And, `&`);
+
+		addRule(Lex.OrOr, `\|\|`);
+		addRule(Lex.OrAssign, `\|=`);
+		addRule(Lex.Or, `\|`);
+
+		addRule(Lex.DotDotDot, `\.\.\.`);
+		addRule(Lex.DotDot, `\.\.`);
+		addRule(Lex.Dot, `\.`);
+
+		addRule(Lex.LeftShiftAssign, `<<=`);
+		addRule(Lex.LeftShift, `<<`);
+		addRule(Lex.LessOrEqual, `<=`);
+		addRule(Lex.NotEqualOrEqual, `<>=`);
+		addRule(Lex.NotEqual, `<>`);
+		addRule(Lex.LessThan, `<`);
+
 		// Special Tokens
 
 		addRule(Lex.SpecialLine, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
@@ -103,33 +106,16 @@ class LexerD : Lexer {
 				break;
 			case Lex.Whitespace:
 				return true;
-			case Lex.StringLiteralStart:
-				setState(stringLiteralState);
-				return true;
-			case Lex.StringLiteralEnd:
-				setState(normalState);
-				return true;
-			case Lex.WysiwygStringLiteralStart:
-				setState(wysiwygLiteralState);
-				return true;
-			case Lex.WysiwygStringLiteralEnd:
-				setState(normalState);
-				return true;
-			case Lex.WysiwygRStringLiteralStart:
-				setState(wysiwygRLiteralState);
-				return true;
-			case Lex.WysiwygRStringLiteralEnd:
-				setState(normalState);
-				return true;
-			case Lex.CommentBlockStart:
-				// change state to comment state
-				setState(commentBlockState);
-				return true;
-			case Lex.CommentBlockEnd:
-				// change state back to normal
-				token = new Token(Lex.Comment, comment);
-				setState(normalState);
-				return true;
+			case Lex.DoubleQuotedString:
+			case Lex.WysiwygString:
+				token = new Token(Lex.StringLiteral, _1);
+				signal = Lex.StringLiteral;
+				break;
+			case Lex.CommentBlock:
+				// The grouping is the actual comment data
+				token = new Token(Lex.Comment, _1);
+				signal = Lex.Comment;
+				break;
 			case Lex.CommentNestedStart:
 				if (getState() == nestedCommentState) {
 					nestedCommentDepth++;
@@ -448,7 +434,9 @@ class LexerD : Lexer {
 					signal = Lex.With;
 				}
 				else if (token.getValue()[0..2] == `__`) {
+
 					// Reserved Identifiers
+
 					if (token.getValue() == `__FILE__`) {
 						signal = Lex.StringLiteral;
 						token = new Token(Lex.StringLiteral, new String("file.d"));

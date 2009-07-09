@@ -1199,6 +1199,22 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 }
 	return it.does;
 	}
+		it eval_should_handle_comments()
+	{before_eval();
+try
+{
+			String str = Regex.eval("bleh", `bl(?#comment here)eh`);
+			if(!(str == "bleh"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
 		it eval_should_handle_complicated_constructions()
 	{before_eval();
 try
@@ -1338,8 +1354,13 @@ this() { before(); }
 
 	tester = new RegexTester();
 
+	result = tester.eval_should_handle_comments();
+		test.logResult(result, "eval should handle comments", "31");
+
+	tester = new RegexTester();
+
 	result = tester.eval_should_handle_complicated_constructions();
-		test.logResult(result, "eval should handle complicated constructions", "31");
+		test.logResult(result, "eval should handle complicated constructions", "38");
 
 
 	}
