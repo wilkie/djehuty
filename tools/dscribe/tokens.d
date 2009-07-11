@@ -2,6 +2,9 @@ module tools.dscribe.tokens;
 
 enum Lex {
 	StringLiteral,
+	
+	Operator,
+	Delimiter,
 
 	DoubleQuotedString,
 	WysiwygString,
@@ -23,6 +26,12 @@ enum Lex {
 	OctalLiteral,
 	BinaryLiteral,
 	HexLiteral,
+	
+	FloatLiteral,
+
+	HexFloat,
+	DecimalFloat,
+	IntegerFloat,
 
 	SpecialLine,
 
@@ -45,18 +54,25 @@ enum Lex {
 	AddAdd,
 	LessThan,
 	LessOrEqual,
-	LeftShift,
-	LeftShiftAssign,
 	NotEqual,
-	NotEqualOrEqual,
 	GreaterThan,
 	GreaterOrEqual,
-	RightShiftAssign,
-	RightRotateAssign,
-	RightShift,
-	RightRotate,
-	Not,
 	Equal,
+	Tautology,
+	UnorderedLessThan,
+	UnorderedLessOrEqual,
+	UnorderedNotEqual,
+	UnorderedGreaterThan,
+	UnorderedGreaterOrEqual,
+	UnorderedEqual,
+	UnorderedContradiction,
+	LeftShift,
+	LeftShiftAssign,
+	RightShiftAssign,
+	RightShiftUnsignedAssign,
+	RightShift,
+	RightShiftUnsigned,
+	Bang,
 	LeftParen,
 	RightParen,
 	LeftBrace,
