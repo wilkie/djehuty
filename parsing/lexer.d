@@ -70,7 +70,7 @@ class Lexer : Responder
 	{
 		Rule newRule;
 
-		newRule.regex = new String("^") ~ regex;
+		newRule.regex = new String("^(?:") ~ regex ~ ")";
 		newRule.id = tokenId;
 
 		rules[stateId].addItem(newRule);
@@ -80,7 +80,7 @@ class Lexer : Responder
 	{
 		Rule newRule;
 
-		newRule.regex = new String("^(") ~ regex ~ ")";
+		newRule.regex = new String("^(?:") ~ regex ~ ")";
 		newRule.id = tokenId;
 
 		rules[stateId].addItem(newRule);
@@ -119,6 +119,7 @@ class Lexer : Responder
 
 		if (workString is null) { workString = new String(
 		`
+// comment
 import std.stdio;
 
 int utfLength(string str) {
@@ -139,10 +140,10 @@ void main() {
 	float f = 077.10e10;
 	writefln(f);
 	float d = 3L;
-	
+
 	int asd = 0x_1111p3;
 }
-		`); }
+		`w ~ " `wysiwyg string`"w); }
 
 		String s;
 

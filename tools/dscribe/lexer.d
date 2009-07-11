@@ -35,7 +35,7 @@ class LexerD : Lexer {
 
 		// String Literal
 
-		addRule(Lex.DoubleQuotedString, `"((?:[^\"](?:\\["'?\\abfnrtv])?)*)"`);
+		addRule(Lex.DoubleQuotedString, `"((?:[^\\"](?:\\.)?)*)"`);
 
 		// Comment Line
 		addRule(Lex.CommentLine, `//([^\n\r]*)`);
@@ -68,21 +68,20 @@ class LexerD : Lexer {
 		// Identifier
 
 		addRule(Lex.Identifier, `[_a-zA-Z][_a-zA-Z0-9]*`);
-		addRule(Lex.HexLiteral, `0[xX][0-9a-fA-F_]+`);
-		addRule(Lex.BinaryLiteral, `0[bB][01_]+`);
-		addRule(Lex.OctalLiteral, `0[_0-7]+`);
-		addRule(Lex.IntegerLiteral, `([1-9][_0-9]*|0)`);
+		addRule(Lex.HexLiteral, `0[xX][0-9a-fA-F_]+([uUL]*)`);
+		addRule(Lex.BinaryLiteral, `0[bB][01_]+([uUL]*)`);
+		addRule(Lex.OctalLiteral, `0[_0-7]+([uUL]*)`);
+		addRule(Lex.IntegerLiteral, `([1-9][_0-9]*|0)([uUL]*)`);
 
 		// Special Tokens
 
-		addRule(Lex.SpecialLine, 
+		addRule(Lex.SpecialLine,
 			`#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
 	}
 
 	override bool raiseSignal(uint signal) {
 		switch(signal) {
 			case Lex.Delimiter:
-						Console.putln(token.getString());
 				switch(token.getString()[0]) {
 					case '(':
 						token = new Token(Lex.LeftParen);
@@ -254,19 +253,16 @@ class LexerD : Lexer {
 				break;
 			case Lex.CommentLine:
 				token = new Token(Lex.Comment, _1);
-				signal = Lex.Comment;
 				break;
 			case Lex.Whitespace:
 				return true;
 			case Lex.DoubleQuotedString:
 			case Lex.WysiwygString:
 				token = new Token(Lex.StringLiteral, _1);
-				signal = Lex.StringLiteral;
 				break;
 			case Lex.CommentBlock:
 				// The grouping is the actual comment data
 				token = new Token(Lex.Comment, _1);
-				signal = Lex.Comment;
 				break;
 			case Lex.CommentNestedStart:
 				if (getState() == nestedCommentState) {
@@ -673,7 +669,7 @@ class LexerD : Lexer {
 		}
 
 		if (token.getString is null) {
-			Console.put(((token.getId())), " [", token.getInteger(), "] ");
+			Console.put(((token.getId())), " (", token.getInteger(), ") ");
 		}
 		else {
 			Console.put(((token.getId())), " [", token.getString(), "] ");
