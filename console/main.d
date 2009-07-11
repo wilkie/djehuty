@@ -185,16 +185,6 @@ class Console
 		ConsoleSetPosition(x,y);
 	}
 
-	static void sleep()
-	{
-				for (uint o = 0; o < 5000000; o++)
-				{
-					uint p = o * 50 + (o >> 2);
-				}
-
-	}
-
-
 	// Description: Moves the position of the caret relative to its current location.
 	// x: The number of columns for the caret to move.  Negative values move down.
 	// y: The number of rows for the caret.  Negative values move up.
