@@ -27,7 +27,7 @@ import platform.win.common;
 import platform.win.definitions;
 import platform.win.vars;
 
-extern(Windows)
+/*extern(Windows)
 DWORD _win_djehuty_thread_proc(void* udata)
 {
 	Thread t = cast(Thread)udata;
@@ -62,7 +62,7 @@ void ThreadStop(ref ThreadPlatformVars threadVars)
 
 	threadVars.thread = null;
 	threadVars.thread_id = 0;
-}
+}*/
 
 void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 {
@@ -75,10 +75,10 @@ void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 	.Sleep(cast(uint)milliseconds);
 }
 
-bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
-{
-	return threadVars.thread_id == GetCurrentThreadId();
-}
+//bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
+//{
+//	return threadVars.thread_id == GetCurrentThreadId();
+//}
 
 
 

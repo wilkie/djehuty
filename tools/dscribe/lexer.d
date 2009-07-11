@@ -23,6 +23,11 @@ class LexerD : Lexer {
 
 		addRule(Lex.Whitespace, `\s*`);
 
+		addRule(Lex.Operator, `[/=+*^%\-<>!~&\|\.]+`);
+
+		// Other Lexicon
+		addRule(Lex.Delimiter, `[()\][{}?,;:$]`);
+
 		// Wysiwyg String Literal
 
 		addRule(Lex.WysiwygString, "`([^`]*)`");
@@ -51,55 +56,202 @@ class LexerD : Lexer {
 
 		setState(normalState);
 
+		// These rules slow down the lexer with their complexity
+		addRule(Lex.DecimalFloat, `([0-9][_0-9]*|0)\.(?:[_0-9]+(?:[eE](?:\+|-)?[_0-9]+)?)?([fF]i?|Li?|i)?`);
+		addRule(Lex.DecimalFloat, `\.[0-9][_0-9]*(?:[eE](?:\+|-)?[_0-9]+)?([fF]i?|Li?|i)?`);
+		addRule(Lex.DecimalFloat, `[0-9][_0-9]*[eE][+-][_0-9]+([fF]i?|Li?|i)?`);
+
+		addRule(Lex.HexFloat, `0[xX](?:[0-9a-fA-F_]+)?\.?[0-9a-fA-F_]+[pP][+-]?[_0-9]+`);
+
+		addRule(Lex.IntegerFloat, `([1-9][_0-9]*|0)([fF]|L)?i`);
+
 		// Identifier
 
 		addRule(Lex.Identifier, `[_a-zA-Z][_a-zA-Z0-9]*`);
-		addRule(Lex.HexLiteral, `0x[0-9a-fA-F_]+`);
-		addRule(Lex.BinaryLiteral, `0b[01_]+`);
+		addRule(Lex.HexLiteral, `0[xX][0-9a-fA-F_]+`);
+		addRule(Lex.BinaryLiteral, `0[bB][01_]+`);
 		addRule(Lex.OctalLiteral, `0[_0-7]+`);
 		addRule(Lex.IntegerLiteral, `([1-9][_0-9]*|0)`);
 
-		// Operators
-		addRule(Lex.DivAssign, `/=`);
-		addRule(Lex.Div, `/`);
-
-		addRule(Lex.MulAssign, `\*=`);
-		addRule(Lex.Mul, `\*`);
-
-		addRule(Lex.AddAdd, `\+\+`);
-		addRule(Lex.AddAssign, `+=`);
-		addRule(Lex.Add, `\+`);
-
-		addRule(Lex.SubSub, `--`);
-		addRule(Lex.SubAssign, `-=`);
-		addRule(Lex.Sub, `-`);
-
-		addRule(Lex.AndAnd, `&&`);
-		addRule(Lex.AndAssign, `&=`);
-		addRule(Lex.And, `&`);
-
-		addRule(Lex.OrOr, `\|\|`);
-		addRule(Lex.OrAssign, `\|=`);
-		addRule(Lex.Or, `\|`);
-
-		addRule(Lex.DotDotDot, `\.\.\.`);
-		addRule(Lex.DotDot, `\.\.`);
-		addRule(Lex.Dot, `\.`);
-
-		addRule(Lex.LeftShiftAssign, `<<=`);
-		addRule(Lex.LeftShift, `<<`);
-		addRule(Lex.LessOrEqual, `<=`);
-		addRule(Lex.NotEqualOrEqual, `<>=`);
-		addRule(Lex.NotEqual, `<>`);
-		addRule(Lex.LessThan, `<`);
-
 		// Special Tokens
 
-		addRule(Lex.SpecialLine, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
+		addRule(Lex.SpecialLine, 
+			`#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
 	}
 
 	override bool raiseSignal(uint signal) {
 		switch(signal) {
+			case Lex.Delimiter:
+						Console.putln(token.getString());
+				switch(token.getString()[0]) {
+					case '(':
+						token = new Token(Lex.LeftParen);
+						break;
+					case ')':
+						token = new Token(Lex.RightParen);
+						break;
+					case '{':
+						token = new Token(Lex.LeftCurly);
+						break;
+					case '}':
+						token = new Token(Lex.RightCurly);
+						break;
+					case '[':
+						token = new Token(Lex.LeftBrace);
+						break;
+					case ']':
+						token = new Token(Lex.RightBrace);
+						break;
+					case '?':
+						token = new Token(Lex.QuestionMark);
+						break;
+					case ',':
+						token = new Token(Lex.Comma);
+						break;
+					case ';':
+						token = new Token(Lex.Semicolon);
+						break;
+					case ':':
+						token = new Token(Lex.Colon);
+						break;
+					case '$':
+						token = new Token(Lex.Dollar);
+						break;
+					default:
+						// unknown block delimiter
+						return true;
+					}
+				break;
+			case Lex.Operator:
+				switch(token.getString().toString) {
+					case `==`:
+						token = new Token(Lex.Equal);
+						break;
+					case `=`:
+						token = new Token(Lex.Assign);
+						break;
+					case `>>`:
+						token = new Token(Lex.RightShift);
+						break;
+					case `>>=`:
+						token = new Token(Lex.RightShiftAssign);
+						break;
+					case `>>>`:
+						token = new Token(Lex.RightShiftUnsigned);
+						break;
+					case `>>>=`:
+						token = new Token(Lex.RightShiftUnsignedAssign);
+						break;
+					case `>`:
+						token = new Token(Lex.GreaterThan);
+						break;
+					case `>=`:
+						token = new Token(Lex.GreaterOrEqual);
+						break;
+					case `<<`:
+						token = new Token(Lex.LeftShift);
+						break;
+					case `<<=`:
+						token = new Token(Lex.LeftShiftAssign);
+						break;
+					case `<`:
+						token = new Token(Lex.LessThan);
+						break;
+					case `<=`:
+						token = new Token(Lex.LessOrEqual);
+						break;
+					case `<>`:
+						token = new Token(Lex.NotEqual);
+						break;
+					case `!=`:
+						token = new Token(Lex.UnorderedNotEqual);
+						break;
+					case `!<>`:
+						token = new Token(Lex.UnorderedEqual);
+						break;
+					case `!>=`:
+						token = new Token(Lex.UnorderedLessThan);
+						break;
+					case `!<=`:
+						token = new Token(Lex.UnorderedGreaterThan);
+						break;
+					case `!<`:
+						token = new Token(Lex.UnorderedGreaterOrEqual);
+						break;
+					case `!>`:
+						token = new Token(Lex.UnorderedLessOrEqual);
+						break;
+					case `<>=`:
+						token = new Token(Lex.Tautology);
+						break;
+					case `!<>=`:
+						token = new Token(Lex.UnorderedContradiction);
+						break;
+					case `.`:
+						token = new Token(Lex.Dot);
+						break;
+					case `..`:
+						token = new Token(Lex.DotDot);
+						break;
+					case `...`:
+						token = new Token(Lex.DotDotDot);
+						break;
+					case `&&`:
+						token = new Token(Lex.AndAnd);
+						break;
+					case `&=`:
+						token = new Token(Lex.AndAssign);
+						break;
+					case `&`:
+						token = new Token(Lex.And);
+						break;
+					case `||`:
+						token = new Token(Lex.OrOr);
+						break;
+					case `|=`:
+						token = new Token(Lex.OrAssign);
+						break;
+					case `|`:
+						token = new Token(Lex.Or);
+						break;
+					case `-=`:
+						token = new Token(Lex.SubAssign);
+						break;
+					case `-`:
+						token = new Token(Lex.Sub);
+						break;
+					case `+=`:
+						token = new Token(Lex.AddAssign);
+						break;
+					case `+`:
+						token = new Token(Lex.Add);
+						break;
+					case `*=`:
+						token = new Token(Lex.MulAssign);
+						break;
+					case `*`:
+						token = new Token(Lex.Mul);
+						break;
+					case `/=`:
+						token = new Token(Lex.DivAssign);
+						break;
+					case `/`:
+						token = new Token(Lex.Div);
+						break;
+					case `~=`:
+						token = new Token(Lex.CatAssign);
+						break;
+					case `~`:
+						token = new Token(Lex.Cat);
+						break;
+					case `!`:
+						token = new Token(Lex.Bang);
+						break;
+					default:
+						// unknown operator
+						return true;
+				}
+				break;
 			case Lex.CommentLine:
 				token = new Token(Lex.Comment, _1);
 				signal = Lex.Comment;
@@ -119,7 +271,7 @@ class LexerD : Lexer {
 			case Lex.CommentNestedStart:
 				if (getState() == nestedCommentState) {
 					nestedCommentDepth++;
-					comment ~= token.getValue();
+					comment ~= token.getString();
 					return true;
 				}
 				else {
@@ -134,335 +286,384 @@ class LexerD : Lexer {
 					return true;
 				}
 				else {
-					comment ~= token.getValue();
+					comment ~= token.getString();
 					nestedCommentDepth--;
 					return true;
 				}
+			case Lex.HexLiteral:
+				ulong value = 0;
+
+				foreach(chr; token.getString()[2..token.getString().length]) {
+					if (chr != '_') {
+						value *= 16;
+						if (chr >= 'a' && chr <= 'f') {
+							value += 10 + (chr - 'a');
+						}
+						else if (chr >= 'A' && chr <= 'F') {
+							value += 10 + (chr - 'A');
+						}
+						else {
+							value += chr - '0';
+						}
+					}
+				}
+				
+				token = new Token(Lex.IntegerLiteral, value);
+				break;
+			case Lex.OctalLiteral:
+				ulong value = 0;
+
+				foreach(chr; token.getString()[1..token.getString().length]) {
+					if (chr != '_') {
+						value *= 8;
+						value += chr - '0';
+					}
+				}
+
+				token = new Token(Lex.IntegerLiteral, value);
+				break;
+			case Lex.BinaryLiteral:
+				ulong value = 0;
+
+				foreach(chr; token.getString()[2..token.getString().length]) {
+					if (chr != '_') {
+						value *= 2;
+						value += chr - '0';
+					}
+				}
+				
+				token = new Token(Lex.IntegerLiteral, value);
+				break;
+			case Lex.IntegerLiteral:
+				ulong value = 0;
+
+				foreach(chr; token.getString()) {
+					if (chr != '_') {
+						value *= 10;
+						value += chr - '0';
+					}
+				}
+				
+				token = new Token(Lex.IntegerLiteral, value);
+				break;
 			case Lex.Identifier:
-				if (token.getValue() == `abstract`) {
-					signal = Lex.Abstract;
+				if (token.getString() == `abstract`) {
+					token = new Token(Lex.Abstract);
 				}
-				else if (token.getValue() == `alias`) {
-					signal = Lex.Alias;
+				else if (token.getString() == `alias`) {
+					token = new Token(Lex.Alias);
 				}
-				else if (token.getValue() == `align`) {
-					signal = Lex.Align;
+				else if (token.getString() == `align`) {
+					token = new Token(Lex.Align);
 				}
-				else if (token.getValue() == `asm`) {
-					signal = Lex.Asm;
+				else if (token.getString() == `asm`) {
+					token = new Token(Lex.Asm);
 				}
-				else if (token.getValue() == `assert`) {
-					signal = Lex.Assert;
+				else if (token.getString() == `assert`) {
+					token = new Token(Lex.Assert);
 				}
-				else if (token.getValue() == `auto`) {
-					signal = Lex.Auto;
+				else if (token.getString() == `auto`) {
+					token = new Token(Lex.Auto);
 				}
-				else if (token.getValue() == `body`) {
-					signal = Lex.Body;
+				else if (token.getString() == `body`) {
+					token = new Token(Lex.Body);
 				}
-				else if (token.getValue() == `bool`) {
-					signal = Lex.Bool;
+				else if (token.getString() == `bool`) {
+					token = new Token(Lex.Bool);
 				}
-				else if (token.getValue() == `break`) {
-					signal = Lex.Break;
+				else if (token.getString() == `break`) {
+					token = new Token(Lex.Break);
 				}
-				else if (token.getValue() == `byte`) {
-					signal = Lex.Byte;
+				else if (token.getString() == `byte`) {
+					token = new Token(Lex.Byte);
 				}
-				else if (token.getValue() == `case`) {
-					signal = Lex.Case;
+				else if (token.getString() == `case`) {
+					token = new Token(Lex.Case);
 				}
-				else if (token.getValue() == `cast`) {
-					signal = Lex.Cast;
+				else if (token.getString() == `cast`) {
+					token = new Token(Lex.Cast);
 				}
-				else if (token.getValue() == `catch`) {
-					signal = Lex.Catch;
+				else if (token.getString() == `catch`) {
+					token = new Token(Lex.Catch);
 				}
-				else if (token.getValue() == `cdouble`) {
-					signal = Lex.Cdouble;
+				else if (token.getString() == `cdouble`) {
+					token = new Token(Lex.Cdouble);
 				}
-				else if (token.getValue() == `cent`) {
-					signal = Lex.Cent;
+				else if (token.getString() == `cent`) {
+					token = new Token(Lex.Cent);
 				}
-				else if (token.getValue() == `cfloat`) {
-					signal = Lex.Cfloat;
+				else if (token.getString() == `cfloat`) {
+					token = new Token(Lex.Cfloat);
 				}
-				else if (token.getValue() == `char`) {
-					signal = Lex.Char;
+				else if (token.getString() == `char`) {
+					token = new Token(Lex.Char);
 				}
-				else if (token.getValue() == `class`) {
-					signal = Lex.Class;
+				else if (token.getString() == `class`) {
+					token = new Token(Lex.Class);
 				}
-				else if (token.getValue() == `const`) {
-					signal = Lex.Const;
+				else if (token.getString() == `const`) {
+					token = new Token(Lex.Const);
 				}
-				else if (token.getValue() == `continue`) {
-					signal = Lex.Continue;
+				else if (token.getString() == `continue`) {
+					token = new Token(Lex.Continue);
 				}
-				else if (token.getValue() == `creal`) {
-					signal = Lex.Creal;
+				else if (token.getString() == `creal`) {
+					token = new Token(Lex.Creal);
 				}
-				else if (token.getValue() == `dchar`) {
-					signal = Lex.Dchar;
+				else if (token.getString() == `dchar`) {
+					token = new Token(Lex.Dchar);
 				}
-				else if (token.getValue() == `debug`) {
-					signal = Lex.Debug;
+				else if (token.getString() == `debug`) {
+					token = new Token(Lex.Debug);
 				}
-				else if (token.getValue() == `default`) {
-					signal = Lex.Default;
+				else if (token.getString() == `default`) {
+					token = new Token(Lex.Default);
 				}
-				else if (token.getValue() == `delegate`) {
-					signal = Lex.Delegate;
+				else if (token.getString() == `delegate`) {
+					token = new Token(Lex.Delegate);
 				}
-				else if (token.getValue() == `delete`) {
-					signal = Lex.Delete;
+				else if (token.getString() == `delete`) {
+					token = new Token(Lex.Delete);
 				}
-				else if (token.getValue() == `deprecated`) {
-					signal = Lex.Deprecated;
+				else if (token.getString() == `deprecated`) {
+					token = new Token(Lex.Deprecated);
 				}
-				else if (token.getValue() == `do`) {
-					signal = Lex.Do;
+				else if (token.getString() == `do`) {
+					token = new Token(Lex.Do);
 				}
-				else if (token.getValue() == `double`) {
-					signal = Lex.Double;
+				else if (token.getString() == `double`) {
+					token = new Token(Lex.Double);
 				}
-				else if (token.getValue() == `else`) {
-					signal = Lex.Else;
+				else if (token.getString() == `else`) {
+					token = new Token(Lex.Else);
 				}
-				else if (token.getValue() == `enum`) {
-					signal = Lex.Enum;
+				else if (token.getString() == `enum`) {
+					token = new Token(Lex.Enum);
 				}
-				else if (token.getValue() == `export`) {
-					signal = Lex.Enum;
+				else if (token.getString() == `export`) {
+					token = new Token(Lex.Enum);
 				}
-				else if (token.getValue() == `extern`) {
-					signal = Lex.Extern;
+				else if (token.getString() == `extern`) {
+					token = new Token(Lex.Extern);
 				}
-				else if (token.getValue() == `false`) {
-					signal = Lex.False;
+				else if (token.getString() == `false`) {
+					token = new Token(Lex.False);
 				}
-				else if (token.getValue() == `final`) {
-					signal = Lex.Final;
+				else if (token.getString() == `final`) {
+					token = new Token(Lex.Final);
 				}
-				else if (token.getValue() == `finally`) {
-					signal = Lex.Finally;
+				else if (token.getString() == `finally`) {
+					token = new Token(Lex.Finally);
 				}
-				else if (token.getValue() == `float`) {
-					signal = Lex.Float;
+				else if (token.getString() == `float`) {
+					token = new Token(Lex.Float);
 				}
-				else if (token.getValue() == `for`) {
-					signal = Lex.For;
+				else if (token.getString() == `for`) {
+					token = new Token(Lex.For);
 				}
-				else if (token.getValue() == `foreach`) {
-					signal = Lex.Foreach;
+				else if (token.getString() == `foreach`) {
+					token = new Token(Lex.Foreach);
 				}
-				else if (token.getValue() == `foreach_reverse`) {
-					signal = Lex.Foreach_reverse;
+				else if (token.getString() == `foreach_reverse`) {
+					token = new Token(Lex.Foreach_reverse);
 				}
-				else if (token.getValue() == `function`) {
-					signal = Lex.Function;
+				else if (token.getString() == `function`) {
+					token = new Token(Lex.Function);
 				}
-				else if (token.getValue() == `goto`) {
-					signal = Lex.Goto;
+				else if (token.getString() == `goto`) {
+					token = new Token(Lex.Goto);
 				}
-				else if (token.getValue() == `idouble`) {
-					signal = Lex.Idouble;
+				else if (token.getString() == `idouble`) {
+					token = new Token(Lex.Idouble);
 				}
-				else if (token.getValue() == `if`) {
-					signal = Lex.If;
+				else if (token.getString() == `if`) {
+					token = new Token(Lex.If);
 				}
-				else if (token.getValue() == `ifloat`) {
-					signal = Lex.Ifloat;
+				else if (token.getString() == `ifloat`) {
+					token = new Token(Lex.Ifloat);
 				}
-				else if (token.getValue() == `import`) {
-					signal = Lex.Import;
+				else if (token.getString() == `import`) {
+					token = new Token(Lex.Import);
 				}
-				else if (token.getValue() == `in`) {
-					signal = Lex.In;
+				else if (token.getString() == `in`) {
+					token = new Token(Lex.In);
 				}
-				else if (token.getValue() == `inout`) {
-					signal = Lex.Inout;
+				else if (token.getString() == `inout`) {
+					token = new Token(Lex.Inout);
 				}
-				else if (token.getValue() == `int`) {
-					signal = Lex.Int;
+				else if (token.getString() == `int`) {
+					token = new Token(Lex.Int);
 				}
-				else if (token.getValue() == `interface`) {
-					signal = Lex.Interface;
+				else if (token.getString() == `interface`) {
+					token = new Token(Lex.Interface);
 				}
-				else if (token.getValue() == `invariant`) {
-					signal = Lex.Invariant;
+				else if (token.getString() == `invariant`) {
+					token = new Token(Lex.Invariant);
 				}
-				else if (token.getValue() == `ireal`) {
-					signal = Lex.Ireal;
+				else if (token.getString() == `ireal`) {
+					token = new Token(Lex.Ireal);
 				}
-				else if (token.getValue() == `is`) {
-					signal = Lex.Is;
+				else if (token.getString() == `is`) {
+					token = new Token(Lex.Is);
 				}
-				else if (token.getValue() == `lazy`) {
-					signal = Lex.Lazy;
+				else if (token.getString() == `lazy`) {
+					token = new Token(Lex.Lazy);
 				}
-				else if (token.getValue() == `long`) {
-					signal = Lex.Long;
+				else if (token.getString() == `long`) {
+					token = new Token(Lex.Long);
 				}
-				else if (token.getValue() == `macro`) {
-					signal = Lex.Macro;
+				else if (token.getString() == `macro`) {
+					token = new Token(Lex.Macro);
 				}
-				else if (token.getValue() == `mixin`) {
-					signal = Lex.Mixin;
+				else if (token.getString() == `mixin`) {
+					token = new Token(Lex.Mixin);
 				}
-				else if (token.getValue() == `module`) {
-					signal = Lex.Module;
+				else if (token.getString() == `module`) {
+					token = new Token(Lex.Module);
 				}
-				else if (token.getValue() == `new`) {
-					signal = Lex.New;
+				else if (token.getString() == `new`) {
+					token = new Token(Lex.New);
 				}
-				else if (token.getValue() == `null`) {
-					signal = Lex.Null;
+				else if (token.getString() == `null`) {
+					token = new Token(Lex.Null);
 				}
-				else if (token.getValue() == `out`) {
-					signal = Lex.Out;
+				else if (token.getString() == `out`) {
+					token = new Token(Lex.Out);
 				}
-				else if (token.getValue() == `override`) {
-					signal = Lex.Override;
+				else if (token.getString() == `override`) {
+					token = new Token(Lex.Override);
 				}
-				else if (token.getValue() == `package`) {
-					signal = Lex.Package;
+				else if (token.getString() == `package`) {
+					token = new Token(Lex.Package);
 				}
-				else if (token.getValue() == `pragma`) {
-					signal = Lex.Pragma;
+				else if (token.getString() == `pragma`) {
+					token = new Token(Lex.Pragma);
 				}
-				else if (token.getValue() == `private`) {
-					signal = Lex.Private;
+				else if (token.getString() == `private`) {
+					token = new Token(Lex.Private);
 				}
-				else if (token.getValue() == `protected`) {
-					signal = Lex.Protected;
+				else if (token.getString() == `protected`) {
+					token = new Token(Lex.Protected);
 				}
-				else if (token.getValue() == `public`) {
-					signal = Lex.Public;
+				else if (token.getString() == `public`) {
+					token = new Token(Lex.Public);
 				}
-				else if (token.getValue() == `real`) {
-					signal = Lex.Real;
+				else if (token.getString() == `real`) {
+					token = new Token(Lex.Real);
 				}
-				else if (token.getValue() == `ref`) {
-					signal = Lex.Ref;
+				else if (token.getString() == `ref`) {
+					token = new Token(Lex.Ref);
 				}
-				else if (token.getValue() == `return`) {
-					signal = Lex.Return;
+				else if (token.getString() == `return`) {
+					token = new Token(Lex.Return);
 				}
-				else if (token.getValue() == `scope`) {
-					signal = Lex.Scope;
+				else if (token.getString() == `scope`) {
+					token = new Token(Lex.Scope);
 				}
-				else if (token.getValue() == `short`) {
-					signal = Lex.Short;
+				else if (token.getString() == `short`) {
+					token = new Token(Lex.Short);
 				}
-				else if (token.getValue() == `static`) {
-					signal = Lex.Static;
+				else if (token.getString() == `static`) {
+					token = new Token(Lex.Static);
 				}
-				else if (token.getValue() == `struct`) {
-					signal = Lex.Struct;
+				else if (token.getString() == `struct`) {
+					token = new Token(Lex.Struct);
 				}
-				else if (token.getValue() == `super`) {
-					signal = Lex.Super;
+				else if (token.getString() == `super`) {
+					token = new Token(Lex.Super);
 				}
-				else if (token.getValue() == `switch`) {
-					signal = Lex.Switch;
+				else if (token.getString() == `switch`) {
+					token = new Token(Lex.Switch);
 				}
-				else if (token.getValue() == `synchronized`) {
-					signal = Lex.Synchronized;
+				else if (token.getString() == `synchronized`) {
+					token = new Token(Lex.Synchronized);
 				}
-				else if (token.getValue() == `template`) {
-					signal = Lex.Template;
+				else if (token.getString() == `template`) {
+					token = new Token(Lex.Template);
 				}
-				else if (token.getValue() == `this`) {
-					signal = Lex.This;
+				else if (token.getString() == `this`) {
+					token = new Token(Lex.This);
 				}
-				else if (token.getValue() == `throw`) {
-					signal = Lex.Throw;
+				else if (token.getString() == `throw`) {
+					token = new Token(Lex.Throw);
 				}
-				else if (token.getValue() == `true`) {
-					signal = Lex.True;
+				else if (token.getString() == `true`) {
+					token = new Token(Lex.True);
 				}
-				else if (token.getValue() == `try`) {
-					signal = Lex.Try;
+				else if (token.getString() == `try`) {
+					token = new Token(Lex.Try);
 				}
-				else if (token.getValue() == `typedef`) {
-					signal = Lex.Typedef;
+				else if (token.getString() == `typedef`) {
+					token = new Token(Lex.Typedef);
 				}
-				else if (token.getValue() == `typeid`) {
-					signal = Lex.Typeid;
+				else if (token.getString() == `typeid`) {
+					token = new Token(Lex.Typeid);
 				}
-				else if (token.getValue() == `typeof`) {
-					signal = Lex.Typeof;
+				else if (token.getString() == `typeof`) {
+					token = new Token(Lex.Typeof);
 				}
-				else if (token.getValue() == `ubyte`) {
-					signal = Lex.Ubyte;
+				else if (token.getString() == `ubyte`) {
+					token = new Token(Lex.Ubyte);
 				}
-				else if (token.getValue() == `ucent`) {
-					signal = Lex.Ucent;
+				else if (token.getString() == `ucent`) {
+					token = new Token(Lex.Ucent);
 				}
-				else if (token.getValue() == `uint`) {
-					signal = Lex.Uint;
+				else if (token.getString() == `uint`) {
+					token = new Token(Lex.Uint);
 				}
-				else if (token.getValue() == `ulong`) {
-					signal = Lex.Ulong;
+				else if (token.getString() == `ulong`) {
+					token = new Token(Lex.Ulong);
 				}
-				else if (token.getValue() == `union`) {
-					signal = Lex.Union;
+				else if (token.getString() == `union`) {
+					token = new Token(Lex.Union);
 				}
-				else if (token.getValue() == `unittest`) {
-					signal = Lex.Unittest;
+				else if (token.getString() == `unittest`) {
+					token = new Token(Lex.Unittest);
 				}
-				else if (token.getValue() == `ushort`) {
-					signal = Lex.Ushort;
+				else if (token.getString() == `ushort`) {
+					token = new Token(Lex.Ushort);
 				}
-				else if (token.getValue() == `version`) {
-					signal = Lex.Version;
+				else if (token.getString() == `version`) {
+					token = new Token(Lex.Version);
 				}
-				else if (token.getValue() == `void`) {
-					signal = Lex.Void;
+				else if (token.getString() == `void`) {
+					token = new Token(Lex.Void);
 				}
-				else if (token.getValue() == `volatile`) {
-					signal = Lex.Volatile;
+				else if (token.getString() == `volatile`) {
+					token = new Token(Lex.Volatile);
 				}
-				else if (token.getValue() == `wchar`) {
-					signal = Lex.Wchar;
+				else if (token.getString() == `wchar`) {
+					token = new Token(Lex.Wchar);
 				}
-				else if (token.getValue() == `while`) {
-					signal = Lex.While;
+				else if (token.getString() == `while`) {
+					token = new Token(Lex.While);
 				}
-				else if (token.getValue() == `with`) {
-					signal = Lex.With;
+				else if (token.getString() == `with`) {
+					token = new Token(Lex.With);
 				}
-				else if (token.getValue()[0..2] == `__`) {
+				else if (token.getString()[0..2] == `__`) {
 
 					// Reserved Identifiers
 
-					if (token.getValue() == `__FILE__`) {
-						signal = Lex.StringLiteral;
+					if (token.getString() == `__FILE__`) {
 						token = new Token(Lex.StringLiteral, new String("file.d"));
 					}
-					else if (token.getValue() == `__LINE__`) {
-						signal = Lex.IntegerLiteral;
+					else if (token.getString() == `__LINE__`) {
 						token = new Token(Lex.IntegerLiteral, new String(0));
 					}
-					else if (token.getValue() == `__DATE__`) {
-						signal = Lex.StringLiteral;
+					else if (token.getString() == `__DATE__`) {
 						token = new Token(Lex.StringLiteral, new String("mmmm dd yyyy"));
 					}
-					else if (token.getValue() == `__TIME__`) {
-						signal = Lex.StringLiteral;
+					else if (token.getString() == `__TIME__`) {
 						token = new Token(Lex.StringLiteral, new String("hh:mm:ss"));
 					}
-					else if (token.getValue() == `__TIMESTAMP__`) {
-						signal = Lex.StringLiteral;
+					else if (token.getString() == `__TIMESTAMP__`) {
 						token = new Token(Lex.StringLiteral, new String("www mmm dd hh:mm:ss yyyy"));
 					}
-					else if (token.getValue() == `__VENDER__`) {
-						signal = Lex.StringLiteral;
+					else if (token.getString() == `__VENDER__`) {
 						token = new Token(Lex.StringLiteral, new String(""));
 					}
-					else if (token.getValue() == `__VERSION__`) {
-						signal = Lex.IntegerLiteral;
+					else if (token.getString() == `__VERSION__`) {
 						token = new Token(Lex.StringLiteral, new String(0));
 					}
 				}
@@ -471,9 +672,14 @@ class LexerD : Lexer {
 				break;
 		}
 
-		Console.putln("raiseSignal " , signal, " [", token.getValue(), "]");
+		if (token.getString is null) {
+			Console.put(((token.getId())), " [", token.getInteger(), "] ");
+		}
+		else {
+			Console.put(((token.getId())), " [", token.getString(), "] ");
+		}
 
-		return super.raiseSignal(signal);
+		return super.raiseSignal(token.getId());
 	}
 
 protected:

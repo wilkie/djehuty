@@ -123,7 +123,7 @@ class Regex {
 	// str: The String to run the regular expression upon.
 	// regex: The regular expression to use.
 	// Returns: The matched substring or null when no match could be found.
-	static String eval(String str, String regex) {
+	static String eval(String str, String regex, string options = "") {
 		int strPos;
 		int regexPos;
 
@@ -157,6 +157,18 @@ class Regex {
 			int unionPos;
 			int groupId;
 		}
+		
+		bool multiline;
+
+		foreach(chr; options) {
+			switch(chr) {
+				case 'm':
+					multiline = true;
+					break;
+				default:
+					break;
+			}
+		}
 
 		// This hash table contains information about a grouping
 		// for a specific position in the regex.
@@ -178,6 +190,10 @@ class Regex {
 		bool matchClass = false;
 		bool matchInverse = false;
 		bool matchRange = false;
+
+		bool noMatchClass = false;
+		
+		bool backtrackedOnCaret = false;
 
 		regexRefs[Thread.getCurrent()] = new String[](9);
 
@@ -248,7 +264,7 @@ class Regex {
 			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch) {
 				if (memoizer[strPos][regexPos] == 1) {
 					// we have been here before
-					//backtrack = true;
+					backtrack = true;
 				}
 				else {
 					memoizer[strPos][regexPos] = 1;
@@ -288,7 +304,16 @@ class Regex {
 
 				if (noMatch) {
 					if (noMatchUntilClosedAtPos == -1) {
+
 						// No union, so just start the regex at the next character in the string.
+						
+						// UNLESS the backtrack happened at a 'caret' character in the regex
+						if (backtrackedOnCaret) {
+							matchMade = false;
+							running = false;
+							break;
+						}
+
 						strPosStart++;
 						strPos = strPosStart;
 
@@ -328,6 +353,21 @@ class Regex {
 					//strPos = findBackupPosition();
 					backtrack = true;
 				}
+				continue;
+			}
+			else if (noMatch && regex[regexPos] == '\\') {
+				regexPos+=2;
+				continue;
+			}
+			else if (noMatch && noMatchClass) {
+				if (regex[regexPos] == ']') {
+					noMatchClass = false;
+				}
+				regexPos++;
+			}
+			else if (noMatch && regex[regexPos] == '[') {
+				// ignore!
+				noMatchClass = true;
 				continue;
 			}
 			else if (regex[regexPos] == '|') {
@@ -372,11 +412,12 @@ class Regex {
 							noMatchUntilUnionForPos = -1;
 						}
 					}
-					else {
+					else if (!noMatch) {
 						// undo actions
 						strPos = groupInfo[currentGroupIdx].strPos;
 
 						noMatch = false;
+					
 						matchMade = true;
 					}
 				}
@@ -820,14 +861,26 @@ class Regex {
 				regexPos++;
 			}
 			else if (regex[regexPos] == '^') {
-				if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r') {
-					matchMade = true;
+				if (multiline) {
+					if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r') {
+						matchMade = true;
+					}
+					else {
+						// Multiline option:
+						backtrack = true;
+						continue;
+					}
 				}
 				else {
-					//regexPos = findBackupRegexPosition();
-					//strPos = findBackupPosition();
-					backtrack = true;
-					continue;
+					if (strPos == 0) {
+						matchMade = true;
+					}
+					else {
+						backtrackedOnCaret = true;
+						// Nonmultiline option:
+						backtrack = true;
+						continue;
+					}
 				}
 				regexPos++;
 			}
@@ -994,6 +1047,10 @@ class Regex {
 									matchMade = str[strPos] == '\a';
 									break;
 
+								case '0':
+									matchMade = str[strPos] == '\0';
+									break;
+
 								case '\0':
 									matchMade = str[strPos] == '\0';
 									break;
@@ -1041,7 +1098,10 @@ class Regex {
 					}
 					else {
 						// dang, need to search for it
-						while(regexPos < regex.length && regex[regexPos] != ']') { regexPos++; }
+						regexPos++;
+						for(;regexPos < regex.length && regex[regexPos] != ']'; regexPos++) {
+							if (regex[regexPos] == '\\') { regexPos++; }
+						}
 
 						if (regexPos >= regex.length) { continue; }
 

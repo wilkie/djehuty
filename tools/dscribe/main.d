@@ -31,14 +31,9 @@ class DScribe : Application {
 	void OnApplicationStart() {
 		Console.putln(usage);
 
-		Console.putln("lexer");
-
 		lexer = new LexerD();
 
-		Console.putln("lexer push");
 		push(lexer);
-
-		Console.putln("lexer work");
 		lexer.work();
 	}
 

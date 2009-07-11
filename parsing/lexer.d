@@ -28,24 +28,34 @@ class Token
 	// actualValue: The value as seen in the stream that identifies with this type of Token.
 	this(int tokenId, String actualValue = null) {
 		id = tokenId;
-		value = actualValue;
-		if (value is null) {
-			value = new String("");
+		strValue = actualValue;
+		if (strValue is null) {
+			strValue = new String("");
 		}
+	}
+
+	this(int tokenId, ulong actualValue) {
+		id = tokenId;
+		intValue = actualValue;
 	}
 
 	int getId() {
 		return id;
 	}
 
-	String getValue() {
-		return value;
+	String getString() {
+		return strValue;
+	}
+
+	ulong getInteger() {
+		return intValue;
 	}
 
 protected:
 
 	int id;
-	String value;
+	String strValue;
+	ulong intValue;
 }
 
 // Description: This class will take a lexicon and produce a series of Tokens from the input stream.
@@ -70,7 +80,7 @@ class Lexer : Responder
 	{
 		Rule newRule;
 
-		newRule.regex = new String("^") ~ regex;
+		newRule.regex = new String("^(") ~ regex ~ ")";
 		newRule.id = tokenId;
 
 		rules[stateId].addItem(newRule);
@@ -108,29 +118,39 @@ class Lexer : Responder
 		static String workString;
 
 		if (workString is null) { workString = new String(
-		`if else "bo\"ooo" r"asdfasdf"
-		/+ asfasdf dfasdfsdf
-		asfdasdfasdf asfdasdf +/
-		// asdfads
-		if auto else synchronized 01
-		// comment line asdfasdfasdf
-		asdfasdf if auto 123
-		if __FILE__ __TIME__
-		#line 43 "foo\bar"
+		`
+import std.stdio;
+
+int utfLength(string str) {
+	return 5;
+}
+
+int utfLength(int[] foo) {
+	return 3;
+}
+
+void main() {
+	string bleh = "asdfsdf";
+	writefln("foo".utfLength());
+
+	int[] b = [0,1,2];
+	writefln(b.utfLength());
+
+	float f = 077.10e10;
+	writefln(f);
+	float d = 3L;
+	
+	int asd = 0x_1111p3;
+}
 		`); }
 
 		String s;
 
 		foreach(int i, rule; rules[stateId])
-			{
+		{
 			s = Regex.eval(workString, rule.regex);
-			if (s !is null)
+			if (s !is null && s != "")
 			{
-				if (s == "")
-				{
-					continue;
-				}
-
 				workString = workString.subString(s.length);
 
 				token = new Token(rule.id, s);
