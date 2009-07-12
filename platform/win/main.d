@@ -1584,7 +1584,7 @@ int mainloop()
 	SetTextColor(dc, 0xf800f8);
 
 	SelectObject(dc, fvars.fontHandle);
-	TextOutW(dc, 0,0, "Your Score was:\0"w.ptr, 16);
+	//TextOutW(dc, 0,0, "Your Score was:\0"w.ptr, 16);
 
 
 

@@ -14,6 +14,7 @@ import core.string;
 
 import tui.application;
 import tui.window;
+import tui.textfield;
 
 import networking.irc;
 
@@ -25,7 +26,7 @@ import hashes.md5;
 
 import specs.test;
 
-class MyControl : Widget {
+/*class MyControl : Widget {
 
 	this() {
 		super(0,50,100,100);
@@ -39,9 +40,9 @@ class MyControl : Widget {
 
 protected:
 	Image img;
-}
+}*/
 
-class MyWindow : Window {
+/*class MyWindow : Window {
 	this() {
 		super("Hello", WindowStyle.Fixed, Color.Red, 100,100,300,300);
 
@@ -83,23 +84,39 @@ private:
 
 	Button closeButton;
 	Button button;
-}
+}*/
 
 class MyTApp : TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void OnApplicationStart() {
-		push(new TuiWindow());
+			 tuiwnd = new MyTWindow();
+			 push(tuiwnd);
+
 	}
 
 	override void OnApplicationEnd() {
 		Console.clear();
 		Console.putln("Your app has been ended.");
-		Console.putln("Go away");
+		//Console.putln("Go away");
 	}
+
+private:
+		MyTWindow tuiwnd;
 }
 
-class MyApp : GuiApplication {
+class MyTWindow : TuiWindow {
+
+	  this(){
+	  		 super();
+	  		 push(tuitext = new TuiTextField(0,Console.getHeight(),Console.getWidth(), fgColor.White));
+	  }
+
+private:
+	TuiTextField tuitext;
+}
+
+/*class MyApp : GuiApplication {
 	// Start an application instance
 	static this() { new MyApp(); }
 
@@ -114,4 +131,4 @@ class MyApp : GuiApplication {
 
 private:
 	MyWindow wnd;
-}
+}*/

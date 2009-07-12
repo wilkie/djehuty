@@ -53,6 +53,9 @@ class TuiWindow : Responder
 				}
 			} while (_focused_control !is c);
 		}
+
+	 	_width = Console.getWidth();
+	 	_height = Console.getHeight();
 	}
 
 	void OnUninitialize()
@@ -61,6 +64,8 @@ class TuiWindow : Responder
 
 	void OnResize()
 	{
+	 	_width = Console.getWidth();
+	 	_height = Console.getHeight();
 	}
 
 	void OnKeyDown(uint keyCode)
@@ -157,6 +162,16 @@ class TuiWindow : Responder
 		{
 			_focused_control.OnMouseMove();
 		}
+	}
+	
+	uint getWidth()
+	{
+	 	 return _width;
+	}
+
+	uint getHeight()
+	{
+	 	 return _height;
 	}
 
 	// Description: This event will be called by any Control tied to this window that raises an event.
@@ -265,4 +280,7 @@ protected:
 	TuiWidget _captured_control;
 	TuiWidget _last_control;
 	TuiWidget _focused_control;
+	
+	uint _width;
+	uint _height;
 }

@@ -214,6 +214,26 @@ class Console
 	{
 		ConsoleHideCaret();
 	}
+	
+	// Description: Will return the height
+	static uint getHeight()
+	{
+ 	 	   uint width;
+ 	 	   uint height;
+		   ConsoleGetSize(width, height);
+		   
+		   return height;
+	}
+
+	// Description: Will return the width
+	static uint getWidth()
+	{
+ 	 	   uint width;
+ 	 	   uint height;
+		   ConsoleGetSize(width, height);
+		   
+		   return width;
+	}
 
 	// Description: Will wait for input and return the key pressed and also the translated Unicode UTF-32 character that this keypress represents, if applicable.
 	// chr: Will be set to the UTF-32 character.
