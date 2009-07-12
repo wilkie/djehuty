@@ -88,21 +88,12 @@ private:
 
 import tui.textfield;
 
-class MyTWindow : TuiWindow {
-	this() {
-		push(new TuiTextField(0,55,80));
-	}
-}
-
 class MyTApp : TuiApplication {
 	static this() { new MyTApp(); }
 
 	override void OnApplicationStart() {
 			 tuiwnd = new MyTWindow();
 			 push(tuiwnd);
-
-=======
-		push(new MyTWindow());
 	}
 
 	override void OnApplicationEnd() {

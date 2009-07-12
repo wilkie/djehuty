@@ -101,21 +101,14 @@ class TuiTextField : TuiWidget
 	override void OnGotFocus()
 	{
 		Console.showCaret();
-		
-		uint yPos = _y;
-		
-		if(Console.getWidth == _width)
-		{
-			yPos--;
-		}
 
 		if (_pos == _max)
 		{
-			Console.setPosition(_x+_max, yPos);
+			Console.setPosition(_x+_max, _y);
 		}
 		else
 		{
-			Console.setPosition(_x+1+_pos, yPos);
+			Console.setPosition(_x+1+_pos, _y);
 		}
 
 		Console.setColor(fgColor.BrightWhite, bgColor.Black);
