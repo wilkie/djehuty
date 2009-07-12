@@ -15,6 +15,7 @@ import platform.win.common;
 import core.main;
 import core.literals;
 import core.unicode;
+import core.string;
 
 import synch.thread;
 
@@ -73,6 +74,9 @@ int _console_x;
 int _console_y;
 ushort _curAttribs;
 
+UINT _consoleCP;
+UINT _consoleOutputCP;
+
 void thread_proc(bool pleaseStop)
 {
 	if (pleaseStop)
@@ -105,26 +109,42 @@ void thread_proc(bool pleaseStop)
 
 void ConsoleInit()
 {
-	CONSOLE_SCREEN_BUFFER_INFO cinfo;
-
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	GetConsoleScreenBufferInfo(hStdout, &cinfo);
 
-	_console_x = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
-	_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
+	_consoleCP = GetConsoleCP();
+	_consoleOutputCP = GetConsoleOutputCP();
+
+	SetConsoleOutputCP(65001);
+	SetConsoleCP(65001);
+
+	DWORD consoleMode;
+	GetConsoleMode(hStdout, &consoleMode);
+
+	// Turn off automatic line advancement
+	consoleMode &= ~(0x2);
+
+	SetConsoleMode(hStdout, consoleMode);
 
 	t = new Thread;
 
 	t.setDelegate(&thread_proc);
 
 	t.start();
+}
 
+void ConsoleUninit() {
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-//	HWND console_hwnd = GetConsoleWindow();
-//	printf(":%x:\n", console_hwnd);
+	SetConsoleOutputCP(_consoleOutputCP);
+	SetConsoleCP(_consoleCP);
 
-//	_console_oldproc = cast(WNDPROC)SetWindowLongW(console_hwnd, GWLP_WNDPROC, cast(ulong)&ConsoleProc);
-//	printf(":%x:\n", _console_oldproc);
+	DWORD consoleMode;
+	GetConsoleMode(hStdout, &consoleMode);
+
+	// Turn on automatic line advancement
+	consoleMode |= 0x2;
+
+	SetConsoleMode(hStdout, consoleMode);
 }
 
 void ConsoleSetColors(uint fg, uint bg, int bright)
@@ -361,12 +381,39 @@ void ConsolePutString(dchar[] chrs)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	wchar[] str = Unicode.toUtf16(chrs);
-
 	uint numCharsWritten;
 
+	uint x, y, w, h;
+	_ConsoleGetPosition(x,y);
+	ConsoleGetSize(w,h);
+
 	// TODO: Worry about codepage?
-	WriteConsoleW(hStdout, str.ptr, str.length, &numCharsWritten, null);
+
+	// print line by line
+
+	String str = new String(Unicode.toUtf16(chrs));
+	uint len = str.length;
+
+	uint pos = 0;
+	while (len > 0) {
+		uint curlen = w - x;
+		if (len > curlen) {
+			SetConsoleTitleW("boob"w.ptr);
+			WriteConsoleW(hStdout, str[pos..pos+curlen].ptr, curlen, &numCharsWritten, null);
+			len -= curlen;
+			pos += curlen;
+			x = 0;
+			if (y <= h) {
+				y++;
+			}
+		}
+		else {
+			SetConsoleTitleW("boo"w.ptr);
+			WriteConsoleW(hStdout, str[pos..str.length].ptr, len, &numCharsWritten, null);
+			x += str.length - pos;
+			len = 0;
+		}
+	}
 }
 
 void ConsolePutChar(dchar chr)
@@ -382,6 +429,12 @@ void ConsolePutChar(dchar chr)
 
 	WriteConsoleOutputAttribute(hStdout, &_curAttribs, 1, csbi.dwCursorPosition, &ret);
 
+	void progressCursor() {
+		COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
+
+		SetConsoleCursorPosition( hStdout, coordScreen );
+	}
+
 	if (chr >= 0x410 && chr <= 0x43c)
 	{
 		// this is cp866
@@ -389,10 +442,6 @@ void ConsolePutChar(dchar chr)
 		char[] chrs_small = [ cast(char)((chr-0x410)+0x80) ];
 
 		WriteConsoleOutputCharacterA(hStdout, chrs_small.ptr, 1, csbi.dwCursorPosition, &ret);
-
-		COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-		SetConsoleCursorPosition( hStdout, coordScreen );
 
 		return;
 	}
@@ -418,10 +467,6 @@ void ConsolePutChar(dchar chr)
 
 		WriteConsoleOutputCharacterA(hStdout, chrs_small.ptr, 1, csbi.dwCursorPosition, &ret);
 
-		COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-		SetConsoleCursorPosition( hStdout, coordScreen );
-
 		return;
 	}
 	else if ((chr >= 0x0401 && chr <= 0x045E) || chr == 0x00B0 || chr == 0x00B7 || chr == 0x00A0 || chr == 0x00A4 || chr == 0x2219 || chr ==  0x221A || chr ==  0x2116 || chr ==  0x25A0)
@@ -436,9 +481,6 @@ void ConsolePutChar(dchar chr)
 
 				WriteConsoleOutputCharacterA(hStdout, chrs_small.ptr, 1, csbi.dwCursorPosition, &ret);
 
-				COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-				SetConsoleCursorPosition( hStdout, coordScreen );
 				return;
 			}
 		}
@@ -455,9 +497,6 @@ void ConsolePutChar(dchar chr)
 
 				WriteConsoleOutputCharacterA(hStdout, chrs_small.ptr, 1, csbi.dwCursorPosition, &ret);
 
-				COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-				SetConsoleCursorPosition( hStdout, coordScreen );
 				return;
 			}
 		}
@@ -467,11 +506,6 @@ void ConsolePutChar(dchar chr)
 	StringLiteral16 chrs = Unicode.toUtf16(chrs32);
 
 	WriteConsoleOutputCharacterW(hStdout, chrs.ptr, chrs.length, csbi.dwCursorPosition, &ret);
-
-	COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-	SetConsoleCursorPosition( hStdout, coordScreen );
-
 }
 
 void ConsoleGetChar(out dchar chr, out uint code)

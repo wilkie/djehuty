@@ -280,6 +280,18 @@ align(1) struct CONSOLE_INFO
    WCHAR    ConsoleTitle[0x100];
 }
 
+struct CONSOLE_SCREEN_BUFFER_INFOEX {
+	ULONG      cbSize = CONSOLE_SCREEN_BUFFER_INFOEX.sizeof;
+	COORD      dwSize;
+	COORD      dwCursorPosition;
+	WORD       wAttributes;
+	SMALL_RECT srWindow;
+	COORD      dwMaximumWindowSize;
+	WORD       wPopupAttributes;
+	BOOL       bFullscreenSupported;
+	COLORREF   ColorTable[16];
+}
+
 struct CONSOLE_FONT_INFO {
 	DWORD nFont;
 	COORD dwFontSize;
@@ -1069,6 +1081,14 @@ extern(Windows)
 	BOOL SetConsoleTextAttribute(HANDLE, WORD);
 
 	BOOL GetConsoleScreenBufferInfo(HANDLE, CONSOLE_SCREEN_BUFFER_INFO*);
+	BOOL GetConsoleScreenBufferInfoEx(HANDLE, CONSOLE_SCREEN_BUFFER_INFOEX*);
+	BOOL SetConsoleScreenBufferInfoEx(HANDLE, CONSOLE_SCREEN_BUFFER_INFOEX*);
+
+	BOOL GetConsoleMode(HANDLE, DWORD*);
+	BOOL SetConsoleMode(HANDLE, DWORD);
+
+	BOOL SetConsoleTitleW(LPCWSTR);
+
 	BOOL SetConsoleWindowInfo(HANDLE,BOOL,SMALL_RECT*);
 	BOOL SetConsoleScreenBufferSize(HANDLE, COORD);
 
@@ -1095,7 +1115,7 @@ extern(Windows)
 	BOOL WriteConsoleW(HANDLE, VOID*, DWORD, DWORD*, VOID*);
 
 	BOOL SetConsoleOutputCP(UINT);
-	
+
 	COORD GetConsoleFontSize(HANDLE, DWORD);
 	BOOL GetCurrentConsoleFont(HANDLE, BOOL, CONSOLE_FONT_INFO*);
 	BOOL GetCurrentConsoleFontEx(HANDLE, BOOL, CONSOLE_FONT_INFOEX*);
@@ -1104,7 +1124,7 @@ extern(Windows)
 
 	BOOL EnumDisplayMonitors(HDC, LPRECT, BOOL function(HMONITOR, HDC, LPRECT, LPARAM), LPARAM);
 	BOOL GetMonitorInfoW(HMONITOR, LPMONITORINFO);
-	
+
 	// SYSTEM POLLING
 
 	BOOL GlobalMemoryStatusEx(LPMEMORYSTATUSEX);

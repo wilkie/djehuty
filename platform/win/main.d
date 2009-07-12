@@ -10,6 +10,7 @@
 
 module platform.win.main;
 
+import platform.win.console;
 import platform.win.common;
 import platform.win.vars;
 import platform.win.widget;
@@ -1562,19 +1563,16 @@ int mainloop()
 		Sleep(1);
 	}
 
-
-
-
 	// THIS CODE PRINTS TO THE CONSOLE WINDOW USING GDI
 
 	HWND hwndConsole = GetConsoleWindow();
 	HDC dc = GetDC(hwndConsole);
 
-   CONSOLE_FONT_INFO cfi ;
-   COORD fsize ;
-   HANDLE hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_FONT_INFO cfi ;
+	COORD fsize ;
+	HANDLE hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-   GetCurrentConsoleFont(hConsoleOut, FALSE, &cfi);
+	GetCurrentConsoleFont(hConsoleOut, FALSE, &cfi);
 
 	Font fnt = new Font("Terminal", 10, 400, false, false, false);
 	FontPlatformVars* fvars = FontGetPlatformVars(fnt);
@@ -1585,6 +1583,8 @@ int mainloop()
 
 	SelectObject(dc, fvars.fontHandle);
 	//TextOutW(dc, 0,0, "Your Score was:\0"w.ptr, 16);
+
+	ConsoleUninit();
 
 
 
