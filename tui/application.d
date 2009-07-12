@@ -7,6 +7,9 @@ import core.string;
 import core.event;
 import core.main;
 
+import platform.imports;
+mixin(PlatformGenericImport!("console"));
+
 // Description: This class represents a Text User Interface application (TUI).
 class TuiApplication : Application {
 public:
@@ -42,10 +45,11 @@ protected:
 private:
 
 	void setWindow(TuiWindow window) {
-		if (!Djehuty._console_inited) {
-			//ConsoleInit();
+		if (!_inited) {
+			ConsoleInit();
 
 			Djehuty._console_inited = true;
+			_inited = true;
 		}
 
 		_curConsoleWindow = window;
@@ -53,4 +57,6 @@ private:
 		// Draw Window
 		window.OnInitialize();
 	}
+
+	bool _inited;
 }
