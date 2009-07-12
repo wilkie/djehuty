@@ -35,20 +35,17 @@ class TuiTextField : TuiWidget
 		Console.setPosition(_x, _y);
 		Console.setColor(fgColor.BrightBlue, bgColor.Black);
 		Console.put("[");
-		//fflush(stdout);
 
 		Console.setColor(fgColor.BrightWhite);
 
 		for (int i=0; i<_max; i++)
 		{
 			Console.put(" ");
-		//	fflush(stdout);
 		}
 
 		Console.setColor(fgColor.BrightBlue);
 
 		Console.put("]");
-		//fflush(stdout);
 	}
 
 	override void OnKeyDown(uint keyCode)

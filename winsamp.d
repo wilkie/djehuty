@@ -85,11 +85,19 @@ private:
 	Button button;
 }
 
+import tui.textfield;
+
+class MyTWindow : TuiWindow {
+	this() {
+		push(new TuiTextField(0,55,80));
+	}
+}
+
 class MyTApp : TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void OnApplicationStart() {
-		push(new TuiWindow());
+		push(new MyTWindow());
 	}
 
 	override void OnApplicationEnd() {
@@ -101,7 +109,7 @@ class MyTApp : TuiApplication {
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
+	//static this() { new MyApp(); }
 
 	override void OnApplicationStart() {
 		wnd = new MyWindow();
