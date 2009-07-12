@@ -48,6 +48,7 @@ HFONT win_button_font;
 HMODULE win_uxThemeMod;
 
 bool console_loop = true;
+uint exitCode;
 
 const uint MI_WP_SIGNATURE = 0xFF515700;
 const uint SIGNATURE_MASK = 0xFFFFFF00;
@@ -1723,7 +1724,7 @@ ci.ConsoleTitle[0] = '\0';
 
 //	SetConsoleInfo(hwndConsole, &ci);
 
-	PostQuitMessage(0);
+	PostQuitMessage(exitCode);
 
 	/*
 	bool close = false;
@@ -1742,7 +1743,7 @@ ci.ConsoleTitle[0] = '\0';
 		Sleep(1);
 	}	*/
 
-	return 1;
+	return exitCode;
 }
 
 DWORD threadPoo(void* boo) {

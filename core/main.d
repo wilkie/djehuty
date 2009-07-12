@@ -52,7 +52,7 @@ void DjehutyStart() {
 	}
 }
 
-void DjehutyEnd() {
+void DjehutyEnd(uint code = 0) {
 	// Tell all running threads that they should end to allow shutdown to commense
 	if (Djehuty._threads !is null) {
 		Djehuty._threadRegisterSemaphore.down();
@@ -67,7 +67,7 @@ void DjehutyEnd() {
 	Djehuty.app.OnApplicationEnd();
 
 	// End the application proper (from the platform's point of view)
-	Scaffold.AppEnd();
+	Scaffold.AppEnd(code);
 
 	Console.setColor(fgColor.White, bgColor.Black);
 }

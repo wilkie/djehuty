@@ -104,7 +104,7 @@ class TuiWidget : Responder
 			OnAdd();
 
 			// If we are pushed to the current window, also call init event
-			if ((cast(TuiApplication)Djehuty.app).getWindow() is _window)
+			if (_window.isActive())
 			{
 				OnInit();
 			}
@@ -127,4 +127,8 @@ protected:
 
 	uint _width = 0;
 	uint _height = 0;
+	
+	bool canDraw() {
+		return _window !is null && _window.isActive;
+	}
 }

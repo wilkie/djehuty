@@ -104,6 +104,10 @@ class Application : Responder {
 	bool isZombie() {
 		return true;
 	}
+	
+	void exit(uint code) {
+		DjehutyEnd(code);
+	}
 
 protected:
 	String appName;

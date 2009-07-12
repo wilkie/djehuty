@@ -27,11 +27,11 @@ public:
 	}
 
 	override void push(Dispatcher dsp) {
+		super.push(dsp);
+
 		if (cast(TuiWindow)dsp !is null) {
 			setWindow(cast(TuiWindow)dsp);
 		}
-
-		super.push(dsp);
 	}
 
 	TuiWindow getWindow() {
@@ -40,7 +40,7 @@ public:
 
 protected:
 
-	TuiWindow _curConsoleWindow;
+	package TuiWindow _curConsoleWindow;
 
 private:
 

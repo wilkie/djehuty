@@ -18,7 +18,8 @@ void AppStart()
 {
 }
 
-void AppEnd() {
+void AppEnd(uint code) {
+	exitCode = code;
 	console_loop = false;
 	_appEnd = true;
 }

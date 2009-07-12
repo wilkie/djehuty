@@ -97,6 +97,7 @@ class MyTApp : TuiApplication {
 	}
 
 	override void OnApplicationEnd() {
+		Console.setColor(fgColor.BrightWhite, bgColor.Black);
 		Console.clear();
 		Console.putln("Your app has been ended.");
 		//Console.putln("Go away");
@@ -110,7 +111,32 @@ class MyTWindow : TuiWindow {
 
 	this(){
 		super();
-		push(tuitext = new TuiTextField(0,Console.getHeight(),Console.getWidth(), fgColor.White));
+
+		push(tuitext = new TuiTextField(0,Console.getHeight(),Console.getWidth(), "boo"));
+
+		tuitext.basecolor = fgColor.White;
+		tuitext.forecolor = fgColor.BrightYellow;
+		tuitext.backcolor = bgColor.Green;
+		
+		string foo = tuitext.text;
+		tuitext.text = "hahaha" ~ foo;
+	}
+	
+	override void OnKeyDown(uint keyCode)
+	{
+		if(keyCode == KeyEnd)
+		{
+			//quit
+			getApplication.exit(0);
+		}
+		else if (keyCode == KeyPageUp) {
+			// meh
+			tuitext.forecolor = fgColor.Red;
+		}
+		else
+		{
+			super.OnKeyDown(keyCode);
+		}
 	}
 
 private:

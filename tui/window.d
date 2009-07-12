@@ -27,6 +27,9 @@ class TuiWindow : Responder
 	{
 		// go through control list, init
 
+		_width = Console.getWidth();
+		_height = Console.getHeight();
+
 		Console.setColor(getBackgroundColor());
 		Console.clear();
 
@@ -53,9 +56,6 @@ class TuiWindow : Responder
 				}
 			} while (_focused_control !is c);
 		}
-
-		_width = Console.getWidth();
-		_height = Console.getHeight();
 	}
 
 	void OnUninitialize()
@@ -188,6 +188,7 @@ class TuiWindow : Responder
 		if (cast(TuiWidget)dsp !is null) {
 			// do not add a control that is already part of another window
 			TuiWidget control = cast(TuiWidget)dsp;
+
 			if (control._nextControl !is null) { return; }
 
 			// add to the control linked list
@@ -264,7 +265,14 @@ class TuiWindow : Responder
 			}
 		} while (_focused_control !is curFocus);
 	}
-
+	
+	TuiApplication getApplication() {
+		return cast(TuiApplication)responder;
+	}
+	
+	bool isActive() {
+		return (getApplication() !is null && getApplication.getWindow() is this);
+	}
 
 	Mouse mouseProps;
 
