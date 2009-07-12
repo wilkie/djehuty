@@ -185,6 +185,7 @@ class Console
 		ConsoleSetPosition(x,y);
 	}
 
+
 	// Description: Moves the position of the caret relative to its current location.
 	// x: The number of columns for the caret to move.  Negative values move down.
 	// y: The number of rows for the caret.  Negative values move up.
@@ -203,6 +204,28 @@ class Console
 	static void hideCaret()
 	{
 		ConsoleHideCaret();
+	}
+
+	// Description: Will return the height
+	static uint getHeight()
+	{
+		uint width;
+		uint height;
+
+		ConsoleGetSize(width, height);
+
+		return height;
+	}
+
+	// Description: Will return the width
+	static uint getWidth()
+	{
+		uint width;
+		uint height;
+
+		ConsoleGetSize(width, height);
+
+		return width;
 	}
 
 	// Description: Will wait for input and return the key pressed and also the translated Unicode UTF-32 character that this keypress represents, if applicable.
@@ -634,4 +657,3 @@ private:
 	static int _vt100_curparam = 0;
 	static int _vt100_paramFilled = 0;
 }
-

@@ -13,11 +13,13 @@ import tui.widget;
 // Description: This console control abstracts a simple one line text field.
 class TuiTextField : TuiWidget
 {
-	this( uint x, uint y, uint width )
+	this( uint x, uint y, uint width, fgColor color = fgColor.BrightBlue)
 	{
 		_x = x;
 		_y = y;
 		_width = width;
+
+		_color = color;
 
 		_max = width-2;
 	}
@@ -33,7 +35,7 @@ class TuiTextField : TuiWidget
 	override void OnInit()
 	{
 		Console.setPosition(_x, _y);
-		Console.setColor(fgColor.BrightBlue, bgColor.Black);
+		Console.setColor(_color, bgColor.Black);
 		Console.put("[");
 
 		Console.setColor(fgColor.BrightWhite);
@@ -43,10 +45,11 @@ class TuiTextField : TuiWidget
 			Console.put(" ");
 		}
 
-		Console.setColor(fgColor.BrightBlue);
+		Console.setColor(_color);
 
 		Console.put("]");
 	}
+
 
 	override void OnKeyDown(uint keyCode)
 	{
@@ -100,12 +103,13 @@ class TuiTextField : TuiWidget
 
 		if (_pos == _max)
 		{
-			Console.setPosition(_x+1+_max-1, _y);
+			Console.setPosition(_x+_max, _y);
 		}
 		else
 		{
 			Console.setPosition(_x+1+_pos, _y);
 		}
+
 		Console.setColor(fgColor.BrightWhite, bgColor.Black);
 	}
 
@@ -114,6 +118,8 @@ protected:
 	uint _x = 0;
 	uint _y = 0;
 	uint _width = 0;
+
+	fgColor _color = fgColor.BrightBlue;
 
 	uint _pos = 0;
 	uint _max = 0;
