@@ -1,3 +1,11 @@
+/*
+ * unicode.d
+ *
+ * This module implements unicode functions that were badly needed.
+ *
+ * Author: Dave Wilkinson
+ *
+ */
 
 module core.unicode;
 
@@ -19,7 +27,7 @@ private const auto UNI_MAX_UTF16 = cast(dchar)0x0010FFFF;
 private const auto UNI_MAX_UTF32 = cast(dchar)0x7FFFFFFF;
 private const auto UNI_MAX_LEGAL_UTF32 = cast(dchar)0x0010FFFF;
 
-private static const char firstByteMark[7] = [ 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC ];
+private static const ubyte firstByteMark[7] = [ 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC ];
 
 /*
  * Index into the table below with the first byte of a UTF-8 sequence to
@@ -1142,13 +1150,6 @@ static:
 
 		return len;
 	}
-
-
-
-
-
-
-
 
 	// Unicode Indices
 

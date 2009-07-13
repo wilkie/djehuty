@@ -26,12 +26,10 @@ class TuiTextField : TuiWidget {
 	// Constructors
 
 	this( uint x, uint y, uint width, string value = "") {
-		_x = x;
-		_y = y;
-		_width = width;
+		super(x,y,width,1);
 
 		_max = width-2;
-		
+
 		_value = new String(value);
 	}
 
@@ -147,10 +145,6 @@ class TuiTextField : TuiWidget {
 	}
 
 protected:
-
-	uint _x = 0;
-	uint _y = 0;
-	uint _width = 0;
 
 	fgColor _color = fgColor.BrightBlue;
 	fgColor _forecolor = fgColor.BrightWhite;
