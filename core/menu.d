@@ -17,7 +17,7 @@ class Menu
 
 	// -- constructors -- //
 
-	this(StringLiteral text, Menu[] submenus = null)
+	this(string text, Menu[] submenus = null)
 	{
 		_value = new String(text);
 
@@ -83,7 +83,7 @@ class Menu
 		_updateItem();
 	}
 
-	void SetText(StringLiteral newValue)
+	void SetText(string newValue)
 	{
 		_value = new String(newValue);
 
@@ -202,7 +202,7 @@ MenuPlatformVars MenuGetPlatformVars(ref Menu mnu)
 
 //CONSTRUCTORS
 
-//NAME:(StringLiteral text, Menu[] submenus = null)
+//NAME:(string text, Menu[] submenus = null)
 //DESC:Creates the menu with the initial caption 'text' with the initial subitems given as an array of Menu objects.  If none are specified, or null is passed, then the menu initially does not have subitems.
 //PARAM:text
 //DESC:The initial caption.
@@ -223,7 +223,7 @@ MenuPlatformVars MenuGetPlatformVars(ref Menu mnu)
 //PARAM:newValue
 //DESC:The text for the menu item.
 
-//NAME:SetText(StringLiteral newValue)
+//NAME:SetText(string newValue)
 //DESC:Sets the text for the menu item.
 //PARAM:newValue
 //DESC:The text for the menu item.

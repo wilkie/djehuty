@@ -28,7 +28,7 @@ class ConsolePrompt
 
 	// Description: This will set the prompt string that will precede the input.
 	// prompt: A string representing the prompt.
-	void setPrompt(StringLiteral prompt)
+	void setPrompt(string prompt)
 	{
 		_prompt = new String(prompt);
 	}

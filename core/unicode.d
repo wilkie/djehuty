@@ -4,8 +4,6 @@ module core.unicode;
 import core.definitions;
 import core.literals;
 
-import core.stringliteral;
-
 private static const uint halfShift = 10;
 private static const uint halfBase = 0x0010000;
 private static const uint halfMask = 0x3FF;
@@ -93,19 +91,19 @@ struct Unicode
 {
 static:
 
-	StringLiteral8 toUtf8(StringLiteral8 src)
+	string toUtf8(string src)
 	{
-		return cast(StringLiteral8)src.dup;
+		return cast(string)src.dup;
 	}
 
-	StringLiteral8 toUtf8(StringLiteral16 src)
+	string toUtf8(wstring src)
 	{
 		if (src.length == 0)
 		{
-			return cast(StringLiteral8)"";
+			return cast(string)"";
 		}
 
-		char[] container = new char[src.length*2];
+		char[] container = new char[src.length*4];
 
 		const auto byteMask = 0xBF;
 		const auto byteMark = 0x80;
@@ -190,14 +188,15 @@ static:
 			target += bytesToWrite;
 		}
 
-		return cast(StringLiteral8)container[0..target - container.ptr];
+		return container[0..target - container.ptr];
+//		return "";
 	}
 
-	StringLiteral8 toUtf8(StringLiteral32 src)
+	string toUtf8(dstring src)
 	{
 		if (src is null || src.length == 0)
 		{
-			return cast(StringLiteral8)"";
+			return cast(string)"";
 		}
 
 		char[] container = new char[src.length*4];
@@ -262,15 +261,15 @@ static:
 
 		uint targetLen = target - container.ptr;
 
-		StringLiteral8 ret = cast(StringLiteral8)container[0..targetLen];
+		string ret = cast(string)container[0..targetLen];
 		return ret;
 	}
 
-	StringLiteral16 toUtf16(StringLiteral8 src)
+	wstring toUtf16(string src)
 	{
 		if (src.length == 0)
 		{
-			return cast(StringLiteral16)"";
+			return cast(wstring)"";
 		}
 
 		wchar[] container = new wchar[src.length];
@@ -337,19 +336,19 @@ static:
 			}
 		}
 
-		return cast(StringLiteral16)container[0..target - container.ptr];
+		return cast(wstring)container[0..target - container.ptr];
 	}
 
-	StringLiteral16 toUtf16(StringLiteral16 src)
+	wstring toUtf16(wstring src)
 	{
-		return cast(StringLiteral16)src.dup;
+		return cast(wstring)src.dup;
 	}
 
-	StringLiteral16 toUtf16(StringLiteral32 src)
+	wstring toUtf16(dstring src)
 	{
 		if (src.length == 0)
 		{
-			return cast(StringLiteral16)"";
+			return cast(wstring)"";
 		}
 
 		wchar[] container = new wchar[src.length];
@@ -391,14 +390,14 @@ static:
 			}
 		}
 
-		return cast(StringLiteral16)container[0..target - container.ptr];
+		return cast(wstring)container[0..target - container.ptr];
 	}
 
-	StringLiteral32 toUtf32(StringLiteral8 src)
+	dstring toUtf32(string src)
 	{
 		if (src.length == 0)
 		{
-			return cast(StringLiteral32)"";
+			return cast(dstring)"";
 		}
 
 		dchar[] container = new dchar[src.length];
@@ -464,14 +463,14 @@ static:
 			}
 		}
 
-		return cast(StringLiteral32)container[0..target - container.ptr];
+		return cast(dstring)container[0..target - container.ptr];
 	}
 
-	StringLiteral32 toUtf32(StringLiteral16 src)
+	dstring toUtf32(wstring src)
 	{
 		if (src.length == 0)
 		{
-			return cast(StringLiteral32)"";
+			return cast(dstring)"";
 		}
 
 		dchar[] container = new dchar[src.length];
@@ -511,59 +510,59 @@ static:
 			*target++ = ch;
 		}
 
-		return cast(StringLiteral32)container[0..target - container.ptr];
+		return cast(dstring)container[0..target - container.ptr];
 	}
 
-	StringLiteral32 toUtf32(StringLiteral32 src)
+	dstring toUtf32(dstring src)
 	{
-		return cast(StringLiteral32)src.dup;
+		return cast(dstring)src.dup;
 	}
 
-	StringLiteral toNative(StringLiteral8 src)
-	{
-		static if (Char.sizeof == dchar.sizeof)
-		{
-			return cast(StringLiteral)toUtf32(src);
-		}
-		else static if (Char.sizeof == wchar.sizeof)
-		{
-			return cast(StringLiteral)toUtf16(src);
-		}
-		else
-		{
-			return cast(StringLiteral)toUtf8(src);
-		}
-	}
-
-	StringLiteral toNative(StringLiteral16 src)
+	Char[] toNative(string src)
 	{
 		static if (Char.sizeof == dchar.sizeof)
 		{
-			return cast(StringLiteral)toUtf32(src);
+			return cast(Char[])toUtf32(src);
 		}
 		else static if (Char.sizeof == wchar.sizeof)
 		{
-			return cast(StringLiteral)toUtf16(src);
+			return cast(Char[])toUtf16(src);
 		}
 		else
 		{
-			return cast(StringLiteral)toUtf8(src);
+			return cast(Char[])toUtf8(src);
 		}
 	}
 
-	StringLiteral toNative(StringLiteral32 src)
+	Char[] toNative(wstring src)
 	{
 		static if (Char.sizeof == dchar.sizeof)
 		{
-			return cast(StringLiteral)toUtf32(src);
+			return cast(Char[])toUtf32(src);
 		}
 		else static if (Char.sizeof == wchar.sizeof)
 		{
-			return cast(StringLiteral)toUtf16(src);
+			return cast(Char[])toUtf16(src);
 		}
 		else
 		{
-			return cast(StringLiteral)toUtf8(src);
+			return cast(Char[])toUtf8(src);
+		}
+	}
+
+	Char[] toNative(dstring src)
+	{
+		static if (Char.sizeof == dchar.sizeof)
+		{
+			return cast(Char[])toUtf32(src);
+		}
+		else static if (Char.sizeof == wchar.sizeof)
+		{
+			return cast(Char[])toUtf16(src);
+		}
+		else
+		{
+			return cast(Char[])toUtf8(src);
 		}
 	}
 
@@ -571,7 +570,7 @@ static:
 
 
 	// character conversions
-	dchar toUtf32Char(StringLiteral8 src)
+	dchar toUtf32Char(string src)
 	{
 		// grab the first character,
 		// convert it to a UTF-32 character,
@@ -639,7 +638,7 @@ static:
 		+/
 	}
 
-	dchar toUtf32Char(StringLiteral16 src)
+	dchar toUtf32Char(wstring src)
 	{
 		// grab the first character,
 		// convert it to a UTF-32 character,
@@ -681,7 +680,7 @@ static:
 		return ch;
 	}
 
-	dchar toUtf32Char(StringLiteral32 src)
+	dchar toUtf32Char(dstring src)
 	{
 		// Useless function
 
@@ -718,7 +717,7 @@ static:
 
 
 	// character conversions
-	dchar[] toUtf32Chars(StringLiteral8 src)
+	dchar[] toUtf32Chars(string src)
 	{
 		// grab the first character,
 		// convert it to a UTF-32 character,
@@ -816,7 +815,7 @@ static:
 		return container;
 	}
 
-	dchar[] toUtf32Chars(StringLiteral16 src)
+	dchar[] toUtf32Chars(wstring src)
 	{
 		// grab the first character,
 		// convert it to a UTF-32 character,
@@ -884,7 +883,7 @@ static:
 		return container;
 	}
 
-	dchar[] toUtf32Chars(StringLiteral32 src)
+	dchar[] toUtf32Chars(dstring src)
 	{
 		CharLiteral32[] container;
 
@@ -913,7 +912,7 @@ static:
 
 
 
-	wchar[] toUtf16Chars(StringLiteral32 src)
+	wchar[] toUtf16Chars(dstring src)
 	{
 		CharLiteral16[] container;
 
@@ -978,7 +977,7 @@ static:
 
 
 
-	char[] toUtf8Chars(StringLiteral32 src)
+	char[] toUtf8Chars(dstring src)
 	{
 		CharLiteral8[] container;
 
@@ -999,7 +998,7 @@ static:
 
 
 	// string length stuffs
-	uint utflen(StringLiteral8 src)
+	uint utflen(string src)
 	{
 		if (src.length == 0)
 		{
@@ -1072,7 +1071,7 @@ static:
 		return len;
 	}
 
-	uint utflen(StringLiteral16 src)
+	uint utflen(wstring src)
 	{
 		if (src.length == 0)
 		{
@@ -1122,7 +1121,7 @@ static:
 		return len;
 	}
 
-	uint utflen(StringLiteral32 src)
+	uint utflen(dstring src)
 	{
 		if (src.length == 0)
 		{
@@ -1153,7 +1152,7 @@ static:
 
 	// Unicode Indices
 
-	uint[] calcIndices(StringLiteral8 src)
+	uint[] calcIndices(string src)
 	{
 		if (src is null)
 		{
@@ -1233,7 +1232,7 @@ static:
 		return ret[0..len];
 	}
 
-	uint[] calcIndices(StringLiteral16 src)
+	uint[] calcIndices(wstring src)
 	{
 		if (src is null)
 		{
@@ -1295,7 +1294,7 @@ static:
 		return ret[0..len];
 	}
 
-	uint[] calcIndices(StringLiteral32 src)
+	uint[] calcIndices(dstring src)
 	{
 		if (src is null)
 		{

@@ -195,7 +195,7 @@ class ListBox : Widget
 		_checkScrollBarStatus();
 	}
 
-	void addItem(StringLiteral data)
+	void addItem(string data)
 	{
 		_list.addItem(new String(data));
 

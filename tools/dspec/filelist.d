@@ -81,7 +81,7 @@ protected:
 		auto dirs = dir.list();
 		//auto dirs = std.file.listdir(path);
 
-		Char[] ext;
+		string ext;
 		//char[] ext;
 
 		foreach (d; dirs)

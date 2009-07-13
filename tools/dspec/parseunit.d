@@ -24,7 +24,7 @@ class ParseUnit
 	{
 		// get class name
 		ClassInfo ci = this.classinfo;
-		String className = new String(Unicode.toNative(ci.name));
+		String className = new String(ci.name);
 
 		Console.putln("CLASS: ", className.array);
 
@@ -37,7 +37,7 @@ class ParseUnit
 			className = new String(className[pos+1..className.length]);
 		}
 		Console.putln("CLASS: ", className.array);
-		
+
 		parseTree.name = className;
 
 		for(;;)
@@ -48,14 +48,14 @@ class ParseUnit
 				idx = 0;
 
 				if (tokens is null) { return original; }
-			}
+   }
 
 			for( ; idx < tokens.length ; idx++)
 			{
 				currentToken = tokens[idx];
-				if (currentToken.array in parseFunctions)
+				if (currentToken.toString in parseFunctions)
 				{
-					parseFunctions[currentToken.array]();
+					parseFunctions[currentToken.toString]();
 				}
 				else
 				{
@@ -83,7 +83,7 @@ class ParseUnit
 		}
 				
 		parseTree.right = right;
-		
+
 		if (parseTree !is original && right !is null && right.valueType == AST.ValueType.Name)
 		{
 			String val;
@@ -102,7 +102,7 @@ protected:
 
 	alias void delegate() ParseFunction;
 
-	ParseFunction[Char[]] parseFunctions;
+	ParseFunction[string] parseFunctions;
 
 	ParseUnit parseUnit;
 	
@@ -126,10 +126,10 @@ protected:
 	
 	void registerToken(String token, ParseFunction func)
 	{
-		parseFunctions[token.array] = func;
+		parseFunctions[token.toString] = func;
 	}
 	
-	void registerToken(StringLiteral token, ParseFunction func)
+	void registerToken(string token, ParseFunction func)
 	{
 		parseFunctions[token] = func;
 	}

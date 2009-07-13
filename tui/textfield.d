@@ -23,7 +23,7 @@ class TuiTextField : TuiWidget {
 
 		_max = width-2;
 		
-		_value = new String(Unicode.toNative(value));
+		_value = new String(value);
 	}
 
 	// Events
@@ -101,7 +101,7 @@ class TuiTextField : TuiWidget {
 	// Description: This property sets the current text within the field.
 	// text: The new value for the field.
 	void text(string text) {
-		_value = new String(Unicode.toNative(text));
+		_value = new String(text);
 		draw();
 	}
 

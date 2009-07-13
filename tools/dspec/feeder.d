@@ -83,11 +83,11 @@ protected:
 				{
 					if (lastpos != i)
 					{
-						ret ~= new String(Unicode.toNative(s[lastpos..i]));
+						ret ~= new String(s[lastpos..i]);
 					}
 					if (keepDelim)
 					{
-						ret ~= new String(Unicode.toNative(s[i..i+1]));
+						ret ~= new String(s[i..i+1]);
 					}
 					lastpos = i+1;
 				}

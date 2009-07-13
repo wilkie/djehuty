@@ -173,7 +173,7 @@ public:
 	// Description: This function will calculate the MD5 hash of a UTF8 encoded string.
 	// utf8Message: The string to hash.
 	// Returns: A string representing the MD5 hash.
-	Digest hash(StringLiteral utfMessage)
+	Digest hash(string utfMessage)
 	{
 		return hash(cast(ubyte[])Unicode.toUtf8(utfMessage));
 	}

@@ -154,7 +154,7 @@ public:
 	// Description: This function will calculate the SHA-1 hash of a UTF8 encoded string.
 	// utf8Message: The string to hash.
 	// Returns: A string representing the SHA-1 hash.
-	Digest hash(StringLiteral8 utf8Message)
+	Digest hash(string utf8Message)
 	{
 		return hash(cast(ubyte[])utf8Message);
 	}

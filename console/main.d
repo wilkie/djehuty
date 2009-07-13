@@ -291,17 +291,17 @@ class Console
 				else if (_arguments[curArg] is typeid(char[]))
 				{
 					char[] chrs = va_arg!(char[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(chrs);
 				}
 				else if (_arguments[curArg] is typeid(wchar[]))
 				{
 					wchar[] chrs = va_arg!(wchar[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(Unicode.toUtf8(chrs));
 				}
 				else if (_arguments[curArg] is typeid(dchar[]))
 				{
 					dchar[] chrs = va_arg!(dchar[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(Unicode.toUtf8(chrs));
 				}
 				else if (_arguments[curArg] is typeid(dchar)) {
 					dchar chr = va_arg!(dchar)(_argptr);
@@ -321,7 +321,7 @@ class Console
 				else
 				{
 					Object obj = va_arg!(Object)(_argptr);
-					toParse = new String(Unicode.toNative(obj.toString()));
+					toParse = new String(obj.toString());
 				}
 
 				if (toParse !is null)
@@ -389,17 +389,17 @@ class Console
 				else if (_arguments[curArg] is typeid(char[]))
 				{
 					char[] chrs = va_arg!(char[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(chrs);
 				}
 				else if (_arguments[curArg] is typeid(wchar[]))
 				{
 					wchar[] chrs = va_arg!(wchar[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(Unicode.toUtf8(chrs));
 				}
 				else if (_arguments[curArg] is typeid(dchar[]))
 				{
 					dchar[] chrs = va_arg!(dchar[])(_argptr);
-					toParse = new String(Unicode.toNative(chrs));
+					toParse = new String(Unicode.toUtf8(chrs));
 				}
 				else if (_arguments[curArg] is typeid(dchar)) {
 					dchar chr = va_arg!(dchar)(_argptr);
@@ -419,7 +419,7 @@ class Console
 				else
 				{
 					Object obj = va_arg!(Object)(_argptr);
-					toParse = new String(Unicode.toNative(obj.toString()));
+					toParse = new String(obj.toString());
 				}
 
 				if (toParse !is null)

@@ -25,7 +25,7 @@ mixin(PlatformScaffoldImport!());
 
 class GLWindow : Window
 {
-	this(StringLiteral windowTitle, WindowStyle windowStyle, int x, int y, int width, int height) {
+	this(string windowTitle, WindowStyle windowStyle, int x, int y, int width, int height) {
 		super(windowTitle, windowStyle, Color.Black, x, y, width, height);
 	}
 

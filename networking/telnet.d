@@ -95,7 +95,7 @@ public:
 	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
 	// host: The host to connect to.
 	// port: The port to use to connect.  Default is 23.
-	bool connect(StringLiteral host, ushort port = 23)
+	bool connect(string host, ushort port = 23)
 	{
 		_connected = _skt.connect(host,port);
 
@@ -138,8 +138,8 @@ public:
 	{
 		if (_connected)
 		{
-			StringLiteral32 chrs = [ chr ];
-			StringLiteral8 chrarray = Unicode.toUtf8(chrs);
+			dstring chrs = [ chr ];
+			string chrarray = Unicode.toUtf8(chrs);
 
 			_skt.write(cast(ubyte*)chrarray.ptr, chrarray.length);
 		}

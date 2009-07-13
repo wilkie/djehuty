@@ -15,7 +15,7 @@ class GrammarPhrase
 		_rule = rule;
 	}
 
-	this(StringLiteral rule)
+	this(string rule)
 	{
 		this(new String(rule));
 	}
@@ -46,7 +46,7 @@ class GrammarRule
 		_right = new GrammarPhrase(rule.subString(divider+2).trim);
 	}
 
-	this(StringLiteral rule)
+	this(string rule)
 	{
 		this(new String(rule));
 	}
@@ -67,7 +67,7 @@ class Grammar
 	{
 	}
 
-	void addRule(StringLiteral rule)
+	void addRule(string rule)
 	{
 		GrammarRule newRule = new GrammarRule(rule);
 

@@ -69,7 +69,7 @@ public:
 		{
 			// get class name
 			ClassInfo ci = w.classinfo;
-			String className = new String(Unicode.toNative(ci.name));
+			String className = new String(ci.name);
 
 			Console.putln("    from window: ", className.array, " [", w.getText().array, "]");
 		}
@@ -77,7 +77,7 @@ public:
 		{
 			// get class name
 			ClassInfo ci = t.classinfo;
-			String className = new String(Unicode.toNative(ci.name));
+			String className = new String(ci.name);
 
 			Console.putln("    from thread: ", className.array);
 		}

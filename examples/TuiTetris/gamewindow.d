@@ -8,8 +8,11 @@ import gamecontrol;
 
 class GameWindow : TuiWindow {
 	this() {
+		Console.putln("boo");
 		scoreLabel = new TuiLabel(4, 5, 10, "0");
+		Console.putln("boo b");
 		game = new GameControl();
+		Console.putln("boo c");
 
 		push(scoreLabel);
 		push(new TuiLabel(2, 3, 10, "Score", fgColor.BrightYellow));
@@ -19,7 +22,7 @@ class GameWindow : TuiWindow {
 	override bool OnSignal(Dispatcher source, uint signal) {
 		if (source is game) {
 			if(signal == GameControl.Event.ScoreUpdated) {
-				scoreLabel.setText(new String(game.getScore()));
+				scoreLabel.text = new String(game.getScore());
 				return true;
 			}
 		}

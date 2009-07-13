@@ -26,11 +26,11 @@ static const Parameter_ColorType ColorType = Parameter_ColorType.ColorRGBA;
 
 // Common Fonts
 
-const auto FontMonospace = "Courier"w;
-const auto FontTimes = "Times New Roman"w;
-const auto FontSans = "Sans"w;
-const auto FontSerif = "Sans Serif"w;
-const auto FontSystem = "Sans Serif"w;
+const string FontMonospace = "Courier";
+const string FontTimes = "Times New Roman";
+const string FontSans = "Sans";
+const string FontSerif = "Sans Serif";
+const string FontSystem = "Sans Serif";
 
 // Keyboard
 

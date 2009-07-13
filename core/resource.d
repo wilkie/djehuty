@@ -35,7 +35,7 @@ class Resource
 
 	// Description: Will create the object and then load the file specified.
 	// filename: The path and filename of the resource file.
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		open(filename);
 	}
@@ -60,7 +60,7 @@ class Resource
 
 	// Description: Will open the filename specified.
 	// filename: The path and filename of the resource file.
-	void open(StringLiteral filename)
+	void open(string filename)
 	{
 		_filename = new String(filename);
 
@@ -162,7 +162,7 @@ class Resource
 
 		_file.read(stringarr.ptr, stringLen * 4);
 
-		String s = new String(Unicode.toNative(stringarr));
+		String s = new String(Unicode.toUtf8(stringarr));
 
 		_stringAccessed[resourceID] = s;
 

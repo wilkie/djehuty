@@ -18,7 +18,7 @@ import core.graphics;
 import core.color;
 import core.main;
 import core.definitions;
-import core.string;
+import core.unicode;
 
 import graphics.region;
 
@@ -51,16 +51,18 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
 	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str) {
-	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
+void drawText(ViewPlatformVars* viewVars, int x, int y, string str) {
+	wstring utf16 = Unicode.toUtf16(str);
+	TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length) {
 	TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint length) {
-	TextOutW(viewVars.dc, x, y, str.ptr, length);
+void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length) {
+	wstring utf16 = Unicode.toUtf16(str);
+	TextOutW(viewVars.dc, x, y, utf16.ptr, length);
 }
 
 // Clipped Text
@@ -68,16 +70,18 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, str.length, null);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str) {
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, str.length, null);
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str) {
+	wstring utf16 = Unicode.toUtf16(str);
+	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, utf16.length, null);
 }
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str, uint length) {
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str, uint length) {
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str, uint length) {
+	wstring utf16 = Unicode.toUtf16(str);
+	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, length, null);
 }
 
 // Text Measurement
@@ -89,12 +93,14 @@ void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size s
 	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz) {
-	GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
+void measureText(ViewPlatformVars* viewVars, string str, out Size sz) {
+	wstring utf16 = Unicode.toUtf16(str);
+	GetTextExtentPoint32W(viewVars.dc, utf16.ptr, utf16.length, cast(SIZE*)&sz);
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out Size sz) {
-	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
+void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size sz) {
+	wstring utf16 = Unicode.toUtf16(str);
+	GetTextExtentPoint32W(viewVars.dc, utf16.ptr, length, cast(SIZE*)&sz);
 }
 
 // Text Colors
@@ -121,10 +127,10 @@ void setTextModeOpaque(ViewPlatformVars* viewVars) {
 
 // Fonts
 
-void createFont(FontPlatformVars* font, StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
-	String s = new String(fontname ~ cast(Char)'\0');
+void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
+	wstring utf16 = Unicode.toUtf16(fontname) ~ cast(wchar)'\0';
 	HDC dcz = GetDC(cast(HWND)0);
-	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, s.ptr);
+	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, utf16.ptr);
 	ReleaseDC(cast(HWND)0, dcz);
 }
 

@@ -200,7 +200,7 @@ struct IRC
 			_callback = callback;
 		}
 
-		void authenticate(StringLiteral nickname, StringLiteral realname)
+		void authenticate(string nickname, string realname)
 		{
 			if (_connected)
 			{
@@ -210,7 +210,7 @@ struct IRC
 			}
 		}
 
-		bool connect(StringLiteral hostname, ushort port = 6667)
+		bool connect(string hostname, ushort port = 6667)
 		{
 			_connected = _skt.connect(hostname, port);
 
@@ -222,7 +222,7 @@ struct IRC
 			return _connected;
 		}
 
-		void join(StringLiteral channel)
+		void join(string channel)
 		{
 			if (_connected)
 			{
@@ -371,13 +371,13 @@ struct IRC
 			{
 				if (command.command == "PRIVMSG" && command.paramCount > 0 && command.prefix !is null && command.content !is null)
 				{
-					OnReceiveMessage(new String(Unicode.toNative(command.params[0])),
-						new String(Unicode.toNative(command.prefix)),
-						new String(Unicode.toNative(command.content)));
+					OnReceiveMessage(new String(command.params[0]),
+						new String(command.prefix),
+						new String(command.content));
 				}
 				else if (command.command == "PING" && command.prefix !is null)
 				{
-					OnPing(new String(Unicode.toNative(command.prefix)));
+					OnPing(new String(command.prefix));
 				}
 			}
 		}

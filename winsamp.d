@@ -87,8 +87,8 @@ private:
 }*/
 
 import tui.textfield;
-
-class MyTApp : TuiApplication {
+import core.application;
+class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
 
 	override void OnApplicationStart() {
@@ -117,11 +117,11 @@ class MyTWindow : TuiWindow {
 		tuitext.basecolor = fgColor.White;
 		tuitext.forecolor = fgColor.BrightYellow;
 		tuitext.backcolor = bgColor.Green;
-		
+
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;
 	}
-	
+
 	override void OnKeyDown(uint keyCode)
 	{
 		if(keyCode == KeyEnd)

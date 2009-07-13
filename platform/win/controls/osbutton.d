@@ -26,7 +26,7 @@ public:
 		super(x,y,width,height,value);
 	}
 
-	this(int x, int y, int width, int height, StringLiteral value) {
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
 

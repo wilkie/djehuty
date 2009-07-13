@@ -102,7 +102,7 @@ class Regex {
 		buildDFA();
 	}
 
-	this(StringLiteral regex) {
+	this(string regex) {
 		regularExpression = new String(regex);
 
 		buildDFA();
@@ -115,7 +115,7 @@ class Regex {
 		return null;
 	}
 
-	String eval(StringLiteral str) {
+	String eval(string str) {
 		return eval(new String(str));
 	}
 
@@ -1140,15 +1140,15 @@ class Regex {
 		return null;
 	}
 
-	static String eval(StringLiteral str, String regex) {
+	static String eval(string str, String regex) {
 		return eval(new String(str), regex);
 	}
 
-	static String eval(String str, StringLiteral regex) {
+	static String eval(String str, string regex) {
 		return eval(str, new String(regex));
 	}
 
-	static String eval(StringLiteral str, StringLiteral regex) {
+	static String eval(string str, string regex) {
 		return eval(new String(str), new String(regex));
 	}
 

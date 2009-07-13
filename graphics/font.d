@@ -12,7 +12,7 @@ import core.string;
 
 class Font
 {
-	this(StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
+	this(string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
 	{
 		Scaffold.createFont(&_pfvars, fontname, fontsize, weight, italic, underline, strikethru);
 	}

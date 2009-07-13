@@ -22,7 +22,7 @@ public:
 		super(appName);
 	}
 
-	this(StringLiteral appName) {
+	this(string appName) {
 		super(appName);
 	}
 

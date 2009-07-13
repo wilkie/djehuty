@@ -15,10 +15,8 @@ import utils.arraylist;
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
-class TuiListBox : TuiWidget, AbstractList!(String)
-{
-	this( uint x, uint y, uint width, uint height )
-	{
+class TuiListBox : TuiWidget, AbstractList!(String) {
+	this( uint x, uint y, uint width, uint height ) {
 		_x = x;
 		_y = y;
 
@@ -27,17 +25,15 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 
 		_list = new ArrayList!(String)();
 	}
-	
+
 	override bool isTabStop() {
 		return true;
 	}
 
-	override void OnAdd()
-	{
+	override void OnAdd() {
 	}
 
-	override void OnInit()
-	{
+	override void OnInit() {
 		Console.setPosition(_x, _y);
 		Console.setColor(fgColor.White, bgColor.Black);
 
@@ -51,8 +47,7 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 		_spacestr = new char[_width];
 		_spacestr[0.._width] = ' ';
 
-		while(_list.getItem(data, irate))
-		{
+		while(_list.getItem(data, irate)) {
 			Console.put(data.array);
 			Console.put(_spacestr[0.._width-data.length]);
 			if (i == 1){
@@ -62,27 +57,22 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 			i++;
 		}
 
-		for ( ; i<=_height; i++)
-		{
+		for ( ; i<=_height; i++) {
 			Console.put(_spacestr);
-			if (i != _height){
+			if (i != _height) {
 				Console.setPosition(_x, _y+i);
 			}
 		}
 	}
 
-	override void OnKeyDown(uint keyCode)
-	{
-		if (keyCode == KeyTab)
-		{
+	override void OnKeyDown(uint keyCode) {
+		if (keyCode == KeyTab) {
 			_window.tabForward();
 		}
-		else if (keyCode == KeyArrowUp)
-		{
+		else if (keyCode == KeyArrowUp) {
 			String data;
 
-			if (_pos > 0)
-			{
+			if (_pos > 0) {
 				// draw over current
 				_list.getItem(data, _pos);
 				Console.setColor(fgColor.BrightWhite, bgColor.Black);
@@ -97,8 +87,7 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 				Console.put(data.array);
 			}
 		}
-		else if (keyCode == KeyArrowDown)
-		{
+		else if (keyCode == KeyArrowDown) {
 			String data;
 
 			if (_pos < _list.length() - 1)
@@ -119,8 +108,7 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 		}
 	}
 
-	override void OnLostFocus()
-	{
+	override void OnLostFocus() {
 		String data;
 
 		_list.getItem(data, _pos);
@@ -129,8 +117,7 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 		Console.put(data.array);
 	}
 
-	override void OnGotFocus()
-	{
+	override void OnGotFocus() {
 		Console.hideCaret();
 
 		String data;
@@ -146,48 +133,39 @@ class TuiListBox : TuiWidget, AbstractList!(String)
 
 	// IList Methods:
 
-	void addItem(String data)
-	{
+	void addItem(String data) {
 		_list.addItem(data);
 	}
 
-	void addItem(StringLiteral data)
-	{
+	void addItem(string data) {
 		_list.addItem(new String(data));
 	}
 
-	void addList(AbstractList!(String) list)
-	{
+	void addList(AbstractList!(String) list) {
 		_list.addList(list);
 	}
 
-	void addList(String[] list)
-	{
+	void addList(String[] list) {
 		_list.addList(list);
 	}
 
-    bool getItem(out String data, uint index)
-    {
+    bool getItem(out String data, uint index) {
 		return _list.getItem(data, index);
     }
 
-	Iterator getIterator()
-	{
+	Iterator getIterator() {
 		return _list.getIterator();
 	}
 
-	bool getItem(out String data, ref Iterator irate)
-	{
+	bool getItem(out String data, ref Iterator irate) {
 		return _list.getItem(data, irate);
 	}
 
-	uint length()
-	{
+	uint length() {
 		return _list.length();
 	}
 
-	bool remove(out String item)
-	{
+	bool remove(out String item) {
 		return _list.remove(item);
     }
 

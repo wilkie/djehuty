@@ -24,7 +24,7 @@ class Texture
 	// filename: The name of the image to load.
 	// frameRows: The number of rows contained in the image.
 	// frameCols: The number of columns contained in the image.
-	this(StringLiteral filename, int frameRows = 1, int frameCols = 1)
+	this(string filename, int frameRows = 1, int frameCols = 1)
 	{
 		_img = new Image();
 

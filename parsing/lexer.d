@@ -61,13 +61,11 @@ protected:
 // Description: This class will take a lexicon and produce a series of Tokens from the input stream.
 class Lexer : Responder
 {
-	this()
-	{
+	this() {
 		rules ~= new ArrayList!(Rule)();
 	}
 
-	void addRule(uint tokenId, String regex)
-	{
+	void addRule(uint tokenId, String regex) {
 		Rule newRule;
 
 		newRule.regex = new String("^(?:") ~ regex ~ ")";
@@ -76,8 +74,7 @@ class Lexer : Responder
 		rules[stateId].addItem(newRule);
 	}
 
-	void addRule(uint tokenId, StringLiteral regex)
-	{
+	void addRule(uint tokenId, string regex) {
 		Rule newRule;
 
 		newRule.regex = new String("^(?:") ~ regex ~ ")";
@@ -101,20 +98,16 @@ class Lexer : Responder
 		return stateId;
 	}
 
-	Token[] work()
-	{
-		while(pull())
-		{
-			if (token !is null)
-			{
+	Token[] work() {
+		while(pull()) {
+			if (token !is null) {
 			}
 		}
 
 		return null;
 	}
 
-	bool pull()
-	{
+	bool pull() {
 		static String workString;
 
 		if (workString is null) { workString = new String(
@@ -143,15 +136,13 @@ void main() {
 
 	int asd = 0x_1111p3;
 }
-		`w ~ " `wysiwyg string`"w); }
+		`c ~ " `wysiwyg string`"c); }
 
 		String s;
 
-		foreach(int i, rule; rules[stateId])
-		{
+		foreach(int i, rule; rules[stateId]) {
 			s = Regex.eval(workString, rule.regex);
-			if (s !is null && s != "")
-			{
+			if (s !is null && s != "") {
 				workString = workString.subString(s.length);
 
 				token = new Token(rule.id, s);
@@ -169,8 +160,7 @@ protected:
 	int ruleId;
 	int stateId;
 
-	struct Rule
-	{
+	struct Rule {
 		String regex;
 		uint id;
 	}

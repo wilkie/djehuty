@@ -61,7 +61,7 @@ class Directory
 
 	// Description: This constructor will create a Directory object that represents the path, if valid.
 	// path: A valid universal path.
-	this(StringLiteral path) {
+	this(string path) {
 		this(new String(path));
 	}
 
@@ -69,7 +69,7 @@ class Directory
 		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ name);
 	}
 
-	bool isDir(StringLiteral name) {
+	bool isDir(string name) {
 		return isDir(new String(name));
 	}
 
@@ -84,7 +84,7 @@ class Directory
 		move(to.getPath());
 	}
 
-	void move(StringLiteral path) {
+	void move(string path) {
 		move(new String(path));
 	}
 
@@ -103,7 +103,7 @@ class Directory
 		}
 	}
 
-	void copy(StringLiteral path) {
+	void copy(string path) {
 		copy(new String(path));
 	}
 
@@ -113,7 +113,7 @@ class Directory
 		copy(to.getPath() ~ "/" ~ newName);
 	}
 
-	void copy(Directory to, StringLiteral newName = null) {
+	void copy(Directory to, string newName = null) {
 		String nname;
 		if (newName is null) { nname = name; } else { nname = new String(newName); }
 
@@ -151,7 +151,7 @@ class Directory
 
 	// Description: This function will rename the directory, if possible.
 	// newName: The new name for the directory.
-	void setName(StringLiteral newName) {
+	void setName(string newName) {
 		setName(new String(newName));
 	}
 
@@ -169,7 +169,7 @@ class Directory
 		return null;
 	}
 
-	File saveFile(StringLiteral filename) {
+	File saveFile(string filename) {
 		return null;
 	}
 
@@ -208,7 +208,7 @@ class Directory
 	// Description: This function will return the Directory representing the directory specified within the current path.
 	// directoryName: The name of the directory.
 	// Returns: The child directory specified.
-	Directory traverse(StringLiteral directoryName) {
+	Directory traverse(string directoryName) {
 		return new Directory(_path ~ "/" ~ directoryName);
 	}
 
@@ -232,7 +232,7 @@ class Directory
 		return _path == d;
 	}
 
-	bool opEquals(StringLiteral d) {
+	bool opEquals(string d) {
 		return _path == d;
 	}
 

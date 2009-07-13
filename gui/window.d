@@ -42,7 +42,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(StringLiteral windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height)
+	this(string windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height)
 	{
 		_color = color;
 		_window_title = new String(windowTitle);
@@ -86,7 +86,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(StringLiteral windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height)
+	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height)
 	{
 		Scaffold.ColorGetSystemColor(_color, sysColor);
 		_window_title = new String(windowTitle);
@@ -162,7 +162,7 @@ public:
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void setText(StringLiteral str)
+	void setText(string str)
 	{
 		_window_title = new String(str);
 

@@ -14,25 +14,25 @@ import tui.widget;
 class TuiLabel : TuiWidget {
 
 	this( uint x, uint y, uint width, String text,
-		  fgColor fgclr = fgColor.BrightBlue, 
+		  fgColor fgclr = fgColor.BrightBlue,
 		  bgColor bgclr = bgColor.Black )
 	{
 		super(x,y,width,1);
 
-		forecolor = fgclr;
-		backcolor = bgclr;
+		_forecolor = fgclr;
+		_backcolor = bgclr;
 
 		_value = new String(text);
 	}
 
-	this( uint x, uint y, uint width, StringLiteral text,
-		  fgColor fgclr = fgColor.BrightBlue, 
+	this( uint x, uint y, uint width, string text,
+		  fgColor fgclr = fgColor.BrightBlue,
 		  bgColor bgclr = bgColor.Black )
 	{
 		super(x,y,width,1);
 
-		forecolor = fgclr;
-		backcolor = bgclr;
+		_forecolor = fgclr;
+		_backcolor = bgclr;
 
 		_value = new String(text);
 	}
@@ -44,46 +44,48 @@ class TuiLabel : TuiWidget {
 		draw();
 	}
 
-	void setText(String newValue) {
+	void text(String newValue) {
 		_value = new String(newValue);
 		draw();
 	}
 
-	void setText(StringLiteral newValue) {
+	void text(string newValue) {
 		_value = new String(newValue);
 		draw();
 	}
-	
-	String getText() {
+
+	String text() {
 		return new String(_value);
 	}
 
-	void setForeColor(fgColor fgclr) {
+	void forecolor(fgColor fgclr) {
 		forecolor = fgclr;
 	}
-	
-	void setBackColor(bgColor bgclr) {
-		backcolor = bgclr;
+
+	void backcolor(bgColor bgclr) {
+		_backcolor = bgclr;
 	}
 
 protected:
 
 	void draw() {
-		Console.setPosition(_x, _y);
-		Console.setColor(forecolor, backcolor);
+		if (canDraw) {
+			Console.setPosition(_x, _y);
+			Console.setColor(_forecolor, _backcolor);
 
-		// draw as much as we can
+			// draw as much as we can
 
-		if (_value.length > _width) {
-			Console.put((new String(_value[0.._width])));
-		}
-		else {
-			Console.put(_value);
+			if (_value.length > _width) {
+				Console.put((new String(_value[0.._width])));
+			}
+			else {
+				Console.put(_value);
+			}
 		}
 	}
 
-	fgColor forecolor = fgColor.BrightBlue;
-	bgColor backcolor = bgColor.Black;
+	fgColor _forecolor = fgColor.BrightBlue;
+	bgColor _backcolor = bgColor.Black;
 
 	String _value;
 }

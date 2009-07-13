@@ -20,6 +20,7 @@ import core.definitions;
 import core.view;
 import core.menu;
 import core.string;
+import core.unicode;
 
 import console.main;
 
@@ -1838,14 +1839,14 @@ void TestForPenDevice()
 				{
 					int keyLength = size / 2;
 
-					StringLiteral16 devDesc = new CharLiteral16[keyLength];
+					wstring devDesc = new wchar[keyLength];
 
 					rc = RegQueryValueExW(hkey, "DeviceDesc\0"w.ptr, null, &regtype, cast(BYTE*)devDesc.ptr, &size);
 
 					// example of devDesc:
 					//@hidserv.inf,%hid_device_system_consumer%;HID-compliant consumer control device
 
-					String s = new String(devDesc);
+					String s = new String(Unicode.toUtf8(devDesc));
 					s = s.toLowercase();
 
 					String srch = new String("tablet");
@@ -1915,7 +1916,7 @@ void parseCommandLine()
 		{
 			if (last != i)
 			{
-				String token = new String(cmdlne[last..i]);
+				String token = new String(Unicode.toUtf8(cmdlne[last..i]));
 
 				args.addItem(token);
 			}

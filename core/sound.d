@@ -56,7 +56,7 @@ class Sound : Responder
 
 	// Description: This constructor will create the object and load the file using the filename passed.
 	// filename: The string containing the filename of the audio file to load.
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		wavDevice = new Audio;
 		wavDevice.setDelegate(&_bufferCallback);
@@ -83,7 +83,7 @@ class Sound : Responder
 
 	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.
 	// filename: The string containing the filename of the audio file to load.
-	bool load(StringLiteral filename)
+	bool load(string filename)
 	{
 		load(new File(filename));
 

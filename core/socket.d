@@ -57,7 +57,7 @@ class Socket : Stream
 	// hostname: The name of the host to connect.
 	// port: The port to connect through.
 	// Returns: Will return true when the connect is made and false if the connection cannot be made.
-    bool connect(StringLiteral hostname, ushort port)
+    bool connect(string hostname, ushort port)
     {
         _hostname = new String(hostname);
         _port = port;

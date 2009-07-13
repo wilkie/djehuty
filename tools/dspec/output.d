@@ -609,7 +609,7 @@ protected:
 		return true;
 	}
 
-	bool print(StringLiteral stuff)
+	bool print(string stuff)
 	{
 		return outfp.write(Unicode.toUtf8(stuff));
 		//fwritef(outfp, "%s", stuff);

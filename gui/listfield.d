@@ -146,7 +146,7 @@ class ListField : Widget, AbstractList!(String)
 		control_listbox.addItem(data);
 	}
 
-	void addItem(StringLiteral data)
+	void addItem(string data)
 	{
 		control_listbox.addItem(data);
 	}

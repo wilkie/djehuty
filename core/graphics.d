@@ -104,7 +104,7 @@ class Graphics
 	// x: The x coordinate to start rendering the text.
 	// y: The y coordinate to start rendering the text.
 	// str: The string to render.
-	void drawText(int x, int y, StringLiteral str)
+	void drawText(int x, int y, string str)
 	{
 		Scaffold.drawText(_viewVars, x,y,str);
 	}
@@ -123,7 +123,7 @@ class Graphics
 	// y: The y coordinate to start rendering the text.
 	// str: The string to render.
 	// length: the length of the string.
-	void drawText(int x, int y, StringLiteral str, uint length)
+	void drawText(int x, int y, string str, uint length)
 	{
 		Scaffold.drawText(_viewVars, x,y,str,length);
 	}
@@ -145,7 +145,7 @@ class Graphics
 	// y: The y coordinate to start rendering the text.
 	// region: The Rect object that defines the rectangular clipping region.
 	// str: The string to render.
-	void drawClippedText(int x, int y, Rect region, StringLiteral str)
+	void drawClippedText(int x, int y, Rect region, string str)
 	{
 		Scaffold.drawClippedText(_viewVars, x,y,region,str);
 	}
@@ -167,7 +167,7 @@ class Graphics
 	// region: The Rect object that defines the rectangular clipping region.
 	// str: The string to render.
 	// length: the length of the string.
-	void drawClippedText(int x, int y, Rect region, StringLiteral str, uint length)
+	void drawClippedText(int x, int y, Rect region, string str, uint length)
 	{
 		Scaffold.drawClippedText(_viewVars, x,y,region,str,length);
 	}
@@ -194,7 +194,7 @@ class Graphics
 	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
 	// str: The string to measure.
 	// sz: The Size struct to update.
-	void measureText(StringLiteral str, out Size sz)
+	void measureText(string str, out Size sz)
 	{
 		Scaffold.measureText(_viewVars, str, sz);
 	}
@@ -203,7 +203,7 @@ class Graphics
 	// str: The string to measure.
 	// length: The length of the string to consider.
 	// sz: The Size struct to update.
-	void measureText(StringLiteral str, uint length, out Size sz)
+	void measureText(string str, uint length, out Size sz)
 	{
 		Scaffold.measureText(_viewVars, str, length, sz);
 	}

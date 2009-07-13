@@ -7,17 +7,17 @@ import core.string;
 
 describe unicode()
 {
-	StringLiteral32 utf32 = "hello\u015Bworld";
-	StringLiteral16 utf16 = "hello\u015Bworld";
-	StringLiteral8 utf8 = "hello\u015Bworld";
+	dstring utf32 = "hello\u015Bworld";
+	wstring utf16 = "hello\u015Bworld";
+	string utf8 = "hello\u015Bworld";
 
-	StringLiteral32 utf32marks = "hello\u0364world";
-	StringLiteral16 utf16marks = "hello\u0364world";
-	StringLiteral8 utf8marks = "hello\u0364world";
+	dstring utf32marks = "hello\u0364world";
+	wstring utf16marks = "hello\u0364world";
+	string utf8marks = "hello\u0364world";
 
-	StringLiteral32 empty32 = "";
-	StringLiteral16 empty16 = "";
-	StringLiteral8 empty8 = "";
+	dstring empty32 = "";
+	wstring empty16 = "";
+	string empty8 = "";
 
 	describe utflen()
 	{

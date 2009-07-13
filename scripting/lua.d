@@ -51,7 +51,7 @@ class LuaScript {
 	void eval(String code) {
 	}
 
-	void eval(StringLiteral code) {
+	void eval(string code) {
 		eval(new String(code));
 	}
 
@@ -67,7 +67,7 @@ class LuaScript {
 	// Description: This function will map a function of the type int(LuaBindings.lua_State) to be called whenever the function specified by the second parameter is called within a Lua script.
 	// func: The callback function to execute.
 	// functionName: The name of the function within the Lua script to map.
-	void registerFunction(Callback func, StringLiteral functionName) {
+	void registerFunction(Callback func, string functionName) {
 		registerFunction(func, new String(functionName));
 	}
 
@@ -96,7 +96,7 @@ class LuaScript {
 
 	// Description: This function will evaluate the Lua script located at the path provided.
 	// filename: A Lua script to evaluate.
-	void evalFile(StringLiteral filename) {
+	void evalFile(string filename) {
 		evalFile(new String(filename));
 	}
 
@@ -116,6 +116,6 @@ protected:
 
 		char[] DStr = str[0..len];
 
-		return new String(Unicode.toNative(DStr));
+		return new String(DStr);
 	}
 }

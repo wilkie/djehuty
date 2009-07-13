@@ -31,7 +31,7 @@ class Application : Responder {
 	this() {
 		// go by classinfo to the application name
 		ClassInfo ci = this.classinfo;
-		String className = new String(Unicode.toNative(ci.name));
+		String className = new String(ci.name);
 
 		int pos = className.findReverse(new String("."));
 
@@ -51,7 +51,7 @@ class Application : Responder {
 		Djehuty.setApplication(this);
 	}
 
-	this(StringLiteral appName) {
+	this(string appName) {
 		this.appName = new String(appName);
 		Djehuty.setApplication(this);
 	}

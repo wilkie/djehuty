@@ -37,7 +37,7 @@ public:
 
 	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		open(filename);
 	}
@@ -92,7 +92,7 @@ public:
 	// Returns: Will return false when the file cannot be opened.
 
 	// TODO: Exceptions for opening of a file.
-    bool open(StringLiteral filename)
+    bool open(string filename)
     {
         name = new String(filename);
 
@@ -449,7 +449,7 @@ class FileReader : File
 
 	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		super(filename);
 	}
@@ -475,7 +475,7 @@ class FileWriter : File
 
 	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		super(filename);
 	}

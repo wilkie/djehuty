@@ -25,7 +25,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,value);
 	}
-	this(int x, int y, int width, int height, StringLiteral value)
+	this(int x, int y, int width, int height, string value)
 	{
 		super(x,y,width,height,value);
 	}
@@ -50,7 +50,7 @@ class Button : Widget
 	}
 
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, StringLiteral value)
+	this(int x, int y, int width, int height, string value)
 	{
 		super(x,y,width,height);
 		_value = new String(value);
@@ -144,7 +144,7 @@ class Button : Widget
 		_value = new String(newTitle);
 	}
 
-	void setText(StringLiteral newTitle)
+	void setText(string newTitle)
 	{
 		_value = new String(newTitle);
 	}

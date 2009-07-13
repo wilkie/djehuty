@@ -47,7 +47,7 @@ String DirectoryGetBinary()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(str) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
 	}
 
 	return cached;
@@ -70,7 +70,7 @@ String DirectoryGetAppData()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(str) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
 	}
 
 	return cached;
@@ -90,7 +90,7 @@ String DirectoryGetTempData()
 		ret = GetTempPathW(ret, str.ptr);
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(str) ~ "/dpj" ~ new String(GetCurrentProcessId());
+		cached = new String(Unicode.toUtf8(str)) ~ "/dpj" ~ new String(GetCurrentProcessId());
 	}
 
 	return cached;
@@ -113,7 +113,7 @@ String DirectoryGetUserData()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(str) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
 	}
 
 	return cached;
@@ -141,7 +141,7 @@ String DirectoryGetApp()
 	dir = _SanitizeWindowsPath(dir);
 	dir = _TruncateFileName(dir);
 
-	return new String(dir);
+	return new String(Unicode.toUtf8(dir));
 }
 
 String DirectoryGetCWD()
@@ -153,7 +153,7 @@ String DirectoryGetCWD()
 
 	cwd = _SanitizeWindowsPath(cwd);
 
-	return new String(cwd);
+	return new String(Unicode.toUtf8(cwd));
 }
 
 bool DirectoryFileIsDir(String path)
@@ -307,7 +307,7 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp)
 
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
-	path = new String(_ConvertFrameworkPath(path.array));
+	path = new String(Unicode.toUtf8(_ConvertFrameworkPath(path.array)));
 
 	String[] list;
 
@@ -318,7 +318,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 
 		int logicaldrives = GetLogicalDrives();
 
-		wchar[1] curDrive = ['a'];
+		string curDrive = ['a'];
 
 		while(logicaldrives != 0)
 		{
@@ -367,7 +367,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 			// Add to list
 			if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..")
 			{
-				list ~= new String(ffd.cFileName[0..len]);
+				list ~= new String(Unicode.toUtf8(ffd.cFileName[0..len]));
 			}
 
 			// Retrieve next item in the directory

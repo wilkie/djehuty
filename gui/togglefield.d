@@ -23,7 +23,7 @@ template ControlPrintCSTRList()
 	{
 		super(x,y,width,height,value);
 	}
-	this(int x, int y, int width, int height, StringLiteral value)
+	this(int x, int y, int width, int height, string value)
 	{
 		super(x,y,width,height,value);
 	}
@@ -46,7 +46,7 @@ class ToggleField : Widget
 		_value = new String(value);
 	}
 
-	this(int x, int y, int width, int height, StringLiteral value)
+	this(int x, int y, int width, int height, string value)
 	{
 		super(x,y,width,height);
 
@@ -68,7 +68,7 @@ class ToggleField : Widget
 		_value = new String(newTitle);
 	}
 
-	void setText(StringLiteral newTitle)
+	void setText(string newTitle)
 	{
 		_value = new String(newTitle);
 	}

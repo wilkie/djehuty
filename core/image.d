@@ -41,7 +41,7 @@ public:
 		load(filename);
 	}
 
-	this(StringLiteral filename)
+	this(string filename)
 	{
 		load(filename);
 	}
@@ -65,7 +65,7 @@ public:
 	// Description: Will load the image.  It will throw the file to all the available decoders with a preference to the ones that match the file extension.  When the decoder accepts the file, it will return true, otherwise on error it will return false.
 	// filename: The filename to open as an image.
 	// Returns: Will return true when the file is accepted and the image is loaded.
-	bool load(StringLiteral filename)
+	bool load(string filename)
 	{
 		FileReader f = new FileReader();
 		_view = new View();

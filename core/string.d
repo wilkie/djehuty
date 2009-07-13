@@ -20,7 +20,7 @@ import core.definitions;
 import core.unicode;
 import core.format;
 
-public import core.stringliteral;
+public import core.string;
 
 template _StringFormat()
 {
@@ -201,10 +201,10 @@ class String
 
 	// Description: Will create a string fitting the string passed through via the parameter.
 	// str: The string to copy to the class.
-	this (StringLiteral str, ...)
+	this (string str, ...)
 	{
 		if (_arguments.length == 0) {
-			_data ~= str;
+			_data = Unicode.toNative(str);
 		}
 		else
 		{
@@ -220,7 +220,7 @@ class String
 	// str: The string to copy to the class.
 	this(String str)
 	{
-		_data ~= str._data[0..$];
+		_data ~= str._data;
 	}
 
 	// Description: Will create a string for the given integer.
@@ -249,7 +249,7 @@ class String
 			return _length;
 		}
 
-		_length = Unicode.utflen(cast(StringLiteral)_data);
+		_length = Unicode.utflen(_data);
 
 		_calcLength = true;
 
@@ -279,13 +279,13 @@ class String
 		_calcIndices = false;
 	}
 
-	void append(StringLiteral str, ...)
+	void append(string str, ...)
 	{
 		_calcLength = false;
 		_calcIndices = false;
 		if (_arguments.length == 0)
 		{
-			_data ~= str;
+			_data ~= Unicode.toNative(str);
 		}
 		else
 		{
@@ -295,8 +295,7 @@ class String
 			// scan input, write when appropriate
 			mixin(_StringFormat!());
 
-			StringLiteral res = Unicode.toNative(result);
-			_data ~= res;
+			_data ~= Unicode.toNative(result);
 		}
 	}
 
@@ -336,7 +335,7 @@ class String
 
 	// Description: Will append a unicode character with combining marks to this String.  The internal character array is rebuilt.
 	// characters: The unicode character to append to the internal character array of this String class.
-	void appendChar(StringLiteral32 characters)
+	void appendChar(dstring characters)
 	{
 		static if (Char.sizeof == dchar.sizeof)
 		{
@@ -395,7 +394,9 @@ class String
 		}
 		endpos++;
 
-		return new String(cast(StringLiteral)_data[startpos..endpos]);
+		String ret = new String("");
+		ret._data = _data[startpos..endpos];
+		return ret;
 	}
 
 	template _nextInt(T)
@@ -483,7 +484,7 @@ class String
 		return _nextInt!(ushort)(value);
 	}
 
-	bool next(out String value, StringLiteral delimiters)
+	bool next(out String value, string delimiters)
 	{
 		return false;
 	}
@@ -495,13 +496,13 @@ class String
 
 		if (!_calcIndices)
 		{
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 			_calcIndices = true;
 		}
 
 		if (!search._calcIndices)
 		{
-			search._indices = Unicode.calcIndices(cast(StringLiteral)search._data);
+			search._indices = Unicode.calcIndices(search._data);
 			search._calcIndices = true;
 		}
 
@@ -521,8 +522,8 @@ class String
 			{
 				dchar aChr, bChr;
 
-				aChr = Unicode.toUtf32Char(cast(StringLiteral)_data[_indices[o]..$]);
-				bChr = Unicode.toUtf32Char(cast(StringLiteral)search._data[bPos..$]);
+				aChr = Unicode.toUtf32Char(_data[_indices[o]..$]);
+				bChr = Unicode.toUtf32Char(search._data[bPos..$]);
 
 				if (aChr != bChr)
 				{
@@ -553,13 +554,13 @@ class String
 
 		if (!_calcIndices)
 		{
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 			_calcIndices = true;
 		}
 
 		if (!search._calcIndices)
 		{
-			search._indices = Unicode.calcIndices(cast(StringLiteral)search._data);
+			search._indices = Unicode.calcIndices(search._data);
 			search._calcIndices = true;
 		}
 
@@ -575,8 +576,8 @@ class String
 			{
 				dchar aChr, bChr;
 
-				aChr = Unicode.toUtf32Char(cast(StringLiteral)_data[_indices[o]..$]);
-				bChr = Unicode.toUtf32Char(cast(StringLiteral)search._data[bPos..$]);
+				aChr = Unicode.toUtf32Char(_data[_indices[o]..$]);
+				bChr = Unicode.toUtf32Char(search._data[bPos..$]);
 
 				if (aChr != bChr)
 				{
@@ -606,7 +607,7 @@ class String
 
 		if (!ret._calcIndices)
 		{
-			ret._indices = Unicode.calcIndices(cast(StringLiteral)ret._data);
+			ret._indices = Unicode.calcIndices(ret._data);
 			ret._calcIndices = true;
 		}
 
@@ -621,7 +622,7 @@ class String
 
 			if (!ret._calcIndices)
 			{
-				ret._indices = Unicode.calcIndices(cast(StringLiteral)ret._data);
+				ret._indices = Unicode.calcIndices(ret._data);
 				ret._calcIndices = true;
 			}
 		}
@@ -663,14 +664,14 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		String str = new String("");
 
 		foreach(index; _indices)
 		{
-			dchar chr = Unicode.toUtf32Char(cast(StringLiteral)_data[index..$]);
+			dchar chr = Unicode.toUtf32Char(_data[index..$]);
 
 			if (chr >= 'a' && chr <= 'z')
 			{
@@ -691,7 +692,7 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (start >= _indices.length || len == 0)
@@ -712,7 +713,9 @@ class String
 		if (len == -1)
 		{
 			start = _indices[start];
-			return new String(cast(StringLiteral)_data[start..$]);
+			String ret = new String("");
+			ret._data = _data[start..$];
+			return ret;
 		}
 
 		// this is the index for one character past the
@@ -722,7 +725,9 @@ class String
 
 		start = _indices[start];
 
-		return new String(cast(StringLiteral)_data[start..len]);
+		String ret = new String("");
+		ret._data = _data[start..len];
+		return ret;
 	}
 
 	// Description: Will return the UTF-32 character from the position given.  This will ignore combining marks!  Do not use unless you wish to compute the size of the character, where this function would be more efficient.  Otherwise, to ensure that internationalization is supported, use utfCharAt.
@@ -733,7 +738,7 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (position >= _indices.length)
@@ -748,7 +753,7 @@ class String
 
 		// convert the character starting at that position to a dchar
 
-		return Unicode.toUtf32Char(cast(StringLiteral)_data[_indices[position]..$]);
+		return Unicode.toUtf32Char(_data[_indices[position]..$]);
 	}
 
 	void setCharAt(uint position, dchar value)
@@ -756,7 +761,7 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (position >= _indices.length)
@@ -782,7 +787,7 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (position >= _indices.length)
@@ -792,67 +797,67 @@ class String
 
 		// convert the character starting at that position to a dchar
 
-		return Unicode.toUtf32Chars(cast(StringLiteral)_data[_indices[position]..$]);
+		return Unicode.toUtf32Chars(_data[_indices[position]..$]);
 	}
 
-	// Description: Will cast the String object to a StringLiteral for functions that require it.
-	StringLiteral opCast()
+	// Description: Will cast the String object to a string for functions that require it.
+	string opCast()
 	{
-		return cast(StringLiteral)_data;
+		return toString();
 	}
 
 	// Unicode Conversions
 
 	// Description: Will return a Unicode character array for this string in UTF-32.
-	StringLiteral32 toUtf32()
+	dstring toUtf32()
 	{
 		static if (Char.sizeof == dchar.sizeof)
 		{
 			// no change!
-			return cast(StringLiteral32)_data;
+			return cast(dstring)_data;
 		}
 		else
 		{
-			return Unicode.toUtf32(cast(StringLiteral)_data);
+			return Unicode.toUtf32(_data);
 		}
 	}
 
 	// Description: Will return a Unicode character array for this string in UTF-16.
-	StringLiteral16 toUtf16()
+	wstring toUtf16()
 	{
 		static if (Char.sizeof == wchar.sizeof)
 		{
 			// no change!
-			return cast(StringLiteral16)_data;
+			return cast(wstring)_data;
 		}
 		else
 		{
-			return Unicode.toUtf16(cast(StringLiteral)_data);
+			return Unicode.toUtf16(_data);
 		}
 	}
 
 	// Description: Will return a Unicode character array for this string in UTF-8.
-	StringLiteral8 toUtf8()
+	string toUtf8()
 	{
 		static if (Char.sizeof == char.sizeof)
 		{
 			// no change!
-			return cast(StringLiteral8)_data;
+			return _data;
 		}
 		else
 		{
-			return Unicode.toUtf8(cast(StringLiteral)_data);
+			return Unicode.toUtf8(_data);
 		}
 	}
 
-	bool opEquals(StringLiteral stringLiteral)
+	bool opEquals(string string)
 	{
-		if (stringLiteral.length != _data.length)
+		if (string.length != _data.length)
 		{
 			return false;
 		}
 
-		if (_data[0..$] != stringLiteral[0..$])
+		if (_data[0..$] != Unicode.toNative(string[0..$]))
 		{
 			return false;
 		}
@@ -939,12 +944,12 @@ class String
 	}
 
 	// array operator overloads
-	StringLiteral opSlice()
+	string opSlice()
 	{
-		return _data;
+		return Unicode.toUtf8(_data);
 	}
 
-	StringLiteral opSlice(size_t start)
+	string opSlice(size_t start)
 	{
 		size_t end = _data.length;
 
@@ -953,7 +958,7 @@ class String
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (end >= _indices.length)
@@ -967,17 +972,17 @@ class String
 
 		if (start > end) { return ""; }
 
-		return _data[start..end];
+		return Unicode.toUtf8(_data[start..end]);
 	}
 
-	StringLiteral opSlice(size_t start, size_t end)
+	string opSlice(size_t start, size_t end)
 	{
 		if (start < 0) { start = 0; }
 
 		if (!_calcIndices)
 		{
 			_calcIndices = true;
-			_indices = Unicode.calcIndices(cast(StringLiteral)_data);
+			_indices = Unicode.calcIndices(_data);
 		}
 
 		if (end >= _indices.length)
@@ -991,25 +996,25 @@ class String
 
 		if (start > end) { return ""; }
 
-		return _data[start..end];
+		return Unicode.toUtf8(_data[start..end]);
 	}
 
-	//StringLiteral opSliceAssign(T val)
+	//string opSliceAssign(T val)
 	//{
 	//	return _components[] = val;
 	//}
 
-	//StringLiteral opSliceAssign(T[] val)
+	//string opSliceAssign(T[] val)
 	//{
 	//	return _components[] = val;
 	//}
 
-	//StringLiteral opSliceAssign(T val, size_t x, size_t y)
+	//string opSliceAssign(T val, size_t x, size_t y)
 	//{
 	//	return _components[x..y] = val;
 	//}
 
-	//StringLiteral opSliceAssign(T[] val, size_t x, size_t y)
+	//string opSliceAssign(T[] val, size_t x, size_t y)
 	//{
 	//	return _components[x..y] = val;
 	//}
@@ -1024,12 +1029,12 @@ class String
 		setCharAt(i, val);
 	}
 
-	//StringLiteral opIndexAssign(T value, size_t i)
+	//string opIndexAssign(T value, size_t i)
 	//{
 	//	return _components[i] = value;
 	//}
 
-	String opCat(StringLiteral string)
+	String opCat(string string)
 	{
 		String newStr = new String(this);
 		newStr.append(string);
@@ -1037,7 +1042,7 @@ class String
 		return newStr;
 	}
 
-	void opCatAssign(StringLiteral str)
+	void opCatAssign(string str)
 	{
 		append(str);
 	}

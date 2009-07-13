@@ -50,7 +50,7 @@ class HTTPClient
 		_skt.close();
 	}
 
-	bool connect(StringLiteral hostname, ushort port = 80)
+	bool connect(string hostname, ushort port = 80)
 	{
 		_connected = _skt.connect(hostname, port);
 
@@ -62,10 +62,10 @@ class HTTPClient
 		return _connected;
 	}
 
-	void get(StringLiteral path)
+	void get(string path)
 	{
 		// send a get request
-		StringLiteral8 sendstr = "GET " ~ Unicode.toUtf8(path) ~ " HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
+		string sendstr = "GET " ~ Unicode.toUtf8(path) ~ " HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
 //			char[] sendstr = "GET /news/news.php HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
 		_skt.write(cast(ubyte*)sendstr.ptr, sendstr.length);
 	}
@@ -283,7 +283,7 @@ protected:
 
 					if (HTTPAttribute == "Content-Length")
 					{
-						String s = new String(Unicode.toNative(cast(StringLiteral8)HTTPValue));
+						String s = new String(cast(string)HTTPValue);
 						s.nextInt(_contentLength);
 					}
 
