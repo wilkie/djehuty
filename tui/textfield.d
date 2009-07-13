@@ -1,3 +1,12 @@
+/*
+ * textfield.d
+ *
+ * This module implements a text field widget for TUI applications.
+ *
+ * Author: Dave Wilkinson, Lindsey Bieda
+ *
+ */
+
 module tui.textfield;
 
 import core.string;
