@@ -67,7 +67,7 @@ class ListField : Widget, AbstractList!(String)
 	}
 
 	// handle events
-	override void OnAdd()
+	override void onAdd()
 	{
 		if (control_button is null)
 		{
@@ -111,12 +111,12 @@ class ListField : Widget, AbstractList!(String)
 		control_button.setEnabled(false);
 	}
 
-	override void OnRemove()
+	override void onRemove()
 	{
 		//control_button.remove();
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 	//draw all entries
 

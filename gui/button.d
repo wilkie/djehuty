@@ -56,7 +56,7 @@ class Button : Widget
 		_value = new String(value);
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 		Color c;
 		c.setRGB(0xc8, 0x00, 0x00);
@@ -69,7 +69,7 @@ class Button : Widget
 		_brsh.setColor(c);
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 		g.setBrush(_brsh);
 		g.setPen(_pen);
@@ -94,7 +94,7 @@ class Button : Widget
 		g.drawText(x, y, _value);
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouseProps)
+	override bool onPrimaryMouseDown(ref Mouse mouseProps)
 	{
 		requestCapture();
 
@@ -103,7 +103,7 @@ class Button : Widget
 		return true;
 	}
 
-	override bool OnPrimaryMouseUp(ref Mouse mouseProps)
+	override bool onPrimaryMouseUp(ref Mouse mouseProps)
 	{
 		if (_hovered)
 		{
@@ -117,14 +117,14 @@ class Button : Widget
 		return true;
 	}
 
-	override bool OnMouseEnter()
+	override bool onMouseEnter()
 	{
 		_brsh.setColor(Color.White);
 
 		return true;
 	}
 
-	override bool OnMouseLeave()
+	override bool onMouseLeave()
 	{
 		Color c;
 		c.setRGB(0xc8, 0xc8, 0xc8);
@@ -134,7 +134,7 @@ class Button : Widget
 		return true;
 	}
 
-	override bool OnKeyDown(uint keyCode)
+	override bool onKeyDown(uint keyCode)
 	{
 		return false;
 	}

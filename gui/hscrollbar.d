@@ -55,7 +55,7 @@ public:
 		push(_clickTimer);
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 		m_whatishovered = 0;
 		m_isclicked=0;
@@ -71,7 +71,7 @@ public:
 		return true;
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 			//a scroll bar is just a few rectangles (4)
 			//one rectangle for the min arrow, one for max arrow
@@ -393,7 +393,7 @@ public:
 			}
 	}
 
-	override bool OnMouseMove(ref Mouse mouseProps)
+	override bool onMouseMove(ref Mouse mouseProps)
 	{
 		if (m_isclicked == 3)
 		{
@@ -532,7 +532,7 @@ public:
 		return false;
 	}
 
-	override bool OnMouseLeave()
+	override bool onMouseLeave()
 	{
 		if (m_isclicked == 3)
 		{
@@ -548,7 +548,7 @@ public:
 		return false;
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouseProps)
+	override bool onPrimaryMouseDown(ref Mouse mouseProps)
 	{
 		if (m_whatishovered != 0)
 		{
@@ -582,7 +582,7 @@ public:
 		return false;
 	}
 
-	override bool OnPrimaryMouseUp(ref Mouse mouseProps)
+	override bool onPrimaryMouseUp(ref Mouse mouseProps)
 	{
 		if (m_isclicked > 0)
 		{
@@ -590,7 +590,7 @@ public:
 			{
 				m_isclicked = 0;
 
-				OnMouseMove(mouseProps);
+				onMouseMove(mouseProps);
 			}
 
 			requestRelease();

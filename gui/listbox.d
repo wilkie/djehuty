@@ -41,7 +41,7 @@ class ListBox : Widget
 	}
 
 	// handle events
-	override void OnAdd()
+	override void onAdd()
 	{
 		if (control_scroll is null)
 		{
@@ -77,12 +77,12 @@ class ListBox : Widget
 		control_scroll.SetEnabled(false);
 	}
 
-	override void OnRemove()
+	override void onRemove()
 	{
 		control_scroll.remove();
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 	//draw all entries
 
@@ -146,7 +146,7 @@ class ListBox : Widget
 		}
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouseProps)
+	override bool onPrimaryMouseDown(ref Mouse mouseProps)
 	{
 		uint curEntry = (mouseProps.y - _y);
 		curEntry -= 1; //remove top margin

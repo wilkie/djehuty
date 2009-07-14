@@ -512,7 +512,7 @@ public:
 				{
 					c =	c._prevControl;
 
-					c.OnDraw(g);
+					c.onDraw(g);
 				} while (c !is _firstControl)
 			}
 
@@ -527,7 +527,7 @@ public:
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
-			if (_focused_control.OnKeyChar(keyChar))
+			if (_focused_control.onKeyChar(keyChar))
 			{
 				OnDraw();
 			}
@@ -539,7 +539,7 @@ public:
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
-			if (_focused_control.OnKeyDown(keyCode))
+			if (_focused_control.onKeyDown(keyCode))
 			{
 				OnDraw();
 			}
@@ -551,7 +551,7 @@ public:
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
-			if (_focused_control.OnKeyUp(keyCode))
+			if (_focused_control.onKeyUp(keyCode))
 			{
 				OnDraw();
 			}
@@ -563,7 +563,7 @@ public:
 		if (_last_control !is null)
 		{
 			_last_control._hovered = false;
-			if(_last_control.OnMouseLeave())
+			if(_last_control.onMouseLeave())
 			{
 				OnDraw();
 			}
@@ -587,12 +587,12 @@ public:
 				{
 					//currently, hover state says control is outside
 					control._hovered = true;
-					if (control.OnMouseEnter() | control.OnMouseMove(mouseProps))
+					if (control.onMouseEnter() | control.onMouseMove(mouseProps))
 					{
 						OnDraw();
 					}
 				}
-				else if (control.OnMouseMove(mouseProps))
+				else if (control.onMouseMove(mouseProps))
 				{
 					OnDraw();
 				}
@@ -604,12 +604,12 @@ public:
 				{
 					//currently, hover state says control is inside
 					control._hovered = false;
-					if (control.OnMouseLeave() | control.OnMouseMove(mouseProps))
+					if (control.onMouseLeave() | control.onMouseMove(mouseProps))
 					{
 						OnDraw();
 					}
 				}
-				else if (control.OnMouseMove(mouseProps))
+				else if (control.onMouseMove(mouseProps))
 				{
 					OnDraw();
 				}
@@ -628,8 +628,8 @@ public:
 				control._hovered = true;
 				_last_control._hovered = false;
 
-				if(_last_control.OnMouseLeave() |
-					control.OnMouseEnter() | control.OnMouseMove(mouseProps))
+				if(_last_control.onMouseLeave() |
+					control.onMouseEnter() | control.onMouseMove(mouseProps))
 				{
 					OnDraw();
 				}
@@ -639,12 +639,12 @@ public:
 				if(!control._hovered)
 				{	//wasn't hovered over before
 					control._hovered = true;
-					if(control.OnMouseEnter() | control.OnMouseMove(mouseProps))
+					if(control.onMouseEnter() | control.onMouseMove(mouseProps))
 					{
 						OnDraw();
 					}
 				}
-				else if(control.OnMouseMove(mouseProps))
+				else if(control.onMouseMove(mouseProps))
 				{
 					OnDraw();
 				}
@@ -664,7 +664,7 @@ public:
 			if (_last_control !is null)
 			{
 				_last_control._hovered = false;
-				if(_last_control.OnMouseLeave())
+				if(_last_control.onMouseLeave())
 				{
 					OnDraw();
 				}
@@ -680,7 +680,7 @@ public:
 
 		_captured_control = target;
 
-		if((target !is null) && (ret | target.OnPrimaryMouseDown(mouseProps))) {
+		if((target !is null) && (ret | target.onPrimaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -692,7 +692,7 @@ public:
 
 		_captured_control = null;
 
-		if((target !is null) && (ret | target.OnPrimaryMouseUp(mouseProps))) {
+		if((target !is null) && (ret | target.onPrimaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -704,7 +704,7 @@ public:
 
 		_captured_control = target;
 
-		if((target !is null) && (ret | target.OnSecondaryMouseDown(mouseProps))) {
+		if((target !is null) && (ret | target.onSecondaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -716,7 +716,7 @@ public:
 
 		_captured_control = null;
 
-		if((target !is null) && (ret | target.OnSecondaryMouseUp(mouseProps))) {
+		if((target !is null) && (ret | target.onSecondaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -728,7 +728,7 @@ public:
 
 		_captured_control = target;
 
-		if((target !is null) && (ret | target.OnTertiaryMouseDown(mouseProps))) {
+		if((target !is null) && (ret | target.onTertiaryMouseDown(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -740,7 +740,7 @@ public:
 
 		_captured_control = null;
 
-		if((target !is null) && (ret | target.OnTertiaryMouseUp(mouseProps))) {
+		if((target !is null) && (ret | target.onTertiaryMouseUp(mouseProps))) {
 			OnDraw();
 		}
 	}
@@ -753,7 +753,7 @@ public:
 
 		_captured_control = target;
 
-		if((target !is null) && (ret | target.OnOtherMouseDown(mouseProps, button))) {
+		if((target !is null) && (ret | target.onOtherMouseDown(mouseProps, button))) {
 			OnDraw();
 		}
 	}
@@ -766,7 +766,7 @@ public:
 
 		_captured_control = null;
 
-		if((target !is null) && (ret | target.OnOtherMouseUp(mouseProps, button))) {
+		if((target !is null) && (ret | target.onOtherMouseUp(mouseProps, button))) {
 			OnDraw();
 		}
 	}
@@ -781,7 +781,7 @@ public:
 		//currently focused control will lose focus
 		if (_focused_control !is null) {
 			_focused_control._focused = false;
-			if (_focused_control.OnLostFocus(true)) {
+			if (_focused_control.onLostFocus(true)) {
 				OnDraw();
 			}
 		}
@@ -791,7 +791,7 @@ public:
 		//currently focused control will regain focus
 		if (_focused_control !is null) {
 			_focused_control._focused = true;
-			if (_focused_control.OnGotFocus(true)) {
+			if (_focused_control.onGotFocus(true)) {
 				OnDraw();
 			}
 		}
@@ -900,7 +900,7 @@ public:
 			super.push(control);
 
 			// call the control's event
-			control.OnAdd();
+			control.onAdd();
 
 			return;
 		}
@@ -1016,14 +1016,14 @@ protected:
 				{
 					//the current focused control gets unfocused
 					_focused_control._focused = false;
-					ret = _focused_control.OnLostFocus(false);
+					ret = _focused_control.onLostFocus(false);
 				}
 
 				//focus this control
 				_focused_control = target;
 				_focused_control._focused = true;
 
-				ret |= _focused_control.OnGotFocus(false);
+				ret |= _focused_control.onGotFocus(false);
 			}
 
 			return ret;

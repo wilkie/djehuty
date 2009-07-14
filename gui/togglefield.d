@@ -79,7 +79,7 @@ class ToggleField : Widget
 	}
 
 	// handle events
-	override void OnAdd()
+	override void onAdd()
 	{
 		_brsh = new Brush(Color.White);
 
@@ -101,7 +101,7 @@ class ToggleField : Widget
 		//FIRE_EVENT(id,EventCreated,0,0);
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 		//Draw Background of Button
 		Brush brush;
@@ -244,7 +244,7 @@ class ToggleField : Widget
 		g.drawClippedText(chkRect.right + 4, (_b + _y-_value_bounds.y)/2, ctrlrt, _value);
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouseProps)
+	override bool onPrimaryMouseDown(ref Mouse mouseProps)
 	{
 		if (!_enabled) { return false; }
 
@@ -254,7 +254,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool OnPrimaryMouseUp(ref Mouse mouseProps)
+	override bool onPrimaryMouseUp(ref Mouse mouseProps)
 	{
 		if (!_enabled) { return false; }
 
@@ -274,7 +274,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool OnMouseEnter()
+	override bool onMouseEnter()
 	{
 		Graphics g = _view.lockDisplay();
 
@@ -285,7 +285,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool OnMouseLeave()
+	override bool onMouseLeave()
 	{
 		Graphics g = _view.lockDisplay();
 
@@ -299,7 +299,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool OnKeyDown(uint keyCode)
+	override bool onKeyDown(uint keyCode)
 	{
 		return false;
 	}

@@ -61,57 +61,57 @@ class Widget : Responder
 	// Events //
 
 	// Description: Called when the control is added to a Window.
-	void OnAdd() {
+	void onAdd() {
 	}
 
 	// Description: Called when the control is removed from its parent window.
-	void OnRemove() {
+	void onRemove() {
 	}
 
 	// Description: Called when the control should be redrawn.
 	// g: The graphics object that has already been locked.  Use this to draw primitives to the window.
-	void OnDraw(ref Graphics g) {
+	void onDraw(ref Graphics g) {
 	}
 
 	// Description: Called when the primary mouse button (usually the left button) is pressed.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnPrimaryMouseDown(ref Mouse mouseProps) {
+	bool onPrimaryMouseDown(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the primary mouse button (usually the left button) is released.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnPrimaryMouseUp(ref Mouse mouseProps) {
+	bool onPrimaryMouseUp(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the secondary mouse button (usually the right button) is pressed.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnSecondaryMouseDown(ref Mouse mouseProps) {
+	bool onSecondaryMouseDown(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the secondary mouse button (usually the right button) is released.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnSecondaryMouseUp(ref Mouse mouseProps) {
+	bool onSecondaryMouseUp(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is pressed.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnTertiaryMouseDown(ref Mouse mouseProps) {
+	bool onTertiaryMouseDown(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is released.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnTertiaryMouseUp(ref Mouse mouseProps) {
+	bool onTertiaryMouseUp(ref Mouse mouseProps) {
 		return false;
 	}
 
@@ -119,7 +119,7 @@ class Widget : Responder
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// button: An index of the alternate button.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnOtherMouseDown(ref Mouse mouseProps, uint button) {
+	bool onOtherMouseDown(ref Mouse mouseProps, uint button) {
 		return false;
 	}
 
@@ -127,61 +127,61 @@ class Widget : Responder
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// button: An index of the alternate button.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnOtherMouseUp(ref Mouse mouseProps, uint button) {
+	bool onOtherMouseUp(ref Mouse mouseProps, uint button) {
 		return false;
 	}
 
 	// Description: Called when the mouse cursor enters within the bounds of the control.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnMouseEnter() {
+	bool onMouseEnter() {
 		return false;
 	}
 
 	// Description: Called when the mouse cursor leaves the bounds of the control.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnMouseLeave() {
+	bool onMouseLeave() {
 		return false;
 	}
 
 	// Description: Called when the mouse moves within the bounds of the control.
 	// mouseProps: A convenient reference to the window's Mouse structure, describing the mouse state.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnMouseMove(ref Mouse mouseProps) {
+	bool onMouseMove(ref Mouse mouseProps) {
 		return false;
 	}
 
 	// Description: Called when the control receives focus.
 	// bWasWindow: When true, the window received focus as well.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnGotFocus(bool bWasWindow) {
+	bool onGotFocus(bool bWasWindow) {
 		return false;
 	}
 
 	// Description: Called when the control loses focus.
 	// bWasWindow: When true, the window lost focus as well.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnLostFocus(bool bWasWindow) {
+	bool onLostFocus(bool bWasWindow) {
 		return false;
 	}
 
 	// Description: Called when the control is focused during a key press.
 	// keyCode: The ID of the code.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnKeyDown(uint keyCode) {
+	bool onKeyDown(uint keyCode) {
 		return false;
 	}
 
 	// Description: Called when the control is focused during a key release.
 	// keyCode: The ID of the code.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnKeyUp(uint keyCode) {
+	bool onKeyUp(uint keyCode) {
 		return false;
 	}
 
 	// Description: Called when the control is focused during a key press that results in a printable character.
 	// keyChar: The character in standard UTF-32.
 	// Returns: The user should return true when the control should be redrawn.
-	bool OnKeyChar(dchar keyChar) {
+	bool onKeyChar(dchar keyChar) {
 		return false;
 	}
 
@@ -367,7 +367,7 @@ protected:
 private:
 
 	package void removeControl() {
-		OnRemove();
+		onRemove();
 
 		_view = null;
 		_window = null;
@@ -390,11 +390,11 @@ class Container : Widget, AbstractContainer
 		super(x,y,width,height);
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 		g.clipSave();
 
@@ -408,7 +408,7 @@ class Container : Widget, AbstractContainer
 			{
 				c =	c._prevControl;
 
-				c.OnDraw(g);
+				c.onDraw(g);
 			} while (c !is _firstControl)
 		}
 
@@ -458,7 +458,7 @@ class Container : Widget, AbstractContainer
 		control._view = _view;
 		control._container = this;
 
-		control.OnAdd();
+		control.onAdd();
 
 		control.move(control.getX(), control.getY());
 	}

@@ -27,7 +27,7 @@ class ProgressBar : Widget
 		super(x,y,width,height);
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 		Brush brsh = new Brush(Color.Red);
 

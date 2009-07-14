@@ -30,7 +30,7 @@ public:
 		super(x,y,width,height,value);
 	}
 
-	override void OnAdd() {
+	override void onAdd() {
 
 		ViewPlatformVars* viewVars = ViewGetPlatformVars(_view);
 
@@ -66,7 +66,7 @@ public:
 		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
 
-	override void OnDraw(ref Graphics g) {
+	override void onDraw(ref Graphics g) {
 		// save current background for later
 
 		// copy over current image
@@ -75,14 +75,14 @@ public:
 		BitBlt(viewVars.dc, _x, _y, _width, _height, button_hdc, 0,0,SRCCOPY);
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouse) {
+	override bool onPrimaryMouseDown(ref Mouse mouse) {
 		hasCapture = true;
 
 		SendMessageW(_hWnd, WM_LBUTTONDOWN, 0, 0);
 		return true;
 	}
 
-	override bool OnPrimaryMouseUp(ref Mouse mouse) {
+	override bool onPrimaryMouseUp(ref Mouse mouse) {
 		hasCapture = false;
 
 		SendMessageW(_hWnd, WM_LBUTTONUP, 0, 0);
@@ -90,11 +90,11 @@ public:
 		return true;
 	}
 
-	override bool OnMouseEnter() {
+	override bool onMouseEnter() {
 		return false;
 	}
 
-	override bool OnMouseMove(ref Mouse mouse) {
+	override bool onMouseMove(ref Mouse mouse) {
 
 		if (hasCapture) {
 			return false;
@@ -128,13 +128,13 @@ public:
 		return false;
 	}
 
-	override bool OnMouseLeave() {
+	override bool onMouseLeave() {
 	//	Console.putln("mouseleave");
 		SendMessageW(_hWnd, WM_MOUSELEAVE, 0, 0);
 		return true;
 	}
 
-	override void OnRemove() {
+	override void onRemove() {
 		DestroyWindow(_hWnd);
 	}
 

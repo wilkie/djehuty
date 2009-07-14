@@ -15,7 +15,7 @@ public:
 		super(0,0,0,0);
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 		for (uint i = 0; i<_count; i++)
 		{

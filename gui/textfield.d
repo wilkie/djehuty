@@ -47,7 +47,7 @@ public:
 		_value = new String(value);
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 		_clr_highlight.setRGB(0xf8,0xf8,0xf8);
 		_clr_outline = Color.DarkGray;
@@ -83,7 +83,7 @@ public:
 		}
 	}
 
-	override bool OnMouseMove(ref Mouse mouseProps)
+	override bool onMouseMove(ref Mouse mouseProps)
 	{
 		//find the section when the left mouse button is pressed
 
@@ -149,7 +149,7 @@ public:
 		return false;
 	}
 
-	override bool OnPrimaryMouseDown(ref Mouse mouseProps)
+	override bool onPrimaryMouseDown(ref Mouse mouseProps)
 	{
 		//move caret
 
@@ -218,19 +218,19 @@ public:
 		return true;
 	}
 
-	override bool OnPrimaryMouseUp(ref Mouse mouseProps)
+	override bool onPrimaryMouseUp(ref Mouse mouseProps)
 	{
 		requestRelease();
 
 		return false;
 	}
 
-	override bool OnGotFocus(bool withWindow) { return true; }
-	override bool OnLostFocus(bool withWindow) { return true; }
+	override bool onGotFocus(bool withWindow) { return true; }
+	override bool onLostFocus(bool withWindow) { return true; }
 
 	// Key Presses
 
-	override bool OnKeyDown(uint keyCode)
+	override bool onKeyDown(uint keyCode)
 	{
 		switch(keyCode)
 		{
@@ -362,7 +362,7 @@ public:
 		return true;
 	}
 
-	override bool OnKeyChar(dchar character)
+	override bool onKeyChar(dchar character)
 	{
 		//if this character is a character we can write out, then
 		//alter the text of the field
@@ -409,7 +409,7 @@ public:
 		return true;
 	}
 
-	override void OnDraw(ref Graphics g)
+	override void onDraw(ref Graphics g)
 	{
 		//Draw Background of Button
 		Brush brush = new Brush(_clr_background);
