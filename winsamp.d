@@ -127,7 +127,7 @@ class MyTWindow : TuiWindow {
 		if(keyCode == KeyEnd)
 		{
 			//quit
-			getApplication.exit(0);
+			application.exit(0);
 		}
 		else if (keyCode == KeyPageUp) {
 			// meh

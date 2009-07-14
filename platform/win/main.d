@@ -1324,7 +1324,7 @@ int mainloop()
 
 				for (i=0; i<cNumRead; i++)
 				{
-					TuiWindow curWindow = (cast(TuiApplication)Djehuty.app).getWindow();
+					TuiWindow curWindow = (cast(TuiApplication)Djehuty.app).window;
 					switch(irInBuf[i].EventType)
 					{
 						case KEY_EVENT: // keyboard input

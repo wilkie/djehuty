@@ -266,12 +266,12 @@ class TuiWindow : Responder
 		} while (_focused_control !is curFocus);
 	}
 	
-	TuiApplication getApplication() {
+	TuiApplication application() {
 		return cast(TuiApplication)responder;
 	}
-	
+
 	bool isActive() {
-		return (getApplication() !is null && getApplication.getWindow() is this);
+		return (application() !is null && application.window is this);
 	}
 
 	Mouse mouseProps;

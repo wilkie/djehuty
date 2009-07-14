@@ -34,7 +34,7 @@ public:
 		}
 	}
 
-	TuiWindow getWindow() {
+	TuiWindow window() {
 		return _curConsoleWindow;
 	}
 
