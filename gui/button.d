@@ -66,7 +66,7 @@ class Button : Widget {
 		g.setBrush(_brsh);
 		g.setPen(_pen);
 
-		g.drawRect(_x, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.right, this.bottom);
 
 		// Draw the text
 		Size sz;
@@ -76,8 +76,8 @@ class Button : Widget {
 
 		int x, y;
 
-		x = _x + ((_width - sz.x)/2);
-		y = _y + ((_height - sz.y)/2);
+		x = this.left + ((this.width - sz.x)/2);
+		y = this.top + ((this.height - sz.y)/2);
 
 		g.setTextModeTransparent();
 

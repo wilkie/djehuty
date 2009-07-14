@@ -37,16 +37,16 @@ public:
 		HDC dc = GetDC(_hWnd);
 
 		HDC dc2 = CreateCompatibleDC(dc);
-		HBITMAP hbmp = CreateCompatibleBitmap(viewVars.dc, _width, _height);
+		HBITMAP hbmp = CreateCompatibleBitmap(viewVars.dc, this.width, this.height);
 
 		SelectObject(dc2, hbmp);
 
 		DeleteObject(hbmp);
 		ReleaseDC(_hWnd, dc);
 
-		newy = _window.height -1 ;//- _height;
+		newy = _window.height -1 ;//- this.height;
 		 _hWnd = CreateWindowExW(0,
-			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , _x,newy,_width,_height,
+			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , this.left,newy,this.width,this.height,
 			_windowHelper.getPlatformVars().hWnd,null, cast(HINSTANCE)GetWindowLongW(_windowHelper.getPlatformVars().hWnd,GWLP_HINSTANCE), null);
 
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
@@ -58,10 +58,10 @@ public:
 
 		button_hWnd = _hWnd;
 		button_hdc = dc2;
-		button_x = _x;
-		button_y = _y;
-		button_width = _width;
-		button_height = _height;
+		button_x = this.left;
+		button_y = this.top;
+		button_width = this.width;
+		button_height = this.height;
 
 		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
@@ -72,7 +72,7 @@ public:
 		// copy over current image
 		ViewPlatformVars* viewVars = ViewGetPlatformVars(_view);
 
-		BitBlt(viewVars.dc, _x, _y, _width, _height, button_hdc, 0,0,SRCCOPY);
+		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, button_hdc, 0,0,SRCCOPY);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouse) {
@@ -113,7 +113,7 @@ public:
 		ncy = rect.top;
 
 		ncx = pt.x;
-		ncy = pt.y + (newy - _y);
+		ncy = pt.y + (newy - this.top);
 
 		ncy &= 0xffff;
 		ncx &= 0xffff;
@@ -121,7 +121,7 @@ public:
 		uint lparam = (ncy << 16) | (ncx);
 		SendMessageW(_hWnd, WM_NCHITTEST, 0, lparam);
 
-		lparam = ((mouse.y - _y) << 16) | (mouse.x - _x);
+		lparam = ((mouse.y - this.top) << 16) | (mouse.x - this.left);
 
 		SendMessageW(_hWnd, WM_MOUSEMOVE, 0, lparam);
 		//SendMessageW(_hWnd, WM_MOUSEHOVER, 0, lparam);
@@ -152,7 +152,7 @@ protected:
 			y = cast(short)((lParam >> 16) & 0xffff);
 
 			// convert coords to window coords, send window WM_MOUSEMOVE
-			x += _x;
+			x += this.left;
 			y += newy;
 			uint windowlParam = (y << 16) | x;
 			x = cast(short)(lParam & 0xffff);
@@ -187,7 +187,7 @@ protected:
 
 			if (hasCapture) {
 				// convert coords to window coords, send window WM_MOUSEMOVE
-				x += _x;
+				x += this.left;
 				y += newy;
 				uint windowlParam = (y << 16) | x;
 				x = cast(short)(lParam & 0xffff);
@@ -202,7 +202,7 @@ protected:
 			if (message == WM_MOUSEMOVE) {
 				if (_hovered) {
 				//	Console.putln("hovered");
-					y += (newy - _y);
+					y += (newy - this.top);
 					lParam = (y << 16) | x;
 				}
 				else {
@@ -227,10 +227,10 @@ protected:
 	}
 
 	View _ReturnView(out int x, out int y, out int w, out int h) {
-		x = _x;
-		y = _y;
-		w = _width;
-		h = _height;
+		x = this.left;
+		y = this.top;
+		w = this.width;
+		h = this.height;
 		return _view;
 	}
 

@@ -82,7 +82,7 @@ class ToggleField : Widget {
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
 		grp.setFont(_font);
-		grp.measureText(_value,_value_bounds);
+		grp.measureText(_value,_valueBounds);
 
 		_view.unlockDisplay();
 
@@ -96,16 +96,16 @@ class ToggleField : Widget {
 
 		Rect chkRect;
 
-		chkRect.left = _x + 2;
-		chkRect.top = _y + 2;
-		chkRect.right = (chkRect.left + _height) - 4;
-		chkRect.bottom = _b - 2;
+		chkRect.left = this.left + 2;
+		chkRect.top = this.top + 2;
+		chkRect.right = (chkRect.left + this.height) - 4;
+		chkRect.bottom = this.bottom - 2;
 
 		if (_is_grouped) {
-			if (chkRect.right > _r) {
-				chkRect.right = _r;
-				chkRect.top += (_height - _width) / 2;
-				chkRect.bottom = chkRect.top + _width;
+			if (chkRect.right > this.right) {
+				chkRect.right = this.right;
+				chkRect.top += (this.height - this.width) / 2;
+				chkRect.bottom = chkRect.top + this.width;
 			}
 
 			brush = new Brush(_clrbackground);
@@ -154,15 +154,15 @@ class ToggleField : Widget {
 		else {
 			//Draw Background of Button
 
-			chkRect.left = _x + 2;
-			chkRect.top = _y + 2;
-			chkRect.right = (chkRect.left + _height) - 4;
-			chkRect.bottom = _b - 2;
+			chkRect.left = this.left + 2;
+			chkRect.top = this.top + 2;
+			chkRect.right = (chkRect.left + this.height) - 4;
+			chkRect.bottom = this.bottom - 2;
 
-			if (chkRect.right > _r) {
-				chkRect.right = _r;
-				chkRect.top += (_height - _width) / 2;
-				chkRect.bottom = chkRect.top + _width;
+			if (chkRect.right > this.right) {
+				chkRect.right = this.right;
+				chkRect.top += (this.height - this.width) / 2;
+				chkRect.bottom = chkRect.top + this.width;
 			}
 
 			pen = new Pen(_clroutline);
@@ -213,10 +213,10 @@ class ToggleField : Widget {
 		g.setFont(_font);
 		Rect ctrlrt;
 		ctrlrt.left = chkRect.right;
-		ctrlrt.right = _r;
-		ctrlrt.top = _y;
-		ctrlrt.bottom = _b;
-		g.drawClippedText(chkRect.right + 4, (_b + _y-_value_bounds.y)/2, ctrlrt, _value);
+		ctrlrt.right = this.right;
+		ctrlrt.top = this.top;
+		ctrlrt.bottom = this.bottom;
+		g.drawClippedText(chkRect.right + 4, (this.bottom + this.top-_valueBounds.y)/2, ctrlrt, _value);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
@@ -272,12 +272,10 @@ class ToggleField : Widget {
 		return false;
 	}
 
-protected:
+private:
 	String _value;
 
 	package bool _is_grouped = false;
-
-private:
 
 	Brush _brsh;
 	Pen _pen;
@@ -293,5 +291,5 @@ private:
 	int _btnstate = 0;
 	int _mouseholdstate = 0;
 
-	Size _value_bounds;
+	Size _valueBounds;
 }

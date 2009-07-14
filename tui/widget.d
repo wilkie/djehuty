@@ -96,12 +96,20 @@ class TuiWidget : Responder {
 		return false;
 	}
 	
-	uint x() {
+	uint left() {
 		return _x;
 	}
-	
-	uint y() {
+
+	uint top() {
 		return _y;
+	}
+	
+	uint right() {
+		return _x + _width;
+	}
+
+	uint bottom() {
+		return _y + _height;
 	}
 	
 	uint width() {
@@ -115,7 +123,7 @@ class TuiWidget : Responder {
 	TuiWindow window() {
 		return _window;
 	}
-	
+
 protected:
 	
 	bool canDraw() {

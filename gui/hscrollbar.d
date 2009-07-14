@@ -78,7 +78,7 @@ public:
 
 		float percent = cast(float)m_large_change / cast(float)total_value_space;
 
-		m_area = (_width - (_height*2))+2;
+		m_area = (this.width - (this.height*2))+2;
 
 		m_thumb_size = cast(int)(cast(float)m_area * percent);
 
@@ -87,7 +87,7 @@ public:
 		m_area -= m_thumb_size;
 
 		percent = cast(float)(m_value - m_min) / cast(float)(m_max - m_min);
-		m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + _x + _height-1;
+		m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + this.left + this.height-1;
 		m_thumb_pos_r = m_thumb_pos_x + m_thumb_size;
 
 		//BODY
@@ -98,12 +98,12 @@ public:
 		g.setPen(pen);
 		g.setBrush(brsh);
 
-		g.drawRect(_x, _y, _r,_b);
+		g.drawRect(this.left, this.top, this.right,this.bottom);
 
 		brsh.setColor(m_clrbutton);
 
-		g.drawRect(_x, _y, _x+_height, _b);
-		g.drawRect(_r-_height, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.left+this.height, this.bottom);
+		g.drawRect(this.right-this.height, this.top, this.right, this.bottom);
 
 		//THUMB
 
@@ -111,7 +111,7 @@ public:
 
 		g.setBrush(brsh);
 
-		g.drawRect(m_thumb_pos_x, _y, m_thumb_pos_r, _b);
+		g.drawRect(m_thumb_pos_x, this.top, m_thumb_pos_r, this.bottom);
 
 		//Draw triangle images...
 
@@ -134,7 +134,7 @@ public:
 
 		int base, height;
 
-		height = (_height / 4); //height
+		height = (this.height / 4); //height
 
 		//from the 'height' we can draw a perfect triangle
 
@@ -142,8 +142,8 @@ public:
 
 		int xH,yB; //main directional point of triangle:
 
-		xH = _y + ((_height - base)/2);
-		yB = _x + ((_height - height) /2);
+		xH = this.top + ((this.height - base)/2);
+		yB = this.left + ((this.height - height) /2);
 
 		base--;
 		height--;
@@ -163,7 +163,7 @@ public:
 
 		//draw DOWN BUTTON
 
-		yB = _r - ((_height - height + 1)/2);
+		yB = this.right - ((this.height - height + 1)/2);
 
 		Coord pnt2[3] = [ Coord(yB,xH+(base/2)), Coord(yB-height,xH), Coord(yB-height,xH+base) ];
 
@@ -196,8 +196,8 @@ public:
 
 		g.setPen(pen);
 
-		int new_y = _y + 2;
-		int new_b = _b - 2;
+		int new_y = this.top + 2;
+		int new_b = this.bottom - 2;
 
 		if (m_thumb_size > 80 + base+4) {
 			for (height = 10; height < 40; height+=4) {
@@ -227,7 +227,7 @@ public:
 
 			//draw rectangle
 
-			yB = _x + m_thumb_pos_x + ((m_thumb_size - base) / 2);
+			yB = this.left + m_thumb_pos_x + ((m_thumb_size - base) / 2);
 
 			if (m_whatishovered == 3) {
 				g.setBrush(brsh_hlight);
@@ -289,7 +289,7 @@ public:
 			}
 		}
 		else if(m_thumb_size > 15) {
-			yB = _x + m_thumb_pos_x + ((m_thumb_size - base) / 2);
+			yB = this.left + m_thumb_pos_x + ((m_thumb_size - base) / 2);
 
 			if (m_whatishovered == 3) {
 				g.setBrush(brsh_hlight);
@@ -319,28 +319,28 @@ public:
 		if (m_isclicked == 1) {
 			g.setPen(pen);
 
-			g.drawLine(_x+1, new_y, _x+1, new_b);
-			g.drawLine(_x+1, new_y, _x+_height-1, new_y);
+			g.drawLine(this.left+1, new_y, this.left+1, new_b);
+			g.drawLine(this.left+1, new_y, this.left+this.height-1, new_y);
 
 			g.setPen(pen_hlight);
 		}
 		else {
-			g.drawLine(_x+1, new_y, _x+1, new_b);
-			g.drawLine(_x+1, new_y, _x+_height-1, new_y);
+			g.drawLine(this.left+1, new_y, this.left+1, new_b);
+			g.drawLine(this.left+1, new_y, this.left+this.height-1, new_y);
 		}
 
 		//DOWN BUTTON
 		if (m_isclicked == 2) {
 			g.setPen(pen);
 
-			g.drawLine(_r-_height+1, new_y, _r-_height+1, new_b);
-			g.drawLine(_r-_height+1, new_y, _r-1, new_y);
+			g.drawLine(this.right-this.height+1, new_y, this.right-this.height+1, new_b);
+			g.drawLine(this.right-this.height+1, new_y, this.right-1, new_y);
 
 			g.setPen(pen_hlight);
 		}
 		else {
-			g.drawLine(_r-_height+1, new_y, _r-_height+1, new_b);
-			g.drawLine(_r-_height+1, new_y, _r-1, new_y);
+			g.drawLine(this.right-this.height+1, new_y, this.right-this.height+1, new_b);
+			g.drawLine(this.right-this.height+1, new_y, this.right-1, new_y);
 		}
 
 		//THUMB BAR
@@ -366,18 +366,18 @@ public:
 
 			//y is now the y position of where the thumb would be now
 
-			if (mouseProps.x < _x + _height) {
-				mouseProps.x = _x + _height;
+			if (mouseProps.x < this.left + this.height) {
+				mouseProps.x = this.left + this.height;
 			}
 
-			if (mouseProps.x > _x + _height + m_area) {
-				mouseProps.x = _x + _height + m_area;
+			if (mouseProps.x > this.left + this.height + m_area) {
+				mouseProps.x = this.left + this.height + m_area;
 			}
 
 			//compute value
 
 			long old_value = m_value;
-			m_value = ( cast(long) ( ( cast(float)(mouseProps.x - _x - _height) / cast(float)(m_area) ) * cast(float)(m_max - m_min) ) ) + m_min;
+			m_value = ( cast(long) ( ( cast(float)(mouseProps.x - this.left - this.height) / cast(float)(m_area) ) * cast(float)(m_max - m_min) ) ) + m_min;
 
 			if (m_value != old_value) {
 				raiseSignal(Signal.Scrolled);
@@ -388,8 +388,8 @@ public:
 		}
 
 		//check if something is being hovered over
-		if (mouseProps.y > _y && mouseProps.y < _b && mouseProps.x > _x && mouseProps.x < _r) {
-			if (mouseProps.x - _x < _height) {
+		if (mouseProps.y > this.top && mouseProps.y < this.bottom && mouseProps.x > this.left && mouseProps.x < this.right) {
+			if (mouseProps.x - this.left < this.height) {
 				//up button
 				if (m_isclicked == 0 || m_isclicked == 1) {
 					if (m_whatishovered != 1) {
@@ -401,7 +401,7 @@ public:
 
 				return false;
 			}
-			else if (mouseProps.x > _r - _height) {
+			else if (mouseProps.x > this.right - this.height) {
 				//down button
 				if (m_isclicked == 0 || m_isclicked == 2) {
 					if (m_whatishovered != 2) {
@@ -579,7 +579,7 @@ protected:
 
 			percent = cast(float)m_large_change / cast(float)(m_large_change + (m_max - m_min));
 
-			m_area = (_height - (_width*2))+2;
+			m_area = (this.height - (this.width*2))+2;
 
 			m_thumb_size = cast(int)(cast(float)m_area * percent);
 
@@ -588,7 +588,7 @@ protected:
 			m_area -= m_thumb_size;
 
 			percent = cast(float)(m_value - m_min) / cast(float)(m_max - m_min);
-			m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + _x + _height-1;
+			m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + this.left + this.height-1;
 			m_thumb_pos_r = m_thumb_pos_x + m_thumb_size;
 
 			//compare last mouse coords with this state
@@ -614,7 +614,7 @@ protected:
 
 			percent = cast(float)m_large_change / cast(float)(m_large_change + (m_max - m_min));
 
-			m_area = (_height - (_width*2))+2;
+			m_area = (this.height - (this.width*2))+2;
 
 			m_thumb_size = cast(int)(cast(float)m_area * percent);
 
@@ -623,7 +623,7 @@ protected:
 			m_area -= m_thumb_size;
 
 			percent = cast(float)(m_value - m_min) / cast(float)(m_max - m_min);
-			m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + _x + _height-1;
+			m_thumb_pos_x = cast(int)(cast(float)m_area * percent) + this.left + this.height-1;
 			m_thumb_pos_r = m_thumb_pos_x + m_thumb_size;
 
 			//compare last mouse coords with this state

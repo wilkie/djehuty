@@ -837,7 +837,7 @@ public:
 			control._windowHelper = windowHelper;
 
 			// do not add a control that is already part of another window
-			if (control.getParent() !is null) { return; }
+			if (control.parent !is null) { return; }
 
 			// Set the window it belongs to
 			control._window = this;

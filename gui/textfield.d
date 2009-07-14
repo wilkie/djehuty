@@ -87,7 +87,7 @@ public:
 
 			uint sel_start = 0;
 
-			int x1 = mouseProps.x - (_x + 3);
+			int x1 = mouseProps.x - (this.left + 3);
 
 			if (x1 < 0) {
 				sel_start = 0;
@@ -143,7 +143,7 @@ public:
 		//    and gets the position under x.  Should be good for determining
 		//    selections
 
-		int x1 = mouseProps.x - (_x + 3);
+		int x1 = mouseProps.x - (this.left + 3);
 
 		if (x1 < 0) { _caret_pos = 0; return true; }
 
@@ -389,14 +389,14 @@ public:
 		g.setBrush(brush);
 		g.setPen(pen);
 
-		g.drawRect(_x, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.right, this.bottom);
 
 		//Draw 3D Effect
 		pen.setColor(_clr_highlight);
 		g.setPen(pen);
 
-		g.drawLine(_x + 1, _y + 1, _r - 1, _y + 1);
-		g.drawLine(_x + 1, _y + 1, _x + 1, _b - 1);
+		g.drawLine(this.left + 1, this.top + 1, this.right - 1, this.top + 1);
+		g.drawLine(this.left + 1, this.top + 1, this.left + 1, this.bottom - 1);
 
 		//Drawing Transparent Text
 		g.setTextModeTransparent();
@@ -409,10 +409,10 @@ public:
 
 		Rect bounds;
 
-		bounds.left = _x + 1;
-		bounds.right = _r - 1;
-		bounds.top = _y + 1;
-		bounds.bottom = _b - 1;
+		bounds.left = this.left + 1;
+		bounds.right = this.right - 1;
+		bounds.top = this.top + 1;
+		bounds.bottom = this.bottom - 1;
 
 		//g.setFont(_font);
 
@@ -420,15 +420,15 @@ public:
 
 		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char)) {
 			//no selection visible
-			g.drawText(_x+3, _y+2, _value[_first_char.._value.length]);
+			g.drawText(this.left+3, this.top+2, _value[_first_char.._value.length]);
 
 			//Draw Caret
 
 			if (_caret_pos >= _first_char && _focused) {
 				int x, y;
 
-				y = _y + 2;
-				x = _x + 3;
+				y = this.top + 2;
+				x = this.left + 3;
 
 				Size s;
 
@@ -459,8 +459,8 @@ public:
 				to_pos = _sel_start;
 			}
 
-			x = _x + 3;
-			y = _y + 2;
+			x = this.left + 3;
+			y = this.top + 2;
 
 			//left side of the selection
 			if (from_pos < _first_char) {
@@ -487,8 +487,8 @@ public:
 			x2 = x + s.x;
 			y2 = y + _value_size.y + 1;
 
-			if (x2 >= _r) {
-				x2 = _r - 1;
+			if (x2 >= this.right) {
+				x2 = this.right - 1;
 			}
 
 			g.drawRect(x,y,x2,y2);
@@ -545,7 +545,7 @@ private:
 			//check to see if it is within the viewable area
 			grp.measureText(_value[_first_char..onPos], s);
 
-			if ((s.x + 3) < _width) {
+			if ((s.x + 3) < this.width) {
 				//we are good
 				_view.unlockDisplay();
 				return;
@@ -575,7 +575,7 @@ private:
 
 				i = onPos;
 
-				while(current_movement < _width) {
+				while(current_movement < this.width) {
 					if (i<=0) {
 						i = 0;
 						break;

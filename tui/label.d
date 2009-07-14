@@ -78,7 +78,7 @@ protected:
 
 	void draw() {
 		if (canDraw) {
-			Console.setPosition(x, y);
+			Console.setPosition(this.left, this.top);
 			Console.setColor(_forecolor, _backcolor);
 
 			// draw as much as we can

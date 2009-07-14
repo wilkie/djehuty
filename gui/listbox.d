@@ -39,7 +39,7 @@ class ListBox : Widget {
 	// handle events
 	override void onAdd() {
 		if (control_scroll is null) {
-			control_scroll = new VScrollBar(_r - 17,_y, 17, _height);
+			control_scroll = new VScrollBar(this.right - 17,this.top, 17, this.height);
 		}
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
@@ -61,7 +61,7 @@ class ListBox : Widget {
 		//normal state
 		m_hoverstate = 0;
 
-		m_total_visible = ((_height+2) / m_entryHeight.y) + 1;
+		m_total_visible = ((this.height+2) / m_entryHeight.y) + 1;
 
 		_window.push(control_scroll);
 
@@ -91,11 +91,11 @@ class ListBox : Widget {
 		g.setPen(pen);
 		g.setBrush(brsh);
 
-		g.drawRect(_x, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.right, this.bottom);
 
-		rt.left = _x+1;
-		rt.top = _y+1;
-		rt.right = _r - control_scroll.width;
+		rt.left = this.left+1;
+		rt.top = this.top+1;
+		rt.right = this.right - control_scroll.width;
 		rt.bottom = rt.top + m_entryHeight.y;
 
 		// set text mode to transparent
@@ -127,16 +127,16 @@ class ListBox : Widget {
 
 			rt.top = rt.bottom;
 
-			if (rt.bottom == _b-1) { break; }
+			if (rt.bottom == this.bottom-1) { break; }
 
 			rt.bottom += m_entryHeight.y;
 
-			if (rt.bottom >= _b) { rt.bottom = _b-1; }
+			if (rt.bottom >= this.bottom) { rt.bottom = this.bottom-1; }
 		}
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
-		uint curEntry = (mouseProps.y - _y);
+		uint curEntry = (mouseProps.y - this.top);
 		curEntry -= 1; //remove top margin
 
 		curEntry /= m_entryHeight.y;

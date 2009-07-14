@@ -61,9 +61,9 @@ class ListField : Widget, AbstractList!(String) {
 	// handle events
 	override void onAdd() {
 		if (control_button is null) {
-			control_button = new Button(_r - _height,_y, _height, _height, "V");
-			control_listbox = new ListBox(0,0, _width,_width / 2);
-			control_window = new ListFieldWindow(_width);
+			control_button = new Button(this.right - this.height,this.top, this.height, this.height, "V");
+			control_listbox = new ListBox(0,0, this.width,this.width / 2);
+			control_window = new ListFieldWindow(this.width);
 
 			if (_list !is null) {
 				control_listbox.addList(_list);
@@ -89,10 +89,10 @@ class ListField : Widget, AbstractList!(String) {
 		//normal state
 		m_hoverstate = 0;
 
-		//control_scroll.Bound(17, _height);
-		//control_scroll.Move(_x+(_width-17), _y);
+		//control_scroll.Bound(17, this.height);
+		//control_scroll.Move(this.left+(this.width-17), this.top);
 
-		m_total_visible = ((_height+2) / m_entryHeight.y) + 1;
+		m_total_visible = ((this.height+2) / m_entryHeight.y) + 1;
 
 		// Add the Child Button, which will spawn the window and the list
 		_window.push(control_button);
@@ -117,11 +117,11 @@ class ListField : Widget, AbstractList!(String) {
 		g.setPen(pen);
 		g.setBrush(brsh);
 
-		g.drawRect(_x, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.right, this.bottom);
 
-		rt.left = _x+1;
-		rt.top = _y+1;
-		rt.right = _r - control_button.width;
+		rt.left = this.left+1;
+		rt.top = this.top+1;
+		rt.right = this.right - control_button.width;
 		rt.bottom = rt.top + m_entryHeight.y;
 	}
 

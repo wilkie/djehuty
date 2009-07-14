@@ -51,8 +51,8 @@ class TuiVT100 : TuiBuffer {
 				}
 				else if (chr == 's') {
 					// save position
-					_vt100_saved_x = _curx-_x;
-					_vt100_saved_y = _cury-_y;
+					_vt100_saved_x = _curx-this.left;
+					_vt100_saved_y = _cury-this.top;
 				}
 				else if (chr == 'u') {
 					// restore position
@@ -172,7 +172,7 @@ class TuiVT100 : TuiBuffer {
 			_vt100_paramFilled = 0;
 		}
 		else {
-			//Console.setPosition(0, _b+2);
+			//Console.setPosition(0, this.bottom+2);
 			//Console.setColor(fgColor.White);
 			//Console.put(_curx, ", ", _cury, " : ", _buffer.length());
 			super.writeChar(chr);

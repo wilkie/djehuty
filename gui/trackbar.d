@@ -33,18 +33,18 @@ class TrackBar : Widget {
 
 		g.setBrush(brsh);
 
-		g.drawRect(_x, _y, _r, _b);
+		g.drawRect(this.left, this.top, this.right, this.bottom);
 
 		int barWidth;
 
-		barWidth = cast(int)(cast(float)_width * (cast(float)(_value - _min) / cast(float)(_max - _min)));
+		barWidth = cast(int)(cast(float)this.width * (cast(float)(_value - _min) / cast(float)(_max - _min)));
 
-		//writefln("barwidth: ", barWidth, " width: ", _width, " value: ", _value, " max: ", _max);
+		//writefln("barwidth: ", barWidth, " width: ", this.width, " value: ", _value, " max: ", _max);
 
 		brsh.setColor(Color.Green);
 		g.setBrush(brsh);
 
-		g.drawRect(_x, _y, barWidth + _x, _b);
+		g.drawRect(this.left, this.top, barWidth + this.left, this.bottom);
 
 	}
 
@@ -80,7 +80,7 @@ class TrackBar : Widget {
 		return _tickFreq;
 	}
 
-protected:
+private:
 
 	long _min = 0;
 	long _max = 100;

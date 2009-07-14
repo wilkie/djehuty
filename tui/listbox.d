@@ -30,7 +30,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	}
 
 	override void onInit() {
-		Console.setPosition(x, y);
+		Console.setPosition(this.left, this.top);
 		Console.setColor(fgColor.White, bgColor.Black);
 
 		// draw all strings
@@ -49,14 +49,14 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 			if (i == 1){
 				Console.setColor(fgColor.BrightWhite, bgColor.Black);
 			}
-			Console.setPosition(x, y+i);
+			Console.setPosition(this.left, this.top+i);
 			i++;
 		}
 
 		for ( ; i<=height; i++) {
 			Console.put(_spacestr);
 			if (i != height) {
-				Console.setPosition(x, y+i);
+				Console.setPosition(this.left, this.top+i);
 			}
 		}
 	}
@@ -72,14 +72,14 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 				// draw over current
 				_list.getItem(data, _pos);
 				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.setPosition(x, y+_pos);
+				Console.setPosition(this.left, this.top+_pos);
 				Console.put(data.array);
 				// decrement
 				_pos--;
 				// draw new
 				_list.getItem(data, _pos);
 				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.setPosition(x, y+_pos);
+				Console.setPosition(this.left, this.top+_pos);
 				Console.put(data.array);
 			}
 		}
@@ -91,14 +91,14 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 				// draw over current
 				_list.getItem(data, _pos);
 				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.setPosition(x, y+_pos);
+				Console.setPosition(this.left, this.top+_pos);
 				Console.put(data.array);
 				// increment
 				_pos++;
 				// draw new
 				_list.getItem(data, _pos);
 				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.setPosition(x, y+_pos);
+				Console.setPosition(this.left, this.top+_pos);
 				Console.put(data.array);
 			}
 		}
@@ -109,7 +109,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 
 		_list.getItem(data, _pos);
 		Console.setColor(fgColor.White, bgColor.Black);
-		Console.setPosition(x, y+_pos);
+		Console.setPosition(this.left, this.top+_pos);
 		Console.put(data.array);
 	}
 
@@ -120,7 +120,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 
 		_list.getItem(data, _pos);
 		Console.setColor(fgColor.BrightYellow, bgColor.Black);
-		Console.setPosition(x, y+_pos);
+		Console.setPosition(this.left, this.top+_pos);
 		Console.put(data.array);
 	}
 

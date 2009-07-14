@@ -37,8 +37,7 @@ class Widget : Responder
 	// y: The y coordinate for the widget.
 	// width: The width of the widget.
 	// height: The height of the widget.
-	this(int x, int y, int width, int height)
-	{
+	this(int x, int y, int width, int height) {
 		_subX = x;
 		_x = x;
 
@@ -211,7 +210,7 @@ class Widget : Responder
 
 	// Description: Will return a reference to the parent window that owns this control.
 	// Returns: The reference to the current window object that owns this control instance.
-	Window getParent() {
+	Window parent() {
 		return _window;
 	}
 
@@ -259,34 +258,37 @@ class Widget : Responder
 	bool focused() {
 		return _focused;
 	}
-	void enabled(bool bEnable)
-	{
+
+	void enabled(bool bEnable) {
 		_enabled = bEnable;
 	}
 
-	bool enabled()
-	{
+	bool enabled() {
 		return _enabled;
 	}
 
-	uint width()
-	{
+	uint width() {
 		return _width;
 	}
 
-	uint height()
-	{
+	uint height() {
 		return _height;
 	}
 
-	int x()
-	{
+	int left() {
 		return _subX;
 	}
 
-	int y()
-	{
+	int top() {
 		return _subY;
+	}
+
+	int right() {
+		return _r;
+	}
+
+	int bottom() {
+		return _b;
 	}
 
 	void resize(uint width, uint height)
@@ -302,8 +304,8 @@ class Widget : Responder
 	{
 		if (_container !is null)
 		{
-			_x = x + _container.baseX;
-			_y = y + _container.baseY;
+			_x = x + _container.baseLeft;
+			_y = y + _container.baseTop;
 		}
 		else
 		{
@@ -319,6 +321,27 @@ class Widget : Responder
 	}
 
 protected:
+
+	// - will post an event to this control
+	//void PostEvent(Int32 theEvent, Int32 p1, Int32 p2);
+
+	void requestCapture()
+	{
+		if (_window !is null)
+		{
+//			WindowCaptureMouse(_window, this);
+		}
+	}
+
+	void requestRelease()
+	{
+		if (_window !is null)
+		{
+//			WindowReleaseMouse(_window, this);
+		}
+	}
+
+private:
 
 	package Window _window = null;
 	package WindowHelper _windowHelper;
@@ -344,27 +367,6 @@ protected:
 
 	int _width = -1;   //width
 	int _height = -1;  //height
-
-	// - will post an event to this control
-	//void PostEvent(Int32 theEvent, Int32 p1, Int32 p2);
-
-	void requestCapture()
-	{
-		if (_window !is null)
-		{
-//			WindowCaptureMouse(_window, this);
-		}
-	}
-
-	void requestRelease()
-	{
-		if (_window !is null)
-		{
-//			WindowReleaseMouse(_window, this);
-		}
-	}
-
-private:
 
 	package void removeControl() {
 		onRemove();
@@ -423,7 +425,7 @@ class Container : Widget, AbstractContainer
 	void addControl(Widget control)
 	{
 		// do not add a control that is already part of another window
-		if (control.getParent() !is null) { return; }
+		if (control.parent !is null) { return; }
 
 		// add to the control linked list
 		if (_firstControl is null && _lastControl is null)
@@ -452,7 +454,7 @@ class Container : Widget, AbstractContainer
 		_numControls++;
 
 		// call a function initializing a control on the control's end
-		Window wnd = getParent();
+		Window wnd = this.parent;
 
 		control._window = wnd;
 		control._view = _view;
@@ -460,7 +462,7 @@ class Container : Widget, AbstractContainer
 
 		control.onAdd();
 
-		control.move(control.x, control.y);
+		control.move(control.left, control.top);
 	}
 
 	void removeControl(Widget control)
@@ -531,24 +533,24 @@ class Container : Widget, AbstractContainer
 		{
 			do
 			{
-				ctrl.move(ctrl.x, ctrl.y);
+				ctrl.move(ctrl.left, ctrl.top);
 
 				ctrl = ctrl._nextControl;
 			} while (ctrl !is _firstControl)
 		}
 	}
 
-	int baseX()
+	int baseLeft()
 	{
 		return _x;
 	}
 
-	int baseY()
+	int baseTop()
 	{
 		return _y;
 	}
 
-protected:
+private:
 
 	// head and tail of the control linked list
 	package Widget _firstControl = null;	//head

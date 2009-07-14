@@ -104,7 +104,7 @@ class GameControl : TuiWidget {
 
 		for(uint j; j < 20; j++) {
 			for(uint o; o < 2; o++) {
-				Console.setPosition(this.x, this.y + (j*2) + o);
+				Console.setPosition(this.left, this.top + (j*2) + o);
 				for (uint i; i < 10; i++) {
 					if (clr != board[i,j]) {
 						clr = board[i,j];
@@ -134,9 +134,9 @@ class GameControl : TuiWidget {
 
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
-				Console.setPosition(this.x + pt.x, this.y + pt.y);
+				Console.setPosition(this.left + pt.x, this.top + pt.y);
 				Console.put("\u2592\u2592\u2592\u2592");
-				Console.setPosition(this.x + pt.x, this.y + pt.y + 1);
+				Console.setPosition(this.left + pt.x, this.top + pt.y + 1);
 				Console.put("\u2592\u2592\u2592\u2592");
 			}
 		}
@@ -148,9 +148,9 @@ class GameControl : TuiWidget {
 		Console.setColor(fgColor.Black);
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
-				Console.setPosition(this.x + pt.x, this.y + pt.y);
+				Console.setPosition(this.left + pt.x, this.top + pt.y);
 				Console.put("\u2592\u2592\u2592\u2592");
-				Console.setPosition(this.x + pt.x, this.y + pt.y + 1);
+				Console.setPosition(this.left + pt.x, this.top + pt.y + 1);
 				Console.put("\u2592\u2592\u2592\u2592");
 			}
 		}

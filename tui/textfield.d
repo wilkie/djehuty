@@ -157,7 +157,7 @@ protected:
 
 	void draw() {
 		if (canDraw) {
-			Console.setPosition(x, y);
+			Console.setPosition(this.left, this.top);
 			Console.setColor(_color, bgColor.Black);
 			Console.put("[");
 
@@ -183,10 +183,10 @@ protected:
 	
 	void positionCursor() {
 		if (_pos == _max) {
-			Console.setPosition(x+_max, y);
+			Console.setPosition(this.left+_max, this.top);
 		}
 		else {
-			Console.setPosition(x+1+_pos, y);
+			Console.setPosition(this.left+1+_pos, this.top);
 		}
 	}
 }
