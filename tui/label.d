@@ -15,8 +15,7 @@ class TuiLabel : TuiWidget {
 
 	this( uint x, uint y, uint width, String text,
 		  fgColor fgclr = fgColor.BrightBlue,
-		  bgColor bgclr = bgColor.Black )
-	{
+		  bgColor bgclr = bgColor.Black ) {
 		super(x,y,width,1);
 
 		_forecolor = fgclr;
@@ -27,8 +26,7 @@ class TuiLabel : TuiWidget {
 
 	this( uint x, uint y, uint width, string text,
 		  fgColor fgclr = fgColor.BrightBlue,
-		  bgColor bgclr = bgColor.Black )
-	{
+		  bgColor bgclr = bgColor.Black ) {
 		super(x,y,width,1);
 
 		_forecolor = fgclr;
@@ -60,6 +58,7 @@ class TuiLabel : TuiWidget {
 
 	void forecolor(fgColor fgclr) {
 		_forecolor = fgclr;
+		draw();
 	}
 
 	fgColor forecolor() {
@@ -68,6 +67,7 @@ class TuiLabel : TuiWidget {
 
 	void backcolor(bgColor bgclr) {
 		_backcolor = bgclr;
+		draw();
 	}
 
 	bgColor backcolor() {

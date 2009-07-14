@@ -33,6 +33,7 @@ class GLWindow : Window
 		super(windowTitle, windowStyle, Color.Black, x, y, width, height);
 	}
 
+	// This function will disallow the normal widget additions to the window.
 	override void push(Dispatcher dsp) {
 		Responder.push(dsp);
 	}
