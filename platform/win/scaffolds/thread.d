@@ -11,7 +11,6 @@
 module platform.win.scaffolds.thread;
 
 import core.view;
-import core.window;
 import core.string;
 import core.file;
 import core.graphics;

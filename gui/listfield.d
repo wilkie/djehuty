@@ -13,7 +13,6 @@ import core.color;
 import core.definitions;
 import core.string;
 import core.graphics;
-import core.window;
 
 import utils.arraylist;
 

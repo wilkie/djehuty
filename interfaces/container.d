@@ -10,6 +10,6 @@ interface AbstractContainer
 	void removeControl(Widget control);
 	Widget controlAtPoint(int x, int y);
 
-	int getBaseX();
-	int getBaseY();
+	int baseX();
+	int baseY();
 }

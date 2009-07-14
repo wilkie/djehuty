@@ -610,7 +610,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			PAINTSTRUCT ps;
 			HDC dc = BeginPaint(hWnd, &ps);
-			BitBlt(ps.hdc, 0, 0, w.getWidth(), w.getHeight(), viewVars.dc, 0, 0, SRCCOPY);
+			BitBlt(ps.hdc, 0, 0, w.width, w.height, viewVars.dc, 0, 0, SRCCOPY);
 			EndPaint(hWnd, &ps);
 
 			view.unlockDisplay();
@@ -1069,9 +1069,9 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			// was it minimized? maximized?
 
-			if (w.getState() != WindowState.Fullscreen)
+			if (w.state != WindowState.Fullscreen)
 			{
-				if (wParam == SIZE_MAXIMIZED && w.getState() != WindowState.Minimized)
+				if (wParam == SIZE_MAXIMIZED && w.state != WindowState.Minimized)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
@@ -1079,7 +1079,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 						windowVars.supress_WM_SIZE_state = false;
 					}
 				}
-				else if (wParam == SIZE_MINIMIZED && w.getState() != WindowState.Maximized)
+				else if (wParam == SIZE_MINIMIZED && w.state != WindowState.Maximized)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
@@ -1087,7 +1087,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 						windowVars.supress_WM_SIZE_state = false;
 					}
 				}
-				else if (wParam == SIZE_RESTORED && w.getState() != WindowState.Normal)
+				else if (wParam == SIZE_RESTORED && w.state != WindowState.Normal)
 				{
 					if (!windowVars.supress_WM_SIZE_state)
 					{
@@ -1122,8 +1122,8 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 					pnt[0].x = 0;
 					pnt[0].y = 0;
-					pnt[1].x = w.getWidth()-1;
-					pnt[1].y = w.getHeight()-1;
+					pnt[1].x = w.width-1;
+					pnt[1].y = w.height-1;
 
 					ClientToScreen(hWnd, &pnt[0]);
 					ClientToScreen(hWnd, &pnt[1]);

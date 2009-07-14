@@ -302,8 +302,8 @@ class Widget : Responder
 	{
 		if (_container !is null)
 		{
-			_x = x + _container.getBaseX();
-			_y = y + _container.getBaseY();
+			_x = x + _container.baseX;
+			_y = y + _container.baseY;
 		}
 		else
 		{
@@ -538,12 +538,12 @@ class Container : Widget, AbstractContainer
 		}
 	}
 
-	int getBaseX()
+	int baseX()
 	{
 		return _x;
 	}
 
-	int getBaseY()
+	int baseY()
 	{
 		return _y;
 	}

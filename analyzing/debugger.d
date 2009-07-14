@@ -71,7 +71,7 @@ public:
 			ClassInfo ci = w.classinfo;
 			String className = new String(ci.name);
 
-			Console.putln("    from window: ", className.array, " [", w.getText().array, "]");
+			Console.putln("    from window: ", className.array, " [", w.text.array, "]");
 		}
 		if (t !is null)
 		{

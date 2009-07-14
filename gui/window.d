@@ -34,6 +34,8 @@ class Window : Responder, AbstractContainer
 
 public:
 
+	// Constructors
+
 	// Description: Will create the window with certain default parameters
 	// windowTitle: The initial title for the window.
 	// windowStyle: The initial style for the window.
@@ -127,15 +129,17 @@ public:
 		uninitialize();
 		remove();
 	}
+	
+	// Properties
 
 	// Widget Container Margins
 
-	int getBaseX()
+	int baseX()
 	{
 		return 0;
 	}
 
-	int getBaseY()
+	int baseY()
 	{
 		return 0;
 	}
@@ -145,14 +149,14 @@ public:
 
 	// Description: Will get the title of the window.
 	// Returns: The String representing the title.
-	String getText()
+	String text()
 	{
 		return new String(_window_title);
 	}
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void setText(String str)
+	void text(String str)
 	{
 		_window_title = new String(str);
 
@@ -162,7 +166,7 @@ public:
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void setText(string str)
+	void text(string str)
 	{
 		_window_title = new String(str);
 
@@ -170,29 +174,13 @@ public:
 		Scaffold.WindowSetTitle(this, windowHelper);
 	}
 
-	Window getNextWindow() {
+	Window nextWindow() {
 		return _nextWindow;
-	}
-
-	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
-	void remove()
-	{
-		if (!_inited) { return; }
-
-		// the window was added
-		// destroy
-
-		// TODO: Fire the event, and allow confirmation
-		// TODO: Add a FORCE DESTROY function method
-
-		_inited = false;
-
-		Scaffold.WindowDestroy(this, windowHelper);
 	}
 
 	// Description: Sets the flag to make the window hidden or visible.
 	// bShow: Pass true to show the window and false to hide it.
-	void setVisibility(bool bShow)
+	void visible(bool bShow)
 	{
 		if (_visible == bShow) { return; }
 
@@ -226,14 +214,14 @@ public:
 
 	// Description: Will return whether or not the window is flagged as hidden or visible.  The window may not actually be visible due to it not being created or added.
 	// Returns: It will return true when the window is flagged to be visible and false otherwise.
-	bool getVisibility()
+	bool visible()
 	{
 		return _visible;
 	}
 
 	// Description: Will set the window to take a different state: WindowState.Minimized, WindowState.Maximized, WindowState.Fullscreen, WindowState.Normal
 	// state: A WindowState value representing the new state.
-	void setState(WindowState state)
+	void state(WindowState state)
 	{
 		if (_state == state) { return; }
 
@@ -249,16 +237,16 @@ public:
 
 	// Description: Will return the current state of the window.
 	// Returns: The current WindowState value for the window.
-	WindowState getState()
+	WindowState state()
 	{
 		return _state;
 	}
 
 	// Description: Will set the window to take a different style: WindowStyle.Fixed (non-sizable), WindowStyle.Sizable (resizable window), WindowStyle.Popup (borderless).
 	// style: A WindowStyle value representing the new style.
-	void setStyle(WindowStyle style)
+	void style(WindowStyle style)
 	{
-		if (getState() == WindowState.Fullscreen)
+		if (this.state == WindowState.Fullscreen)
 			{ return; }
 
 		_style = style;
@@ -271,12 +259,56 @@ public:
 
 	// Description: Will return the current style of the window.
 	// Returns: The current WindowStyle value for the window.
-	WindowStyle getStyle()
+	WindowStyle style()
 	{
 		return _style;
 	}
 
+	// Description: Will return the width of the client area of the window.
+	// Returns: The width of the client area of the window.
+	uint width()
+	{
+		return _width;
+	}
 
+	// Description: Will return the height of the client area of the window.
+	// Returns: The height of the client area of the window.
+	uint height()
+	{
+		return _height;
+	}
+
+	// Description: Will return the x coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
+	// Returns: The x position of the top-left corner of the window.
+	uint x()
+	{
+		return _x;
+	}
+
+	// Description: Will return the y coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
+	// Returns: The y position of the top-left corner of the window.
+	uint y()
+	{
+		return _y;
+	}
+	
+	// Methods
+
+	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
+	void remove()
+	{
+		if (!_inited) { return; }
+
+		// the window was added
+		// destroy
+
+		// TODO: Fire the event, and allow confirmation
+		// TODO: Add a FORCE DESTROY function method
+
+		_inited = false;
+
+		Scaffold.WindowDestroy(this, windowHelper);
+	}
 
 	// Description: This function will Size the window to fit a client area with the dimensions given by width and height.
 	// width: The new width of the client area.
@@ -308,38 +340,6 @@ public:
 		}
 
 		OnMove();
-	}
-
-
-	// Position Polling //
-
-
-	// Description: Will return the width of the client area of the window.
-	// Returns: The width of the client area of the window.
-	uint getWidth()
-	{
-		return _width;
-	}
-
-	// Description: Will return the height of the client area of the window.
-	// Returns: The height of the client area of the window.
-	uint getHeight()
-	{
-		return _height;
-	}
-
-	// Description: Will return the x coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
-	// Returns: The x position of the top-left corner of the window.
-	uint getX()
-	{
-		return _x;
-	}
-
-	// Description: Will return the y coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
-	// Returns: The y position of the top-left corner of the window.
-	uint getY()
-	{
-		return _y;
 	}
 
 	void ClientToScreen(ref int x, ref int y)

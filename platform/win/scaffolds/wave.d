@@ -16,7 +16,6 @@ import platform.win.main;
 
 import core.view;
 import core.graphics;
-import core.window;
 import core.string;
 import core.file;
 import core.stream;

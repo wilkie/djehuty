@@ -10,7 +10,6 @@
 
 module core.main;
 
-import core.window;
 import core.string;
 import core.arguments;
 import core.filesystem;

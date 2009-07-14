@@ -52,59 +52,61 @@ class Texture
 		_fw = _img.getWidth() / _fcols;
 		_fh = _img.getHeight() / _frows;
 	}
+	
+	// Properties
 
 	// Description: This function will return the texture's width.
 	// Returns: The width of the texture.
-	int getWidth()
+	int width()
 	{
 		return _img.getWidth();
 	}
 
 	// Description: This function will return the texture's height.
 	// Returns: The height of the texture.
-	int getHeight()
+	int height()
 	{
 		return _img.getHeight();
 	}
 
 	// Description: This function will return the number of frames that are contained in this texture.
 	// Returns: This returns the equivalent of getFrameRows * getFrameColumns
-	int getFrameCount()
+	int numFrames()
 	{
 		return _frows * _fcols;
 	}
 
 	// Description: This function will return the number of frames within each individual column.
 	// Returns: The number of rows represented within the texture.
-	int getFrameRows()
+	int numRows()
 	{
 		return _frows;
 	}
 
 	// Description: This function will return the number of frames within each individual row.
 	// Returns: The number of columns represented within the texture.
-	int getFrameColumns()
+	int numColumns()
 	{
 		return _fcols;
 	}
 
 	// Description: This function will return the width of a frame.
 	// Returns: The width of a single frame.
-	int getFrameWidth()
+	int frameWidth()
 	{
 		return _fw;
 	}
 
 	// Description: This function will return the height of a frame.
 	// Returns: The height of a single frame.
-	int getFrameHeight()
+	int frameHeight()
 	{
 		return _fh;
 	}
 
 	// Description: Returns the texture index as specified by OpenGL upon creation of the texture.
 	// Returns: The texture index.
-	GLuint getTextureIndex()
+	GLuint textureIndex()
 	{
 		return _gl_tex_index;
 	}

@@ -35,13 +35,13 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 {
 	auto windowVars = windowHelper.getPlatformVars();
 
-	windowVars.oldWidth = window.getWidth();
-	windowVars.oldHeight = window.getHeight();
+	windowVars.oldWidth = window.width;
+	windowVars.oldHeight = window.height;
 
-	windowVars.oldX = window.getX();
-	windowVars.oldY = window.getY();
+	windowVars.oldX = window.x;
+	windowVars.oldY = window.y;
 
-	windowVars.oldTitle = window.getText();
+	windowVars.oldTitle = window.text;
 
 	windowVars.userData = cast(void*)windowHelper;
 
@@ -118,17 +118,17 @@ void WindowSetStyle(ref Window window, WindowHelper windowHelper)
 
 	bool wasMaximized = false;
 
-	if (window.getState() == WindowState.Maximized)
+	if (window.state == WindowState.Maximized)
 	{
 		ShowWindow(windowVars.hWnd, SW_HIDE);
 		wasMaximized = true;
-		window.setState(WindowState.Normal);
+		window.state = WindowState.Normal;
 	}
 
 	int width, height;
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width;
+	height = window.height;
 
 	_ClientSizeToWindowSize(window, width, height);
 
@@ -146,9 +146,9 @@ void WindowSetStyle(ref Window window, WindowHelper windowHelper)
 
 	if (wasMaximized)
 	{
-		window.setState(WindowState.Maximized);
+		window.state = WindowState.Maximized;
 
-		if (window.getVisibility())
+		if (window.visible)
 		{
 			ShowWindow(windowVars.hWnd, SW_SHOW);
 		}
@@ -159,20 +159,20 @@ void WindowReposition(ref Window window, WindowHelper windowHelper)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 
-	SetWindowPos(windowVars.hWnd, null, window.getX(),window.getY(), 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	SetWindowPos(windowVars.hWnd, null, window.x,window.y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
 void WindowSetState(ref Window window, WindowHelper windowHelper)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 
-	if (window.getState() == WindowState.Fullscreen)
+	if (window.state == WindowState.Fullscreen)
 	{
-		windowVars.oldX = window.getX();
-		windowVars.oldY = window.getY();
+		windowVars.oldX = window.x;
+		windowVars.oldY = window.y;
 
-		windowVars.oldWidth = window.getWidth();
-		windowVars.oldHeight = window.getHeight();
+		windowVars.oldWidth = window.width;
+		windowVars.oldHeight = window.height;
 
 		windowVars.supress_WM_MOVE = true;
 		windowVars.supress_WM_SIZE = true;
@@ -195,14 +195,14 @@ void WindowSetState(ref Window window, WindowHelper windowHelper)
 
 		SetWindowRgn(windowVars.hWnd, null, true);
 
-		if (window.getVisibility())
+		if (window.visible)
 		{
 			ShowWindow(windowVars.hWnd, SW_SHOW);
 		}
 
 		windowVars.infullscreen = true;
 	}
-	else if (window.getVisibility())
+	else if (window.visible)
 	{
 		if (windowVars.infullscreen)
 		{
@@ -215,18 +215,18 @@ void WindowSetState(ref Window window, WindowHelper windowHelper)
 			windowHelper.setWindowHeight(windowVars.oldHeight);
 
 			int width, height;
-			width = window.getWidth();
-			height = window.getHeight();
+			width = window.width;
+			height = window.height;
 
 			_ClientSizeToWindowSize(window, width, height);
 
-			SetWindowPos(windowVars.hWnd, null, window.getX(),window.getY(), width, height, SWP_NOOWNERZORDER | SWP_NOZORDER);
+			SetWindowPos(windowVars.hWnd, null, window.x,window.y, width, height, SWP_NOOWNERZORDER | SWP_NOZORDER);
 			InvalidateRect(null, null, 0);
 
 			windowVars.infullscreen = false;
 		}
 
-		switch(window.getState())
+		switch(window.state)
 		{
 			case WindowState.Normal:
 
@@ -253,12 +253,11 @@ void WindowSetState(ref Window window, WindowHelper windowHelper)
 
 void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexstyle)
 {
-	if (window.getStyle() == WindowStyle.Fixed)
+	if (window.style == WindowStyle.Fixed)
 	{
 		istyle = WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
                 /+
-	        /+ DIALOG STYLE +/
                 istyle &= ~(WS_BORDER | WS_THICKFRAME);
                 iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
                 istyle |= WS_CAPTION | WS_DLGFRAME;
@@ -271,7 +270,7 @@ void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexsty
 		istyle |= WS_BORDER | WS_CAPTION;
 		iexstyle |= WS_EX_DLGMODALFRAME;
 	}
-	else if (window.getStyle() == WindowStyle.Popup)
+	else if (window.style == WindowStyle.Popup)
 	{
 		istyle = WS_POPUP;
 	}
@@ -280,7 +279,7 @@ void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexsty
 		istyle = WS_OVERLAPPEDWINDOW;
 	}
 
-	if (window.getVisibility())
+	if (window.visible)
 	{
 		istyle |= WS_VISIBLE;
 	}
@@ -297,7 +296,7 @@ void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 		//because windows is retarded in this
 		//respect
 
-		if (window.getStyle() == WindowStyle.Fixed)
+		if (window.style == WindowStyle.Fixed)
 		{
 			int border_width, border_height;
 			border_width = ( GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME) ) * 2;
@@ -306,7 +305,7 @@ void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 			width += border_width;
 			height += border_height;
 		}
-		else if (window.getStyle() == WindowStyle.Popup)
+		else if (window.style == WindowStyle.Popup)
 		{
 			//do nothing
 		}
@@ -330,8 +329,8 @@ void WindowRebound(ref Window window, WindowHelper windowHelper)
 
 	int width, height;
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width;
+	height = window.height;
 
 	_ClientSizeToWindowSize(window, width, height);
 
@@ -364,7 +363,7 @@ void WindowSetTitle(ref Window window, WindowHelper windowHelper)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 
-	String s = new String(window.getText());
+	String s = new String(window.text);
 	s.appendChar('\0');
 	SetWindowTextW(windowVars.hWnd, cast(wchar*)s.ptr);
 }

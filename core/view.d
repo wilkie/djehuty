@@ -1,6 +1,5 @@
 module core.view;
 
-import core.window;
 import core.graphics;
 
 import synch.semaphore;
@@ -299,7 +298,7 @@ void ViewCreateForWindow(ref View view, ref Window window)
 {
 	view._fromWindow = true;
 
-	view.create(window.getWidth(), window.getHeight());
+	view.create(window.width, window.height);
 
 	view._fromWindow = true;
 }
@@ -308,7 +307,7 @@ void ViewResizeForWindow(ref View view, ref Window window)
 {
 	if (view !is null && view._fromWindow)
 	{
-		view.resize(window.getWidth(), window.getHeight());
+		view.resize(window.width, window.height);
 	}
 }
 

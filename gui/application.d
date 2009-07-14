@@ -25,6 +25,8 @@ mixin(PlatformScaffoldImport!());
 class GuiApplication : Application {
 public:
 
+	// Constructors
+
 	override void push(Dispatcher dsp) {
 		if (cast(Window)dsp !is null) {
 			addWindow(cast(Window)dsp);
@@ -33,19 +35,23 @@ public:
 		super.push(dsp);
 	}
 
-	int getWindowCount() {
+	// Properties
+
+	int numWindows() {
 		return _windowCount;
 	}
 
-	int getVisibleWindowCount() {
+	int numVisible() {
 		return _windowVisibleCount;
 	}
+
+	// Methods
 
 	override bool isZombie() {
 		return _windowVisibleCount == 0;
 	}
 
-	Window getFirstWindow() {
+	Window firstWindow() {
 		return _windowListHead;
 	}
 
@@ -73,7 +79,7 @@ private:
 			Scaffold.WindowCreate(window, window.windowHelper);
 		}
 
-		if (window.getVisibility()) {
+		if (window.visible) {
 			Scaffold.WindowSetVisible(window, window.windowHelper, true);
 		}
 	}

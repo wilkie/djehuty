@@ -51,7 +51,7 @@ class GLWindow : Window
 	// tex: The Texture to bind.
 	void bindTexture(Texture tex) {
 		_bindedTexture = tex;
-		glBindTexture(GL_TEXTURE_2D, tex.getTextureIndex());
+		glBindTexture(GL_TEXTURE_2D, tex.textureIndex());
 
 		// texture mode
 		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -80,11 +80,11 @@ class GLWindow : Window
 	// x2: The right.
 	// y2: The bottom.
 	void useTexture(Texture tex, int x1, int y1, int x2, int y2) {
-		_tu0 = cast(double)x1 / cast(double)tex.getWidth();
-		_tv0 = cast(double)y1 / cast(double)tex.getHeight();
+		_tu0 = cast(double)x1 / cast(double)tex.width;
+		_tv0 = cast(double)y1 / cast(double)tex.height;
 
-		_tu1 = cast(double)x2 / cast(double)tex.getWidth();
-		_tv1 = cast(double)y2 / cast(double)tex.getHeight();
+		_tu1 = cast(double)x2 / cast(double)tex.width;
+		_tv1 = cast(double)y2 / cast(double)tex.height;
 	}
 
 	// Description: This function will bind a frame from a texture.
@@ -92,13 +92,13 @@ class GLWindow : Window
 	// frameIndex: The row-major index of the frame.
 	void useTexture(Texture tex, int frameIndex) {
 		int x,y;
-		x = frameIndex % tex.getFrameRows();
-		y = frameIndex / tex.getFrameRows();
+		x = frameIndex % tex.numRows;
+		y = frameIndex / tex.numRows;
 
-		_tu0 = cast(double)x / cast(double)tex.getFrameColumns();
-		_tu1 = cast(double)(x+1) / cast(double)tex.getFrameColumns();
-		_tv0 = cast(double)y / cast(double)tex.getFrameRows();
-		_tv1 = cast(double)(y+1) / cast(double)tex.getFrameRows();
+		_tu0 = cast(double)x / cast(double)tex.numColumns;
+		_tu1 = cast(double)(x+1) / cast(double)tex.numColumns;
+		_tv0 = cast(double)y / cast(double)tex.numRows;
+		_tv1 = cast(double)(y+1) / cast(double)tex.numRows;
 	}
 
 
@@ -135,25 +135,25 @@ class GLWindow : Window
 
 		// assumes -1 ... 1 window
 
-		xpos = x / cast(double)getWidth();
+		xpos = x / cast(double)this.width;
 
-		ypos = 1.0 - (y / cast(double)getHeight());
+		ypos = 1.0 - (y / cast(double)this.height);
 
 		GLdouble scalew, scaleh;
 
-		int x1 = frameIndex % _bindedTexture.getFrameRows();
-		int y1 = frameIndex / _bindedTexture.getFrameRows();
+		int x1 = frameIndex % _bindedTexture.numRows;
+		int y1 = frameIndex / _bindedTexture.numRows;
 
-		scalew = cast(double)_bindedTexture.getFrameWidth() / cast(double)getWidth();
-		scaleh = cast(double)_bindedTexture.getFrameHeight() / cast(double)getHeight();
+		scalew = cast(double)_bindedTexture.frameWidth / cast(double)this.width;
+		scaleh = cast(double)_bindedTexture.frameHeight / cast(double)this.height;
 
 		glTranslatef(xpos + (scalew/2), ypos - (scaleh/2), 0.0);
 		glScalef(scalew, scaleh, 1.0);
 
-		_tu0 = cast(double)x1 / cast(double)_bindedTexture.getFrameColumns();
-		_tu1 = cast(double)(x1+1) / cast(double)_bindedTexture.getFrameColumns();
-		_tv0 = cast(double)y1 / cast(double)_bindedTexture.getFrameRows();
-		_tv1 = cast(double)(y1+1) / cast(double)_bindedTexture.getFrameRows();
+		_tu0 = cast(double)x1 / cast(double)_bindedTexture.numColumns;
+		_tu1 = cast(double)(x1+1) / cast(double)_bindedTexture.numColumns;
+		_tv0 = cast(double)y1 / cast(double)_bindedTexture.numRows;
+		_tv1 = cast(double)(y1+1) / cast(double)_bindedTexture.numRows;
 
 		renderQuad();
 

@@ -44,7 +44,7 @@ public:
 		DeleteObject(hbmp);
 		ReleaseDC(_hWnd, dc);
 
-		newy = _window.getHeight() -1;//- _height;
+		newy = _window.height -1 ;//- _height;
 		 _hWnd = CreateWindowExW(0,
 			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , _x,newy,_width,_height,
 			_windowHelper.getPlatformVars().hWnd,null, cast(HINSTANCE)GetWindowLongW(_windowHelper.getPlatformVars().hWnd,GWLP_HINSTANCE), null);
