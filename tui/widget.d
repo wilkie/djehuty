@@ -7,8 +7,8 @@ import core.event;
 import core.main;
 
 // Description: This class abstracts part of the console's screen.  When attached to a window, this class will receive input through the events.  Keyboard events will be passed only when the control is activated.  A control can decide not to be activatable by setting it's _isTabStop to false.
-class TuiWidget : Responder
-{
+class TuiWidget : Responder {
+
 	this() {
 	}
 
@@ -21,77 +21,58 @@ class TuiWidget : Responder
 
 	// Events
 
-
-	void onInit()
-	{
+	void onInit() {
 	}
 
-	void onAdd()
-	{
+	void onAdd() {
 	}
 
-	void onRemove()
-	{
+	void onRemove() {
 	}
 
-	void onGotFocus()
-	{
+	void onGotFocus() {
 	}
 
-	void onLostFocus()
-	{
+	void onLostFocus() {
 	}
 
-	void onResize()
-	{
+	void onResize() {
 	}
 
-	void onKeyDown(uint keyCode)
-	{
+	void onKeyDown(uint keyCode) {
 	}
 
-	void onKeyChar(dchar keyChar)
-	{
+	void onKeyChar(dchar keyChar) {
 	}
 
-	void onKeyUp(uint keyCode)
-	{
+	void onKeyUp(uint keyCode) {
 	}
 
-	void onPrimaryMouseDown()
-	{
+	void onPrimaryMouseDown() {
 	}
 
-	void onPrimaryMouseUp()
-	{
+	void onPrimaryMouseUp() {
 	}
 
-	void onSecondaryMouseDown()
-	{
+	void onSecondaryMouseDown() {
 	}
 
-	void onSecondaryMouseUp()
-	{
+	void onSecondaryMouseUp() {
 	}
 
-	void onTertiaryMouseDown()
-	{
+	void onTertiaryMouseDown() {
 	}
 
-	void onTertiaryMouseUp()
-	{
+	void onTertiaryMouseUp() {
 	}
 
-	void onMouseWheelY(int amount)
-	{
+	void onMouseWheelY(int amount) {
 	}
 
-	void onMouseWheelX(int amount)
-	{
+	void onMouseWheelX(int amount) {
 	}
 
-	void onMouseMove()
-	{
+	void onMouseMove() {
 	}
 
 	override void onPush(Responder rsp) {
@@ -114,8 +95,34 @@ class TuiWidget : Responder
 	bool isTabStop() {
 		return false;
 	}
-
+	
+	uint x() {
+		return _x;
+	}
+	
+	uint y() {
+		return _y;
+	}
+	
+	uint width() {
+		return _width;
+	}
+	
+	uint height() {
+		return _height;
+	}
+	
+	TuiWindow window() {
+		return _window;
+	}
+	
 protected:
+	
+	bool canDraw() {
+		return _window !is null && _window.isActive;
+	}
+
+private:
 
 	package TuiWidget _nextControl;
 	package TuiWidget _prevControl;
@@ -127,8 +134,4 @@ protected:
 
 	uint _width = 0;
 	uint _height = 0;
-	
-	bool canDraw() {
-		return _window !is null && _window.isActive;
-	}
 }

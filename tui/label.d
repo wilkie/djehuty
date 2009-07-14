@@ -78,13 +78,13 @@ protected:
 
 	void draw() {
 		if (canDraw) {
-			Console.setPosition(_x, _y);
+			Console.setPosition(x, y);
 			Console.setColor(_forecolor, _backcolor);
 
 			// draw as much as we can
 
-			if (_value.length > _width) {
-				Console.put((new String(_value[0.._width])));
+			if (_value.length > width) {
+				Console.put((new String(_value[0..width])));
 			}
 			else {
 				Console.put(_value);

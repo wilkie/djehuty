@@ -179,7 +179,7 @@ class TuiVT100 : TuiBuffer {
 		}
 	}
 
-protected:
+private:
 
 	static bool _vt100_inescape = false;
 	static bool _vt100_inescape2 = false;

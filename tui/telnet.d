@@ -10,19 +10,16 @@ import networking.telnet;
 // Section: Console
 
 // Description: This console control is a console buffer that will facilitate a connection to a telnet server within a section of your console view.
-class TuiTelnet : TuiVT100
-{
-	this( uint x, uint y, uint width, uint height)
-	{
+class TuiTelnet : TuiVT100 {
+	this( uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 
 		_telnet = new TelnetClient;
-		_telnet.setDelegate(&_recvChar);
+		_telnet.setDelegate(&recvChar);
 		_telnet.connect("ice9-tw.com", 2002);
 	}
 
-	override void onKeyChar(dchar chr)
-	{
+	override void onKeyChar(dchar chr) {
 		if (chr == 10)
 		{
 			chr = 13;
@@ -32,19 +29,17 @@ class TuiTelnet : TuiVT100
 
 protected:
 
-	TelnetClient _telnet;
-
-	void _recvChar(dchar chr)
-	{
-			writeChar('a');
+	void recvChar(dchar chr) {
 		if (true) { return; }
-		if (chr == 13 || chr == 10)
-		{
+		if (chr == 13 || chr == 10) {
 			super.onKeyChar(chr);
 		}
-		else
-		{
+		else {
 			writeChar(chr);
 		}
 	}
+
+private:
+
+	TelnetClient _telnet;
 }

@@ -64,7 +64,7 @@ class TuiTextField : TuiWidget {
 			}
 		}
 		else if (keyCode == KeyTab || keyCode == KeyReturn || keyCode == 10) {
-			_window.tabForward();
+			window.tabForward();
 		}
 	}
 
@@ -157,13 +157,13 @@ protected:
 
 	void draw() {
 		if (canDraw) {
-			Console.setPosition(_x, _y);
+			Console.setPosition(x, y);
 			Console.setColor(_color, bgColor.Black);
 			Console.put("[");
 
 			Console.setColor(_forecolor, _backcolor);
 
-			foreach(chr; _value.subString(0,_width-2)) {
+			foreach(chr; _value.subString(0,width-2)) {
 				Console.put(chr);
 			}
 
@@ -183,10 +183,10 @@ protected:
 	
 	void positionCursor() {
 		if (_pos == _max) {
-			Console.setPosition(_x+_max, _y);
+			Console.setPosition(x+_max, y);
 		}
 		else {
-			Console.setPosition(_x+1+_pos, _y);
+			Console.setPosition(x+1+_pos, y);
 		}
 	}
 }
