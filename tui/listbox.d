@@ -30,10 +30,10 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		return true;
 	}
 
-	override void OnAdd() {
+	override void onAdd() {
 	}
 
-	override void OnInit() {
+	override void onInit() {
 		Console.setPosition(_x, _y);
 		Console.setColor(fgColor.White, bgColor.Black);
 
@@ -65,7 +65,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		}
 	}
 
-	override void OnKeyDown(uint keyCode) {
+	override void onKeyDown(uint keyCode) {
 		if (keyCode == KeyTab) {
 			_window.tabForward();
 		}
@@ -108,7 +108,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		}
 	}
 
-	override void OnLostFocus() {
+	override void onLostFocus() {
 		String data;
 
 		_list.getItem(data, _pos);
@@ -117,7 +117,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		Console.put(data.array);
 	}
 
-	override void OnGotFocus() {
+	override void onGotFocus() {
 		Console.hideCaret();
 
 		String data;

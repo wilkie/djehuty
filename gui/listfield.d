@@ -40,7 +40,7 @@ class ListFieldWindow : Window
 		super("ListFieldPopup", WindowStyle.Popup, SystemColor.Window, 0,0,width,width / 2);
 	}
 
-	override void OnLostFocus()
+	override void onLostFocus()
 	{
 		remove();
 	}

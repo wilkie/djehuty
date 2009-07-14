@@ -35,15 +35,15 @@ class TuiTextField : TuiWidget {
 
 	// Events
 
-	override void OnAdd() {
+	override void onAdd() {
 	}
 
-	override void OnInit() {
+	override void onInit() {
 		draw();
 	}
 
 
-	override void OnKeyDown(uint keyCode) {
+	override void onKeyDown(uint keyCode) {
 
 		Console.setColor(_forecolor, _backcolor);
 		if (keyCode == KeyBackspace) {
@@ -68,7 +68,7 @@ class TuiTextField : TuiWidget {
 		}
 	}
 
-	override void OnKeyChar(dchar keyChar) {
+	override void onKeyChar(dchar keyChar) {
 
 		Console.setColor(_forecolor, _backcolor);
 		if (keyChar != 0x8 && keyChar != '\t' && keyChar != '\n' && keyChar != '\r') {
@@ -89,7 +89,7 @@ class TuiTextField : TuiWidget {
 		}
 	}
 
-	override void OnGotFocus() {
+	override void onGotFocus() {
 		Console.showCaret();
 
 		positionCursor();

@@ -33,18 +33,20 @@ class GLWindow : Window
 		super(windowTitle, windowStyle, Color.Black, x, y, width, height);
 	}
 
-	override void OnDraw() {
-	}
-
 	override void push(Dispatcher dsp) {
 		Responder.push(dsp);
 	}
+	
+	// Events
 
-	void OnDraw(double deltaTime) {
+	override void onDraw() {
+	}
+
+	void onDraw(double deltaTime) {
 	}
 
 	// Methods to aid drawing?
-	// Or perhaps a separate class that is passed to OnDraw
+	// Or perhaps a separate class that is passed to onDraw
 	// Probably need a separate class to maintain the current context
 
 	// Description: This function will bind the texture given.

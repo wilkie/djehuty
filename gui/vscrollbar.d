@@ -68,7 +68,7 @@ public:
 		m_isclicked=0;
 	}
 	
-	override bool OnSignal(Dispatcher dsp, uint signal) {
+	override bool onSignal(Dispatcher dsp, uint signal) {
 		if (dsp is _readyTimer) {
 			readyTimerProc();
 		}

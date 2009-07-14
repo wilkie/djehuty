@@ -34,7 +34,7 @@ import specs.test;
 		img = new Image("tiles.png");
 	}
 
-	override void OnDraw(ref Graphics g) {
+	override void onDraw(ref Graphics g) {
 		g.drawImage(_x,_y,img);
 	}
 
@@ -51,14 +51,14 @@ protected:
 
 	IRC.Client irc;
 
-	override void OnAdd() {
+	override void onAdd() {
 		push(button = new Button(0,0,100,50,"OK"));
 		push(new MyControl());
 		push(closeButton = new OSButton(100,0,100,50,"Close"));
 		push(button = new Button(50,25,100,50,"OK"));
 	}
 
-	override bool OnSignal(Dispatcher source, uint signal) {
+	override bool onSignal(Dispatcher source, uint signal) {
 		if (source is closeButton) {
 			if (signal == Button.Signal.Selected) {
 				remove();
@@ -122,7 +122,7 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;
 	}
 
-	override void OnKeyDown(uint keyCode)
+	override void onKeyDown(uint keyCode)
 	{
 		if(keyCode == KeyEnd)
 		{
@@ -135,7 +135,7 @@ class MyTWindow : TuiWindow {
 		}
 		else
 		{
-			super.OnKeyDown(keyCode);
+			super.onKeyDown(keyCode);
 		}
 	}
 
@@ -147,13 +147,13 @@ private:
 	// Start an application instance
 	//static this() { new MyApp(); }
 
-	override void OnApplicationStart() {
+	override void onApplicationStart() {
 		wnd = new MyWindow();
 		wnd.setVisibility(true);
 		push(wnd);
 	}
 
-	override void OnApplicationEnd() {
+	override void onApplicationEnd() {
 	}
 
 private:

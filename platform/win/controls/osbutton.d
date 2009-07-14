@@ -220,7 +220,7 @@ protected:
 		//Console.putln("return: ", ret);
 
 		if (message == WM_PAINT) {
-			_window.OnDraw();
+			_window.onDraw();
 		}
 
 		return ret;

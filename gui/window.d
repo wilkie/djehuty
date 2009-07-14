@@ -209,7 +209,7 @@ public:
 			}
 		}
 
-		OnVisibilityChange();
+		onVisibilityChange();
 	}
 
 	// Description: Will return whether or not the window is flagged as hidden or visible.  The window may not actually be visible due to it not being created or added.
@@ -232,7 +232,7 @@ public:
 			Scaffold.WindowSetState(this, windowHelper);
 		}
 
-		OnStateChange();
+		onStateChange();
 	}
 
 	// Description: Will return the current state of the window.
@@ -323,7 +323,7 @@ public:
 			Scaffold.WindowRebound(this, windowHelper);
 		}
 
-		OnResize();
+		onResize();
 	}
 
 	// Description: This function will move the window so that the top-left corner of the window (not client area) is set to the point (x,y).
@@ -339,7 +339,7 @@ public:
 			Scaffold.WindowReposition(this, windowHelper);
 		}
 
-		OnMove();
+		onMove();
 	}
 
 	void ClientToScreen(ref int x, ref int y)
@@ -423,10 +423,10 @@ public:
 		Scaffold.WindowCreate(this, &this._pfvars, window, window._pfvars);
 
 		// create the window's view object
-		window.OnInitialize();
+		window.onInitialize();
 
-		// call the OnAdd event of the new window
-		window.OnAdd();*/
+		// call the onAdd event of the new window
+		window.onAdd();*/
 
 		//PrintChildWindowList(this);
 	}
@@ -434,67 +434,67 @@ public:
 	// Events //
 
 	// Description: This event will be called when the window is added to the window hierarchy.
-	void OnAdd()
+	void onAdd()
 	{
 	}
 
 	// Description: This event will be called when the window is removed from the window hierarchy.
-	void OnRemove()
+	void onRemove()
 	{
 	}
 
 	// Description: This event is called when the mouse wheel is scrolled vertically (the common scroll method).
 	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void OnMouseWheelY(uint amount)
+	void onMouseWheelY(uint amount)
 	{
 	}
 
 	// Description: This event is called when the mouse wheel is scrolled horizontally.
 	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void OnMouseWheelX(uint amount)
+	void onMouseWheelX(uint amount)
 	{
 	}
 
 	// Description: This event is called when the mouse enters the client area of the window
-	void OnMouseEnter()
+	void onMouseEnter()
 	{
 	}
 
 	// Description: This event is called when the window is moved, either from the OS or the move() function.
-	void OnMove()
+	void onMove()
 	{
 	}
 
 	// Description: This event is called when the window is hidden or shown.
-	void OnVisibilityChange()
+	void onVisibilityChange()
 	{
 	}
 
 	// Description: This event is called when the window is maximized, minimized, put into fullscreen, or restored.
-	void OnStateChange()
+	void onStateChange()
 	{
 	}
 
 	// Description: This event is called when a menu item belonging to the window is activated.
 	// mnu: A reference to the menu that was activated.
-	void OnMenu(Menu mnu)
+	void onMenu(Menu mnu)
 	{
 	}
 
-	void OnInitialize()
+	void onInitialize()
 	{
 		_view = new View;
 
 		ViewCreateForWindow(_view, this);
 	}
 
-	void OnUninitialize()
+	void onUninitialize()
 	{
 		_view.destroy();
 		_view = null;
 	}
 
-	void OnDraw()
+	void onDraw()
 	{
 		if (_view !is null)
 		{
@@ -522,56 +522,56 @@ public:
 		}
 	}
 
-	void OnKeyChar(dchar keyChar)
+	void onKeyChar(dchar keyChar)
 	{
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
 			if (_focused_control.onKeyChar(keyChar))
 			{
-				OnDraw();
+				onDraw();
 			}
 		}
 	}
 
-	void OnKeyDown(uint keyCode)
+	void onKeyDown(uint keyCode)
 	{
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
 			if (_focused_control.onKeyDown(keyCode))
 			{
-				OnDraw();
+				onDraw();
 			}
 		}
 	}
 
-	void OnKeyUp(uint keyCode)
+	void onKeyUp(uint keyCode)
 	{
 		// dispatch to focused control
 		if (_focused_control !is null)
 		{
 			if (_focused_control.onKeyUp(keyCode))
 			{
-				OnDraw();
+				onDraw();
 			}
 		}
 	}
 
-	void OnMouseLeave()
+	void onMouseLeave()
 	{
 		if (_last_control !is null)
 		{
 			_last_control._hovered = false;
 			if(_last_control.onMouseLeave())
 			{
-				OnDraw();
+				onDraw();
 			}
 			_last_control = null;
 		}
 	}
 
-	void OnMouseMove()
+	void onMouseMove()
 	{
 		//select the control to send the message to
 		Widget control;
@@ -589,12 +589,12 @@ public:
 					control._hovered = true;
 					if (control.onMouseEnter() | control.onMouseMove(mouseProps))
 					{
-						OnDraw();
+						onDraw();
 					}
 				}
 				else if (control.onMouseMove(mouseProps))
 				{
-					OnDraw();
+					onDraw();
 				}
 			}
 			else
@@ -606,12 +606,12 @@ public:
 					control._hovered = false;
 					if (control.onMouseLeave() | control.onMouseMove(mouseProps))
 					{
-						OnDraw();
+						onDraw();
 					}
 				}
 				else if (control.onMouseMove(mouseProps))
 				{
-					OnDraw();
+					onDraw();
 				}
 			}
 
@@ -631,7 +631,7 @@ public:
 				if(_last_control.onMouseLeave() |
 					control.onMouseEnter() | control.onMouseMove(mouseProps))
 				{
-					OnDraw();
+					onDraw();
 				}
 			} //otherwise, there is just one control to worry about
 			else
@@ -641,12 +641,12 @@ public:
 					control._hovered = true;
 					if(control.onMouseEnter() | control.onMouseMove(mouseProps))
 					{
-						OnDraw();
+						onDraw();
 					}
 				}
 				else if(control.onMouseMove(mouseProps))
 				{
-					OnDraw();
+					onDraw();
 				}
 			}
 
@@ -666,7 +666,7 @@ public:
 				_last_control._hovered = false;
 				if(_last_control.onMouseLeave())
 				{
-					OnDraw();
+					onDraw();
 				}
 				_last_control = null;
 			}
@@ -674,125 +674,125 @@ public:
 	}
 
 	// Description: Called when the primary mouse button (usually the left button) is pressed.
-	void OnPrimaryMouseDown() {
+	void onPrimaryMouseDown() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = target;
 
 		if((target !is null) && (ret | target.onPrimaryMouseDown(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: Called when the primary mouse button (usually the left button) is released.
-	void OnPrimaryMouseUp() {
+	void onPrimaryMouseUp() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = null;
 
 		if((target !is null) && (ret | target.onPrimaryMouseUp(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: Called when the secondary mouse button (usually the right button) is pressed.
-	void OnSecondaryMouseDown() {
+	void onSecondaryMouseDown() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = target;
 
 		if((target !is null) && (ret | target.onSecondaryMouseDown(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: Called when the secondary mouse button (usually the right button) is released.
-	void OnSecondaryMouseUp() {
+	void onSecondaryMouseUp() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = null;
 
 		if((target !is null) && (ret | target.onSecondaryMouseUp(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is pressed.
-	void OnTertiaryMouseDown() {
+	void onTertiaryMouseDown() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = target;
 
 		if((target !is null) && (ret | target.onTertiaryMouseDown(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: Called when the tertiary mouse button (usually the middle button) is released.
-	void OnTertiaryMouseUp() {
+	void onTertiaryMouseUp() {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = null;
 
 		if((target !is null) && (ret | target.onTertiaryMouseUp(mouseProps))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: This event is called when another uncommon mouse button is pressed down over the window.
 	// button: The identifier of this button.
-	void OnOtherMouseDown(uint button) {
+	void onOtherMouseDown(uint button) {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = target;
 
 		if((target !is null) && (ret | target.onOtherMouseDown(mouseProps, button))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
 	// Description: This event is called when another uncommon mouse button is released over the window.
 	// button: The identifier of this button.
-	void OnOtherMouseUp(uint button) {
+	void onOtherMouseUp(uint button) {
 		Widget target;
 		bool ret = mouseEventCommon(target);
 
 		_captured_control = null;
 
 		if((target !is null) && (ret | target.onOtherMouseUp(mouseProps, button))) {
-			OnDraw();
+			onDraw();
 		}
 	}
 
-	void OnResize() {
+	void onResize() {
 		ViewResizeForWindow(_view, this);
 
-		OnDraw();
+		onDraw();
 	}
 
-	void OnLostFocus() {
+	void onLostFocus() {
 		//currently focused control will lose focus
 		if (_focused_control !is null) {
 			_focused_control._focused = false;
 			if (_focused_control.onLostFocus(true)) {
-				OnDraw();
+				onDraw();
 			}
 		}
 	}
 
-	void OnGotFocus() {
+	void onGotFocus() {
 		//currently focused control will regain focus
 		if (_focused_control !is null) {
 			_focused_control._focused = true;
 			if (_focused_control.onGotFocus(true)) {
-				OnDraw();
+				onDraw();
 			}
 		}
 	}
@@ -822,7 +822,7 @@ public:
 	// Description: This will force a redraw of the entire window.
 	void redraw()
 	{
-		OnDraw();
+		onDraw();
 	}
 
 	// Widget Maintenance //
@@ -1039,7 +1039,7 @@ protected:
 	{
 		if (_nextWindow is null) { return; }
 
-		OnRemove();
+		onRemove();
 
 		removeAll();
 
@@ -1047,7 +1047,7 @@ protected:
 		_nextWindow._prevWindow = _prevWindow;
 
 		// destroy the window's view object
-		OnUninitialize();
+		onUninitialize();
 
 		GuiApplication app = cast(GuiApplication)responder;
 
@@ -1279,7 +1279,7 @@ class WindowHelper {
 	void callStateChange(WindowState newState)
 	{
 		window._state = newState;
-		window.OnStateChange();
+		window.onStateChange();
 	}
 
 	void uninitialize() {

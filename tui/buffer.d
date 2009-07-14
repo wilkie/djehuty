@@ -45,7 +45,7 @@ class TuiBuffer : TuiWidget
 		setPosition(0,0);
 	}
 
-	override void OnKeyChar(dchar chr)
+	override void onKeyChar(dchar chr)
 	{
 		static char lastchr;
 
@@ -92,16 +92,16 @@ class TuiBuffer : TuiWidget
 		lastchr = chr;
 	}
 
-	override void OnAdd()
+	override void onAdd()
 	{
 	}
 
-	override void OnInit()
+	override void onInit()
 	{
 		redraw();
 	}
 
-	override void OnMouseWheelY(int amt)
+	override void onMouseWheelY(int amt)
 	{
 		// + amt : subtract from _firstVisible
 		// - amt : add to _firstVisible

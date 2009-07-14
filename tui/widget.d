@@ -22,91 +22,91 @@ class TuiWidget : Responder
 	// Events
 
 
-	void OnInit()
+	void onInit()
 	{
 	}
 
-	void OnAdd()
+	void onAdd()
 	{
 	}
 
-	void OnRemove()
+	void onRemove()
 	{
 	}
 
-	void OnGotFocus()
+	void onGotFocus()
 	{
 	}
 
-	void OnLostFocus()
+	void onLostFocus()
 	{
 	}
 
-	void OnResize()
+	void onResize()
 	{
 	}
 
-	void OnKeyDown(uint keyCode)
+	void onKeyDown(uint keyCode)
 	{
 	}
 
-	void OnKeyChar(dchar keyChar)
+	void onKeyChar(dchar keyChar)
 	{
 	}
 
-	void OnKeyUp(uint keyCode)
+	void onKeyUp(uint keyCode)
 	{
 	}
 
-	void OnPrimaryMouseDown()
+	void onPrimaryMouseDown()
 	{
 	}
 
-	void OnPrimaryMouseUp()
+	void onPrimaryMouseUp()
 	{
 	}
 
-	void OnSecondaryMouseDown()
+	void onSecondaryMouseDown()
 	{
 	}
 
-	void OnSecondaryMouseUp()
+	void onSecondaryMouseUp()
 	{
 	}
 
-	void OnTertiaryMouseDown()
+	void onTertiaryMouseDown()
 	{
 	}
 
-	void OnTertiaryMouseUp()
+	void onTertiaryMouseUp()
 	{
 	}
 
-	void OnMouseWheelY(int amount)
+	void onMouseWheelY(int amount)
 	{
 	}
 
-	void OnMouseWheelX(int amount)
+	void onMouseWheelX(int amount)
 	{
 	}
 
-	void OnMouseMove()
+	void onMouseMove()
 	{
 	}
 
-	override void OnPush(Responder rsp) {
+	override void onPush(Responder rsp) {
 		// Did we get pushed to a TuiWindow?
 		if (cast(TuiWindow)rsp !is null) {
 			// Set the window we are attached
 			_window = cast(TuiWindow)rsp;
 
 			// Call event
-			OnAdd();
+			onAdd();
 
 			// If we are pushed to the current window, also call init event
 			if (_window.isActive())
 			{
-				OnInit();
+				onInit();
 			}
 		}
 	}

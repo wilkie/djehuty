@@ -37,10 +37,10 @@ class TuiLabel : TuiWidget {
 		_value = new String(text);
 	}
 
-	override void OnAdd() {
+	override void onAdd() {
 	}
 
-	override void OnInit() {
+	override void onInit() {
 		draw();
 	}
 

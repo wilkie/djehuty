@@ -10,7 +10,7 @@ module core.event;
 // Description: This class represents an object that can dispatch signals.
 class Dispatcher {
 
-	void OnPush(Responder rsp) {
+	void onPush(Responder rsp) {
 	}
 
 	// Description: This function will set the responder that will receive
@@ -33,7 +33,7 @@ protected:
 			// Raise the event on the Responder, if it does not respond,
 			// tell the Responder to pass the event up the responder
 			// chain.
-			if (!responder.OnSignal(this, signal)) {
+			if (!responder.onSignal(this, signal)) {
 				// recursively raise the event
 				return responder.raiseSignal(signal);
 			}
@@ -46,14 +46,14 @@ protected:
 class Responder : Dispatcher {
 public:
 
-	bool OnSignal(Dispatcher dispatcher, uint signal) {
+	bool onSignal(Dispatcher dispatcher, uint signal) {
 		return false;
 	}
 	
 	// Description: This function will attach the specified Dispatcher to this
-	//	Responder. It fires an OnPush event for the Dispatcher as well.
+	//	Responder. It fires an onPush event for the Dispatcher as well.
 	void push(Dispatcher dsp) {
 		dsp.setResponder(this);
-		dsp.OnPush(this);
+		dsp.onPush(this);
 	}
 }

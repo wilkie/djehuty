@@ -7,32 +7,28 @@ import tui.buffer;
 // Section: Console
 
 // Description: This console control is a console buffer that emulations VT100 terminal codes.
-class TuiVT100 : TuiBuffer
-{
-	this( uint x, uint y, uint width, uint height)
-	{
+class TuiVT100 : TuiBuffer {
+
+	// Constructors
+
+	this( uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 	}
 
 	alias TuiBuffer.writeChar writeChar;
 
-	override void writeChar(dchar chr)
-	{
-		if (_vt100_inescape2)
-		{
-			if (chr >= '0' && chr <= '9')
-			{
+	override void writeChar(dchar chr) {
+		if (_vt100_inescape2) {
+			if (chr >= '0' && chr <= '9') {
 				// another number,
 				// add to current param
 				_vt100_params[_vt100_curparam] *= 10;
 				_vt100_params[_vt100_curparam] += chr - cast(ubyte)'0';
 				_vt100_paramFilled = 1;
 			}
-			else if (chr == ';')
-			{
+			else if (chr == ';') {
 				// goto next param
-				if (_vt100_curparam < 4)
-				{
+				if (_vt100_curparam < 4) {
 					_vt100_curparam++;
 					_vt100_params[_vt100_curparam] = 0;
 					_vt100_paramFilled = 0;
@@ -40,135 +36,105 @@ class TuiVT100 : TuiBuffer
 			}
 
 			if ((chr >= 'a' && chr <= 'z') ||
-				(chr >= 'A' && chr <= 'Z'))
-			{
-				if (_vt100_curparam < 4 && _vt100_paramFilled != 0)
-				{
+				(chr >= 'A' && chr <= 'Z')) {
+				if (_vt100_curparam < 4 && _vt100_paramFilled != 0) {
 					_vt100_curparam++;
 				}
 				// found a code
 				// interpret this
-				if (chr == 'J')
-				{
-					if (_vt100_params[0] == 2)
-					{
+				if (chr == 'J') {
+					if (_vt100_params[0] == 2) {
 						_screenfeed();
 					}
-					else
-					{
+					else {
 					}
 				}
-				else if (chr == 's')
-				{
+				else if (chr == 's') {
 					// save position
 					_vt100_saved_x = _curx-_x;
 					_vt100_saved_y = _cury-_y;
 				}
-				else if (chr == 'u')
-				{
+				else if (chr == 'u') {
 					// restore position
 					setPosition(_vt100_saved_x,_vt100_saved_y);
 				}
-				else if (chr == 'A')
-				{
-					if (_vt100_params[0] == 0)
-					{
+				else if (chr == 'A') {
+					if (_vt100_params[0] == 0) {
 						_vt100_params[0] = 1;
 					}
 					setRelative(0, -_vt100_params[0]);
 				}
-				else if (chr == 'B')
-				{
-					if (_vt100_params[0] == 0)
-					{
+				else if (chr == 'B') {
+					if (_vt100_params[0] == 0) {
 						_vt100_params[0] = 1;
 					}
 					setRelative(0, _vt100_params[0]);
 				}
-				else if (chr == 'C')
-				{
-					if (_vt100_params[0] == 0)
-					{
+				else if (chr == 'C') {
+					if (_vt100_params[0] == 0) {
 						_vt100_params[0] = 1;
 					}
 					setRelative(_vt100_params[0], 0);
 				}
-				else if (chr == 'D')
-				{
-					if (_vt100_params[0] == 0)
-					{
+				else if (chr == 'D') {
+					if (_vt100_params[0] == 0) {
 						_vt100_params[0] = 1;
 					}
 					setRelative(-_vt100_params[0], 0);
 				}
-				else if (chr == 'H' || chr == 'f')
-				{
+				else if (chr == 'H' || chr == 'f') {
 					// set cursor position
-					if (_vt100_params[1] == 0)
-					{
+					if (_vt100_params[1] == 0) {
 						_vt100_params[1] = 1;
 					}
-					if (_vt100_params[0] == 0)
-					{
+					if (_vt100_params[0] == 0) {
 						_vt100_params[0] = 1;
 					}
 
 					setPosition(_vt100_params[1]-1, _vt100_params[0]-1);
 				}
-				else if (chr == 'm')
-				{
+				else if (chr == 'm') {
 					// color
 
 					int fgclr=-1;
 					int bgclr=-1;
 					int bright=-1;
 
-					for(uint i=0; i<_vt100_curparam; i++)
-					{
-						if (_vt100_params[i] >= 30 && _vt100_params[i] <= 37)
-						{
+					for(uint i=0; i<_vt100_curparam; i++) {
+						if (_vt100_params[i] >= 30 && _vt100_params[i] <= 37) {
 							fgclr = _vt100_params[i] - 30;
 						}
-						else if (_vt100_params[i] == 39)
-						{
+						else if (_vt100_params[i] == 39) {
 							fgclr = fgColor.White;
 						}
-						else if (_vt100_params[i] >= 40 && _vt100_params[i] <= 47)
-						{
+						else if (_vt100_params[i] >= 40 && _vt100_params[i] <= 47) {
 							bgclr = _vt100_params[i] - 40;
 						}
-						else if (_vt100_params[i] == 49)
-						{
+						else if (_vt100_params[i] == 49) {
 							bgclr = bgColor.Black;
 						}
-						else if (_vt100_params[i] == 0)
-						{
+						else if (_vt100_params[i] == 0) {
 							bright = 0;
 							fgclr = fgColor.White;
 							bgclr = fgColor.Black;
 						}
-						else if (_vt100_params[i] < 2)
-						{
+						else if (_vt100_params[i] < 2) {
 							bright = _vt100_params[i];
 						}
-						else if (_vt100_params[i] == 7)
-						{
+						else if (_vt100_params[i] == 7) {
 							// invert the colors
 						}
 					}
 
-					if (bright != -1)
-					{
+					if (bright != -1) {
 					    _cur_bright_color = bright;
 					}
 
-					if (fgclr != -1)
-					{
+					if (fgclr != -1) {
 						_cur_fg_color = fgclr;
 					}
 
-					if (bgclr != -1)
-					{
+					if (bgclr != -1) {
 						_cur_bg_color = bgclr;
 				    }
 
@@ -180,8 +146,7 @@ class TuiVT100 : TuiBuffer
 
 				    setColor(_curfg, _curbg);
 				}
-				else
-				{
+				else {
 					//Console.putln("!!!!!", chr , "!!!!!");
 				}
 
@@ -189,10 +154,8 @@ class TuiVT100 : TuiBuffer
 			}
 			return;
 		}
-		else if (_vt100_inescape)
-		{
-			if (chr == '[')
-			{
+		else if (_vt100_inescape) {
+			if (chr == '[') {
 				_vt100_inescape2 = true;
 				_vt100_inescape = false;
 				return;
@@ -200,8 +163,7 @@ class TuiVT100 : TuiBuffer
 			_vt100_inescape = false;
 		}
 
-		if (chr == 27)
-		{
+		if (chr == 27) {
 			_vt100_curparam = 0;
 			_vt100_inescape = true;
 			_vt100_params[0] = 0;
@@ -209,8 +171,7 @@ class TuiVT100 : TuiBuffer
 			_vt100_params[2] = 0;
 			_vt100_paramFilled = 0;
 		}
-		else
-		{
+		else {
 			//Console.setPosition(0, _b+2);
 			//Console.setColor(fgColor.White);
 			//Console.put(_curx, ", ", _cury, " : ", _buffer.length());
@@ -233,6 +194,4 @@ protected:
 	static uint _cur_fg_color = fgColor.White;
 	static uint _cur_bg_color = bgColor.Black;
 	static uint _cur_bright_color = 0;
-
-
 }

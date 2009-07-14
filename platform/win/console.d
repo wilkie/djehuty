@@ -57,7 +57,7 @@ int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 	switch(uMsg)
 	{
 		case WM_SIZE:
-			(cast(TuiApplication)Djehuty.app).window.OnResize();
+			(cast(TuiApplication)Djehuty.app).window.onResize();
 			return 0;
 
 		default:
@@ -100,7 +100,7 @@ void thread_proc(bool pleaseStop)
 			_console_x = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
 			_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
 
-			(cast(TuiApplication)Djehuty.app).window.OnResize();
+			(cast(TuiApplication)Djehuty.app).window.onResize();
 		}
 
 		t.sleep(100);
@@ -474,7 +474,7 @@ void ConsoleGetChar(out dchar chr, out uint code)
 						// KeyUp
 
 						// The Current Console View Receives the Event
-						//ConsoleWindowOnKeyUp( irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
+						//ConsoleWindowonKeyUp( irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
 					}
 					break;
 

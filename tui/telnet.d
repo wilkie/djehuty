@@ -21,7 +21,7 @@ class TuiTelnet : TuiVT100
 		_telnet.connect("ice9-tw.com", 2002);
 	}
 
-	override void OnKeyChar(dchar chr)
+	override void onKeyChar(dchar chr)
 	{
 		if (chr == 10)
 		{
@@ -40,7 +40,7 @@ protected:
 		if (true) { return; }
 		if (chr == 13 || chr == 10)
 		{
-			super.OnKeyChar(chr);
+			super.onKeyChar(chr);
 		}
 		else
 		{

@@ -23,7 +23,7 @@ public:
 		}
 	}
 
-	override bool OnSignal(Dispatcher dsp, uint signal) {
+	override bool onSignal(Dispatcher dsp, uint signal) {
 		if (signal == ToggleField.Signal.Selected) {
 			for (uint i = 0; i<_count; i++) {
 				if (_toggleFields[i] !is dsp) {

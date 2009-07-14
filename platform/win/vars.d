@@ -120,10 +120,10 @@ struct WindowPlatformVars
 		assert(hWnd);
 
 		// create the window's view object
-		windowClass.OnInitialize();
+		windowClass.onInitialize();
 
-		// call the OnAdd() event
-		windowClass.OnAdd();
+		// call the onAdd() event
+		windowClass.onAdd();
 
 		MSG msg;
 		while (GetMessageW(&msg, cast(HWND) hWnd, 0, 0))
@@ -143,7 +143,7 @@ struct WindowPlatformVars
 	{
 		GLWindow glWindow = cast(GLWindow)windowClass;
 
-		glWindow.OnDraw(getDeltaTime());
+		glWindow.onDraw(getDeltaTime());
 
 		// Now, we can swap the buffers
 		SwapBuffers(windhDC);
@@ -254,10 +254,10 @@ struct WindowPlatformVars
 		}
 
 		// create the window's view object
-		windowClass.OnInitialize();
+		windowClass.onInitialize();
 
-		// call the OnAdd() event
-		windowClass.OnAdd();
+		// call the onAdd() event
+		windowClass.onAdd();
 
 		_TimeInfo tInfo;
 
@@ -292,7 +292,7 @@ struct WindowPlatformVars
 				// This will need work to support multiple GL windows
 				// For now, one is supported
 
-				glWindow.OnDraw(getDeltaTime());
+				glWindow.onDraw(getDeltaTime());
 
 				// Now, we can swap the buffers
 				SwapBuffers(windhDC);

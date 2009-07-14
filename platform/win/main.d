@@ -525,7 +525,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 				if (viewW !is null)
 				{
-					viewW.OnMenu(mnuNow);
+					viewW.onMenu(mnuNow);
 				}
 			}
 			else
@@ -604,7 +604,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			indraw = true;
 
-			viewW.OnDraw();
+			viewW.onDraw();
 
 			view.lockDisplay();
 
@@ -645,12 +645,12 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 		if (x == WA_INACTIVE)
 		{
 			//losing focus
-			w.OnLostFocus();
+			w.onLostFocus();
 		}
 		else if (x == WA_ACTIVE || x == WA_CLICKACTIVE)
 		{
 			//gaining focus
-			w.OnGotFocus();
+			w.onGotFocus();
 		}
 
 		if (y != 0)
@@ -705,7 +705,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			_TestNumberOfClicks(wHelper,x,y,1);
 
-			w.OnPrimaryMouseDown();
+			w.onPrimaryMouseDown();
 			break;
 
 		case WM_LBUTTONUP:
@@ -728,7 +728,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
 
-			w.OnPrimaryMouseUp();
+			w.onPrimaryMouseUp();
 			break;
 
 
@@ -760,7 +760,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			_TestNumberOfClicks(wHelper,x,y,2);
 
-			w.OnSecondaryMouseDown();
+			w.onSecondaryMouseDown();
 			break;
 
 		case WM_RBUTTONUP:
@@ -782,7 +782,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = false;
 			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
 
-			w.OnSecondaryMouseUp();
+			w.onSecondaryMouseUp();
 			break;
 
 
@@ -811,7 +811,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			_TestNumberOfClicks(wHelper,x,y,3);
 
-			w.OnTertiaryMouseDown();
+			w.onTertiaryMouseDown();
 			break;
 
 		case WM_MBUTTONUP:
@@ -833,7 +833,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 			w.mouseProps.middleDown = false;
 
-			w.OnTertiaryMouseUp();
+			w.onTertiaryMouseUp();
 			break;
 
 
@@ -863,7 +863,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 				_TestNumberOfClicks(wHelper,x,y,4 + cast(uint)wParam);
 
-				w.OnOtherMouseDown(cast(uint)wParam);
+				w.onOtherMouseDown(cast(uint)wParam);
 			}
 			break;
 
@@ -887,7 +887,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				//check for double click
 				_TestNumberOfClicksUp(wHelper,4 + cast(uint)wParam);
 
-				w.OnOtherMouseUp(cast(uint)wParam);
+				w.onOtherMouseUp(cast(uint)wParam);
 			}
 			break;
 
@@ -900,12 +900,12 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 		case WM_MOUSEHWHEEL:
 
-			w.OnMouseWheelX(0);
+			w.onMouseWheelX(0);
 			break;
 
 		case WM_MOUSEWHEEL:
 
-			w.OnMouseWheelY(0);
+			w.onMouseWheelY(0);
 			break;
 
 
@@ -934,7 +934,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 				windowVars.hoverTimerSet = 1;
 			}
 
-			w.OnMouseMove();
+			w.onMouseMove();
 			break;
 
 
@@ -946,7 +946,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			// Internal Timing Functions
 		case WM_MOUSELEAVE:
-			w.OnMouseLeave();
+			w.onMouseLeave();
 			break;
 
 
@@ -974,7 +974,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			if (!windowVars.supress_WM_MOVE)
 			{
 				wHelper.setWindowXY(rt.left, rt.top);
-				w.OnMove();
+				w.onMove();
 				windowVars.supress_WM_MOVE = false;
 			}
 			break;
@@ -987,7 +987,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 		case WM_KEYDOWN:
 
-			w.OnKeyDown(cast(uint)wParam);
+			w.onKeyDown(cast(uint)wParam);
 
 			break;
 
@@ -1006,7 +1006,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			//printf("%x %x", stuff[0], stuff[1]);
 
-			w.OnKeyChar(cast(dchar)wParam);
+			w.onKeyChar(cast(dchar)wParam);
 
 			break;
 
@@ -1029,13 +1029,13 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 			//printf("%x %x", stuff[0], stuff[1]);
 
-			w.OnKeyChar(cast(dchar)wParam);
+			w.onKeyChar(cast(dchar)wParam);
 
 			break;
 
 		case WM_KEYUP:
 
-			w.OnKeyUp(cast(uint)wParam);
+			w.onKeyUp(cast(uint)wParam);
 
 			break;
 
@@ -1058,7 +1058,7 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			if (!windowVars.supress_WM_SIZE)
 			{
 				wHelper.setWindowSize(rt.right, rt.bottom);
-				w.OnResize();
+				w.onResize();
 
 				if (cast(GLWindow)w !is null) {
 					windowVars.gameLoopCallResize();
@@ -1333,11 +1333,11 @@ int mainloop()
 								// KeyDown
 
 								// The Current Console View Receives the Event
-								curWindow.OnKeyDown(irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
+								curWindow.onKeyDown(irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
 
 								if (irInBuf[i].Event.KeyEvent.uChar.UnicodeChar > 0)
 								{
-									curWindow.OnKeyChar(irInBuf[i].Event.KeyEvent.uChar.UnicodeChar);
+									curWindow.onKeyChar(irInBuf[i].Event.KeyEvent.uChar.UnicodeChar);
 								}
 							}
 							else
@@ -1345,7 +1345,7 @@ int mainloop()
 								// KeyUp
 
 								// The Current Console View Receives the Event
-								curWindow.OnKeyUp(irInBuf[i].Event.KeyEvent.wVirtualKeyCode);
+								curWindow.onKeyUp(irInBuf[i].Event.KeyEvent.wVirtualKeyCode);
 							}
 		                    break;
 
@@ -1469,17 +1469,17 @@ int mainloop()
 								if (curbutton == 1)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnPrimaryMouseUp();
+									curWindow.onPrimaryMouseUp();
 								}
 								else if (curbutton == 2)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnTertiaryMouseUp();
+									curWindow.onTertiaryMouseUp();
 								}
 								else if (curbutton == 5)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnSecondaryMouseUp();
+									curWindow.onSecondaryMouseUp();
 								}
 							}
 							else if (curbutton > 0)
@@ -1487,17 +1487,17 @@ int mainloop()
 								if (curbutton == 1)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnPrimaryMouseDown();
+									curWindow.onPrimaryMouseDown();
 								}
 								else if (curbutton == 2)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnTertiaryMouseDown();
+									curWindow.onTertiaryMouseDown();
 								}
 								else if (curbutton == 5)
 								{
 									_last_was_mousepress = true;
-									curWindow.OnSecondaryMouseDown();
+									curWindow.onSecondaryMouseDown();
 								}
 							}
 							else
@@ -1507,7 +1507,7 @@ int mainloop()
 									case MOUSE_MOVED:
 										if (isMovement && !_last_was_mousepress)
 										{
-											curWindow.OnMouseMove();
+											curWindow.onMouseMove();
 										}
 										_last_was_mousepress = false;
 										break;
@@ -1517,7 +1517,7 @@ int mainloop()
 
 										delta /= 120;
 
-										curWindow.OnMouseWheelY(delta);
+										curWindow.onMouseWheelY(delta);
 										break;
 									case MOUSE_HWHEELED:
 
@@ -1525,7 +1525,7 @@ int mainloop()
 
 										delta /= 120;
 
-										curWindow.OnMouseWheelX(delta);
+										curWindow.onMouseWheelX(delta);
 										break;
 									default:
 										break;

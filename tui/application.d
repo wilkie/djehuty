@@ -55,7 +55,7 @@ private:
 		_curConsoleWindow = window;
 
 		// Draw Window
-		window.OnInitialize();
+		window.onInitialize();
 	}
 
 	bool _inited;

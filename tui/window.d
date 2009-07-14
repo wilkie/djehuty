@@ -23,7 +23,7 @@ class TuiWindow : Responder
 
 	// Events
 
-	void OnInitialize()
+	void onInitialize()
 	{
 		// go through control list, init
 
@@ -41,7 +41,7 @@ class TuiWindow : Responder
 			{
 				c =	c._prevControl;
 
-				c.OnInit();
+				c.onInit();
 			} while (c !is _firstControl)
 
 			_focused_control = c;
@@ -51,116 +51,116 @@ class TuiWindow : Responder
 				_focused_control = _focused_control._prevControl;
 				if (_focused_control.isTabStop())
 				{
-					_focused_control.OnGotFocus();
+					_focused_control.onGotFocus();
 					break;
 				}
 			} while (_focused_control !is c);
 		}
 	}
 
-	void OnUninitialize()
+	void onUninitialize()
 	{
 	}
 
-	void OnResize()
+	void onResize()
 	{
 		_width = Console.getWidth();
 		_height = Console.getHeight();
 	}
 
-	void OnKeyDown(uint keyCode)
+	void onKeyDown(uint keyCode)
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnKeyDown(keyCode);
+			_focused_control.onKeyDown(keyCode);
 		}
 	}
 
-	void OnKeyChar(dchar keyChar)
+	void onKeyChar(dchar keyChar)
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnKeyChar(keyChar);
+			_focused_control.onKeyChar(keyChar);
 		}
 	}
 
-	void OnKeyUp(uint keyCode)
+	void onKeyUp(uint keyCode)
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnKeyUp(keyCode);
+			_focused_control.onKeyUp(keyCode);
 		}
 	}
 
-	void OnPrimaryMouseDown()
+	void onPrimaryMouseDown()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnPrimaryMouseDown();
+			_focused_control.onPrimaryMouseDown();
 		}
 	}
 
-	void OnPrimaryMouseUp()
+	void onPrimaryMouseUp()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnPrimaryMouseUp();
+			_focused_control.onPrimaryMouseUp();
 		}
 	}
 
-	void OnSecondaryMouseDown()
+	void onSecondaryMouseDown()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnSecondaryMouseDown();
+			_focused_control.onSecondaryMouseDown();
 		}
 	}
 
-	void OnSecondaryMouseUp()
+	void onSecondaryMouseUp()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnSecondaryMouseUp();
+			_focused_control.onSecondaryMouseUp();
 		}
 	}
 
-	void OnTertiaryMouseDown()
+	void onTertiaryMouseDown()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnTertiaryMouseDown();
+			_focused_control.onTertiaryMouseDown();
 		}
 	}
 
-	void OnTertiaryMouseUp()
+	void onTertiaryMouseUp()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnTertiaryMouseUp();
+			_focused_control.onTertiaryMouseUp();
 		}
 	}
 
-	void OnMouseWheelY(uint amount)
+	void onMouseWheelY(uint amount)
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnMouseWheelY(amount);
+			_focused_control.onMouseWheelY(amount);
 		}
 	}
 
-	void OnMouseWheelX(uint amount)
+	void onMouseWheelX(uint amount)
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnMouseWheelX(amount);
+			_focused_control.onMouseWheelX(amount);
 		}
 	}
 
-	void OnMouseMove()
+	void onMouseMove()
 	{
 		if (_focused_control !is null)
 		{
-			_focused_control.OnMouseMove();
+			_focused_control.onMouseMove();
 		}
 	}
 
@@ -177,7 +177,7 @@ class TuiWindow : Responder
 	// Description: This event will be called by any Control tied to this window that raises an event.
 	// source: The Control that raised the event.
 	// event: The event that was issued.
-	bool OnEvent(TuiWidget source, uint event)
+	bool onEvent(TuiWidget source, uint event)
 	{
 		return false;
 	}
@@ -235,14 +235,14 @@ class TuiWindow : Responder
 		// activate the next control
 		TuiWidget curFocus = _focused_control;
 
-		_focused_control.OnLostFocus();
+		_focused_control.onLostFocus();
 
 		do
 		{
 			_focused_control = _focused_control._prevControl;
 			if (_focused_control.isTabStop())
 			{
-				_focused_control.OnGotFocus();
+				_focused_control.onGotFocus();
 				break;
 			}
 		} while (_focused_control !is curFocus);
@@ -253,14 +253,14 @@ class TuiWindow : Responder
 		// activate the previous control
 		TuiWidget curFocus = _focused_control;
 
-		_focused_control.OnLostFocus();
+		_focused_control.onLostFocus();
 
 		do
 		{
 			_focused_control = _focused_control._nextControl;
 			if (_focused_control.isTabStop())
 			{
-				_focused_control.OnGotFocus();
+				_focused_control.onGotFocus();
 				break;
 			}
 		} while (_focused_control !is curFocus);
