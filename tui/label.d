@@ -59,11 +59,19 @@ class TuiLabel : TuiWidget {
 	}
 
 	void forecolor(fgColor fgclr) {
-		forecolor = fgclr;
+		_forecolor = fgclr;
+	}
+
+	fgColor forecolor() {
+		return _forecolor;
 	}
 
 	void backcolor(bgColor bgclr) {
 		_backcolor = bgclr;
+	}
+
+	bgColor backcolor() {
+		return _backcolor;
 	}
 
 protected:
@@ -83,6 +91,8 @@ protected:
 			}
 		}
 	}
+
+private:
 
 	fgColor _forecolor = fgColor.BrightBlue;
 	bgColor _backcolor = bgColor.Black;

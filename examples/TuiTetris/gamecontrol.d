@@ -24,7 +24,7 @@ class GameControl : TuiWidget {
 		tmr.start();
 	}
 
-	override void OnInit() {
+	override void onInit() {
 		// draw board
 		drawBoard();
 
@@ -32,7 +32,7 @@ class GameControl : TuiWidget {
 		drawPiece();
 	}
 
-	void OnKeyDown(uint keyCode) {
+	void onKeyDown(uint keyCode) {
 		if (keyCode == KeyArrowDown) {
 			tmr.stop();
 			timerProc();
@@ -88,7 +88,7 @@ class GameControl : TuiWidget {
 		}
 	}
 
-	bool OnSignal(Dispatcher dsp, uint signal) {
+	bool onSignal(Dispatcher dsp, uint signal) {
 		if (dsp is tmr) {
 			timerProc();
 		}

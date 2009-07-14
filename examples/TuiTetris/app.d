@@ -8,7 +8,7 @@ class TermTetris : TuiApplication {
 	// Start an application instance
 	static this() { new TermTetris(); }
 
-	override void OnApplicationStart() {
+	override void onApplicationStart() {
 		Console.hideCaret();
 
 		gameWindow = new GameWindow();
@@ -16,7 +16,7 @@ class TermTetris : TuiApplication {
 		push(gameWindow);
 	}
 
-	override void OnApplicationEnd() {
+	override void onApplicationEnd() {
 		Console.clear();
 		Console.setColor(fgColor.White);
 		Console.put("Your Score was: ");
