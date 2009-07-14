@@ -30,7 +30,7 @@ class TuiWindow : Responder
 		_width = Console.getWidth();
 		_height = Console.getHeight();
 
-		Console.setColor(getBackgroundColor());
+		Console.setColor(_bgClr);
 		Console.clear();
 
 		TuiWidget c = _firstControl;
@@ -164,22 +164,12 @@ class TuiWindow : Responder
 		}
 	}
 
-	uint getWidth()
-	{
+	uint width() {
 		return _width;
 	}
 
-	uint getHeight()
-	{
+	uint height() {
 		return _height;
-	}
-
-	// Description: This event will be called by any Control tied to this window that raises an event.
-	// source: The Control that raised the event.
-	// event: The event that was issued.
-	bool onEvent(TuiWidget source, uint event)
-	{
-		return false;
 	}
 
 	// Methods
@@ -225,13 +215,11 @@ class TuiWindow : Responder
 		}
 	}
 
-	bgColor getBackgroundColor()
-	{
+	bgColor backcolor() {
 		return _bgClr;
 	}
 
-	void tabForward()
-	{
+	void tabForward() {
 		// activate the next control
 		TuiWidget curFocus = _focused_control;
 
@@ -248,26 +236,23 @@ class TuiWindow : Responder
 		} while (_focused_control !is curFocus);
 	}
 
-	void tabBackward()
-	{
+	void tabBackward() {
 		// activate the previous control
 		TuiWidget curFocus = _focused_control;
 
 		_focused_control.onLostFocus();
 
-		do
-		{
+		do {
 			_focused_control = _focused_control._nextControl;
-			if (_focused_control.isTabStop())
-			{
+			if (_focused_control.isTabStop()) {
 				_focused_control.onGotFocus();
 				break;
 			}
 		} while (_focused_control !is curFocus);
 	}
-	
+
 	TuiApplication application() {
-		return cast(TuiApplication)responder;
+		return cast(TuiApplication)this.responder;
 	}
 
 	bool isActive() {
@@ -276,7 +261,8 @@ class TuiWindow : Responder
 
 	Mouse mouseProps;
 
-protected:
+private:
+
 	bgColor _bgClr = bgColor.Black;
 
 	// head and tail of the control linked list
