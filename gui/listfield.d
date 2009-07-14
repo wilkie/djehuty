@@ -97,7 +97,7 @@ class ListField : Widget, AbstractList!(String) {
 		// Add the Child Button, which will spawn the window and the list
 		_window.push(control_button);
 
-		control_button.setEnabled(false);
+		control_button.enabled = false;
 	}
 
 	override void onRemove() {
@@ -121,7 +121,7 @@ class ListField : Widget, AbstractList!(String) {
 
 		rt.left = _x+1;
 		rt.top = _y+1;
-		rt.right = _r - control_button.getWidth();
+		rt.right = _r - control_button.width;
 		rt.bottom = rt.top + m_entryHeight.y;
 	}
 

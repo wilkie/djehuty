@@ -419,7 +419,7 @@ void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref View view
 	rt.bottom = view.getHeight();
 
 	//draw background
-	windowVars.brsh = CreateSolidBrush(ColorGetValue(window.getColor()));
+	windowVars.brsh = CreateSolidBrush(ColorGetValue(window.color));
 	FillRect(viewVars.dc, &rt, windowVars.brsh);
 	DeleteObject(windowVars.brsh);
 

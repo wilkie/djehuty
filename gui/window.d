@@ -580,37 +580,29 @@ public:
 		{
 			control = _captured_control;
 
-			if (controlAtPoint(mouseProps.x, mouseProps.y) is control && control.getVisibility())
-			{
+			if (controlAtPoint(mouseProps.x, mouseProps.y) is control && control.visible) {
 				//within bounds of control
-				if (!control._hovered)
-				{
+				if (!control._hovered) {
 					//currently, hover state says control is outside
 					control._hovered = true;
-					if (control.onMouseEnter() | control.onMouseMove(mouseProps))
-					{
+					if (control.onMouseEnter() | control.onMouseMove(mouseProps)) {
 						onDraw();
 					}
 				}
-				else if (control.onMouseMove(mouseProps))
-				{
+				else if (control.onMouseMove(mouseProps)) {
 					onDraw();
 				}
 			}
-			else
-			{
+			else {
 				//outside bounds of control
-				if (control._hovered)
-				{
+				if (control._hovered) {
 					//currently, hover state says control is inside
 					control._hovered = false;
-					if (control.onMouseLeave() | control.onMouseMove(mouseProps))
-					{
+					if (control.onMouseLeave() | control.onMouseMove(mouseProps)) {
 						onDraw();
 					}
 				}
-				else if (control.onMouseMove(mouseProps))
-				{
+				else if (control.onMouseMove(mouseProps)) {
 					onDraw();
 				}
 			}
@@ -620,32 +612,26 @@ public:
 
 
 		}	// no control that has captured the mouse input
-		else if ((control = controlAtPoint(mouseProps.x, mouseProps.y)) !is null)
-		{
+		else if ((control = controlAtPoint(mouseProps.x, mouseProps.y)) !is null) {
 			//when there is a control to pass a MouseLeave to...
-			if (_last_control !is control && _last_control !is null)
-			{
+			if (_last_control !is control && _last_control !is null) {
 				control._hovered = true;
 				_last_control._hovered = false;
 
 				if(_last_control.onMouseLeave() |
-					control.onMouseEnter() | control.onMouseMove(mouseProps))
-				{
+					control.onMouseEnter() | control.onMouseMove(mouseProps)) {
 					onDraw();
 				}
 			} //otherwise, there is just one control to worry about
-			else
-			{
-				if(!control._hovered)
-				{	//wasn't hovered over before
+			else {
+				if(!control._hovered) {
+					//wasn't hovered over before
 					control._hovered = true;
-					if(control.onMouseEnter() | control.onMouseMove(mouseProps))
-					{
+					if(control.onMouseEnter() | control.onMouseMove(mouseProps)) {
 						onDraw();
 					}
 				}
-				else if(control.onMouseMove(mouseProps))
-				{
+				else if(control.onMouseMove(mouseProps)) {
 					onDraw();
 				}
 			}
@@ -656,16 +642,12 @@ public:
 			_last_control = control;
 
 		}
-		else
-		{
-
+		else {
 			//mouse is on window, not control
 
-			if (_last_control !is null)
-			{
+			if (_last_control !is null) {
 				_last_control._hovered = false;
-				if(_last_control.onMouseLeave())
-				{
+				if(_last_control.onMouseLeave()) {
 					onDraw();
 				}
 				_last_control = null;
@@ -801,27 +783,24 @@ public:
 
 	// Description: This will retreive the current window color.
 	// Returns: The color currently associated with the window.
-	Color getColor() {
+	Color color() {
 		return _color;
 	}
 
 	// Description: This will set the current window color.
 	// color: The color to associate with the window.
-	void setColor(ref Color color)
-	{
-		_color = color;
+	void color(ref Color clr) {
+		_color = clr;
 	}
 
 	// Description: This will set the current window color to a specific platform color.
 	// sysColor: The system color index to associate with the window.
-	void setColor(SystemColor color)
-	{
-		Scaffold.ColorGetSystemColor(_color, color);
+	void color(SystemColor clr) {
+		Scaffold.ColorGetSystemColor(_color, clr);
 	}
 
 	// Description: This will force a redraw of the entire window.
-	void redraw()
-	{
+	void redraw() {
 		onDraw();
 	}
 
@@ -831,23 +810,17 @@ public:
 	// x: The x coordinate to start the search.
 	// y: The y coordinate to start the search.
 	// Returns: The top-most visible control at the point (x,y) or null.
-	Widget controlAtPoint(int x, int y)
-	{
+	Widget controlAtPoint(int x, int y) {
 		Widget ctrl = _firstControl;
 
-		if (ctrl !is null)
-		{
-			do
-			{
-				if (ctrl.containsPoint(x,y) && ctrl.getVisibility())
-				{
-					if (ctrl.isContainer())
-					{
+		if (ctrl !is null) {
+			do {
+				if (ctrl.containsPoint(x,y) && ctrl.visible) {
+					if (ctrl.isContainer()) {
 						Widget innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
 						if (innerCtrl !is null) { return innerCtrl; }
 					}
-					else
-					{
+					else {
 						return ctrl;
 					}
 				}
@@ -910,27 +883,21 @@ public:
 
 	// Description: Removes the control as long as this control is a part of the current window.
 	// control: A reference to the control that should be removed from the window.
-	void removeControl(Widget control)
-	{
-		if (control.isOfWindow(this))
-		{
-			if (_firstControl is null && _lastControl is null)
-			{
+	void removeControl(Widget control) {
+		if (control.isOfWindow(this)) {
+			if (_firstControl is null && _lastControl is null) {
 				// it is the last control
 				_firstControl = null;
 				_lastControl = null;
 			}
-			else
-			{
+			else {
 				// is it not the last control
 
-				if (_firstControl is control)
-				{
+				if (_firstControl is control) {
 					_firstControl = _firstControl._nextControl;
 				}
 
-				if (_lastControl is control)
-				{
+				if (_lastControl is control) {
 					_lastControl = _lastControl._prevControl;
 				}
 
@@ -949,8 +916,7 @@ public:
 
 		if (c is null) { return; }
 
-		do
-		{
+		do {
 			tmp = c._nextControl;
 
 			c.removeControl();
@@ -962,23 +928,17 @@ public:
 		_lastControl = null;
 	}
 
-
-
 	// Menus //
-
 
 	// Description: Sets the menu for the window.  This menu's subitems will be displayed typically as a menu bar.
 	// mnuMain: A Menu object representing the main menu for the window.  Pass null to have no menu.
-	void setMenu(Menu mnuMain)
-	{
+	void menu(Menu mnuMain) {
 		_mainMenu = mnuMain;
 
-		if (mnuMain is null)
-		{
+		if (mnuMain is null) {
 			// remove the menu
 		}
-		else
-		{
+		else {
 			// Switch out and apply the menu
 
 			// platform specific
@@ -989,8 +949,7 @@ public:
 
 	// Description: Gets the current menu for the window.  It will return null when no menu is available.
 	// Returns: The Menu object representing the main menu for the window.
-	Menu getMenu()
-	{
+	Menu menu() {
 		return _mainMenu;
 	}
 
@@ -1001,19 +960,15 @@ public:
 protected:
 
 	bool mouseEventCommon(out Widget target) {
-		if (_captured_control !is null)
-		{
+		if (_captured_control !is null) {
 			target = _captured_control;
 		}
-		else if ((target = controlAtPoint(mouseProps.x, mouseProps.y)) !is null)
-		{
+		else if ((target = controlAtPoint(mouseProps.x, mouseProps.y)) !is null) {
 			bool ret = false;
 
 			//consider the focus of the control
-			if(_focused_control !is target)
-			{
-				if (_focused_control !is null)
-				{
+			if(_focused_control !is target) {
+				if (_focused_control !is null) {
 					//the current focused control gets unfocused
 					_focused_control._focused = false;
 					ret = _focused_control.onLostFocus(false);
@@ -1035,8 +990,7 @@ protected:
 		return false;
 	}
 
-	void uninitialize()
-	{
+	void uninitialize() {
 		if (_nextWindow is null) { return; }
 
 		onRemove();
@@ -1072,14 +1026,12 @@ protected:
 		app._windowCount--;
 
 		// Check to see if this was invisible
-		if (_visible)
-		{
+		if (_visible) {
 			// Decrement Window Visible length
 			app._windowVisibleCount--;
 
 			// If there are no visible windows, quit (for now)
-			if (app.isZombie())
-			{
+			if (app.isZombie()) {
 				// just kill the app
 				app.destroyAllWindows();
 				DjehutyEnd();
@@ -1088,12 +1040,10 @@ protected:
 
 		// is it a parent window of some kind?
 		// destroy and uninitialize all children
-		if (_firstChild !is null)
-		{
+		if (_firstChild !is null) {
 			Window child = _firstChild;
 
-			do
-			{
+			do {
 				child.remove();
 				child = child._nextSibling;
 			} while (child !is _firstChild)
@@ -1101,8 +1051,7 @@ protected:
 
 		// is it a child window of some kind?
 		// unlink it within the sibling list
-		if (_parent !is null)
-		{
+		if (_parent !is null) {
 			Window p = _parent;
 
 			p._numChildren--;
@@ -1110,22 +1059,18 @@ protected:
 			_prevSibling._nextSibling = _nextSibling;
 			_nextSibling._prevSibling = _prevSibling;
 
-			if (p._firstChild is this && p._lastChild is this)
-			{
+			if (p._firstChild is this && p._lastChild is this) {
 				// unreference this, the last child
 				// the parent now has no children
 				p._firstChild = null;
 				p._lastChild = null;
 			}
-			else
-			{
-				if (p._firstChild is this)
-				{
+			else {
+				if (p._firstChild is this) {
 					p._firstChild = p._firstChild._nextSibling;
 				}
 
-				if (p._lastChild is this)
-				{
+				if (p._lastChild is this) {
 					p._lastChild = p._lastChild._prevSibling;
 				}
 			}
@@ -1202,82 +1147,67 @@ class WindowHelper {
 		window._constraint_x = constraint_x;
 	}
 
-	void setConstraintY(long constraint_y)
-	{
+	void setConstraintY(long constraint_y) {
 		window._constraint_y = constraint_y;
 	}
 
-	long WindowGetConstraintX()
-	{
+	long WindowGetConstraintX() {
 		return window._constraint_x;
 	}
 
-	long getConstraintY()
-	{
+	long getConstraintY() {
 		return window._constraint_y;
 	}
 
-	void captureMouse(ref Widget control)
-	{
+	void captureMouse(ref Widget control) {
 		window._captured_control = control;
 
 		Scaffold.WindowCaptureMouse(window, this);
 	}
 
-	void releaseMouse(ref Widget control)
-	{
-		if (window._captured_control is control)
-		{
+	void releaseMouse(ref Widget control) {
+		if (window._captured_control is control) {
 			window._captured_control = null;
 
 			Scaffold.WindowReleaseMouse(window, this);
 		}
 	}
 
-	View* getView()
-	{
+	View* getView() {
 		return &window._view;
 	}
 
-	WindowPlatformVars* getPlatformVars()
-	{
+	WindowPlatformVars* getPlatformVars() {
 		return &_pfvars;
 	}
 
-	void setWindowXY(int x, int y)
-	{
+	void setWindowXY(int x, int y) {
 		window._x = x;
 		window._y = y;
 	}
 
-	void setWindowX(int x)
-	{
+	void setWindowX(int x) {
 		window._x = x;
 	}
 
-	void setWindowY(int y)
-	{
+	void setWindowY(int y) {
 		window._y = y;
 	}
 
-	void setWindowSize(uint width, uint height)
-	{
+	void setWindowSize(uint width, uint height) {
 		window._width = width;
 		window._height = height;
 	}
 
-	void setWindowWidth(uint width)
-	{
+	void setWindowWidth(uint width) {
 		window._width = width;
 	}
 
-	void setWindowHeight(uint height)
-	{
+	void setWindowHeight(uint height) {
 		window._height = height;
 	}
 
-	void callStateChange(WindowState newState)
-	{
+	void callStateChange(WindowState newState) {
 		window._state = newState;
 		window.onStateChange();
 	}

@@ -236,13 +236,13 @@ class Widget : Responder
 
 	// Description: Will return the flag that determines whether or not the control is visible (ie. drawn).
 	// Returns: If true, the control is currently visible.  If false, the control is currently hidden.
-	bool getVisibility() {
+	bool visible() {
 		return _visible;
 	}
 
 	// Description: Will set the flag to mark the control either visible or hidden.
 	// bVisible: Passing true would mark this control to be drawn, passing false will mark this control as hidden and not drawn.
-	void setVisibility(bool bVisible) {
+	void visible(bool bVisible) {
 		_visible = bVisible;
 	}
 
@@ -252,39 +252,39 @@ class Widget : Responder
 		return false;
 	}
 
-	bool isHovered() {
+	bool hovered() {
 		return _hovered;
 	}
 
-	bool isFocused() {
+	bool focused() {
 		return _focused;
 	}
-	void setEnabled(bool bEnable)
+	void enabled(bool bEnable)
 	{
 		_enabled = bEnable;
 	}
 
-	bool getEnabled()
+	bool enabled()
 	{
 		return _enabled;
 	}
 
-	uint getWidth()
+	uint width()
 	{
 		return _width;
 	}
 
-	uint getHeight()
+	uint height()
 	{
 		return _height;
 	}
 
-	int getX()
+	int x()
 	{
 		return _subX;
 	}
 
-	int getY()
+	int y()
 	{
 		return _subY;
 	}
@@ -460,7 +460,7 @@ class Container : Widget, AbstractContainer
 
 		control.onAdd();
 
-		control.move(control.getX(), control.getY());
+		control.move(control.x, control.y);
 	}
 
 	void removeControl(Widget control)
@@ -502,7 +502,7 @@ class Container : Widget, AbstractContainer
 		{
 			do
 			{
-				if (ctrl.containsPoint(x,y) && ctrl.getVisibility())
+				if (ctrl.containsPoint(x,y) && ctrl.visible)
 				{
 					if (ctrl.isContainer())
 					{
@@ -531,7 +531,7 @@ class Container : Widget, AbstractContainer
 		{
 			do
 			{
-				ctrl.move(ctrl.getX(), ctrl.getY());
+				ctrl.move(ctrl.x, ctrl.y);
 
 				ctrl = ctrl._nextControl;
 			} while (ctrl !is _firstControl)

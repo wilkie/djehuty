@@ -68,7 +68,7 @@ class ListBox : Widget {
 		//control_scroll.SetScrollPeriods(1, m_total_visible-2);
 		//control_scroll.SetRange(0, _list.length() - m_total_visible+1);
 
-		control_scroll.setEnabled(false);
+		control_scroll.enabled = false;
 	}
 
 	override void onRemove() {
@@ -95,7 +95,7 @@ class ListBox : Widget {
 
 		rt.left = _x+1;
 		rt.top = _y+1;
-		rt.right = _r - control_scroll.getWidth();
+		rt.right = _r - control_scroll.width;
 		rt.bottom = rt.top + m_entryHeight.y;
 
 		// set text mode to transparent
@@ -248,12 +248,12 @@ protected:
 		//whether or not the scroll bar is in use
 		if (_list.length() - m_total_visible >= 0 && _list.length() - m_total_visible < _list.length()) {
 			//scroll bars should be enabled
-			control_scroll.setEnabled(true);
+			control_scroll.enabled = true;
 
 			//control_scroll.SetRange(0, _list.length() - m_total_visible + 1);
 		}
 		else {
-			control_scroll.setEnabled(false);
+			control_scroll.enabled = false;
 		}
 	}
 }
