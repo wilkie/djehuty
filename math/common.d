@@ -10,11 +10,9 @@ import math.mathobject;
 
 import core.literals;
 
-template _mathFunc(StringLiteral8 func)
-{
+template _mathFunc(StringLiteral8 func) {
 	const char[] _mathFunc = `
-		MathObject ` ~ func ~ `(MathObject operand)
-		{
+		MathObject ` ~ func ~ `(MathObject operand) {
 			// call corresponding op for the MathObject
 			return operand.op` ~ cast(char)(func[0] - 32) ~ func[1..$] ~ `();
 		}
@@ -24,8 +22,7 @@ template _mathFunc(StringLiteral8 func)
 
 mixin(_mathFunc!("sqrt"));
 
-double sqrt(double operand)
-{
+double sqrt(double operand) {
 	double x, z, tempf;
 	uint *tfptr = (cast(uint *)&tempf) + 1;
 
@@ -38,5 +35,6 @@ double sqrt(double operand)
 	x = (1.5*x) - (x*x)*(x*z);
 	x = (1.5*x) - (x*x)*(x*z);
 	x = (1.5*x) - (x*x)*(x*z);
+	
 	return x*operand;
 }
