@@ -23,25 +23,20 @@ import gui.listbox;
 
 import interfaces.list;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, AbstractList!(String) list = null)
-	{
+	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
 }
 
-class ListFieldWindow : Window
-{
-	this(uint width)
-	{
+class ListFieldWindow : Window {
+	this(uint width) {
 		super("ListFieldPopup", WindowStyle.Popup, SystemColor.Window, 0,0,width,width / 2);
 	}
 
-	override void onLostFocus()
-	{
+	override void onLostFocus() {
 		remove();
 	}
 }
@@ -49,17 +44,14 @@ class ListFieldWindow : Window
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : Widget, AbstractList!(String)
-{
+class ListField : Widget, AbstractList!(String) {
 
-	enum Signal : uint
-	{
+	enum Signal : uint {
 		Selected,
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, AbstractList!(String) list = null)
-	{
+	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
 		super(x,y,width,height);
 
 		_list = new ArrayList!(String)();
@@ -67,16 +59,13 @@ class ListField : Widget, AbstractList!(String)
 	}
 
 	// handle events
-	override void onAdd()
-	{
-		if (control_button is null)
-		{
+	override void onAdd() {
+		if (control_button is null) {
 			control_button = new Button(_r - _height,_y, _height, _height, "V");
 			control_listbox = new ListBox(0,0, _width,_width / 2);
 			control_window = new ListFieldWindow(_width);
 
-			if (_list !is null)
-			{
+			if (_list !is null) {
 				control_listbox.addList(_list);
 			}
 			_list = null;
@@ -111,13 +100,11 @@ class ListField : Widget, AbstractList!(String)
 		control_button.setEnabled(false);
 	}
 
-	override void onRemove()
-	{
+	override void onRemove() {
 		//control_button.remove();
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 	//draw all entries
 
 		ulong i;
@@ -140,48 +127,39 @@ class ListField : Widget, AbstractList!(String)
 
 	// List Methods
 
-	void addItem(String data)
-	{
+	void addItem(String data) {
 		control_listbox.addItem(data);
 	}
 
-	void addItem(string data)
-	{
+	void addItem(string data) {
 		control_listbox.addItem(data);
 	}
 
-	void addList(AbstractList!(String) list)
-	{
+	void addList(AbstractList!(String) list) {
 		control_listbox.addList(list);
 	}
 
-	void addList(String[] list)
-	{
+	void addList(String[] list) {
 		control_listbox.addList(list);
 	}
 
-    bool getItem(out String data, uint index)
-    {
+    bool getItem(out String data, uint index) {
 		return control_listbox.getItem(data, index);
     }
 
-	Iterator getIterator()
-	{
+	Iterator getIterator() {
 		return control_listbox.getIterator();
 	}
 
-    bool getItem(out String data, ref Iterator irate)
-    {
+    bool getItem(out String data, ref Iterator irate) {
 		return control_listbox.getItem(data, irate);
     }
 
-    uint length()
-    {
+    uint length() {
 		return control_listbox.length();
     }
 
-	bool remove(out String item)
-	{
+	bool remove(out String item) {
 		return control_listbox.remove(item);
 	}
 
@@ -208,33 +186,4 @@ protected:
 	Window control_window;
 
 	ArrayList!(String) _list;
-
-	/*void _ButtonEvents(Button button, Button.Event evt)
-	{
-		if (evt == Button.Event.Pressed)
-		{
-			// Spawn the child window, if one does not exist
-			Coord pt;
-			pt.x = _x;
-			pt.y = _b;
-
-			_window.ClientToScreen(pt);
-
-			control_window.move(pt.x, pt.y);
-			_window.addWindow(control_window);
-			control_window.setVisibility(true);
-			control_window.push(control_listbox);
-		}
-	}*/
-
-	/*void _ListBoxEvents(ListBox list, ListBoxEvent evt)
-	{
-		if (evt == ListBoxEvent.Selected)
-		{
-			control_window.remove();
-
-			String data;
-			control_listbox.getItem(data, control_listbox.getSelectionStart());
-		}
-	}*/
 }

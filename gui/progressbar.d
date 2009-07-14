@@ -7,11 +7,9 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height)
-	{
+	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
 	}
 
@@ -19,16 +17,14 @@ template ControlPrintCSTRList()
 	`;
 }
 
-class ProgressBar : Widget
-{
+class ProgressBar : Widget {
+
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height)
-	{
+	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 		Brush brsh = new Brush(Color.Red);
 
 		g.setBrush(brsh);
@@ -47,33 +43,30 @@ class ProgressBar : Widget
 		g.drawRect(_x, _y, barWidth + _x, _b);
 
 	}
+	
+	// Properties
 
-	void setRange(long min, long max)
-	{
-		_min = min;
-		_max = max;
+	void range(long[2] value) {
+		_min = value[0];
+		_max = value[1];
 
 		if (_min > _max) { _min = _max; }
 		if (_value < _min) { _value = _min; }
 		if (_value > _max) { _value = _max; }
 	}
 
-	void getRange(out long min, out long max)
-	{
-		min = _min;
-		max = _max;
+	long[] range() {
+		return [_min, _max];
 	}
 
-	void setValue(long value)
-	{
-		_value = value;
+	void value(long val) {
+		_value = val;
 
 		if (_value < _min) { _value = _min; }
 		if (_value > _max) { _value = _max; }
 	}
 
-	long getValue()
-	{
+	long value() {
 		return _value;
 	}
 

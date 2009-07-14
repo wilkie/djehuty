@@ -7,48 +7,40 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height,value);
 	}
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
 	`;
 }
 
 // Description: This control provides a standard one line text field.
-class TextField : Widget
-{
+class TextField : Widget {
 public:
 
-	enum Signal : uint
-	{
+	enum Signal : uint {
 		Selected,
 		Unselected,
 		Changed,
 	}
 
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height);
 
 		_value = new String(value);
 	}
 
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height);
 
 		_value = new String(value);
 	}
 
-	override void onAdd()
-	{
+	override void onAdd() {
 		_clr_highlight.setRGB(0xf8,0xf8,0xf8);
 		_clr_outline = Color.DarkGray;
 		_clr_background = Color.White;
@@ -71,8 +63,7 @@ public:
 		_view.unlockDisplay();
 	}
 
-	void SelectionClear()
-	{
+	void SelectionClear() {
 		//deletes the selection
 
 		if (_caret_pos != _sel_start)
@@ -83,14 +74,14 @@ public:
 		}
 	}
 
-	override bool onMouseMove(ref Mouse mouseProps)
-	{
+	override bool onMouseMove(ref Mouse mouseProps) {
 		//find the section when the left mouse button is pressed
 
-		if (mouseProps.clicks != 1) { return false; }
+		if (mouseProps.clicks != 1) {
+			return false;
+		}
 
-		if (mouseProps.leftDown)
-		{
+		if (mouseProps.leftDown) {
 			Graphics grp = _view.lockDisplay();
 			//grp.setFont(_font);
 
@@ -98,12 +89,10 @@ public:
 
 			int x1 = mouseProps.x - (_x + 3);
 
-			if (x1 < 0)
-			{
+			if (x1 < 0) {
 				sel_start = 0;
 			}
-			else
-			{
+			else {
 				int x_test;
 
 				Size s;
@@ -114,8 +103,7 @@ public:
 
 				x_test = (s.x / 2);
 
-				while (x_test < x1 && sel_start < _value.length)
-				{
+				while (x_test < x1 && sel_start < _value.length) {
 					//proceed further down the string
 					sel_start++;
 
@@ -132,8 +120,7 @@ public:
 				}
 			}
 
-			if (_sel_start != sel_start)
-			{
+			if (_sel_start != sel_start) {
 				_sel_start = sel_start;
 				_view.unlockDisplay();
 
@@ -149,8 +136,7 @@ public:
 		return false;
 	}
 
-	override bool onPrimaryMouseDown(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
 		//move caret
 
 		// -- this section takes 'x' in terms of the control's position
@@ -173,8 +159,7 @@ public:
 
 		x_test = (s.x / 2);
 
-		while (x_test < x1 && _caret_pos < _value.length)
-		{
+		while (x_test < x1 && _caret_pos < _value.length) {
 			//proceed further down the string
 			_caret_pos++;
 
@@ -197,46 +182,44 @@ public:
 
 		requestCapture();
 
-		if ((mouseProps.clicks % 3) == 0)
-		{
+		if ((mouseProps.clicks % 3) == 0) {
 			//select line
 			_caret_pos = 0;
 			_sel_start = _value.length;
 		}
-		if ((mouseProps.clicks % 2) == 0)
-		{
+		if ((mouseProps.clicks % 2) == 0) {
 			//select text from the current caret position
 			//grab a word
 			_caret_pos = 0;
 			_sel_start = _value.length;
 		}
-		else
-		{
+		else {
 		}
 
 		_view.unlockDisplay();
 		return true;
 	}
 
-	override bool onPrimaryMouseUp(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseUp(ref Mouse mouseProps) {
 		requestRelease();
 
 		return false;
 	}
 
-	override bool onGotFocus(bool withWindow) { return true; }
-	override bool onLostFocus(bool withWindow) { return true; }
+	override bool onGotFocus(bool withWindow) {
+		return true;
+	}
+
+	override bool onLostFocus(bool withWindow) {
+		return true;
+	}
 
 	// Key Presses
 
-	override bool onKeyDown(uint keyCode)
-	{
-		switch(keyCode)
-		{
+	override bool onKeyDown(uint keyCode) {
+		switch(keyCode) {
 			case KeyArrowLeft:
-				if (_caret_pos != 0)
-				{
+				if (_caret_pos != 0) {
 					_sel_start = --_caret_pos;
 				}
 
@@ -244,8 +227,7 @@ public:
 
 				break;
 			case KeyArrowRight:
-				if (_caret_pos != _value.length)
-				{
+				if (_caret_pos != _value.length) {
 					_sel_start = ++_caret_pos;
 				}
 
@@ -258,10 +240,8 @@ public:
 				break;
 			case KeyDelete:
 
-				if (_caret_pos == _sel_start)
-				{
-					if ( _caret_pos != _value.length )
-					{
+				if (_caret_pos == _sel_start) {
+					if ( _caret_pos != _value.length ) {
 						//delete the character to the right of the caret
 						String str_partA, str_partB;
 
@@ -276,12 +256,10 @@ public:
 						Graphics grp = _view.lockDisplay();
 						//grp.setFont(_font);
 
-						if (_value.length > 0)
-						{
+						if (_value.length > 0) {
 							grp.measureText(_value, _value_size);
 						}
-						else
-						{
+						else {
 							grp.measureText(new String(" "), _value_size);
 							_value_size.x = 0;
 						}
@@ -293,8 +271,7 @@ public:
 						//FIRE_EVENT(id, EventValueChanged, 0, 0);
 					}
 				}
-				else
-				{
+				else {
 					//clear selection
 					SelectionClear();
 				}
@@ -305,10 +282,8 @@ public:
 
 				//erase
 
-				if (_caret_pos == _sel_start)
-				{
-					if (_caret_pos != 0)
-					{
+				if (_caret_pos == _sel_start) {
+					if (_caret_pos != 0) {
 						String str_partA, str_partB;
 
 						_caret_pos--;
@@ -343,8 +318,7 @@ public:
 						//FIRE_EVENT(id, EventValueChanged, 0, 0);
 					}
 				}
-				else
-				{
+				else {
 					//erase the selection
 
 					SelectionClear();
@@ -362,8 +336,7 @@ public:
 		return true;
 	}
 
-	override bool onKeyChar(dchar character)
-	{
+	override bool onKeyChar(dchar character) {
 		//if this character is a character we can write out, then
 		//alter the text of the field
 
@@ -390,12 +363,10 @@ public:
 		Graphics grp = _view.lockDisplay();
 		//grp.setFont(_font);
 
-		if (_value.length > 0)
-		{
+		if (_value.length > 0) {
 			grp.measureText(_value, _value_size);
 		}
-		else
-		{
+		else {
 			grp.measureText(new String(" "), _value_size);
 			_value_size.x = 0;
 		}
@@ -409,8 +380,7 @@ public:
 		return true;
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 		//Draw Background of Button
 		Brush brush = new Brush(_clr_background);
 
@@ -448,15 +418,13 @@ public:
 
 		g.setTextColor(Color.Black);
 
-		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char))
-		{
+		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char)) {
 			//no selection visible
 			g.drawText(_x+3, _y+2, _value[_first_char.._value.length]);
 
 			//Draw Caret
 
-			if (_caret_pos >= _first_char && _focused)
-			{
+			if (_caret_pos >= _first_char && _focused) {
 				int x, y;
 
 				y = _y + 2;
@@ -464,34 +432,29 @@ public:
 
 				Size s;
 
-				if (_caret_pos > _first_char)
-				{
+				if (_caret_pos > _first_char) {
 					g.measureText(_value[_first_char.._caret_pos],s);
 
 					x += s.x;
 				}
 
-				if (x < bounds.right)
-				{
+				if (x < bounds.right) {
 					g.drawLine(x,y,x,y+_value_size.y);
 				}
 			}
 		}
-		else
-		{
+		else {
 			int x, y, x2, y2;
 			Size s;
 
 			uint from_pos;
 			uint to_pos;
 
-			if (_sel_start < _caret_pos)
-			{
+			if (_sel_start < _caret_pos) {
 				from_pos = _sel_start;
 				to_pos = _caret_pos;
 			}
-			else
-			{
+			else {
 				from_pos = _caret_pos;
 				to_pos = _sel_start;
 			}
@@ -500,8 +463,7 @@ public:
 			y = _y + 2;
 
 			//left side of the selection
-			if (from_pos < _first_char)
-			{
+			if (from_pos < _first_char) {
 				from_pos = _first_char;
 			}
 
@@ -525,8 +487,7 @@ public:
 			x2 = x + s.x;
 			y2 = y + _value_size.y + 1;
 
-			if (x2 >= _r)
-			{
+			if (x2 >= _r) {
 				x2 = _r - 1;
 			}
 
@@ -542,18 +503,15 @@ public:
 		}
 	}
 
-	void setText(String newTitle)
-	{
+	void text(String newTitle) {
 		_value = new String(newTitle);
 	}
 
-	void setText(string newTitle)
-	{
+	void text(string newTitle) {
 		_value = new String(newTitle);
 	}
 
-	String getText()
-	{
+	String text() {
 		return _value;
 	}
 
@@ -563,16 +521,14 @@ protected:
 
 private:
 
-	void RefreshViewport(uint onPos)
-	{
+	void RefreshViewport(uint onPos) {
 		//check to see if onPos is already within viewing area
 		//check to see what direction we are travelling
 		//if left... from onPos go backwards a certain distance
 		//if right... from onPos go forwards a certain distance
 		//set _first_char accordingly
 
-		if (_caret_pos > _value.length)
-		{
+		if (_caret_pos > _value.length) {
 			_caret_pos = _value.length;
 		}
 
@@ -585,29 +541,24 @@ private:
 
 		Graphics grp = _view.lockDisplay();
 
-		if (onPos > _first_char)
-		{
+		if (onPos > _first_char) {
 			//check to see if it is within the viewable area
 			grp.measureText(_value[_first_char..onPos], s);
 
-			if ((s.x + 3) < _width)
-			{
+			if ((s.x + 3) < _width) {
 				//we are good
 				_view.unlockDisplay();
 				return;
 			}
-			else
-			{
+			else {
 				//we are moving right
 
 				//go forward
 
 				i = onPos;
 
-				while(current_movement < movement_width)
-				{
-					if (i > _value.length)
-					{
+				while(current_movement < movement_width) {
+					if (i > _value.length) {
 						i = _value.length;
 						break;
 					}
@@ -624,10 +575,8 @@ private:
 
 				i = onPos;
 
-				while(current_movement < _width)
-				{
-					if (i<=0)
-					{
+				while(current_movement < _width) {
+					if (i<=0) {
 						i = 0;
 						break;
 					}
@@ -642,18 +591,15 @@ private:
 				_first_char = i + 1;
 			}
 		}
-		else
-		{
+		else {
 			//we are moving left
 
 			//go backward
 
 			i = onPos;
 
-			while(current_movement < movement_width)
-			{
-				if (i<=0)
-				{
+			while(current_movement < movement_width) {
+				if (i<=0) {
 					i = 0;
 					break;
 				}
@@ -673,14 +619,11 @@ private:
 
 	}
 
-	void InternalSelectionClear()
-	{
+	void InternalSelectionClear() {
 		//deletes the selection
 
-		if (_caret_pos != _sel_start)
-		{
-			if (_caret_pos < _sel_start)
-			{
+		if (_caret_pos != _sel_start) {
+			if (_caret_pos < _sel_start) {
 				//swap the two positions, so that
 				//m_sel_start is at the beginning of the selection
 				//and m_caret_pos marks the end
@@ -710,12 +653,10 @@ private:
 			Graphics grp = _view.lockDisplay();
 			//grp.setFont(_font);
 
-			if (_value.length)
-			{
+			if (_value.length) {
 				grp.measureText(_value, _value_size);
 			}
-			else
-			{
+			else {
 				grp.measureText(new String(" "), _value_size);
 				_value_size.x = 0;
 			}

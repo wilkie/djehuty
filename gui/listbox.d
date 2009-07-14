@@ -13,27 +13,23 @@ import interfaces.list;
 
 import gui.vscrollbar;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, AbstractList!(String) list = null)
-	{
+	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
 }
 
 // Description: This control provides a standard list selection box.
-class ListBox : Widget
-{
-	enum Signal : uint
-	{
+class ListBox : Widget {
+
+	enum Signal : uint {
 		Selected,
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, AbstractList!(String) list = null)
-	{
+	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
 		super(x,y,width,height);
 
 		_list = new ArrayList!(String)();
@@ -41,10 +37,8 @@ class ListBox : Widget
 	}
 
 	// handle events
-	override void onAdd()
-	{
-		if (control_scroll is null)
-		{
+	override void onAdd() {
+		if (control_scroll is null) {
 			control_scroll = new VScrollBar(_r - 17,_y, 17, _height);
 		}
 
@@ -71,20 +65,18 @@ class ListBox : Widget
 
 		_window.push(control_scroll);
 
-		control_scroll.SetScrollPeriods(1, m_total_visible-2);
-		control_scroll.SetRange(0, _list.length() - m_total_visible+1);
+		//control_scroll.SetScrollPeriods(1, m_total_visible-2);
+		//control_scroll.SetRange(0, _list.length() - m_total_visible+1);
 
-		control_scroll.SetEnabled(false);
+		control_scroll.setEnabled(false);
 	}
 
-	override void onRemove()
-	{
+	override void onRemove() {
 		control_scroll.remove();
 	}
 
-	override void onDraw(ref Graphics g)
-	{
-	//draw all entries
+	override void onDraw(ref Graphics g) {
+		//draw all entries
 
 		uint i;
 
@@ -116,12 +108,10 @@ class ListBox : Widget
 
 		String data;
 
-		for (i=m_first_visible; i<m_first_visible+m_total_visible && i<_list.length(); i++)
-		{
+		for (i=m_first_visible; i<m_first_visible+m_total_visible && i<_list.length(); i++) {
 			_list.getItem(data, i);
 
-			if (i==m_sel_start)
-			{
+			if (i==m_sel_start) {
 				// set text mode to opaque (selection!)
 				g.setTextModeOpaque();
 				g.setTextColor(m_clrhighlighttext);
@@ -131,8 +121,7 @@ class ListBox : Widget
 				g.setTextColor(m_clrnormal);
 				g.setTextModeTransparent();
 			}
-			else
-			{
+			else {
 				g.drawClippedText(rt.left, rt.top, rt, data);
 			}
 
@@ -146,8 +135,7 @@ class ListBox : Widget
 		}
 	}
 
-	override bool onPrimaryMouseDown(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
 		uint curEntry = (mouseProps.y - _y);
 		curEntry -= 1; //remove top margin
 
@@ -155,11 +143,9 @@ class ListBox : Widget
 
 		curEntry += m_first_visible;
 
-		if (curEntry < _list.length())
-		{
+		if (curEntry < _list.length()) {
 			//mark this as selected
-			if (m_sel_start != curEntry)
-			{
+			if (m_sel_start != curEntry) {
 				m_sel_start = curEntry;
 
 				raiseSignal(Signal.Selected);
@@ -169,10 +155,8 @@ class ListBox : Widget
 
 			raiseSignal(Signal.Selected);
 		}
-		else
-		{
-			if (m_sel_start != -1)
-			{
+		else {
+			if (m_sel_start != -1) {
 				m_sel_start = -1;
 				return true;
 			}
@@ -181,63 +165,53 @@ class ListBox : Widget
 		return false;
 	}
 
-	uint getSelectionStart()
-	{
+	uint selectionStart() {
 		return m_sel_start;
 	}
 
 	// AbstractList Methods
 
-	void addItem(String data)
-	{
+	void addItem(String data) {
 		_list.addItem(data);
 
 		_checkScrollBarStatus();
 	}
 
-	void addItem(string data)
-	{
+	void addItem(string data) {
 		_list.addItem(new String(data));
 
 		_checkScrollBarStatus();
 	}
 
-	void addList(AbstractList!(String) list)
-	{
+	void addList(AbstractList!(String) list) {
 		_list.addList(list);
 
 		_checkScrollBarStatus();
 	}
 
-	void addList(String[] list)
-	{
+	void addList(String[] list) {
 		_list.addList(list);
 
 		_checkScrollBarStatus();
 	}
 
-    bool getItem(out String data, uint index)
-    {
+    bool getItem(out String data, uint index) {
 		return _list.getItem(data, index);
     }
 
-	Iterator getIterator()
-	{
+	Iterator getIterator() {
 		return _list.getIterator();
 	}
 
-	bool getItem(out String data, ref Iterator irate)
-	{
+	bool getItem(out String data, ref Iterator irate) {
 		return _list.getItem(data, irate);
     }
 
-    uint length()
-    {
+    uint length() {
 		return _list.length();
     }
 
-	bool remove(out String item)
-	{
+	bool remove(out String item) {
 		return _list.remove(item);
     }
 
@@ -263,27 +237,23 @@ protected:
 
 	VScrollBar control_scroll;
 
-	void _checkScrollBarStatus()
-	{
+	void _checkScrollBarStatus() {
 		//make sure list refits the list when it gets taller
-		if (m_first_visible > _list.length() - m_total_visible + 2)
-		{
+		if (m_first_visible > _list.length() - m_total_visible + 2) {
 			m_first_visible = _list.length() - m_total_visible + 2;
 
-			control_scroll.SetValue(m_first_visible);
+			//control_scroll.SetValue(m_first_visible);
 		}
 
 		//whether or not the scroll bar is in use
-		if (_list.length() - m_total_visible >= 0 && _list.length() - m_total_visible < _list.length())
-		{
+		if (_list.length() - m_total_visible >= 0 && _list.length() - m_total_visible < _list.length()) {
 			//scroll bars should be enabled
-			control_scroll.SetEnabled(true);
+			control_scroll.setEnabled(true);
 
-			control_scroll.SetRange(0, _list.length() - m_total_visible + 1);
+			//control_scroll.SetRange(0, _list.length() - m_total_visible + 1);
 		}
-		else
-		{
-			control_scroll.SetEnabled(false);
+		else {
+			control_scroll.setEnabled(false);
 		}
 	}
 }

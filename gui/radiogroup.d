@@ -68,7 +68,7 @@ private:
 		_toggleFields[_count] = inctrl;
 		_count++;
 
-		ToggleFieldSetGrouped(inctrl, true);
+		inctrl._is_grouped = true;
 
 		if (_window !is null)
 		{

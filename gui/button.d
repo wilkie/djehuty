@@ -18,46 +18,39 @@ import core.graphics;
 
 import graphics.brush;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height,value);
 	}
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
 	`;
 }
 
 // Description: This control will provide a simple push button.
-class Button : Widget
-{
-	enum Signal : uint
-	{
+class Button : Widget {
+
+	enum Signal : uint {
 		Pressed,
 		Released,
 		Selected,
 	}
 
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height);
 		_value = new String(value);
 	}
 
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height);
 		_value = new String(value);
 	}
 
-	override void onAdd()
-	{
+	override void onAdd() {
 		Color c;
 		c.setRGB(0xc8, 0x00, 0x00);
 
@@ -69,8 +62,7 @@ class Button : Widget
 		_brsh.setColor(c);
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 		g.setBrush(_brsh);
 		g.setPen(_pen);
 
@@ -94,8 +86,7 @@ class Button : Widget
 		g.drawText(x, y, _value);
 	}
 
-	override bool onPrimaryMouseDown(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
 		requestCapture();
 
 		raiseSignal(Signal.Pressed);
@@ -103,10 +94,8 @@ class Button : Widget
 		return true;
 	}
 
-	override bool onPrimaryMouseUp(ref Mouse mouseProps)
-	{
-		if (_hovered)
-		{
+	override bool onPrimaryMouseUp(ref Mouse mouseProps) {
+		if (_hovered) {
 			raiseSignal(Signal.Selected);
 		}
 
@@ -117,15 +106,13 @@ class Button : Widget
 		return true;
 	}
 
-	override bool onMouseEnter()
-	{
+	override bool onMouseEnter() {
 		_brsh.setColor(Color.White);
 
 		return true;
 	}
 
-	override bool onMouseLeave()
-	{
+	override bool onMouseLeave() {
 		Color c;
 		c.setRGB(0xc8, 0xc8, 0xc8);
 
@@ -134,23 +121,19 @@ class Button : Widget
 		return true;
 	}
 
-	override bool onKeyDown(uint keyCode)
-	{
+	override bool onKeyDown(uint keyCode) {
 		return false;
 	}
 
-	void setText(String newTitle)
-	{
+	void text(String newTitle) {
 		_value = new String(newTitle);
 	}
 
-	void setText(string newTitle)
-	{
+	void text(string newTitle) {
 		_value = new String(newTitle);
 	}
 
-	String getText()
-	{
+	String text() {
 		return _value;
 	}
 

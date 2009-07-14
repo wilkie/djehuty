@@ -16,71 +16,59 @@ import core.definitions;
 import core.string;
 import core.graphics;
 
-template ControlPrintCSTRList()
-{
+template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height,value);
 	}
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
 	`;
 }
 
 // Description: This control provides a standard toggle field.  When grouped, these will act as a exclusive list of options, essentially a 'radio' or 'option' field.  Otherwise they are 'check' fields.
-class ToggleField : Widget
-{
-	enum Signal : uint
-	{
+class ToggleField : Widget {
+
+	enum Signal : uint {
 		Selected,
 		Unselected,
 	}
 
-	this(int x, int y, int width, int height, String value)
-	{
+	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height);
 
 		_value = new String(value);
 	}
 
-	this(int x, int y, int width, int height, string value)
-	{
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height);
 
 		_value = new String(value);
 	}
 
-	void unselect()
-	{
+	void unselect() {
 		_btnstate = 0;
 	}
 
-	void select()
-	{
+	void select() {
 		_btnstate = 1;
 	}
 
-	void setText(String newTitle)
-	{
+	void text(String newTitle) {
 		_value = new String(newTitle);
 	}
 
-	void setText(string newTitle)
-	{
+	void text(string newTitle) {
 		_value = new String(newTitle);
 	}
 
-	String getText()
-	{
+	String text() {
 		return _value;
 	}
 
 	// handle events
-	override void onAdd()
-	{
+	override void onAdd() {
 		_brsh = new Brush(Color.White);
 
 		_clroutline.setRGB(0x80, 0x80, 0x80);
@@ -101,8 +89,7 @@ class ToggleField : Widget
 		//FIRE_EVENT(id,EventCreated,0,0);
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 		//Draw Background of Button
 		Brush brush;
 		Pen pen;
@@ -114,10 +101,8 @@ class ToggleField : Widget
 		chkRect.right = (chkRect.left + _height) - 4;
 		chkRect.bottom = _b - 2;
 
-		if (_is_grouped)
-		{
-			if (chkRect.right > _r)
-			{
+		if (_is_grouped) {
+			if (chkRect.right > _r) {
 				chkRect.right = _r;
 				chkRect.top += (_height - _width) / 2;
 				chkRect.bottom = chkRect.top + _width;
@@ -138,40 +123,35 @@ class ToggleField : Widget
 
 			//Draw Check
 
-			if (_mouseholdstate == 1)
-			{
+			if (_mouseholdstate == 1) {
 				pen.setColor(_clrnormal);
 
 				brush.setColor(_clrbackground);
 
 				g.drawOval(chkRect.left + 3, chkRect.top + 3, chkRect.right - 3, chkRect.bottom-3);
 			}
-			else if (_btnstate == 1)
-			{
+			else if (_btnstate == 1) {
 				brush.setColor(_clrnormal);
 
 				pen.setColor(_clrnormal);
 
 				g.drawOval(chkRect.left + 3, chkRect.top + 3, chkRect.right - 3, chkRect.bottom - 3);
 
-				if (_hovered)
-				{
+				if (_hovered) {
 					pen.setColor(_clrhighlight);
 
 					g.drawOval(chkRect.left + 4, chkRect.top + 4, chkRect.right - 4, chkRect.bottom-4);
 				}
 
 			}
-			else if (_hovered)
-			{
+			else if (_hovered) {
 				pen.setColor(_clrhighlight);
 				brush.setColor(_clrbackground);
 
 				g.drawOval(chkRect.left + 3, chkRect.top + 3, chkRect.right - 3, chkRect.bottom-3);
 			}
 		}
-		else
-		{
+		else {
 			//Draw Background of Button
 
 			chkRect.left = _x + 2;
@@ -179,8 +159,7 @@ class ToggleField : Widget
 			chkRect.right = (chkRect.left + _height) - 4;
 			chkRect.bottom = _b - 2;
 
-			if (chkRect.right > _r)
-			{
+			if (chkRect.right > _r) {
 				chkRect.right = _r;
 				chkRect.top += (_height - _width) / 2;
 				chkRect.bottom = chkRect.top + _width;
@@ -201,30 +180,26 @@ class ToggleField : Widget
 
 			//Draw Check
 
-			if (_mouseholdstate == 1)
-			{
+			if (_mouseholdstate == 1) {
 				pen.setColor(_clrnormal);
 				brush.setColor(_clrbackground);
 
 				g.drawRect(chkRect.left + 3, chkRect.top + 3, chkRect.right - 3, chkRect.bottom-3);
 			}
-			else if (_btnstate == 1)
-			{
+			else if (_btnstate == 1) {
 				brush.setColor(_clrnormal);
 				pen.setColor(_clrnormal);
 
 				g.drawRect(chkRect.left + 3, chkRect.top + 3, chkRect.right - 3, chkRect.bottom - 3);
 
-				if (_hovered)
-				{
+				if (_hovered) {
 					pen.setColor(_clrhighlight);
 
 					g.drawRect(chkRect.left + 4, chkRect.top + 4, chkRect.right - 4, chkRect.bottom-4);
 				}
 
 			}
-			else if (_hovered)
-			{
+			else if (_hovered) {
 				pen.setColor(_clrhighlight);
 				brush.setColor(_clrbackground);
 
@@ -244,8 +219,7 @@ class ToggleField : Widget
 		g.drawClippedText(chkRect.right + 4, (_b + _y-_value_bounds.y)/2, ctrlrt, _value);
 	}
 
-	override bool onPrimaryMouseDown(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseDown(ref Mouse mouseProps) {
 		if (!_enabled) { return false; }
 
 		_mouseholdstate = 1;
@@ -254,18 +228,15 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool onPrimaryMouseUp(ref Mouse mouseProps)
-	{
+	override bool onPrimaryMouseUp(ref Mouse mouseProps) {
 		if (!_enabled) { return false; }
 
 		requestRelease();
 
 		_mouseholdstate = 0;
 
-		if (_hovered)
-		{
-			if (!(_is_grouped && _btnstate))
-			{
+		if (_hovered) {
+			if (!(_is_grouped && _btnstate)) {
 				_btnstate = !_btnstate;
 				raiseSignal(Signal.Selected);
 			}
@@ -274,8 +245,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool onMouseEnter()
-	{
+	override bool onMouseEnter() {
 		Graphics g = _view.lockDisplay();
 
 		_brsh.setColor(Color.White);
@@ -285,8 +255,7 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool onMouseLeave()
-	{
+	override bool onMouseLeave() {
 		Graphics g = _view.lockDisplay();
 
 		Color c;
@@ -299,15 +268,14 @@ class ToggleField : Widget
 		return true;
 	}
 
-	override bool onKeyDown(uint keyCode)
-	{
+	override bool onKeyDown(uint keyCode) {
 		return false;
 	}
 
 protected:
 	String _value;
 
-	bool _is_grouped = false;
+	package bool _is_grouped = false;
 
 private:
 
@@ -326,9 +294,4 @@ private:
 	int _mouseholdstate = 0;
 
 	Size _value_bounds;
-}
-
-void ToggleFieldSetGrouped(ref ToggleField ctrl, bool grouped)
-{
-  ctrl._is_grouped = grouped;
 }
