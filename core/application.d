@@ -90,12 +90,12 @@ class Application : Responder {
 
 	// Description: This event will be fired when the application has
 	//	finished loading.
-	void OnApplicationStart() {
+	void onApplicationStart() {
 	}
 
 	// Description: This event will be fired when the application is about
 	//	to close.
-	void OnApplicationEnd() {
+	void onApplicationEnd() {
 	}
 
 	// Description: Detects whether or not the application is a Zombie app;

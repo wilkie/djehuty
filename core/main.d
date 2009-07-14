@@ -39,7 +39,7 @@ void DjehutyStart() {
 	else
 	{
 		Djehuty.app.setArguments(Arguments.getInstance());
-		Djehuty.app.OnApplicationStart();
+		Djehuty.app.onApplicationStart();
 	}
 
 	// Start the application proper (from platform's point of view)
@@ -63,7 +63,7 @@ void DjehutyEnd(uint code = 0) {
 		Djehuty._threadRegisterSemaphore.up();
 	}
 
-	Djehuty.app.OnApplicationEnd();
+	Djehuty.app.onApplicationEnd();
 
 	// End the application proper (from the platform's point of view)
 	Scaffold.AppEnd(code);

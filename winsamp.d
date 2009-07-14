@@ -91,12 +91,12 @@ import core.application;
 class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
 
-	override void OnApplicationStart() {
+	override void onApplicationStart() {
 			 tuiwnd = new MyTWindow();
 			 push(tuiwnd);
 	}
 
-	override void OnApplicationEnd() {
+	override void onApplicationEnd() {
 		Console.setColor(fgColor.BrightWhite, bgColor.Black);
 		Console.clear();
 		Console.putln("Your app has been ended.");
