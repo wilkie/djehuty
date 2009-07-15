@@ -124,7 +124,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		Console.put(data.array);
 	}
 
-
 	// methods
 
 	// IList Methods:

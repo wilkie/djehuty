@@ -24,31 +24,26 @@ import core.directory;
 // Section: Core/Streams
 
 // Description: This class wraps common file operations within the context of a Stream.
-class File : Stream
-{
+class File : Stream {
 public:
 
-	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(String filename)
-	{
+	this(String filename) {
 		open(filename);
 	}
 
-	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(string filename)
-	{
+	this(string filename) {
 		open(filename);
 	}
 
 	// Description: Will create a closed File class.  You must open a file to use it as a stream.
-	this()
-	{
+	this() {
 	}
 
-	~this()
-	{
+	~this() {
 		close();
 	}
 
@@ -62,21 +57,19 @@ public:
 
 	// Core Functionality
 
-	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	// Returns: Will return false when the file cannot be opened.
 
 	// TODO: Exceptions for opening of a file.
-    bool open(String filename)
-    {
-        name = new String(filename);
+    bool open(String filename) {
+        _name = new String(filename);
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, name);
+        bool r = Scaffold.FileOpen(_pfvars, _name);
 
-        if (!r)
-        {
+        if (!r) {
             return false;
         }
 
@@ -87,21 +80,19 @@ public:
         return true;
     }
 
-	// Description: Will open the file located at the path at filename.  The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	// Returns: Will return false when the file cannot be opened.
 
 	// TODO: Exceptions for opening of a file.
-    bool open(string filename)
-    {
-        name = new String(filename);
+    bool open(string filename) {
+        _name = new String(filename);
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, name);
+        bool r = Scaffold.FileOpen(_pfvars, _name);
 
-        if (!r)
-        {
+        if (!r) {
             return false;
         }
 
@@ -113,21 +104,17 @@ public:
     }
 
 	// Description: Will close the file.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
-    void close()
-    {
-		if (_inited)
-		{
+    void close() {
+		if (_inited) {
 	        Scaffold.FileClose(_pfvars);
 	        _inited = false;
-	        name = null;
+	        _name = null;
 	    }
     }
 
     // read
-	override bool read(void* buffer, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	override bool read(void* buffer, uint len) {
+		if (_curpos + len > _length) {
 			return false;
 		}
 
@@ -138,10 +125,8 @@ public:
 		return true;
 	}
 
-	override bool read(AbstractStream stream, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	override bool read(AbstractStream stream, uint len) {
+		if (_curpos + len > _length) {
 			return false;
 		}
 
@@ -150,10 +135,8 @@ public:
 		return true;
 	}
 
-	override ulong readAny(void* buffer, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	override ulong readAny(void* buffer, uint len) {
+		if (_curpos + len > _length) {
 			len = cast(uint)(_length - _curpos);
 		}
 
@@ -164,10 +147,8 @@ public:
 		return len;
 	}
 
-	override ulong readAny(AbstractStream stream, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	override ulong readAny(AbstractStream stream, uint len) {
+		if (_curpos + len > _length) {
 			len = cast(uint)(_length - _curpos);
 		}
 
@@ -182,8 +163,7 @@ public:
 
     // Console.put
 
-	override bool write(ubyte* bytes, uint len)
-	{
+	override bool write(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
 		//if (_curpos + len > _length)
@@ -200,8 +180,7 @@ public:
 		return true;
 	}
 
-	override bool write(AbstractStream stream, uint len)
-	{
+	override bool write(AbstractStream stream, uint len) {
 		if (len <= 0) { return false;}
 
 		ubyte buffer[] = new ubyte[len];
@@ -224,8 +203,7 @@ public:
 
     // append
 
-	override bool append(ubyte* bytes, uint len)
-	{
+	override bool append(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
 		Scaffold.FileAppend(_pfvars, bytes, len);
@@ -234,8 +212,7 @@ public:
 		return true;
 	}
 
-	override bool append(AbstractStream stream, uint len)
-	{
+	override bool append(AbstractStream stream, uint len) {
 		if (len <= 0) { return false;}
 
 		ubyte buffer[] = new ubyte[len];
@@ -247,26 +224,22 @@ public:
 		return true;
 	}
 
-	override ulong getRemaining()
-	{
+	override ulong getRemaining() {
 		//Console.put("rem: ", _curpos, " ", _length, " ", _length - _curpos);
 		return _length - _curpos;
 	}
 
 	// rewind
 
-	override void rewind()
-	{
+	override void rewind() {
 		// set to start
 		_curpos = 0;
 
 		Scaffold.FileRewindAll(_pfvars);
 	}
 
-	override bool rewind(ulong amount)
-	{
-		if (_curpos - amount < 0)
-		{
+	override bool rewind(ulong amount) {
+		if (_curpos - amount < 0) {
 			return false;
 		}
 
@@ -276,10 +249,8 @@ public:
 		return true;
 	}
 
-	override ulong rewindAny(ulong amount)
-	{
-		if (_curpos - amount < 0)
-		{
+	override ulong rewindAny(ulong amount) {
+		if (_curpos - amount < 0) {
 			amount = _curpos;
 		}
 
@@ -291,17 +262,14 @@ public:
 
 	// skip
 
-	override void skip()
-	{
+	override void skip() {
 		_curpos = _length;
 
 		Scaffold.FileSkipAll(_pfvars);
 	}
 
-	override bool skip(ulong amount)
-	{
-		if (_curpos + amount > _length)
-		{
+	override bool skip(ulong amount) {
+		if (_curpos + amount > _length) {
 			return false;
 		}
 
@@ -310,10 +278,8 @@ public:
 		return true;
 	}
 
-	override ulong skipAny(ulong amount)
-	{
-		if (_curpos + amount > _length)
-		{
+	override ulong skipAny(ulong amount) {
+		if (_curpos + amount > _length) {
 			amount = _length - _curpos;
 		}
 
@@ -326,17 +292,15 @@ public:
 
 	// Description: Will return the String representing the filename currently open, or null for when there is no open file.
 	// Returns: The string representing the filename of this class.
-    String getFilename()
-    {
+    String name() {
 		if (_inited) {
-	        return new String(name);
+	        return new String(_name);
 	    }
 
 	    return null;
     }
 
-	override bool duplicate(ulong distanceBehind, uint amount)
-	{
+	override bool duplicate(ulong distanceBehind, uint amount) {
 		if (amount <= 0) { return false; }
 
 		if (_curpos - distanceBehind < 0) { return false; }
@@ -349,8 +313,7 @@ public:
 		return true;
 	}
 
-	override bool duplicateFromEnd(ulong distanceBehind, uint amount)
-	{
+	override bool duplicateFromEnd(ulong distanceBehind, uint amount) {
 		if (amount <= 0) { return false; }
 
 		if (_length - distanceBehind < 0) { return false; }
@@ -373,57 +336,47 @@ public:
 
 	// File logic
 
-	Directory getPath()
-	{
+	Directory path() {
 		if (_inited) {
-	        return path;
+	        return _path;
 	    }
 
 		return null;
 	}
 
-	void move(Directory destination)
-	{
-		if (Scaffold.FileMove(_pfvars, path.getPath() ~ "/" ~ name, destination.getPath() ~ "/" ~ name))
-		{
-			path = destination;
+	void move(Directory destination) {
+		if (Scaffold.FileMove(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
+			_path = destination;
 		}
 	}
 
-	void move(String destination)
-	{
-		if (Scaffold.FileMove(_pfvars, path.getPath() ~ "/" ~ name, destination ~ "/" ~ name))
-		{
-			path = new Directory(destination);
+	void move(String destination) {
+		if (Scaffold.FileMove(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
+			_path = new Directory(destination);
 		}
 	}
 
-	File copy(Directory destination)
-	{
+	File copy(Directory destination) {
 		File ret;
-		if (Scaffold.FileCopy(_pfvars, path.getPath() ~ "/" ~ name, destination.getPath() ~ "/" ~ name))
-		{
-			ret = new File(destination.getPath() ~ "/" ~ name);
+		if (Scaffold.FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
+			ret = new File(destination.path ~ "/" ~ _name);
 		}
 		return ret;
 	}
 
-	File copy(String destination)
-	{
+	File copy(String destination) {
 		File ret;
-		if (Scaffold.FileCopy(_pfvars, path.getPath() ~ "/" ~ name, destination ~ "/" ~ name))
-		{
-			ret = new File(destination ~ "/" ~ name);
+		if (Scaffold.FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
+			ret = new File(destination ~ "/" ~ _name);
 		}
 		return ret;
 	}
 
-	void destroy()
-	{
+	void destroy() {
 	}
-	
+
 	override char[] toString() {
-		return (path.getPath() ~ "/" ~ name).toString();
+		return (_path.path ~ "/" ~ _name).toString();
 	}
 
 protected:
@@ -431,8 +384,8 @@ protected:
     bool _inited = false;
     FilePlatformVars _pfvars;
 
-	Directory path;
-	String name;
+	Directory _path;
+	String _name;
 }
 
 // Section: Core/Streams
@@ -440,14 +393,14 @@ protected:
 // Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow writes.
 class FileReader : File
 {
-	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(String filename)
 	{
 		super(filename);
 	}
 
-	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(string filename)
 	{
@@ -466,14 +419,14 @@ class FileReader : File
 // Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow reads.
 class FileWriter : File
 {
-	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(String filename)
 	{
 		super(filename);
 	}
 
-	// Description: Will open the file located at the path at filename. The internal pointer will point to the beginning of the file.
+	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(string filename)
 	{

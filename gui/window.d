@@ -134,12 +134,12 @@ public:
 
 	// Widget Container Margins
 
-	int baseX()
+	int baseLeft()
 	{
 		return 0;
 	}
 
-	int baseY()
+	int baseTop()
 	{
 		return 0;
 	}

@@ -29,8 +29,8 @@ import core.literals;
 import console.main;
 
 // Description: This class implements and abstracts a control, which is a special container that can be drawn and added to a Window.  The control receives many events for different tasks, and allows reusable components within the static version of an application.
-class Widget : Responder
-{
+class Widget : Responder {
+
 	// Description: This constructor will create the widget at the location
 	//	indicated by x and y and the size indicated by width and height.
 	// x: The x coordinate for the widget.
@@ -291,8 +291,7 @@ class Widget : Responder
 		return _b;
 	}
 
-	void resize(uint width, uint height)
-	{
+	void resize(uint width, uint height) {
 		_width = width;
 		_height = height;
 
@@ -300,15 +299,12 @@ class Widget : Responder
 		_b = _y + height;
 	}
 
-	void move(int x, int y)
-	{
-		if (_container !is null)
-		{
+	void move(int x, int y) {
+		if (_container !is null) {
 			_x = x + _container.baseLeft;
 			_y = y + _container.baseTop;
 		}
-		else
-		{
+		else {
 			_x = x;
 			_y = y;
 		}
@@ -325,18 +321,14 @@ protected:
 	// - will post an event to this control
 	//void PostEvent(Int32 theEvent, Int32 p1, Int32 p2);
 
-	void requestCapture()
-	{
-		if (_window !is null)
-		{
+	void requestCapture() {
+		if (_window !is null) {
 //			WindowCaptureMouse(_window, this);
 		}
 	}
 
-	void requestRelease()
-	{
-		if (_window !is null)
-		{
+	void requestRelease() {
+		if (_window !is null) {
 //			WindowReleaseMouse(_window, this);
 		}
 	}
@@ -387,27 +379,22 @@ private:
 class Container : Widget, AbstractContainer
 {
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height)
-	{
+	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
 	}
 
-	override void onAdd()
-	{
+	override void onAdd() {
 	}
 
-	override void onDraw(ref Graphics g)
-	{
+	override void onDraw(ref Graphics g) {
 		g.clipSave();
 
 		g.clipRect(_x,_y,_r,_b);
 
 		Widget c = _firstControl;
 
-		if (c !is null)
-		{
-			do
-			{
+		if (c !is null) {
+			do {
 				c =	c._prevControl;
 
 				c.onDraw(g);
@@ -417,19 +404,16 @@ class Container : Widget, AbstractContainer
 		g.clipRestore();
 	}
 
-	override bool isContainer()
-	{
+	override bool isContainer() {
 		return true;
 	}
 
-	void addControl(Widget control)
-	{
+	void addControl(Widget control) {
 		// do not add a control that is already part of another window
 		if (control.parent !is null) { return; }
 
 		// add to the control linked list
-		if (_firstControl is null && _lastControl is null)
-		{
+		if (_firstControl is null && _lastControl is null) {
 			// first control
 
 			_firstControl = control;
@@ -438,8 +422,7 @@ class Container : Widget, AbstractContainer
 			control._nextControl = control;
 			control._prevControl = control;
 		}
-		else
-		{
+		else {
 			// next control
 			control._nextControl = _firstControl;
 			control._prevControl = _lastControl;
@@ -465,27 +448,21 @@ class Container : Widget, AbstractContainer
 		control.move(control.left, control.top);
 	}
 
-	void removeControl(Widget control)
-	{
-		if (control.isOfContainer(this))
-		{
-			if (_firstControl is null && _lastControl is null)
-			{
+	void removeControl(Widget control) {
+		if (control.isOfContainer(this)) {
+			if (_firstControl is null && _lastControl is null) {
 				// it is the last control
 				_firstControl = null;
 				_lastControl = null;
 			}
-			else
-			{
+			else {
 				// is it not the last control
 
-				if (_firstControl is control)
-				{
+				if (_firstControl is control) {
 					_firstControl = _firstControl._nextControl;
 				}
 
-				if (_lastControl is control)
-				{
+				if (_lastControl is control) {
 					_lastControl = _lastControl._prevControl;
 				}
 
@@ -496,23 +473,17 @@ class Container : Widget, AbstractContainer
 		}
 	}
 
-	Widget controlAtPoint(int x, int y)
-	{
+	Widget controlAtPoint(int x, int y) {
 		Widget ctrl = _firstControl;
 
-		if (ctrl !is null)
-		{
-			do
-			{
-				if (ctrl.containsPoint(x,y) && ctrl.visible)
-				{
-					if (ctrl.isContainer())
-					{
+		if (ctrl !is null) {
+			do {
+				if (ctrl.containsPoint(x,y) && ctrl.visible) {
+					if (ctrl.isContainer()) {
 						Widget innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
 						if (innerCtrl !is null) { return innerCtrl; }
 					}
-					else
-					{
+					else {
 						return ctrl;
 					}
 				}
@@ -523,16 +494,13 @@ class Container : Widget, AbstractContainer
 		return null;
 	}
 
-	override void move(int x, int y)
-	{
+	override void move(int x, int y) {
 		super.move(x,y);
 
 		Widget ctrl = _firstControl;
 
-		if (ctrl !is null)
-		{
-			do
-			{
+		if (ctrl !is null) {
+			do {
 				ctrl.move(ctrl.left, ctrl.top);
 
 				ctrl = ctrl._nextControl;
@@ -540,13 +508,11 @@ class Container : Widget, AbstractContainer
 		}
 	}
 
-	int baseLeft()
-	{
+	int baseLeft() {
 		return _x;
 	}
 
-	int baseTop()
-	{
+	int baseTop() {
 		return _y;
 	}
 

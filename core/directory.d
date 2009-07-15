@@ -47,13 +47,13 @@ class Directory
 			Directory cur = FileSystem.getCurrentDir();
 
 			// create an absolute path
-			_path = cur.getPath ~ "/" ~ path;
+			_path = cur.path ~ "/" ~ path;
 		}
 
-		// retrieve name
+		// retrieve _name
 		foreach_reverse(int i, chr; _path) {
 			if (chr == '/') {
-				name = new String(_path[i+1.._path.length]);
+				_name = new String(_path[i+1.._path.length]);
 				break;
 			}
 		}
@@ -65,23 +65,23 @@ class Directory
 		this(new String(path));
 	}
 
-	bool isDir(String name) {
-		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ name);
+	bool isDir(String _name) {
+		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ _name);
 	}
 
-	bool isDir(string name) {
-		return isDir(new String(name));
+	bool isDir(string _name) {
+		return isDir(new String(_name));
 	}
 
 	void move(String path) {
-		if (Scaffold.DirectoryMove(_path, path ~ "/" ~ name)) {
-			parent = new Directory(path);
-			_path = path ~ "/" ~ name;
+		if (Scaffold.DirectoryMove(_path, path ~ "/" ~ _name)) {
+			_parent = new Directory(path);
+			_path = path ~ "/" ~ _name;
 		}
 	}
 
 	void move(Directory to) {
-		move(to.getPath());
+		move(to.path());
 	}
 
 	void move(string path) {
@@ -90,13 +90,13 @@ class Directory
 
 	void copy(String path) {
 		if (Scaffold.DirectoryCopy(_path, path)) {
-			parent = null;
+			_parent = null;
 			_path = path;
 
-			// retrieve name
+			// retrieve _name
 			foreach_reverse(int i, chr; _path) {
 				if (chr == '/') {
-					name = new String(_path[i+1.._path.length]);
+					_name = new String(_path[i+1.._path.length]);
 					break;
 				}
 			}
@@ -108,33 +108,33 @@ class Directory
 	}
 
 	void copy(Directory to, String newName = null) {
-		if (newName is null) { newName = name; }
+		if (newName is null) { newName = _name; }
 
-		copy(to.getPath() ~ "/" ~ newName);
+		copy(to.path() ~ "/" ~ newName);
 	}
 
 	void copy(Directory to, string newName = null) {
 		String nname;
-		if (newName is null) { nname = name; } else { nname = new String(newName); }
+		if (newName is null) { nname = _name; } else { nname = new String(newName); }
 
-		copy(to.getPath() ~ "/" ~ nname);
+		copy(to.path() ~ "/" ~ nname);
 	}
 
-	// Description: This function will return a String representing the name of the directory.
-	// Returns: The name of the directory.
-	String getName() {
-		return new String(name);
+	// Description: This function will return a String representing the _name of the directory.
+	// Returns: The _name of the directory.
+	String name() {
+		return new String(_name);
 	}
 
 	// Description: This function will return a String representing the path of this directory.
 	// Returns: The path of the directory.
-	String getPath() {
+	String path() {
 		return new String(_path);
 	}
 
 	// Description: This function will rename the directory, if possible.
-	// newName: The new name for the directory.
-	void setName(String newName) {
+	// newName: The new _name for the directory.
+	void name(String newName) {
 		// Rename directory
 
 		// XXX: Do it.
@@ -142,28 +142,28 @@ class Directory
 			// XXX: Exception
 		}
 		else {
-			// Change the name of the directory (if possible)
+			// Change the _name of the directory (if possible)
 			Scaffold.DirectoryRename(_path, newName);
-			_path = getParent().getPath() ~ "/" ~ newName;
-			name = new String(newName);
+			_path = this.parent.path ~ "/" ~ newName;
+			_name = new String(newName);
 		}
 	}
 
 	// Description: This function will rename the directory, if possible.
-	// newName: The new name for the directory.
-	void setName(string newName) {
-		setName(new String(newName));
+	// newName: The new _name for the directory.
+	void name(string newName) {
+		name(new String(newName));
 	}
 
 	// Description: This function will open the file specified by the parameter if it exists within the directory.
-	// filename: The name of the file to open.
+	// filename: The _name of the file to open.
 	// Returns: Will return null if the file cannot be opened or found, will return a valid File otherwise.
 	File openFile(String filename) {
 		return null;
 	}
 
 	// Description: This function will create a new file in this directory.
-	// filename: The name of the file to create.
+	// filename: The _name of the file to create.
 	// Returns: Will return null if the file cannot be created, will return a valid File otherwise.
 	File saveFile(String filename) {
 		return null;
@@ -173,40 +173,40 @@ class Directory
 		return null;
 	}
 
-	// Description: This function will return the parent directory of the current path.
-	// Returns: The Directory object representing the parent directory and null if the current directory is the root.
-	Directory getParent() {
+	// Description: This function will return the _parent directory of the current path.
+	// Returns: The Directory object representing the _parent directory and null if the current directory is the root.
+	Directory parent() {
 		if (isRoot) { return null; }
 
-		if (parent is null) {
+		if (_parent is null) {
 			Console.putln(_path.array);
 
 			foreach_reverse(int i, chr; _path) {
 				if (chr == '/')	{
 					// truncate
 					Console.putln(_path[0..i]);
-					parent = new Directory(_path[0..i]);
-					return parent;
+					_parent = new Directory(_path[0..i]);
+					return _parent;
 				}
 			}
 		}
 
-		return parent;
+		return _parent;
 	}
 
 	// Description: This function will return the Directory representing the directory specified within the current path.
-	// directoryName: The name of the directory.
+	// directoryName: The _name of the directory.
 	// Returns: The child directory specified.
 	Directory traverse(String directoryName) {
 		Directory ret = new Directory(_path ~ "/" ~ directoryName);
 
-		ret.parent = this;
+		ret._parent = this;
 
 		return ret;
 	}
 
 	// Description: This function will return the Directory representing the directory specified within the current path.
-	// directoryName: The name of the directory.
+	// directoryName: The _name of the directory.
 	// Returns: The child directory specified.
 	Directory traverse(string directoryName) {
 		return new Directory(_path ~ "/" ~ directoryName);
@@ -240,14 +240,14 @@ class Directory
 	alias Object.opEquals opEquals;
 	
 	override char[] toString() {
-		return getPath().toString();
+		return this.path.toString();
 	}
 
 protected:
 
-	String name;
+	String _name;
 	String _path;
-	Directory parent;
+	Directory _parent;
 
 	bool _isRoot;
 

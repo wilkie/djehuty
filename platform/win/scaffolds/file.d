@@ -96,7 +96,7 @@ bool FileMove(ref String from, ref Directory to)
 
 	if (fn is null) { return false; }
 
-	String str = new String(to.getPath());
+	String str = new String(to.path);
 	str.append(fn);
 	str.appendChar('\0');
 

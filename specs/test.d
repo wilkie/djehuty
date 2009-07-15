@@ -1,3 +1,4 @@
+
 /*
  * test.d
  *
@@ -13,7 +14,7 @@ import core.string;
 
 class StringTester
 {
-
+	
 		it creation_should_handle_literals()
 	{before_creation();
 try
@@ -80,7 +81,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_creation() { }
 
-
+	
 		it trim_should_trim_off_whitespace()
 	{before_trim();
 try
@@ -99,7 +100,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_trim() { }
 
-
+	
 		it length_should_account_for_combining_marks()
 	{before_length();
 try
@@ -149,7 +150,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_length() { }
 
-
+	
 		it append_should_concatenate_a_string_object()
 	{before_append();
 try
@@ -247,7 +248,7 @@ return it.doesnt;
 	{before_append();
 try
 {
-
+			
 
 			String str = new String("hello ");
 			String str2;
@@ -260,7 +261,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_append() { }
 
-
+	
 		it toLowercase_should_work_as_expected()
 	{before_toLowercase();
 try
@@ -298,7 +299,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_toLowercase() { }
 
-
+	
 		it toUppercase_should_work_as_expected()
 	{before_toUppercase();
 try
@@ -452,349 +453,13 @@ this() { before(); }
 
 
 	}
-}import core.unicode;
-
-import core.string;
-
-class UnicodeTester
-{
-	dstring utf32 = "hello\u015Bworld";
-	wstring utf16 = "hello\u015Bworld";
-	string utf8 = "hello\u015Bworld";
-
-	dstring utf32marks = "hello\u0364world";
-	wstring utf16marks = "hello\u0364world";
-	string utf8marks = "hello\u0364world";
-
-	dstring empty32 = "";
-	wstring empty16 = "";
-	string empty8 = "";
-
-
-		it utflen_should_be_the_same_for_utf8_as_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf8);
-			uint compare = Unicode.utflen(utf32);
-			if(!(length == compare))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_be_the_same_for_utf16_as_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf16);
-			uint compare = Unicode.utflen(utf32);
-			if(!(length == compare))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf8()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf8marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf16()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf16marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf32marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf8()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty32);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf16()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty16);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty8);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}	done before_utflen() { }
-
-
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf32marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf16()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf16marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf8()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf8marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf32()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf32marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf16()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf16marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf8()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf8marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
-}
-	return it.does;
-	}	done before_toUtfChars() { }
-done before() { }
-
-this() { before(); }
-
-
-	static void test()
-	{
-	UnicodeTester tester = new UnicodeTester();
-
-	Test test = new Test("Unicode");
-
-	it result;
-
-	test.logSubset("utflen");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
-		test.logResult(result, "utflen should be the same for utf8 as utf32", "11");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
-		test.logResult(result, "utflen should be the same for utf16 as utf32", "17");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "utflen should account for combining marks for utf8", "23");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "utflen should account for combining marks for utf16", "29");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "utflen should account for combining marks for utf32", "39");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf8();
-		test.logResult(result, "utflen should account for empty strings for utf8", "49");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf16();
-		test.logResult(result, "utflen should account for empty strings for utf16", "55");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf32();
-		test.logResult(result, "utflen should account for empty strings for utf32", "61");
-
-	test.logSubset("toUtfChars");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "70");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "80");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "88");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "toUtfChars should account for combining marks for utf32", "96");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "toUtfChars should account for combining marks for utf16", "105");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "toUtfChars should account for combining marks for utf8", "113");
-
-
-	}
 }import core.string;
 
 import core.regex;
 
 class RegexTester
 {
-
+	
 		it eval_should_handle_kleene_star()
 	{before_eval();
 try
@@ -1349,17 +1014,353 @@ this() { before(); }
 	tester = new RegexTester();
 
 	result = tester.eval_should_handle_forwardreferences();
-		test.logResult(result, "eval should handle forwardreferences", "24");
+		test.logResult(result, "eval should handle forwardreferences", "12");
 
 	tester = new RegexTester();
 
 	result = tester.eval_should_handle_comments();
-		test.logResult(result, "eval should handle comments", "31");
+		test.logResult(result, "eval should handle comments", "18");
 
 	tester = new RegexTester();
 
 	result = tester.eval_should_handle_complicated_constructions();
-		test.logResult(result, "eval should handle complicated constructions", "38");
+		test.logResult(result, "eval should handle complicated constructions", "24");
+
+
+	}
+}import core.unicode;
+
+import core.string;
+
+class UnicodeTester
+{
+	dstring utf32 = "hello\u015Bworld";
+	wstring utf16 = "hello\u015Bworld";
+	string utf8 = "hello\u015Bworld";
+
+	dstring utf32marks = "hello\u0364world";
+	wstring utf16marks = "hello\u0364world";
+	string utf8marks = "hello\u0364world";
+
+	dstring empty32 = "";
+	wstring empty16 = "";
+	string empty8 = "";
+
+	
+		it utflen_should_be_the_same_for_utf8_as_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf8);
+			uint compare = Unicode.utflen(utf32);
+			if(!(length == compare))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_be_the_same_for_utf16_as_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf16);
+			uint compare = Unicode.utflen(utf32);
+			if(!(length == compare))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf8()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf8marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf16()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf16marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf32marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf8()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty32);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf16()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty16);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty8);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_utflen() { }
+
+	
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf32marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf16()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf16marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf8()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf8marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf32()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf32marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf16()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf16marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf8()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf8marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_toUtfChars() { }
+done before() { }
+
+this() { before(); }
+
+
+	static void test()
+	{
+	UnicodeTester tester = new UnicodeTester();
+
+	Test test = new Test("Unicode");
+
+	it result;
+
+	test.logSubset("utflen");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
+		test.logResult(result, "utflen should be the same for utf8 as utf32", "11");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
+		test.logResult(result, "utflen should be the same for utf16 as utf32", "17");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf8();
+		test.logResult(result, "utflen should account for combining marks for utf8", "23");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf16();
+		test.logResult(result, "utflen should account for combining marks for utf16", "29");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf32();
+		test.logResult(result, "utflen should account for combining marks for utf32", "39");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf8();
+		test.logResult(result, "utflen should account for empty strings for utf8", "49");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf16();
+		test.logResult(result, "utflen should account for empty strings for utf16", "55");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf32();
+		test.logResult(result, "utflen should account for empty strings for utf32", "61");
+
+	test.logSubset("toUtfChars");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "70");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "80");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "88");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
+		test.logResult(result, "toUtfChars should account for combining marks for utf32", "96");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
+		test.logResult(result, "toUtfChars should account for combining marks for utf16", "105");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
+		test.logResult(result, "toUtfChars should account for combining marks for utf8", "113");
 
 
 	}
@@ -1367,7 +1368,7 @@ this() { before(); }
 
 class DigestTester
 {
-
+	
 		it creation_should_allow_for_64_bits()
 	{before_creation();
 try
@@ -1441,7 +1442,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_creation() { }
 
-
+	
 		it comparison_should_work_for_equals_overload()
 	{before_comparison();
 try
@@ -1539,7 +1540,7 @@ this() { before(); }
 
 class MD5Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1576,7 +1577,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	{before_hash();
 try
 {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
 			String s = HashMD5.hash("d").getString();
 			if(!(s == "8277e0910d750195b448797616e091ad"))
 	{
@@ -1593,7 +1594,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	{before_hash();
 try
 {
-			// Testing a classic MD5
+			// Testing a classic MD5 
 			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
 			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
 
@@ -1657,7 +1658,7 @@ this() { before(); }
 
 class SHA1Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1742,7 +1743,7 @@ this() { before(); }
 
 class SHA224Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1827,7 +1828,7 @@ this() { before(); }
 
 class SHA256Tester
 {
-
+	
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1916,14 +1917,14 @@ class Tests
 		StringTester.test();
 	}
 
-	static void testUnicode()
-	{
-		UnicodeTester.test();
-	}
-
 	static void testRegex()
 	{
 		RegexTester.test();
+	}
+
+	static void testUnicode()
+	{
+		UnicodeTester.test();
 	}
 
 	static void testDigest()
@@ -1954,8 +1955,8 @@ class Tests
 	static void testAll()
 	{
 		testString();
-		testUnicode();
 		testRegex();
+		testUnicode();
 		testDigest();
 		testMD5();
 		testSHA1();

@@ -28,7 +28,7 @@ class Dspec : Application {
 		super("djehuty-dspec");
 	}
 
-	void OnApplicationStart() {
+	override void onApplicationStart() {
 		String[] argList = arguments.getList();
 
 		foreach(str; argList)
