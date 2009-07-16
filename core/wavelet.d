@@ -8,7 +8,7 @@ import core.time;
 import core.audio;
 import core.sound;
 
-import console.main;
+import io.console;
 
 enum Interpolate
 {
@@ -26,10 +26,6 @@ class Wavelet : Stream {
 	this() {
 		super(1);
 	}
-
-
-
-
 
 	// -- Methods -- //
 

@@ -15,7 +15,7 @@ import core.stream;
 import synch.thread;
 import core.unicode;
 
-import console.main;
+import io.console;
 
 struct IRC
 {

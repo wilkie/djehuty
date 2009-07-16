@@ -5,8 +5,6 @@ import synch.semaphore;
 
 import core.event;
 
-import console.main;
-
 // Section: Core/Synchronization
 
 // Description: This class offers an abstraction to a periodic timer.  This is implemented currently as a yielding thread.

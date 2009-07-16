@@ -9,7 +9,7 @@ import core.definitions;
 
 import synch.semaphore;
 
-import console.main;
+import io.console;
 
 import tui.widget;
 

@@ -13,14 +13,7 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
 
-import core.view;
-import core.graphics;
-import core.string;
-import core.file;
 import core.color;
-
-import core.main;
-
 import core.definitions;
 
 void ColorGetSystemColor(ref Color clr, SystemColor sysColorIndex)

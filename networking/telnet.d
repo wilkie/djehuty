@@ -14,7 +14,7 @@ import core.string;
 import core.socket;
 import core.unicode;
 
-import console.main;
+import io.console;
 
 import synch.thread;
 

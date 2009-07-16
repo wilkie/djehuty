@@ -2,7 +2,7 @@ module core.time;
 
 import core.string;
 
-import console.main;
+import io.console;
 
 // Section: Types
 
@@ -13,32 +13,27 @@ struct Time {
 	long micros;
 
 	// Description: Will set the time value for all fields with the given milliseconds.
-	void fromMilliseconds(long ms)
-	{
+	void fromMilliseconds(long ms) {
 		micros = ms * 1000;
 	}
 
 	// Description: Will set the time value for all fields with the given milliseconds.
-	void fromMicroseconds(long ms)
-	{
+	void fromMicroseconds(long ms) {
 		micros = ms;
 	}
 
 	// comparator functions
-	int opCmp(Time o)
-	{
+	int opCmp(Time o) {
 		return cast(int)(micros - o.micros);
 	}
 
-	int opEquals(Time o)
-	{
+	int opEquals(Time o) {
 		return cast(int)(o.micros == micros);
 	}
 
 	// string functions
 
-	String toString()
-	{
+	String toString() {
 		ulong h,ms,s,m;
 		long tmp = micros;
 
@@ -88,16 +83,14 @@ struct Time {
 	}
 
 	// mathematical functions
-	Time opAdd(Time o)
-	{
+	Time opAdd(Time o) {
 		Time ret;
 		ret.micros = micros + o.micros;
 
 		return ret;
 	}
 
-	Time opSub(Time o)
-	{
+	Time opSub(Time o) {
 		Time ret;
 
 		ret.micros = micros - o.micros;
@@ -105,13 +98,11 @@ struct Time {
 		return ret;
 	}
 
-	void opAddAssign(Time o)
-	{
+	void opAddAssign(Time o) {
 		micros += o.micros;
 	}
 
-	void opSubAssign(Time o)
-	{
+	void opSubAssign(Time o) {
 		micros -= o.micros;
 	}
 }

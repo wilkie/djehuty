@@ -17,7 +17,7 @@ import synch.semaphore;
 import core.stream;
 import core.unicode;
 
-import console.main;
+import io.console;
 
 class HTTPHeader
 {

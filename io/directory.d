@@ -8,18 +8,18 @@
  *
  */
 
-module core.directory;
+module io.directory;
 
 import core.string;
-import core.file;
 import core.filesystem;
+
+import io.file;
+import io.console;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
-
-import console.main;
 
 // Section: Core
 

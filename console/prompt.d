@@ -2,7 +2,8 @@ module console.prompt;
 
 import core.string;
 import core.literals;
-import console.main;
+
+import io.console;
 
 import core.definitions;
 

@@ -2,7 +2,7 @@ module core.menu;
 
 import core.string;
 
-import console.main;
+import io.console;
 
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));
@@ -12,52 +12,43 @@ mixin(PlatformScaffoldImport!());
 // Section: Core/Resources
 
 // Description: This class provides an abstract to a dropdown menu.  The Window class uses this to provide a menubar for a window.
-class Menu
-{
+class Menu {
 
 	// -- constructors -- //
 
-	this(string text, Menu[] submenus = null)
-	{
+	this(string text, Menu[] submenus = null) {
 		_value = new String(text);
 
-		if (submenus is null || submenus.length == 0)
-		{
+		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
 		}
-		else
-		{
+		else {
 			_subitems = new Menu[submenus.length];
 			_subitems[0..$] = submenus[0..$];
 		}
 
 		Scaffold.MenuCreate(this, _pfvars);
 
-		foreach(mnu ; _subitems)
-		{
+		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
 			Scaffold.MenuAppend(this, mnu, _pfvars, mnu._pfvars);
 		}
 	}
 
-	this(String text, Menu[] submenus = null)
-	{
+	this(String text, Menu[] submenus = null) {
 		_value = new String(text);
 
-		if (submenus is null || submenus.length == 0)
-		{
+		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
 		}
-		else
-		{
+		else {
 			_subitems = new Menu[submenus.length];
 			_subitems[0..$] = submenus[0..$];
 		}
 
 		Scaffold.MenuCreate(this, _pfvars);
 
-		foreach(mnu ; _subitems)
-		{
+		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
 			Scaffold.MenuAppend(this, mnu, _pfvars, mnu._pfvars);
 		}
@@ -65,8 +56,7 @@ class Menu
 
 	// -- destructor -- //
 
-	~this()
-	{
+	~this() {
 		// remove all descendants
 		_subitems = null;
 
@@ -76,34 +66,29 @@ class Menu
 
 	// -- Methods -- //
 
-	void SetText(String newValue)
-	{
+	void text(String newValue) {
 		_value = new String(newValue);
 
 		_updateItem();
 	}
 
-	void SetText(string newValue)
-	{
+	void text(string newValue) {
 		_value = new String(newValue);
 
 		_updateItem();
 	}
 
-	String getText()
-	{
+	String text() {
 		return _value;
 	}
 
-	uint GetSubMenuCount()
-	{
+	uint length() {
 		if (_subitems is null) { return 0; }
 
 		return _subitems.length;
 	}
 
-	void AppendMenu(Menu inMenu)
-	{
+	void append(Menu inMenu) {
 		if (inMenu._checkForRecursive(this)) { return; }
 
 		_subitems ~= inMenu;
@@ -129,12 +114,9 @@ protected:
 
 	MenuPlatformVars _pfvars;
 
-	void _addParent(ref Menu parent)
-	{
-		foreach(ent; _parents)
-		{
-			if (ent is parent)
-			{
+	void _addParent(ref Menu parent) {
+		foreach(ent; _parents) {
+			if (ent is parent) {
 				return;
 			}
 		}
@@ -142,13 +124,10 @@ protected:
 		_parents ~= parent;
 	}
 
-	void _updateChild(ref Menu child)
-	{
+	void _updateChild(ref Menu child) {
 		uint pos = 0;
-		foreach(sitm; _subitems)
-		{
-			if (sitm is child)
-			{
+		foreach(sitm; _subitems) {
+			if (sitm is child) {
 				Scaffold.MenuUpdate(pos, this, child, _pfvars, child._pfvars);
 			}
 			pos++;
@@ -156,18 +135,13 @@ protected:
 	}
 
 	// check to ensure that we will not create a recursive menu structure
-	bool _checkForRecursive(ref Menu inMenu)
-	{
-		foreach(sitm; _subitems)
-		{
-			if (sitm is inMenu)
-			{
+	bool _checkForRecursive(ref Menu inMenu) {
+		foreach(sitm; _subitems) {
+			if (sitm is inMenu) {
 				return true;
 			}
-			else
-			{
-				if (sitm._checkForRecursive(inMenu))
-				{
+			else {
+				if (sitm._checkForRecursive(inMenu)) {
 					return true;
 				}
 			}
@@ -175,72 +149,15 @@ protected:
 		return false;
 	}
 
-	void _updateItem()
-	{
+	void _updateItem() {
 		// for each parent, update their lists as well
 
-		foreach(ent; _parents)
-		{
+		foreach(ent; _parents) {
 			ent._updateChild(this);
 		}
 	}
 }
 
-MenuPlatformVars MenuGetPlatformVars(ref Menu mnu)
-{
+MenuPlatformVars MenuGetPlatformVars(ref Menu mnu) {
 	return mnu._pfvars;
 }
-
-//documentation interests:
-
-//DJEHUTYDOC
-
-//
-//CLASS:Menu
-//EXTENDS:Object
-//DESC:This base provides an abstraction for a menu.  It can either be a standalone menu item or a submenu containing many menu items within a tree.  As a restriction, you cannot have a recursive menu.
-
-//CONSTRUCTORS
-
-//NAME:(string text, Menu[] submenus = null)
-//DESC:Creates the menu with the initial caption 'text' with the initial subitems given as an array of Menu objects.  If none are specified, or null is passed, then the menu initially does not have subitems.
-//PARAM:text
-//DESC:The initial caption.
-//PARAM:submenus
-//DESC:An array of previously created Menu objects which serve as subitems for the menu.  Pass null for having no initial subitems.
-
-//NAME:(String text, Menu[] submenus = null)
-//DESC:Creates the menu with the initial caption 'text' with the initial subitems given as an array of Menu objects.  If none are specified, or null is passed, then the menu initially does not have subitems.
-//PARAM:text
-//DESC:The initial caption.
-//PARAM:submenus
-//DESC:An array of previously created Menu objects which serve as subitems for the menu.  Pass null for having no initial subitems.
-
-//METHODS
-
-//NAME:SetText(String newValue)
-//DESC:Sets the text for the menu item.
-//PARAM:newValue
-//DESC:The text for the menu item.
-
-//NAME:SetText(string newValue)
-//DESC:Sets the text for the menu item.
-//PARAM:newValue
-//DESC:The text for the menu item.
-
-//NAME:getText()
-//DESC:Sets the text for the menu item.
-//RETURNS:String
-//DESC:The current label for the menu item.
-
-//NAME:AppendMenu(Menu inMenu)
-//DESC:Appends the menu given by inMenu to the end of the menu's subitem list.  It cannot be in such a way as to produce a recursive list.  That is you cannot add the menu's parent as a submenu.
-//PARAM:inMenu
-//DESC:The menu to append.
-
-//NAME:GetSubMenuCount()
-//DESC:Returns the number of subitems directly within this menu.  This does not count subitems of subitems.
-//RETURNS:uint
-//DESC:The number of subitems.
-
-//DJEHUTYDOCEND

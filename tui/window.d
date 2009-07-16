@@ -6,7 +6,7 @@ import tui.widget;
 import core.event;
 import core.definitions;
 
-import console.main;
+import io.console;
 
 // Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
 class TuiWindow : Responder

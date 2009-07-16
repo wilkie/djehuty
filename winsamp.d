@@ -22,7 +22,7 @@ import networking.irc;
 
 import platform.win.controls.osbutton;
 
-import console.main;
+import io.console;
 
 import hashes.md5;
 

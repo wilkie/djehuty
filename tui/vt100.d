@@ -1,6 +1,6 @@
 module tui.vt100;
 
-import console.main;
+import io.console;
 
 import tui.buffer;
 

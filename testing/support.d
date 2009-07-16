@@ -1,21 +1,17 @@
 module testing.support;
 
-import console.main;
+import io.console;
 
-void should(bool expr)
-{
+void should(bool expr) {
 }
 
-void shouldNot(bool expr)
-{
+void shouldNot(bool expr) {
 }
 
-void shouldThrow()
-{
+void shouldThrow() {
 }
 
-void shouldThrow(char[] exceptionMessage)
-{
+void shouldThrow(char[] exceptionMessage) {
 }
 
 alias void describe;

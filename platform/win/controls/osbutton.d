@@ -15,7 +15,7 @@ import core.definitions;
 import gui.widget;
 import gui.window;
 
-import console.main;
+import io.console;
 
 import core.graphics;
 

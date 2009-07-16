@@ -23,7 +23,7 @@ import analyzing.debugger;
 // Access to the threads array
 import core.main;
 
-import console.main;
+import io.console;
 
 // Section: Core/Synchronization
 

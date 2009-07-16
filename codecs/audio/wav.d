@@ -22,7 +22,7 @@ import core.audio;
 import core.time;
 import core.string;
 
-import console.main;
+import io.console;
 
 // Section: Codecs/Audio
 

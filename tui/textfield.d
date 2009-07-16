@@ -14,7 +14,7 @@ import core.main;
 import core.definitions;
 import core.unicode;
 
-import console.main;
+import io.console;
 
 import tui.widget;
 

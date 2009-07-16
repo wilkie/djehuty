@@ -12,16 +12,16 @@ module core.image;
 import core.stream;
 import core.string;
 import core.view;
-import core.file;
 import core.stream;
+
+import io.file;
+import io.console;
 
 import synch.semaphore;
 
 // import the codec information
 import codecs.image.codec;
 import codecs.image.all;
-
-import console.main;
 
 // Section: Core/Resources
 

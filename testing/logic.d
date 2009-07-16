@@ -2,30 +2,24 @@ module testing.logic;
 
 public import testing.support : describe, done;
 
-import console.main;
+import io.console;
 
-enum it
-{
+enum it {
 	does,
 	doesnt
 }
 
-class Test
-{
-	this(char[] testClass)
-	{
+class Test {
+	this(char[] testClass) {
 		currentTest = testClass;
 	}
 
-	void logSubset(char[] subsetName)
-	{
+	void logSubset(char[] subsetName) {
 		currentRegion = subsetName;
 	}
 
-	void logResult(it result, char[] msg, char[] lineNumber)
-	{
-		if (result == it.does)
-		{
+	void logResult(it result, char[] msg, char[] lineNumber) {
+		if (result == it.does) {
 			// success
 			Console.setColor(fgColor.BrightGreen);
 			Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
@@ -33,8 +27,7 @@ class Test
 
 			testsOk++;
 		}
-		else
-		{
+		else {
 			// fail
 			Console.setColor(fgColor.BrightRed);
 			Console.putln("FAILED : (", lineNumber, ") : ", currentTest, " ", msg);
@@ -44,19 +37,16 @@ class Test
 		}
 	}
 
-	static void done()
-	{
+	static void done() {
 		Console.putln("");
 		Console.putln("Testing Completed");
 		Console.putln("");
-		if (testsFailcopter > 0)
-		{
+		if (testsFailcopter > 0) {
 			Console.setColor(fgColor.BrightRed);
 			Console.putln(testsFailcopter, " tests FAILED");
 			Console.setColor(fgColor.White);
 		}
-		else
-		{
+		else {
 			Console.setColor(fgColor.BrightGreen);
 			Console.putln("All ", testsOk, " tests SUCCEEDED");
 			Console.setColor(fgColor.White);

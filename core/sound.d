@@ -11,7 +11,6 @@
 module core.sound;
 
 import core.time;
-import core.file;
 import core.string;
 import core.audio;
 import core.wavelet;
@@ -21,10 +20,11 @@ import core.stream;
 import synch.thread;
 import synch.timer;
 
+import io.file;
+import io.console;
+
 import codecs.audio.codec;
 import codecs.audio.all;
-
-import console.main;
 
 // Section: Enums
 

@@ -20,7 +20,6 @@ import core.view;
 import core.graphics;
 import core.color;
 import core.string;
-import core.file;
 import core.main;
 import core.definitions;
 

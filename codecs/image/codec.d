@@ -6,8 +6,6 @@ import core.stream;
 
 import codecs.codec;
 
-import console.main;
-
 struct ImageFrameDescription {
 	uint time;	//time till the display of the next image
 	uint xoffset;	//the x offset of the image within the main image

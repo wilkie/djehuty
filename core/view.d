@@ -6,8 +6,6 @@ import synch.semaphore;
 
 import gui.window;
 
-import console.main;
-
 import graphics.brush;
 import graphics.pen;
 import graphics.font;

@@ -9,7 +9,7 @@
 
 module analyzing.debugger;
 
-import console.main;
+import io.console;
 
 import gui.window;
 

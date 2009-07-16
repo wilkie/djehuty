@@ -13,7 +13,7 @@ module core.regex;
 import core.string;
 import synch.thread;
 
-import console.main;
+import io.console;
 
 import utils.stack;
 

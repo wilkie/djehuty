@@ -15,10 +15,10 @@ import core.arguments;
 import core.filesystem;
 import core.application;
 
+import io.console;
+
 import synch.semaphore;
 import synch.thread;
-
-import console.main;
 
 void DjehutyStart() {
 	// Can only start the framework once

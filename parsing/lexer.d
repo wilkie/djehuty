@@ -18,7 +18,7 @@ import core.event;
 
 import utils.arraylist;
 
-import console.main;
+import io.console;
 
 // Description: This class represents a token that has been run through a lexical analyzer, specifically a Lexer.
 class Token

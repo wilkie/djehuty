@@ -22,6 +22,8 @@ import core.menu;
 import core.main;
 import core.definitions;
 
+import io.console;
+
 import gui.window;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
@@ -37,9 +39,9 @@ void MenuDestroy(ref Menu mnu, ref MenuPlatformVars menuVars)
 
 void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toAppendVars)
 {
-	String s = new String(toAppend.getText());
+	String s = new String(toAppend.text);
 	s.appendChar('\0');
-	if (toAppend.GetSubMenuCount() > 0)
+	if (toAppend.length > 0)
 	{
 		AppendMenuW(mnuVars.hMenu,MF_POPUP,cast(uint*)toAppendVars.hMenu,s.ptr);
 	}
@@ -51,9 +53,9 @@ void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, r
 
 void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toUpdateVars)
 {
-	String s = new String(toUpdate.getText());
+	String s = new String(toUpdate.text);
 	s.appendChar('\0');
-	if (toUpdate.GetSubMenuCount() > 0)
+	if (toUpdate.length > 0)
 	{
 		ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_POPUP,cast(uint*)toUpdateVars.hMenu,s.ptr);
 	}

@@ -19,7 +19,7 @@ import core.string;
 import core.unicode;
 
 // print
-import console.main;
+import io.console;
 
 // A Helper class
 class LuaScript {

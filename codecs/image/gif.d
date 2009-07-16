@@ -18,7 +18,7 @@ import codecs.image.codec;
 import codecs.codec;
 
 // For debugging
-import console.main;
+import io.console;
 
 // The structures define structures found in the standard and utilized
 // when reading the file or stream.

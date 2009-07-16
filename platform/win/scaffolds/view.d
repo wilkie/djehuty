@@ -19,7 +19,6 @@ import gui.window;
 import core.view;
 import core.graphics;
 import core.string;
-import core.file;
 import core.main;
 import core.definitions;
 

@@ -22,7 +22,7 @@ import core.menu;
 import core.string;
 import core.unicode;
 
-import console.main;
+import io.console;
 
 import gui.window;
 import graphics.font;
@@ -1895,7 +1895,6 @@ void initAll()
 }
 
 import core.arguments;
-import console.main;
 
 void parseCommandLine()
 {

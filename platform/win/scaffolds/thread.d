@@ -12,7 +12,6 @@ module platform.win.scaffolds.thread;
 
 import core.view;
 import core.string;
-import core.file;
 import core.graphics;
 import core.color;
 import core.main;

@@ -17,12 +17,11 @@ import core.stream;
 import core.view;
 import core.graphics;
 import core.string;
-import core.file;
 import core.main;
 import core.definitions;
-import core.directory;
 
-import console.main;
+import io.directory;
+import io.file;
 
 // OPERATIONS //
 

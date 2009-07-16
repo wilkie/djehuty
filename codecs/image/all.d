@@ -8,8 +8,6 @@ import core.stream;
 import codecs.codec;
 import codecs.image.codec;
 
-import console.main;
-
 public import codecs.image.png;
 public import codecs.image.bmp;
 public import codecs.image.gif;

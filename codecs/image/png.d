@@ -9,7 +9,7 @@ import codecs.image.codec;
 import codecs.codec;
 import codecs.binary.zlib;
 
-import console.main;
+import io.console;
 
 // Section: Codecs/Image
 

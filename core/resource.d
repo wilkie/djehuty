@@ -11,14 +11,14 @@
 module core.resource;
 
 import core.string;
-import core.file;
 import core.image;
 import core.endian;
 import core.menu;
 import core.stream;
 import core.unicode;
 
-import console.main;
+import io.file;
+import io.console;
 
 static const bool flagCheckForMenuRecursion = true;
 

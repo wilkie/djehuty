@@ -17,7 +17,6 @@ import platform.win.main;
 import core.view;
 import core.graphics;
 import core.string;
-import core.file;
 import core.stream;
 import core.time;
 import core.audio;
@@ -27,7 +26,7 @@ import core.definitions;
 import synch.thread;
 import synch.semaphore;
 
-import console.main;
+import io.console;
 
 // Worker Thread
 extern(Windows)

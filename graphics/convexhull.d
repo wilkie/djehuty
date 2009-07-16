@@ -14,7 +14,7 @@ import graphics.region;
 
 import core.definitions;
 
-import console.main;
+import io.console;
 
 // Description: This class represents a region that is convex.
 class ConvexHull : Region {

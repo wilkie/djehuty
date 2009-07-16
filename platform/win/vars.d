@@ -24,8 +24,6 @@ import synch.semaphore;
 
 import gui.window;
 
-import console.main;
-
 import opengl.window;
 import opengl.gl;
 

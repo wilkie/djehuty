@@ -17,11 +17,10 @@ import platform.win.main;
 import core.view;
 import core.graphics;
 import core.string;
-import core.file;
 import core.main;
 import core.definitions;
 
-import console.main;
+import io.console;
 
 // SOCKET
 

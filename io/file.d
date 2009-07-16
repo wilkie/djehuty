@@ -7,7 +7,7 @@
  *
  */
 
-module core.file;
+module io.file;
 
 import core.stream;
 import core.string;
@@ -17,7 +17,7 @@ mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
-import core.directory;
+import io.directory;
 
 // Section: Core/Streams
 

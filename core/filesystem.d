@@ -10,8 +10,8 @@
 
 module core.filesystem;
 
-import core.directory;
-import core.file;
+import io.directory;
+import io.file;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));

@@ -14,11 +14,11 @@ import platform.win.vars;
 import platform.win.common;
 
 import core.string;
-import core.file;
 import core.main;
 import core.unicode;
 
-import console.main;
+import io.console;
+import io.file;
 
 bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref String path)
 {

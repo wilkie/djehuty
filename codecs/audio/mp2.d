@@ -18,7 +18,7 @@ import core.audio;
 import core.time;
 import core.string;
 
-import console.main;
+import io.console;
 
 // initialize the array to zero
 typedef double zerodouble = 0.0;

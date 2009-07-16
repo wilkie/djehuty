@@ -2,9 +2,7 @@ module parsing.cfg;
 
 import core.string;
 
-import console.main;
-
-
+import io.console;
 
 class GrammarPhrase
 {
