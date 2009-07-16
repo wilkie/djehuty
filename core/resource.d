@@ -77,7 +77,7 @@ class Resource {
 
 	// Description: Will set the current language to the one given by the parameter if it exists within the file.
 	// langID: The standard language ID for the language you wish to use.
-	void setLanguage(uint langID) {
+	void language(uint langID) {
 		// check for validity
 		if (_file is null) { return; }
 
