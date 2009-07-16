@@ -9,8 +9,6 @@
 
 module codecs.codec;
 
-import interfaces.stream;
-
 import core.time;
 import core.string;
 

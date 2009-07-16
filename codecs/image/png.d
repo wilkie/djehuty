@@ -1,7 +1,5 @@
 module codecs.image.png;
 
-import interfaces.stream;
-
 import core.stream;
 import core.view;
 import core.string;
@@ -2936,7 +2934,7 @@ private:
 		ubyte green;
 		ubyte blue;
 	}
-	
+
 	ubyte pngHeader[8];
 
 	_djehuty_image_png_chunk_header pngChunkHeader;

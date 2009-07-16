@@ -9,12 +9,11 @@
 
 module platform.win.scaffolds.file;
 
-import interfaces.stream;
-
 import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
 
+import core.stream;
 import core.view;
 import core.graphics;
 import core.string;

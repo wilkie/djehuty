@@ -7,12 +7,7 @@
 
 module core.stream;
 
-import interfaces.stream;
-
 import core.string;
-
-import platform.imports;
-mixin(PlatformGenericImport!("definitions"));
 
 // TODO: allow ENORMOUS ARRAYS gracefully (> 4GB... switch to a Map)
 // TODO: Read and Write distinction, stream permissions

@@ -9,8 +9,7 @@
 
 module core.image;
 
-import interfaces.stream;
-
+import core.stream;
 import core.string;
 import core.view;
 import core.file;

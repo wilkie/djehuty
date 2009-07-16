@@ -1,7 +1,5 @@
 module core.socket;
 
-import interfaces.stream;
-
 import core.stream;
 import core.string;
 
