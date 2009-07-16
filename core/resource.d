@@ -11,10 +11,11 @@
 module core.resource;
 
 import core.string;
-import core.image;
 import core.endian;
 import core.stream;
 import core.unicode;
+
+import resource.image;
 
 import io.file;
 import io.console;

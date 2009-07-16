@@ -18,8 +18,7 @@ import io.console;
 
 import synch.thread;
 
-private
-{
+private {
 	const auto CODE_IAC = 255;		// Interpret as Command
 	const auto CODE_SE	= 240;		// End of subnegotiation parameters.
 	const auto CODE_NOP = 241;		// No operation.
@@ -71,21 +70,17 @@ private
 // Section: Sockpuppets
 
 // Description: This class provides a server interface to the Telnet protocol.
-class TelnetServer
-{
-	this()
-	{
+class TelnetServer {
+	this() {
 	}
 }
 
 // Description: This class provides a client interface to the Telnet protocol.
-class TelnetClient
-{
+class TelnetClient {
 public:
 
 	// Description: This will create an instance of the object.  Use 'connect' to make a connection.
-	this()
-	{
+	this() {
 		_skt = new Socket();
 		_thread = new Thread();
 
@@ -95,12 +90,10 @@ public:
 	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
 	// host: The host to connect to.
 	// port: The port to use to connect.  Default is 23.
-	bool connect(string host, ushort port = 23)
-	{
+	bool connect(string host, ushort port = 23) {
 		_connected = _skt.connect(host,port);
 
-		if (_connected)
-		{
+		if (_connected) {
 			_thread.start();
 		}
 
@@ -110,12 +103,10 @@ public:
 	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
 	// host: The host to connect to.
 	// port: The port to use to connect.  Default is 23.
-	bool connect(String host, ushort port = 23)
-	{
+	bool connect(String host, ushort port = 23) {
 		_connected = _skt.connect(host,port);
 
-		if (_connected)
-		{
+		if (_connected) {
 	        //writefln("opened");
 			_thread.start();
 		}
@@ -124,20 +115,16 @@ public:
 	}
 
 	// Description: This function will send the byte to the server
-	void sendByte(ubyte byteout)
-	{
-		if (_connected)
-		{
+	void sendByte(ubyte byteout) {
+		if (_connected) {
 			_skt.write(byteout);
 		}
 	}
 
 	// Description: This function will send the UTF-32 character as a UTF-8 stream.
 	// chr: The UTF-32 character to send.
-	void putChar(dchar chr)
-	{
-		if (_connected)
-		{
+	void putChar(dchar chr) {
+		if (_connected) {
 			dstring chrs = [ chr ];
 			string chrarray = Unicode.toUtf8(chrs);
 
@@ -147,51 +134,42 @@ public:
 
 	// Description: Will set the delegate for callback events from this sockpuppet.
 	// callback: The delegate fitting the description.
-	void setDelegate(void delegate(dchar) callback)
-	{
+	void setDelegate(void delegate(dchar) callback) {
 		_charDelegate = callback;
 	}
 
-	void close()
-	{
+	void close() {
 		_skt.close();
 	}
 
 protected:
 
-	void sendCommandWord(ubyte optionWord, ubyte commandWord)
-	{
+	void sendCommandWord(ubyte optionWord, ubyte commandWord) {
 		_skt.write(CODE_IAC);
 		_skt.write(optionWord);
 		_skt.write(commandWord);
 	}
 
-	void threadProc(bool pleaseStop)
-	{
-		if (pleaseStop)
-		{
+	void threadProc(bool pleaseStop) {
+		if (pleaseStop) {
 			close();
 		}
 
 		ubyte bytein;
 
-		for (;;)
-		{
+		for (;;) {
 			_skt.read(bytein);
 
-			if (bytein == CODE_IAC)
-			{
+			if (bytein == CODE_IAC) {
 				//writefln("Command Incoming");
 				_skt.read(bytein);
 
-				switch (bytein)
-				{
+				switch (bytein) {
 					case CODE_DO:
 						//writefln("Option Word");
 						_skt.read(bytein);
 
-						switch (bytein)
-						{
+						switch (bytein) {
 							case CODE_ECHO:
 								//writefln("Echo");
 
@@ -237,11 +215,9 @@ protected:
 						break;
 				}
 			}
-			else
-			{
+			else {
 				//
-				if (_charDelegate !is null)
-				{
+				if (_charDelegate !is null) {
 					_charDelegate(Unicode.fromCP866(bytein));
 					//_charDelegate(bytein);
 				}

@@ -7,7 +7,7 @@
  *
  */
 
-module core.image;
+module resource.image;
 
 import core.stream;
 import core.string;

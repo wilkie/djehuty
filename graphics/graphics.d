@@ -11,7 +11,8 @@ module graphics.graphics;
 
 import graphics.view;
 
-import core.image;
+import resource.image;
+
 import core.definitions;
 import core.string;
 import core.color;

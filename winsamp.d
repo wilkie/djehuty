@@ -9,10 +9,10 @@ import gui.widget;
 
 import graphics.graphics;
 
-import core.image;
 import core.regex;
 import core.string;
 
+import resource.image;
 import resource.sound;
 
 import tui.application;
