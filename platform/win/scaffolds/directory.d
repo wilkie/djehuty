@@ -47,7 +47,7 @@ String DirectoryGetBinary()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;
@@ -70,7 +70,7 @@ String DirectoryGetAppData()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;
@@ -113,7 +113,7 @@ String DirectoryGetUserData()
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.getApplicationName();
+		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;

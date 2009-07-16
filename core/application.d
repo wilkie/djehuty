@@ -47,12 +47,12 @@ class Application : Responder {
 	}
 
 	this(String appName) {
-		this.appName = new String(appName);
+		this._appName = new String(appName);
 		Djehuty.setApplication(this);
 	}
 
 	this(string appName) {
-		this.appName = new String(appName);
+		this._appName = new String(appName);
 		Djehuty.setApplication(this);
 	}
 
@@ -60,8 +60,8 @@ class Application : Responder {
 
 	// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
 	// Returns: The application name.
-	String getApplicationName() {
-		return new String(appName);
+	String name() {
+		return new String(_appName);
 	}
 
 	// Description: This function will return true when the application being executed has been installed and is running from the installation directory.
@@ -72,18 +72,18 @@ class Application : Responder {
 		return (System.FileSystem.getBinaryDir() == System.FileSystem.getApplicationDir());
 	}
 
-	void setArguments(Arguments argInstance) {
-		arguments = argInstance;
+	void arguments(Arguments argInstance) {
+		_arguments = argInstance;
 	}
 
-	Arguments getArguments() {
-		return arguments;
+	Arguments arguments() {
+		return _arguments;
 	}
 
 	// Overrides //
 
 	override char[] toString() {
-		return appName.toString();
+		return _appName.toString();
 	}
 
 	// Events //
@@ -110,8 +110,8 @@ class Application : Responder {
 	}
 
 protected:
-	String appName;
-	Arguments arguments;
+	String _appName;
+	Arguments _arguments;
 
 	override bool raiseSignal(uint signal) {
 		Debugger.raiseSignal(signal);
