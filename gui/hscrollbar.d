@@ -36,13 +36,13 @@ public:
 	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
 
-		m_clroutline.setRGB(0x80,0x80,0x80);
-		m_clrarea.setRGB(0xe0, 0xe0, 0xe0);
-		m_clrbutton.setRGB(0xc0, 0xc0, 0xc0);
-		m_clrhighlight.setRGB(0xdd, 0xdd, 0xdd);
-		m_clrnormal.setRGB(0,0,0);
-		m_clrthumb.setRGB(0xc0, 0xc0, 0xc0);
-		m_clrhover.setRGB(0xdd, 0xdd, 0xdd);
+		m_clroutline.fromRGB(0x80,0x80,0x80);
+		m_clrarea.fromRGB(0xe0, 0xe0, 0xe0);
+		m_clrbutton.fromRGB(0xc0, 0xc0, 0xc0);
+		m_clrhighlight.fromRGB(0xdd, 0xdd, 0xdd);
+		m_clrnormal.fromRGB(0,0,0);
+		m_clrthumb.fromRGB(0xc0, 0xc0, 0xc0);
+		m_clrhover.fromRGB(0xdd, 0xdd, 0xdd);
 
 		_readyTimer = new Timer();
 		_clickTimer = new Timer();

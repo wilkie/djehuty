@@ -52,13 +52,13 @@ class Button : Widget {
 
 	override void onAdd() {
 		Color c;
-		c.setRGB(0xc8, 0x00, 0x00);
+		c.fromRGB(0xc8, 0x00, 0x00);
 
 		_brsh = new Brush(c);
 		_pen = new Pen(Color.Black);
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
-		c.setRGBA(0xc8, 0x00, 0x80, 0x40);
+		c.fromRGBA(0xc8, 0x00, 0x80, 0x40);
 		_brsh.setColor(c);
 	}
 
@@ -114,7 +114,7 @@ class Button : Widget {
 
 	override bool onMouseLeave() {
 		Color c;
-		c.setRGB(0xc8, 0xc8, 0xc8);
+		c.fromRGB(0xc8, 0xc8, 0xc8);
 
 		_brsh.setColor(c);
 

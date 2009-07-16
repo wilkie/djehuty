@@ -42,7 +42,7 @@ public:
 	}
 
 	override void onAdd() {
-		_clr_highlight.setRGB(0xf8,0xf8,0xf8);
+		_clr_highlight.fromRGB(0xf8,0xf8,0xf8);
 		_clr_outline = Color.DarkGray;
 		_clr_background = Color.White;
 

@@ -35,17 +35,15 @@ else
 	pragma(msg, "WARNING: Colorbpp parameter is not set!");
 }
 
-static if (ColorType == Parameter_ColorType.ColorRGBA)
-{
-	align(1) struct _comps{
+static if (ColorType == Parameter_ColorType.ColorRGBA) {
+	align(1) struct _comps {
 		ColorComponent r;
 		ColorComponent g;
 		ColorComponent b;
 		ColorComponent a;
 	}
 }
-else static if (ColorType == Parameter_ColorType.ColorBGRA)
-{
+else static if (ColorType == Parameter_ColorType.ColorBGRA) {
 	align(1) struct _comps{
 		ColorComponent b;
 		ColorComponent g;
@@ -53,27 +51,24 @@ else static if (ColorType == Parameter_ColorType.ColorBGRA)
 		ColorComponent a;
 	}
 }
-else static if (ColorType == Parameter_ColorType.ColorABGR)
-{
-	align(1) struct _comps{
+else static if (ColorType == Parameter_ColorType.ColorABGR) {
+	align(1) struct _comps {
 		ColorComponent a;
 		ColorComponent b;
 		ColorComponent g;
 		ColorComponent r;
 	}
 }
-else static if (ColorType == Parameter_ColorType.ColorARGB)
-{
-	align(1) struct _comps{
+else static if (ColorType == Parameter_ColorType.ColorARGB) {
+	align(1) struct _comps {
 		ColorComponent a;
 		ColorComponent r;
 		ColorComponent g;
 		ColorComponent b;
 	}
 }
-else
-{
-	align(1) struct _comps{
+else {
+	align(1) struct _comps {
 		ColorComponent r;
 		ColorComponent g;
 		ColorComponent b;
@@ -85,38 +80,20 @@ else
 
 	// a small function to convert an 8bpp value into
 	// the native bits per pixel (which is either 8bpp or 16bpp)
-static if (Colorbpp == Parameter_Colorbpp.Color8bpp)
-{
-	static ubyte _8toNativebpp(ubyte comp)
-	{
+static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+	static ubyte _8toNativebpp(ubyte comp) {
 		return comp;
 	}
 }
-else //static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
-{
-	static ushort _8toNativebpp(ubyte comp)
-	{
+else { //static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
+	static ushort _8toNativebpp(ubyte comp) {
 		return cast(ushort)(comp * (0x101 * Colorbpp));
 	}
 }
 // Section: Types
 
 // Description: This abstracts a color type.  Internally, the structure is different for each platform depending on the native component ordering and the bits per pixel for the platform.
-union Color
-{
-
-
-private:
-
-	union internal
-	{
-		_comps components;
-
-		ColorValue clr;
-	}
-
-	internal _internal;
-
+union Color {
 public:
 
 	// -- Predefined values
@@ -140,17 +117,14 @@ public:
 	// --
 
 	// Description: This function will set the color given the 8-bit red, green, blue, and alpha components.
-	void setRGBA(ubyte r, ubyte g, ubyte b, ubyte a)
-	{
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp)
-		{
+	void fromRGBA(ubyte r, ubyte g, ubyte b, ubyte a) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
 			_internal.components.r = r;
 			_internal.components.g = g;
 			_internal.components.b = b;
 			_internal.components.a = a;
 		}
-		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
-		{
+		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
 			_internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
 			_internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
 			_internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
@@ -159,17 +133,14 @@ public:
 	}
 
 	// Description: This function will set the color given the 8-bit red, green, and blue components.
-	void setRGB(ubyte r, ubyte g, ubyte b)
-	{
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp)
-		{
+	void fromRGB(ubyte r, ubyte g, ubyte b) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
 			_internal.components.r = r;
 			_internal.components.g = g;
 			_internal.components.b = b;
 			_internal.components.a = 0xFF;
 		}
-		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
-		{
+		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
 			_internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
 			_internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
 			_internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
@@ -177,7 +148,69 @@ public:
 		}
 	}
 
+	ubyte blue() {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			return _internal.components.b;
+		}
+		else {
+			return (cast(double)_internal.components.b / cast(double)0xFFFF) * 0xFF;
+		}
+	}
 
+	void blue(ubyte val) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			_internal.components.b = val;
+		}
+		else {
+			_internal.components.b = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+		}
+	}
+
+	ubyte green() {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			return _internal.components.g;
+		}
+		else {
+			return (cast(double)_internal.components.g / cast(double)0xFFFF) * 0xFF;
+		}
+	}
+
+	void green(ubyte val) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			_internal.components.g = val;
+		}
+		else {
+			_internal.components.g = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+		}
+	}
+
+	ubyte red() {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			return _internal.components.r;
+		}
+		else {
+			return (cast(double)_internal.components.r / cast(double)0xFFFF) * 0xFF;
+		}
+	}
+
+	void red(ubyte val) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			_internal.components.r = val;
+		}
+		else {
+			_internal.components.r = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+		}
+	}
+
+private:
+
+	union internal {
+		_comps components;
+
+		ColorValue clr;
+	}
+
+	internal _internal;
 }
 
 
