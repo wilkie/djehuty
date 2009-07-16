@@ -13,7 +13,7 @@ import core.image;
 import core.regex;
 import core.string;
 
-import core.sound;
+import resource.sound;
 
 import tui.application;
 import tui.window;

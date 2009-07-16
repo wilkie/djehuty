@@ -8,7 +8,7 @@
  *
  */
 
-module core.sound;
+module resource.sound;
 
 import core.time;
 import core.string;
