@@ -27,62 +27,18 @@ import core.string;
 
 import console.main;
 
-private
-{
-
-
-	align(2) struct _djehuty_wave_riff_header {
-		uint magic;
-		uint filesize;
-		uint rifftype;
-	}
-
-	align(2) struct _djehuty_wave_chunk_header {
-		uint chunkID;
-		uint chunkSize;
-	}
-
-	struct _djehuty_wave_format_chunk {
-		ushort compressionCode;
-		ushort numChannels;
-		uint sampleRate;
-		uint avgBytesPerSecond;
-		ushort blockAlign;
-		ushort significantBitsPerSample;
-		ushort extraBytes;
-	}
-
-
-
-
-	const auto WAVE_STATE_INIT 			= 0;
-	const auto WAVE_STATE_READ_RIFF		= 1;
-	const auto WAVE_STATE_READ_CHUNK	= 2;
-	const auto WAVE_STATE_SKIP_CHUNK	= 3;
-
-	const auto WAVE_STATE_CHUNK_FMT		= 4;
-	const auto WAVE_STATE_CHUNK_DATA	= 5;
-
-}
-
-
 // Section: Codecs/Audio
 
 // Description: This is the Microsoft Wave file codec.
-class WAVCodec : AudioCodec
-{
+class WAVCodec : AudioCodec {
 
-	String getName()
-	{
+	String name() {
 		return new String("Microsoft Wave");
 	}
 
-	StreamData decode(AbstractStream stream, Wavelet toBuffer, ref AudioInfo wi)
-	{
-		for (;;)
-		{
-			switch (decoderState)
-			{
+	StreamData decode(AbstractStream stream, Wavelet toBuffer, ref AudioInfo wi) {
+		for (;;) {
+			switch (decoderState) {
 				case WAVE_STATE_INIT:
 					//initial stuff
 
@@ -95,13 +51,11 @@ class WAVCodec : AudioCodec
 					// and check the validity
 
 					//reading the header
-					if (!stream.read(&RIFFHeader, RIFFHeader.sizeof))
-					{
+					if (!stream.read(&RIFFHeader, RIFFHeader.sizeof)) {
 						return StreamData.Required;
 					}
 
-					if (RIFFHeader.magic != *(cast(uint*)"RIFF"c.ptr))
-					{
+					if (RIFFHeader.magic != *(cast(uint*)"RIFF"c.ptr)) {
 						// RIFF header is wrong
 						Console.putln("WAVE: Invalid RIFF Header");
 						return StreamData.Invalid;
@@ -113,16 +67,14 @@ class WAVCodec : AudioCodec
 				case WAVE_STATE_READ_CHUNK:
 
 					// read in a chunk header
-					if (!stream.read(&curChunk, curChunk.sizeof))
-					{
+					if (!stream.read(&curChunk, curChunk.sizeof)) {
 						return StreamData.Required;
 					}
 
 					char arr[4] = (cast(char*)&curChunk.chunkID)[0..4];
 
 					// figure out what the chunk means
-					if (curChunk.chunkID == *(cast(uint*)"data"c.ptr))
-					{
+					if (curChunk.chunkID == *(cast(uint*)"data"c.ptr)) {
 						// DATA Chunk
 						decoderState = WAVE_STATE_CHUNK_DATA;
 
@@ -133,14 +85,12 @@ class WAVCodec : AudioCodec
 						dataToRead = curChunk.chunkSize;
 						continue;
 					}
-					else if (curChunk.chunkID == *(cast(uint*)"fmt "c.ptr))
-					{
+					else if (curChunk.chunkID == *(cast(uint*)"fmt "c.ptr)) {
 						// FMT Chunk
 						decoderState = WAVE_STATE_CHUNK_FMT;
 						continue;
 					}
-					else
-					{
+					else {
 						// Unknown Chunk
 						// Just skip it
 						decoderState = WAVE_STATE_SKIP_CHUNK;
@@ -148,15 +98,11 @@ class WAVCodec : AudioCodec
 
 					// *** fall through on an unknown chunk *** //
 				case WAVE_STATE_SKIP_CHUNK:
-					if (!stream.skip(curChunk.chunkSize))
-					{
+					if (!stream.skip(curChunk.chunkSize)) {
 						return StreamData.Required;
 					}
 					decoderState = WAVE_STATE_READ_CHUNK;
 					continue;
-
-
-
 
 					// -- Process a Chunk -- //
 
@@ -172,30 +118,27 @@ class WAVCodec : AudioCodec
 
 					uint bufferSize = FMTHeader.avgBytesPerSecond << 1 ;
 
-					if (isSeek && !isSeekBack && (toSeek < (curTime + bufferTime)))
-					{
+					if (isSeek && !isSeekBack && (toSeek < (curTime + bufferTime))) {
 						// seeking
 						Console.putln("seek no more");
 						isSeek = false;
 						return StreamData.Accepted;
 					}
-					else if (isSeek && isSeekBack && (toSeek >= curTime))
-					{
+					else if (isSeek && isSeekBack && (toSeek >= curTime)) {
 						// seeking
 						Console.putln("seek no more");
 						isSeek = false;
 						return StreamData.Accepted;
 					}
-					else if (toBuffer is null && isSeek == false) { return StreamData.Accepted; }
+					else if (toBuffer is null && isSeek == false) {
+						return StreamData.Accepted;
+					}
 
-					if (isSeek && isSeekBack)
-					{
+					if (isSeek && isSeekBack) {
 						// go backwards
 
-						if (dataToRead == 0 && (curChunk.chunkSize % bufferSize) != 0)
-						{
-							if (!stream.rewind(curChunk.chunkSize % bufferSize))
-							{
+						if (dataToRead == 0 && (curChunk.chunkSize % bufferSize) != 0) {
+							if (!stream.rewind(curChunk.chunkSize % bufferSize)) {
 								Console.putln("Audio Codec : Data Required");
 								return StreamData.Required;
 							}
@@ -205,11 +148,9 @@ class WAVCodec : AudioCodec
 							curTime -= bufferTime;
 
 						}
-						else
-						{
+						else {
 
-							if (!stream.rewind(FMTHeader.avgBytesPerSecond << 1))
-							{
+							if (!stream.rewind(FMTHeader.avgBytesPerSecond << 1)) {
 								Console.putln("Audio Codec : Data Required");
 								return StreamData.Required;
 							}
@@ -222,40 +163,33 @@ class WAVCodec : AudioCodec
 					}
 					//writeln("Audio Codec : Decoding Data Chunk");
 
-					if (dataToRead == 0)
-					{
+					if (dataToRead == 0) {
 						return StreamData.Complete;
 					}
 
 					// we should have a format header
-					if (!formatHeaderFound)
-					{
+					if (!formatHeaderFound) {
 						// no format header, yet...
 						// this file is invalid
 						return StreamData.Invalid;
 					}
 
-					if (FMTHeader.compressionCode == 0x50)
-					{
+					if (FMTHeader.compressionCode == 0x50) {
 						if (embeddedCodec is null) {
 							embeddedCodec = new MP2Codec();
 						}
 						return embeddedCodec.decode(stream, toBuffer, wi);
 					}
-					else if (FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3)
-					{
+					else if (FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3) {
 						// are we getting the last piece?
-						if (dataToRead < bufferSize)
-						{
+						if (dataToRead < bufferSize) {
 							//writeln("Audio Codec : Allocating ", dataToRead, " bytes (last chunk)");
 							// allocate a whole buffer
 
-							if (toBuffer !is null)
-							{
+							if (toBuffer !is null) {
 								toBuffer.setAudioFormat(wf);
 
-								if (toBuffer.length() != dataToRead)
-								{
+								if (toBuffer.length() != dataToRead) {
 									// allocate
 									//  (this may look redundant, but this may occur
 									//   when there is only one chunk in the file)
@@ -267,16 +201,13 @@ class WAVCodec : AudioCodec
 								//writeln("Audio Codec : Appending ", dataToRead, " bytes (last chunk)");
 
 								// this is the last chunk of data
-								if (!toBuffer.write(stream, dataToRead))
-								{
+								if (!toBuffer.write(stream, dataToRead)) {
 									Console.putln("Audio Codec : Data Required");
 									return StreamData.Required;
 								}
 							}
-							else
-							{
-								if (!stream.skip(dataToRead))
-								{
+							else {
+								if (!stream.skip(dataToRead)) {
 									//writeln("Audio Codec : Data Required");
 									return StreamData.Required;
 								}
@@ -290,16 +221,13 @@ class WAVCodec : AudioCodec
 
 							return StreamData.Complete;
 						}
-						else
-						{
+						else {
 							//writeln("Audio Codec : Allocating ", bufferSize, " bytes");
 							// allocate a whole buffer
 
-							if (toBuffer !is null)
-							{
+							if (toBuffer !is null) {
 								toBuffer.setAudioFormat(wf);
-								if (toBuffer.length() != bufferSize)
-								{
+								if (toBuffer.length() != bufferSize) {
 									// allocate
 									Console.putln("Audio Codec : Resizing : " , toBuffer.length(), " : ", bufferSize);
 									toBuffer.resize(bufferSize);
@@ -308,8 +236,7 @@ class WAVCodec : AudioCodec
 								//writeln("Audio Codec : Appending ", bufferSize, " bytes");
 
 								// Read in a second worth of information
-								if (!toBuffer.write(stream, bufferSize))
-								{
+								if (!toBuffer.write(stream, bufferSize)) {
 									//writeln("Audio Codec : Data Required");
 									return StreamData.Required;
 								}
@@ -319,10 +246,8 @@ class WAVCodec : AudioCodec
 								dataToRead -= bufferSize;
 								return StreamData.Accepted;
 							}
-							else
-							{
-								if (!stream.skip(bufferSize))
-								{
+							else {
+								if (!stream.skip(bufferSize)) {
 									//writeln("Audio Codec : Data Required");
 									return StreamData.Required;
 								}
@@ -343,8 +268,7 @@ class WAVCodec : AudioCodec
 
 					// Read in the format information
 
-					if (!stream.read(&FMTHeader, FMTHeader.sizeof))
-					{
+					if (!stream.read(&FMTHeader, FMTHeader.sizeof)) {
 						return StreamData.Required;
 					}
 
@@ -352,14 +276,13 @@ class WAVCodec : AudioCodec
 
 					if (FMTHeader.compressionCode != 0x01 &&
 						FMTHeader.compressionCode != 0x03 &&
-						FMTHeader.compressionCode != 0x50)
-					{
+						FMTHeader.compressionCode != 0x50) {
+
 						Console.putln("WAVE: Unsupported Compression Type");
 						return StreamData.Invalid;
 					}
 
-					if (FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3)
-					{
+					if (FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3) {
 						wf.compressionType = FMTHeader.compressionCode;
 
 						wf.numChannels = FMTHeader.numChannels;
@@ -384,8 +307,7 @@ class WAVCodec : AudioCodec
 						bufferTime.fromMicroseconds(2000000);
 
 					}
-					else
-					{
+					else {
 						Console.putln("WAVE: Alternate Codec Requested Via Compression Code");
 						embeddedCodec = null;
 					}
@@ -397,21 +319,9 @@ class WAVCodec : AudioCodec
 					decoderState = WAVE_STATE_SKIP_CHUNK;
 					continue;
 
-
-
-
-
-
-
-
-
-
-
-
+				default:
 					// -- Default for corrupt files -- //
 
-				default:
-					// invalid state
 					return StreamData.Invalid;
 			}
 		}
@@ -420,33 +330,27 @@ class WAVCodec : AudioCodec
 	}
 
 	// Description: This function will advance the stream to the beginning of the buffer that contains the time requested.
-	StreamData seek(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount)
-	{
-		if (decoderState == 0)
-		{
+	StreamData seek(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
+		if (decoderState == 0) {
 			// not inited?
 			return StreamData.Invalid;
 		}
 
-		if (FMTHeader.compressionCode == 0x50 && embeddedCodec !is null)
-		{
+		if (FMTHeader.compressionCode == 0x50 && embeddedCodec !is null) {
 			StreamData ret = embeddedCodec.seek(stream, wf, wi, amount);
 			amount -= embeddedCodec.getCurrentTime();
 			return ret;
 		}
-		else if (!(FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3))
-		{
+		else if (!(FMTHeader.compressionCode == 1 || FMTHeader.compressionCode == 3)) {
 			return StreamData.Invalid;
 		}
 
-		if (amount == curTime)
-		{
+		if (amount == curTime) {
 			Console.putln("ON TIME");
 			return StreamData.Accepted;
 		}
 
-		if (amount > curTime)
-		{
+		if (amount > curTime) {
 			Console.putln("WE NEED TO GO AHEAD");
 			// good!
 			// simply find the section we need to be
@@ -458,8 +362,7 @@ class WAVCodec : AudioCodec
 			amount -= curTime;
 			return ret;
 		}
-		else
-		{
+		else {
 			Console.putln("WE NEED TO FALL BEHIND");
 			// for wave files, this is not altogether a bad thing
 			// for other types of files, it might be
@@ -474,14 +377,12 @@ class WAVCodec : AudioCodec
 		}
 	}
 
-	Time length(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi)
-	{
+	Time length(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}
 
-	Time lengthQuick(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi)
-	{
+	Time lengthQuick(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}
@@ -501,5 +402,35 @@ protected:
 
 	AudioFormat wf;
 	Time bufferTime;
-}
 
+private:
+
+	align(2) struct _djehuty_wave_riff_header {
+		uint magic;
+		uint filesize;
+		uint rifftype;
+	}
+
+	align(2) struct _djehuty_wave_chunk_header {
+		uint chunkID;
+		uint chunkSize;
+	}
+
+	struct _djehuty_wave_format_chunk {
+		ushort compressionCode;
+		ushort numChannels;
+		uint sampleRate;
+		uint avgBytesPerSecond;
+		ushort blockAlign;
+		ushort significantBitsPerSample;
+		ushort extraBytes;
+	}
+
+	const auto WAVE_STATE_INIT 			= 0;
+	const auto WAVE_STATE_READ_RIFF		= 1;
+	const auto WAVE_STATE_READ_CHUNK	= 2;
+	const auto WAVE_STATE_SKIP_CHUNK	= 3;
+
+	const auto WAVE_STATE_CHUNK_FMT		= 4;
+	const auto WAVE_STATE_CHUNK_DATA	= 5;
+}

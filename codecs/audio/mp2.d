@@ -941,7 +941,7 @@ private
 // Description: This is the MPEG Layer 2 audio codec.
 class MP2Codec : AudioCodec
 {
-	String getName()
+	String name()
 	{
 		return new String("MPEG Layer 2");
 	}

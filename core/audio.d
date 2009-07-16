@@ -12,6 +12,7 @@ module core.audio;
 
 import core.stream;
 import core.time;
+import core.event;
 
 import synch.semaphore;
 
@@ -23,8 +24,7 @@ mixin(PlatformScaffoldImport!());
 // Section: Types
 
 // Description: This structure contains information about an audio file and its uncompressed format.  The Audio class uses this to know how to send buffers given by the audio codec to the audio device.
-struct AudioFormat
-{
+struct AudioFormat {
 	uint compressionType;
 
 	// Description: The number of channels.
@@ -43,8 +43,7 @@ struct AudioFormat
 	uint bitsPerSample;
 }
 
-struct AudioInfo
-{
+struct AudioInfo {
 	// File Information
 
 	ulong totalTime;
@@ -57,121 +56,99 @@ struct AudioInfo
 // Section: Core
 
 // Description: This class provides a low-level interface to an audio device.
-class Audio
-{
-	this()
-	{
+class Audio : Dispatcher {
+
+	enum Signal {
+		BufferPlayed,
+	}
+
+	this() {
 		_mutex = new Semaphore(1);
 	}
 
-	~this()
-	{
+	~this() {
 		closeDevice();
 	}
 
 	// Description: Opens an audio device with the format given.  The format describes the representation of the audio stream.
 	// format: The format of the audio stream that will indicate the representation of any audio buffers passed to the device.
-	void openDevice(AudioFormat format)
-	{
+	void openDevice(AudioFormat format) {
 		if (_opened) { return; }
 
 		_mutex.down();
+		scope(exit) _mutex.up();
 
 		_opened = true;
 		Scaffold.WaveOpenDevice(this, _pfvars, format);
-
-		_mutex.up();
 	}
 
 	// Description: Closes an already opened device, stops playback, and frees any pending buffers.
-	void closeDevice()
-	{
+	void closeDevice() {
 		_mutex.down();
+		scope(exit) _mutex.up();
+
 		if (_opened)
 		{
 			Scaffold.WaveCloseDevice(this, _pfvars);
 			_opened = false;
 		}
-		_mutex.up();
-	}
-
-	// --- //
-
-	// Description: Sets the callback routine for the device.  This gets called when the device has played a buffer.  It will be commonly used to indicate that another buffer should be sent.
-	void setDelegate(void delegate() callback)
-	{
-		_callback = callback;
 	}
 
 	// --- //
 
 	// Description: Sends an audio buffer to the device.  These can be queued, and any number may be sent.
-	void sendBuffer(Stream waveBuffer, bool isLast = false)
-	{
+	void sendBuffer(Stream waveBuffer, bool isLast = false) {
 		_mutex.down();
-		if (_opened)
-		{
+		scope(exit) _mutex.up();
+
+		if (_opened) {
 			Scaffold.WaveSendBuffer(this, _pfvars, waveBuffer, isLast);
 		}
-		_mutex.up();
 	}
 
 	// Description: Resumes a paused device.
-	void resume()
-	{
+	void resume() {
 		_mutex.down();
-		if (_opened)
-		{
+		scope(exit) _mutex.up();
+
+		if (_opened) {
 			Scaffold.WaveResume(this, _pfvars);
 		}
-		_mutex.up();
 	}
 
 	// Description: Pauses playback of a device.
-	void pause()
-	{
+	void pause() {
 		_mutex.down();
-		if (_opened)
-		{
+		scope(exit) _mutex.up();
+
+		if (_opened) {
 			Scaffold.WavePause(this, _pfvars);
 		}
-		_mutex.up();
 	}
 
-
-
-	Time getPosition()
-	{
+	Time position() {
 		_mutex.down();
-		if (!Scaffold.WaveIsOpen(this, _pfvars))
-		{
+		scope(exit) _mutex.up();
+
+		if (!Scaffold.WaveIsOpen(this, _pfvars)) {
 			Time myTime = Time.init;
-			_mutex.up();
 			return myTime;
 		}
-		else
-		{
-			_mutex.up();
-			return Scaffold.WaveGetPosition(this, _pfvars);
-		}
-	}
 
+		return Scaffold.WaveGetPosition(this, _pfvars);
+	}
 
 protected:
 
 	WavePlatformVars _pfvars;
-	void delegate() _callback = null;
 
 	bool _opened;
 
 	Semaphore _mutex;
 }
 
-
-void WaveFireCallback(ref Audio w)
-{
-	 if (w._callback !is null)
-	{
-		w._callback();
+void WaveFireCallback(ref Audio w) {
+	 if (w.responder !is null) {
+		w.raiseSignal(Audio.Signal.BufferPlayed);
 	}
 }

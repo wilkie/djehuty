@@ -12,6 +12,8 @@ import core.image;
 import core.regex;
 import core.string;
 
+import core.sound;
+
 import tui.application;
 import tui.window;
 import tui.textfield;
@@ -92,8 +94,11 @@ class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
-			 tuiwnd = new MyTWindow();
-			 push(tuiwnd);
+		tuiwnd = new MyTWindow();
+		push(tuiwnd);
+
+		snd = new Sound("tests/begin.mp2");
+		snd.play();
 	}
 
 	override void onApplicationEnd() {
@@ -104,12 +109,14 @@ class MyTApp :TuiApplication {
 	}
 
 private:
-		MyTWindow tuiwnd;
+	MyTWindow tuiwnd;
+
+	Sound snd;
 }
 
 class MyTWindow : TuiWindow {
 
-	this(){
+	this() {
 		super();
 
 		push(tuitext = new TuiTextField(0,Console.getHeight(),Console.getWidth(), "boo"));
@@ -122,10 +129,8 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;
 	}
 
-	override void onKeyDown(uint keyCode)
-	{
-		if(keyCode == KeyEnd)
-		{
+	override void onKeyDown(uint keyCode) {
+		if(keyCode == KeyEnd) {
 			//quit
 			application.exit(0);
 		}
@@ -133,8 +138,7 @@ class MyTWindow : TuiWindow {
 			// meh
 			tuitext.forecolor = fgColor.Red;
 		}
-		else
-		{
+		else {
 			super.onKeyDown(keyCode);
 		}
 	}

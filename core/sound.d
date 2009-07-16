@@ -29,37 +29,36 @@ import console.main;
 
 // Section: Enums
 
-// Description: The state of a Sound object indicates the state of the audio it is in charge of playing.
-enum SoundState
-{
-	// Description: Indicates that the Sound object is currently paused.
-	Paused,
-	// Description: Indicates that the Sound object is currently stopped.
-	Stopped,
-	// Description: Indicates that the Sound object is currently playing.
-	Playing,
-}
-
 // Section: Core/Resources
 
 // Description: This class will abstract away the low-level Audio class.  It can load an audio file and control its playback with simple and common interactions.
-class Sound : Responder
-{
+class Sound : Responder {
 
+	enum Signal {
+		StateChanged,
+	}
+
+	// Description: The state of a Sound object indicates the state of the audio it is in charge of playing.
+	enum State {
+		// Description: Indicates that the Sound object is currently paused.
+		Paused,
+		// Description: Indicates that the Sound object is currently stopped.
+		Stopped,
+		// Description: Indicates that the Sound object is currently playing.
+		Playing,
+	}
 
 	// Only temporary.. the user will be expected to do this themselves.
 	Timer tmr;
 
 	void timerProc() {
-		getPositionString();
+		//getPositionString();
 	}
 
 	// Description: This constructor will create the object and load the file using the filename passed.
 	// filename: The string containing the filename of the audio file to load.
-	this(string filename)
-	{
-		wavDevice = new Audio;
-		wavDevice.setDelegate(&_bufferCallback);
+	this(string filename) {
+		push(wavDevice = new Audio);
 
 		tmr = new Timer();
 		tmr.setInterval(1);
@@ -69,13 +68,15 @@ class Sound : Responder
 		load(filename);
 	}
 
-	~this()
-	{
+	~this() {
 		tmr.stop();
 	}
 	
 	bool OnSignal(Dispatcher dsp, uint signal) {
-		if (dsp is tmr) {
+		if (dsp is wavDevice && signal == Audio.Signal.BufferPlayed) {
+			_bufferCallback();
+		}
+		else if (dsp is tmr) {
 			timerProc();
 		}
 		return true;
@@ -83,8 +84,7 @@ class Sound : Responder
 
 	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.
 	// filename: The string containing the filename of the audio file to load.
-	bool load(string filename)
-	{
+	bool load(string filename) {
 		load(new File(filename));
 
 		return false;
@@ -92,10 +92,9 @@ class Sound : Responder
 
 	// Description: This function will stream the audio using the stream given, stopping and unloading any current audio playback.
 	// stream: The Stream containing the audio information to decode.
-	StreamData load(AbstractStream stream)
-	{
+	StreamData load(AbstractStream stream) {
 		_doneBuffering = false;
-		_state = SoundState.Paused;
+		_state = State.Paused;
 
 		buffers[0] = new Wavelet();
 		buffers[1] = new Wavelet();
@@ -108,21 +107,20 @@ class Sound : Responder
 		ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
 
 		if (ret == StreamData.Invalid) { return ret; }
-
+		Console.putln("dboo");
 		Console.putln("Sound: Codec name: ", _curCodec.getName().array);
 
 		Console.putln("Sound: Audio File Loaded : Length: ", wavInfo.totalTime);
-		getTotalTimeString();
+		//getTotalTimeString();
 
 		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
 
 		wavDevice.openDevice(buffers[0].getAudioFormat());
 		wavDevice.pause();
 
-		_state = SoundState.Paused;
+		_state = State.Paused;
 
-		if (ret == StreamData.Complete)
-		{
+		if (ret == StreamData.Complete) {
 			Console.putln("Sound : Decoded Last Buffer");
 			wavDevice.sendBuffer(buffers[0], true);
 
@@ -130,8 +128,7 @@ class Sound : Responder
 
 			return ret;
 		}
-		else
-		{
+		else {
 			wavDevice.sendBuffer(buffers[0]);
 		}
 
@@ -147,10 +144,8 @@ class Sound : Responder
 	}
 
 	// Description: Will start or resume the playback of the currently loaded audio stream.
-	void play()
-	{
-		if (_state == SoundState.Stopped || _state == SoundState.Playing)
-		{
+	void play() {
+		if (_state == State.Stopped || _state == State.Playing) {
 			Console.put(" SSSStoopeeedd?!?!");
 			stop();
 
@@ -162,25 +157,26 @@ class Sound : Responder
 		wavDevice.resume();
 		//tmr.start();
 
-		_state = SoundState.Playing;
+		_state = State.Playing;
+		raiseSignal(Signal.StateChanged);
 	}
 
 	// Description: Will pause the currently playing audio stream.
-	void pause()
-	{
-		if (_state == SoundState.Playing)
-		{
-			_state = SoundState.Paused;
+	void pause() {
+		if (_state == State.Playing) {
+			_state = State.Paused;
 			wavDevice.pause();
 			//tmr.stop();
 		}
 	}
 
 	// Description: Will stop the currently playing audio stream and reset the device.
-	void stop()
-	{
-		_state = SoundState.Stopped;
-		wavDevice.closeDevice();
+	void stop() {
+		if (_state != State.Stopped) {
+			_state = State.Stopped;
+			wavDevice.closeDevice();
+			raiseSignal(Signal.StateChanged);
+		}
 
 		// the audio device will close
 		// and therefore reset its clock
@@ -190,8 +186,7 @@ class Sound : Responder
 
 	// Description: Will return the total length of the audio stream.
 	// Returns: The total length of the loaded audio.
-	Time getTotalTime()
-	{
+	Time totalTime() {
 		Time tme;
 		if (inStream !is null)
 		{
@@ -201,23 +196,11 @@ class Sound : Responder
 		return tme;
 	}
 
-	String getTotalTimeString()
-	{
-		Time tme = getTotalTime();
-		tme.toString();
-
-		String str = new String("");
-
-		return str;
-	}
-
 	// Description: Will return the current position of the audio playback.
 	// Returns: The current position of playback.
-	Time getPosition()
-	{
-		if (inStream !is null)
-		{
-			return wavDevice.getPosition() + _synch;
+	Time position() {
+		if (inStream !is null) {
+			return wavDevice.position + _synch;
 		}
 
 		Time retTime;
@@ -225,27 +208,16 @@ class Sound : Responder
 		return retTime;
 	}
 
-	String getPositionString()
-	{
-		Time tme = getPosition();
-
-		tme.toString();
-		String str = new String("");
-
-		return str;
-	}
-
 	// Description: Will change the position of playback.
 	// toPosition: The microseconds from the beginning to set the audio playback.
-	void setPosition(ulong toPosition)
-	{
+	void position(ulong toPosition) {
 		stop();
 
 		_doneBuffering = false;
 
 		wavDevice.openDevice(buffers[0].getAudioFormat());
 		wavDevice.pause();
-		_state = SoundState.Paused;
+		_state = State.Paused;
 
 		Time tme;
 		tme.fromMicroseconds(cast(long)toPosition);
@@ -267,8 +239,7 @@ class Sound : Responder
 
 	// Description: Will get the current state of playback.
 	// Returns: The current state of the device.
-	SoundState getState()
-	{
+	State state() {
 		return _state;
 	}
 
@@ -286,7 +257,7 @@ protected:
 	AudioFormat wavFormat;
 	AudioInfo wavInfo;
 
-	SoundState _state;
+	State _state;
 
 	// the time that the audio device has is the amount of data
 	// that has been fed to the audio device
@@ -301,34 +272,35 @@ protected:
 
 	Thread _audioLoader;
 
-	void _bufferCallback()
-	{
-		if (_state == SoundState.Stopped) { return; }
-		if (_doneBuffering) { return; }
+	void _bufferCallback() {
+		if (_state == State.Stopped) { return; }
+		if (_doneBuffering) {
+			Console.putln("Done");
+			_state = State.Stopped;
+			raiseSignal(Signal.StateChanged);
+			return;
+		}
 
 		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
 
 		// send the next buffer
-		if (ret == StreamData.Complete)
-		{
+		if (ret == StreamData.Complete) {
 			Console.putln("Sound : Decoded Last Buffer");
 			wavDevice.sendBuffer(buffers[bufferIndex], true);
 
 			_doneBuffering = true;
 		}
-		else
-		{
+		else {
+			Console.putln("Sound : Decoded Buffer");
 			wavDevice.sendBuffer(buffers[bufferIndex]);
 		}
 
 
-		if (bufferIndex == 0)
-			{ bufferIndex = 1; }
-		else
-			{ bufferIndex = 0; }
-
-
-
-		//Console.putln("Sound : Buffer Sent");
+		if (bufferIndex == 0) {
+			bufferIndex = 1;
+		}
+		else {
+			bufferIndex = 0;
+		}
 	}
 }
