@@ -1,4 +1,4 @@
-module core.menu;
+module gui.menu;
 
 import core.string;
 

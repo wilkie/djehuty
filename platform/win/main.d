@@ -16,17 +16,17 @@ import platform.win.vars;
 import platform.win.widget;
 
 import graphics.view;
+import graphics.font;
 
 import core.main;
 import core.definitions;
-import core.menu;
 import core.string;
 import core.unicode;
 
 import io.console;
 
 import gui.window;
-import graphics.font;
+import gui.menu;
 
 import opengl.window;
 

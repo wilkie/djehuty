@@ -16,13 +16,13 @@ import platform.win.common;
 import platform.win.main;
 
 import core.string;
-import core.menu;
 import core.main;
 import core.definitions;
 
 import io.console;
 
 import gui.window;
+import gui.menu;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
 {

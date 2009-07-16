@@ -12,6 +12,7 @@ module gui.window;
 
 import gui.widget;
 import gui.application;
+import gui.menu;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
@@ -20,7 +21,6 @@ mixin(PlatformScaffoldImport!());
 import graphics.view;
 import graphics.graphics;
 
-import core.menu;
 import core.definitions;
 import core.color;
 import core.string;

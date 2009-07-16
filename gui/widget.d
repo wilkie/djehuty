@@ -11,6 +11,7 @@ module gui.widget;
 
 import gui.application;
 import gui.window;
+import gui.menu;
 
 import core.definitions;
 
@@ -21,7 +22,6 @@ import graphics.graphics;
 
 import core.main;
 import core.string;
-import core.menu;
 import core.color;
 import core.event;
 import core.literals;
