@@ -1,7 +1,8 @@
 module codecs.audio.all;
 
-import core.audio;
-import core.wavelet;
+import io.audio;
+import io.wavelet;
+
 import core.time;
 import core.literals;
 import core.string;

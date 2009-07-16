@@ -11,11 +11,12 @@ module codecs.audio.codec;
 
 import codecs.codec;
 
-import core.audio;
 import core.string;
 import core.time;
-import core.wavelet;
 import core.stream;
+
+import io.audio;
+import io.wavelet;
 
 // Section: Interfaces
 

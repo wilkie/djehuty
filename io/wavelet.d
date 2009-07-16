@@ -1,13 +1,13 @@
-module core.wavelet;
+module io.wavelet;
 
 import core.stream;
 import core.string;
 import core.literals;
 import core.definitions;
 import core.time;
-import core.audio;
 import core.sound;
 
+import io.audio;
 import io.console;
 
 enum Interpolate

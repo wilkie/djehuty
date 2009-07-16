@@ -16,13 +16,13 @@ import platform.win.main;
 
 import core.stream;
 import core.time;
-import core.audio;
 import core.main;
 import core.definitions;
 
 import synch.thread;
 import synch.semaphore;
 
+import io.audio;
 import io.console;
 
 // Worker Thread

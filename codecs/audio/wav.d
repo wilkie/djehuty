@@ -17,11 +17,11 @@ import codecs.audio.mp2 : MP2Codec;
 import codecs.codec;
 
 import core.stream;
-import core.wavelet;
-import core.audio;
 import core.time;
 import core.string;
 
+import io.wavelet;
+import io.audio;
 import io.console;
 
 // Section: Codecs/Audio

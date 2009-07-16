@@ -14,10 +14,11 @@ import platform.win.scaffolds.opengl;
 import platform.win.main;
 
 import core.definitions;
-import core.audio;
 import core.stream;
 import core.main;
 import core.string;
+
+import io.audio;
 
 import synch.thread;
 import synch.semaphore;

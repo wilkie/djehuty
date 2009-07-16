@@ -12,14 +12,14 @@ module core.sound;
 
 import core.time;
 import core.string;
-import core.audio;
-import core.wavelet;
 import core.event;
 import core.stream;
 
 import synch.thread;
 import synch.timer;
 
+import io.wavelet;
+import io.audio;
 import io.file;
 import io.console;
 

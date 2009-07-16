@@ -8,7 +8,7 @@
  *
  */
 
-module core.audio;
+module io.audio;
 
 import core.stream;
 import core.time;
