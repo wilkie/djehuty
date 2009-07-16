@@ -11,24 +11,20 @@ module codecs.binary.codec;
 
 import codecs.codec;
 
-import interfaces.stream;
-
 import core.string;
+import core.stream;
 
 // Section: Interfaces
 
 // Description: The interface to a binary codec.
-class BinaryCodec : Codec
-{
+class BinaryCodec : Codec {
 public:
 
-	StreamData decode(AbstractStream stream, AbstractStream toStream)
-	{
+	StreamData decode(Stream stream, Stream toStream) {
 		return StreamData.Invalid;
 	}
 
-	override String getName()
-	{
+	override String name() {
 		return new String("Unknown Binary Codec");
 	}
 }

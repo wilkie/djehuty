@@ -13,7 +13,7 @@ module codecs.binary.zlib;
 import codecs.binary.codec;
 import codecs.binary.deflate;
 
-import interfaces.stream;
+import core.stream;
 
 private
 {
@@ -35,7 +35,7 @@ private
 // Description: This represents the ZLIB Codec.
 class ZLIBCodec : BinaryCodec
 {
-	StreamData decode(AbstractStream stream, AbstractStream toStream)
+	StreamData decode(Stream stream, Stream toStream)
 	{
 	//	writeln("zlib start");
 

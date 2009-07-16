@@ -19,7 +19,7 @@ class Codec
 {
 public:
 
-	String getName()
+	String name()
 	{
 		return new String("Unknown Codec");
 	}

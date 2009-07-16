@@ -9,8 +9,6 @@
 
 module core.file;
 
-import interfaces.stream;
-
 import core.stream;
 import core.string;
 
@@ -125,7 +123,7 @@ public:
 		return true;
 	}
 
-	override bool read(AbstractStream stream, uint len) {
+	override bool read(Stream stream, uint len) {
 		if (_curpos + len > _length) {
 			return false;
 		}
@@ -147,7 +145,7 @@ public:
 		return len;
 	}
 
-	override ulong readAny(AbstractStream stream, uint len) {
+	override ulong readAny(Stream stream, uint len) {
 		if (_curpos + len > _length) {
 			len = cast(uint)(_length - _curpos);
 		}
@@ -180,7 +178,7 @@ public:
 		return true;
 	}
 
-	override bool write(AbstractStream stream, uint len) {
+	override bool write(Stream stream, uint len) {
 		if (len <= 0) { return false;}
 
 		ubyte buffer[] = new ubyte[len];
@@ -212,7 +210,7 @@ public:
 		return true;
 	}
 
-	override bool append(AbstractStream stream, uint len) {
+	override bool append(Stream stream, uint len) {
 		if (len <= 0) { return false;}
 
 		ubyte buffer[] = new ubyte[len];
@@ -224,7 +222,7 @@ public:
 		return true;
 	}
 
-	override ulong getRemaining() {
+	override ulong remaining() {
 		//Console.put("rem: ", _curpos, " ", _length, " ", _length - _curpos);
 		return _length - _curpos;
 	}

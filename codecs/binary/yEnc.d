@@ -11,8 +11,7 @@ module codecs.binary.yEnc;
 
 import core.endian;
 import core.literals;
-
-import interfaces.stream;
+import core.stream;
 
 import codecs.binary.codec;
 
@@ -38,7 +37,7 @@ private {
 // Description: This represents the yEnc Codec.
 class yEncCodec : BinaryCodec {
 
-	StreamData decode(AbstractStream stream, AbstractStream toStream) {
+	StreamData decode(Stream stream, Stream toStream) {
 		ushort chunk;
 		char linestr[257];
 		uint line;

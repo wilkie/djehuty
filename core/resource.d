@@ -514,12 +514,12 @@ private:
 
 		if (_sectionCounts[0] > 0)
 		{
-			_stringOffsets[0] = cast(uint)_file.getPosition();
+			_stringOffsets[0] = cast(uint)_file.position;
 		}
 
 		// skip to the image section
 
-		_file.skip(_sectionOffsets[1] - _file.getPosition());
+		_file.skip(_sectionOffsets[1] - _file.position);
 
 
 
@@ -549,13 +549,13 @@ private:
 
 		if (_sectionCounts[1] > 0)
 		{
-			_imageOffsets[0] = cast(uint)_file.getPosition();
+			_imageOffsets[0] = cast(uint)_file.position;
 		}
 
 		//Console.putln(_imageOffsets);
 		// skip to the menu section
 
-		_file.skip(_sectionOffsets[2] - _file.getPosition());
+		_file.skip(_sectionOffsets[2] - _file.position);
 
 		//Console.putln(_sectionOffsets[2] - _file.getPosition());
 
@@ -584,7 +584,7 @@ private:
 
 		if (_sectionCounts[2] > 0)
 		{
-			_menuOffsets[0] = cast(uint)_file.getPosition();
+			_menuOffsets[0] = cast(uint)_file.position;
 		}
 
 

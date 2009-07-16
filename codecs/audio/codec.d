@@ -15,33 +15,27 @@ import core.audio;
 import core.string;
 import core.time;
 import core.wavelet;
-
-import interfaces.stream;
+import core.stream;
 
 // Section: Interfaces
 
 // Description: The interface to an audio codec.
-class AudioCodec : Codec
-{
+class AudioCodec : Codec {
 public:
 
-	StreamData decode(AbstractStream stream, Wavelet toBuffer, ref AudioInfo wf)
-	{
+	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wf) {
 		return StreamData.Invalid;
 	}
 
-	StreamData seek(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount)
-	{
+	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
 		return StreamData.Invalid;
 	}
 
-	override String getName()
-	{
+	override String name() {
 		return new String("Unknown Audio Codec");
 	}
 
-	Time getCurrentTime()
-	{
+	Time getCurrentTime() {
 		return curTime;
 	}
 

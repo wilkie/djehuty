@@ -9,10 +9,9 @@
 
 module codecs.image.jpeg;
 
-import interfaces.stream;
 import core.view;
 import core.string;
-
+import core.stream;
 import core.endian;
 
 import codecs.image.codec;
@@ -310,12 +309,12 @@ private
 class JPEGCodec : ImageCodec
 {
 
-	String getName()
+	String name()
 	{
 		return new String("Joint Picture Experts Group");
 	}
 
-	StreamData decode(AbstractStream stream, ref View view)
+	StreamData decode(Stream stream, ref View view)
 	{
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
@@ -580,7 +579,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_SOF_READ_COMPONENTS:
 
 					// read the image components
-					if (stream.getRemaining() < (sof.num_image_components * 3))
+					if (stream.remaining < (sof.num_image_components * 3))
 					{
 						return StreamData.Required;
 					}
@@ -895,7 +894,7 @@ class JPEGCodec : ImageCodec
 
 				case JPEG_STATE_CHUNK_SOS_READ_COMPONENTS:
 
-					if (stream.getRemaining < (sos.num_image_components * 2)) {
+					if (stream.remaining < (sos.num_image_components * 2)) {
 						return StreamData.Required;
 					}
 

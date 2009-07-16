@@ -10,9 +10,9 @@
 
 module codecs.image.gif;
 
-import interfaces.stream;
 import core.view;
 import core.string;
+import core.stream;
 
 import codecs.image.codec;
 import codecs.codec;
@@ -117,11 +117,11 @@ private {
 
 // Description: The GIF Codec
 class GIFCodec : ImageCodec {
-	override String getName() {
+	override String name() {
 		return new String("Graphics Interchange Format");
 	}
 
-	StreamData decode(AbstractStream stream, ref View view) {
+	StreamData decode(Stream stream, ref View view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -155,7 +155,7 @@ class GIFCodec : ImageCodec {
 		return ret;
 	}
 
-	StreamData DecodeFrame(AbstractStream stream, ref View view) {
+	StreamData DecodeFrame(Stream stream, ref View view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -186,7 +186,7 @@ class GIFCodec : ImageCodec {
 		return StreamData.Required;
 	}
 
-	StreamData Decoder(ref AbstractStream stream, ref View view, ref ImageFrameDescription imageDesc) {
+	StreamData Decoder(ref Stream stream, ref View view, ref ImageFrameDescription imageDesc) {
 		uint q;
 
 		ushort gifCode;

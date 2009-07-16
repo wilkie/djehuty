@@ -1,16 +1,14 @@
 module codecs.audio.all;
 
-import interfaces.stream;
 import core.audio;
 import core.wavelet;
+import core.time;
+import core.literals;
+import core.string;
+import core.stream;
 
 import codecs.codec;
 import codecs.audio.codec;
-
-import core.time;
-
-import core.literals;
-import core.string;
 
 version(NoWaveAudio) {
 }
@@ -39,17 +37,17 @@ template RunCodec(StringLiteral8 codec) {
 	const char[] RunCodec = `
 		audioCodec = new ` ~ codec ~ `Codec();
 		
-		pos = stream.getPosition();
+		pos = stream.position;
 
 		if ((ret = audioCodec.decode(stream, buffer, wf)) != StreamData.Invalid) {
 			return ret;
 		}
-		
-		stream.setPosition(pos);
+
+		stream.position = pos;
 	`;
 }
 
-StreamData runAllCodecs(ref AudioCodec audioCodec, AbstractStream stream, Wavelet buffer, ref AudioInfo wf) {
+StreamData runAllCodecs(ref AudioCodec audioCodec, Stream stream, Wavelet buffer, ref AudioInfo wf) {
 	StreamData ret;
 	ulong pos;
 	

@@ -12,17 +12,14 @@
 module codecs.audio.wav;
 
 import codecs.audio.codec;
-
 import codecs.audio.mp2 : MP2Codec;
 
 import codecs.codec;
-import interfaces.stream;
+
+import core.stream;
 import core.wavelet;
 import core.audio;
-
 import core.time;
-
-import interfaces.mod;
 import core.string;
 
 import console.main;
@@ -36,7 +33,7 @@ class WAVCodec : AudioCodec {
 		return new String("Microsoft Wave");
 	}
 
-	StreamData decode(AbstractStream stream, Wavelet toBuffer, ref AudioInfo wi) {
+	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {
 		for (;;) {
 			switch (decoderState) {
 				case WAVE_STATE_INIT:
@@ -330,7 +327,7 @@ class WAVCodec : AudioCodec {
 	}
 
 	// Description: This function will advance the stream to the beginning of the buffer that contains the time requested.
-	StreamData seek(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
+	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
 		if (decoderState == 0) {
 			// not inited?
 			return StreamData.Invalid;
@@ -377,12 +374,12 @@ class WAVCodec : AudioCodec {
 		}
 	}
 
-	Time length(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi) {
+	Time length(Stream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}
 
-	Time lengthQuick(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi) {
+	Time lengthQuick(Stream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}

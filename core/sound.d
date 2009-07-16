@@ -10,14 +10,13 @@
 
 module core.sound;
 
-import interfaces.stream;
-
 import core.time;
 import core.file;
 import core.string;
 import core.audio;
 import core.wavelet;
 import core.event;
+import core.stream;
 
 import synch.thread;
 import synch.timer;
@@ -92,7 +91,7 @@ class Sound : Responder {
 
 	// Description: This function will stream the audio using the stream given, stopping and unloading any current audio playback.
 	// stream: The Stream containing the audio information to decode.
-	StreamData load(AbstractStream stream) {
+	StreamData load(Stream stream) {
 		_doneBuffering = false;
 		_state = State.Paused;
 
@@ -108,7 +107,7 @@ class Sound : Responder {
 
 		if (ret == StreamData.Invalid) { return ret; }
 		Console.putln("dboo");
-		Console.putln("Sound: Codec name: ", _curCodec.getName().array);
+		Console.putln("Sound: Codec name: ", _curCodec.name);
 
 		Console.putln("Sound: Audio File Loaded : Length: ", wavInfo.totalTime);
 		//getTotalTimeString();
@@ -251,7 +250,7 @@ protected:
 	ulong curPos;
 
 	AudioCodec _curCodec;
-	AbstractStream inStream;
+	Stream inStream;
 
 	Audio wavDevice;
 	AudioFormat wavFormat;

@@ -17,32 +17,76 @@ mixin(PlatformGenericImport!("definitions"));
 // TODO: allow ENORMOUS ARRAYS gracefully (> 4GB... switch to a Map)
 // TODO: Read and Write distinction, stream permissions
 
+// Section: Enums
+
+// Description: This enum gives a description of the current stream processing progress for any function that receives its information via a stream.
+enum StreamData : int
+{
+	// Description: The stream is invalid.  The primarly reason is that the stream does not represent the expected semantics of the data.  For instance, you gave a BMP file to the PNG decoder, the PNG header would not be present and the stream would be marked invalid.
+	Invalid = -1,
+
+	// Description: The stream is so far valid, and has been partially processed.  The function requires further data to complete.
+	Required,
+
+	// Description: The stream was used and a piece of information has been processed successfully.  There is more units to decode with further calls.  (A frame of animation or a sample of audio are examples)
+	Accepted,
+
+	// Description: The stream was used and all information was successfully decoded.
+	Complete,
+}
+
+// Description: This enum gives the possible permission types of the stream.
+
+// As you can see, individual bits indicate access type: read - 1, update - 2, append - 4, allocate - 8
+enum StreamAccess : int
+{
+	// Description: The stream allows no access to data.
+	NoAccess = 0,
+
+	// Description: The stream allows for reading.
+	Read = 1,
+
+	// Description: The stream allows for updating the contents, but not reading what was already there.  You cannot also change the size of the buffer.
+	Update = 2,
+
+	// Description: The stream allows for reading and updating. One cannot change the size of the stream.
+	ReadUpdate = 3,
+
+	// Description: The stream does not allow reading. The stream allows for writing past the end bounds of the buffer and allows for changing the internal memory capacity of the buffer.
+	Append = 14,
+
+	// Description: The stream does not allow reading. The stream allows for writing past the end bounds of the buffer, but one is confined to the memory capacity of the buffer at creation.
+	AppendFixed = 6,
+
+	// Description: The stream allows for all accesses, but the buffer is confined to use only as much memory as was originally allocated for it.
+	AllFixed = 7,
+
+	// Description: The stream allows all access.
+	AllAccess = 15,
+}
+
 // Section: Core/Streams
 
 // Description: A stream class!
 // Feature: Provides a nice interface to any read, write, and append operation on any type of input output device.
-class Stream : AbstractStream
-{
+class Stream {
 public:
 
 	// Description: This will create the stream using a default capacity.
-	this()
-	{
+	this() {
 		_data = new ubyte[cast(uint)_capacity];
 		_pos = &_data[0];
 	}
 
 	// Description: This will create the stream using the capacity given by the parameter.
 	// size: The default size of the stream, which will be allocated immediately.
-	this(ulong size)
-	{
+	this(ulong size) {
 		_capacity = size;
 
 		this();
 	}
 
-	this(ubyte[] fromArray)
-	{
+	this(ubyte[] fromArray) {
 		_capacity = fromArray.length;
 		_length = fromArray.length;
 
@@ -54,14 +98,12 @@ public:
 	// Methods //
 
 	// Description: This will zero out the entire contents of the stream.
-	void zero()
-	{
+	void zero() {
 		_data[0..$] = 0;
 	}
 
 	// Description: This will shrink the stream back to the default size and invalidate the contents. You will need allocation and write permissions.  If you do not have allocation permissions, this will simply perform the operations of zero().
-	void clear()
-	{
+	void clear() {
 		_capacity = 100000;
 		_data = new ubyte[cast(uint)_capacity];
 
@@ -74,16 +116,13 @@ public:
 	// Description: Will resize the Stream.
 	// Returns: Will return true when the Stream can be resized to this amount.
 	// newLength: the new length of the stream
-	bool resize(ulong newLength)
-	{
+	bool resize(ulong newLength) {
 		ubyte tmp[] = new ubyte[cast(uint)newLength];
 
-		if (newLength > _length)
-		{
+		if (newLength > _length) {
 			tmp[0..cast(uint)_length] = _data[0..cast(uint)_length];
 		}
-		else
-		{
+		else {
 			tmp[0..cast(uint)newLength] = _data[0..cast(uint)newLength];
 		}
 
@@ -109,12 +148,10 @@ public:
 	// bytes: The buffer with the data to be appended.
 	// len: The number of bytes to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	bool append(ubyte* bytes, uint len)
-	{
+	bool append(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
-		while (_length + len > _capacity)
-		{
+		while (_length + len > _capacity) {
 			resize();	// Size!
 		}
 
@@ -128,17 +165,14 @@ public:
 	// stream: The stream to append from.
 	// len: The number of bytes to stream.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	bool append(AbstractStream stream, uint len)
-	{
+	bool append(Stream stream, uint len) {
 		if (len <= 0) { return false;}
 
-		while (_length + len > _capacity)
-		{
+		while (_length + len > _capacity) {
 			resize();	// Size!
 		}
 
-		if (!stream.read(&_data[cast(uint)_length], len))
-		{
+		if (!stream.read(&_data[cast(uint)_length], len)) {
 			return false;
 		}
 
@@ -152,12 +186,10 @@ public:
 	// stream: The stream to append from.
 	// len: The number of bytes to stream.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	ulong appendAny(AbstractStream stream, uint len)
-	{
+	ulong appendAny(Stream stream, uint len) {
 		if (len <= 0) { return 0;}
 
-		while (_length + len > _capacity)
-		{
+		while (_length + len > _capacity) {
 			resize();	// Size!
 		}
 
@@ -173,12 +205,10 @@ public:
 	// bytes: The buffer to write from.
 	// len: The number of bytes to write.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	bool write(ubyte* bytes, uint len)
-	{
+	bool write(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
-		while (_curpos + len > _capacity)
-		{
+		while (_curpos + len > _capacity) {
 			resize();	// Size!
 		}
 
@@ -195,12 +225,10 @@ public:
 	// bytes: The buffer to write from.
 	// len: The number of bytes to write.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	bool write(AbstractStream stream, uint len)
-	{
+	bool write(Stream stream, uint len) {
 		if (len <= 0) { return false;}
 
-		while (_curpos + len > _capacity)
-		{
+		while (_curpos + len > _capacity) {
 			resize();	// Size!
 		}
 
@@ -217,19 +245,16 @@ public:
 	// bytes: The buffer to write from.
 	// len: The number of bytes to write.
 	// Returns: Will return true when the data could be successfully written and false when the data could not all be read.
-	ulong writeAny(AbstractStream stream, uint len)
-	{
+	ulong writeAny(Stream stream, uint len) {
 		if (len <= 0) { return false;}
 
-		while (_curpos + len > _capacity)
-		{
+		while (_curpos + len > _capacity) {
 			resize();	// Size!
 		}
 
 		len = cast(uint)stream.readAny(_pos, len);
 
-		if ((_curpos + len) > _length)
-		{
+		if ((_curpos + len) > _length) {
 			// cannot append
 			// TODO: throw permission exception
 			return 0;
@@ -245,219 +270,187 @@ public:
 	// Description: This function will write the ubyte passed to the end of the current stream.
 	// value: A ubyte to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(ubyte value)
-	{
+	bool append(ubyte value) {
 		return append(&value, 1);
 	}
 
 	// Description: This function will write the ubyte passed to the current position of the current stream and progress this stream the amount written.
 	// value: A ubyte to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(ubyte value)
-	{
+	bool write(ubyte value) {
 		return write(&value, 1);
 	}
 
 	// Description: This function will write the byte passed to the end of the current stream.
 	// value: A byte to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(byte value)
-	{
+	bool append(byte value) {
 		return append(cast(ubyte*)&value, 1);
 	}
 
 	// Description: This function will write the byte passed to the current position of the current stream and progress this stream the amount written.
 	// value: A byte to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(byte value)
-	{
+	bool write(byte value) {
 		return write(cast(ubyte*)&value, 1);
 	}
 
 	// Description: This function will write the ushort passed to the end of the current stream.
 	// value: A ushort to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(ushort value)
-	{
+	bool append(ushort value) {
 		return append(cast(ubyte*)&value, 2);
 	}
 
 	// Description: This function will write the ushort passed to the current position of the current stream and progress this stream the amount written.
 	// value: A ushort to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(ushort value)
-	{
+	bool write(ushort value) {
 		return write(cast(ubyte*)&value, 2);
 	}
 
 	// Description: This function will write the short passed to the end of the current stream.
 	// value: A ushort to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(short value)
-	{
+	bool append(short value) {
 		return append(cast(ubyte*)&value, 2);
 	}
 
 	// Description: This function will write the ushort passed to the current position of the current stream and progress this stream the amount written.
 	// value: A short to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(short value)
-	{
+	bool write(short value) {
 		return write(cast(ubyte*)&value, 2);
 	}
 
 	// Description: This function will write the uint passed to the end of the current stream.
 	// value: A uint to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(uint value)
-	{
+	bool append(uint value) {
 		return append(cast(ubyte*)&value, 4);
 	}
 
 	// Description: This function will write the uint passed to the current position of the current stream and progress this stream the amount written.
 	// value: A uint to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(uint value)
-	{
+	bool write(uint value) {
 		return write(cast(ubyte*)&value, 4);
 	}
 
 	// Description: This function will write the uint passed to the end of the current stream.
 	// value: A uint to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(int value)
-	{
+	bool append(int value) {
 		return append(cast(ubyte*)&value, 4);
 	}
 
 	// Description: This function will write the int passed to the current position of the current stream and progress this stream the amount written.
 	// value: A int to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(int value)
-	{
+	bool write(int value) {
 		return write(cast(ubyte*)&value, 4);
 	}
 
 	// Description: This function will write the ulong passed to the end of the current stream.
 	// value: A ulong to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(ulong value)
-	{
+	bool append(ulong value) {
 		return append(cast(ubyte*)&value, 8);
 	}
 
 	// Description: This function will write the ulong passed to the current position of the current stream and progress this stream the amount written.
 	// value: A ulong to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(ulong value)
-	{
+	bool write(ulong value) {
 		return write(cast(ubyte*)&value, 8);
 	}
 
 	// Description: This function will write the long passed to the end of the current stream.
 	// value: A long to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool append(long value)
-	{
+	bool append(long value) {
 		return append(cast(ubyte*)&value, 8);
 	}
 
 	// Description: This function will write the long passed to the current position of the current stream and progress this stream the amount written.
 	// value: A long to append.
 	// Returns: Will return true when the data could be successfully written and false when the data could not.
-	bool write(long value)
-	{
+	bool write(long value) {
 		return write(cast(ubyte*)&value, 8);
 	}
 
-	bool append(char[] str)
-	{
+	bool append(char[] str) {
 		return append(cast(ubyte*)str.ptr, char.sizeof * str.length);
 	}
 
-	bool writeUtf8(char[] str)
-	{
+	bool writeUtf8(char[] str) {
 		return write(cast(ubyte*)str.ptr, char.sizeof * str.length);
 	}
 
-	bool write(char[] str)
-	{
+	bool write(char[] str) {
 		return write(cast(ubyte*)str.ptr, char.sizeof * str.length);
 	}
 
-	bool append(wchar[] str)
-	{
+	bool append(wchar[] str) {
 		return append(cast(ubyte*)str.ptr, wchar.sizeof * str.length);
 	}
 
-	bool write(wchar[] str)
-	{
+	bool write(wchar[] str) {
 		return write(cast(ubyte*)str.ptr, wchar.sizeof * str.length);
 	}
 
-	bool append(dchar[] str)
-	{
+	bool append(dchar[] str) {
 		return append(cast(ubyte*)str.ptr, dchar.sizeof * str.length);
 	}
 
-	bool write(dchar[] str)
-	{
+	bool write(dchar[] str) {
 		return write(cast(ubyte*)str.ptr, dchar.sizeof * str.length);
 	}
 
 	// Description: This function places the last bytes of information into the front and sets the pointer to end of the information after it is moved.
-	void flush()
-	{
+	void flush() {
 	}
 
-	StreamAccess getPermissions()
-	{
+	StreamAccess permissions() {
 		//return permissions;
 		return StreamAccess.AllAccess;
 	}
 
 	// Description: This function will return the amount of data remaining in the stream from the current position.
 	// Returns: The number of bytes remaining in the stream.
-	ulong getRemaining()
-	{
+	ulong remaining() {
 		return _length - _curpos;
 	}
 
 	// Description: This function will return the current length of the stream.
 	// Returns: The total number of bytes of this stream.
-	ulong length()
-	{
+	ulong length() {
 		return _length;
 	}
 
 	// Description: This function will return the current position of the stream.
 	// Returns: The current byte of the stream.
-	ulong getPosition()
-	{
+	ulong position() {
 		return _curpos;
 	}
 
-	ulong setPosition(ulong position)
-	{
-		if (getPosition() > position)
-		{
+	ulong position(ulong newPosition) {
+		if (position > newPosition) {
 			// need to rewind
-			ulong amt = getPosition() - position;
+			ulong amt = position - newPosition;
 			rewind(amt);
 		}
-		else
-		{
+		else {
 			// need to skip
-			ulong amt = position - getPosition();
+			ulong amt = newPosition - position;
 			skip(amt);
 		}
 
-		return getPosition();
+		return position;
 	}
 
 	// Description: This function will rewind the current position to the very beginning of the stream's buffer.
-	void rewind()
-	{
+	void rewind() {
 		// set to start
 		_pos = &_data[0];
 		_curpos = 0;
@@ -466,10 +459,8 @@ public:
 	// Description: This function will rewind the current position the amount given if possible.
 	// amount: The number of bytes to rewind.
 	// Returns: Will return false if the stream cannot be rewound by that amount and true if the operation is successful.
-	bool rewind(ulong amount)
-	{
-		if (_curpos - amount < 0)
-		{
+	bool rewind(ulong amount) {
+		if (_curpos - amount < 0) {
 			return false;
 		}
 
@@ -482,10 +473,8 @@ public:
 	// Description: This function will rewind the current position the amount given or simply move to the beginning.
 	// amount: The number of bytes to rewind.
 	// Returns: Will return the number of bytes rewound successfully.  This could be less than 'amount' if the stream's current position was less than amount.  In this case, it has rewound to the very beginning and was analogous to the simple rewind() call.
-	ulong rewindAny(ulong amount)
-	{
-		if (_curpos - amount < 0)
-		{
+	ulong rewindAny(ulong amount) {
+		if (_curpos - amount < 0) {
 			amount = _curpos;
 		}
 
@@ -499,10 +488,8 @@ public:
 	// len: The number of bytes to read from this stream.
 	// buffer: The buffer into which the data will be copied.
 	// Returns: Will return true when the stream has copied successfully all data and false when there is not enough data to complete the operation.
-	bool read(void* buffer, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	bool read(void* buffer, uint len) {
+		if (_curpos + len > _length) {
 			return false;
 		}
 
@@ -518,10 +505,8 @@ public:
 	// len: The number of bytes to read from this stream.
 	// stream: The stream into which the data will be copied.
 	// Returns: Will return true when the stream has copied successfully all data and false when there is not enough data to complete the operation.
-	bool read(AbstractStream stream, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	bool read(Stream stream, uint len) {
+		if (_curpos + len > _length) {
 			return false;
 		}
 
@@ -556,10 +541,8 @@ public:
 	// len: The number of bytes to read from this stream.
 	// stream: The buffer into which the data will be copied.
 	// Returns: Will return the number of bytes successfully copied.  This will be less than len when the stream does not have len bytes left in its buffer.
-	ulong readAny(void* buffer, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	ulong readAny(void* buffer, uint len) {
+		if (_curpos + len > _length) {
 			len = cast(uint)(_length - _curpos);
 		}
 
@@ -573,10 +556,8 @@ public:
 	// len: The number of bytes to read from this stream.
 	// stream: The stream into which the data will be copied.
 	// Returns: Will return the number of bytes successfully copied.  This will be less than len when the stream does not have len bytes left in its buffer.
-	ulong readAny(AbstractStream stream, uint len)
-	{
-		if (_curpos + len > _length)
-		{
+	ulong readAny(Stream stream, uint len) {
+		if (_curpos + len > _length) {
 			len = cast(uint)(_length - _curpos);
 		}
 
@@ -606,66 +587,55 @@ public:
 	// Description: This function will read in a ubyte from the current stream and progress the current position upon success.
 	// toByte: a ubyte to be manipulated.
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
-	bool read(out ubyte toByte)
-	{
+	bool read(out ubyte toByte) {
 		return read(&toByte, 1);
 	}
 
 	// Description: This function will read in a ushort from the current stream and progress the current position upon success.
 	// toShort: a ushort to be manipulated.
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
-	bool read(out ushort toShort)
-	{
+	bool read(out ushort toShort) {
 		return read(cast(ubyte*)&toShort, 2);
 	}
 
 	// Description: This function will read in a uint from the current stream and progress the current position upon success.
 	// toInt: a uint to be manipulated.
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
-	bool read(out uint toInt)
-	{
+	bool read(out uint toInt) {
 		return read(cast(ubyte*)&toInt, 4);
 	}
 
 	// Description: This function will read in a double from the current stream and progress the current position upon success.
 	// toDouble: a double to be manipulated.
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
-	bool read(out double toDouble)
-	{
+	bool read(out double toDouble) {
 		return read(cast(ubyte*)&toDouble, 8);
 	}
 
 	// Description: This function will read in a float from the current stream and progress the current position upon success.
 	// toDouble: a float to be manipulated.
 	// Returns: Will return true upon success and false when the Stream does not have enough data.
-	bool read(out float toFloat)
-	{
+	bool read(out float toFloat) {
 		return read(cast(ubyte*)&toFloat, 4);
 	}
 
-	bool readLine(out char[] line)
-	{
+	bool readLine(out char[] line) {
 		ubyte inByte;
 
-		for(;;)
-		{
-			if (!read(inByte))
-			{
+		for(;;) {
+			if (!read(inByte)) {
 				// done
 				if (line is null) { return false; }
 				break;
 			}
-			else if (inByte == cast(ubyte)'\r')
-			{
+			else if (inByte == cast(ubyte)'\r') {
 				// ignore
 			}
-			else if (inByte == cast(ubyte)'\n')
-			{
+			else if (inByte == cast(ubyte)'\n') {
 				// done
 				break;
 			}
-			else
-			{
+			else {
 				// add to the string
 				line ~= cast(char)inByte;
 			}
@@ -674,14 +644,12 @@ public:
 		return true;
 	}
 
-	bool read(ref ubyte[] toBuffer)
-	{
+	bool read(ref ubyte[] toBuffer) {
 		return read(toBuffer.ptr, toBuffer.length);
 	}
 
 	// Description: This function will skip to the end of the stream.  Essentially, it will set the current position to the length.
-	void skip()
-	{
+	void skip() {
 		_curpos = _length;
 		_pos = &_data[cast(uint)_curpos];
 	}
@@ -689,10 +657,8 @@ public:
 	// Description: This function will skip through the stream the number of bytes given.
 	// amount: The number of bytes to skip.
 	// Returns: Will return true upon success and false when the stream does not have enough bytes to skip.
-	bool skip(ulong amount)
-	{
-		if (_curpos + amount > _length)
-		{
+	bool skip(ulong amount) {
+		if (_curpos + amount > _length) {
 			return false;
 		}
 
@@ -704,10 +670,8 @@ public:
 	// Description: This function will skip through the stream the number of bytes given or skip to the end of the stream when the operation would have skipped past the end of the buffer.
 	// amount: The number of bytes to skip.
 	// Returns: Will return the number of bytes skipped.  This may be less than amount if amount is greater than the amount of bytes left in the buffer.
-	ulong skipAny(ulong amount)
-	{
-		if (_curpos + amount > _length)
-		{
+	ulong skipAny(ulong amount) {
+		if (_curpos + amount > _length) {
 			amount = _length - _curpos;
 		}
 
@@ -722,8 +686,7 @@ public:
 	// distanceBehind: The number of bytes behind the current position the data region to copy starts.
 	// amount: The number of bytes to duplicate.
 	// Returns: Will return true upon success and false when the region is undefined (the current position is less than distanceBehind).
-	bool duplicate(ulong distanceBehind, uint amount)
-	{
+	bool duplicate(ulong distanceBehind, uint amount) {
 		if (amount <= 0) { return false; }
 
 		if (_curpos - distanceBehind < 0) { return false; }
@@ -742,36 +705,32 @@ public:
 	// distanceBehind: The number of bytes behind the current position the data region to copy starts.
 	// amount: The number of bytes to duplicate.
 	// Returns: Will return true upon success and false when the region is undefined (the length is less than distanceBehind).
-	bool duplicateFromEnd(ulong distanceBehind, uint amount)
-	{
+	bool duplicateFromEnd(ulong distanceBehind, uint amount) {
 		if (amount <= 0) { return false; }
 
 		if (_length - distanceBehind < 0) { return false; }
 
 		// need to store bytes...could be an overlapping array copy!
 
-		while (_length + amount > _capacity)
-		{
+		while (_length + amount > _capacity) {
 			resize();	// Size!
 		}
 
-		if (distanceBehind < amount) // overlapping regions (worst case)
-		{
+		if (distanceBehind < amount) {
+			// overlapping regions (worst case)
 			// in chunks
 			ubyte bytes[] = new ubyte[cast(uint)distanceBehind];
 
 			bytes[0..cast(uint)distanceBehind] = _data[cast(uint)_length-cast(uint)distanceBehind..cast(uint)_length];
 
-			while(distanceBehind < amount)
-			{
+			while(distanceBehind < amount) {
 				_data[cast(uint)_length..cast(uint)_length+cast(uint)distanceBehind] = bytes[0..cast(uint)distanceBehind];
 
 				_length += distanceBehind;
 				amount -= distanceBehind;
 			}
 
-			if (amount > 0)
-			{
+			if (amount > 0) {
 				_data[cast(uint)_length..cast(uint)_length+amount] = bytes[0..amount];
 				_length += amount;
 			}
@@ -793,28 +752,23 @@ public:
 	// allows a viewer of a stream to save the current position it has
 	// and then recall this, if it should believe another function
 	// may manipulate the stream position.
-	bool PushRestriction(ulong length)
-	{
+	bool PushRestriction(ulong length) {
 		return false;
 	}
 
-	bool PushRestriction(ulong startingIndex, ulong length)
-	{
+	bool PushRestriction(ulong startingIndex, ulong length) {
 		return false;
 	}
 
-	bool PopRestriction()
-	{
+	bool PopRestriction() {
 		return false;
 	}
 
 
 
 
-	ubyte[] contents()
-	{
-		if (_length == 0)
-		{
+	ubyte[] contents() {
+		if (_length == 0) {
 			return null;
 		}
 		return _data[0..cast(uint)_length];
@@ -830,13 +784,11 @@ protected:
 	const uint AppendOnlyFlag = 4;
 	const uint AllocOnlyFlag = 8;
 
-	void readFrom(void* buffer, ulong pos, ulong len)
-	{
+	void readFrom(void* buffer, ulong pos, ulong len) {
 		(cast(ubyte*)buffer)[0..cast(uint)len] = _data[cast(uint)pos..cast(uint)pos+cast(uint)len];
 	}
 
-	void resize()
-	{
+	void resize() {
 		_capacity += 150000;
 
 		ubyte tmp[] = new ubyte[cast(uint)_capacity];
@@ -859,80 +811,61 @@ protected:
 	ubyte* _pos = null;
 	ulong _curpos = 0;
 }
-/*
-ubyte* StreamGetPos(Stream s)
-{
-	return s._pos;
-}
-*/
 
-class Buffer : Stream
-{
+class Buffer : Stream {
 	// Description: This will create the stream using a default capacity.
-	this()
-	{
+	this() {
 		super();
 	}
 
 	// Description: This will create the stream using the capacity given by the parameter.
 	// size: The default size of the stream, which will be allocated immediately.
-	this(ulong size)
-	{
+	this(ulong size) {
 		super(size);
 	}
 
-	this(ubyte[] fromArray)
-	{
+	this(ubyte[] fromArray) {
 		super(fromArray);
 	}
 }
 
-class BufferReader : Stream
-{
+class BufferReader : Stream {
 	// Description: This will create the stream using a default capacity.
-	this()
-	{
+	this() {
 		super();
 	}
 
 	// Description: This will create the stream using the capacity given by the parameter.
 	// size: The default size of the stream, which will be allocated immediately.
-	this(ulong size)
-	{
+	this(ulong size) {
 		super(size);
 	}
 
-	this(ubyte[] fromArray)
-	{
+	this(ubyte[] fromArray) {
 		super(fromArray);
 	}
 
 	// Exceptions:
 
-	override bool write(byte value)
-	{
+	override bool write(byte value) {
 		//throw new Exception("Stream Permission");
 		return false;
 	}
 }
 
-class BufferWriter : Stream
-{
+class BufferWriter : Stream {
 	// Description: This will create the stream using a default capacity.
-	this()
-	{
+	this() {
 		super();
 	}
 
 	// Description: This will create the stream using the capacity given by the parameter.
 	// size: The default size of the stream, which will be allocated immediately.
-	this(ulong size)
-	{
+	this(ulong size) {
 		super(size);
 	}
 
-	this(ubyte[] fromArray)
-	{
+	this(ubyte[] fromArray) {
 		super(fromArray);
 	}
 }

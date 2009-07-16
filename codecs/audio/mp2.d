@@ -12,8 +12,7 @@ module codecs.audio.mp2;
 import codecs.audio.codec;
 import codecs.codec;
 
-import interfaces.stream;
-
+import core.stream;
 import core.wavelet;
 import core.audio;
 import core.time;
@@ -946,7 +945,7 @@ class MP2Codec : AudioCodec
 		return new String("MPEG Layer 2");
 	}
 
-	StreamData decode(AbstractStream stream, Wavelet toBuffer, ref AudioInfo wi)
+	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi)
 	{
 		for (;;)
 		{
@@ -957,11 +956,10 @@ class MP2Codec : AudioCodec
 
 					decoderState = MP2_BUFFER_AUDIO;
 
-					posOfFirstFrame = cast(long)stream.getPosition();
+					posOfFirstFrame = cast(long)stream.position;
 
-					SeekPointer sptr = {Time.init, stream.getPosition(), null};
+					SeekPointer sptr = {Time.init, stream.position(), null};
 					seekLUT ~= sptr;
-
 
 					// *** fall through *** //
 
@@ -1140,7 +1138,7 @@ class MP2Codec : AudioCodec
 						if (toBuffer !is null)
 						{
 							toBuffer.setAudioFormat(wf);
-							bufferTime = toBuffer.getTime();
+							bufferTime = toBuffer.time;
 						}
 
 						if (header.Protected == 0)
@@ -1156,7 +1154,7 @@ class MP2Codec : AudioCodec
 					}
 					else
 					{
-						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.getPosition() - 4);
+						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
 						ubyte curByte;
 						if (!stream.read(curByte))
 						{
@@ -2375,7 +2373,7 @@ class MP2Codec : AudioCodec
 		return 0;
 	}
 
-	StreamData seek(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount)
+	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount)
 	{
 		if (decoderState == 0)
 		{
@@ -2412,7 +2410,7 @@ class MP2Codec : AudioCodec
 			// for other types of files, it might be
 			// mp3 can be variable, and would require a seek from the
 			// beginning or maintaining a cache of some sort.
-			if (!stream.rewind(cast(ulong)(stream.getPosition() - cast(long)posOfFirstFrame)))
+			if (!stream.rewind(cast(ulong)(stream.position - cast(long)posOfFirstFrame)))
 			{
 				return StreamData.Required;
 			}
@@ -2432,13 +2430,13 @@ class MP2Codec : AudioCodec
 		}
 	}
 
-	Time length(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi)
+	Time length(Stream stream, ref AudioFormat wf, ref AudioInfo wi)
 	{
 		Time tme = Time.init;
 		return tme;
 	}
 
-	Time lengthQuick(AbstractStream stream, ref AudioFormat wf, ref AudioInfo wi)
+	Time lengthQuick(Stream stream, ref AudioFormat wf, ref AudioInfo wi)
 	{
 		Time tme = Time.init;
 		return tme;

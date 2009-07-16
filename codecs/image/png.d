@@ -13,135 +13,24 @@ import codecs.binary.zlib;
 
 import console.main;
 
-//------------------------
-
-private
-{
-
-	const auto PNG_STATE_INIT_PROGRESS				= 0;
-	const auto PNG_STATE_INIT						= 1;
-	const auto PNG_STATE_READ_CHUNK_HEADER			= 2;
-	const auto PNG_STATE_READ_CHUNK_CRC				= 3;
-	const auto PNG_STATE_SKIP_CHUNK					= 4;
-
-	const auto PNG_STATE_READ_IHDR					= 5;
-	const auto PNG_STATE_READ_PLTE					= 6;
-	const auto PNG_STATE_READ_IDAT					= 7;
-	const auto PNG_STATE_READ_IEND					= 8;
-
-	const auto PNG_STATE_READ_PLTE_ENTRIES			= 9;
-
-	const auto PNG_STATE_INTERPRET_IDAT				= 10;
-	const auto PNG_STATE_FILL_IDAT					= 11;
-	const auto PNG_STATE_DONE_IDAT					= 12;
-
-	const auto PNG_STATE_DECODE_READ_FILTER_TYPE	= 13;
-
-		// FILTER STATES //
-
-	const auto PNG_STATE_UNFILTER_NONE				= 14;
-	const auto PNG_STATE_UNFILTER_SUB				= 15;
-	const auto PNG_STATE_UNFILTER_UP				= 16;
-	const auto PNG_STATE_UNFILTER_AVERAGE			= 17;
-	const auto PNG_STATE_UNFILTER_PAETH				= 18;
-
-		// RENDER STATES //
-
-	const auto PNG_STATE_RENDER_STATE_BASE			= 32; // defines 32...32 + PNG_TRUECOLOUR_ALPHA_16BPP for the byte renderers
-
-
-
-	// Chunk Type Definitions //
-
-	const auto PNG_CHUNK_IHDR						= 0x52444849;
-	const auto PNG_CHUNK_PLTE						= 0x45544C50;
-	const auto PNG_CHUNK_IDAT						= 0x54414449;
-	const auto PNG_CHUNK_IEND						= 0x444E4549;
-
-	// Image Types //
-
-	const auto PNG_GREYSCALE_1BPP					= ((1 << 16) + 1);
-	const auto PNG_GREYSCALE_2BPP					= ((1 << 16) + 2);
-	const auto PNG_GREYSCALE_4BPP					= ((1 << 16) + 4);
-	const auto PNG_GREYSCALE_8BPP					= ((1 << 16) + 8);
-	const auto PNG_GREYSCALE_16BPP					= ((1 << 16) + 16);
-
-	const auto PNG_TRUECOLOUR_8BPP					= ((3 << 16) + 8);
-	const auto PNG_TRUECOLOUR_16BPP					= ((3 << 16) + 16);
-
-	const auto PNG_INDEXED_COLOUR_1BPP				= ((4 << 16) + 1);
-	const auto PNG_INDEXED_COLOUR_2BPP				= ((4 << 16) + 2);
-	const auto PNG_INDEXED_COLOUR_4BPP				= ((4 << 16) + 4);
-	const auto PNG_INDEXED_COLOUR_8BPP				= ((4 << 16) + 8);
-
-	const auto PNG_GREYSCALE_ALPHA_8BPP				= ((5 << 16) + 8);
-	const auto PNG_GREYSCALE_ALPHA_16BPP			= ((5 << 16) + 16);
-
-	const auto PNG_TRUECOLOUR_ALPHA_8BPP			= ((7 << 16) + 8);
-	const auto PNG_TRUECOLOUR_ALPHA_16BPP			= ((7 << 16) + 16);
-
-			// defines the rest of the states for interlaced rendering
-	const auto PNG_STATE_RENDER_INTERLACED_STATE_BASE = (PNG_STATE_RENDER_STATE_BASE + PNG_TRUECOLOUR_ALPHA_16BPP);
-
-
-
-	align (1) struct _djehuty_image_png_chunk_header
-	{
-		uint pngChunkLength;
-		uint pngChunkType;
-	}
-
-	align (1) struct _djehuty_image_png_ihdr
-	{
-		uint pngWidth;
-		uint pngHeight;
-		ubyte pngBitDepth;
-		ubyte pngColorType;
-		ubyte pngCompressionMethod;
-		ubyte pngFilterMethod;
-		ubyte pngInterlaceMethod;
-	}
-
-	align (1) struct _djehuty_image_png_color
-	{
-		ubyte red;
-		ubyte green;
-		ubyte blue;
-	}
-
-	//GLOBAL STATIC CONSTANTS
-	//------------------------
-
-	static const uint pngInterlaceIncrementsX[7] = (8, 8, 4, 4, 2, 2, 1);
-	static const uint pngInterlaceIncrementsY[7] = (8, 8, 8, 4, 4, 2, 2);
-	static const uint pngInterlaceStartsX[7] = (0, 4, 0, 2, 0, 1, 0);
-	static const uint pngInterlaceStartsY[7] = (0, 0, 4, 0, 2, 0, 1);
-
-	// for low bpp color conversion
-	static const ubyte	png1BPP[2] = (0, 255);
-	static const ubyte	png2BPP[4] = (0, 85, 170, 255);
-	static const ubyte	png4BPP[16] = (0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255);
-
-}
-
 // Section: Codecs/Image
 
 // Description: The PNG Codec
 class PNGCodec : ImageCodec
 {
-	override String getName()
+	override String name()
 	{
 		return new String("Portable Network Graphics");
 	}
 
-	StreamData decode(AbstractStream stream, ref View view)
+	StreamData decode(Stream stream, ref View view)
 	{
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
 		view.setAlphaFlag(true);
 
-		AbstractStream streamToDecode;
+		Stream streamToDecode;
 
 		streamToDecode = new Stream();
 
@@ -3027,6 +2916,27 @@ class PNGCodec : ImageCodec
 
 private:
 
+	align (1) struct _djehuty_image_png_chunk_header {
+		uint pngChunkLength;
+		uint pngChunkType;
+	}
+
+	align (1) struct _djehuty_image_png_ihdr {
+		uint pngWidth;
+		uint pngHeight;
+		ubyte pngBitDepth;
+		ubyte pngColorType;
+		ubyte pngCompressionMethod;
+		ubyte pngFilterMethod;
+		ubyte pngInterlaceMethod;
+	}
+
+	align (1) struct _djehuty_image_png_color {
+		ubyte red;
+		ubyte green;
+		ubyte blue;
+	}
+	
 	ubyte pngHeader[8];
 
 	_djehuty_image_png_chunk_header pngChunkHeader;
@@ -3047,7 +2957,7 @@ private:
 
 	//IDAT
 	//ZLIB, et al
-	AbstractStream pngUncompressedData = null;
+	Stream pngUncompressedData = null;
 	ZLIBCodec zlibDecompressor = null;
 
 	// FOR UNFILTERING
@@ -3082,6 +2992,84 @@ private:
 	// for the decoder state
 	uint pngFilterState;				//the filter state
 	uint pngRenderState;				//the render state per image type
+
+	// States
+
+	const auto PNG_STATE_INIT_PROGRESS				= 0;
+	const auto PNG_STATE_INIT						= 1;
+	const auto PNG_STATE_READ_CHUNK_HEADER			= 2;
+	const auto PNG_STATE_READ_CHUNK_CRC				= 3;
+	const auto PNG_STATE_SKIP_CHUNK					= 4;
+
+	const auto PNG_STATE_READ_IHDR					= 5;
+	const auto PNG_STATE_READ_PLTE					= 6;
+	const auto PNG_STATE_READ_IDAT					= 7;
+	const auto PNG_STATE_READ_IEND					= 8;
+
+	const auto PNG_STATE_READ_PLTE_ENTRIES			= 9;
+
+	const auto PNG_STATE_INTERPRET_IDAT				= 10;
+	const auto PNG_STATE_FILL_IDAT					= 11;
+	const auto PNG_STATE_DONE_IDAT					= 12;
+
+	const auto PNG_STATE_DECODE_READ_FILTER_TYPE	= 13;
+
+		// FILTER STATES //
+
+	const auto PNG_STATE_UNFILTER_NONE				= 14;
+	const auto PNG_STATE_UNFILTER_SUB				= 15;
+	const auto PNG_STATE_UNFILTER_UP				= 16;
+	const auto PNG_STATE_UNFILTER_AVERAGE			= 17;
+	const auto PNG_STATE_UNFILTER_PAETH				= 18;
+
+		// RENDER STATES //
+
+	const auto PNG_STATE_RENDER_STATE_BASE			= 32; // defines 32...32 + PNG_TRUECOLOUR_ALPHA_16BPP for the byte renderers
+
+	// Chunk Type Definitions //
+
+	const auto PNG_CHUNK_IHDR						= 0x52444849;
+	const auto PNG_CHUNK_PLTE						= 0x45544C50;
+	const auto PNG_CHUNK_IDAT						= 0x54414449;
+	const auto PNG_CHUNK_IEND						= 0x444E4549;
+
+	// Image Types //
+
+	const auto PNG_GREYSCALE_1BPP					= ((1 << 16) + 1);
+	const auto PNG_GREYSCALE_2BPP					= ((1 << 16) + 2);
+	const auto PNG_GREYSCALE_4BPP					= ((1 << 16) + 4);
+	const auto PNG_GREYSCALE_8BPP					= ((1 << 16) + 8);
+	const auto PNG_GREYSCALE_16BPP					= ((1 << 16) + 16);
+
+	const auto PNG_TRUECOLOUR_8BPP					= ((3 << 16) + 8);
+	const auto PNG_TRUECOLOUR_16BPP					= ((3 << 16) + 16);
+
+	const auto PNG_INDEXED_COLOUR_1BPP				= ((4 << 16) + 1);
+	const auto PNG_INDEXED_COLOUR_2BPP				= ((4 << 16) + 2);
+	const auto PNG_INDEXED_COLOUR_4BPP				= ((4 << 16) + 4);
+	const auto PNG_INDEXED_COLOUR_8BPP				= ((4 << 16) + 8);
+
+	const auto PNG_GREYSCALE_ALPHA_8BPP				= ((5 << 16) + 8);
+	const auto PNG_GREYSCALE_ALPHA_16BPP			= ((5 << 16) + 16);
+
+	const auto PNG_TRUECOLOUR_ALPHA_8BPP			= ((7 << 16) + 8);
+	const auto PNG_TRUECOLOUR_ALPHA_16BPP			= ((7 << 16) + 16);
+
+			// defines the rest of the states for interlaced rendering
+	const auto PNG_STATE_RENDER_INTERLACED_STATE_BASE = (PNG_STATE_RENDER_STATE_BASE + PNG_TRUECOLOUR_ALPHA_16BPP);
+
+	//GLOBAL STATIC CONSTANTS
+	//------------------------
+
+	static const uint pngInterlaceIncrementsX[7] = (8, 8, 4, 4, 2, 2, 1);
+	static const uint pngInterlaceIncrementsY[7] = (8, 8, 8, 4, 4, 2, 2);
+	static const uint pngInterlaceStartsX[7] = (0, 4, 0, 2, 0, 1, 0);
+	static const uint pngInterlaceStartsY[7] = (0, 0, 4, 0, 2, 0, 1);
+
+	// for low bpp color conversion
+	static const ubyte	png1BPP[2] = (0, 255);
+	static const ubyte	png2BPP[4] = (0, 85, 170, 255);
+	static const ubyte	png4BPP[16] = (0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255);
 
 }
 

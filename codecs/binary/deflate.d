@@ -10,8 +10,7 @@
 module codecs.binary.deflate;
 
 import core.endian;
-
-import interfaces.stream;
+import core.stream;
 
 import codecs.binary.codec;
 
@@ -203,7 +202,7 @@ private
 // Description: This represents the DEFLATE Codec.
 class DEFLATECodec : BinaryCodec {
 
-	StreamData decode(AbstractStream stream, AbstractStream toStream) {
+	StreamData decode(Stream stream, Stream toStream) {
 		uint counter;
 
 		for (;;) {
