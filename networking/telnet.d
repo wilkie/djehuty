@@ -11,9 +11,9 @@ module networking.telnet;
 
 import core.literals;
 import core.string;
-import core.socket;
 import core.unicode;
 
+import io.socket;
 import io.console;
 
 import synch.thread;

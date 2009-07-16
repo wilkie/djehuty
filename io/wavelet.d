@@ -10,8 +10,7 @@ import core.sound;
 import io.audio;
 import io.console;
 
-enum Interpolate
-{
+enum Interpolate {
 	Zeroth,
 	Linear,
 }

@@ -25,7 +25,7 @@ DFILES_PLATFORM_WIN = platform/win/scaffolds/system.d platform/win/main.d platfo
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
 DFILES_ANALYZING = analyzing/debugger.d
-DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/filesystem.d core/definitions.d core/application.d core/format.d core/time.d core/sound.d core/unicode.d core/resource.d core/menu.d core/socket.d core/endian.d core/image.d core/stream.d core/string.d core/main.d core/color.d
+DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/filesystem.d core/definitions.d core/application.d core/format.d core/time.d core/sound.d core/unicode.d core/resource.d core/menu.d core/endian.d core/image.d core/stream.d core/string.d core/main.d core/color.d
 DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
 DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
 DFILES_PARSING = parsing/lexer.d parsing/cfg.d
@@ -35,7 +35,7 @@ DFILES_IMAGE_CODECS = codecs/image/codec.d codecs/image/all.d codecs/image/bmp.d
 DFILES_AUDIO_CODECS = codecs/audio/codec.d codecs/audio/all.d codecs/audio/mp2.d codecs/audio/wav.d
 DFILES_GRAPHICS = graphics/view.d graphics/graphics.d graphics/convexhull.d graphics/region.d graphics/brush.d graphics/font.d graphics/pen.d
 DFILES_NETWORKING = networking/http.d networking/telnet.d networking/irc.d
-DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d
+DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d io/socket.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d

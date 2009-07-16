@@ -9,7 +9,6 @@
 
 module networking.http;
 
-import core.socket;
 import core.string;
 import core.definitions;
 import synch.thread;
@@ -17,6 +16,7 @@ import synch.semaphore;
 import core.stream;
 import core.unicode;
 
+import io.socket;
 import io.console;
 
 class HTTPHeader

@@ -10,11 +10,11 @@
 module networking.irc;
 
 import core.string;
-import core.socket;
 import core.stream;
 import synch.thread;
 import core.unicode;
 
+import io.socket;
 import io.console;
 
 struct IRC

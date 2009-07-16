@@ -1,4 +1,4 @@
-module core.socket;
+module io.socket;
 
 import core.stream;
 import core.string;
