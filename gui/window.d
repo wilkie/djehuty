@@ -17,14 +17,15 @@ import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformScaffoldImport!());
 
-import core.view;
+import graphics.view;
+import graphics.graphics;
+
 import core.menu;
 import core.definitions;
 import core.color;
 import core.string;
 import core.event;
 import core.main;
-import core.graphics;
 
 import interfaces.container;
 

@@ -13,7 +13,8 @@ import opengl.gl;
 
 import core.image;
 import core.string;
-import core.view;
+
+import graphics.view;
 
 // Section: OpenGL
 

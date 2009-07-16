@@ -4,7 +4,6 @@ import gui.widget;
 import gui.togglefield;
 
 import core.string;
-import core.graphics;
 import core.event;
 
 // Description: This control provides a method of grouping together toggle fields to form a collection of mutually exclusive 'radio' fields.

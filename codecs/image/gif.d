@@ -10,7 +10,8 @@
 
 module codecs.image.gif;
 
-import core.view;
+import graphics.view;
+
 import core.string;
 import core.stream;
 

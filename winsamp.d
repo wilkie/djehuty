@@ -2,12 +2,13 @@ import core.definitions;
 import core.color;
 import core.event;
 
-import gui . application;
+import gui.application;
 import gui.window;
 import gui.button;
 import gui.widget;
 
-import core.graphics;
+import graphics.graphics;
+
 import core.image;
 import core.regex;
 import core.string;

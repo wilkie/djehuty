@@ -16,8 +16,9 @@ import platform.win.main;
 
 import gui.window;
 
-import core.view;
-import core.graphics;
+import graphics.view;
+import graphics.graphics;
+
 import core.string;
 import core.main;
 import core.definitions;

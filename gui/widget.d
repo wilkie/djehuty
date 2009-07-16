@@ -16,11 +16,12 @@ import core.definitions;
 
 import interfaces.container;
 
+import graphics.view;
+import graphics.graphics;
+
 import core.main;
-import core.view;
 import core.string;
 import core.menu;
-import core.graphics;
 import core.color;
 import core.event;
 import core.literals;

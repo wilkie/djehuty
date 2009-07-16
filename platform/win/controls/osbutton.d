@@ -9,7 +9,6 @@ import platform.win.widget;
 import platform.win.main;
 
 import core.string;
-import core.view;
 import core.definitions;
 
 import gui.widget;
@@ -17,7 +16,8 @@ import gui.window;
 
 import io.console;
 
-import core.graphics;
+import graphics.view;
+import graphics.graphics;
 
 class OSButton : Button, WinWidget
 {

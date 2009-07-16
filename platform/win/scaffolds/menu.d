@@ -15,8 +15,6 @@ import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
 
-import core.view;
-import core.graphics;
 import core.string;
 import core.menu;
 import core.main;

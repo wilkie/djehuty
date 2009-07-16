@@ -10,7 +10,8 @@
 module platform.win.widget;
 
 import platform.win.common;
-import core.view;
+
+import graphics.view;
 
 // os control interface
 

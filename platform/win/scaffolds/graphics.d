@@ -10,9 +10,9 @@
 
 module platform.win.scaffolds.graphics;
 
-import core.view;
+import graphics.view;
+
 import core.string;
-import core.graphics;
 import core.color;
 import core.main;
 import core.definitions;

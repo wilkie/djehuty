@@ -15,9 +15,10 @@ import platform.win.common;
 import platform.win.vars;
 import platform.win.widget;
 
+import graphics.view;
+
 import core.main;
 import core.definitions;
-import core.view;
 import core.menu;
 import core.string;
 import core.unicode;

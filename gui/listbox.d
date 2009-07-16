@@ -5,7 +5,8 @@ import gui.widget;
 import core.color;
 import core.definitions;
 import core.string;
-import core.graphics;
+
+import graphics.graphics;
 
 import utils.arraylist;
 

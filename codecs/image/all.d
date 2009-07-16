@@ -1,6 +1,7 @@
 module codecs.image.all;
 
-import core.view;
+import graphics.view;
+
 import core.literals;
 import core.string;
 import core.stream;

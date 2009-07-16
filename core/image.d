@@ -11,8 +11,9 @@ module core.image;
 
 import core.stream;
 import core.string;
-import core.view;
 import core.stream;
+
+import graphics.view;
 
 import io.file;
 import io.console;

@@ -1,7 +1,8 @@
 module codecs.image.png;
 
+import graphics.view;
+
 import core.stream;
-import core.view;
 import core.string;
 import core.endian;
 

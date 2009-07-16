@@ -14,7 +14,8 @@ import gui.widget;
 import core.color;
 import core.definitions;
 import core.string;
-import core.graphics;
+
+import graphics.graphics;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
