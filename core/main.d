@@ -12,7 +12,6 @@ module core.main;
 
 import core.string;
 import core.arguments;
-import core.filesystem;
 import core.application;
 
 import io.console;

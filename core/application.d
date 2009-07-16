@@ -12,8 +12,8 @@ module core.application;
 
 import core.string;
 import core.unicode;
+import core.system;
 import core.main;
-import core.filesystem;
 import core.arguments;
 import core.event;
 
@@ -69,7 +69,7 @@ class Application : Responder {
 	bool isInstalled() {
 		// return true when the executable currently being executed is
 		// located in the filesystem's installed binaries directory
-		return (FileSystem.getBinaryDir() == FileSystem.getApplicationDir());
+		return (System.FileSystem.getBinaryDir() == System.FileSystem.getApplicationDir());
 	}
 
 	void setArguments(Arguments argInstance) {

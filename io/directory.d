@@ -11,7 +11,7 @@
 module io.directory;
 
 import core.string;
-import core.filesystem;
+import core.system;
 
 import io.file;
 import io.console;
@@ -44,7 +44,7 @@ class Directory
 			// relative path
 
 			// get the working directory
-			Directory cur = FileSystem.getCurrentDir();
+			Directory cur = System.FileSystem.getCurrentDir();
 
 			// create an absolute path
 			_path = cur.path ~ "/" ~ path;
