@@ -223,7 +223,7 @@ class Socket : Stream {
 
 	// Description: Will return the String representing the host currently open, or null for when there is no open socket.
 	// Returns: The String of the host.
-    String getHostname() {
+    String hostname() {
 		if (_inited) {
 	        return _hostname;
 	    }
@@ -231,7 +231,7 @@ class Socket : Stream {
 		return null;
 	}
 
-	ulong getPort() {
+	ulong port() {
 		if (_inited) { return 0; }
 
 		return _port;
