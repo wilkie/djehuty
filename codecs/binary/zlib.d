@@ -15,35 +15,15 @@ import codecs.binary.deflate;
 
 import core.stream;
 
-private
-{
-	const auto ZLIB_STATE_INIT						= 0;
-
-	const auto ZLIB_STATE_READ_HEADER				= 1;
-	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
-	const auto ZLIB_STATE_READ_ADLER32				= 3;
-
-	align(1) struct _zlib_cmf_flg_header
-	{
-		ubyte zlibCMF;
-		ubyte zlibFLG;
-	};
-}
-
 // Section: Codecs/Binary
 
 // Description: This represents the ZLIB Codec.
-class ZLIBCodec : BinaryCodec
-{
-	StreamData decode(Stream stream, Stream toStream)
-	{
+class ZLIBCodec : BinaryCodec {
+	StreamData decode(Stream stream, Stream toStream) {
 	//	writeln("zlib start");
 
-		for (;;)
-		{
-			switch (decoderState)
-			{
-
+		for (;;) {
+			switch (decoderState) {
 				// INIT DECODER //
 			case ZLIB_STATE_INIT:
 	//	writeln("zlib init");
@@ -65,8 +45,7 @@ class ZLIBCodec : BinaryCodec
 				//OutputDebugStringA("zlib - attempting to read in headers\n");
 	//	writeln("zlib read header");
 
-				if (!(stream.read(&zlibStreamHeader,2)))
-				{
+				if (!(stream.read(&zlibStreamHeader,2))) {
 					return StreamData.Required;
 				}
 	//	writeln("zlib header read");
@@ -93,35 +72,29 @@ class ZLIBCodec : BinaryCodec
 				// FLEVEL
 				zlibCompressionLevel = cast(ubyte)(zlibStreamHeader.zlibFLG >> 6);
 
-				if (zlibCompressionMethod == 8)
-				{
+				if (zlibCompressionMethod == 8) {
 					///write("zlib - using DEFLATE\n");
 
-					if (zlibCompressionInfo > 7)
-					{
+					if (zlibCompressionInfo > 7) {
 						//write("zlib - window size is invalid\n");
 
 						return StreamData.Invalid;
 					}
-					else if (zlibCompressionInfo == 7)
-					{
+					else if (zlibCompressionInfo == 7) {
 	//					write("zlib - window size of 32K\n");
 					}
 
 				}
-				else
-				{
+				else {
 					//ite("zlib - unsupported compression method\n");
 					return StreamData.Invalid;
 				}
 
-				if (zlibIsDictionary)
-				{
+				if (zlibIsDictionary) {
 					//write("zlib - has preset dictionary\n");
 				}
 
-				switch (zlibCompressionLevel)
-				{
+				switch (zlibCompressionLevel) {
 				case 0:
 					//write("zlib - compression level: fastest\n");
 					break;
@@ -151,17 +124,14 @@ class ZLIBCodec : BinaryCodec
 				//decoding.rewind();
 	//	writeln("zlib deflate");
 
-				if (deflateDecompressor is null)
-				{
+				if (deflateDecompressor is null) {
 					deflateDecompressor = new DEFLATECodec();
 				}
 
-				if ((ret = deflateDecompressor.decode(stream, toStream)) != StreamData.Required)
-				{
+				if ((ret = deflateDecompressor.decode(stream, toStream)) != StreamData.Required) {
 					decoderState = ZLIB_STATE_READ_ADLER32;
 				}
-				else
-				{
+				else {
 					////OutputDebugStringA("zlib - returning early\n");
 					return ret;
 				}
@@ -171,8 +141,7 @@ class ZLIBCodec : BinaryCodec
 
 				//OutputDebugStringA("zlib - decompression done, reading ALDER32\n");
 
-				if (!(stream.skip(4)))
-				{
+				if (!(stream.skip(4))) {
 					//return StreamData.Required;
 				}
 				//OutputDebugStringA("zlib - returning\n");
@@ -210,4 +179,17 @@ protected:
 
 	// USED WHEN STREAMING THE DECODER
 	DEFLATECodec deflateDecompressor;
+
+private:
+
+	const auto ZLIB_STATE_INIT						= 0;
+
+	const auto ZLIB_STATE_READ_HEADER				= 1;
+	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
+	const auto ZLIB_STATE_READ_ADLER32				= 3;
+
+	align(1) struct _zlib_cmf_flg_header {
+		ubyte zlibCMF;
+		ubyte zlibFLG;
+	}
 }
