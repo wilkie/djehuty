@@ -8,7 +8,7 @@
  *
  */
 
-module core.resource;
+module resource.resource;
 
 import core.string;
 import core.endian;
