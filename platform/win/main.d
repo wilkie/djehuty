@@ -1903,7 +1903,7 @@ void parseCommandLine()
 
 	if (cmdlne is null) { return; }
 
-	Arguments args = Arguments.getInstance();
+	Arguments args = Arguments.instance;
 
 	// tokenize
 	int last = 0;

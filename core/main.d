@@ -37,7 +37,7 @@ void DjehutyStart() {
 	}
 	else
 	{
-		Djehuty.app.arguments = Arguments.getInstance();
+		Djehuty.app.arguments = Arguments.instance;
 		Djehuty.app.onApplicationStart();
 	}
 
