@@ -1,7 +1,8 @@
 module ast;
 
 import core.string;
-import console.main;
+
+import io.console;
 
 class AST
 {

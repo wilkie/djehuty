@@ -7,11 +7,7 @@ import core.string;
 import core.unicode;
 import core.definitions;
 
-import console.main;
-
-//import std.stdio;
-//import std.file;
-//import std.string;
+import io.console;
 
 class ParseUnit
 {

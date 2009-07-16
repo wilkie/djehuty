@@ -2,14 +2,10 @@ module filelist;
 
 import core.definitions;
 import core.string;
-import core.file;
-import core.directory;
 
-import console.main;
-
-// *** delete both
-//import std.file;
-//import std.string;
+import io.file;
+import io.directory;
+import io.console;
 
 class FileList
 {

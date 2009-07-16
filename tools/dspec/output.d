@@ -1,13 +1,10 @@
 module output;
 
-import core.file;
 import core.string;
 import core.unicode;
-import console.main;
 
-// *** delete both
-//import std.stdio;
-//import std.string;
+import io.file;
+import io.console;
 
 import ast;
 import parser;

@@ -5,7 +5,7 @@
  *
  */
 
-import console.main;
+import io.console;
 
 import core.main;
 import core.string;

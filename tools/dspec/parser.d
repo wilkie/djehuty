@@ -1,7 +1,8 @@
 module parser;
 
 import core.string;
-import console.main;
+
+import io.console;
 
 import filelist;
 import output;

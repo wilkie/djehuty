@@ -1,15 +1,10 @@
 module feeder;
 
-import core.file;
 import core.string;
 import core.unicode;
 
-import console.main;
-
-// *** delete all three
-//import std.stdio;
-//import std.file;
-//import std.string;
+import io.file;
+import io.console;
 
 char[] delims = " \t.{}()[];,-+=/\\*&^%!|?:<>";
 
