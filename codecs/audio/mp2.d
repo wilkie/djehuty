@@ -2304,8 +2304,6 @@ class MP2Codec : AudioCodec
 					return StreamData.Invalid;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 	uint readBits(uint bits)
@@ -2369,11 +2367,9 @@ class MP2Codec : AudioCodec
 				return value;
 			}
 		}
-
-		return 0;
 	}
 
-	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount)
+	StreamData seek(Stream stream, AudioFormat wf, AudioInfo wi, ref Time amount)
 	{
 		if (decoderState == 0)
 		{

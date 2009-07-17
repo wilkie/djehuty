@@ -30,13 +30,13 @@ class TuiTelnet : TuiVT100 {
 protected:
 
 	void recvChar(dchar chr) {
-		if (true) { return; }
-		if (chr == 13 || chr == 10) {
+		return;
+		/*if (chr == 13 || chr == 10) {
 			super.onKeyChar(chr);
 		}
 		else {
 			writeChar(chr);
-		}
+		}*/
 	}
 
 private:

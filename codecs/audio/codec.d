@@ -28,7 +28,7 @@ public:
 		return StreamData.Invalid;
 	}
 
-	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
+	StreamData seek(Stream stream, AudioFormat wf, AudioInfo wi, ref Time amount) {
 		return StreamData.Invalid;
 	}
 

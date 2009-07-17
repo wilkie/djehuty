@@ -2908,8 +2908,6 @@ class PNGCodec : ImageCodec
 
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 

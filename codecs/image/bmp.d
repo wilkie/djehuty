@@ -366,10 +366,7 @@ class BMPCodec : ImageCodec
 						}
 
 					}
-					delete fileData;
 				}
-
-				break;
 
 	// WINDOWS 2BPP BITMAPS //
 
@@ -538,13 +535,8 @@ class BMPCodec : ImageCodec
 						if (fileDataCurPtr == fileDataEndPtr) {
 							break;
 						}
-
 					}
-
-					delete fileData;
 				}
-
-				break;
 
 	// WINDOWS 4BPP BITMAPS, RGB AND RLE COMPRESSED //
 
@@ -732,11 +724,9 @@ class BMPCodec : ImageCodec
 						// }
 
 					}
-
-					delete fileData;
 				}
 
-				view.unlockBuffer();
+				//view.unlockBuffer();
 
 				//if (bi.biCompression == 0)
 				//{
@@ -1011,7 +1001,7 @@ class BMPCodec : ImageCodec
 
 				*/
 
-				return StreamData.Complete;
+//				return StreamData.Complete;
 
 	// WINDOWS 8BPP BITMAPS, RGB AND RLE COMPRESSED //
 
@@ -1292,7 +1282,7 @@ class BMPCodec : ImageCodec
 										}
 
 										// BACK TO GETTING A CODE
-										decoderSubState = 0;
+										//decoderSubState = 0;
 									}
 									else { //if (byteData == 2)
 										// DELTA ENCODING
@@ -1378,12 +1368,10 @@ class BMPCodec : ImageCodec
 							}
 						}
 					}
-
-					delete fileData;
 				}
 
-				view.unlockBuffer();
-				break;
+				//view.unlockBuffer();
+				//break;
 
 
 	// WINDOWS 16BPP BITMAPS, 5-6-5 AND 5-5-5 AND others //
@@ -1566,12 +1554,7 @@ class BMPCodec : ImageCodec
 							}
 						}
 					}
-
-					delete fileData;
-
 				}
-
-				break;
 
 	// WINDOWS 32BPP BITMAPS //
 
@@ -1728,13 +1711,10 @@ class BMPCodec : ImageCodec
 
 					delete fileData;
 				}
-				break;
 
 				default: break;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 protected:

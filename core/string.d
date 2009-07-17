@@ -928,7 +928,7 @@ class String
 
 	    do
 	    {
-	        _data[intlen] = '0' + (tmp % 10);
+	        _data[intlen] = cast(Char)('0' + (tmp % 10));
 	        tmp /= 10;
 	        intlen--;
 	    } while (tmp != 0);

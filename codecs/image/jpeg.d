@@ -1548,8 +1548,6 @@ class JPEGCodec : ImageCodec
 					return StreamData.Invalid;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 protected:

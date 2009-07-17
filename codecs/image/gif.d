@@ -1218,8 +1218,6 @@ class GIFCodec : ImageCodec {
 			default: break;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 protected:

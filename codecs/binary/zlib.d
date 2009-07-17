@@ -153,7 +153,6 @@ class ZLIBCodec : BinaryCodec {
 				return StreamData.Invalid;
 			}
 		}
-		return StreamData.Invalid;
 	}
 
 protected:

@@ -1275,7 +1275,7 @@ BOOL ConsoleProc( DWORD fdwCtrlType )
       return FALSE;
 
     default:
-      return FALSE;
+	    break;
   }
 
   return FALSE;

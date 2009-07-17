@@ -98,8 +98,6 @@ class Base64Codec : BinaryCodec {
 
 				decoderSubState = (decoderNextState & 0x3) << 6;
 
-
-
 				decoderFrameState = 2;
 			}
 			else if (decoderFrameState == 6) {
@@ -121,7 +119,5 @@ class Base64Codec : BinaryCodec {
 
 			decoderFrameState = decoderFrameState;
 		}
-
-		return StreamData.Invalid;
 	}
 }

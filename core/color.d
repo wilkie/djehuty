@@ -218,14 +218,14 @@ private:
 
 
 // shady platfrom private accessors and mutators
-ColorValue ColorGetValue(ref Color clr)
+ColorValue ColorGetValue(Color clr)
 {
 	// For some reason, that union is not working properly
 	return clr._internal.clr;
 //	return clr.clr;
 }
 
-void ColorSetValue(ref Color clr, ColorValue val)
+void ColorSetValue(Color clr, ColorValue val)
 {
 	clr._internal.clr = val;
 }

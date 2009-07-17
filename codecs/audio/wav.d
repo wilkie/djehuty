@@ -322,12 +322,10 @@ class WAVCodec : AudioCodec {
 					return StreamData.Invalid;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 
 	// Description: This function will advance the stream to the beginning of the buffer that contains the time requested.
-	StreamData seek(Stream stream, ref AudioFormat wf, ref AudioInfo wi, ref Time amount) {
+	StreamData seek(Stream stream, AudioFormat wf, AudioInfo wi, ref Time amount) {
 		if (decoderState == 0) {
 			// not inited?
 			return StreamData.Invalid;

@@ -320,7 +320,5 @@ class yEncCodec : BinaryCodec {
 				default: return StreamData.Invalid;
 			}
 		}
-
-		return StreamData.Invalid;
 	}
 }
