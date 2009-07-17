@@ -52,7 +52,7 @@ class BMPCodec : ImageCodec
 				}
 
 				decoderState = BMP_STATE_READ_BITMAP_SIZE;
-				break;
+				continue;
 
 			case BMP_STATE_READ_BITMAP_SIZE:
 				//reading the bitmap size
@@ -62,19 +62,17 @@ class BMPCodec : ImageCodec
 				switch (biSize) {
 				case 0x0C: // osx 1.0
 					decoderState = BMP_STATE_READ_OSX_1;
-					break;
+					continue;
 				case 0xF0: // osx 2.0
 					decoderState = BMP_STATE_READ_OSX_2;
-					break;
+					continue;
 				case 0x28: // windows
 					decoderState = BMP_STATE_READ_WIN;
-					break;
+					continue;
 				default:
 					// Bitmap Version not supported
 					return StreamData.Invalid;
 				}
-
-				break;
 
 			case BMP_STATE_READ_OSX_1:
 				return StreamData.Complete;
@@ -132,7 +130,7 @@ class BMPCodec : ImageCodec
 
 				}
 
-				break;
+				continue;
 
 
 
@@ -160,7 +158,7 @@ class BMPCodec : ImageCodec
 				decoderState = decoderNextState;
 
 
-				break;
+				continue;
 
 
 
@@ -1708,13 +1706,15 @@ class BMPCodec : ImageCodec
 							}
 						}
 					}
-
-					delete fileData;
 				}
 
-				default: break;
+				default:
+					break;
 			}
+			break;
 		}
+		
+		return StreamData.Invalid;
 	}
 
 protected:

@@ -49,11 +49,7 @@ class Base64Codec : BinaryCodec {
 	StreamData decode(Stream stream, Stream toStream) {
 		ubyte chunk;
 
-		for (;;) {
-
-			if (!stream.read(chunk)) {
-				return StreamData.Required;
-			}
+		for (;stream.read(chunk);) {
 
 			// decode character
 			// add to stream, where last character left off
@@ -119,5 +115,7 @@ class Base64Codec : BinaryCodec {
 
 			decoderFrameState = decoderFrameState;
 		}
+
+		return StreamData.Required;
 	}
 }

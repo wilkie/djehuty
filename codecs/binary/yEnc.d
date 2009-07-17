@@ -73,9 +73,6 @@ class yEncCodec : BinaryCodec {
 
 					continue;
 
-
-
-
 				case YENC_STATE_READHEADER:
 
 					// read the rest of the line
@@ -317,8 +314,12 @@ class yEncCodec : BinaryCodec {
 
 					return StreamData.Complete;
 
-				default: return StreamData.Invalid;
+				default: 
+					break;
 			}
+			break;
 		}
+
+		return StreamData.Invalid;
 	}
 }

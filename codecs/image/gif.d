@@ -292,7 +292,7 @@ class GIFCodec : ImageCodec {
 				default: break;
 				}
 
-				break;
+				continue;
 
 			// READS IN ALL EXTENSIONS
 			case GIF_STATE_READ_GRAPHIC_CONTROL:
@@ -457,7 +457,7 @@ class GIFCodec : ImageCodec {
 				default: break;
 				}
 
-				break;
+				continue;
 
 			// READ IN IMAGE DESCRIPTOR
 			case GIF_STATE_DECODE_IMAGE:
@@ -486,7 +486,7 @@ class GIFCodec : ImageCodec {
 					gifLocalColorTableSize = 0;
 					gifCurColorTable = gifGlobalColorTableComputed.ptr;
 
-					break;
+					continue;
 				}
 
 				// ... drop through WHEN there is a local color table ... //
@@ -1213,11 +1213,14 @@ class GIFCodec : ImageCodec {
 					}
 				}
 
-				break;
+				continue;
 
-			default: break;
+			default:
+				break;
 			}
+			break;
 		}
+		return StreamData.Invalid;
 	}
 
 protected:

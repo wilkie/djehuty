@@ -379,7 +379,7 @@ class JPEGCodec : ImageCodec
 
 					decoderState = decoderNextState;
 
-					break;
+					continue;
 
 
 				// state to read a certain amount of bits (bits_to_read)
@@ -707,7 +707,7 @@ class JPEGCodec : ImageCodec
 					jfif.density_y = FromBigEndian16(jfif.density_y);
 
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
-					break;
+					continue;
 
 				case JPEG_STATE_CHUNK_APP0_UNKNOWN:
 
@@ -717,7 +717,7 @@ class JPEGCodec : ImageCodec
 					}
 
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
-					break;
+					continue;
 
 
 
@@ -1095,7 +1095,7 @@ class JPEGCodec : ImageCodec
 							huffman_bits++;
 						}
 
-						break;
+						continue;
 					}
 
 				case JPEG_STATE_DECODE_HUFFMAN_DC_READ:
@@ -1222,14 +1222,13 @@ class JPEGCodec : ImageCodec
 
 							huffman_code = 0;
 							huffman_bits = 0;
-							break;
 						}
 						else {
 							huffman_bits++;
 						}
 					}
 
-					break;
+					continue;
 
 				case JPEG_STATE_DECODE_HUFFMAN_AC_READ:
 
@@ -1545,9 +1544,11 @@ class JPEGCodec : ImageCodec
 					continue;
 
 				default:
-					return StreamData.Invalid;
+					break;
 			}
+			break;
 		}
+		return StreamData.Invalid;
 	}
 
 protected:

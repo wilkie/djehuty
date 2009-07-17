@@ -20,38 +20,22 @@ import core.stream;
 // Description: This represents the ZLIB Codec.
 class ZLIBCodec : BinaryCodec {
 	StreamData decode(Stream stream, Stream toStream) {
-	//	writeln("zlib start");
-
 		for (;;) {
 			switch (decoderState) {
 				// INIT DECODER //
 			case ZLIB_STATE_INIT:
-	//	writeln("zlib init");
-
-
 				// SET VARIABLES WITHIN IDP
 
 				// GOTO NEXT STEP
 
 				decoderState = ZLIB_STATE_READ_HEADER;
 
-
-
-
-
 				// READ STREAM HEADER //
 			case ZLIB_STATE_READ_HEADER:
-
-				//OutputDebugStringA("zlib - attempting to read in headers\n");
-	//	writeln("zlib read header");
 
 				if (!(stream.read(&zlibStreamHeader,2))) {
 					return StreamData.Required;
 				}
-	//	writeln("zlib header read");
-
-				////OutputDebugString(String(zlibStreamHeader.zlibCMF) + S("\n"));
-				////OutputDebugString(String(zlibStreamHeader.zlibFLG) + S("\n"));
 
 				// GET COMPRESSION METHOD, INFO
 
@@ -150,9 +134,13 @@ class ZLIBCodec : BinaryCodec {
 
 
 			default:
-				return StreamData.Invalid;
+				break;
 			}
+
+			break;
 		}
+		
+		return StreamData.Invalid;
 	}
 
 protected:

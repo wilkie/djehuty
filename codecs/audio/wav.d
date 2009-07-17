@@ -318,10 +318,11 @@ class WAVCodec : AudioCodec {
 
 				default:
 					// -- Default for corrupt files -- //
-
-					return StreamData.Invalid;
+					break;
 			}
+			break;
 		}
+		return StreamData.Invalid;
 	}
 
 	// Description: This function will advance the stream to the beginning of the buffer that contains the time requested.

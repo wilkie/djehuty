@@ -237,9 +237,6 @@ class DEFLATECodec : BinaryCodec {
 				//writeln("read byte", stream.length());
 
 				if (!(stream.read(deflateCurByte))) {
-
-				//writeln("read byte (return)");
-				////OutputDebugString(String(toStream.getRemaining()) + S(" EHHH??? \n"));
 					return StreamData.Required;
 				}
 				//writeln("read byte teres");
@@ -252,7 +249,7 @@ class DEFLATECodec : BinaryCodec {
 				decoderState = decoderNextState;
 				///writeln("read byte done");
 
-				break;
+				continue;
 
 
 				// READS A SEQUENCE OF BITS FROM THE STREAM //
@@ -263,7 +260,7 @@ class DEFLATECodec : BinaryCodec {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BITS;
-					break;
+					continue;
 				}
 
 				if (deflateCurByte & deflateCurMask) {
@@ -296,7 +293,7 @@ class DEFLATECodec : BinaryCodec {
 					decoderState = deflateLastState;
 				}
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_READ_BIT:
 
@@ -306,7 +303,7 @@ class DEFLATECodec : BinaryCodec {
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BIT;
 				//writeln("read bit (break)");
-					break;
+					continue;
 				}
 
 				if (deflateCurByte & deflateCurMask) {
@@ -333,7 +330,7 @@ class DEFLATECodec : BinaryCodec {
 				decoderState = deflateLastState;
 				//writeln("read bit done");
 
-				break;
+				continue;
 
 
 
@@ -356,7 +353,7 @@ class DEFLATECodec : BinaryCodec {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BITS_REV;
-					break;
+					continue;
 				}
 
 				deflateCurValue <<= 1;
@@ -379,7 +376,7 @@ class DEFLATECodec : BinaryCodec {
 					decoderState = deflateLastState;
 				}
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_READ_BIT_REV:
 
@@ -387,7 +384,7 @@ class DEFLATECodec : BinaryCodec {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_READ_BIT_REV;
-					break;
+					continue;
 				}
 
 				deflateCurValue <<= 1;
@@ -409,7 +406,7 @@ class DEFLATECodec : BinaryCodec {
 
 				decoderState = deflateLastState;
 
-				break;
+				continue;
 
 
 
@@ -448,7 +445,7 @@ class DEFLATECodec : BinaryCodec {
 
 				deflateBitsLeft = 2;
 
-				break;
+				continue;
 
 
 				// READ THE BLOCK'S BTYPE //
@@ -506,20 +503,10 @@ class DEFLATECodec : BinaryCodec {
 
 
 				default:
-					//write("deflate - invalid compression type\n");
-
 					return StreamData.Invalid;
 				}
 
-				break;
-
-
-
-
-
-
-
-
+				continue;
 
 				// DECODER FOR 'NO COMPRESSION' TYPE (BTYPE == 0) //
 
@@ -573,7 +560,7 @@ class DEFLATECodec : BinaryCodec {
 
 
 
-				break;
+				continue;
 
 
 
@@ -688,7 +675,7 @@ class DEFLATECodec : BinaryCodec {
 					}
 				}
 
-				break;
+				continue;
 
 
 
@@ -717,7 +704,7 @@ class DEFLATECodec : BinaryCodec {
 				decoderState = DEFLATE_STATE_READ_BITS_REV;
 				deflateLastState = DEFLATE_STATE_DEFLATE_FIXED_GET_DISTANCE;
 
-				break;
+				continue;
 
 				// CALCULATE DISTANCE //
 
@@ -759,7 +746,7 @@ class DEFLATECodec : BinaryCodec {
 					}
 				}
 
-				break;
+				continue;
 
 
 				// CURVALUE IS THE EXTRA BITS FOR DISTANCE
@@ -788,7 +775,7 @@ class DEFLATECodec : BinaryCodec {
 
 				//////OutputDebugString(S("deflate - code found: <len ") + String(deflateLength) + S(", dis ") + String(deflateDistance) + S(">\n"));
 
-				break;
+				continue;
 
 
 
@@ -829,7 +816,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_HDIST:
 				//----writeln("deflate dynamic hdist");
@@ -844,7 +831,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_HCLEN:
 				//----writeln("deflate dynamic hclen");
@@ -866,7 +853,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
+				continue;
 
 				// CURVALUE HOLDS THE NEXT CODE LENGTH //
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_GET_CODE_LEN:
@@ -1014,7 +1001,7 @@ class DEFLATECodec : BinaryCodec {
 					deflateTreePosition = 0;
 				}
 
-				break;
+				continue;
 
 
 
@@ -1033,7 +1020,7 @@ class DEFLATECodec : BinaryCodec {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LENS;
-					break;
+					continue;
 				}
 
 				if (deflateCurByte & deflateCurMask) {
@@ -1085,7 +1072,7 @@ class DEFLATECodec : BinaryCodec {
 
 							// WE HAVE TO DECODE THE DISTANCE ARRAY, OR THE TREE NOW
 							decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_DIST;
-							break;
+							continue;
 						}
 
 						// READ ANOTHER CODE
@@ -1111,7 +1098,7 @@ class DEFLATECodec : BinaryCodec {
 						deflateBitsLeft = 2;
 						decoderState = DEFLATE_STATE_READ_BITS;
 						deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN16;
-						break;
+						continue;
 					}
 					else if (deflateCurCode == 17) {
 						// REPEAT CODE LENGTH OF 0 FOR 3 - 10 TIMES
@@ -1123,7 +1110,7 @@ class DEFLATECodec : BinaryCodec {
 						deflateBitsLeft = 3;
 						decoderState = DEFLATE_STATE_READ_BITS;
 						deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN17;
-						break;
+						continue;
 					}
 					else if (deflateCurCode == 18) {
 						// REPEAT CODE LENGTH OF 0 FOR 11 - 138 TIMES
@@ -1135,11 +1122,11 @@ class DEFLATECodec : BinaryCodec {
 						deflateBitsLeft = 7;
 						decoderState = DEFLATE_STATE_READ_BITS;
 						deflateLastState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN18;
-						break;
+						continue;
 					}
 				}
 
-				break;
+				continue;
 
 				// INTERPRET LENGTH CODE 16
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN16:
@@ -1464,7 +1451,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateTreePosition = 0;
 				//////OutputDebugString(S("1: ") + String(deflateHuffmanLengthCounts[0]) + S("\n"));
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_DECODER:
 				//writeln("deflate dynamic decoder");
@@ -1477,7 +1464,7 @@ class DEFLATECodec : BinaryCodec {
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODER;
 				//writeln("deflate dynamic decoder done (break)");
-					break;
+					continue;
 				}
 
 				if (deflateCurByte & deflateCurMask) {
@@ -1556,7 +1543,7 @@ class DEFLATECodec : BinaryCodec {
 
 						decoderState = DEFLATE_STATE_READ_BIT;
 				//writeln("deflate dynamic decoder done (break2)");
-						break;
+						continue;
 					}
 					else {
 						// LENGTH CODE
@@ -1595,7 +1582,7 @@ class DEFLATECodec : BinaryCodec {
 				}
 				//writeln("deflate dynamic decoder done");
 
-				break;
+				continue;
 
 
 
@@ -1617,7 +1604,7 @@ class DEFLATECodec : BinaryCodec {
 				//deflateCurDistanceEntry = &deflateInternalDistanceTable.huffman_entries[deflateCurDistanceBitLength];
 
 
-				break;
+				continue;
 
 
 
@@ -1635,7 +1622,7 @@ class DEFLATECodec : BinaryCodec {
 					// get the next byte from the stream
 					decoderState = DEFLATE_STATE_READ_BYTE;
 					decoderNextState = DEFLATE_STATE_DEFLATE_DYNAMIC_GET_DISTANCE;
-					break;
+					continue;
 				}
 
 				if (deflateCurByte & deflateCurMask) {
@@ -1709,7 +1696,7 @@ class DEFLATECodec : BinaryCodec {
 					}
 				}
 
-				break;
+				continue;
 
 				// CURVALUE IS THE RESULT OF THE EXTRA BITS //
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_GET_DIST_EX:
@@ -1732,12 +1719,14 @@ class DEFLATECodec : BinaryCodec {
 
 				decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_DECODER;
 
-				break;
+				continue;
 
 			default:
-				return StreamData.Invalid;
+				break;
 			}
+			break;
 		}
+		return StreamData.Invalid;
 	}
 
 protected:
