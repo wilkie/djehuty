@@ -56,12 +56,10 @@ class Region {
 		return points.length;
 	}
 
-	int opApply(int delegate(inout Coord) loopFunc)
-	{
+	int opApply(int delegate(inout Coord) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < points.length; i++)
-		{
+		for(int i = 0; i < points.length; i++) {
 			ret = loopFunc(points[i]);
 			if (ret) { break; }
 		}
@@ -69,12 +67,10 @@ class Region {
 		return ret;
 	}
 
-	int opApply(int delegate(inout int, inout Coord) loopFunc)
-	{
+	int opApply(int delegate(inout int, inout Coord) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < points.length; i++)
-		{
+		for(int i = 0; i < points.length; i++) {
 			ret = loopFunc(i, points[i]);
 			if (ret) { break; }
 		}
@@ -82,8 +78,7 @@ class Region {
 		return ret;
 	}
 
-	Coord[] opSlice()
-	{
+	Coord[] opSlice() {
 		return points;
 	}
 
@@ -91,20 +86,11 @@ protected:
 
 	// Whether or not the platform's realization of the state of this region
 	// is valid
-	bool platformDirty = true;
+	package bool platformDirty = true;
 
 	// Platform specific denotation of the region
-	RegionPlatformVars _pfvars;
+	package RegionPlatformVars _pfvars;
 
 	// The collection of points
 	Coord[] points;
-}
-
-RegionPlatformVars* RegionGetPlatformVars(ref Region rgn) {
-	return &rgn._pfvars;
-}
-
-bool RegionGetPlatformDirty(ref Region rgn) {
-	scope(exit) rgn.platformDirty = false;
-	return rgn.platformDirty;
 }

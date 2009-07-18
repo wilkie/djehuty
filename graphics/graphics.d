@@ -65,7 +65,8 @@ class Graphics {
 	// y: The amount to translate the region in the y direction.
 	// rgn: The region to draw.
 	void drawRegion(int x, int y, Region rgn) {
-		Scaffold.drawRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
+		rgn.platformDirty = false;
+		Scaffold.drawRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
 	}
 
 	// Description: Fills the region given.
@@ -73,7 +74,8 @@ class Graphics {
 	// y: The amount to translate the region in the y direction.
 	// rgn: The region to fill.
 	void fillRegion(int x, int y, Region rgn) {
-		Scaffold.fillRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
+		rgn.platformDirty = false;
+		Scaffold.fillRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
 	}
 
 	// Description: Outlines the region given.
@@ -81,7 +83,8 @@ class Graphics {
 	// y: The amount to translate the region in the y direction.
 	// rgn: The region to stroke.
 	void strokeRegion(int x, int y, Region rgn) {
-		Scaffold.strokeRegion(_viewVars, RegionGetPlatformVars(rgn), RegionGetPlatformDirty(rgn), rgn, x, y);
+		rgn.platformDirty = false;
+		Scaffold.strokeRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
 	}
 
 // Text
