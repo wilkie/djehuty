@@ -12,60 +12,49 @@ import utils.linkedlist;
 // Section: Console
 
 // Description: This class provides a line input field for a console application.  This class can buffer the previous lines much like that of a modern shell.
-class ConsolePrompt
-{
+class Prompt {
 	// TODO: Allow ANSI emulated prompt strings
-	this()
-	{
+	this() {
 		_prompt = new String("");
 	}
 
 	// Description: This will set the prompt string that will precede the input.
 	// prompt: A string representing the prompt.
-	void setPrompt(String prompt)
-	{
+	void prompt(String prompt) {
 		_prompt = new String(prompt);
 	}
 
 	// Description: This will set the prompt string that will precede the input.
 	// prompt: A string representing the prompt.
-	void setPrompt(string prompt)
-	{
+	void prompt(string prompt) {
 		_prompt = new String(prompt);
-	}
-
-	void setPromptColor(fgColor fgClr)
-	{
-		_promptClr = fgClr;
-	}
-
-	void setColor(fgColor fgClr)
-	{
-		_clr = fgClr;
 	}
 
 	// Description: This function will return the current prompt.
 	// Returns: The current prompt.
-	String getPrompt()
-	{
+	String prompt() {
 		return new String(_prompt);
+	}
+
+	void promptColor(fgColor fgClr) {
+		_promptClr = fgClr;
+	}
+
+	void forecolor(fgColor fgClr) {
+		_clr = fgClr;
 	}
 
 	// Description: This function will set the amount of lines the line buffer stores.  The line buffer will scroll through the most recent lines inputted by the user.  This function will also turn off the line buffer if the size is 0.
 	// bufferSize: The number of lines to store.  Setting this to zero will turn off the buffer.  There is a maximum of 5000.
-	void setBufferSize(uint bufferSize)
-	{
-		if (bufferSize > 5000)
-		{
+	void bufferSize(uint bufferSize) {
+		if (bufferSize > 5000) {
 			bufferSize = 5000;
 		}
 
-		if (bufferSize != 0)
-		{
+		if (bufferSize != 0) {
 			_lineBuffer = new LinkedList!(String)();
 		}
-		else
-		{
+		else {
 			_lineBuffer = null;
 		}
 
@@ -74,8 +63,7 @@ class ConsolePrompt
 
 	// Description: This will display the prompt and return the line typed by the user.
 	// Returns: The line typed by the user.
-	String getLine()
-	{
+	String line() {
 		// the current displayed line
 		String line;
 
@@ -99,41 +87,34 @@ class ConsolePrompt
 		line = new String("");
 
 		workingLine = line;
-		if (_lineBuffer !is null)
-		{
+		if (_lineBuffer !is null) {
 			_bufferPos = -1;
 		}
 
 		Console.setColor(_clr);
 
-		for(;;)
-		{
+		for(;;) {
 			Console.getChar(chr, code);
 
-			if (code == KeyReturn)
-			{
+			if (code == KeyReturn) {
 				// enter
 
 				_pos = 0;
 
 				break;
 			}
-			else if (code == KeyBackspace)
-			{
+			else if (code == KeyBackspace) {
 				// backspace
 
-				if (line.length() > 0 && _pos > 0)
-				{
+				if (line.length() > 0 && _pos > 0) {
 					Console.put(chr);
 					Console.put(' ');
 					Console.put(chr);
 
-					if (_pos == line.length())
-					{
+					if (_pos == line.length()) {
 						line = line.subString(0, line.length()-1);
 					}
-					else
-					{
+					else {
 						String newLine = line.subString(0, _pos-1);
 						String restLine = line.subString(_pos);
 						newLine.append(restLine);
@@ -141,16 +122,14 @@ class ConsolePrompt
 						Console.put(restLine.array);
 						Console.put(' ');
 
-						for (uint i=0; i<=restLine.length(); i++)
-						{
+						for (uint i=0; i<=restLine.length(); i++) {
 							Console.put(cast(char)0x8);
 						}
 
 						line = newLine;
 					}
 
-					if (_lineBuffer !is null)
-					{
+					if (_lineBuffer !is null) {
 						_bufferPos = -1;
 					}
 					workingLine = line;
@@ -158,34 +137,27 @@ class ConsolePrompt
 					_pos--;
 				}
 			}
-			else if (code == KeyArrowLeft)
-			{
-				if (_pos > 0)
-				{
+			else if (code == KeyArrowLeft) {
+				if (_pos > 0) {
 					Console.put(cast(char)0x8);
 
 					_pos--;
 				}
 			}
-			else if (code == KeyArrowRight)
-			{
-				if (_pos < line.length())
-				{
+			else if (code == KeyArrowRight) {
+				if (_pos < line.length()) {
 					Console.setRelative(1,0);
 
 					_pos++;
 				}
 			}
-			else if (code == KeyArrowUp)
-			{
+			else if (code == KeyArrowUp) {
 				// The current line is still stored
 
 				// And then the line buffer spits out
 				// the previous line submitted
-				if (_lineBuffer !is null)
-				{
-					if (_bufferPos+1 < cast(int)_lineBuffer.length() && _lineBuffer.length() > 0)
-					{
+				if (_lineBuffer !is null) {
+					if (_bufferPos+1 < cast(int)_lineBuffer.length() && _lineBuffer.length() > 0) {
 						// grab the line from the line buffer
 
 						_bufferPos++;
@@ -193,11 +165,8 @@ class ConsolePrompt
 
 						uint i;
 
-						if (line.length() < _pos)
-						{
-
-							for (i=line.length(); i<_pos; i++)
-							{
+						if (line.length() < _pos) {
+							for (i=line.length(); i<_pos; i++) {
 								Console.put(cast(char)0x8);
 								Console.put(' ');
 								Console.put(cast(char)0x8);
@@ -206,8 +175,7 @@ class ConsolePrompt
 							_pos = line.length();
 						}
 
-						for (i=0; i<_pos; i++)
-						{
+						for (i=0; i<_pos; i++) {
 							Console.put(cast(char)0x8);
 						}
 
@@ -218,27 +186,22 @@ class ConsolePrompt
 					}
 				}
 			}
-			else if (code == KeyArrowDown)
-			{
+			else if (code == KeyArrowDown) {
 				// The current line is still stored
 
 				// And then the line buffer spits out
 				// the next line submitted
-				if (_lineBuffer !is null)
-				{
-					if (_bufferPos > 0)
-					{
+				if (_lineBuffer !is null) {
+					if (_bufferPos > 0) {
 						// grab the line from the line buffer
 
 						_bufferPos--;
 						_lineBuffer.getItem(line, _bufferPos);
 					}
-					else
-					{
+					else {
 						// redisplay the working line
 						_bufferPos = -1;
-						if (workingLine !is null)
-						{
+						if (workingLine !is null) {
 							line = workingLine;
 						}
 					}
@@ -247,11 +210,8 @@ class ConsolePrompt
 
 					uint i;
 
-					if (line.length() < _pos)
-					{
-
-						for (i=line.length(); i<_pos; i++)
-						{
+					if (line.length() < _pos) {
+						for (i=line.length(); i<_pos; i++) {
 							Console.put(cast(char)0x8);
 							Console.put(' ');
 							Console.put(cast(char)0x8);
@@ -260,8 +220,7 @@ class ConsolePrompt
 						_pos = line.length();
 					}
 
-					for (i=0; i<_pos; i++)
-					{
+					for (i=0; i<_pos; i++) {
 						Console.put(cast(char)0x8);
 					}
 
@@ -273,32 +232,27 @@ class ConsolePrompt
 					_pos = line.length();
 				}
 			}
-			else if (chr != 0)
-			{
+			else if (chr != 0) {
 				// written character
 
-				if (_pos == line.length())
-				{
+				if (_pos == line.length()) {
 					Console.put(chr);
 					line.appendChar(chr);
 				}
-				else if (_pos == 0)
-				{
+				else if (_pos == 0) {
 					String newLine = new String("");
 					newLine.appendChar(chr);
 					newLine.append(line);
 
 					Console.put(newLine.array);
 
-					for (uint i=1; i<newLine.length(); i++)
-					{
+					for (uint i=1; i<newLine.length(); i++) {
 						Console.put(cast(char)0x8);
 					}
 
 					line = newLine;
 				}
-				else
-				{
+				else {
 					Console.put(chr);
 					String leftLine = line.subString(0, _pos);
 					leftLine.appendChar(chr);
@@ -307,16 +261,14 @@ class ConsolePrompt
 
 					Console.put(rightLine.array);
 
-					for (uint i=0; i<rightLine.length(); i++)
-					{
+					for (uint i=0; i<rightLine.length(); i++) {
 						Console.put(cast(char)0x8);
 					}
 
 					line = leftLine;
 				}
 
-				if (_lineBuffer !is null)
-				{
+				if (_lineBuffer !is null) {
 					_bufferPos = -1;
 				}
 				workingLine = line;
@@ -328,10 +280,8 @@ class ConsolePrompt
 		Console.putln("");
 
 		// Save line in line buffer
-		if (_lineBuffer !is null)
-		{
-			if (_lineBuffer.length == _bufferSize)
-			{
+		if (_lineBuffer !is null) {
+			if (_lineBuffer.length == _bufferSize) {
 				_lineBuffer.remove();
 			}
 			_lineBuffer.addItem(line);
