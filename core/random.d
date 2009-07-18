@@ -25,32 +25,32 @@ class Random {
 	// Description: This will set up a new random number generator and will seed it with the given seed.
 	// seed: The seed to use with the generator.
 	this(long seed = -1) {
-		setSeed(seed);
+		this.seed(seed);
 	}
 
 	// Description: This will reseed the random number generator.
 	// seed: The seem to use with the generator.
-	void setSeed(long seed) {
-		if (seed < 0) {
-			seed = Scaffold.TimeGet();
+	void seed(long value) {
+		if (value < 0) {
+			value = Scaffold.TimeGet();
 		}
-		state = seed;
+		_state = value;
 	}
 
 	// Description: This will retrieve the current state of the generator.
 	// Returns: The state of the generator. (Reseed with this value to continue from the same position)
-	long getSeed() {
-		return state;
+	long seed() {
+		return _state;
 	}
 
 	double nextDouble() {
 		mutateState();
-		return cast(double)state / cast(double)MODULUS;
+		return cast(double)_state / cast(double)MODULUS;
 	}
 
 	long next() {
 		mutateState();
-		return state;
+		return _state;
 	}
 
 	long next(long max) {
@@ -73,19 +73,19 @@ protected:
 	const auto A256			= 22925;
 	const auto DEFAULT		= 123456789;
 
-	long state = DEFAULT;
+	long _state = DEFAULT;
 
 	void mutateState() {
 		const long Q = MODULUS / MULTIPLIER;
 		const long R = MODULUS % MULTIPLIER;
 		long t;
 
-		t = MULTIPLIER * (state % Q) - R * (state / Q);
+		t = MULTIPLIER * (_state % Q) - R * (_state / Q);
 		if (t > 0) {
-			state = t;
+			_state = t;
 		}
 		else {
-			state = t + MODULUS;
+			_state = t + MODULUS;
 		}
 	}
 }
