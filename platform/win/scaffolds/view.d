@@ -27,7 +27,7 @@ import utils.linkedlist;
 
 
 // views
-void ViewCreate(ref View view, ref ViewPlatformVars viewVars)
+void ViewCreate(View view, ref ViewPlatformVars viewVars)
 {
 	HDC dc;
 
@@ -81,7 +81,7 @@ void ViewCreateDIB(ref View view, ref ViewPlatformVars viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewCreateForWindow(ref View view, ref ViewPlatformVars viewVars, ref Window window)
+void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, ref WindowHelper windowHelper)
 {
 	//will set _inited to true:
 	ViewCreate(view, viewVars);

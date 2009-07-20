@@ -15,9 +15,11 @@ mixin(PlatformGenericPublicImport!("definitions"));
 
 // String
 
-alias char[] string;
-alias wchar[] wstring;
-alias dchar[] dstring;
+version(Tango) {
+	alias char[] string;
+	alias wchar[] wstring;
+	alias dchar[] dstring;
+}
 
 // Section: Types
 
