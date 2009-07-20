@@ -21,7 +21,7 @@ import tui.textfield;
 
 import networking.irc;
 
-import platform.win.controls.osbutton;
+//import platform.win.controls.osbutton;
 
 import io.console;
 
@@ -91,6 +91,7 @@ private:
 
 import tui.textfield;
 import core.application;
+
 class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
 
@@ -98,8 +99,8 @@ class MyTApp :TuiApplication {
 		tuiwnd = new MyTWindow();
 		push(tuiwnd);
 
-		snd = new Sound("tests/begin.mp2");
-		snd.play();
+		//snd = new Sound("tests/begin.mp2");
+		//snd.play();
 	}
 
 	override void onApplicationEnd() {
@@ -120,7 +121,7 @@ class MyTWindow : TuiWindow {
 	this() {
 		super();
 
-		push(tuitext = new TuiTextField(0,Console.getHeight(),Console.getWidth(), "boo"));
+		push(tuitext = new TuiTextField(0,Console.height,Console.width, "boo"));
 
 		tuitext.basecolor = fgColor.White;
 		tuitext.forecolor = fgColor.BrightYellow;

@@ -18,7 +18,8 @@ import platform.unix.main;
 
 import synch.thread;
 
-import tui.core;
+import tui.application;
+import tui.window;
 
 void ConsoleSetColors(uint fg, uint bg, int bright)
 {
@@ -64,7 +65,7 @@ termios m_term_info_working;
 extern(C) void close_sig_handler(int signal) {
 	DjehutyEnd();
 	for(int i=0; i<256; i++) {
-		printf("\x1B[48;5;%dm ", i);
+		printf("\x1B[48;5;%dma", i);
 	}
 	ConsoleUninit();
 	exit(0);
@@ -98,7 +99,7 @@ extern(C) void size_sig_handler(int signal) {
 
     //fire Size event
 	TuiApplication app = cast(TuiApplication)Djehuty.app;
-	app.getWindow().OnResize();
+	app.window.onResize();
 }
 
 void ConsoleInit()
@@ -114,7 +115,6 @@ void ConsoleInit()
     m_winsize_state = false;
 
     ioctl(STDIN, TIOCGWINSZ, &m_winsize_saved);
-
     m_width = m_winsize_saved.ws_col;
     m_height = m_winsize_saved.ws_row;
 
@@ -135,13 +135,15 @@ void ConsoleInit()
 
     //tell the terminal to not echo anything
     //streamed from stdin
-    m_term_info_working.c_iflag &= (~(ISTRIP | INLCR | IGNCR | IXON | IXOFF));
+    //m_term_info_working.c_iflag &= (~(ISTRIP | INLCR | IGNCR | IXON | IXOFF));
     m_term_info_working.c_lflag &= ~(ECHO | ICANON); //ISIG -- stops ctrl_c, ect
     ioctl(STDIN, TCSETS, &m_term_info_working);
 }
 
 void ConsoleUninit()
 {
+	printf("uninit\n");
+	m_term_info_saved.c_lflag |= ECHO;
     ioctl(STDIN, TCSETS, &m_term_info_saved);
 }
 
@@ -262,6 +264,16 @@ void ConsoleGetChar(out dchar chr, out uint code)
             break;
         } */
     }
+}
+
+void ConsoleGetSize(out uint width, out uint height)
+{
+    ioctl(STDIN, TIOCGWINSZ, &m_winsize_saved);
+    m_width = m_winsize_saved.ws_col;
+    m_height = m_winsize_saved.ws_row;
+
+	width = m_width;
+	height = m_height;
 }
 
 // key

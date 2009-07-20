@@ -11,26 +11,25 @@ module platform.unix.scaffolds.app;
 
 import platform.unix.vars;
 import platform.unix.common;
-
-import core.view;
-import core.graphics;
-
-import core.window;
 import platform.unix.main;
+
+import graphics.view;
+import graphics.graphics;
+
+import gui.window;
+import io.file;
+
 import core.string;
-import core.file;
-
 import core.main;
-
 import core.definitions;
 
-import console.main;
+import io.console;
 
 void AppStart()
 {
 }
 
-void AppEnd()
+void AppEnd(uint exitCode)
 {
 	// this code is executed at uninitialization of the application
 	_pfvars.running = false;

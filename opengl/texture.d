@@ -12,6 +12,7 @@ module opengl.texture;
 import opengl.gl;
 
 import core.string;
+import core.definitions;
 
 import resource.image;
 
@@ -52,7 +53,7 @@ class Texture {
 		_fw = _img.getWidth() / _fcols;
 		_fh = _img.getHeight() / _frows;
 	}
-	
+
 	// Properties
 
 	// Description: This function will return the texture's width.

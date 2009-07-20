@@ -13,8 +13,9 @@ import platform.unix.vars;
 import platform.unix.common;
 
 import core.string;
-import core.file;
 import core.main;
+
+import io.file;
 
 // FILE //
 

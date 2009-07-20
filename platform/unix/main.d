@@ -15,20 +15,23 @@ import platform.unix.vars;
 import platform.unix.scaffolds.directory;
 import platform.unix.console;
 
-import gui.core;
+import gui.application;
+import gui.window;
 
 import core.definitions;
 import core.main;
 import core.string;
-import core.view;
+
+import graphics.view;
 
 import synch.thread;
 
 import analyzing.debugger;
 
-import console.main;
+import io.console;
 
-import tui.core;
+import tui.application;
+import tui.window;
 
 extern(C) void mousetimerproc(sigval val)
 {
@@ -54,6 +57,7 @@ void eventLoop()
 	Window viewWindow;
 
 	WindowPlatformVars* windowVars;
+	WindowHelper windowHelper;
 
 	//poll for events
 	//and run the apploop
@@ -71,7 +75,7 @@ void eventLoop()
 
 		//find the window
 
-		window_test = app.getFirstWindow();
+		window_test = app.firstWindow();
 		window = null;
 
 		if (window_test is null)
@@ -81,14 +85,14 @@ void eventLoop()
 
 		do
 		{
-			windowVars = WindowGetPlatformVars(window_test);
+			//windowVars = WindowGetPlatformVars(window_test);
 			if (windowVars.window == event.xany.window)
 			{
 				window = window_test;
 				break;
 			}
-			window_test = window_test.getNextWindow();
-		} while (window_test !is app.getFirstWindow());
+			window_test = window_test.nextWindow();
+		} while (window_test !is app.firstWindow());
 
 		if ( window is null )
 		{
@@ -103,7 +107,7 @@ void eventLoop()
 			/* WINDOW IS DESTROYED */
 			if (event.type == X.EventType.DestroyNotify)
 			{
-				UninitializeWindow(window);
+				windowHelper.uninitialize();
 			}
 		}
 		else
@@ -133,16 +137,16 @@ void eventLoop()
 						// If the window has a drawable view, perform drawing
 						if (viewWindow !is null)
 						{
-							View* view = WindowGetView(viewWindow);
+							View* view = windowHelper.getView();
 							ViewPlatformVars* viewVars = ViewGetPlatformVars(*view);
 
-							viewWindow.OnDraw();
+							viewWindow.onDraw();
 
 							view.lockDisplay();
 
 							X.XCopyArea(_pfvars.display, viewVars.pixmap,
 							  windowVars.window, viewVars.gc,
-							  0, 0, viewWindow.getWidth(), viewWindow.getHeight(), 0, 0);
+							  0, 0, viewWindow.width, viewWindow.height, 0, 0);
 
 							view.unlockDisplay();
 						}
@@ -157,12 +161,12 @@ void eventLoop()
 				case X.EventType.ConfigureNotify:
 
 					//Size
-					if (window.getWidth() != event.xconfigure.width ||
-						window.getHeight() != event.xconfigure.height)
+					if (window.width != event.xconfigure.width ||
+						window.height != event.xconfigure.height)
 					{
 						//Size
-						SetWindowSize(window, event.xconfigure.width, event.xconfigure.height);
-						window.OnResize();
+						windowHelper.setWindowSize(event.xconfigure.width, event.xconfigure.height);
+						window.onResize();
 					}
 					else
 					{
@@ -175,14 +179,14 @@ void eventLoop()
 				case X.EventType.FocusIn:
 					if (event.xfocus.mode == X.NotifyModes.NotifyNormal)
 					{
-						window.OnGotFocus();
+						window.onGotFocus();
 					}
 					break;
 
 				case X.EventType.FocusOut:
 					if (event.xfocus.mode == X.NotifyModes.NotifyNormal)
 					{
-						window.OnLostFocus();
+						window.onLostFocus();
 					}
 					break;
 
@@ -253,19 +257,19 @@ void eventLoop()
 					switch (event.xbutton.button)
 					{
 						case X.ButtonName.Button1:
-							window.OnPrimaryMouseDown();
+							window.onPrimaryMouseDown();
 							break;
 						case X.ButtonName.Button2:
-							window.OnTertiaryMouseDown();
+							window.onTertiaryMouseDown();
 							break;
 						case X.ButtonName.Button3:
-							window.OnSecondaryMouseDown();
+							window.onSecondaryMouseDown();
 							break;
 						case X.ButtonName.Button4:
-							window.OnOtherMouseDown(0);
+							window.onOtherMouseDown(0);
 							break;
 						case X.ButtonName.Button5:
-							window.OnOtherMouseDown(1);
+							window.onOtherMouseDown(1);
 							break;
 					}
 					break;
@@ -298,21 +302,21 @@ void eventLoop()
 					{
 						case X.ButtonName.Button1:
 							window.mouseProps.leftDown = 0;
-							window.OnPrimaryMouseUp();
+							window.onPrimaryMouseUp();
 							break;
 						case X.ButtonName.Button2:
 							window.mouseProps.middleDown = 0;
-							window.OnTertiaryMouseUp();
+							window.onTertiaryMouseUp();
 							break;
 						case X.ButtonName.Button3:
 							window.mouseProps.rightDown = 0;
-							window.OnSecondaryMouseUp();
+							window.onSecondaryMouseUp();
 							break;
 						case X.ButtonName.Button4:
-							window.OnOtherMouseUp(0);
+							window.onOtherMouseUp(0);
 							break;
 						case X.ButtonName.Button5:
-							window.OnOtherMouseUp(1);
+							window.onOtherMouseUp(1);
 							break;
 					}
 
@@ -351,7 +355,7 @@ void eventLoop()
 					window.mouseProps.x = event.xmotion.x;
 					window.mouseProps.y = event.xmotion.y;
 
-					window.OnMouseMove();
+					window.onMouseMove();
 
 					break;
 				case X.EventType.EnterNotify:
@@ -359,7 +363,7 @@ void eventLoop()
 					break;
 				case X.EventType.LeaveNotify:
 					//Cursor leaves the client area of the window
-					window.OnMouseLeave();
+					window.onMouseLeave();
 					break;
 
 	/* Keyboard */
@@ -387,7 +391,7 @@ void eventLoop()
 					{
 						if (ksym >= 'a' && ksym <= 'z' || ksym == ' ')
 						{
-							window.OnKeyChar(cast(char)ksym);
+							window.onKeyChar(cast(char)ksym);
 						}
 					}
 					break;
@@ -397,7 +401,7 @@ void eventLoop()
 					X.KeySym ksym2;
 					ksym2 = X.XLookupKeysym(&event.xkey, 0);
 
-					window.OnKeyUp(ksym2);
+					window.onKeyUp(ksym2);
 					break;
 
 				default:
@@ -604,16 +608,16 @@ void consoleLoop()
 		ulong ky; uint tky;
 		ky = consoleGetKey();
 		TuiApplication app = cast(TuiApplication)Djehuty.app;
-		TuiWindow window = app.getWindow();
+		TuiWindow window = app.window;
 		tky = consoleTranslateKey(ky);
 
 		if (ky < 0xfffffff) {
-			window.OnKeyDown(tky);
+			window.onKeyDown(tky);
 
 			if (tky != KeyBackspace && tky != KeyArrowLeft && tky != KeyArrowRight
 				&& tky != KeyArrowUp && tky != KeyArrowDown)
 			{
-				window.OnKeyChar(cast(uint)ky);
+				window.onKeyChar(cast(uint)ky);
 			}
         }
 

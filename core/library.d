@@ -12,6 +12,7 @@
 module core.library;
 
 import core.string;
+import core.definitions;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));

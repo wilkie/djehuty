@@ -13,6 +13,7 @@ module hashes.sha1;
 import core.stream;
 import core.string;
 import core.endian;
+import core.definitions;
 
 import hashes.digest;
 

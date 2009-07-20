@@ -130,7 +130,7 @@ public:
 		uninitialize();
 		remove();
 	}
-	
+
 	// Properties
 
 	// Widget Container Margins
@@ -292,7 +292,7 @@ public:
 	{
 		return _y;
 	}
-	
+
 	// Methods
 
 	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
@@ -1136,6 +1136,37 @@ private:
 	package bool _inited = false;
 
 	package WindowHelper windowHelper;
+}
+
+// Definition: This is a View that defines the graphical client area of a Window.
+class WindowView : View {
+
+	this() {
+		super();
+	}
+
+	override void create(int width, int height) {
+	}
+
+	override void CreateDIB(int width, int height) {
+	}
+
+protected:
+
+	override void _platformCreate() {
+		Scaffold.ViewCreateForWindow(this, _pfvars, _window, _windowHelper);
+	}
+
+private:
+
+	void createForWindow(Window window, WindowHelper windowHelper) {
+		_window = window;
+		_windowHelper = windowHelper;
+		View.create(window.width, window.height);
+	}
+
+	Window _window;
+	WindowHelper _windowHelper;
 }
 
 class WindowHelper {

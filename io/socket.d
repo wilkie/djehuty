@@ -2,6 +2,7 @@ module io.socket;
 
 import core.stream;
 import core.string;
+import core.definitions;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));

@@ -198,7 +198,7 @@ protected:
 
 	uint startTime;
 	uint time;
-	
+
 	Window wnd;
 
 	ThreadPlatformVars _pfvars;
@@ -214,6 +214,7 @@ protected:
 		class overrideThread : Tango.Thread
 		{
 			Thread thread;
+			RuntimeThread runtimeThread;
 
 			this() {
 				super(&run);
@@ -288,7 +289,13 @@ void ThreadModuleInit() {
 
 	// create a Thread for the main thread
 	Thread mainThread = new Thread();
-	mainThread.stdThread.runtimeThread = Phobos.Thread.getThis();
+
+	version(Tango) {
+		mainThread.stdThread.runtimeThread = Tango.Thread.getThis();
+	}
+	else {
+		mainThread.stdThread.runtimeThread = Phobos.Thread.getThis();
+	}
 
 	Thread.threadById[mainThread.stdThread.runtimeThread] = mainThread;
 	Console.putln("module init");

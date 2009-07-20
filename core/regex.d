@@ -11,6 +11,8 @@
 module core.regex;
 
 import core.string;
+import core.definitions;
+
 import synch.thread;
 
 import io.console;
@@ -157,7 +159,7 @@ class Regex {
 			int unionPos;
 			int groupId;
 		}
-		
+
 		bool multiline;
 
 		foreach(chr; options) {
@@ -192,7 +194,7 @@ class Regex {
 		bool matchRange = false;
 
 		bool noMatchClass = false;
-		
+
 		bool backtrackedOnCaret = false;
 
 		regexRefs[Thread.getCurrent()] = new String[](9);
@@ -306,7 +308,7 @@ class Regex {
 					if (noMatchUntilClosedAtPos == -1) {
 
 						// No union, so just start the regex at the next character in the string.
-						
+
 						// UNLESS the backtrack happened at a 'caret' character in the regex
 						if (backtrackedOnCaret) {
 							matchMade = false;
@@ -417,7 +419,7 @@ class Regex {
 						strPos = groupInfo[currentGroupIdx].strPos;
 
 						noMatch = false;
-					
+
 						matchMade = true;
 					}
 				}

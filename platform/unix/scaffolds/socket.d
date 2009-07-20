@@ -16,7 +16,7 @@ import core.string;
 import core.main;
 import core.definitions;
 
-import console.main;
+import io.console;
 
 // SOCKET
 

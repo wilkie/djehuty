@@ -12,6 +12,7 @@ module resource.image;
 import core.stream;
 import core.string;
 import core.stream;
+import core.definitions;
 
 import graphics.view;
 

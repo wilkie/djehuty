@@ -57,12 +57,7 @@ public:
 		_width = width;
 		_height = height;
 
-		if (_fromWindow) {
-			Scaffold.ViewCreateForWindow(this, _pfvars, _window);
-		}
-		else {
-			Scaffold.ViewCreate(this, _pfvars);
-		}
+		_platformCreate();
 
 		_fromWindow = false;
 
@@ -86,12 +81,7 @@ public:
 		_width = width;
 		_height = height;
 
-		if (_fromWindow) {
-			Scaffold.ViewCreateForWindow(this, _pfvars, _window);
-		}
-		else {
-			Scaffold.ViewCreateDIB(this, _pfvars);
-		}
+		Scaffold.ViewCreateDIB(this, _pfvars);
 
 		_fromWindow = false;
 
@@ -248,6 +238,10 @@ protected:
 
 		_width = 0;
 		_height = 0;
+	}
+
+	void _platformCreate() {
+		Scaffold.ViewCreate(this, _pfvars);
 	}
 
 	// Retained Objects

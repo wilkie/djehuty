@@ -12,14 +12,12 @@ module platform.unix.scaffolds.menu;
 import platform.unix.vars;
 import platform.unix.common;
 
-import core.view;
-import core.graphics;
 import core.string;
-import core.menu;
 import core.main;
 import core.definitions;
 
-import gui.core;
+import gui.menu;
+import gui.window;
 
 void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
 {
@@ -31,7 +29,7 @@ void MenuDestroy(ref Menu mnu, ref MenuPlatformVars menuVars)
 
 void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toAppendVars)
 {
-	if (toAppend.GetSubMenuCount() > 0)
+	if (toAppend.length > 0)
 	{
 	}
 	else
@@ -41,7 +39,7 @@ void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, r
 
 void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toUpdateVars)
 {
-	if (toUpdate.GetSubMenuCount() > 0)
+	if (toUpdate.length > 0)
 	{
 	}
 	else
@@ -49,7 +47,7 @@ void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatform
 	}
 }
 
-void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, ref WindowPlatformVars windVars)
+void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, WindowHelper windowHelper)
 {
 }
 

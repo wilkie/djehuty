@@ -9,14 +9,14 @@
 
 module platform.unix.scaffolds.graphics;
 
-import core.view;
 import core.string;
-import core.file;
-import core.graphics;
 import core.color;
 import core.main;
 import core.definitions;
 import core.string;
+
+import graphics.view;
+import graphics.graphics;
 
 import platform.unix.common;
 import platform.unix.definitions;
@@ -24,9 +24,7 @@ import platform.unix.vars;
 
 import graphics.region;
 
-
 // Shapes
-
 
 // Draw a line
 void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
@@ -66,8 +64,8 @@ void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
 
 // Fonts
 
-//void createFont(ViewPlatformVars* viewVars, out Font font, StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-void createFont(FontPlatformVars* font, StringLiteral fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
+//void createFont(ViewPlatformVars* viewVars, out Font font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
+void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
 {
 	font.pangoFont = Pango.pango_font_description_new();
 
@@ -136,7 +134,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str)
 	Pango.pango_cairo_show_layout(viewVars.cr, viewVars.layout);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str)
+void drawText(ViewPlatformVars* viewVars, int x, int y, string str)
 {
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, str.length);
 
@@ -158,7 +156,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length)
 	Pango.pango_cairo_show_layout(viewVars.cr, viewVars.layout);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, StringLiteral str, uint length)
+void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length)
 {
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
@@ -212,7 +210,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	printf("clip draw done\n"); */
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str)
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str)
 {
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, str.length);
 
@@ -262,7 +260,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	Cairo.cairo_restore(viewVars.cr);
 }
 
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, StringLiteral str, uint length)
+void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str, uint length)
 {
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
@@ -310,7 +308,7 @@ void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size s
 	sz.y /= Pango.PANGO_SCALE;
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz)
+void measureText(ViewPlatformVars* viewVars, string str, out Size sz)
 {
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, str.length);
@@ -321,7 +319,7 @@ void measureText(ViewPlatformVars* viewVars, StringLiteral str, out Size sz)
 	sz.y /= Pango.PANGO_SCALE;
 }
 
-void measureText(ViewPlatformVars* viewVars, StringLiteral str, uint length, out Size sz)
+void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size sz)
 {
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, length);

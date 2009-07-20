@@ -14,6 +14,7 @@ import core.stream;
 import core.endian;
 import core.string;
 import core.unicode;
+import core.definitions;
 
 import hashes.digest;
 

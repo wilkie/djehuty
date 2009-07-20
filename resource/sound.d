@@ -13,6 +13,7 @@ module resource.sound;
 import core.time;
 import core.string;
 import core.event;
+import core.definitions;
 import core.stream;
 
 import synch.thread;
@@ -70,7 +71,7 @@ class Sound : Responder {
 	~this() {
 		tmr.stop();
 	}
-	
+
 	bool OnSignal(Dispatcher dsp, uint signal) {
 		if (dsp is wavDevice && signal == Audio.Signal.BufferPlayed) {
 			_bufferCallback();

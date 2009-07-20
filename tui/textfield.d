@@ -163,11 +163,14 @@ protected:
 
 			Console.setColor(_forecolor, _backcolor);
 
-			foreach(chr; _value.subString(0,width-2)) {
+			foreach(chr; _value.subString(0,_max)) {
 				Console.put(chr);
 			}
 
 			_pos = _value.length;
+			if (_pos > _max) {
+				_pos = _max;
+			}
 
 			for (int i=_value.length; i<_max; i++) {
 				Console.put(' ');
@@ -176,11 +179,11 @@ protected:
 			Console.setColor(_color, bgColor.Black);
 
 			Console.put("]");
-			
+
 			positionCursor();
 		}
 	}
-	
+
 	void positionCursor() {
 		if (_pos == _max) {
 			Console.setPosition(this.left+_max, this.top);
