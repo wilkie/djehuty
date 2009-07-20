@@ -137,8 +137,8 @@ void eventLoop()
 						// If the window has a drawable view, perform drawing
 						if (viewWindow !is null)
 						{
-							View* view = windowHelper.getView();
-							ViewPlatformVars* viewVars = ViewGetPlatformVars(*view);
+							View view = windowHelper.getView();
+							ViewPlatformVars* viewVars = windowHelper.getViewVars();
 
 							viewWindow.onDraw();
 

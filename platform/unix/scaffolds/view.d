@@ -115,6 +115,10 @@ void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref
 	//Pango.pango_attribute_destroy(viewVars.attr_bg);
 }
 
+void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowHelper windowHelper)
+{
+}
+
 void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 {
 	// code to Size a view, no concern needs to be taken
