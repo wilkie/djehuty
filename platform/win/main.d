@@ -600,8 +600,8 @@ int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 		case WM_PAINT:
 
-			View* view = wHelper.getView();
-			ViewPlatformVars* viewVars = ViewGetPlatformVars(*view);
+			View view = wHelper.getView();
+			ViewPlatformVars* viewVars = wHelper.getViewVars();
 
 			indraw = true;
 

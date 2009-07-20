@@ -87,6 +87,10 @@ void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref
 	ViewCreate(view, viewVars);
 }
 
+void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, ref WindowHelper windowHelper)
+{
+}
+
 void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 {
 	HDC dc;

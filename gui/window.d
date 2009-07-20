@@ -484,9 +484,8 @@ public:
 
 	void onInitialize()
 	{
-		_view = new View;
-
-		ViewCreateForWindow(_view, this);
+		_view = new WindowView;
+		_viewVars = _view.createForWindow(this, windowHelper);
 	}
 
 	void onUninitialize()
@@ -499,11 +498,9 @@ public:
 	{
 		if (_view !is null)
 		{
-			ViewPlatformVars* viewVars = ViewGetPlatformVars(_view);
-
 			Graphics g = _view.lockDisplay();
 
-			Scaffold.WindowStartDraw(this, windowHelper, _view, *viewVars);
+			Scaffold.WindowStartDraw(this, windowHelper, _view, *_viewVars);
 
 			Widget c = _firstControl;
 
@@ -517,7 +514,7 @@ public:
 				} while (c !is _firstControl)
 			}
 
-			Scaffold.WindowEndDraw(this, windowHelper, _view, *viewVars);
+			Scaffold.WindowEndDraw(this, windowHelper, _view, *_viewVars);
 
 			_view.unlockDisplay();
 		}
@@ -755,7 +752,7 @@ public:
 	}
 
 	void onResize() {
-		ViewResizeForWindow(_view, this);
+		Scaffold.ViewResizeForWindow(_view, *_viewVars, this, windowHelper);
 
 		onDraw();
 	}
@@ -1084,7 +1081,8 @@ protected:
 		_lastChild = null;
 	}
 
-	View _view = null;
+	WindowView _view = null;
+	ViewPlatformVars* _viewVars;
 
 	Color _color;
 
@@ -1159,10 +1157,12 @@ protected:
 
 private:
 
-	void createForWindow(Window window, WindowHelper windowHelper) {
+	ViewPlatformVars* createForWindow(Window window, WindowHelper windowHelper) {
 		_window = window;
 		_windowHelper = windowHelper;
 		View.create(window.width, window.height);
+		
+		return &_pfvars;
 	}
 
 	Window _window;
@@ -1205,8 +1205,12 @@ class WindowHelper {
 		}
 	}
 
-	View* getView() {
-		return &window._view;
+	View getView() {
+		return window._view;
+	}
+
+	ViewPlatformVars* getViewVars() {
+		return window._viewVars;
 	}
 
 	WindowPlatformVars* getPlatformVars() {

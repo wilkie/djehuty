@@ -32,7 +32,7 @@ public:
 
 	override void onAdd() {
 
-		ViewPlatformVars* viewVars = ViewGetPlatformVars(_view);
+		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
 
 		HDC dc = GetDC(_hWnd);
 
@@ -70,7 +70,7 @@ public:
 		// save current background for later
 
 		// copy over current image
-		ViewPlatformVars* viewVars = ViewGetPlatformVars(_view);
+		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
 
 		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, button_hdc, 0,0,SRCCOPY);
 	}

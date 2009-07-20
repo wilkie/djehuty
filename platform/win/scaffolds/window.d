@@ -406,7 +406,7 @@ void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref View view, ref ViewPlatformVars viewVars)
+void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 
@@ -439,7 +439,7 @@ void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref View view
 	//window->_view._graphics.SetTextModeTransparent();
 }
 
-void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref View view, ref ViewPlatformVars viewVars)
+void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 

@@ -271,7 +271,7 @@ class Graphics {
 	void drawView(int x, int y, View view) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view);
 
@@ -287,7 +287,7 @@ class Graphics {
 	void drawView(int x, int y, View view, int viewX, int viewY) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY);
 
@@ -305,7 +305,7 @@ class Graphics {
 	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight);
 
@@ -320,7 +320,7 @@ class Graphics {
 	void drawView(int x, int y, View view, double opacity) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, opacity);
 
@@ -337,7 +337,7 @@ class Graphics {
 	void drawView(int x, int y, View view, int viewX, int viewY, double opacity) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, opacity);
 
@@ -356,7 +356,7 @@ class Graphics {
 	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
 		view.lockDisplay();
 
-		ViewPlatformVars* viewVarsSrc = ViewGetPlatformVars(view);
+		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight, opacity);
 

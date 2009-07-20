@@ -207,7 +207,7 @@ public:
 
 protected:
 
-	ViewPlatformVars _pfvars;
+	package ViewPlatformVars _pfvars;
 
 	bool _fromWindow = false;
 	Window _window;
@@ -250,24 +250,6 @@ protected:
 
 	package Brush _brush;
 	package Pen _pen;
-}
-
-ViewPlatformVars* ViewGetPlatformVars(ref View view) {
-	return &view._pfvars;
-}
-
-void ViewCreateForWindow(ref View view, ref Window window) {
-	view._fromWindow = true;
-
-	view.create(window.width, window.height);
-
-	view._fromWindow = true;
-}
-
-void ViewResizeForWindow(ref View view, ref Window window) {
-	if (view !is null && view._fromWindow) {
-		view.resize(window.width, window.height);
-	}
 }
 
 bool ViewIsDIB(ref View view) {
