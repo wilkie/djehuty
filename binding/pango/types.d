@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.pango.types;
+module binding.pango.types;
 
 enum PangoDirection {
   PANGO_DIRECTION_LTR,
@@ -240,10 +240,10 @@ struct  _GObjectClass
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.engine;
-import platform.unix.pango.pbreak;
-import platform.unix.pango.font;
-import platform.unix.pango.fontmap;
+import binding.pango.engine;
+import binding.pango.pbreak;
+import binding.pango.font;
+import binding.pango.fontmap;
 
 alias _PangoLogAttr PangoLogAttr;
 

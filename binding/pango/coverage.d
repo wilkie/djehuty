@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.coverage;
+module binding.pango.coverage;
 
 /* Pango
  * pango-coverage.h: Coverage sets for fonts
@@ -31,7 +31,7 @@ module platform.unix.pango.coverage;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
 extern(C) struct _PangoCoverage;
 

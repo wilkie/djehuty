@@ -8,7 +8,7 @@
  * Author: Teissier Sylvere, Dave Wilkinson
  *
  */
- 
+
  /* 	Xlib binding for D language
 	Copyright 2007 TEISSIER Sylvere sligor(at)free.fr
 	version 0.1 2007/08/29
@@ -23,8 +23,8 @@
 */
 
 
-module platform.unix.x.Xlib;
-public import platform.unix.x.X;
+module binding.x.Xlib;
+public import binding.x.X;
 import core.definitions;
 
 const int XlibSpecificationRelease=6;

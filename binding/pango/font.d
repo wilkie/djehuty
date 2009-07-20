@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.pango.font;
+module binding.pango.font;
 
 //extern(C) struct _PangoFontDescription;
 //extern(C) struct _PangoFontMetrics;
@@ -56,10 +56,10 @@ enum PangoFontMask {
   PANGO_FONT_MASK_GRAVITY = (1 << 6)
 }
 
-import platform.unix.pango.types;
-import platform.unix.pango.gravity;
-import platform.unix.pango.types;
-import platform.unix.pango.coverage;
+import binding.pango.types;
+import binding.pango.gravity;
+import binding.pango.types;
+import binding.pango.coverage;
 
 extern(C) struct _PangoFontDescription;
 

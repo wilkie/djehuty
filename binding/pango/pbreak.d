@@ -7,10 +7,10 @@
  *
  */
 
-module platform.unix.pango.pbreak;
+module binding.pango.pbreak;
 
-import platform.unix.pango.types;
-import platform.unix.pango.item;
+import binding.pango.types;
+import binding.pango.item;
 
 extern(C):
 

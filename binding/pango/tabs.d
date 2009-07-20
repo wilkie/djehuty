@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.tabs;
+module binding.pango.tabs;
 
 /* Pango
  * pango-tabs.h: Tab-related stuff
@@ -31,7 +31,7 @@ module platform.unix.pango.tabs;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
 extern(C) struct _PangoTabArray;
 

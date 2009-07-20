@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.fontmap;
+module binding.pango.fontmap;
 
 /* Pango
  * pango-font.h: Font handling
@@ -31,15 +31,15 @@ module platform.unix.pango.fontmap;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.context;
+import binding.pango.context;
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.font;
-import platform.unix.pango.fontset;
+import binding.pango.font;
+import binding.pango.fontset;
 
-import platform.unix.pango.font;
-import platform.unix.pango.fontmap;
+import binding.pango.font;
+import binding.pango.fontmap;
 
 extern(C):
 

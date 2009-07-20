@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.layout;
+module binding.pango.layout;
 
 /* Pango
  * pango-layout.h: High-level layout driver
@@ -31,13 +31,13 @@ module platform.unix.pango.layout;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.attributes;
-import platform.unix.pango.context;
-import platform.unix.pango.glyphitem;
-import platform.unix.pango.tabs;
-import platform.unix.pango.font;
+import binding.pango.attributes;
+import binding.pango.context;
+import binding.pango.glyphitem;
+import binding.pango.tabs;
+import binding.pango.font;
 
 extern(C) struct _PangoLayout;
 extern(C) struct _PangoLayoutClass;

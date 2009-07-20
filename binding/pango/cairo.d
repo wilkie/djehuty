@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.cairo;
+module binding.pango.cairo;
 
 /* Pango
  * pangocairo.h:
@@ -31,14 +31,14 @@ module platform.unix.pango.cairo;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.context;
-import platform.unix.pango.fontmap;
-import platform.unix.pango.layout;
-import platform.unix.pango.glyph;
+import binding.pango.context;
+import binding.pango.fontmap;
+import binding.pango.layout;
+import binding.pango.glyph;
 
-import platform.unix.cairo.cairo;
+import binding.cairo.cairo;
 
 
 /**

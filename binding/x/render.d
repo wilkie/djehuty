@@ -11,7 +11,7 @@
 
 /* Converted to D from render.h by htod */
 
-module platform.unix.x.render;
+module binding.x.render;
 
 /*
  * $XFree86: xc/include/extensions/render.h,v 1.10 2002/11/06 22:47:49 keithp Exp $
@@ -38,7 +38,7 @@ module platform.unix.x.render;
  * Author:  Keith Packard, SuSE, Inc.
  */
 
-import platform.unix.x.X;
+import binding.x.X;
 
 extern (C):
 alias XID Glyph;

@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.glyph;
+module binding.pango.glyph;
 
 /* Pango
  * pango-glyph.h: Glyph storage
@@ -31,9 +31,9 @@ module platform.unix.pango.glyph;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
-import platform.unix.pango.item;
-import platform.unix.pango.font;
+import binding.pango.types;
+import binding.pango.item;
+import binding.pango.font;
 
 alias _PangoGlyphGeometry PangoGlyphGeometry;
 alias _PangoGlyphVisAttr PangoGlyphVisAttr;

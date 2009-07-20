@@ -11,12 +11,12 @@
 
 module platform.unix.common;
 
-public import X = platform.unix.x.Xlib;
+public import X = binding.x.Xlib;
 
-public import Cairo = platform.unix.cairo.cairo;
-public import CairoX = platform.unix.cairo.xlib;
+public import Cairo = binding.cairo.cairo;
+public import CairoX = binding.cairo.xlib;
 
-public import Pango = platform.unix.pango.pango;
+public import Pango = binding.pango.pango;
 
     const int EOF = -1;
     const int FOPEN_MAX = 16;

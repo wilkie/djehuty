@@ -17,7 +17,7 @@
 	This file is free software, please read licence.txt for more informations
 */
 
-module platform.unix.x.X;
+module binding.x.X;
 import core.definitions;
 
 const uint X_PROTOCOL=11;		/* current protocol version */
