@@ -69,7 +69,7 @@ class Application : Responder {
 	bool isInstalled() {
 		// return true when the executable currently being executed is
 		// located in the filesystem's installed binaries directory
-		return (System.FileSystem.getBinaryDir() == System.FileSystem.getApplicationDir());
+		return (System.FileSystem.binaryDir() == System.FileSystem.applicationDir());
 	}
 
 	void arguments(Arguments argInstance) {

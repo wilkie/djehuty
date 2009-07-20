@@ -22,33 +22,33 @@ class System {
 		static:
 		public:
 
-		uint getScreenCount() {
+		uint count() {
 			return Scaffold.SystemGetDisplayCount();
 		}
 
-		uint getPrimary() {
+		uint primary() {
 			return Scaffold.SystemGetPrimaryDisplay();
 		}
 
-		int getWidth(uint index) {
+		int width(uint index) {
 			return Scaffold.SystemGetDisplayWidth(index);
 		}
 
-		int getHeight(uint index) {
+		int height(uint index) {
 			return Scaffold.SystemGetDisplayHeight(index);
 		}
 	}
-	
+
 	class Display {
 		static:
 		public:
 
-		int getWidth() {
-			return Scaffold.SystemGetDisplayWidth(Displays.getPrimary());
+		int width() {
+			return Scaffold.SystemGetDisplayWidth(Displays.primary);
 		}
 
-		int getHeight() {
-			return Scaffold.SystemGetDisplayHeight(Displays.getPrimary());
+		int height() {
+			return Scaffold.SystemGetDisplayHeight(Displays.primary);
 		}
 	}
 
@@ -56,52 +56,52 @@ class System {
 		static:
 		public:
 
-		ulong getTotal() {
+		ulong total() {
 			return Scaffold.SystemGetTotalMemory();
 		}
 
-		ulong getAvailable() {
+		ulong available() {
 			return Scaffold.SystemGetAvailableMemory();
 		}
 	}
-	
+
 	class FileSystem {
 		static:
 		public:
 
 		// Description: This function will return the Directory representing the current directory.
 		// Returns: The Directory representing the working directory.
-		Directory getCurrentDir() {
+		Directory currentDir() {
 			return new Directory(Scaffold.DirectoryGetCWD());
 		}
-	
+
 		// Description: This function will return the Directory representing the directory the executable is located in. It should not be relied on completely, as this information can be incorrect or non-existent.
 		// Returns: The Directory representing the executable location.
-		Directory getApplicationDir() {
+		Directory applicationDir() {
 			return new Directory(Scaffold.DirectoryGetApp());
 		}
-	
+
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
-		Directory getTempDir() {
+		Directory tempDir() {
 			return new Directory(Scaffold.DirectoryGetTempData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
-		Directory getAppDataDir() {
+		Directory appDataDir() {
 			return new Directory(Scaffold.DirectoryGetAppData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
-		Directory getUserDataDir() {
+		Directory userDataDir() {
 			return new Directory(Scaffold.DirectoryGetUserData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
-		Directory getBinaryDir() {
+		Directory binaryDir() {
 			return new Directory(Scaffold.DirectoryGetBinary());
 		}
 	}

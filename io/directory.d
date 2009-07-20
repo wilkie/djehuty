@@ -44,7 +44,7 @@ class Directory
 			// relative path
 
 			// get the working directory
-			Directory cur = System.FileSystem.getCurrentDir();
+			Directory cur = System.FileSystem.currentDir;
 
 			// create an absolute path
 			_path = cur.path ~ "/" ~ path;
