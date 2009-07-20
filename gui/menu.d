@@ -1,6 +1,7 @@
 module gui.menu;
 
 import core.string;
+import core.definitions;
 
 import io.console;
 

@@ -11,20 +11,22 @@ module platform.unix.scaffolds.window;
 
 import platform.unix.vars;
 import platform.unix.common;
-
-import core.view;
-import core.graphics;
-import core.color;
-
 import platform.unix.main;
-import core.string;
-import core.file;
-import core.main;
 
-import gui.core;
+import graphics.view;
+import graphics.graphics;
+
+import core.color;
+import core.string;
+import core.main;
 import core.definitions;
 
-import console.main;
+import io.file;
+
+import gui.application;
+import gui.window;
+
+import io.console;
 
 struct MWMHints {
   Clong flags;
@@ -86,14 +88,16 @@ const int PAllHints     = (PPosition|PSize|
 
 
 // all windows
-void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
+void WindowCreate(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to create the window
 	windowVars.destroy_called = false;
 
 	X.XSetWindowAttributes attributes;
 
-	if (window.getStyle() == WindowStyle.Popup)
+	if (window.style == WindowStyle.Popup)
 	{
 		attributes.override_redirect = X.Bool.True;
 	}
@@ -101,7 +105,7 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 	X.Window parent = X.XRootWindow(_pfvars.display, _pfvars.screen);
 
 	windowVars.window = X.XCreateWindow(_pfvars.display,
-		parent, window.getX(),window.getY(),window.getWidth(),window.getHeight(),0,
+		parent, window.x,window.y,window.width,window.height,0,
 		X.CopyFromParent,
 		X.WindowClass.InputOutput,
 		cast(X.Visual*)X.CopyFromParent,
@@ -116,65 +120,69 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 
 	X.Status r = X.XSetWMProtocols(_pfvars.display, windowVars.window, &_pfvars.wm_destroy_window, 1);
 
-	WindowRebound(window, windowVars);
+	WindowRebound(window, windowHelper);
 
-	WindowSetTitle(window, windowVars);
+	WindowSetTitle(window, windowHelper);
 
 	X.XChangeWindowAttributes(_pfvars.display, windowVars.window, X.WindowAttribute.CWOverrideRedirect, &attributes);
 
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.getX(), window.getY());
+	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
 
-	if (window.getVisibility())
+	if (window.visible)
 	{
-		WindowSetVisible(window, windowVars, true);
+		WindowSetVisible(window, windowHelper, true);
 	}
 
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.getX(), window.getY());
+	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
 
 	// Create View
-	window.OnInitialize();
+	window.onInitialize();
 
 	// Run Add
-	window.OnAdd();
+	window.onAdd();
 }
 
-void WindowCreate(ref Window parent, WindowPlatformVars* parentVars, ref Window window, ref WindowPlatformVars windowVars)
+void WindowCreate(ref Window parent, WindowHelper parentHelper, ref Window window, WindowHelper windowHelper)
 {
 	// code to create a child window
 	//int screen;
 
-	WindowCreate(window, &windowVars);
+	WindowCreate(window, windowHelper);
 	return;
 }
 
-void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
+void WindowSetStyle(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
 	// code to change the style of a window
 }
 
-void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
+void WindowReposition(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
 	// code to move a window
 }
 
-void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
+void WindowSetState(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
 	// code to change the state of a window
 }
 
-void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
+void WindowRebound(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
 	// code to Size a window
 	int width, height;
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width;
+	height = window.height;
 
 	MWMHints mwmhints;
 
 	X.XSizeHints* xhints;
 
 	X.Atom wm_normal_hints = X.XInternAtom(_pfvars.display, "WM_NORMAL_HINTS\0"c.ptr, X.Bool.True);
-	if (window.getStyle() == WindowStyle.Popup)
+	if (window.style == WindowStyle.Popup)
 	{
 
 		X.Atom prop = X.XInternAtom(_pfvars.display, "_MOTIF_WM_HINTS\0"c.ptr, X.Bool.True);
@@ -203,7 +211,7 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 		X.XFree(xhints);
 
 	}
-	else if (window.getStyle() == WindowStyle.Fixed)
+	else if (window.style == WindowStyle.Fixed)
 	{
 		X.Atom prop = X.XInternAtom(_pfvars.display, "_MOTIF_WM_HINTS\0"c.ptr, X.Bool.True);
 
@@ -234,8 +242,10 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 	}
 }
 
-void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
+void WindowDestroy(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to destroy a window
 	windowVars.destroy_called = true;
 
@@ -243,8 +253,10 @@ void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 	X.XDestroyWindow(_pfvars.display, windowVars.window);
 }
 
-void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
+void WindowSetVisible(ref Window window, WindowHelper windowHelper, bool bShow)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to show or hide a window
 	if (bShow)
 	{
@@ -256,15 +268,17 @@ void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bS
 	}
 }
 
-void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
+void WindowSetTitle(ref Window window, WindowHelper windowHelper)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to change a window's title
 
 	//Set the window's text
 
 	//Fill in a text property
 
-	String str = new String(window.getText());
+	String str = new String(window.text);
 	str.appendChar('\0');
 
 	// Alternative Syntax:
@@ -303,25 +317,28 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
+void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref int x, ref int y)
 {
 	//Coord pt = {x,y};
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
+	auto windowVars = windowHelper.getPlatformVars();
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
 		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
+void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Coord pt)
 {
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
+	auto windowVars = windowHelper.getPlatformVars();
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
 		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
+void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect rt)
 {
+	auto windowVars = windowHelper.getPlatformVars();
 }
 
 
@@ -329,8 +346,10 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref View view, ref ViewPlatformVars viewVars)
+void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref View view, ref ViewPlatformVars viewVars)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code executed at the start of a redraw for a window
 
 	// should establish a white brush and a black pen
@@ -338,14 +357,14 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref View
 	//Set initial Pen and Brush
 	//window->_initial_color = 0xFF;
 
-	X.XSetForeground(_pfvars.display, viewVars.gc, ColorGetValue(window.getColor()));
-	X.XSetBackground(_pfvars.display, viewVars.gc, ColorGetValue(window.getColor()));
+	X.XSetForeground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
+	X.XSetBackground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
 
 	//Fill background
 
 	X.XFillRectangle(_pfvars.display, viewVars.pixmap,
 		viewVars.gc,
-		0,0,window.getWidth(), window.getHeight());
+		0,0,window.width, window.height);
 
 	viewVars.textclr_red = 0.0;
 	viewVars.textclr_green = 0.0;
@@ -354,8 +373,10 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref View
 	viewVars.isOpaqueRendering = 0;
 }
 
-void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref View view, ref ViewPlatformVars viewVars)
+void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref View view, ref ViewPlatformVars viewVars)
 {
+	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to reclaim resources, and executed after all components have drawn to the window
 
 	//copy over area
@@ -363,15 +384,15 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref View v
 
 	X.XCopyArea(_pfvars.display, viewVars.pixmap,
 		windowVars.window, viewVars.gc,
-		0, 0, window.getWidth(), window.getHeight(), 0, 0);
+		0, 0, window.width, window.height, 0, 0);
 }
 
-void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars)
+void WindowCaptureMouse(ref Window window, WindowHelper windowHelper)
 {
 	// capture the mouse
 }
 
-void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars)
+void WindowReleaseMouse(ref Window window, WindowHelper windowHelper)
 {
 	// release the mouse
 }

@@ -6,6 +6,7 @@ import core.application;
 import core.string;
 import core.event;
 import core.main;
+import core.definitions;
 
 import platform.imports;
 mixin(PlatformGenericImport!("console"));

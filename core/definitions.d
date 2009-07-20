@@ -13,24 +13,13 @@ module core.definitions;
 import platform.imports;
 mixin(PlatformGenericPublicImport!("definitions"));
 
+// String
+
+alias char[] string;
+alias wchar[] wstring;
+alias dchar[] dstring;
+
 // Section: Types
-
-// Platform Types:
-
-//DJEHUTYDOC
-
-//TYPE:Char
-//DESC:This represents the character type native to the platform.  Sometimes it is UTF-8, other times, UTF-16, and perhaps UTF-32.
-
-//TYPE:Pen
-//DESC:This type stores a pen, or stroke, information for use with a Graphics class.
-
-//TYPE:Brush
-//DESC:This type stores a brush, or fill, information for use with a Graphics class.
-
-//TYPE:Font
-//DESC:This type stores the font information that is for use with a Graphics class.
-
 
 // Description: This struct stores an x and y and is used to specify a point.
 struct Coord {

@@ -27,8 +27,8 @@ class TuiWindow : Responder
 	{
 		// go through control list, init
 
-		_width = Console.getWidth();
-		_height = Console.getHeight();
+		_width = Console.width();
+		_height = Console.height();
 
 		Console.setColor(_bgClr);
 		Console.clear();
@@ -64,8 +64,8 @@ class TuiWindow : Responder
 
 	void onResize()
 	{
-		_width = Console.getWidth();
-		_height = Console.getHeight();
+		_width = Console.width();
+		_height = Console.height();
 	}
 
 	void onKeyDown(uint keyCode)

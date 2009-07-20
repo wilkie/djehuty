@@ -7,6 +7,7 @@ mixin(PlatformScaffoldImport!());
 
 import core.color;
 import core.string;
+import core.definitions;
 
 import graphics.view;
 

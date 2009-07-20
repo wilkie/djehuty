@@ -12,6 +12,7 @@ module io.directory;
 
 import core.string;
 import core.system;
+import core.definitions;
 
 import io.file;
 import io.console;
@@ -238,7 +239,7 @@ class Directory
 
 	// this should work:
 	alias Object.opEquals opEquals;
-	
+
 	override char[] toString() {
 		return this.path.toString();
 	}

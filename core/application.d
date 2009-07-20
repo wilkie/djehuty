@@ -16,6 +16,7 @@ import core.system;
 import core.main;
 import core.arguments;
 import core.event;
+import core.definitions;
 
 import platform.imports;
 mixin(PlatformScaffoldImport!());
@@ -104,7 +105,7 @@ class Application : Responder {
 	bool isZombie() {
 		return true;
 	}
-	
+
 	void exit(uint code) {
 		DjehutyEnd(code);
 	}

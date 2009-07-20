@@ -12,6 +12,7 @@ module networking.telnet;
 import core.literals;
 import core.string;
 import core.unicode;
+import core.definitions;
 
 import io.socket;
 import io.console;

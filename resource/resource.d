@@ -14,6 +14,7 @@ import core.string;
 import core.endian;
 import core.stream;
 import core.unicode;
+import core.definitions;
 
 import resource.image;
 

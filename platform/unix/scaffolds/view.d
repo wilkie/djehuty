@@ -13,14 +13,16 @@ import platform.unix.vars;
 import platform.unix.common;
 import platform.unix.main;
 
-import core.view;
-import core.graphics;
+import graphics.view;
+import graphics.graphics;
+
 import core.string;
-import core.file;
 import core.main;
 import core.definitions;
 
-import gui.core;
+import io.file;
+
+import gui.window;
 
 //import console.main;
 
@@ -65,10 +67,10 @@ void ViewCreateDIB(ref View view, ref ViewPlatformVars viewVars)
 	viewVars.bits_length = view.getWidth() * view.getHeight() * 4;
 }
 
-void ViewCreateForWindow(ref View view, ref ViewPlatformVars viewVars, ref Window window)
+void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowHelper windowHelper)
 {
 	// code to create a view for a window
-	WindowPlatformVars* windowVars = WindowGetPlatformVars(window);
+	WindowPlatformVars* windowVars = windowHelper.getPlatformVars();
 
 	int screen, depth;
 
@@ -77,8 +79,8 @@ void ViewCreateForWindow(ref View view, ref ViewPlatformVars viewVars, ref Windo
 	screen = X.DefaultScreen(_pfvars.display);
 	depth = X.DefaultDepth(_pfvars.display, screen);
 
-	int _width = window.getWidth();
-	int _height = window.getHeight();
+	int _width = window.width;
+	int _height = window.height;
 
 	//create the back buffer
 	viewVars.pixmap = X.XCreatePixmap(

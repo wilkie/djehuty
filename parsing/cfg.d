@@ -1,6 +1,7 @@
 module parsing.cfg;
 
 import core.string;
+import core.definitions;
 
 import io.console;
 

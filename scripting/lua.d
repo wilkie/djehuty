@@ -17,6 +17,7 @@ import binding.lua;
 // common
 import core.string;
 import core.unicode;
+import core.definitions;
 
 // print
 import io.console;

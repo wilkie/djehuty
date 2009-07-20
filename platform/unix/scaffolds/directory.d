@@ -12,8 +12,9 @@ module platform.unix.scaffolds.directory;
 import platform.unix.vars;
 import platform.unix.common;
 
+import io.file;
+
 import core.string;
-import core.file;
 import core.main;
 
 import utils.arraylist;
@@ -49,7 +50,7 @@ String DirectoryGetBinary()
 
 String DirectoryGetAppData()
 {
-	return new String("/usr/share/") ~ Djehuty.app.getApplicationName();
+	return new String("/usr/share/") ~ Djehuty.app.name;
 }
 
 String DirectoryGetTempData()
@@ -78,7 +79,7 @@ String DirectoryGetUserData()
 		if (i != 0)
 		{
 			homePath = result[0..i];
-			cached = new String(homePath) ~ "/." ~ Djehuty.app.getApplicationName();
+			cached = new String(homePath) ~ "/." ~ Djehuty.app.name;
 		}
 		else
 		{

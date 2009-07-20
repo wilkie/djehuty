@@ -193,7 +193,7 @@ class Console {
 	}
 
 	// Description: Will return the height
-	static uint getHeight() {
+	static uint height() {
 		uint width;
 		uint height;
 
@@ -203,7 +203,7 @@ class Console {
 	}
 
 	// Description: Will return the width
-	static uint getWidth() {
+	static uint width() {
 		uint width;
 		uint height;
 

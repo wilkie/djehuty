@@ -9,12 +9,13 @@
 module specs.test;
 
 import testing.logic;
+import core.definitions;
 
 import core.string;
 
 class StringTester
 {
-	
+
 		it creation_should_handle_literals()
 	{before_creation();
 try
@@ -81,7 +82,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_creation() { }
 
-	
+
 		it trim_should_trim_off_whitespace()
 	{before_trim();
 try
@@ -100,7 +101,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_trim() { }
 
-	
+
 		it length_should_account_for_combining_marks()
 	{before_length();
 try
@@ -150,7 +151,7 @@ return it.doesnt;
 	return it.does;
 	}	done before_length() { }
 
-	
+
 		it append_should_concatenate_a_string_object()
 	{before_append();
 try
@@ -248,7 +249,7 @@ return it.doesnt;
 	{before_append();
 try
 {
-			
+
 
 			String str = new String("hello ");
 			String str2;
@@ -261,7 +262,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_append() { }
 
-	
+
 		it toLowercase_should_work_as_expected()
 	{before_toLowercase();
 try
@@ -299,7 +300,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_toLowercase() { }
 
-	
+
 		it toUppercase_should_work_as_expected()
 	{before_toUppercase();
 try
@@ -459,7 +460,7 @@ import core.regex;
 
 class RegexTester
 {
-	
+
 		it eval_should_handle_kleene_star()
 	{before_eval();
 try
@@ -1046,7 +1047,7 @@ class UnicodeTester
 	wstring empty16 = "";
 	string empty8 = "";
 
-	
+
 		it utflen_should_be_the_same_for_utf8_as_utf32()
 	{before_utflen();
 try
@@ -1178,7 +1179,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_utflen() { }
 
-	
+
 		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
 	{before_toUtfChars();
 try
@@ -1368,7 +1369,7 @@ this() { before(); }
 
 class DigestTester
 {
-	
+
 		it creation_should_allow_for_64_bits()
 	{before_creation();
 try
@@ -1442,7 +1443,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	return it.does;
 	}	done before_creation() { }
 
-	
+
 		it comparison_should_work_for_equals_overload()
 	{before_comparison();
 try
@@ -1540,7 +1541,7 @@ this() { before(); }
 
 class MD5Tester
 {
-	
+
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1577,7 +1578,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	{before_hash();
 try
 {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the
 			String s = HashMD5.hash("d").getString();
 			if(!(s == "8277e0910d750195b448797616e091ad"))
 	{
@@ -1594,7 +1595,7 @@ if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
 	{before_hash();
 try
 {
-			// Testing a classic MD5 
+			// Testing a classic MD5
 			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
 			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
 
@@ -1658,7 +1659,7 @@ this() { before(); }
 
 class SHA1Tester
 {
-	
+
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1743,7 +1744,7 @@ this() { before(); }
 
 class SHA224Tester
 {
-	
+
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try
@@ -1828,7 +1829,7 @@ this() { before(); }
 
 class SHA256Tester
 {
-	
+
 		it hash_should_hash_as_expected_for_String_objects()
 	{before_hash();
 try

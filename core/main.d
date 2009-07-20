@@ -19,6 +19,11 @@ import io.console;
 import synch.semaphore;
 import synch.thread;
 
+import platform.imports;
+mixin(PlatformGenericImport!("vars"));
+mixin(PlatformGenericImport!("definitions"));
+mixin(PlatformScaffoldImport!());
+
 void DjehutyStart() {
 	// Can only start the framework once
 	if (!Djehuty._hasStarted) {

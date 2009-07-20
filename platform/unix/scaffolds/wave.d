@@ -11,16 +11,13 @@ module platform.unix.scaffolds.wave;
 
 import platform.unix.vars;
 
-import core.view;
-import core.graphics;
-
 import core.string;
-import core.file;
 import core.stream;
 import core.time;
-import core.audio;
 import core.main;
 import core.definitions;
+
+import io.audio;
 
 import synch.thread;
 import synch.semaphore;
