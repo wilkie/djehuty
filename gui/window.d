@@ -26,6 +26,7 @@ import core.color;
 import core.string;
 import core.event;
 import core.main;
+import core.system;
 
 import interfaces.container;
 
@@ -54,9 +55,6 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
-
-		windowHelper = new WindowHelper();
-		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -76,9 +74,6 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
-
-		windowHelper = new WindowHelper();
-		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -98,9 +93,6 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
-
-		windowHelper = new WindowHelper();
-		windowHelper.window = this;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -120,9 +112,6 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
-
-		windowHelper = new WindowHelper();
-		windowHelper.window = this;
 	}
 
 	~this()
@@ -162,7 +151,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, windowHelper);
+		Scaffold.WindowSetTitle(this, &_pfvars);
 	}
 
 	// Description: Will set the title of the window.
@@ -172,7 +161,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, windowHelper);
+		Scaffold.WindowSetTitle(this, &_pfvars);
 	}
 
 	Window nextWindow() {
@@ -199,7 +188,7 @@ public:
 				app._windowVisibleCount++;
 			}
 
-			Scaffold.WindowSetVisible(this, windowHelper, bShow);
+			Scaffold.WindowSetVisible(this, &_pfvars, bShow);
 
 			// safe guard:
 			// fights off infection from ZOMBIE PROCESSES!!!
@@ -230,7 +219,7 @@ public:
 
 		if (_nextWindow !is null)
 		{
-			Scaffold.WindowSetState(this, windowHelper);
+			Scaffold.WindowSetState(this, &_pfvars);
 		}
 
 		onStateChange();
@@ -254,7 +243,7 @@ public:
 
 		if (_nextWindow !is null)
 		{
-			Scaffold.WindowSetStyle(this, windowHelper);
+			Scaffold.WindowSetStyle(this, &_pfvars);
 		}
 	}
 
@@ -269,6 +258,9 @@ public:
 	// Returns: The width of the client area of the window.
 	uint width()
 	{
+		if (_state == WindowState.Fullscreen) {
+			return System.Display.width;
+		}
 		return _width;
 	}
 
@@ -276,6 +268,9 @@ public:
 	// Returns: The height of the client area of the window.
 	uint height()
 	{
+		if (_state == WindowState.Fullscreen) {
+			return System.Display.height;
+		}
 		return _height;
 	}
 
@@ -283,6 +278,9 @@ public:
 	// Returns: The x position of the top-left corner of the window.
 	uint x()
 	{
+		if (_state == WindowState.Fullscreen) {
+			return 0;
+		}
 		return _x;
 	}
 
@@ -290,6 +288,9 @@ public:
 	// Returns: The y position of the top-left corner of the window.
 	uint y()
 	{
+		if (_state == WindowState.Fullscreen) {
+			return 0;
+		}
 		return _y;
 	}
 
@@ -308,7 +309,7 @@ public:
 
 		_inited = false;
 
-		Scaffold.WindowDestroy(this, windowHelper);
+		Scaffold.WindowDestroy(this, &_pfvars);
 	}
 
 	// Description: This function will Size the window to fit a client area with the dimensions given by width and height.
@@ -321,7 +322,7 @@ public:
 
 		if (_inited)
 		{
-			Scaffold.WindowRebound(this, windowHelper);
+			Scaffold.WindowRebound(this, &_pfvars);
 		}
 
 		onResize();
@@ -337,7 +338,7 @@ public:
 
 		if (_inited)
 		{
-			Scaffold.WindowReposition(this, windowHelper);
+			Scaffold.WindowReposition(this, &_pfvars);
 		}
 
 		onMove();
@@ -346,19 +347,19 @@ public:
 	void ClientToScreen(ref int x, ref int y)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, windowHelper, x, y);
+		Scaffold.WindowClientToScreen(this, &_pfvars, x, y);
 	}
 
 	void ClientToScreen(ref Coord pt)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, windowHelper, pt);
+		Scaffold.WindowClientToScreen(this, &_pfvars, pt);
 	}
 
 	void ClientToScreen(ref Rect rt)
 	{
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, windowHelper, rt);
+		Scaffold.WindowClientToScreen(this, &_pfvars, rt);
 	}
 
 	Window parent()
@@ -451,7 +452,7 @@ public:
 	void onInitialize()
 	{
 		_view = new WindowView;
-		_viewVars = _view.createForWindow(this, windowHelper);
+		_viewVars = _view.createForWindow(this, &_pfvars);
 	}
 
 	void onUninitialize()
@@ -466,7 +467,7 @@ public:
 		{
 			Graphics g = _view.lockDisplay();
 
-			Scaffold.WindowStartDraw(this, windowHelper, _view, *_viewVars);
+			Scaffold.WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
 			Widget c = _firstControl;
 
@@ -480,7 +481,7 @@ public:
 				} while (c !is _firstControl)
 			}
 
-			Scaffold.WindowEndDraw(this, windowHelper, _view, *_viewVars);
+			Scaffold.WindowEndDraw(this, &_pfvars, _view, *_viewVars);
 
 			_view.unlockDisplay();
 		}
@@ -718,7 +719,7 @@ public:
 	}
 
 	void onResize() {
-		Scaffold.ViewResizeForWindow(_view, *_viewVars, this, windowHelper);
+		Scaffold.ViewResizeForWindow(_view, *_viewVars, this, &_pfvars);
 
 		onDraw();
 	}
@@ -798,7 +799,6 @@ public:
 	override void push(Dispatcher dsp) {
 		if (cast(Widget)dsp !is null) {
 			Widget control = cast(Widget)dsp;
-			control._windowHelper = windowHelper;
 
 			// do not add a control that is already part of another window
 			if (control.parent !is null) { return; }
@@ -907,7 +907,7 @@ public:
 
 			// platform specific
 			MenuPlatformVars mnuVars = MenuGetPlatformVars(mnuMain);
-			Scaffold.WindowSetMenu(mnuMain, mnuVars, this, windowHelper);
+			Scaffold.WindowSetMenu(mnuMain, mnuVars, this, &_pfvars);
 		}
 	}
 
@@ -923,7 +923,7 @@ public:
 
 protected:
 
-	bool mouseEventCommon(out Widget target) {
+	final bool mouseEventCommon(out Widget target) {
 		if (_captured_control !is null) {
 			target = _captured_control;
 		}
@@ -954,7 +954,7 @@ protected:
 		return false;
 	}
 
-	void uninitialize() {
+	package final void uninitialize() {
 		if (_nextWindow is null) { return; }
 
 		onRemove();
@@ -1047,8 +1047,8 @@ protected:
 		_lastChild = null;
 	}
 
-	WindowView _view = null;
-	ViewPlatformVars* _viewVars;
+	package WindowView _view = null;
+	package ViewPlatformVars* _viewVars;
 
 	Color _color;
 
@@ -1057,11 +1057,11 @@ protected:
 	long _constraint_y = 0;
 
 	String _window_title;
-	uint _width, _height;
-	uint _x, _y;
+	package uint _width, _height;
+	package uint _x, _y;
 
-	WindowStyle _style;
-	WindowState _state;
+	package WindowStyle _style;
+	package WindowState _state;
 
 private:
 
@@ -1099,7 +1099,7 @@ private:
 
 	package bool _inited = false;
 
-	package WindowHelper windowHelper;
+	package WindowPlatformVars _pfvars;
 }
 
 // Definition: This is a View that defines the graphical client area of a Window.
@@ -1118,108 +1118,19 @@ class WindowView : View {
 protected:
 
 	override void _platformCreate() {
-		Scaffold.ViewCreateForWindow(this, _pfvars, _window, _windowHelper);
+		Scaffold.ViewCreateForWindow(this, _pfvars, _window, _windowVars);
 	}
 
 private:
 
-	ViewPlatformVars* createForWindow(Window window, WindowHelper windowHelper) {
+	ViewPlatformVars* createForWindow(Window window, WindowPlatformVars* windowVars) {
 		_window = window;
-		_windowHelper = windowHelper;
+		_windowVars = windowVars;
 		View.create(window.width, window.height);
 		
 		return &_pfvars;
 	}
 
 	Window _window;
-	WindowHelper _windowHelper;
-}
-
-class WindowHelper {
-
-	Window getWindow() {
-		return window;
-	}
-
-	void setConstraintX(long constraint_x) {
-		window._constraint_x = constraint_x;
-	}
-
-	void setConstraintY(long constraint_y) {
-		window._constraint_y = constraint_y;
-	}
-
-	long WindowGetConstraintX() {
-		return window._constraint_x;
-	}
-
-	long getConstraintY() {
-		return window._constraint_y;
-	}
-
-	void captureMouse(ref Widget control) {
-		window._captured_control = control;
-
-		Scaffold.WindowCaptureMouse(window, this);
-	}
-
-	void releaseMouse(ref Widget control) {
-		if (window._captured_control is control) {
-			window._captured_control = null;
-
-			Scaffold.WindowReleaseMouse(window, this);
-		}
-	}
-
-	View getView() {
-		return window._view;
-	}
-
-	ViewPlatformVars* getViewVars() {
-		return window._viewVars;
-	}
-
-	WindowPlatformVars* getPlatformVars() {
-		return &_pfvars;
-	}
-
-	void setWindowXY(int x, int y) {
-		window._x = x;
-		window._y = y;
-	}
-
-	void setWindowX(int x) {
-		window._x = x;
-	}
-
-	void setWindowY(int y) {
-		window._y = y;
-	}
-
-	void setWindowSize(uint width, uint height) {
-		window._width = width;
-		window._height = height;
-	}
-
-	void setWindowWidth(uint width) {
-		window._width = width;
-	}
-
-	void setWindowHeight(uint height) {
-		window._height = height;
-	}
-
-	void callStateChange(WindowState newState) {
-		window._state = newState;
-		window.onStateChange();
-	}
-
-	void uninitialize() {
-		window.uninitialize();
-	}
-
-	WindowPlatformVars _pfvars;
-
-private:
-	Window window;
+	WindowPlatformVars* _windowVars;
 }

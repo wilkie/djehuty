@@ -81,13 +81,13 @@ void ViewCreateDIB(ref View view, ref ViewPlatformVars viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, ref WindowHelper windowHelper)
+void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 	//will set _inited to true:
 	ViewCreate(view, viewVars);
 }
 
-void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, ref WindowHelper windowHelper)
+void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 }
 

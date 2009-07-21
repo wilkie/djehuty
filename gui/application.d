@@ -85,7 +85,7 @@ private:
 	// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
 	// window: An instance of a Window class, or any the inherit from Window.
 	void addWindow(Window window) {
-		WindowPlatformVars* wpv = window.windowHelper.getPlatformVars();
+		WindowPlatformVars* wpv = &window._pfvars;
 
 		synchronized {
 			// update the window linked list
@@ -95,11 +95,11 @@ private:
 			_windowCount++;
 
 			// create the window through platform calls
-			Scaffold.WindowCreate(window, window.windowHelper);
+			Scaffold.WindowCreate(window, wpv);
 		}
 
 		if (window.visible) {
-			Scaffold.WindowSetVisible(window, window.windowHelper, true);
+			Scaffold.WindowSetVisible(window, wpv, true);
 		}
 	}
 

@@ -32,7 +32,7 @@ class OSButton : Button, WinWidget {
 
 	override void onAdd() {
 
-		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
+		ViewPlatformVars* viewVars = _window._viewVars;
 
 		HDC dc = GetDC(_hWnd);
 
@@ -47,7 +47,7 @@ class OSButton : Button, WinWidget {
 		newy = _window.height -1 ;//- this.height;
 		 _hWnd = CreateWindowExW(0,
 			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , this.left,newy,this.width,this.height,
-			_windowHelper.getPlatformVars().hWnd,null, cast(HINSTANCE)GetWindowLongW(_windowHelper.getPlatformVars().hWnd,GWLP_HINSTANCE), null);
+			_window._pfvars.hWnd,null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
 
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -70,7 +70,7 @@ class OSButton : Button, WinWidget {
 		// save current background for later
 
 		// copy over current image
-		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
+		ViewPlatformVars* viewVars = _window._viewVars;
 
 		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, GuiApplicationController.button_hdc, 0,0,SRCCOPY);
 	}
@@ -108,7 +108,7 @@ class OSButton : Button, WinWidget {
 
 		int ncx, ncy;
 
-		GetWindowRect(_windowHelper.getPlatformVars().hWnd, &rect);
+		GetWindowRect(_window._pfvars.hWnd, &rect);
 		ncx = rect.left;
 		ncy = rect.top;
 
@@ -158,7 +158,7 @@ protected:
 			x = cast(short)(lParam & 0xffff);
 			y = cast(short)((lParam >> 16) & 0xffff);
 //			Console.putln("mouse up (captured) x:", x, "y:",y);
-			SendMessageW(_windowHelper.getPlatformVars().hWnd, message, 0, windowlParam);
+			SendMessageW(_window._pfvars.hWnd, message, 0, windowlParam);
 		}
 		else if (message == WM_MOUSELEAVE) {
 			// ignore!
@@ -193,7 +193,7 @@ protected:
 				x = cast(short)(lParam & 0xffff);
 				y = cast(short)((lParam >> 16) & 0xffff);
 			//	Console.putln("mouse move (captured) x:", x, "y:",y);
-				SendMessageW(_windowHelper.getPlatformVars().hWnd,WM_MOUSEMOVE, 0, windowlParam);
+				SendMessageW(_window._pfvars.hWnd,WM_MOUSEMOVE, 0, windowlParam);
 			}
 			else {
 				//Console.putln("mouse move");
