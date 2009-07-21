@@ -563,14 +563,6 @@ static:
 	
 		        return cast(LRESULT)GetStockObject(NULL_BRUSH);
 	
-	
-	
-	
-	
-	
-	
-	
-	
 			case WM_ERASEBKGND:
 	
 				break;
@@ -597,430 +589,358 @@ static:
 	
 				wHelper.uninitialize();
 				break;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-			/* FOCUS */
 
+		/* FOCUS */
+		
+			case WM_ACTIVATE:
+				int x, y;
+				//activation type
+				x = wParam & 0xffff;
+				//minimization status
+				y = (wParam >> 16) & 0xffff;
 	
+				if (x == WA_INACTIVE) {
+					//losing focus
+					w.onLostFocus();
+				}
+				else if (x == WA_ACTIVE || x == WA_CLICKACTIVE) {
+					//gaining focus
+					w.onGotFocus();
+				}
 	
-		case WM_ACTIVATE:
-			int x, y;
-			//activation type
-			x = wParam & 0xffff;
-			//minimization status
-			y = (wParam >> 16) & 0xffff;
-	
-			if (x == WA_INACTIVE) {
-				//losing focus
-				w.onLostFocus();
-			}
-			else if (x == WA_ACTIVE || x == WA_CLICKACTIVE) {
-				//gaining focus
-				w.onGotFocus();
-			}
-	
-			if (y != 0) {
-				//minimized
-			}
-			break;
-	
-	
-	
-	
-	
-	
-	
-			case WM_INPUT:
-	
-	
+				if (y != 0) {
+					//minimized
+				}
 				break;
-	
+
+			case WM_INPUT:
+				break;
+
 			case WM_CAPTURECHANGED:
 				break;
-	
-	
+
 			case WM_LBUTTONDOWN:
-	
+
 				SetFocus(hWnd);
 				SetCapture(hWnd);
-	
+
 				//uint lp = GetMessageExtraInfo();
 				//if ((lp & SIGNATURE_MASK) == MI_WP_SIGNATURE) {
 					//writefln("pen");
 				//}
-	
+
 				//writefln("down : ", lp, " ... ", lp & SIGNATURE_MASK, " == ", MI_WP_SIGNATURE);
-	
+
 				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
-	
+
 				//w.mouseProps.rightDown = 1;
-	
+
 				//check bounds for the controls
-	
+
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = true;
 				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
-	
+
 				_TestNumberOfClicks(wHelper,x,y,1);
-	
+
 				w.onPrimaryMouseDown();
 				break;
-	
+
 			case WM_LBUTTONUP:
-	
+
 				ReleaseCapture();
-	
+
 				//window.mouseProps.rightDown = 0;
-	
+
 				//check for double click first
 				_TestNumberOfClicksUp(wHelper,1);
-	
+
 				//fill _mouseProps
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = false;
 				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
-	
+
 				w.onPrimaryMouseUp();
 				break;
-	
-	
-	
-	
-	
-	
-	
+
 			case WM_RBUTTONDOWN:
-	
+
 				SetFocus(hWnd);
 				SetCapture(hWnd);
-	
+
 				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
-	
+
 				//w.mouseProps.rightDown = 1;
-	
+
 				//check bounds for the controls
-	
+
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 				w.mouseProps.rightDown = true;
 				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
-	
+
 				_TestNumberOfClicks(wHelper,x,y,2);
 
 				w.onSecondaryMouseDown();
 				break;
-	
+
 			case WM_RBUTTONUP:
-	
+
 				ReleaseCapture();
 				//window.mouseProps.rightDown = 0;
-	
+
 				//check for double click first
 				_TestNumberOfClicksUp(wHelper,2);
-	
+
 				//fill _mouseProps
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 				w.mouseProps.rightDown = false;
 				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
-	
+
 				w.onSecondaryMouseUp();
 				break;
-	
-	
-	
-	
+
 			case WM_MBUTTONDOWN:
-	
+
 				SetFocus(hWnd);
 				SetCapture(hWnd);
-	
+
 				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
-	
+
 				//w.mouseProps.rightDown = 1;
-	
+
 				//check bounds for the controls
-	
+
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 				w.mouseProps.middleDown = true;
-	
+
 				_TestNumberOfClicks(wHelper,x,y,3);
-	
+
 				w.onTertiaryMouseDown();
 				break;
-	
+
 			case WM_MBUTTONUP:
-	
+
 				ReleaseCapture();
 				//window.mouseProps.rightDown = 0;
-	
+
 				//check for double click first
 				_TestNumberOfClicksUp(wHelper,3);
-	
+
 				//fill _mouseProps
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 				w.mouseProps.middleDown = false;
-	
+
 				w.onTertiaryMouseUp();
 				break;
-	
-	
-	
-	
+
 			case WM_XBUTTONDOWN:
-	
+
 				SetFocus(hWnd);
 				SetCapture(hWnd);
-	
+
 				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
-	
+
 				//w.mouseProps.rightDown = 1;
-	
+
 				//check bounds for the controls
-	
+
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				wParam >>= 16;
 				if (wParam) {
 					wParam--;
-	
+
 					_TestNumberOfClicks(wHelper,x,y,4 + cast(uint)wParam);
-	
+
 					w.onOtherMouseDown(cast(uint)wParam);
 				}
 				break;
-	
+
 			case WM_XBUTTONUP:
-	
+
 				ReleaseCapture();
 				//window.mouseProps.rightDown = 0;
-	
+
 				//fill _mouseProps
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
-	
+
 				wParam >>= 16;
 				if (wParam) {
 					wParam--;
-	
+
 					//check for double click
 					_TestNumberOfClicksUp(wHelper,4 + cast(uint)wParam);
-	
+
 					w.onOtherMouseUp(cast(uint)wParam);
 				}
 				break;
-	
-	
-	
-	
-	
-	
-	
-	
+
 			case WM_MOUSEHWHEEL:
-	
+
 				w.onMouseWheelX(0);
 				break;
-	
+
 			case WM_MOUSEWHEEL:
 	
 				w.onMouseWheelY(0);
 				break;
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 			case WM_MOUSEMOVE:
-	
+
 				int x, y;
 				x = lParam & 0xffff;
 				w.mouseProps.x = x;
 				y = (lParam >> 16) & 0xffff;
 				w.mouseProps.y = y;
 			//	Console.putln("mouse move window! x:", x, "y:", y);
-	
+
 				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
 				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
 				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
-	
+
 				if (windowVars.hoverTimerSet==0) {
 					SetTimer(hWnd, 0, 55, null);
 					windowVars.hoverTimerSet = 1;
 				}
-	
+
 				w.onMouseMove();
 				break;
-	
-	
-	
-	
-	
-	
-	
-	
+
 				// Internal Timing Functions
 			case WM_MOUSELEAVE:
 				w.onMouseLeave();
 				break;
-	
-	
-	
+
 			case WM_MOUSECAPTURE: //made up event
 				if (windowVars.hoverTimerSet == 1) {
 					KillTimer(hWnd, 0);
 					windowVars.hoverTimerSet = 0;
 				}
-	
+
 				SetCapture(hWnd);
 				break;
-	
-	
-	
-	
-	
-	
+
 			case WM_MOVE:
-	
+
 				RECT rt;
 				GetWindowRect(hWnd, &rt);
-	
+
 				if (!windowVars.supress_WM_MOVE) {
 					wHelper.setWindowXY(rt.left, rt.top);
 					w.onMove();
 					windowVars.supress_WM_MOVE = false;
 				}
 				break;
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 			case WM_KEYDOWN:
-	
+
 				w.onKeyDown(cast(uint)wParam);
-	
+
 				break;
-	
+
 				//might have to translate these keys
-	
+
 			case WM_CHAR:
-	
-				if ((wParam == KeyBackspace) 
+
+				if ((wParam == KeyBackspace)
 					|| (wParam == KeyReturn)
 					|| (wParam == KeyTab)) {
 					break;
 				}
-	
+
 				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
-	
+
 				//printf("%x %x", stuff[0], stuff[1]);
-	
+
 				w.onKeyChar(cast(dchar)wParam);
-	
+
 				break;
-	
+
 			case WM_DEADCHAR:
-	
+
 				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
-	
+
 				//printf("%x %x", stuff[0], stuff[1]);
-	
+
 				break;
-	
+
 			case WM_UNICHAR:
-	
+
 				if (wParam == 0xFFFF) {
 					return 1;
 				}
-	
+
 				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
-	
+
 				//printf("%x %x", stuff[0], stuff[1]);
-	
+
 				w.onKeyChar(cast(dchar)wParam);
-	
+
 				break;
-	
+
 			case WM_KEYUP:
-	
+
 				w.onKeyUp(cast(uint)wParam);
-	
+
 				break;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 			case WM_SIZE:
-	
+
 				RECT rt;
 				GetClientRect(hWnd, &rt);
-	
+
 				if (!windowVars.supress_WM_SIZE) {
 					wHelper.setWindowSize(rt.right, rt.bottom);
 					w.onResize();
@@ -1079,7 +999,7 @@ static:
 						pnt[0].y = 0;
 						pnt[1].x = w.width-1;
 						pnt[1].y = w.height-1;
-	
+
 						ClientToScreen(hWnd, &pnt[0]);
 						ClientToScreen(hWnd, &pnt[1]);
 	
@@ -1101,46 +1021,36 @@ static:
 				}
 	
 				break;
-	
-	
-	
-	
+
 				// These are Djehuty Protocol Requests
 				// They do not belong in the final release
-	
+
 			case WM_USER + 0xff00:
 
 				SendMessageW(cast(HWND)lParam, WM_USER+0xf000, 0,0);
-	
 				break;
-	
+
 			case WM_USER + 0xff01:
-	
+
 			// create window 1
 
 			// p1 : width
 			// p2 : height
 				break;
-	
+
 			case WM_USER + 0xff02:
-	
+
 			// create window 2
 
 			// p1: x
 			// p2: y
 				break;
-	
-	
-	
-	
-	
-	
-	
+
 			default:
-	
+
 				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 		}
-	
+
 		return 0;
 	}
 }
