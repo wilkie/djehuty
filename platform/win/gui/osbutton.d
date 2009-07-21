@@ -1,4 +1,4 @@
-module platform.win.controls.osbutton;
+module gui.osbutton;
 
 import gui.button;
 
@@ -13,15 +13,15 @@ import core.definitions;
 
 import gui.widget;
 import gui.window;
+import gui.apploop;
 
 import io.console;
 
 import graphics.view;
 import graphics.graphics;
 
-class OSButton : Button, WinWidget
-{
-public:
+class OSButton : Button, WinWidget {
+
 	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height,value);
 	}
@@ -51,19 +51,19 @@ public:
 
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)win_button_font, 1);
+		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)GuiApplicationController.win_button_font, 1);
 
 		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(ulong)(cast(void*)(cast(WinWidget)this)));
-		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&CtrlProc);
+		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&GuiApplicationController.CtrlProc);
 
-		button_hWnd = _hWnd;
-		button_hdc = dc2;
-		button_x = this.left;
-		button_y = this.top;
-		button_width = this.width;
-		button_height = this.height;
+		GuiApplicationController.button_hWnd = _hWnd;
+		GuiApplicationController.button_hdc = dc2;
+		GuiApplicationController.button_x = this.left;
+		GuiApplicationController.button_y = this.top;
+		GuiApplicationController.button_width = this.width;
+		GuiApplicationController.button_height = this.height;
 
-		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
+		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)GuiApplicationController.button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -72,7 +72,7 @@ public:
 		// copy over current image
 		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
 
-		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, button_hdc, 0,0,SRCCOPY);
+		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, GuiApplicationController.button_hdc, 0,0,SRCCOPY);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouse) {

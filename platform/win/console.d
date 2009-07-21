@@ -68,75 +68,14 @@ int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 
 static WNDPROC _console_oldproc = null;
 
-Thread t;
 
-int _console_x;
-int _console_y;
 ushort _curAttribs;
-
-UINT _consoleCP;
-UINT _consoleOutputCP;
-
-void thread_proc(bool pleaseStop)
-{
-	if (pleaseStop)
-	{
-		// XXX: What to do???
-		return;
-	}
-
-	// keep looking at the console window for size changes
-	CONSOLE_SCREEN_BUFFER_INFO cinfo;
-
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	while(1)
-	{
-		GetConsoleScreenBufferInfo(hStdout, &cinfo);
-
-		if (_console_x != cinfo.srWindow.Right - cinfo.srWindow.Left+1 ||
-			_console_y != cinfo.srWindow.Bottom - cinfo.srWindow.Top)
-		{
-			_console_x = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
-			_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
-
-			(cast(TuiApplication)Djehuty.app).window.onResize();
-		}
-
-		t.sleep(100);
-	}
-}
-
-void ConsoleInit()
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	_consoleCP = GetConsoleCP();
-	_consoleOutputCP = GetConsoleOutputCP();
-
-//	SetConsoleOutputCP(65001);
-//	SetConsoleCP(65001);
-
-	DWORD consoleMode;
-	GetConsoleMode(hStdout, &consoleMode);
-
-	// Turn off automatic line advancement
-	consoleMode &= ~(0x2);
-
-	SetConsoleMode(hStdout, consoleMode);
-
-	t = new Thread;
-
-	t.setDelegate(&thread_proc);
-
-	t.start();
-}
 
 void ConsoleUninit() {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	SetConsoleOutputCP(_consoleOutputCP);
-	SetConsoleCP(_consoleCP);
+	//SetConsoleOutputCP(_consoleOutputCP);
+//	SetConsoleCP(_consoleCP);
 
 	DWORD consoleMode;
 	GetConsoleMode(hStdout, &consoleMode);
@@ -172,8 +111,7 @@ void ConsoleGetSize(out uint width, out uint height)
 	height = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
 }
 
-void ConsoleClear()
-{
+void ConsoleClear() {
 	DWORD cCharsWritten;
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	DWORD dwConSize;
@@ -182,8 +120,7 @@ void ConsoleClear()
 
 	// Get the number of character cells in the current window space.
 
-	if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
-	{
+	if( !GetConsoleScreenBufferInfo( hStdout, &csbi )) {
 	   return;
 	}
 
@@ -191,20 +128,23 @@ void ConsoleClear()
 
 	dwConSize = (csbi.srWindow.Right - csbi.srWindow.Left+1);
 
-	do
-	{
+	do {
 		coordScreen.Y--;
 		// Fill the entire screen with blanks.
 
 		if( !FillConsoleOutputCharacterW( hStdout, ' ',
-		   dwConSize, coordScreen, &cCharsWritten ))
+		   dwConSize, coordScreen, &cCharsWritten )) {
+
 		   return;
+		}
 
 		// Set the buffer's attributes accordingly.
 
 		if( !FillConsoleOutputAttribute( hStdout, csbi.wAttributes,
-		   dwConSize, coordScreen, &cCharsWritten ))
+		   dwConSize, coordScreen, &cCharsWritten )) {
+
 		   return;
+		}
 
 	} while (coordScreen.Y >= csbi.srWindow.Top)
 

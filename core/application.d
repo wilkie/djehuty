@@ -18,6 +18,8 @@ import core.arguments;
 import core.event;
 import core.definitions;
 
+import io.console;
+
 import platform.imports;
 mixin(PlatformScaffoldImport!());
 mixin(PlatformGenericImport!("definitions"));
@@ -107,7 +109,7 @@ class Application : Responder {
 	}
 
 	void exit(uint code) {
-		DjehutyEnd(code);
+		Djehuty.end(code);
 	}
 
 protected:
@@ -117,5 +119,22 @@ protected:
 	override bool raiseSignal(uint signal) {
 		Debugger.raiseSignal(signal);
 		return false;
+	}
+
+	void start() {
+	}
+
+	void end(uint exitCode) {
+	}
+
+private:
+
+	// Silly wrapper to call start() due to a compiler bug
+	package final void onPostApplicationStart() {
+		start();
+	}
+
+	package final void onPostApplicationEnd(uint exitCode) {
+		end(exitCode);
 	}
 }

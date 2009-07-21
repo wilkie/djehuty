@@ -206,7 +206,7 @@ public:
 			if (app.isZombie())
 			{
 				app.destroyAllWindows();
-				DjehutyEnd();
+				Djehuty.end(0);
 			}
 		}
 
@@ -361,43 +361,9 @@ public:
 		Scaffold.WindowClientToScreen(this, windowHelper, rt);
 	}
 
-
-
-
-	// CHILD WINDOW METHODS
-
-	bool IsDescendantOf(Window window)
-	{
-		if (_inited == false) { return false; }
-
-		Window p = _parent;
-
-		while(p !is null)
-		{
-			if (p is window)
-			{
-				return true;
-			}
-
-			p = p._parent;
-		}
-
-		return false;
-	}
-
-	bool IsAdded()
-	{
-		return _inited;
-	}
-
-	Window getParent()
+	Window parent()
 	{
 		return _parent;
-	}
-
-	uint GetNumChildren()
-	{
-		return _numChildren;
 	}
 
 	// add a child window to this window
@@ -1032,7 +998,7 @@ protected:
 			if (app.isZombie()) {
 				// just kill the app
 				app.destroyAllWindows();
-				DjehutyEnd();
+				Djehuty.end(0);
 			}
 		}
 

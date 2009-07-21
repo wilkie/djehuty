@@ -1,0 +1,1146 @@
+/*
+ * apploop.d
+ *
+ * This is the Windows GUI apploop.
+ *
+ * Author: Dave Wilkinson
+ * Originated: July 20th, 2009
+ *
+ */
+
+module gui.apploop;
+
+import platform.win.vars;
+import platform.win.common;
+import platform.win.widget;
+import platform.win.definitions;
+import platform.win.main;
+import platform.win.console;
+
+import gui.application;
+import gui.window;
+import gui.menu;
+
+import opengl.window;
+
+import graphics.view;
+import graphics.font;
+
+import core.application;
+import core.definitions;
+
+import io.console;
+
+class GuiApplicationController {
+
+	// The initial entry for the gui application
+	this() {
+	}
+
+	void start() {
+		// Register the class that a window will be created with
+		registerWindowClass();
+		
+		// Recognize theme information
+		loadThemingData();
+
+		// Hooks
+
+		ubyte* bleh; uint dontcare;
+
+		Hook("USER32.DLL\0"c.ptr, "BeginPaint\0"c.ptr, syscall_BeginPaint, bleh, cast(void*)&HookBeginPaint);
+		pBeginPaint = cast(BeginPaintFunc)bleh;
+		Hook("USER32.DLL\0"c.ptr, "EndPaint\0"c.ptr, syscall_EndPaint, bleh, cast(void*)&HookEndPaint);
+		pEndPaint = cast(EndPaintFunc)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BufferedPaintRenderAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBufferedPaintRenderAnimation);
+		pBufferedPaintRenderAnimation = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
+		pBeginBufferedPaint = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "EndBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookEndBufferedAnimation);
+		pEndBufferedAnimation = cast(void*)bleh;
+		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedAnimation);
+		pBeginBufferedAnimation = cast(void*)bleh;
+
+		mainloop();
+	}
+
+	void end(uint code) {
+		_appEnd = true;
+
+		ApplicationController.instance.exitCode = code;
+	}
+
+private:
+
+	bool _appEnd = false;
+
+	const int WM_MOUSECAPTURE = 0xffff;
+
+	const wchar[] djehutyClassName = "djehutyApp\0"w;
+
+	void registerWindowClass() {
+		WNDCLASSW wc;
+		wc.lpszClassName = djehutyClassName.ptr;
+		wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+		wc.lpfnWndProc = &DefaultProc;
+		wc.hInstance = null;
+		wc.hIcon = LoadIconA(cast(HINSTANCE) null, IDI_APPLICATION);
+		wc.hCursor = LoadCursorA(cast(HINSTANCE) null, IDC_CROSS);
+		wc.hbrBackground = cast(HBRUSH) (COLOR_WINDOW + 1);
+		wc.lpszMenuName = null;
+		wc.cbClsExtra = wc.cbWndExtra = 0;
+		auto a = RegisterClassW(&wc);
+		assert(a);
+	}
+
+	void mainloop() {
+
+		// HOW AWFUL IS THIS: ?!
+		
+		while(!_appEnd) {
+			Sleep(1);
+		}
+		
+		// THIS CODE PRINTS TO THE CONSOLE WINDOW USING GDI
+		
+		HWND hwndConsole = GetConsoleWindow();
+		HDC dc = GetDC(hwndConsole);
+		
+		CONSOLE_FONT_INFO cfi ;
+		COORD fsize ;
+		HANDLE hConsoleOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		
+		GetCurrentConsoleFont(hConsoleOut, FALSE, &cfi);
+		
+		Font fnt = new Font("Terminal", 10, 400, false, false, false);
+		FontPlatformVars* fvars = FontGetPlatformVars(fnt);
+		
+		SetBkMode(dc, OPAQUE);
+		SetBkColor(dc, 0x339933);
+		SetTextColor(dc, 0xf800f8);
+
+		SelectObject(dc, fvars.fontHandle);
+		
+		ConsoleUninit();
+
+		ApplicationController.instance.end;
+	}
+
+static:
+
+	int win_osVersion = -1;
+
+	alias extern(C) HDC function(HWND, LPPAINTSTRUCT) BeginPaintFunc;
+	BeginPaintFunc pBeginPaint;
+	uint syscall_BeginPaint;
+	alias extern(C) BOOL function(HWND, LPPAINTSTRUCT) EndPaintFunc;
+	EndPaintFunc pEndPaint;
+	uint syscall_EndPaint;
+	
+	void* pBufferedPaintRenderAnimation;
+	void* pBeginBufferedPaint;
+	void* pEndBufferedAnimation;
+	void* pBeginBufferedAnimation;
+
+	bool Hook(char* mod, char* proc, ref uint syscall_id, ref ubyte* pProc, void* pNewProc) {
+	    HINSTANCE hMod = GetModuleHandleA(mod);
+
+	    if (hMod is null) {
+			hMod = LoadLibraryA(mod);
+			Console.putln("not loaded");
+		    if (hMod is null) {
+				Console.putln("bad");
+				return false;
+			}
+		}
+	
+	    pProc = cast(ubyte*)GetProcAddress(hMod, proc);
+	
+	    if (pProc is null) {
+			Console.putln("procnotfound");
+			return false;
+	    }
+	
+	    ubyte[5] oldCode;
+	    oldCode[0..5] = pProc[0..5];
+	
+	    if ( true || pProc[0] == 0xB8 ) {
+	        syscall_id = *cast(uint*)(pProc + 1);
+	
+	        DWORD flOldProtect;
+	
+	        VirtualProtect(pProc, 5, PAGE_EXECUTE_READWRITE, & flOldProtect);
+	
+	        pProc[0] = 0xE9;
+	        *cast(uint*)(pProc+1) = cast(uint)pNewProc - cast(uint)(pProc+5);
+	
+	        pProc += 5;
+	
+	        VirtualProtect(pProc, 5, flOldProtect, & flOldProtect);
+	
+	        return true;
+	    }
+	    else {
+	        return false;
+		}
+	}
+	
+	extern(C) HDC HookBeginPaint(HWND hWnd, LPPAINTSTRUCT lpPaint) {
+	
+		HDC ret;
+	
+		// normal operations:
+		asm {
+	        mov     EAX, syscall_BeginPaint;
+	        push    lpPaint;
+	        push    hWnd;
+			call    pBeginPaint;
+	        mov		ret, EAX;
+		}
+	
+		// abnormal operations:
+		if (hWnd == button_hWnd) {
+	
+			//Console.putln("BeginPaint");
+	
+			//lpPaint.hdc = button_hdc;
+			//ret = button_hdc;
+		}
+	
+		return ret;
+	}
+	
+	void HookBeginPaintImpl() {
+		asm {
+			mov EAX, syscall_BeginPaint;
+			call pBeginPaint;
+			ret;
+		}
+	}
+	
+	template UXThemePrologue() {
+		const char[] UXThemePrologue =
+		`
+			asm {
+				naked;
+	
+				mov		EDI,EDI;
+				push	EBP;
+				mov		EBP,ESP;
+			}
+			`;
+	}
+	
+	extern(C) void HookBeginBufferedPaint() {
+	
+		mixin(UXThemePrologue!());
+		//Console.putln("BeginBufferedPaint");
+	
+		asm {
+	        jmp		pBeginBufferedPaint;
+		}
+	
+		return;
+	}
+	
+	extern(C) void HookBeginBufferedAnimation() {
+	
+		mixin(UXThemePrologue!());
+	
+		//Console.putln("BeginBufferedAnimation");
+		asm {
+			//mov EAX, button_hdc;
+			//mov [EBP+12], EAX;
+		}
+	
+		asm {
+	        jmp		pBeginBufferedAnimation;
+		}
+	
+		return;
+	}
+	
+	extern(C) void HookEndBufferedAnimation() {
+	
+		mixin(UXThemePrologue!());
+	
+		//Console.putln("EndBufferedAnimation");
+	
+		asm {
+	        jmp		pEndBufferedAnimation;
+		}
+	
+		return;
+	}
+	
+	extern(C) void HookBufferedPaintRenderAnimation() {
+	
+		mixin(UXThemePrologue!());
+	
+		//Console.putln("BufferedPaintRenderAnimation");
+	
+		asm {
+			mov EAX, button_hdc;
+			mov [EBP+12], EAX;
+		}
+	
+		asm {
+	        jmp		pBufferedPaintRenderAnimation;
+		}
+	
+		return;
+	}
+	
+	extern(C) BOOL HookEndPaint(HWND hWnd, LPPAINTSTRUCT lpPaint) {
+		// abnormal operations:
+		if (hWnd == button_hWnd) {
+			//Console.putln("End Paint");
+	//		return true;
+		}
+	
+		// normal operations:
+		asm {
+	        mov     EAX, syscall_EndPaint;
+	        push    lpPaint;
+	        push    hWnd;
+	        call    pEndPaint;
+		}
+	}
+
+	extern(Windows)
+	int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
+	//			Console.putln("def proc");
+		CREATESTRUCTW* cs = cast(CREATESTRUCTW*)lParam;
+
+		if (uMsg == WM_CREATE) {
+			Window w = cast(Window)cs.lpCreateParams;
+
+			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(ulong)&WindowProc);
+			SetWindowLongW(hWnd, GWLP_USERDATA, cast(ulong)cs.lpCreateParams);
+
+			return 0;
+		}
+		else if (uMsg == WM_UNICHAR) {
+			return 1;
+		}
+	
+		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+	}
+
+	extern(Windows)
+	int CtrlProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
+	//			Console.putln("ctrl proc");
+		void* ctrl_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
+
+		if (ctrl_in !is null) {
+			WinWidget _ctrlvars = cast(WinWidget)ctrl_in;
+	
+			return CallAppLoopMessage(_ctrlvars, uMsg, wParam, lParam);
+		}
+	
+		return 0;
+	}
+
+	void _TestNumberOfClicks(ref WindowHelper w, int x, int y, int clickType) {
+		WindowPlatformVars* windowVars = w.getPlatformVars();
+		//check for double click first and within close proximity
+		//of the last click
+	
+		if (windowVars.doubleClickTimerSet != 0) {
+			KillTimer(windowVars.hWnd, 1);
+		}
+	
+		// checks whether within tolerance region
+		if ( (windowVars.doubleClickTimerSet == clickType) &&
+			(x <= windowVars.doubleClickX + 1) &&
+			(x >= windowVars.doubleClickX - 1) &&
+			(y <= windowVars.doubleClickY + 1) &&
+			(y >= windowVars.doubleClickY - 1) ) {
+
+			// disable timer, inside tolerance
+			windowVars.doubleClickAmount++;
+	
+			KillTimer(windowVars.hWnd, 1);
+		}
+		else {
+			//reset timer stats, start over with one click
+			windowVars.doubleClickTimerSet = clickType;
+			windowVars.doubleClickAmount = 1;
+		}
+	
+		//set up double click tolerance region
+		windowVars.doubleClickX = x;
+		windowVars.doubleClickY = y;
+	
+		SetTimer(windowVars.hWnd, 1, GetDoubleClickTime(), null);
+	
+		w.getWindow().mouseProps.clicks = windowVars.doubleClickAmount;
+	}
+	
+	void _TestNumberOfClicksUp(ref WindowHelper w, int clickType) {
+		WindowPlatformVars* windowVars = w.getPlatformVars();
+	
+		if (windowVars.doubleClickTimerSet == clickType) {
+			//double click may have occured
+			w.getWindow().mouseProps.clicks = windowVars.doubleClickAmount;
+		}
+		else {
+			w.getWindow().mouseProps.clicks = 1;
+		}
+	}
+
+	bool win_hasVisualStyles = false;
+	HFONT win_button_font;
+	
+	HMODULE win_uxThemeMod;
+
+	// Theming Libraries
+	extern (Windows) alias HTHEME (*OpenThemeDataFunc)(HWND, LPCWSTR);
+	extern (Windows) alias HRESULT (*GetThemeSysFontFunc)(HTHEME, int, LOGFONTW*);
+	extern (Windows) alias HRESULT (*CloseThemeDataFunc)(HTHEME);
+	
+	OpenThemeDataFunc OpenThemeDataDLL;
+	GetThemeSysFontFunc GetThemeSysFontDLL;
+	CloseThemeDataFunc CloseThemeDataDLL;
+
+	HWND button_hWnd;
+	HDC button_hdc;
+	int button_width;
+	int button_height;
+	int button_x;
+	int button_y;
+
+	void loadThemingData() {
+		const int TMT_MSGBOXFONT = 805;
+
+		// Do we have visual styles?
+		// Load the theming library: uxTheme, if applicable
+
+		if (win_osVersion >= OsVersionWindowsXp) {
+			//using visual styles
+			//look up uxTheme.dll
+	
+			win_uxThemeMod = LoadLibraryW("UxTheme.DLL");
+	
+			if (win_uxThemeMod == null) {
+				//does not exist...
+				win_hasVisualStyles = false;
+			}
+			else {
+				//get proc addresses of important functions
+				OpenThemeDataDLL = cast(OpenThemeDataFunc)GetProcAddress(win_uxThemeMod, "OpenThemeData");
+				CloseThemeDataDLL = cast(CloseThemeDataFunc)GetProcAddress(win_uxThemeMod, "CloseThemeData");
+				GetThemeSysFontDLL = cast(GetThemeSysFontFunc)GetProcAddress(win_uxThemeMod, "GetThemeSysFont");
+
+				//apply visual styles if the application is allowed
+				win_hasVisualStyles = true;
+			}
+		}
+		else {
+			//no visual styles
+			win_uxThemeMod = null;
+	
+			win_hasVisualStyles = false;
+		}
+	
+		HDC dcz = GetDC(null);
+	
+		if (win_hasVisualStyles) {
+			HTHEME hTheme;
+			hTheme = OpenThemeDataDLL(null, "WINDOW");
+	
+			LOGFONTW lfnt = { 0 };
+	
+			HRESULT hr = GetThemeSysFontDLL(hTheme, TMT_MSGBOXFONT, &lfnt);
+
+			if (hr != S_OK) {
+				win_button_font = CreateFontW(-MulDiv(8, GetDeviceCaps(dcz, 90), 72), 0, 0, 0, 400, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, "Microsoft Sans Serif");
+			}
+			else {
+				win_button_font = CreateFontIndirectW(&lfnt);
+			}
+	
+			CloseThemeDataDLL(hTheme);
+		}
+		else {
+			win_button_font = CreateFontW(-MulDiv(8, GetDeviceCaps(dcz, 90), 72),0,0,0, 400, false, false, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, "MS Sans Serif");
+		}
+
+		ReleaseDC(null, dcz);
+	}
+
+	extern(Windows)
+	static int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
+
+		// resolve the window class reference:
+		void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
+		WindowHelper wHelper = cast(WindowHelper)(wind_in);
+		Window w = wHelper.getWindow();
+	
+		WindowPlatformVars* windowVars = wHelper.getPlatformVars();
+	
+		Window viewW;
+	
+		int ret = IsWindowUnicode(windowVars.hWnd);
+	
+		if (true) {
+			viewW = cast(Window)w;
+		}
+		else {
+			viewW = null;
+		}
+
+		switch (uMsg) {
+
+			// FOR CONTROLS AND MENUS //
+
+			case WM_VSCROLL:
+			case WM_HSCROLL:
+			case WM_COMMAND:
+
+				if (lParam == 0) {
+					// menu
+
+					Menu mnuNow = cast(Menu)cast(void*)wParam;
+
+					if (viewW !is null) {
+						viewW.onMenu(mnuNow);
+					}
+				}
+				else {
+					// native control
+	
+					wind_in = cast(void*)GetWindowLongW(cast(HWND)lParam, GWLP_USERDATA);
+	
+					WinWidget ctrl = cast(WinWidget)wind_in;
+	
+					wParam &= 0xFFFF;
+	
+	//				ctrl._AppLoopMessage(uMsg, wParam, lParam);
+					return CallAppLoopMessage(ctrl, uMsg, wParam, lParam);
+				}
+	
+				break;
+	
+			case WM_CTLCOLORDLG:
+			case WM_CTLCOLORBTN:
+			case WM_CTLCOLORSTATIC:
+	
+			/*	Console.putln("ctrl back");
+	
+				wind_in = cast(void*)GetWindowLongW(cast(HWND)lParam, GWLP_USERDATA);
+	
+				WinWidget ctrl = cast(WinWidget)wind_in;
+	
+				// SET FOREGROUND AND BACKGROUND COLORS FOR CONTROLS HERE:
+				// TO SUPPORT BACKGROUND AND FOREGROUND CHANGES
+	
+		        SetBkMode(cast(HDC)wParam, TRANSPARENT);
+	
+				// Lock Display
+	
+				int x, y, width, height;
+	
+				View ctrl_view = CallReturnView(ctrl,x,y,width,height); //ctrl._ReturnView(x, y, width, height);
+	
+				if (!indraw) {
+					ctrl_view.lockDisplay();
+				}
+	
+				ViewPlatformVars* viewVars = ViewGetPlatformVars(ctrl_view);
+	
+				BitBlt(
+					cast(HDC)wParam,
+					0, 0,
+					width, height,
+					viewVars.dc,
+					x, y,
+					SRCCOPY);
+	
+				if (!indraw) {
+					ctrl_view.unlockDisplay();
+				}*/
+	
+		        return cast(LRESULT)GetStockObject(NULL_BRUSH);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			case WM_ERASEBKGND:
+	
+				break;
+	
+			case WM_PAINT:
+
+				View view = wHelper.getView();
+				ViewPlatformVars* viewVars = wHelper.getViewVars();
+	
+				viewW.onDraw();
+	
+				view.lockDisplay();
+	
+				PAINTSTRUCT ps;
+				HDC dc = BeginPaint(hWnd, &ps);
+				BitBlt(ps.hdc, 0, 0, w.width, w.height, viewVars.dc, 0, 0, SRCCOPY);
+				EndPaint(hWnd, &ps);
+	
+				view.unlockDisplay();
+	
+				break;
+	
+		    case WM_DESTROY:
+	
+				wHelper.uninitialize();
+				break;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			/* FOCUS */
+
+	
+	
+		case WM_ACTIVATE:
+			int x, y;
+			//activation type
+			x = wParam & 0xffff;
+			//minimization status
+			y = (wParam >> 16) & 0xffff;
+	
+			if (x == WA_INACTIVE) {
+				//losing focus
+				w.onLostFocus();
+			}
+			else if (x == WA_ACTIVE || x == WA_CLICKACTIVE) {
+				//gaining focus
+				w.onGotFocus();
+			}
+	
+			if (y != 0) {
+				//minimized
+			}
+			break;
+	
+	
+	
+	
+	
+	
+	
+			case WM_INPUT:
+	
+	
+				break;
+	
+			case WM_CAPTURECHANGED:
+				break;
+	
+	
+			case WM_LBUTTONDOWN:
+	
+				SetFocus(hWnd);
+				SetCapture(hWnd);
+	
+				//uint lp = GetMessageExtraInfo();
+				//if ((lp & SIGNATURE_MASK) == MI_WP_SIGNATURE) {
+					//writefln("pen");
+				//}
+	
+				//writefln("down : ", lp, " ... ", lp & SIGNATURE_MASK, " == ", MI_WP_SIGNATURE);
+	
+				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+	
+				//w.mouseProps.rightDown = 1;
+	
+				//check bounds for the controls
+	
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = true;
+				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+	
+				_TestNumberOfClicks(wHelper,x,y,1);
+	
+				w.onPrimaryMouseDown();
+				break;
+	
+			case WM_LBUTTONUP:
+	
+				ReleaseCapture();
+	
+				//window.mouseProps.rightDown = 0;
+	
+				//check for double click first
+				_TestNumberOfClicksUp(wHelper,1);
+	
+				//fill _mouseProps
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = false;
+				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+	
+				w.onPrimaryMouseUp();
+				break;
+	
+	
+	
+	
+	
+	
+	
+			case WM_RBUTTONDOWN:
+	
+				SetFocus(hWnd);
+				SetCapture(hWnd);
+	
+				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+	
+				//w.mouseProps.rightDown = 1;
+	
+				//check bounds for the controls
+	
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+				w.mouseProps.rightDown = true;
+				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+	
+				_TestNumberOfClicks(wHelper,x,y,2);
+
+				w.onSecondaryMouseDown();
+				break;
+	
+			case WM_RBUTTONUP:
+	
+				ReleaseCapture();
+				//window.mouseProps.rightDown = 0;
+	
+				//check for double click first
+				_TestNumberOfClicksUp(wHelper,2);
+	
+				//fill _mouseProps
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+				w.mouseProps.rightDown = false;
+				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+	
+				w.onSecondaryMouseUp();
+				break;
+	
+	
+	
+	
+			case WM_MBUTTONDOWN:
+	
+				SetFocus(hWnd);
+				SetCapture(hWnd);
+	
+				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+	
+				//w.mouseProps.rightDown = 1;
+	
+				//check bounds for the controls
+	
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+				w.mouseProps.middleDown = true;
+	
+				_TestNumberOfClicks(wHelper,x,y,3);
+	
+				w.onTertiaryMouseDown();
+				break;
+	
+			case WM_MBUTTONUP:
+	
+				ReleaseCapture();
+				//window.mouseProps.rightDown = 0;
+	
+				//check for double click first
+				_TestNumberOfClicksUp(wHelper,3);
+	
+				//fill _mouseProps
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+				w.mouseProps.middleDown = false;
+	
+				w.onTertiaryMouseUp();
+				break;
+	
+	
+	
+	
+			case WM_XBUTTONDOWN:
+	
+				SetFocus(hWnd);
+				SetCapture(hWnd);
+	
+				// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+	
+				//w.mouseProps.rightDown = 1;
+	
+				//check bounds for the controls
+	
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				wParam >>= 16;
+				if (wParam) {
+					wParam--;
+	
+					_TestNumberOfClicks(wHelper,x,y,4 + cast(uint)wParam);
+	
+					w.onOtherMouseDown(cast(uint)wParam);
+				}
+				break;
+	
+			case WM_XBUTTONUP:
+	
+				ReleaseCapture();
+				//window.mouseProps.rightDown = 0;
+	
+				//fill _mouseProps
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+	
+				wParam >>= 16;
+				if (wParam) {
+					wParam--;
+	
+					//check for double click
+					_TestNumberOfClicksUp(wHelper,4 + cast(uint)wParam);
+	
+					w.onOtherMouseUp(cast(uint)wParam);
+				}
+				break;
+	
+	
+	
+	
+	
+	
+	
+	
+			case WM_MOUSEHWHEEL:
+	
+				w.onMouseWheelX(0);
+				break;
+	
+			case WM_MOUSEWHEEL:
+	
+				w.onMouseWheelY(0);
+				break;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			case WM_MOUSEMOVE:
+	
+				int x, y;
+				x = lParam & 0xffff;
+				w.mouseProps.x = x;
+				y = (lParam >> 16) & 0xffff;
+				w.mouseProps.y = y;
+			//	Console.putln("mouse move window! x:", x, "y:", y);
+	
+				w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+				w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+				w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+	
+				if (windowVars.hoverTimerSet==0) {
+					SetTimer(hWnd, 0, 55, null);
+					windowVars.hoverTimerSet = 1;
+				}
+	
+				w.onMouseMove();
+				break;
+	
+	
+	
+	
+	
+	
+	
+	
+				// Internal Timing Functions
+			case WM_MOUSELEAVE:
+				w.onMouseLeave();
+				break;
+	
+	
+	
+			case WM_MOUSECAPTURE: //made up event
+				if (windowVars.hoverTimerSet == 1) {
+					KillTimer(hWnd, 0);
+					windowVars.hoverTimerSet = 0;
+				}
+	
+				SetCapture(hWnd);
+				break;
+	
+	
+	
+	
+	
+	
+			case WM_MOVE:
+	
+				RECT rt;
+				GetWindowRect(hWnd, &rt);
+	
+				if (!windowVars.supress_WM_MOVE) {
+					wHelper.setWindowXY(rt.left, rt.top);
+					w.onMove();
+					windowVars.supress_WM_MOVE = false;
+				}
+				break;
+	
+	
+	
+	
+	
+	
+	
+			case WM_KEYDOWN:
+	
+				w.onKeyDown(cast(uint)wParam);
+	
+				break;
+	
+				//might have to translate these keys
+	
+			case WM_CHAR:
+	
+				if ((wParam == KeyBackspace) 
+					|| (wParam == KeyReturn)
+					|| (wParam == KeyTab)) {
+					break;
+				}
+	
+				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+	
+				//printf("%x %x", stuff[0], stuff[1]);
+	
+				w.onKeyChar(cast(dchar)wParam);
+	
+				break;
+	
+			case WM_DEADCHAR:
+	
+				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+	
+				//printf("%x %x", stuff[0], stuff[1]);
+	
+				break;
+	
+			case WM_UNICHAR:
+	
+				if (wParam == 0xFFFF) {
+					return 1;
+				}
+	
+				ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+	
+				//printf("%x %x", stuff[0], stuff[1]);
+	
+				w.onKeyChar(cast(dchar)wParam);
+	
+				break;
+	
+			case WM_KEYUP:
+	
+				w.onKeyUp(cast(uint)wParam);
+	
+				break;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			case WM_SIZE:
+	
+				RECT rt;
+				GetClientRect(hWnd, &rt);
+	
+				if (!windowVars.supress_WM_SIZE) {
+					wHelper.setWindowSize(rt.right, rt.bottom);
+					w.onResize();
+
+					if (cast(GLWindow)w !is null) {
+						windowVars.gameLoopCallResize();
+					}
+
+					windowVars.supress_WM_SIZE = false;
+				}
+
+				// was it minimized? maximized?
+
+				if (w.state != WindowState.Fullscreen) {
+					if (wParam == SIZE_MAXIMIZED && w.state != WindowState.Minimized) {
+						if (!windowVars.supress_WM_SIZE_state) {
+							wHelper.callStateChange(WindowState.Maximized);
+							windowVars.supress_WM_SIZE_state = false;
+						}
+					}
+					else if (wParam == SIZE_MINIMIZED && w.state != WindowState.Maximized) {
+						if (!windowVars.supress_WM_SIZE_state) {
+							wHelper.callStateChange(WindowState.Minimized);
+							windowVars.supress_WM_SIZE_state = false;
+						}
+					}
+					else if (wParam == SIZE_RESTORED && w.state != WindowState.Normal) {
+						if (!windowVars.supress_WM_SIZE_state) {
+							wHelper.callStateChange(WindowState.Normal);
+							windowVars.supress_WM_SIZE_state = false;
+						}
+					}
+				}
+	
+				break;
+	
+			case WM_TIMER:
+	
+				if (wParam == 0) {
+					//Internal Timer (mouse hover)
+
+					POINT pt;
+
+					GetCursorPos(&pt);
+
+					if (WindowFromPoint(pt) != hWnd) {
+						KillTimer(hWnd, 0);
+						windowVars.hoverTimerSet = 0;
+
+						SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
+					}
+					else {
+						POINT pnt[2];
+	
+						pnt[0].x = 0;
+						pnt[0].y = 0;
+						pnt[1].x = w.width-1;
+						pnt[1].y = w.height-1;
+	
+						ClientToScreen(hWnd, &pnt[0]);
+						ClientToScreen(hWnd, &pnt[1]);
+	
+						if (pt.x < pnt[0].x || pt.y < pnt[0].y || pt.x > pnt[1].x || pt.y > pnt[1].y) {
+							KillTimer(hWnd,0);
+	
+							windowVars.hoverTimerSet = 0;
+	
+							SendMessageW(hWnd, WM_MOUSELEAVE, 0, 0);
+						}
+					}
+					//KillTimer(hWnd, 0);
+				}
+				else if (wParam == 1) {
+					//Internal Timer (double click test)
+					//kill the timer
+					windowVars.doubleClickTimerSet = -windowVars.doubleClickTimerSet;
+					KillTimer(hWnd, 1);
+				}
+	
+				break;
+	
+	
+	
+	
+				// These are Djehuty Protocol Requests
+				// They do not belong in the final release
+	
+			case WM_USER + 0xff00:
+
+				SendMessageW(cast(HWND)lParam, WM_USER+0xf000, 0,0);
+	
+				break;
+	
+			case WM_USER + 0xff01:
+	
+			// create window 1
+
+			// p1 : width
+			// p2 : height
+				break;
+	
+			case WM_USER + 0xff02:
+	
+			// create window 2
+
+			// p1: x
+			// p2: y
+				break;
+	
+	
+	
+	
+	
+	
+	
+			default:
+	
+				return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+		}
+	
+		return 0;
+	}
+}

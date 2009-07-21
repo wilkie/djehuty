@@ -460,6 +460,8 @@ void WindowCaptureMouse(ref Window window, WindowHelper windowHelper)
 {
 	auto windowVars = windowHelper.getPlatformVars;
 
+	const int WM_MOUSECAPTURE = 0xffff;
+
 	SendMessageW(windowVars.hWnd, WM_MOUSECAPTURE, 0, 0);
 }
 
