@@ -148,10 +148,8 @@ private:
 			Console.putln("Fatal Error: Cannot Set the Console Mode");
         }
 
-		if( SetConsoleCtrlHandler(cast(PHANDLER_ROUTINE)&consoleProc, TRUE))
-		{
-			while(_console_loop)
-			{
+		if( SetConsoleCtrlHandler(cast(PHANDLER_ROUTINE)&consoleProc, TRUE)) {
+			while(_console_loop) {
 				if (! ReadConsoleInputW(
 						hStdin,			// input buffer handle
 						irInBuf.ptr,	// buffer to read into
@@ -338,7 +336,6 @@ private:
 										break;
 								}
 							}
-
 
 		                    break;
 
