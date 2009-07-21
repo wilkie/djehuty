@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.gravity;
+module binding.pango.gravity;
 
 /* Pango
  * pango-gravity.h: Gravity routines
@@ -100,8 +100,8 @@ enum PangoGravityHint {
 
 //#define PANGO_GRAVITY_IS_VERTICAL(gravity) ((gravity) == PANGO_GRAVITY_EAST || (gravity) == PANGO_GRAVITY_WEST)
 
-import platform.unix.pango.matrix;
-import platform.unix.pango.script;
+import binding.pango.matrix;
+import binding.pango.script;
 
 extern(C):
 

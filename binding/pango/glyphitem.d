@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.glyphitem;
+module binding.pango.glyphitem;
 
 /* Pango
  * pango-glyph-item.h: Pair of PangoItem and a glyph string
@@ -32,12 +32,12 @@ module platform.unix.pango.glyphitem;
  */
 
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.attributes;
-import platform.unix.pango.pbreak;
-import platform.unix.pango.item;
-import platform.unix.pango.glyph;
+import binding.pango.attributes;
+import binding.pango.pbreak;
+import binding.pango.item;
+import binding.pango.glyph;
 
 alias _PangoGlyphItem PangoGlyphItem;
 

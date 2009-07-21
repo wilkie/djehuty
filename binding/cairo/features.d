@@ -9,7 +9,7 @@
 
 /* Converted to D from cairo-features.h by htod */
 
-module platform.unix.cairo.features;
+module binding.cairo.features;
 
 const auto CAIRO_VERSION_MAJOR = 1;
 

@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.engine;
+module binding.pango.engine;
 
 /* Pango
  * pango-engine.h: Engines for script and language specific processing
@@ -32,15 +32,15 @@ module platform.unix.pango.engine;
  */
 
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.item;
-import platform.unix.pango.font;
-import platform.unix.pango.script;
-import platform.unix.pango.glyph;
+import binding.pango.item;
+import binding.pango.font;
+import binding.pango.script;
+import binding.pango.glyph;
 
-import platform.unix.pango.pbreak;
-import platform.unix.pango.coverage;
+import binding.pango.pbreak;
+import binding.pango.coverage;
 
 extern(C):
 

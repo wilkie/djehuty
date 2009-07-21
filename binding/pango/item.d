@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.item;
+module binding.pango.item;
 
 /* Pango
  * pango-item.h: Structure for storing run information
@@ -31,9 +31,9 @@ module platform.unix.pango.item;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
-import platform.unix.pango.engine;
-import platform.unix.pango.font;
+import binding.pango.types;
+import binding.pango.engine;
+import binding.pango.font;
 
 alias _PangoAnalysis PangoAnalysis;
 alias _PangoItem PangoItem;

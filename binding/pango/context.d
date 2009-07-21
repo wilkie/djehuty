@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.context;
+module binding.pango.context;
 
 /* Pango
  * pango-context.h: Rendering contexts
@@ -31,13 +31,13 @@ module platform.unix.pango.context;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
-import platform.unix.pango.font;
-import platform.unix.pango.fontmap;
-import platform.unix.pango.fontset;
-import platform.unix.pango.gravity;
-import platform.unix.pango.matrix;
-import platform.unix.pango.attributes;
+import binding.pango.types;
+import binding.pango.font;
+import binding.pango.fontmap;
+import binding.pango.fontset;
+import binding.pango.gravity;
+import binding.pango.matrix;
+import binding.pango.attributes;
 
 /* Sort of like a GC - application set information about how
  * to handle scripts

@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.attributes;
+module binding.pango.attributes;
 
 /* Pango
  * pango-attributes.h: Attributed text
@@ -31,10 +31,10 @@ module platform.unix.pango.attributes;
  * Boston, MA 02111-1307, USA.
  */
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
-import platform.unix.pango.font;
-import platform.unix.pango.gravity;
+import binding.pango.font;
+import binding.pango.gravity;
 
 extern(C):
 

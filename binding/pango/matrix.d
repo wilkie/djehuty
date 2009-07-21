@@ -8,7 +8,7 @@
  *
  */
 
-module platform.unix.pango.matrix;
+module binding.pango.matrix;
 
 /* Pango
  * pango-matrix.h: Matrix manipulation routines
@@ -89,7 +89,7 @@ struct _PangoMatrix
 
 //#define PANGO_MATRIX_INIT { 1., 0., 0., 1., 0., 0. }
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
 extern(C):
 

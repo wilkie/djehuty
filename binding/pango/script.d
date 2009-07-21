@@ -8,9 +8,9 @@
  *
  */
 
-module platform.unix.pango.script;
+module binding.pango.script;
 
-import platform.unix.pango.types;
+import binding.pango.types;
 
 /* Pango
  * pango-script.h: Script tag handling

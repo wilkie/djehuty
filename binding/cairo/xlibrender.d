@@ -1,14 +1,14 @@
 /*
- * xlib.d
+ * xlibrender.d
  *
- * This file holds bindings to cairo's xlib.h. The original copyright
+ * This file holds bindings to cairo's xlibrender.h. The original copyright
  * is displayed below, but does not pertain to this file.
  *
  * Author: Dave Wilkinson
  *
  */
 
-module platform.unix.cairo.xlib;
+module binding.cairo.xlibrender;
 
 /* cairo - a vector graphics library with display and print output
  *
@@ -46,42 +46,9 @@ module platform.unix.cairo.xlib;
  *	Carl D. Worth <cworth@cworth.org>
  */
 
-import platform.unix.cairo.cairo;
-import platform.unix.x.Xlib;
-import platform.unix.x.X;
-
-
-
+import binding.cairo.cairo;
+import binding.Xrender;
 
 
 extern(C):
-cairo_surface_t* cairo_xlib_surface_create (Display* dpy, Drawable drawable, Visual* visual, int width, int height);
-
-
-cairo_surface_t* cairo_xlib_surface_create_for_bitmap (Display* dpy, Pixmap bitmap, Screen* screen, int width, int height);
-
-
-void cairo_xlib_surface_set_size (cairo_surface_t *surface, int width, int height);
-
-
-void cairo_xlib_surface_set_drawable (cairo_surface_t *surface, Drawable drawable, int width, int height);
-
-
-Display* cairo_xlib_surface_get_display(cairo_surface_t* surface);
-
-
-Drawable cairo_xlib_surface_get_drawable(cairo_surface_t* surface);
-
-
-Screen* cairo_xlib_surface_get_screen(cairo_surface_t* surface);
-
-
-Visual* cairo_xlib_surface_get_visual(cairo_surface_t* surface);
-
-int cairo_xlib_surface_get_depth(cairo_surface_t* surface);
-
-
-int cairo_xlib_surface_get_width(cairo_surface_t* surface);
-
-
-int cairo_xlib_surface_get_height(cairo_surface_t* surface);
+cairo_surface_t* cairo_xlib_surface_create_with_xrender_format (Display* dpy, Drawable drawable, Screen* screen, XRenderPictFormat* format, int width, int height);

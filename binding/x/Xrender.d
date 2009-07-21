@@ -9,7 +9,7 @@
  *
  */
 
-module platform.unix.x.Xrender;
+module binding.x.Xrender;
 
 /*
  *
@@ -35,9 +35,9 @@ module platform.unix.x.Xrender;
  * Author:  Keith Packard, SuSE, Inc.
  */
 
-import platform.unix.x.render;
+import binding.x.render;
 
-import platform.unix.x.Xlib;
+import binding.x.Xlib;
 
 //#include <X11/Xfuncproto.h>
 //#include <X11/Xosdefs.h>

@@ -10,7 +10,7 @@
 
 /* Converted to D from cairo.h by htod */
 
-module platform.unix.cairo.cairo;
+module binding.cairo.cairo;
 
 /* cairo - a vector graphics library with display and print output
  *
@@ -49,7 +49,7 @@ module platform.unix.cairo.cairo;
  *	Carl D. Worth <cworth@cworth.org>
  */
 
-public import platform.unix.cairo.features;
+public import binding.cairo.features;
 public import core.definitions;
 
 extern (C):
