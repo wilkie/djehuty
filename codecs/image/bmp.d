@@ -1,6 +1,6 @@
 module codecs.image.bmp;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.stream;
 
@@ -18,7 +18,7 @@ class BMPCodec : ImageCodec
 		return new String("Bitmap");
 	}
 
-	StreamData decode(Stream stream, ref View view) {
+	StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -196,7 +196,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -396,7 +396,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -571,7 +571,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1034,7 +1034,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1408,7 +1408,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1579,7 +1579,7 @@ class BMPCodec : ImageCodec
 				}
 
 				//create the bitmap's buffer
-				view.CreateDIB(bi.biWidth, bi.biHeight);
+				view.create(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;

@@ -9,7 +9,7 @@
 
 module codecs.image.jpeg;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.string;
 import core.stream;
@@ -315,7 +315,7 @@ class JPEGCodec : ImageCodec
 		return new String("Joint Picture Experts Group");
 	}
 
-	StreamData decode(Stream stream, ref View view)
+	StreamData decode(Stream stream, ref Bitmap view)
 	{
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
@@ -653,7 +653,7 @@ class JPEGCodec : ImageCodec
 					imgxlinemovement_block_start = 32 * Hmajor;
 					imgylinemovement_block_start = imgylinemovement_block * Vmajor;
 
-					view.CreateDIB(sof.num_samples_per_line, sof.num_lines);
+					view.create(sof.num_samples_per_line, sof.num_lines);
 					//view.CreateDIB(actual_image_width, actual_image_height);
 
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;

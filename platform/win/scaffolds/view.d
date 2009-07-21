@@ -18,6 +18,7 @@ import gui.window;
 
 import graphics.view;
 import graphics.graphics;
+import graphics.bitmap;
 
 import core.string;
 import core.main;
@@ -51,7 +52,7 @@ void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
 	DeleteDC(viewVars.dc);
 }
 
-void ViewCreateDIB(ref View view, ref ViewPlatformVars viewVars)
+void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
 {
 	HDC dc;
 
@@ -99,8 +100,7 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 
 	HBITMAP bmp;
 
-	if (ViewIsDIB(view))
-	{
+	if (cast(Bitmap)view !is null) {
 
 		BITMAPINFO bi = BITMAPINFO.init;
 
@@ -112,8 +112,7 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 
 		bmp = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &viewVars.bits, null, 0);
 	}
-	else
-	{
+	else {
 		bmp = CreateCompatibleBitmap(dc, view.getWidth(), view.getHeight());
 	}
 

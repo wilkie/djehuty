@@ -46,8 +46,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(string windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height)
-	{
+	this(string windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height) {
 		_color = color;
 		_window_title = new String(windowTitle);
 		_width = width;
@@ -65,8 +64,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(String windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height)
-	{
+	this(String windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height) {
 		_color = color;
 		_window_title = new String(windowTitle);
 		_width = width;
@@ -84,8 +82,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height)
-	{
+	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
 		Scaffold.ColorGetSystemColor(_color, sysColor);
 		_window_title = new String(windowTitle);
 		_width = width;
@@ -103,8 +100,7 @@ public:
 	// y: The initial y position of the window.
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
-	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height)
-	{
+	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
 		Scaffold.ColorGetSystemColor(_color, sysColor);
 		_window_title = new String(windowTitle);
 		_width = width;
@@ -114,8 +110,7 @@ public:
 		_style = windowStyle;
 	}
 
-	~this()
-	{
+	~this() {
 		uninitialize();
 		remove();
 	}
@@ -124,13 +119,11 @@ public:
 
 	// Widget Container Margins
 
-	int baseLeft()
-	{
+	int baseLeft() {
 		return 0;
 	}
 
-	int baseTop()
-	{
+	int baseTop() {
 		return 0;
 	}
 
@@ -139,15 +132,13 @@ public:
 
 	// Description: Will get the title of the window.
 	// Returns: The String representing the title.
-	String text()
-	{
+	String text() {
 		return new String(_window_title);
 	}
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void text(String str)
-	{
+	void text(String str) {
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
@@ -156,8 +147,7 @@ public:
 
 	// Description: Will set the title of the window.
 	// str: The new title.
-	void text(string str)
-	{
+	void text(string str) {
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
@@ -170,21 +160,17 @@ public:
 
 	// Description: Sets the flag to make the window hidden or visible.
 	// bShow: Pass true to show the window and false to hide it.
-	void visible(bool bShow)
-	{
+	void visible(bool bShow) {
 		if (_visible == bShow) { return; }
 
 		_visible = !_visible;
 
-		if (_inited)
-		{
+		if (_inited) {
 			GuiApplication app = cast(GuiApplication)responder;
-			if (!_visible)
-			{
+			if (!_visible) {
 				app._windowVisibleCount--;
 			}
-			else
-			{
+			else {
 				app._windowVisibleCount++;
 			}
 
@@ -192,8 +178,7 @@ public:
 
 			// safe guard:
 			// fights off infection from ZOMBIE PROCESSES!!!
-			if (app.isZombie())
-			{
+			if (app.isZombie()) {
 				app.destroyAllWindows();
 				Djehuty.end(0);
 			}
@@ -204,21 +189,18 @@ public:
 
 	// Description: Will return whether or not the window is flagged as hidden or visible.  The window may not actually be visible due to it not being created or added.
 	// Returns: It will return true when the window is flagged to be visible and false otherwise.
-	bool visible()
-	{
+	bool visible() {
 		return _visible;
 	}
 
 	// Description: Will set the window to take a different state: WindowState.Minimized, WindowState.Maximized, WindowState.Fullscreen, WindowState.Normal
 	// state: A WindowState value representing the new state.
-	void state(WindowState state)
-	{
+	void state(WindowState state) {
 		if (_state == state) { return; }
 
 		_state = state;
 
-		if (_nextWindow !is null)
-		{
+		if (_nextWindow !is null) {
 			Scaffold.WindowSetState(this, &_pfvars);
 		}
 
@@ -227,37 +209,32 @@ public:
 
 	// Description: Will return the current state of the window.
 	// Returns: The current WindowState value for the window.
-	WindowState state()
-	{
+	WindowState state() {
 		return _state;
 	}
 
 	// Description: Will set the window to take a different style: WindowStyle.Fixed (non-sizable), WindowStyle.Sizable (resizable window), WindowStyle.Popup (borderless).
 	// style: A WindowStyle value representing the new style.
-	void style(WindowStyle style)
-	{
+	void style(WindowStyle style) {
 		if (this.state == WindowState.Fullscreen)
 			{ return; }
 
 		_style = style;
 
-		if (_nextWindow !is null)
-		{
+		if (_nextWindow !is null) {
 			Scaffold.WindowSetStyle(this, &_pfvars);
 		}
 	}
 
 	// Description: Will return the current style of the window.
 	// Returns: The current WindowStyle value for the window.
-	WindowStyle style()
-	{
+	WindowStyle style() {
 		return _style;
 	}
 
 	// Description: Will return the width of the client area of the window.
 	// Returns: The width of the client area of the window.
-	uint width()
-	{
+	uint width() {
 		if (_state == WindowState.Fullscreen) {
 			return System.Display.width;
 		}
@@ -266,8 +243,7 @@ public:
 
 	// Description: Will return the height of the client area of the window.
 	// Returns: The height of the client area of the window.
-	uint height()
-	{
+	uint height() {
 		if (_state == WindowState.Fullscreen) {
 			return System.Display.height;
 		}
@@ -276,8 +252,7 @@ public:
 
 	// Description: Will return the x coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
 	// Returns: The x position of the top-left corner of the window.
-	uint x()
-	{
+	uint x() {
 		if (_state == WindowState.Fullscreen) {
 			return 0;
 		}
@@ -286,8 +261,7 @@ public:
 
 	// Description: Will return the y coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
 	// Returns: The y position of the top-left corner of the window.
-	uint y()
-	{
+	uint y() {
 		if (_state == WindowState.Fullscreen) {
 			return 0;
 		}
@@ -297,8 +271,7 @@ public:
 	// Methods
 
 	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
-	void remove()
-	{
+	void remove() {
 		if (!_inited) { return; }
 
 		// the window was added
@@ -315,13 +288,11 @@ public:
 	// Description: This function will Size the window to fit a client area with the dimensions given by width and height.
 	// width: The new width of the client area.
 	// height: The new height of the client area.
-	void resize(uint width, uint height)
-	{
+	void resize(uint width, uint height) {
 		_width = width;
 		_height = height;
 
-		if (_inited)
-		{
+		if (_inited) {
 			Scaffold.WindowRebound(this, &_pfvars);
 		}
 
@@ -331,46 +302,40 @@ public:
 	// Description: This function will move the window so that the top-left corner of the window (not client area) is set to the point (x,y).
 	// x: The new x coordinate of the top-left corner.
 	// y: The new y coordinate of the top-left corner.
-	void move(uint x, uint y)
-	{
+	void move(uint x, uint y) {
 		_x = x;
 		_y = y;
 
-		if (_inited)
-		{
+		if (_inited) {
 			Scaffold.WindowReposition(this, &_pfvars);
 		}
 
 		onMove();
 	}
 
-	void ClientToScreen(ref int x, ref int y)
-	{
+	void ClientToScreen(ref int x, ref int y) {
 		if (_inited == false) { return; }
 		Scaffold.WindowClientToScreen(this, &_pfvars, x, y);
 	}
 
-	void ClientToScreen(ref Coord pt)
-	{
+	void ClientToScreen(ref Coord pt) {
 		if (_inited == false) { return; }
 		Scaffold.WindowClientToScreen(this, &_pfvars, pt);
 	}
 
-	void ClientToScreen(ref Rect rt)
-	{
+	void ClientToScreen(ref Rect rt) {
 		if (_inited == false) { return; }
 		Scaffold.WindowClientToScreen(this, &_pfvars, rt);
 	}
 
-	Window parent()
-	{
+	Window parent() {
 		return _parent;
 	}
 
 	// add a child window to this window
 
-	void addWindow(Window window)
-	{/*
+	void addWindow(Window window) {
+	/*
 		if (_inited == false) { return; }
 
 		// add the window to the root window list
@@ -402,79 +367,64 @@ public:
 	// Events //
 
 	// Description: This event will be called when the window is added to the window hierarchy.
-	void onAdd()
-	{
+	void onAdd() {
 	}
 
 	// Description: This event will be called when the window is removed from the window hierarchy.
-	void onRemove()
-	{
+	void onRemove() {
 	}
 
 	// Description: This event is called when the mouse wheel is scrolled vertically (the common scroll method).
 	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void onMouseWheelY(uint amount)
-	{
+	void onMouseWheelY(uint amount) {
 	}
 
 	// Description: This event is called when the mouse wheel is scrolled horizontally.
 	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void onMouseWheelX(uint amount)
-	{
+	void onMouseWheelX(uint amount) {
 	}
 
 	// Description: This event is called when the mouse enters the client area of the window
-	void onMouseEnter()
-	{
+	void onMouseEnter() {
 	}
 
 	// Description: This event is called when the window is moved, either from the OS or the move() function.
-	void onMove()
-	{
+	void onMove() {
 	}
 
 	// Description: This event is called when the window is hidden or shown.
-	void onVisibilityChange()
-	{
+	void onVisibilityChange() {
 	}
 
 	// Description: This event is called when the window is maximized, minimized, put into fullscreen, or restored.
-	void onStateChange()
-	{
+	void onStateChange() {
 	}
 
 	// Description: This event is called when a menu item belonging to the window is activated.
 	// mnu: A reference to the menu that was activated.
-	void onMenu(Menu mnu)
-	{
+	void onMenu(Menu mnu) {
 	}
 
-	void onInitialize()
-	{
+	void onInitialize() {
 		_view = new WindowView;
 		_viewVars = _view.createForWindow(this, &_pfvars);
 	}
 
-	void onUninitialize()
-	{
+	void onUninitialize() {
 		_view.destroy();
 		_view = null;
 	}
 
-	void onDraw()
-	{
-		if (_view !is null)
-		{
+	void onDraw() {
+		if (_view !is null) {
 			Graphics g = _view.lockDisplay();
 
 			Scaffold.WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
 			Widget c = _firstControl;
 
-			if (c !is null)
-			{
-				do
-				{
+			if (c !is null) {
+				do {
 					c =	c._prevControl;
 
 					c.onDraw(g);
@@ -487,62 +437,48 @@ public:
 		}
 	}
 
-	void onKeyChar(dchar keyChar)
-	{
+	void onKeyChar(dchar keyChar) {
 		// dispatch to focused control
-		if (_focused_control !is null)
-		{
-			if (_focused_control.onKeyChar(keyChar))
-			{
+		if (_focused_control !is null) {
+			if (_focused_control.onKeyChar(keyChar)) {
 				onDraw();
 			}
 		}
 	}
 
-	void onKeyDown(uint keyCode)
-	{
+	void onKeyDown(uint keyCode) {
 		// dispatch to focused control
-		if (_focused_control !is null)
-		{
-			if (_focused_control.onKeyDown(keyCode))
-			{
+		if (_focused_control !is null) {
+			if (_focused_control.onKeyDown(keyCode)) {
 				onDraw();
 			}
 		}
 	}
 
-	void onKeyUp(uint keyCode)
-	{
+	void onKeyUp(uint keyCode) {
 		// dispatch to focused control
-		if (_focused_control !is null)
-		{
-			if (_focused_control.onKeyUp(keyCode))
-			{
+		if (_focused_control !is null) {
+			if (_focused_control.onKeyUp(keyCode)) {
 				onDraw();
 			}
 		}
 	}
 
-	void onMouseLeave()
-	{
-		if (_last_control !is null)
-		{
+	void onMouseLeave() {
+		if (_last_control !is null) {
 			_last_control._hovered = false;
-			if(_last_control.onMouseLeave())
-			{
+			if(_last_control.onMouseLeave()) {
 				onDraw();
 			}
 			_last_control = null;
 		}
 	}
 
-	void onMouseMove()
-	{
+	void onMouseMove() {
 		//select the control to send the message to
 		Widget control;
 
-		if (_captured_control !is null)
-		{
+		if (_captured_control !is null) {
 			control = _captured_control;
 
 			if (controlAtPoint(mouseProps.x, mouseProps.y) is control && control.visible) {
@@ -1110,9 +1046,6 @@ class WindowView : View {
 	}
 
 	override void create(int width, int height) {
-	}
-
-	override void CreateDIB(int width, int height) {
 	}
 
 protected:

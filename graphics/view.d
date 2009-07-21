@@ -20,8 +20,6 @@ mixin(PlatformScaffoldImport!());
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
 class View {
 public:
-
-
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
 		_mutex = new Semaphore;
@@ -30,6 +28,11 @@ public:
 		_inited = false;
 		_mutex.init(1);
 		_buffer_mutex.init(1);
+
+		_graphics = new Graphics();
+
+		_graphics._view = this;
+		_graphics._viewVars = &_pfvars;
 	}
 
 	~this() {
@@ -47,43 +50,10 @@ public:
 
 		_mutex.down();
 
-		_graphics = new Graphics();
-
-		_graphics._view = this;
-		_graphics._viewVars = &_pfvars;
-
-		_isDIB = false;
-
 		_width = width;
 		_height = height;
 
 		_platformCreate();
-
-		_fromWindow = false;
-
-		_inited = true;
-
-		_mutex.up();
-	}
-
-	void CreateDIB(int width, int height) {
-		if (_inited) { destroy(); }
-
-		_mutex.down();
-
-		_graphics = new Graphics();
-
-		_graphics._view = this;
-		_graphics._viewVars = &_pfvars;
-
-		_isDIB = true;
-
-		_width = width;
-		_height = height;
-
-		Scaffold.ViewCreateDIB(this, _pfvars);
-
-		_fromWindow = false;
 
 		_inited = true;
 
@@ -209,9 +179,6 @@ protected:
 
 	package ViewPlatformVars _pfvars;
 
-	bool _fromWindow = false;
-	Window _window;
-
 	bool _inited = false;
 
 	package bool _locked = false;
@@ -221,7 +188,6 @@ protected:
 
 	bool _hasAlpha = false;
 
-	bool _isDIB = false;
 	bool _forcenopremultiply = false;
 
 	package Graphics _graphics = null;
@@ -233,8 +199,6 @@ protected:
 		Scaffold.ViewDestroy(this, _pfvars);
 
 		_inited = false;
-
-		_isDIB = false;
 
 		_width = 0;
 		_height = 0;
@@ -251,15 +215,3 @@ protected:
 	package Brush _brush;
 	package Pen _pen;
 }
-
-bool ViewIsDIB(ref View view) {
-    return view._isDIB;
-}
-
-bool ViewIsFromWindow(ref View view) {
-	return view._fromWindow;
-}
-
-//void ViewSetPen(ref View view, ref Pen pen)
-//{
-//}

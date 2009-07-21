@@ -1,6 +1,6 @@
 module codecs.image.png;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.stream;
 import core.string;
@@ -22,7 +22,7 @@ class PNGCodec : ImageCodec
 		return new String("Portable Network Graphics");
 	}
 
-	StreamData decode(Stream stream, ref View view)
+	StreamData decode(Stream stream, ref Bitmap view)
 	{
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
@@ -569,7 +569,7 @@ class PNGCodec : ImageCodec
 				//Console.putln(("png - ") + toString(pngIHDR.pngWidth) + (" x ") + toString(pngIHDR.pngHeight) + ("\n"));
 
 //	printf("type: %d\n", pngIHDR.pngWidth);
-				view.CreateDIB(pngIHDR.pngWidth, pngIHDR.pngHeight);
+				view.create(pngIHDR.pngWidth, pngIHDR.pngHeight);
 
 
 
