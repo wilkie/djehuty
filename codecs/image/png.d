@@ -27,7 +27,7 @@ class PNGCodec : ImageCodec
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.setAlphaFlag(true);
+		view.alpha = true;
 
 		Stream streamToDecode;
 

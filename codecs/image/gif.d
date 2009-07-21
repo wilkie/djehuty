@@ -125,7 +125,7 @@ class GIFCodec : ImageCodec {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.setAlphaFlag(true);
+		view.alpha = true;
 
 		// will read headers and such
 
@@ -165,10 +165,9 @@ class GIFCodec : ImageCodec {
 
 		ret = Decoder(stream, view, imageDesc);
 
+		view.alpha = true;
+
 		if (ret == 2) {
-
-			view.setAlphaFlag(true);
-
 			// another frame will occur
 			return StreamData.Accepted;
 		}
@@ -177,8 +176,6 @@ class GIFCodec : ImageCodec {
 			imageDesc.clearFirst = gifFirstClear;
 			imageDesc.clearColor = gifFirstClearColor;
 			imageDesc.time = gifFirstTime;
-
-			view.setAlphaFlag(true);
 
 			return StreamData.Complete;
 		}

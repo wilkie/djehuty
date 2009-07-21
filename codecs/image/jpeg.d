@@ -320,7 +320,7 @@ class JPEGCodec : ImageCodec
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.setAlphaFlag(false);
+		view.alpha = false;
 		hasMultipleFrames = false;
 
 		ushort header;

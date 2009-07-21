@@ -188,7 +188,7 @@ void destroyPen(PenPlatformVars* pen) {
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag()) {
+	if (srcView.alpha) {
 		uint viewWidth = srcView.width();
 		uint viewHeight = srcView.height();
 		if (x + viewWidth > view.width()) {
@@ -208,7 +208,7 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag()) {
+	if (srcView.alpha) {
 		uint viewWidth = srcView.width();
 		uint viewHeight = srcView.height();
 		if (x + viewWidth > view.width()) {
@@ -236,7 +236,7 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
-	if (srcView.getAlphaFlag()) {
+	if (srcView.alpha) {
 		if (viewWidth > srcView.width()) {
 			viewWidth = srcView.width();
 		}

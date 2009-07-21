@@ -133,13 +133,13 @@ public:
 
 	// Description: Will allow an alpha channel to display on a canvas.
 	// isAlpha: Whether or not the canvas should be considered to have an alpha channel.
-	void setAlphaFlag(bool isAlpha) {
+	void alpha(bool isAlpha) {
 		_hasAlpha = isAlpha;
 	}
 
 	// Description: Will return the status of the view and whether it has a working alpha channel.
 	// Returns: The flag that is marked in order to use an alpha channel.
-	bool getAlphaFlag() {
+	bool alpha() {
 		return _hasAlpha;
 	}
 

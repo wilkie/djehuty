@@ -33,7 +33,7 @@ class BMPCodec : ImageCodec
 			case BMP_STATE_INIT:
 				//initial stuff
 
-				view.setAlphaFlag(false);
+				view.alpha = false;
 
 				hasMultipleFrames = 0;
 
