@@ -371,7 +371,7 @@ class Graphics {
 	// image: The image to draw.
 	void drawImage(int x, int y, Image image) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v);
 		}
@@ -386,7 +386,7 @@ class Graphics {
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	void drawImage(int x, int y, Image image, int srcX, int srcY) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v, srcX, srcY);
 		}
@@ -403,7 +403,7 @@ class Graphics {
 	// srcH: The height of the cropped region.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v, srcX, srcY, srcW, srcH);
 		}
@@ -417,7 +417,7 @@ class Graphics {
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, double opacity) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v, opacity);
 		}
@@ -433,7 +433,7 @@ class Graphics {
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, double opacity) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v, srcX, srcY, opacity);
 		}
@@ -451,7 +451,7 @@ class Graphics {
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH, double opacity) {
 		ImageLock(image);
-		View v = image.getView();
+		View v = image.view;
 		if (v !is null) {
 			drawView(x, y, v, srcX, srcY, srcW, srcH, opacity);
 		}

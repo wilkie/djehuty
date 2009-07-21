@@ -1,4 +1,4 @@
-module platform.win.controls.osbutton;
+module gui.osbutton;
 
 import gui.button;
 
@@ -13,15 +13,15 @@ import core.definitions;
 
 import gui.widget;
 import gui.window;
+import gui.apploop;
 
 import io.console;
 
 import graphics.view;
 import graphics.graphics;
 
-class OSButton : Button, WinWidget
-{
-public:
+class OSButton : Button, WinWidget {
+
 	this(int x, int y, int width, int height, String value) {
 		super(x,y,width,height,value);
 	}
@@ -32,7 +32,7 @@ public:
 
 	override void onAdd() {
 
-		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
+		ViewPlatformVars* viewVars = _window._viewVars;
 
 		HDC dc = GetDC(_hWnd);
 
@@ -47,32 +47,32 @@ public:
 		newy = _window.height -1 ;//- this.height;
 		 _hWnd = CreateWindowExW(0,
 			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , this.left,newy,this.width,this.height,
-			_windowHelper.getPlatformVars().hWnd,null, cast(HINSTANCE)GetWindowLongW(_windowHelper.getPlatformVars().hWnd,GWLP_HINSTANCE), null);
+			_window._pfvars.hWnd,null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
 
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)win_button_font, 1);
+		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)GuiApplicationController.win_button_font, 1);
 
 		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(ulong)(cast(void*)(cast(WinWidget)this)));
-		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&CtrlProc);
+		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&GuiApplicationController.CtrlProc);
 
-		button_hWnd = _hWnd;
-		button_hdc = dc2;
-		button_x = this.left;
-		button_y = this.top;
-		button_width = this.width;
-		button_height = this.height;
+		GuiApplicationController.button_hWnd = _hWnd;
+		GuiApplicationController.button_hdc = dc2;
+		GuiApplicationController.button_x = this.left;
+		GuiApplicationController.button_y = this.top;
+		GuiApplicationController.button_width = this.width;
+		GuiApplicationController.button_height = this.height;
 
-		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
+		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)GuiApplicationController.button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
 
 	override void onDraw(ref Graphics g) {
 		// save current background for later
 
 		// copy over current image
-		ViewPlatformVars* viewVars = _windowHelper.getViewVars();
+		ViewPlatformVars* viewVars = _window._viewVars;
 
-		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, button_hdc, 0,0,SRCCOPY);
+		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, GuiApplicationController.button_hdc, 0,0,SRCCOPY);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouse) {
@@ -108,7 +108,7 @@ public:
 
 		int ncx, ncy;
 
-		GetWindowRect(_windowHelper.getPlatformVars().hWnd, &rect);
+		GetWindowRect(_window._pfvars.hWnd, &rect);
 		ncx = rect.left;
 		ncy = rect.top;
 
@@ -158,7 +158,7 @@ protected:
 			x = cast(short)(lParam & 0xffff);
 			y = cast(short)((lParam >> 16) & 0xffff);
 //			Console.putln("mouse up (captured) x:", x, "y:",y);
-			SendMessageW(_windowHelper.getPlatformVars().hWnd, message, 0, windowlParam);
+			SendMessageW(_window._pfvars.hWnd, message, 0, windowlParam);
 		}
 		else if (message == WM_MOUSELEAVE) {
 			// ignore!
@@ -193,7 +193,7 @@ protected:
 				x = cast(short)(lParam & 0xffff);
 				y = cast(short)((lParam >> 16) & 0xffff);
 			//	Console.putln("mouse move (captured) x:", x, "y:",y);
-				SendMessageW(_windowHelper.getPlatformVars().hWnd,WM_MOUSEMOVE, 0, windowlParam);
+				SendMessageW(_window._pfvars.hWnd,WM_MOUSEMOVE, 0, windowlParam);
 			}
 			else {
 				//Console.putln("mouse move");

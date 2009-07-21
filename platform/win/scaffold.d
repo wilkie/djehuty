@@ -9,9 +9,6 @@
 
 module platform.win.scaffold;
 
-// Application Loop
-public import platform.win.scaffolds.app;
-
 // Windows
 public import platform.win.scaffolds.window;
 

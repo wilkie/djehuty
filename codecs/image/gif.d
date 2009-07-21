@@ -7,10 +7,9 @@
  *
  */
 
-
 module codecs.image.gif;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.string;
 import core.stream;
@@ -122,11 +121,11 @@ class GIFCodec : ImageCodec {
 		return new String("Graphics Interchange Format");
 	}
 
-	StreamData decode(Stream stream, ref View view) {
+	StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.setAlphaFlag(true);
+		view.alpha = true;
 
 		// will read headers and such
 
@@ -156,7 +155,7 @@ class GIFCodec : ImageCodec {
 		return ret;
 	}
 
-	StreamData DecodeFrame(Stream stream, ref View view) {
+	StreamData DecodeFrame(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -166,10 +165,9 @@ class GIFCodec : ImageCodec {
 
 		ret = Decoder(stream, view, imageDesc);
 
+		view.alpha = true;
+
 		if (ret == 2) {
-
-			view.setAlphaFlag(true);
-
 			// another frame will occur
 			return StreamData.Accepted;
 		}
@@ -179,15 +177,13 @@ class GIFCodec : ImageCodec {
 			imageDesc.clearColor = gifFirstClearColor;
 			imageDesc.time = gifFirstTime;
 
-			view.setAlphaFlag(true);
-
 			return StreamData.Complete;
 		}
 
 		return StreamData.Required;
 	}
 
-	StreamData Decoder(ref Stream stream, ref View view, ref ImageFrameDescription imageDesc) {
+	StreamData Decoder(ref Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
 		uint q;
 
 		ushort gifCode;
@@ -587,7 +583,7 @@ class GIFCodec : ImageCodec {
 				gifBlockSize = 0;
 				gifBlockCounter = 0;
 
-				view.CreateDIB(gifImage.gifImageWidth, gifImage.gifImageHeight);
+				view.create(gifImage.gifImageWidth, gifImage.gifImageHeight);
 
 				decoderState = GIF_STATE_DECODE;
 				decoderSubState = 0;
