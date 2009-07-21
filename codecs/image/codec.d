@@ -1,6 +1,6 @@
 module codecs.image.codec;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.string;
 import core.stream;
@@ -17,7 +17,7 @@ struct ImageFrameDescription {
 
 class ImageCodec : Codec {
 public:
-	StreamData decode(Stream stream, ref View view) {
+	StreamData decode(Stream stream, ref Bitmap view) {
 		return StreamData.Invalid;
 	}
 

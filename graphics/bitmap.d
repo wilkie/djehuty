@@ -14,9 +14,14 @@ module graphics.bitmap;
 import graphics.view;
 import graphics.graphics;
 
+import synch.semaphore;
+
 class Bitmap : View {
 	this() {
 		super();
+
+		_buffer_mutex = new Semaphore;
+		_buffer_mutex.init(1);
 	}
 
 	void create(int width, int height) {
@@ -33,4 +38,21 @@ class Bitmap : View {
 
 		_mutex.up();
 	}
+
+	void* getBufferUnsafe() {
+		return Scaffold.ViewGetBytes(_pfvars);
+	}
+
+	void lockBuffer(void** bufferPtr, ref ulong length) {
+		_buffer_mutex.down();
+		bufferPtr[0] = Scaffold.ViewGetBytes(_pfvars, length);
+	}
+
+	void unlockBuffer() {
+		_buffer_mutex.up();
+	}
+
+private:
+
+	Semaphore _buffer_mutex;
 }

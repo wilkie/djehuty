@@ -38,7 +38,7 @@ void ViewCreate(View view, ref ViewPlatformVars viewVars)
 
 	viewVars.dc = CreateCompatibleDC(dc);
 
-	HBITMAP bmp = CreateCompatibleBitmap(dc, view.getWidth(), view.getHeight());
+	HBITMAP bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
 
 	ReleaseDC(null, dc);
 
@@ -65,15 +65,15 @@ void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
 	BITMAPINFO bi = BITMAPINFOHEADER.init;
 
 	bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
-	bi.bmiHeader.biWidth = view.getWidth();
-	bi.bmiHeader.biHeight = -view.getHeight();
+	bi.bmiHeader.biWidth = view.width();
+	bi.bmiHeader.biHeight = -view.height();
 	bi.bmiHeader.biPlanes = 1;
 	bi.bmiHeader.biBitCount = 32;
 
 	//HBITMAP bmp = CreateCompatibleBitmap(dc, _width, _height);
 	HBITMAP bmp = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &viewVars.bits, null, 0);
 
-	viewVars.length = (view.getWidth() * view.getHeight()) * 4;
+	viewVars.length = (view.width() * view.height()) * 4;
 
 	ReleaseDC(null, dc);
 
@@ -105,15 +105,15 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 		BITMAPINFO bi = BITMAPINFO.init;
 
 		bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
-		bi.bmiHeader.biWidth = view.getWidth();
-		bi.bmiHeader.biHeight = -view.getHeight();
+		bi.bmiHeader.biWidth = view.width();
+		bi.bmiHeader.biHeight = -view.height();
 		bi.bmiHeader.biPlanes = 1;
 		bi.bmiHeader.biBitCount = 32;
 
 		bmp = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &viewVars.bits, null, 0);
 	}
 	else {
-		bmp = CreateCompatibleBitmap(dc, view.getWidth(), view.getHeight());
+		bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
 	}
 
 	ReleaseDC(null, dc);

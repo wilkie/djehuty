@@ -189,19 +189,19 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	if (srcView.getAlphaFlag()) {
-		uint viewWidth = srcView.getWidth();
-		uint viewHeight = srcView.getHeight();
-		if (x + viewWidth > view.getWidth()) {
-			viewWidth = view.getWidth() - x;
+		uint viewWidth = srcView.width();
+		uint viewHeight = srcView.height();
+		if (x + viewWidth > view.width()) {
+			viewWidth = view.width() - x;
 		}
 
-		if (y + viewHeight > view.getHeight()) {
-			viewHeight = view.getHeight() - y;
+		if (y + viewHeight > view.height()) {
+			viewHeight = view.height() - y;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0, viewWidth, viewHeight, bf);
 	}
 	else {
-		BitBlt(viewVars.dc, x, y, srcView.getWidth(), srcView.getHeight(), viewVarsSrc.dc, 0,0,SRCCOPY);
+		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, 0,0,SRCCOPY);
 	}
 }
 
@@ -209,27 +209,27 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	if (srcView.getAlphaFlag()) {
-		uint viewWidth = srcView.getWidth();
-		uint viewHeight = srcView.getHeight();
-		if (x + viewWidth > view.getWidth()) {
-			viewWidth = view.getWidth() - x;
+		uint viewWidth = srcView.width();
+		uint viewHeight = srcView.height();
+		if (x + viewWidth > view.width()) {
+			viewWidth = view.width() - x;
 		}
 
-		if (y + viewHeight > view.getHeight()) {
-			viewHeight = view.getHeight() - y;
+		if (y + viewHeight > view.height()) {
+			viewHeight = view.height() - y;
 		}
 
-		if (viewX + viewWidth > srcView.getWidth()) {
-			viewWidth = srcView.getWidth() - viewX;
+		if (viewX + viewWidth > srcView.width()) {
+			viewWidth = srcView.width() - viewX;
 		}
 
-		if (viewY + viewHeight > srcView.getHeight()) {
-			viewHeight = srcView.getHeight() - viewY;
+		if (viewY + viewHeight > srcView.height()) {
+			viewHeight = srcView.height() - viewY;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 	}
 	else {
-		BitBlt(viewVars.dc, x, y, srcView.getWidth(), srcView.getHeight(), viewVarsSrc.dc, viewX,viewY,SRCCOPY);
+		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, viewX,viewY,SRCCOPY);
 	}
 }
 
@@ -237,28 +237,28 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
 
 	if (srcView.getAlphaFlag()) {
-		if (viewWidth > srcView.getWidth()) {
-			viewWidth = srcView.getWidth();
+		if (viewWidth > srcView.width()) {
+			viewWidth = srcView.width();
 		}
 
-		if (viewHeight > srcView.getHeight()) {
-			viewHeight = srcView.getHeight();
+		if (viewHeight > srcView.height()) {
+			viewHeight = srcView.height();
 		}
 
-		if (x + viewWidth > view.getWidth()) {
-			viewWidth = view.getWidth() - x;
+		if (x + viewWidth > view.width()) {
+			viewWidth = view.width() - x;
 		}
 
-		if (y + viewHeight > view.getHeight()) {
-			viewHeight = view.getHeight() - y;
+		if (y + viewHeight > view.height()) {
+			viewHeight = view.height() - y;
 		}
 
-		if (viewX + viewWidth > srcView.getWidth()) {
-			viewWidth = srcView.getWidth() - viewX;
+		if (viewX + viewWidth > srcView.width()) {
+			viewWidth = srcView.width() - viewX;
 		}
 
-		if (viewY + viewHeight > srcView.getHeight()) {
-			viewHeight = srcView.getHeight() - viewY;
+		if (viewY + viewHeight > srcView.height()) {
+			viewHeight = srcView.height() - viewY;
 		}
 		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 	}
@@ -273,14 +273,14 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
 
 
-	uint viewWidth = srcView.getWidth();
-	uint viewHeight = srcView.getHeight();
-	if (x + viewWidth > view.getWidth()) {
-		viewWidth = view.getWidth() - x;
+	uint viewWidth = srcView.width();
+	uint viewHeight = srcView.height();
+	if (x + viewWidth > view.width()) {
+		viewWidth = view.width() - x;
 	}
 
-	if (y + viewHeight > view.getHeight()) {
-		viewHeight = view.getHeight() - y;
+	if (y + viewHeight > view.height()) {
+		viewHeight = view.height() - y;
 	}
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0,viewWidth, viewHeight, bf);
 }
@@ -290,22 +290,22 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
 
-	uint viewWidth = srcView.getWidth();
-	uint viewHeight = srcView.getHeight();
-	if (x + viewWidth > view.getWidth()) {
-		viewWidth = view.getWidth() - x;
+	uint viewWidth = srcView.width();
+	uint viewHeight = srcView.height();
+	if (x + viewWidth > view.width()) {
+		viewWidth = view.width() - x;
 	}
 
-	if (y + viewHeight > view.getHeight()) {
-		viewHeight = view.getHeight() - y;
+	if (y + viewHeight > view.height()) {
+		viewHeight = view.height() - y;
 	}
 
-	if (viewX + viewWidth > srcView.getWidth()) {
-		viewWidth = srcView.getWidth() - viewX;
+	if (viewX + viewWidth > srcView.width()) {
+		viewWidth = srcView.width() - viewX;
 	}
 
-	if (viewY + viewHeight > srcView.getHeight()) {
-		viewHeight = srcView.getHeight() - viewY;
+	if (viewY + viewHeight > srcView.height()) {
+		viewHeight = srcView.height() - viewY;
 	}
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
 }
@@ -315,28 +315,28 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 
 	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
 
-	if (viewWidth > srcView.getWidth()) {
-		viewWidth = srcView.getWidth();
+	if (viewWidth > srcView.width()) {
+		viewWidth = srcView.width();
 	}
 
-	if (viewHeight > srcView.getHeight()) {
-		viewHeight = srcView.getHeight();
+	if (viewHeight > srcView.height()) {
+		viewHeight = srcView.height();
 	}
 
-	if (x + viewWidth > view.getWidth()) {
-		viewWidth = view.getWidth() - x;
+	if (x + viewWidth > view.width()) {
+		viewWidth = view.width() - x;
 	}
 
-	if (y + viewHeight > view.getHeight()) {
-		viewHeight = view.getHeight() - y;
+	if (y + viewHeight > view.height()) {
+		viewHeight = view.height() - y;
 	}
 
-	if (viewX + viewWidth > srcView.getWidth()) {
-		viewWidth = srcView.getWidth() - viewX;
+	if (viewX + viewWidth > srcView.width()) {
+		viewWidth = srcView.width() - viewX;
 	}
 
-	if (viewY + viewHeight > srcView.getHeight()) {
-		viewHeight = srcView.getHeight() - viewY;
+	if (viewY + viewHeight > srcView.height()) {
+		viewHeight = srcView.height() - viewY;
 	}
 
 	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);

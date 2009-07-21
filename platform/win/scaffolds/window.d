@@ -76,14 +76,14 @@ void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window 
 	/*
 	int width, height, x, y;
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width();
+	height = window.height();
 
 	x = window.getX();
 	y = window.getY();
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width();
+	height = window.height();
 
 	_ClientSizeToWindowSize(window, width, height);
 
@@ -380,8 +380,8 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 
 	rt.left = 0;
 	rt.top = 0;
-	rt.right = view.getWidth();
-	rt.bottom = view.getHeight();
+	rt.right = view.width();
+	rt.bottom = view.height();
 
 	//draw background
 	windowVars.brsh = CreateSolidBrush(ColorGetValue(window.color));
@@ -415,7 +415,7 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref Window
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
 
-	BitBlt(hdc, 0, 0, view.getWidth(), view.getHeight(), viewVars.dc, 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
 
 	ReleaseDC(windowVars.hWnd, hdc);
 }

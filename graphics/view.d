@@ -23,11 +23,9 @@ public:
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
 		_mutex = new Semaphore;
-		_buffer_mutex = new Semaphore;
 
 		_inited = false;
 		_mutex.init(1);
-		_buffer_mutex.init(1);
 
 		_graphics = new Graphics();
 
@@ -92,13 +90,13 @@ public:
 
 	// Description: Will return the width of the drawing canvas.
 	// Returns: The width of the canvas.
-	int getWidth() {
+	int width() {
 		return _width;
 	}
 
 	// Description: Will return the height of the drawing canvas.
 	// Returns: The height of the canvas.
-	int getHeight() {
+	int height() {
 		return _height;
 	}
 
@@ -145,19 +143,6 @@ public:
 		return _hasAlpha;
 	}
 
-	void* getBufferUnsafe() {
-		return Scaffold.ViewGetBytes(_pfvars);
-	}
-
-	void lockBuffer(void** bufferPtr, ref ulong length) {
-		_buffer_mutex.down();
-		bufferPtr[0] = Scaffold.ViewGetBytes(_pfvars, length);
-	}
-
-	void unlockBuffer() {
-		_buffer_mutex.up();
-	}
-
 	uint rgbaTouint(uint r, uint g, uint b, uint a) {
 		return Scaffold.ViewRGBAToInt32(_forcenopremultiply,_pfvars,r,g,b,a);
 	}
@@ -193,7 +178,6 @@ protected:
 	package Graphics _graphics = null;
 
 	Semaphore _mutex;
-	Semaphore _buffer_mutex;
 
 	void _destroy() {
 		Scaffold.ViewDestroy(this, _pfvars);
