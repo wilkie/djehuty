@@ -115,15 +115,13 @@ public:
 	void unlockDisplay() {
 		_locked = false;
 
-		if (_brush !is null)
-		{
+		if (_brush !is null) {
 			// Unattach the Brush
 			_brush._view = null;
 		}
 		_brush = null;
 
-		if (_pen !is null)
-		{
+		if (_pen !is null) {
 			// Unattach the Pen
 			_pen._view = null;
 		}
@@ -150,15 +148,6 @@ public:
 	uint rgbTouint(uint r, uint g, uint b) {
 		return Scaffold.ViewRGBAToInt32(_pfvars,r,g,b);
 	}
-
-	/*
-
-	// DIB Specific
-	void DIBClear(UInt32 clr);
-	void DIBClear(UInt8 r, UInt8 g, UInt8 b, UInt8 a);
-	void DIBBlit(Int32 x, Int32 y, View &view);
-
-	*/
 
 protected:
 
