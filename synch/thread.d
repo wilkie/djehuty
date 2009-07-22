@@ -10,8 +10,7 @@ else {
 	import Phobos = std.thread;
 }
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.thread;
 
 import scaffold.thread;
 import scaffold.time;

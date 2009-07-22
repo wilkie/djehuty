@@ -14,8 +14,9 @@ import gui.widget;
 import gui.application;
 import gui.menu;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.view;
+import platform.vars.menu;
+import platform.vars.window;
 
 import scaffold.color;
 import scaffold.window;

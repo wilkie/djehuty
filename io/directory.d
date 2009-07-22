@@ -17,8 +17,7 @@ import core.definitions;
 import io.file;
 import io.console;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.directory;
 
 import scaffold.directory;
 

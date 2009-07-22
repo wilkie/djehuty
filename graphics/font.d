@@ -1,7 +1,6 @@
 module graphics.font;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.font;
 
 import Scaffold = scaffold.graphics;
 

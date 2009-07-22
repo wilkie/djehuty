@@ -10,9 +10,11 @@
 
 module scaffold.view;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.view;
+import platform.vars.window;
 
 import gui.window;
 

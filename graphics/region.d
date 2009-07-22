@@ -11,8 +11,7 @@ module graphics.region;
 
 import core.definitions;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.region;
 
 import scaffold.graphics;
 

@@ -10,8 +10,9 @@
 
 module scaffold.directory;
 
-import platform.win.vars;
 import platform.win.common;
+
+import platform.vars.directory;
 
 import core.string;
 import core.main;

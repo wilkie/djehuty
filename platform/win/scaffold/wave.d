@@ -11,9 +11,10 @@
 
 module scaffold.wave;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.wave;
 
 import core.stream;
 import core.time;
