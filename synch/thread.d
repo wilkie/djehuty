@@ -3,7 +3,7 @@ module synch.thread;
 import gui.window;
 
 // Awww... my only runtime dependency
-version(LDC) {
+version(Tango) {
 	import Tango = tango.core.Thread;
 }
 else {
@@ -12,7 +12,6 @@ else {
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import scaffold.thread;
 import scaffold.time;

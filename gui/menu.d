@@ -6,7 +6,6 @@ import core.definitions;
 import io.console;
 
 import platform.imports;
-mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("vars"));
 
 import scaffold.menu;

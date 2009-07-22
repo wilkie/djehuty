@@ -2,7 +2,6 @@ module gui.osbutton;
 
 import gui.button;
 
-import platform.win.definitions;
 import platform.win.vars;
 import platform.win.common;
 import platform.win.widget;

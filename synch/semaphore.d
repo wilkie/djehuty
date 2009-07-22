@@ -2,9 +2,10 @@ module synch.semaphore;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import scaffold.thread;
+
+import core.definitions;
 
 // Section: Core/Synchronization
 

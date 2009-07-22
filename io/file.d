@@ -15,7 +15,6 @@ import core.definitions;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import scaffold.file;
 

@@ -19,7 +19,6 @@ import io.console;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import scaffold.directory;
 

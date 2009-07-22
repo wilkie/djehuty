@@ -24,7 +24,6 @@ import tui.apploop;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 // Section: Core
 
