@@ -16,7 +16,11 @@ import gui.menu;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.color;
+import scaffold.window;
+import scaffold.view;
+import scaffold.menu;
 
 import graphics.view;
 import graphics.graphics;
@@ -83,7 +87,7 @@ public:
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
 	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
-		Scaffold.ColorGetSystemColor(_color, sysColor);
+		ColorGetSystemColor(_color, sysColor);
 		_window_title = new String(windowTitle);
 		_width = width;
 		_height = height;
@@ -101,7 +105,7 @@ public:
 	// width: The initial width of the client area of the window.
 	// height: The initial height of the client area of the window.
 	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
-		Scaffold.ColorGetSystemColor(_color, sysColor);
+		ColorGetSystemColor(_color, sysColor);
 		_window_title = new String(windowTitle);
 		_width = width;
 		_height = height;
@@ -142,7 +146,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, &_pfvars);
+		WindowSetTitle(this, &_pfvars);
 	}
 
 	// Description: Will set the title of the window.
@@ -151,7 +155,7 @@ public:
 		_window_title = new String(str);
 
 		if (!_inited) { return; }
-		Scaffold.WindowSetTitle(this, &_pfvars);
+		WindowSetTitle(this, &_pfvars);
 	}
 
 	Window nextWindow() {
@@ -174,7 +178,7 @@ public:
 				app._windowVisibleCount++;
 			}
 
-			Scaffold.WindowSetVisible(this, &_pfvars, bShow);
+			WindowSetVisible(this, &_pfvars, bShow);
 
 			// safe guard:
 			// fights off infection from ZOMBIE PROCESSES!!!
@@ -201,7 +205,7 @@ public:
 		_state = state;
 
 		if (_nextWindow !is null) {
-			Scaffold.WindowSetState(this, &_pfvars);
+			WindowSetState(this, &_pfvars);
 		}
 
 		onStateChange();
@@ -222,7 +226,7 @@ public:
 		_style = style;
 
 		if (_nextWindow !is null) {
-			Scaffold.WindowSetStyle(this, &_pfvars);
+			WindowSetStyle(this, &_pfvars);
 		}
 	}
 
@@ -282,7 +286,7 @@ public:
 
 		_inited = false;
 
-		Scaffold.WindowDestroy(this, &_pfvars);
+		WindowDestroy(this, &_pfvars);
 	}
 
 	// Description: This function will Size the window to fit a client area with the dimensions given by width and height.
@@ -293,7 +297,7 @@ public:
 		_height = height;
 
 		if (_inited) {
-			Scaffold.WindowRebound(this, &_pfvars);
+			WindowRebound(this, &_pfvars);
 		}
 
 		onResize();
@@ -307,7 +311,7 @@ public:
 		_y = y;
 
 		if (_inited) {
-			Scaffold.WindowReposition(this, &_pfvars);
+			WindowReposition(this, &_pfvars);
 		}
 
 		onMove();
@@ -315,17 +319,17 @@ public:
 
 	void ClientToScreen(ref int x, ref int y) {
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &_pfvars, x, y);
+		WindowClientToScreen(this, &_pfvars, x, y);
 	}
 
 	void ClientToScreen(ref Coord pt) {
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &_pfvars, pt);
+		WindowClientToScreen(this, &_pfvars, pt);
 	}
 
 	void ClientToScreen(ref Rect rt) {
 		if (_inited == false) { return; }
-		Scaffold.WindowClientToScreen(this, &_pfvars, rt);
+		WindowClientToScreen(this, &_pfvars, rt);
 	}
 
 	Window parent() {
@@ -353,7 +357,7 @@ public:
 		_numChildren++;
 
 		// create the window via platform calls
-		Scaffold.WindowCreate(this, &this._pfvars, window, window._pfvars);
+		WindowCreate(this, &this._pfvars, window, window._pfvars);
 
 		// create the window's view object
 		window.onInitialize();
@@ -419,7 +423,7 @@ public:
 		if (_view !is null) {
 			Graphics g = _view.lockDisplay();
 
-			Scaffold.WindowStartDraw(this, &_pfvars, _view, *_viewVars);
+			WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
 			Widget c = _firstControl;
 
@@ -431,7 +435,7 @@ public:
 				} while (c !is _firstControl)
 			}
 
-			Scaffold.WindowEndDraw(this, &_pfvars, _view, *_viewVars);
+			WindowEndDraw(this, &_pfvars, _view, *_viewVars);
 
 			_view.unlockDisplay();
 		}
@@ -509,7 +513,7 @@ public:
 			}
 
 			//change the cursor to reflect the new control
-			//Scaffold.ChangeCursor(window->captured_control->ctrl_info.ctrl_cursor);
+			//ChangeCursor(window->captured_control->ctrl_info.ctrl_cursor);
 
 
 		}	// no control that has captured the mouse input
@@ -538,7 +542,7 @@ public:
 			}
 
 			//change the cursor to reflect the new control
-			//Scaffold.ChangeCursor(index->ctrl_cursor);
+			//ChangeCursor(index->ctrl_cursor);
 
 			_last_control = control;
 
@@ -655,7 +659,7 @@ public:
 	}
 
 	void onResize() {
-		Scaffold.ViewResizeForWindow(_view, *_viewVars, this, &_pfvars);
+		ViewResizeForWindow(_view, *_viewVars, this, &_pfvars);
 
 		onDraw();
 	}
@@ -697,7 +701,7 @@ public:
 	// Description: This will set the current window color to a specific platform color.
 	// sysColor: The system color index to associate with the window.
 	void color(SystemColor clr) {
-		Scaffold.ColorGetSystemColor(_color, clr);
+		ColorGetSystemColor(_color, clr);
 	}
 
 	// Description: This will force a redraw of the entire window.
@@ -843,7 +847,7 @@ public:
 
 			// platform specific
 			MenuPlatformVars mnuVars = MenuGetPlatformVars(mnuMain);
-			Scaffold.WindowSetMenu(mnuMain, mnuVars, this, &_pfvars);
+			WindowSetMenu(mnuMain, mnuVars, this, &_pfvars);
 		}
 	}
 
@@ -884,7 +888,7 @@ protected:
 			return ret;
 
 			//change the cursor to reflect the new control
-			//Scaffold.ChangeCursor(index->ctrl_cursor);
+			//ChangeCursor(index->ctrl_cursor);
 		}
 
 		return false;
@@ -1051,7 +1055,7 @@ class WindowView : View {
 protected:
 
 	override void _platformCreate() {
-		Scaffold.ViewCreateForWindow(this, _pfvars, _window, _windowVars);
+		ViewCreateForWindow(this, _pfvars, _window, _windowVars);
 	}
 
 private:

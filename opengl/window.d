@@ -21,7 +21,8 @@ import opengl.gl;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.opengl;
 
 class GLWindow : Window
 {

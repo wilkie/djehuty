@@ -23,7 +23,8 @@ import gui.apploop;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.window;
 
 class GuiApplication : Application {
 public:
@@ -95,11 +96,11 @@ private:
 			_windowCount++;
 
 			// create the window through platform calls
-			Scaffold.WindowCreate(window, wpv);
+			WindowCreate(window, wpv);
 		}
 
 		if (window.visible) {
-			Scaffold.WindowSetVisible(window, wpv, true);
+			WindowSetVisible(window, wpv, true);
 		}
 	}
 

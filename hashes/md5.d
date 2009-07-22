@@ -19,8 +19,7 @@ import core.definitions;
 import hashes.digest;
 
 // Description: This class will compute a hash using the MD5 algorithm.
-class HashMD5
-{
+class HashMD5 {
 private:
 
 	static uint r[64] = [	7, 12, 17, 22, 7, 12, 17, 22,
@@ -61,8 +60,7 @@ private:
 static:
 public:
 
-	Digest hash(ubyte[] byteArray)
-	{
+	Digest hash(ubyte[] byteArray) {
 		int len = byteArray.length;
 
 	    int bufferLen = (((len+9)/64)+1)*64, i;
@@ -94,8 +92,7 @@ public:
 
 	    ubyte* bufferEnd = (&buffer[0]) + bufferLen;
 
-	    while(bufferptr != bufferEnd)
-	    {
+	    while(bufferptr != bufferEnd) {
 	        *bufferptr = cast(ubyte)(bitLen);
 
 	        bufferptr++;
@@ -106,29 +103,23 @@ public:
 	    dataEnd = cast(int*)bufferEnd;
 
 		// encode the data
-	    while(data != dataEnd)
-	    {
+	    while(data != dataEnd) {
 	        a = a0;
 	        b = b0;
 	        c = c0;
 	        d = d0;
 
-	        for(i=0; i<64; i++)
-	        {
-	            if(i<16)
-	            {
+	        for(i=0; i<64; i++) {
+	            if(i<16) {
 	                a += (b & c) | (~b & d);
 	            }
-	            else if(i<32)
-	            {
+	            else if(i<32) {
 	                a += (b & d) | (~d & c);
 	            }
-	            else if(i<48)
-	            {
+	            else if(i<48) {
 	                a += (b ^ c ^ d);
 	            }
-	            else
-	            {
+	            else {
 	                a += c ^ (~d | b);
 	            }
 
@@ -166,24 +157,21 @@ public:
 	// Description: This function will calculate the MD5 hash of a stream.
 	// stream: The stream to digest.
 	// Returns: A String representing the MD5 hash.
-	Digest hash(Stream stream)
-	{
+	Digest hash(Stream stream) {
 		return hash(stream.contents());
 	}
 
 	// Description: This function will calculate the MD5 hash of a UTF8 encoded string.
 	// utf8Message: The string to hash.
 	// Returns: A string representing the MD5 hash.
-	Digest hash(string utfMessage)
-	{
+	Digest hash(string utfMessage) {
 		return hash(cast(ubyte[])Unicode.toUtf8(utfMessage));
 	}
 
 	// Description: This function will calculate the MD5 hash of a string object.
 	// message: The string to hash.
 	// Returns: A string representing the MD5 hash.
-	Digest hash(String message)
-	{
+	Digest hash(String message) {
 		// for standard reasons, we convert to utf8
 		return hash(cast(ubyte[])(message.toUtf8()));
 	}

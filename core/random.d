@@ -17,7 +17,8 @@ module core.random;
 
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.time;
 
 // Description: This class represents a Random number generator.
 class Random {
@@ -32,7 +33,7 @@ class Random {
 	// seed: The seem to use with the generator.
 	void seed(long value) {
 		if (value < 0) {
-			value = Scaffold.TimeGet();
+			value = TimeGet();
 		}
 		_state = value;
 	}

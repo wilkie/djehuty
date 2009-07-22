@@ -3,7 +3,8 @@ module graphics.font;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import Scaffold = scaffold.graphics;
 
 import core.color;
 import core.string;

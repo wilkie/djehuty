@@ -13,37 +13,29 @@ module hashes.digest;
 import core.string;
 
 // Description: This class holds the computed digest from a hashing algorithm.
-class Digest
-{
-public:
-	this (uint[] newData...)
-	{
+class Digest {
+	this (uint[] newData...) {
 		data = newData.dup;
 	}
 
 	uint[] data;
 
-	String getString()
-	{
+	String getString() {
 		String ret = new String();
-		for(int i=0; i<data.length; i++)
-		{
+		for(int i=0; i<data.length; i++) {
 			ret.append("%.8x", data[i]);
 		}
 		return ret;
 	}
 
-	override char[] toString()
-	{
+	override char[] toString() {
 		return getString().toString();
 	}
 
 	// operator overloads
 
-	bool equals(Digest compareTo)
-	{
-		if (data == compareTo.data)
-		{
+	bool equals(Digest compareTo) {
+		if (data == compareTo.data) {
 			return true;
 		}
 
@@ -51,10 +43,8 @@ public:
 	}
 
 	// mathematical operator overloads
-	override int opEquals(Object o)
-	{
-		if (cast(Digest)o !is null)
-		{
+	override int opEquals(Object o) {
+		if (cast(Digest)o !is null) {
 			return equals(cast(Digest)o);
 		}
 		return 0;

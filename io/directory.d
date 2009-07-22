@@ -20,7 +20,8 @@ import io.console;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.directory;
 
 // Section: Core
 
@@ -67,7 +68,7 @@ class Directory
 	}
 
 	bool isDir(String _name) {
-		return Scaffold.DirectoryFileIsDir(_path ~ "/" ~ _name);
+		return DirectoryFileIsDir(_path ~ "/" ~ _name);
 	}
 
 	bool isDir(string _name) {
@@ -75,7 +76,7 @@ class Directory
 	}
 
 	void move(String path) {
-		if (Scaffold.DirectoryMove(_path, path ~ "/" ~ _name)) {
+		if (DirectoryMove(_path, path ~ "/" ~ _name)) {
 			_parent = new Directory(path);
 			_path = path ~ "/" ~ _name;
 		}
@@ -90,7 +91,7 @@ class Directory
 	}
 
 	void copy(String path) {
-		if (Scaffold.DirectoryCopy(_path, path)) {
+		if (DirectoryCopy(_path, path)) {
 			_parent = null;
 			_path = path;
 
@@ -144,7 +145,7 @@ class Directory
 		}
 		else {
 			// Change the _name of the directory (if possible)
-			Scaffold.DirectoryRename(_path, newName);
+			DirectoryRename(_path, newName);
 			_path = this.parent.path ~ "/" ~ newName;
 			_name = new String(newName);
 		}
@@ -222,7 +223,7 @@ class Directory
 	// Description: This function will return an array of filenames that are found within this directory.
 	// Returns: An array of filenames.
 	String[] list() {
-		return Scaffold.DirectoryList(_pfVars, _path);
+		return DirectoryList(_pfVars, _path);
 	}
 
 	bool opEquals(Directory d) {

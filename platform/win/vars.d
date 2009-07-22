@@ -10,8 +10,9 @@
 module platform.win.vars;
 
 import platform.win.common;
-import platform.win.scaffolds.opengl;
 import platform.win.main;
+
+import scaffold.opengl;
 
 import core.definitions;
 import core.stream;

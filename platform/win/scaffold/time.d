@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.time;
+module scaffold.time;
 
 import platform.win.common;
 import platform.win.definitions;

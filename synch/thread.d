@@ -3,19 +3,19 @@ module synch.thread;
 import gui.window;
 
 // Awww... my only runtime dependency
-version(LDC)
-{
+version(LDC) {
 	import Tango = tango.core.Thread;
 }
-else
-{
+else {
 	import Phobos = std.thread;
 }
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.thread;
+import scaffold.time;
 
 // access to exception handler
 import analyzing.debugger;
@@ -38,7 +38,7 @@ public:
 		stdThread = new overrideThread();
 		stdThread.thread = this;
 
-		startTime = time = Scaffold.TimeGet();
+		startTime = time = TimeGet();
 	}
 
 	// Description: Will create a thread using the given delegate as the callback function.
@@ -49,7 +49,7 @@ public:
 		stdThread = new overrideThread();
 		stdThread.thread = this;
 
-		startTime = time = Scaffold.TimeGet();
+		startTime = time = TimeGet();
 	}
 
 	// Description: Will create a thread using the given function as the callback function.
@@ -97,7 +97,7 @@ public:
 	// Returns: Will return true when this thread is the current thread executing and false otherwise.
 	bool isCurrentThread() {
 		if (_inited) {
-			return this is getCurrent(); //return Scaffold.ThreadIsCurrent(_pfvars);
+			return this is getCurrent(); //return ThreadIsCurrent(_pfvars);
 		}
 
 		return false;
@@ -108,7 +108,7 @@ public:
 	void sleep(ulong milliseconds) {
 		// we are given a long for length, windows only has an int function
 		if (_inited) {
-			Scaffold.ThreadSleep(_pfvars, milliseconds);
+			ThreadSleep(_pfvars, milliseconds);
 		}
 	}
 
@@ -116,9 +116,9 @@ public:
 	void start() {
 		if (!_inited) {
 			RegisterThread(this);
-			//Scaffold.ThreadStart(_pfvars, this);
+			//ThreadStart(_pfvars, this);
 
-			startTime = time = Scaffold.TimeGet();
+			startTime = time = TimeGet();
 
 			if (stdThread is null) {
 				stdThread = new overrideThread();
@@ -132,7 +132,7 @@ public:
 	// Description: This function will stop the thread prematurely.
 	void stop() {
 		if (_inited) {
-			//Scaffold.ThreadStop(_pfvars);
+			//ThreadStop(_pfvars);
 			stdThread = null;
 			UnregisterThread(this);
 		}
@@ -149,12 +149,12 @@ public:
 	}
 
 	uint getElapsed() {
-		return Scaffold.TimeGet() - time;
+		return TimeGet() - time;
 	}
 
 	uint getDelta() {
 		uint oldTime = time;
-		time = Scaffold.TimeGet();
+		time = TimeGet();
 
 		return time - oldTime;
 	}

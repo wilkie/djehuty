@@ -8,7 +8,8 @@
  *
  */
 
-module platform.win.scaffolds.wave;
+
+module scaffold.wave;
 
 import platform.win.vars;
 import platform.win.common;

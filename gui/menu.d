@@ -8,7 +8,9 @@ import io.console;
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.menu;
+import scaffold.window;
 
 // Section: Core/Resources
 
@@ -28,11 +30,11 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		Scaffold.MenuCreate(this, _pfvars);
+		MenuCreate(this, _pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			Scaffold.MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
 		}
 	}
 
@@ -47,11 +49,11 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		Scaffold.MenuCreate(this, _pfvars);
+		MenuCreate(this, _pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			Scaffold.MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
 		}
 	}
 
@@ -62,7 +64,7 @@ class Menu {
 		_subitems = null;
 
 		// platform specific destroy
-		Scaffold.MenuDestroy(this, _pfvars);
+		MenuDestroy(this, _pfvars);
 	}
 
 	// -- Methods -- //
@@ -101,7 +103,7 @@ class Menu {
 
 		_updateItem();
 
-		Scaffold.MenuAppend(this, inMenu, _pfvars, inMenu._pfvars);
+		MenuAppend(this, inMenu, _pfvars, inMenu._pfvars);
 	}
 
 
@@ -129,7 +131,7 @@ protected:
 		uint pos = 0;
 		foreach(sitm; _subitems) {
 			if (sitm is child) {
-				Scaffold.MenuUpdate(pos, this, child, _pfvars, child._pfvars);
+				MenuUpdate(pos, this, child, _pfvars, child._pfvars);
 			}
 			pos++;
 		}

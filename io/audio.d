@@ -19,7 +19,8 @@ import synch.semaphore;
 import platform.imports;
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.wave;
 
 // Section: Types
 
@@ -79,7 +80,7 @@ class Audio : Dispatcher {
 		scope(exit) _mutex.up();
 
 		_opened = true;
-		Scaffold.WaveOpenDevice(this, _pfvars, format);
+		WaveOpenDevice(this, _pfvars, format);
 	}
 
 	// Description: Closes an already opened device, stops playback, and frees any pending buffers.
@@ -89,7 +90,7 @@ class Audio : Dispatcher {
 
 		if (_opened)
 		{
-			Scaffold.WaveCloseDevice(this, _pfvars);
+			WaveCloseDevice(this, _pfvars);
 			_opened = false;
 		}
 	}
@@ -102,7 +103,7 @@ class Audio : Dispatcher {
 		scope(exit) _mutex.up();
 
 		if (_opened) {
-			Scaffold.WaveSendBuffer(this, _pfvars, waveBuffer, isLast);
+			WaveSendBuffer(this, _pfvars, waveBuffer, isLast);
 		}
 	}
 
@@ -112,7 +113,7 @@ class Audio : Dispatcher {
 		scope(exit) _mutex.up();
 
 		if (_opened) {
-			Scaffold.WaveResume(this, _pfvars);
+			WaveResume(this, _pfvars);
 		}
 	}
 
@@ -122,7 +123,7 @@ class Audio : Dispatcher {
 		scope(exit) _mutex.up();
 
 		if (_opened) {
-			Scaffold.WavePause(this, _pfvars);
+			WavePause(this, _pfvars);
 		}
 	}
 
@@ -130,12 +131,12 @@ class Audio : Dispatcher {
 		_mutex.down();
 		scope(exit) _mutex.up();
 
-		if (!Scaffold.WaveIsOpen(this, _pfvars)) {
+		if (!WaveIsOpen(this, _pfvars)) {
 			Time myTime = Time.init;
 			return myTime;
 		}
 
-		return Scaffold.WaveGetPosition(this, _pfvars);
+		return WaveGetPosition(this, _pfvars);
 	}
 
 protected:

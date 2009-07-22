@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.view;
+module scaffold.view;
 
 import platform.win.vars;
 import platform.win.common;

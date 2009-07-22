@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.graphics;
+module scaffold.graphics;
 
 import graphics.view;
 

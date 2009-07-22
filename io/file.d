@@ -16,7 +16,8 @@ import core.definitions;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.file;
 
 import io.directory;
 
@@ -66,14 +67,14 @@ public:
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, _name);
+        bool r = FileOpen(_pfvars, _name);
 
         if (!r) {
             return false;
         }
 
         // get file size
-        Scaffold.FileGetSize(_pfvars, _length);
+        FileGetSize(_pfvars, _length);
         _inited = true;
 
         return true;
@@ -89,14 +90,14 @@ public:
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.FileOpen(_pfvars, _name);
+        bool r = FileOpen(_pfvars, _name);
 
         if (!r) {
             return false;
         }
 
         // get file size
-        Scaffold.FileGetSize(_pfvars, _length);
+        FileGetSize(_pfvars, _length);
         _inited = true;
 
         return true;
@@ -105,7 +106,7 @@ public:
 	// Description: Will close the file.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
     void close() {
 		if (_inited) {
-	        Scaffold.FileClose(_pfvars);
+	        FileClose(_pfvars);
 	        _inited = false;
 	        _name = null;
 	    }
@@ -117,7 +118,7 @@ public:
 			return false;
 		}
 
-		Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
+		FileRead(_pfvars, cast(ubyte*)buffer, len);
 
 		_curpos += len;
 
@@ -141,7 +142,7 @@ public:
 
 		if (len == 0) { return 0; }
 
-		Scaffold.FileRead(_pfvars, cast(ubyte*)buffer, len);
+		FileRead(_pfvars, cast(ubyte*)buffer, len);
 
 		return len;
 	}
@@ -171,7 +172,7 @@ public:
 		//	return false;
 		//}
 
-		Scaffold.FileWrite(_pfvars, bytes, len);
+		FileWrite(_pfvars, bytes, len);
 
 		_curpos += len;
 
@@ -192,7 +193,7 @@ public:
 		//	return false;
 		//}
 
-		Scaffold.FileWrite(_pfvars, &buffer[0], len);
+		FileWrite(_pfvars, &buffer[0], len);
 
 		_curpos += len;
 
@@ -205,7 +206,7 @@ public:
 	override bool append(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
-		Scaffold.FileAppend(_pfvars, bytes, len);
+		FileAppend(_pfvars, bytes, len);
 
 		_length += len;
 		return true;
@@ -217,7 +218,7 @@ public:
 		ubyte buffer[] = new ubyte[len];
 
 		stream.read(&buffer[0], len);
-		Scaffold.FileAppend(_pfvars, &buffer[0], len);
+		FileAppend(_pfvars, &buffer[0], len);
 
 		_length += len;
 		return true;
@@ -234,7 +235,7 @@ public:
 		// set to start
 		_curpos = 0;
 
-		Scaffold.FileRewindAll(_pfvars);
+		FileRewindAll(_pfvars);
 	}
 
 	override bool rewind(ulong amount) {
@@ -243,7 +244,7 @@ public:
 		}
 
 		_curpos -= amount;
-		Scaffold.FileRewind(_pfvars, amount);
+		FileRewind(_pfvars, amount);
 
 		return true;
 	}
@@ -254,7 +255,7 @@ public:
 		}
 
 		_curpos -= amount;
-		Scaffold.FileRewind(_pfvars, amount);
+		FileRewind(_pfvars, amount);
 
 		return amount;
 	}
@@ -264,7 +265,7 @@ public:
 	override void skip() {
 		_curpos = _length;
 
-		Scaffold.FileSkipAll(_pfvars);
+		FileSkipAll(_pfvars);
 	}
 
 	override bool skip(ulong amount) {
@@ -273,7 +274,7 @@ public:
 		}
 
 		_curpos += amount;
-		Scaffold.FileSkip(_pfvars, amount);
+		FileSkip(_pfvars, amount);
 		return true;
 	}
 
@@ -285,7 +286,7 @@ public:
 		if (amount <= 0) { return 0; }
 
 		_curpos += amount;
-		Scaffold.FileSkip(_pfvars, amount);
+		FileSkip(_pfvars, amount);
 		return amount;
 	}
 
@@ -344,20 +345,20 @@ public:
 	}
 
 	void move(Directory destination) {
-		if (Scaffold.FileMove(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
+		if (FileMove(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
 			_path = destination;
 		}
 	}
 
 	void move(String destination) {
-		if (Scaffold.FileMove(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
+		if (FileMove(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
 			_path = new Directory(destination);
 		}
 	}
 
 	File copy(Directory destination) {
 		File ret;
-		if (Scaffold.FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
+		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
 			ret = new File(destination.path ~ "/" ~ _name);
 		}
 		return ret;
@@ -365,7 +366,7 @@ public:
 
 	File copy(String destination) {
 		File ret;
-		if (Scaffold.FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
+		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
 			ret = new File(destination ~ "/" ~ _name);
 		}
 		return ret;

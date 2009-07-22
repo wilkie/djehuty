@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.socket;
+module scaffold.socket;
 
 import platform.win.vars;
 import platform.win.common;

@@ -8,9 +8,9 @@
  *
  */
 
-module platform.win.scaffolds.window;
+module scaffold.window;
 
-import platform.win.scaffolds.system;
+import scaffold.system;
 
 import platform.win.vars;
 import platform.win.common;

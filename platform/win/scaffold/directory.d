@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.directory;
+module scaffold.directory;
 
 import platform.win.vars;
 import platform.win.common;

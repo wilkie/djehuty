@@ -13,7 +13,8 @@ import graphics.region;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.view;
 
 // Section: Core
 
@@ -68,7 +69,7 @@ public:
 		_height = height;
 
 		if (_inited) {
-			Scaffold.ViewResize(this, _pfvars);
+			ViewResize(this, _pfvars);
 		}
 
 		_mutex.up();
@@ -142,11 +143,11 @@ public:
 	}
 
 	uint rgbaTouint(uint r, uint g, uint b, uint a) {
-		return Scaffold.ViewRGBAToInt32(_forcenopremultiply,_pfvars,r,g,b,a);
+		return ViewRGBAToInt32(_forcenopremultiply,_pfvars,r,g,b,a);
 	}
 
 	uint rgbTouint(uint r, uint g, uint b) {
-		return Scaffold.ViewRGBAToInt32(_pfvars,r,g,b);
+		return ViewRGBAToInt32(_pfvars,r,g,b);
 	}
 
 protected:
@@ -169,7 +170,7 @@ protected:
 	Semaphore _mutex;
 
 	void _destroy() {
-		Scaffold.ViewDestroy(this, _pfvars);
+		ViewDestroy(this, _pfvars);
 
 		_inited = false;
 
@@ -178,7 +179,7 @@ protected:
 	}
 
 	void _platformCreate() {
-		Scaffold.ViewCreate(this, _pfvars);
+		ViewCreate(this, _pfvars);
 	}
 
 	// Retained Objects

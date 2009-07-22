@@ -8,12 +8,12 @@
  *
  */
 
-module platform.win.scaffolds.system;
+module scaffold.system;
 
 import platform.win.vars;
 import platform.win.common;
 
-import platform.win.scaffolds.directory;
+import scaffold.directory;
 
 import core.definitions;
 import core.string;

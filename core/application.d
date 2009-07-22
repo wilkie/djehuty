@@ -21,7 +21,6 @@ import core.definitions;
 import io.console;
 
 import platform.imports;
-mixin(PlatformScaffoldImport!());
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformGenericImport!("console"));
 mixin(PlatformGenericImport!("vars"));

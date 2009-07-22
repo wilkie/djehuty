@@ -17,7 +17,8 @@ import core.definitions;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.system;
 
 // Description: This class will allow runtime linking to dynamic libraries.
 class Library {
@@ -25,7 +26,7 @@ class Library {
 	// Description: This constructor will dynamically load the library found at the given framework path.
 	// path: The path to the library in question.
 	this(String path) {
-		Scaffold.SystemLoadLibrary(_pfvars, path);
+		SystemLoadLibrary(_pfvars, path);
 	}
 
 	// Description: This constructor will dynamically load the library found at the given framework path.
@@ -35,7 +36,7 @@ class Library {
 	}
 
 	~this() {
-		Scaffold.SystemFreeLibrary(_pfvars);
+		SystemFreeLibrary(_pfvars);
 	}
 
 protected:
@@ -49,7 +50,7 @@ protected:
 		}
 
 		// acquire the signature (or null)
-		void* signature = Scaffold.SystemLoadLibraryProc(_pfvars, new String(proc));
+		void* signature = SystemLoadLibraryProc(_pfvars, new String(proc));
 
 		// set in hash
 		_funcs[proc] = signature;
