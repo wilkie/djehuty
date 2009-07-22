@@ -20,9 +20,6 @@ import core.definitions;
 
 import io.console;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 import analyzing.debugger;
 
 // Description: This class represents the application instance.
