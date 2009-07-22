@@ -19,15 +19,11 @@ import hashes.digest;
 
 // ---------------------------------
 
-class HashSHA1
-{
+class HashSHA1 {
 static:
-private:
-
 public:
 
-	Digest hash(ubyte[] message)
-	{
+	Digest hash(ubyte[] message) {
 		//Note 1: All variables are unsigned 32 bits and wrap modulo 2^32 when calculating
 		//Note 2: All constants in this pseudo code are in big endian.
 		//Within each word, the most significant bit is stored in the leftmost bit position
@@ -49,8 +45,7 @@ public:
 		uint bufferLen = message.length + 9;
 
 		// minimum increase of 9, after that the message must be padded
-		if ((bufferLen % 64))
-		{
+		if ((bufferLen % 64)) {
 			padBytes = 64 - (cast(int)bufferLen % 64);
 			if (padBytes < 0)
 			{
@@ -71,17 +66,14 @@ public:
 		uint[80] words;
 
 		//Process the message in successive 512-bit chunks:
-		while (bufferPtr < bufferEnd)
-		{
+		while (bufferPtr < bufferEnd) {
 
 		    //Extend the sixteen 32-bit words into eighty 32-bit words:
 			int i;
-			for ( ; i<16; i++)
-			{
+			for ( ; i<16; i++) {
 				words[i] = FromBigEndian32(bufferPtr[i]);
 			}
-			for (i=0 ; i < 64; i++)
-			{
+			for (i=0 ; i < 64; i++) {
 				words[i+16] = (words[i+13] ^ words[i+8] ^ words[i+2] ^ words[i]);
 				words[i+16] = (words[i+16] << 1) | (words[i+16] >>> 31);
 		    }
@@ -99,8 +91,7 @@ public:
 
 	        k = (0x5A827999);
 
-			for (o = 0; o < 20; o++)
-			{
+			for (o = 0; o < 20; o++) {
 				f = (b & c) | (~b & d);
 
 	            temp = ((a << 5) | (a >>> 27)) + f + e + k + words[o];
@@ -114,8 +105,7 @@ public:
 
 			k = (0x6ED9EBA1);
 
-			for ( ; o < 40; o++)
-			{
+			for ( ; o < 40; o++) {
 				f = (b ^ c ^ d);
 
 	            temp = ((a << 5) | (a >>> 27)) + f + e + k + words[o];
@@ -129,8 +119,7 @@ public:
 
 	        k = (0x8F1BBCDC);
 
-		    for ( ; o < 60; o++)
-		    {
+		    for ( ; o < 60; o++) {
 				f = (b & c) | (b & d) | (c & d);
 
 	            temp = ((a << 5) | (a >>> 27)) + f + e + k + words[o];
@@ -144,8 +133,7 @@ public:
 
 			k = (0xCA62C1D6);
 
-			for ( ; o < 80; o++)
-			{
+			for ( ; o < 80; o++) {
 				f = (b ^ c ^ d);
 
 	            temp = ((a << 5) | (a >>> 27)) + f + e + k + words[o];
@@ -175,16 +163,14 @@ public:
 	// Description: This function will calculate the SHA-1 hash of a UTF8 encoded string.
 	// utf8Message: The string to hash.
 	// Returns: A string representing the SHA-1 hash.
-	Digest hash(string utf8Message)
-	{
+	Digest hash(string utf8Message) {
 		return hash(cast(ubyte[])utf8Message);
 	}
 
 	// Description: This function will calculate the SHA-1 hash of a string object.
 	// message: The string to hash.
 	// Returns: A string representing the SHA-1 hash.
-	Digest hash(String message)
-	{
+	Digest hash(String message) {
 		// for standard reasons, we convert to utf8
 		return hash(cast(ubyte[])(message.toUtf8()));
 	}
