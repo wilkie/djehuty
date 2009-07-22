@@ -2,7 +2,6 @@ module graphics.brush;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import Scaffold = scaffold.graphics;
 

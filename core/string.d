@@ -13,9 +13,6 @@ module core.string;
 // a class to encapsulate the expected string format for
 // the underlying OS platform in use
 
-import platform.imports;
-mixin(PlatformGenericImport!("definitions"));
-
 import core.definitions;
 import core.unicode;
 import core.format;

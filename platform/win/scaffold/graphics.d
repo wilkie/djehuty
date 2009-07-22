@@ -22,7 +22,6 @@ import graphics.region;
 
 import platform.win.main;
 import platform.win.common;
-import platform.win.definitions;
 import platform.win.vars;
 
 // Shapes

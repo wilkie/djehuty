@@ -10,8 +10,7 @@
 
 module core.definitions;
 
-import platform.imports;
-mixin(PlatformGenericPublicImport!("definitions"));
+public import platform.definitions;
 
 // String
 
