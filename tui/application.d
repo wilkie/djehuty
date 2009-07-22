@@ -1,12 +1,15 @@
 module tui.application;
 
 import tui.window;
+import tui.apploop; // Platform Specific Entry
 
 import core.application;
 import core.string;
 import core.event;
 import core.main;
 import core.definitions;
+
+import io.console;
 
 import platform.imports;
 mixin(PlatformGenericImport!("console"));
@@ -17,6 +20,7 @@ public:
 
 	this() {
 		super();
+		_appController = new TuiApplicationController();
 	}
 
 	this(String appName) {
@@ -39,20 +43,29 @@ public:
 		return _curConsoleWindow;
 	}
 
+	override bool isZombie() {
+		return (_curConsoleWindow is null);
+	}
+
 protected:
 
 	package TuiWindow _curConsoleWindow;
 
+	override void start() {
+		_appController.start();
+	}
+
+	override void end(uint exitCode) {
+		if (_appController !is null) {
+			_appController.end(exitCode);
+		}
+	}
+
 private:
 
+	TuiApplicationController _appController;
+
 	void setWindow(TuiWindow window) {
-		if (!_inited) {
-			ConsoleInit();
-
-			Djehuty._console_inited = true;
-			_inited = true;
-		}
-
 		_curConsoleWindow = window;
 
 		// Draw Window

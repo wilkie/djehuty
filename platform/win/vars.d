@@ -112,7 +112,7 @@ struct WindowPlatformVars
 		}
 
 		oldTitle.appendChar('\0');
-		hWnd = CreateWindowExW(iexstyle, djehutyClassName.ptr,oldTitle.ptr, istyle,// | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle,// | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 			oldX, oldY, oldWidth, oldHeight, null,
 			cast(HMENU) null, null, cast(void*)userData);
 
@@ -210,7 +210,7 @@ struct WindowPlatformVars
 		}
 
 		oldTitle.appendChar('\0');
-		hWnd = CreateWindowExW(0, djehutyClassName.ptr,oldTitle.ptr, istyle ,
+		hWnd = CreateWindowExW(0, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle ,
 			oldX, oldY, oldWidth, oldHeight, null,
 			cast(HMENU) null, null, cast(void*)userData);
 

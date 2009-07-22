@@ -14,7 +14,7 @@ import core.string;
 import core.stream;
 import core.definitions;
 
-import graphics.view;
+import graphics.bitmap;
 
 import io.file;
 import io.console;
@@ -49,7 +49,7 @@ public:
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(String filename) {
 		FileReader f = new FileReader();
-		_view = new View();
+		_view = new Bitmap();
 
 		if (f.open(filename) == false) {
 			return false;
@@ -63,7 +63,7 @@ public:
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(string filename) {
 		FileReader f = new FileReader();
-		_view = new View();
+		_view = new Bitmap();
 
 		if (f.open(filename) == false) {
 			return false;
@@ -81,31 +81,31 @@ public:
 
 	// Description: Will return the width of the loaded image.
 	// Returns: The width of the image.
-	uint getWidth() {
-		return _view.getWidth();
+	uint width() {
+		return _view.width;
 	}
 
 	// Description: Will return the height of the loaded image.
 	// Returns: The height of the image.
-	uint getHeight() {
-		return _view.getHeight();
+	uint height() {
+		return _view.height;
 	}
 
 	// Description: This function will return the view object associated with this image.
 	// Returns: A View object.
-	View getView() {
+	Bitmap view() {
 		return _view;
 	}
 
 	// Description: This function will return the currently used ImageCodec, if available.
 	// Returns: The ImageCodec being used.
-	ImageCodec getCodec() {
+	ImageCodec codec() {
 		return _curCodec;
 	}
 
 protected:
 
-	View _view;
+	Bitmap _view;
 
 	bool _hasMultipleFrames;
 	ImageFrameDescription _imageFrameDesc;
@@ -117,7 +117,7 @@ protected:
 	StreamData _stream(Stream stream) {
 		StreamData ret = StreamData.Invalid;
 
-		_view = new View();
+		_view = new Bitmap();
 
 		if (_curCodec is null) {
 			ret = runAllCodecs(_curCodec, stream, _view);

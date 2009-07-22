@@ -18,6 +18,9 @@ import core.event;
 import gui.widget;
 import gui.window;
 
+// Platform Specific application entry
+import gui.apploop;
+
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformScaffoldImport!());
@@ -26,6 +29,11 @@ class GuiApplication : Application {
 public:
 
 	// Constructors
+
+	this() {
+		super();
+		_appController = new GuiApplicationController();
+	}
 
 	override void push(Dispatcher dsp) {
 		if (cast(Window)dsp !is null) {
@@ -62,11 +70,22 @@ protected:
 	package int _windowCount;
 	package int _windowVisibleCount;
 
+	override void start() {
+		_appController.start();
+	}
+
+	override void end(uint exitCode) {
+		_appController.end(exitCode);
+	}
+
 private:
+
+	GuiApplicationController _appController;
+
 	// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
 	// window: An instance of a Window class, or any the inherit from Window.
 	void addWindow(Window window) {
-		WindowPlatformVars* wpv = window.windowHelper.getPlatformVars();
+		WindowPlatformVars* wpv = &window._pfvars;
 
 		synchronized {
 			// update the window linked list
@@ -76,11 +95,11 @@ private:
 			_windowCount++;
 
 			// create the window through platform calls
-			Scaffold.WindowCreate(window, window.windowHelper);
+			Scaffold.WindowCreate(window, wpv);
 		}
 
 		if (window.visible) {
-			Scaffold.WindowSetVisible(window, window.windowHelper, true);
+			Scaffold.WindowSetVisible(window, wpv, true);
 		}
 	}
 

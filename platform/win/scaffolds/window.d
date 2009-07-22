@@ -30,10 +30,8 @@ import opengl.window;
 import synch.thread;
 
 // all windows
-void WindowCreate(ref Window window, WindowHelper windowHelper)
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
-
 	windowVars.oldWidth = window.width;
 	windowVars.oldHeight = window.height;
 
@@ -42,7 +40,7 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 
 	windowVars.oldTitle = window.text;
 
-	windowVars.userData = cast(void*)windowHelper;
+	windowVars.userData = cast(void*)window;
 
 	_ClientSizeToWindowSize(window, windowVars.oldWidth, windowVars.oldHeight);
 
@@ -73,19 +71,19 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
 }
 
-void WindowCreate(ref Window parent, WindowHelper parentHelper, ref Window window, WindowHelper windowHelper)
+void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars)
 {
 	/*
 	int width, height, x, y;
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width();
+	height = window.height();
 
 	x = window.getX();
 	y = window.getY();
 
-	width = window.getWidth();
-	height = window.getHeight();
+	width = window.width();
+	height = window.height();
 
 	_ClientSizeToWindowSize(window, width, height);
 
@@ -111,10 +109,8 @@ void WindowCreate(ref Window parent, WindowHelper parentHelper, ref Window windo
 	*/
 }
 
-void WindowSetStyle(ref Window window, WindowHelper windowHelper)
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	bool wasMaximized = false;
 
 	if (window.state == WindowState.Maximized)
@@ -154,17 +150,13 @@ void WindowSetStyle(ref Window window, WindowHelper windowHelper)
 	}
 }
 
-void WindowReposition(ref Window window, WindowHelper windowHelper)
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	SetWindowPos(windowVars.hWnd, null, window.x,window.y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
-void WindowSetState(ref Window window, WindowHelper windowHelper)
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	if (window.state == WindowState.Fullscreen)
 	{
 		windowVars.oldX = window.x;
@@ -187,11 +179,6 @@ void WindowSetState(ref Window window, WindowHelper windowHelper)
 
 		SetWindowPos(windowVars.hWnd, null, 0,0, SystemGetDisplayWidth(SystemGetPrimaryDisplay()), SystemGetDisplayHeight(SystemGetPrimaryDisplay()), SWP_NOOWNERZORDER | SWP_NOZORDER);
 
-		windowHelper.setWindowX(0);
-		windowHelper.setWindowY(0);
-		windowHelper.setWindowWidth(1280);
-		windowHelper.setWindowHeight(1024);
-
 		SetWindowRgn(windowVars.hWnd, null, true);
 
 		if (window.visible)
@@ -207,11 +194,6 @@ void WindowSetState(ref Window window, WindowHelper windowHelper)
 		{
 			SetWindowLongW(windowVars.hWnd, GWL_STYLE, windowVars.oldStyle);
 			SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, windowVars.oldExStyle);
-
-			windowHelper.setWindowX(windowVars.oldX);
-			windowHelper.setWindowY(windowVars.oldY);
-			windowHelper.setWindowWidth(windowVars.oldWidth);
-			windowHelper.setWindowHeight(windowVars.oldHeight);
 
 			int width, height;
 			width = window.width;
@@ -322,10 +304,8 @@ void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 	}
 }
 
-void WindowRebound(ref Window window, WindowHelper windowHelper)
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	int width, height;
 
 	width = window.width;
@@ -337,17 +317,13 @@ void WindowRebound(ref Window window, WindowHelper windowHelper)
 	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER);
 }
 
-void WindowDestroy(ref Window window, WindowHelper windowHelper)
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	PostMessageW(windowVars.hWnd, WM_CLOSE, 0,0);
 }
 
-void WindowSetVisible(ref Window window, WindowHelper windowHelper, bool bShow)
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	if (bShow)
 	{
 		ShowWindow(windowVars.hWnd, SW_SHOW);
@@ -358,10 +334,8 @@ void WindowSetVisible(ref Window window, WindowHelper windowHelper, bool bShow)
 	}
 }
 
-void WindowSetTitle(ref Window window, WindowHelper windowHelper)
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	String s = new String(window.text);
 	s.appendChar('\0');
 	SetWindowTextW(windowVars.hWnd, cast(wchar*)s.ptr);
@@ -372,27 +346,21 @@ void WindowSetTitle(ref Window window, WindowHelper windowHelper)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref int x, ref int y)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	Coord pt = {x,y};
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
 	x = pt.x;
 	y = pt.y;
 }
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Coord pt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
 }
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect rt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 // could optimize by directly accessing a point worth from the rect
 	Coord pt = {rt.left,rt.top};
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
@@ -406,16 +374,14 @@ void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	RECT rt;
 
 	rt.left = 0;
 	rt.top = 0;
-	rt.right = view.getWidth();
-	rt.bottom = view.getHeight();
+	rt.right = view.width();
+	rt.bottom = view.height();
 
 	//draw background
 	windowVars.brsh = CreateSolidBrush(ColorGetValue(window.color));
@@ -439,10 +405,8 @@ void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref WindowVie
 	//window->_view._graphics.SetTextModeTransparent();
 }
 
-void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
+void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	//window->_view._graphics.DestroyFont(window->_pfvars.fnt);
 
 	DeleteObject(windowVars.pen);
@@ -451,21 +415,19 @@ void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref WindowView 
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
 
-	BitBlt(hdc, 0, 0, view.getWidth(), view.getHeight(), viewVars.dc, 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
 
 	ReleaseDC(windowVars.hWnd, hdc);
 }
 
-void WindowCaptureMouse(ref Window window, WindowHelper windowHelper)
+void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
+	const int WM_MOUSECAPTURE = 0xffff;
 
 	SendMessageW(windowVars.hWnd, WM_MOUSECAPTURE, 0, 0);
 }
 
-void WindowReleaseMouse(ref Window window, WindowHelper windowHelper)
+void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars;
-
 	ReleaseCapture();
 }

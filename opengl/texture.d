@@ -16,7 +16,7 @@ import core.definitions;
 
 import resource.image;
 
-import graphics.view;
+import graphics.bitmap;
 
 // Section: OpenGL
 
@@ -31,7 +31,7 @@ class Texture {
 
 		_img.load(filename);
 
-		View view = _img.getView();
+		Bitmap view = _img.view;
 
 		void* bytes;
 		ulong len;
@@ -45,13 +45,13 @@ class Texture {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _img.getWidth(), _img.getHeight(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bytes);
+	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _img.width, _img.height, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bytes);
 
 		_frows = frameRows;
 		_fcols = frameCols;
 
-		_fw = _img.getWidth() / _fcols;
-		_fh = _img.getHeight() / _frows;
+		_fw = _img.width / _fcols;
+		_fh = _img.height / _frows;
 	}
 
 	// Properties
@@ -59,13 +59,13 @@ class Texture {
 	// Description: This function will return the texture's width.
 	// Returns: The width of the texture.
 	int width() {
-		return _img.getWidth();
+		return _img.width;
 	}
 
 	// Description: This function will return the texture's height.
 	// Returns: The height of the texture.
 	int height() {
-		return _img.getHeight();
+		return _img.height;
 	}
 
 	// Description: This function will return the number of frames that are contained in this texture.

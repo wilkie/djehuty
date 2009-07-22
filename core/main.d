@@ -19,68 +19,20 @@ import io.console;
 import synch.semaphore;
 import synch.thread;
 
+import gui.apploop;
+import tui.apploop;
+
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
 mixin(PlatformScaffoldImport!());
 
-void DjehutyStart() {
-	// Can only start the framework once
-	if (!Djehuty._hasStarted) {
-		Djehuty._hasStarted = true;
-	}
-	else {
-		throw new Exception("Framework Already Started");
-	}
-
-	// Constitute the main thread class
-	ThreadModuleInit();
-
-	// Check to make sure the app provided a suitable class to use
-	if (Djehuty.app is null) {
-		throw new Exception("No Application Class");
-	}
-	else
-	{
-		Djehuty.app.arguments = Arguments.instance;
-		Djehuty.app.onApplicationStart();
-	}
-
-	// Start the application proper (from platform's point of view)
-	Scaffold.AppStart();
-
-	// If no event controllers are in play, then end
-	if (Djehuty.app.isZombie() && Djehuty._console_inited == false) {
-		DjehutyEnd();
-	}
-}
-
-void DjehutyEnd(uint code = 0) {
-	// Tell all running threads that they should end to allow shutdown to commense
-	if (Djehuty._threads !is null) {
-		Djehuty._threadRegisterSemaphore.down();
-
-		foreach(th; Djehuty._threads) {
-			th.pleaseStop();
-		}
-
-		Djehuty._threadRegisterSemaphore.up();
-	}
-
-	Djehuty.app.onApplicationEnd();
-
-	// End the application proper (from the platform's point of view)
-	Scaffold.AppEnd(code);
-
-	Console.setColor(fgColor.White, bgColor.Black);
-}
-
 // Section: Core
 
 // Description: This class is the main class for the framework. It provides base functionality.
 class Djehuty {
-	static:
-	public:
+static:
+public:
 
 	void setApplication(Application application) {
 		if (app !is null) {
@@ -89,9 +41,58 @@ class Djehuty {
 
 		app = application;
 	}
+	
+	void start() {
+		// Can only start the framework once
+		if (!_hasStarted) {
+			_hasStarted = true;
+		}
+		else {
+			throw new Exception("Framework Already Started");
+		}
+	
+		// Constitute the main thread class
+		ThreadModuleInit();
 
-	private:
-		bool _console_inited = false;
+		// Check to make sure the app provided a suitable class to use
+		if (app is null) {
+			throw new Exception("No Application Class");
+		}
+		else {
+			app.arguments = Arguments.instance;
+			app.onApplicationStart();
+		}
+	
+		// If no event controllers are in play, then end
+		if (app.isZombie) {
+			end(0);
+		}
+		else {
+			app.onPostApplicationStart();
+		}
+	}
+
+	void end(uint code = 0) {
+		// Tell all running threads that they should end to allow shutdown to commense
+		if (_threads !is null) {
+			_threadRegisterSemaphore.down();
+
+			foreach(th; _threads) {
+				th.pleaseStop();
+			}
+
+			_threadRegisterSemaphore.up();
+		}
+
+		if (app !is null) {
+			app.onApplicationEnd();
+			app.onPostApplicationEnd(code);
+		}
+
+		Console.setColor(fgColor.White, bgColor.Black);
+	}
+
+private:
 
 		bool _hasStarted = false;
 
@@ -102,8 +103,7 @@ class Djehuty {
 		Application app;
 }
 
-void RegisterThread(ref Thread thread)
-{
+void RegisterThread(ref Thread thread) {
 	if (Djehuty._threadRegisterSemaphore is null) {
 		Djehuty._threadRegisterSemaphore = new Semaphore(1);
 	}

@@ -334,7 +334,6 @@ protected:
 private:
 
 	package Window _window = null;
-	package WindowHelper _windowHelper;
 
 	package AbstractContainer _container = null;
 

@@ -63,10 +63,10 @@ void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatform
 	}
 }
 
-void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, ref WindowHelper windowHelper)
+void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, WindowPlatformVars* windowVars)
 {
-	SetMenu(windowHelper.getPlatformVars().hWnd, mnuVars.hMenu);
+	SetMenu(windowVars.hWnd, mnuVars.hMenu);
 
 	// resize to adapt client area
-	WindowRebound(wnd,windowHelper);
+	WindowRebound(wnd,windowVars);
 }

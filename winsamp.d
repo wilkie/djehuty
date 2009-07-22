@@ -29,6 +29,8 @@ import hashes.md5;
 
 import specs.test;
 
+import gui.osbutton;
+
 /*class MyControl : Widget {
 
 	this() {
@@ -93,7 +95,7 @@ import tui.textfield;
 import core.application;
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+//	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -149,13 +151,24 @@ private:
 	TuiTextField tuitext;
 }
 
-/*class MyApp : GuiApplication {
+class MyWindow : Window {
+	this() {
+		super("hey",WindowStyle.Fixed,Color.Red,0,0,300,300);
+	}
+	
+	override void onAdd() {
+		push(new OSButton(0,0,100,50,"yo"));
+	}
+}
+
+class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
-		wnd.setVisibility(true);
+		wnd.visible = true;
+
 		push(wnd);
 	}
 
@@ -164,4 +177,4 @@ private:
 
 private:
 	MyWindow wnd;
-}*/
+}

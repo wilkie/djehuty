@@ -1,6 +1,6 @@
 module codecs.image.all;
 
-import graphics.view;
+import graphics.bitmap;
 
 import core.literals;
 import core.string;
@@ -20,7 +20,7 @@ public import codecs.image.jpeg;
 // PCX
 // RAW
 
-StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref View view) {
+StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref Bitmap view) {
 	StreamData ret;
 
 	ulong pos = stream.position;

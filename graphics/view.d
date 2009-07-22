@@ -20,16 +20,17 @@ mixin(PlatformScaffoldImport!());
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
 class View {
 public:
-
-
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
 		_mutex = new Semaphore;
-		_buffer_mutex = new Semaphore;
 
 		_inited = false;
 		_mutex.init(1);
-		_buffer_mutex.init(1);
+
+		_graphics = new Graphics();
+
+		_graphics._view = this;
+		_graphics._viewVars = &_pfvars;
 	}
 
 	~this() {
@@ -47,43 +48,10 @@ public:
 
 		_mutex.down();
 
-		_graphics = new Graphics();
-
-		_graphics._view = this;
-		_graphics._viewVars = &_pfvars;
-
-		_isDIB = false;
-
 		_width = width;
 		_height = height;
 
 		_platformCreate();
-
-		_fromWindow = false;
-
-		_inited = true;
-
-		_mutex.up();
-	}
-
-	void CreateDIB(int width, int height) {
-		if (_inited) { destroy(); }
-
-		_mutex.down();
-
-		_graphics = new Graphics();
-
-		_graphics._view = this;
-		_graphics._viewVars = &_pfvars;
-
-		_isDIB = true;
-
-		_width = width;
-		_height = height;
-
-		Scaffold.ViewCreateDIB(this, _pfvars);
-
-		_fromWindow = false;
 
 		_inited = true;
 
@@ -122,13 +90,13 @@ public:
 
 	// Description: Will return the width of the drawing canvas.
 	// Returns: The width of the canvas.
-	int getWidth() {
+	int width() {
 		return _width;
 	}
 
 	// Description: Will return the height of the drawing canvas.
 	// Returns: The height of the canvas.
-	int getHeight() {
+	int height() {
 		return _height;
 	}
 
@@ -165,27 +133,14 @@ public:
 
 	// Description: Will allow an alpha channel to display on a canvas.
 	// isAlpha: Whether or not the canvas should be considered to have an alpha channel.
-	void setAlphaFlag(bool isAlpha) {
+	void alpha(bool isAlpha) {
 		_hasAlpha = isAlpha;
 	}
 
 	// Description: Will return the status of the view and whether it has a working alpha channel.
 	// Returns: The flag that is marked in order to use an alpha channel.
-	bool getAlphaFlag() {
+	bool alpha() {
 		return _hasAlpha;
-	}
-
-	void* getBufferUnsafe() {
-		return Scaffold.ViewGetBytes(_pfvars);
-	}
-
-	void lockBuffer(void** bufferPtr, ref ulong length) {
-		_buffer_mutex.down();
-		bufferPtr[0] = Scaffold.ViewGetBytes(_pfvars, length);
-	}
-
-	void unlockBuffer() {
-		_buffer_mutex.up();
 	}
 
 	uint rgbaTouint(uint r, uint g, uint b, uint a) {
@@ -209,9 +164,6 @@ protected:
 
 	package ViewPlatformVars _pfvars;
 
-	bool _fromWindow = false;
-	Window _window;
-
 	bool _inited = false;
 
 	package bool _locked = false;
@@ -221,20 +173,16 @@ protected:
 
 	bool _hasAlpha = false;
 
-	bool _isDIB = false;
 	bool _forcenopremultiply = false;
 
 	package Graphics _graphics = null;
 
 	Semaphore _mutex;
-	Semaphore _buffer_mutex;
 
 	void _destroy() {
 		Scaffold.ViewDestroy(this, _pfvars);
 
 		_inited = false;
-
-		_isDIB = false;
 
 		_width = 0;
 		_height = 0;
@@ -251,15 +199,3 @@ protected:
 	package Brush _brush;
 	package Pen _pen;
 }
-
-bool ViewIsDIB(ref View view) {
-    return view._isDIB;
-}
-
-bool ViewIsFromWindow(ref View view) {
-	return view._fromWindow;
-}
-
-//void ViewSetPen(ref View view, ref Pen pen)
-//{
-//}
