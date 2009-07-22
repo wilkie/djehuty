@@ -14,7 +14,8 @@ import core.definitions;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.graphics;
 
 class Region {
 

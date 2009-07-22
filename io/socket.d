@@ -7,7 +7,8 @@ import core.definitions;
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
 mixin(PlatformGenericImport!("definitions"));
-mixin(PlatformScaffoldImport!());
+
+import scaffold.socket;
 
 // Section: Core/Streams
 
@@ -37,7 +38,7 @@ class Socket : Stream {
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.SocketOpen(_pfvars, _hostname, port);
+        bool r = SocketOpen(_pfvars, _hostname, port);
 
         if (!r) {
             return false;
@@ -58,7 +59,7 @@ class Socket : Stream {
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.SocketOpen(_pfvars, _hostname, port);
+        bool r = SocketOpen(_pfvars, _hostname, port);
 
         if (!r) {
             return false;
@@ -78,7 +79,7 @@ class Socket : Stream {
 
         _pos = null;
         _curpos = 0;
-        bool r = Scaffold.SocketBind(_pfvars, port);
+        bool r = SocketBind(_pfvars, port);
 
         if (!r) {
             return false;
@@ -92,19 +93,19 @@ class Socket : Stream {
 	// Description: Will listen to a binded port.  Use bind() prior to this.  It will not return until a connection is requested from a client.
 	// Returns: Will return false on failure.
     bool listen() {
-		return Scaffold.SocketListen(_pfvars);
+		return SocketListen(_pfvars);
     }
 
 	// Description: Will accept a connection request from a client.  Do this after returning from a Listen() call without failure.
 	// Returns: Will return false on failure.
     bool accept() {
-		return Scaffold.SocketAccept(_pfvars);
+		return SocketAccept(_pfvars);
     }
 
 	// Description: Will close the connection, if open.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
     void close() {
 		if (_inited) {
-	        Scaffold.SocketClose(_pfvars);
+	        SocketClose(_pfvars);
 
 	        _inited = false;
 	        _hostname = null;
@@ -114,7 +115,7 @@ class Socket : Stream {
 
     // read
 	override bool read(void* buffer, uint len) {
-		return Scaffold.SocketRead(_pfvars, cast(ubyte*)buffer, len);
+		return SocketRead(_pfvars, cast(ubyte*)buffer, len);
 	}
 
 	override bool read(Stream stream, uint len) {
@@ -132,7 +133,7 @@ class Socket : Stream {
 	override ulong readAny(void* buffer, uint len) {
 		if (len == 0) { return 0; }
 
-		return Scaffold.SocketReadAvailable(_pfvars, cast(ubyte*)buffer, len);
+		return SocketReadAvailable(_pfvars, cast(ubyte*)buffer, len);
 	}
 
 	override ulong readAny(Stream stream, uint len) {
@@ -140,7 +141,7 @@ class Socket : Stream {
 
 		ubyte buffer[] = new ubyte[len];
 
-		len = cast(uint)Scaffold.SocketReadAvailable(_pfvars, buffer.ptr, len);
+		len = cast(uint)SocketReadAvailable(_pfvars, buffer.ptr, len);
 
 		if (len != 0) {
 			stream.write(buffer.ptr, len);
@@ -156,7 +157,7 @@ class Socket : Stream {
 	override bool write(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
-		Scaffold.SocketWrite(_pfvars, bytes, len);
+		SocketWrite(_pfvars, bytes, len);
 
 		return true;
 	}
@@ -167,7 +168,7 @@ class Socket : Stream {
 		ubyte buffer[] = new ubyte[len];
 
 		stream.read(&buffer[0], len);
-		Scaffold.SocketWrite(_pfvars, &buffer[0], len);
+		SocketWrite(_pfvars, &buffer[0], len);
 
 		return true;
 	}
@@ -179,7 +180,7 @@ class Socket : Stream {
 	override bool append(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
-		Scaffold.SocketWrite(_pfvars, bytes, len);
+		SocketWrite(_pfvars, bytes, len);
 
 		return true;
 	}
@@ -190,7 +191,7 @@ class Socket : Stream {
 		ubyte buffer[] = new ubyte[len];
 
 		stream.read(&buffer[0], len);
-		Scaffold.SocketWrite(_pfvars, &buffer[0], len);
+		SocketWrite(_pfvars, &buffer[0], len);
 
 		return true;
 	}

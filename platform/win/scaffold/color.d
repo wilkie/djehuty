@@ -7,7 +7,7 @@
  *
  */
 
-module platform.win.scaffolds.color;
+module scaffold.color;
 
 import platform.win.vars;
 import platform.win.common;

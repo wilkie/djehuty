@@ -24,7 +24,8 @@ public import graphics.region;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformScaffoldImport!());
+
+import Scaffold = scaffold.graphics;
 
 // Section: Core
 

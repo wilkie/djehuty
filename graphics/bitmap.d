@@ -16,6 +16,8 @@ import graphics.graphics;
 
 import synch.semaphore;
 
+import scaffold.view;
+
 class Bitmap : View {
 	this() {
 		super();
@@ -32,7 +34,7 @@ class Bitmap : View {
 		_width = width;
 		_height = height;
 
-		Scaffold.ViewCreateDIB(this, _pfvars);
+		ViewCreateDIB(this, _pfvars);
 
 		_inited = true;
 
@@ -40,12 +42,12 @@ class Bitmap : View {
 	}
 
 	void* getBufferUnsafe() {
-		return Scaffold.ViewGetBytes(_pfvars);
+		return ViewGetBytes(_pfvars);
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		_buffer_mutex.down();
-		bufferPtr[0] = Scaffold.ViewGetBytes(_pfvars, length);
+		bufferPtr[0] = ViewGetBytes(_pfvars, length);
 	}
 
 	void unlockBuffer() {

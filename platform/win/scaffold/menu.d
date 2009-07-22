@@ -8,9 +8,10 @@
  *
  */
 
-module platform.win.scaffolds.menu;
+module scaffold.menu;
 
-import platform.win.scaffolds.window;
+import scaffold.window;
+
 import platform.win.vars;
 import platform.win.common;
 import platform.win.main;

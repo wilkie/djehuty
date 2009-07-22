@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.thread;
+module scaffold.thread;
 
 import core.main;
 import core.definitions;

@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.scaffolds.opengl;
+module scaffold.opengl;
 
 import opengl.gl;
 import opengl.window;

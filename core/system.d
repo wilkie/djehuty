@@ -8,8 +8,8 @@
 
 module core.system;
 
-import platform.imports;
-mixin(PlatformScaffoldImport!());
+import scaffold.system;
+import scaffold.directory;
 
 import io.directory;
 
@@ -23,19 +23,19 @@ class System {
 		public:
 
 		uint count() {
-			return Scaffold.SystemGetDisplayCount();
+			return SystemGetDisplayCount();
 		}
 
 		uint primary() {
-			return Scaffold.SystemGetPrimaryDisplay();
+			return SystemGetPrimaryDisplay();
 		}
 
 		int width(uint index) {
-			return Scaffold.SystemGetDisplayWidth(index);
+			return SystemGetDisplayWidth(index);
 		}
 
 		int height(uint index) {
-			return Scaffold.SystemGetDisplayHeight(index);
+			return SystemGetDisplayHeight(index);
 		}
 	}
 
@@ -44,11 +44,11 @@ class System {
 		public:
 
 		int width() {
-			return Scaffold.SystemGetDisplayWidth(Displays.primary);
+			return SystemGetDisplayWidth(Displays.primary);
 		}
 
 		int height() {
-			return Scaffold.SystemGetDisplayHeight(Displays.primary);
+			return SystemGetDisplayHeight(Displays.primary);
 		}
 	}
 
@@ -57,11 +57,11 @@ class System {
 		public:
 
 		ulong total() {
-			return Scaffold.SystemGetTotalMemory();
+			return SystemGetTotalMemory();
 		}
 
 		ulong available() {
-			return Scaffold.SystemGetAvailableMemory();
+			return SystemGetAvailableMemory();
 		}
 	}
 
@@ -72,37 +72,37 @@ class System {
 		// Description: This function will return the Directory representing the current directory.
 		// Returns: The Directory representing the working directory.
 		Directory currentDir() {
-			return new Directory(Scaffold.DirectoryGetCWD());
+			return new Directory(DirectoryGetCWD());
 		}
 
 		// Description: This function will return the Directory representing the directory the executable is located in. It should not be relied on completely, as this information can be incorrect or non-existent.
 		// Returns: The Directory representing the executable location.
 		Directory applicationDir() {
-			return new Directory(Scaffold.DirectoryGetApp());
+			return new Directory(DirectoryGetApp());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory tempDir() {
-			return new Directory(Scaffold.DirectoryGetTempData());
+			return new Directory(DirectoryGetTempData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory appDataDir() {
-			return new Directory(Scaffold.DirectoryGetAppData());
+			return new Directory(DirectoryGetAppData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory userDataDir() {
-			return new Directory(Scaffold.DirectoryGetUserData());
+			return new Directory(DirectoryGetUserData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory binaryDir() {
-			return new Directory(Scaffold.DirectoryGetBinary());
+			return new Directory(DirectoryGetBinary());
 		}
 	}
 }

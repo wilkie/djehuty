@@ -7,7 +7,7 @@
  *
  */
 
-module platform.win.scaffolds.file;
+module scaffold.file;
 
 import platform.win.vars;
 import platform.win.common;
@@ -221,4 +221,3 @@ void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
 	file.rewind();
 	file.skip(pos);*/
 }
-
