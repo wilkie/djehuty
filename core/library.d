@@ -14,8 +14,7 @@ module core.library;
 import core.string;
 import core.definitions;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.library;
 
 import scaffold.system;
 

@@ -12,9 +12,11 @@ module scaffold.menu;
 
 import scaffold.window;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.menu;
+import platform.vars.window;
 
 import core.string;
 import core.main;

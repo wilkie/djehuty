@@ -5,8 +5,7 @@ import core.definitions;
 
 import io.console;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.menu;
 
 import scaffold.menu;
 import scaffold.window;

@@ -22,9 +22,6 @@ import synch.thread;
 import gui.apploop;
 import tui.apploop;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
-
 // Section: Core
 
 // Description: This class is the main class for the framework. It provides base functionality.

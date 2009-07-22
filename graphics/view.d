@@ -11,8 +11,7 @@ import graphics.pen;
 import graphics.font;
 import graphics.region;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.view;
 
 import scaffold.view;
 

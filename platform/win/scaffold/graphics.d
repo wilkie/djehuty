@@ -12,6 +12,12 @@ module scaffold.graphics;
 
 import graphics.view;
 
+import platform.vars.view;
+import platform.vars.brush;
+import platform.vars.font;
+import platform.vars.pen;
+import platform.vars.region;
+
 import core.string;
 import core.color;
 import core.main;
@@ -22,7 +28,6 @@ import graphics.region;
 
 import platform.win.main;
 import platform.win.common;
-import platform.win.vars;
 
 // Shapes
 

@@ -21,8 +21,7 @@ import gui.window;
 // Platform Specific application entry
 import gui.apploop;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.window;
 
 import scaffold.window;
 

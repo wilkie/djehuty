@@ -18,7 +18,10 @@ import synch.thread;
 
 import platform.win.main;
 import platform.win.common;
-import platform.win.vars;
+
+import platform.vars.mutex;
+import platform.vars.semaphore;
+import platform.vars.thread;
 
 /*extern(Windows)
 DWORD _win_djehuty_thread_proc(void* udata)

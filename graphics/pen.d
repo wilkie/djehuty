@@ -1,7 +1,6 @@
 module graphics.pen;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.pen;
 
 import Scaffold = scaffold.graphics;
 
