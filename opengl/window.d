@@ -19,13 +19,12 @@ import core.event;
 import opengl.texture;
 import opengl.gl;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.window;
 
 import scaffold.opengl;
 
-class GLWindow : Window
-{
+class GLWindow : Window {
+
 	this(string windowTitle, WindowStyle windowStyle, int x, int y, int width, int height) {
 		super(windowTitle, windowStyle, Color.Black, x, y, width, height);
 	}

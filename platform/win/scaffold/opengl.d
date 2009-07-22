@@ -14,7 +14,6 @@ import opengl.gl;
 import opengl.window;
 
 import platform.win.common;
-import platform.win.vars;
 
 // some extra GDI imports
 

@@ -2,10 +2,11 @@ module gui.osbutton;
 
 import gui.button;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.widget;
 import platform.win.main;
+
+import platform.vars.view;
 
 import core.string;
 import core.definitions;

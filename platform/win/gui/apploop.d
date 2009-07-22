@@ -10,11 +10,14 @@
 
 module gui.apploop;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.widget;
 import platform.win.main;
 import platform.win.console;
+
+import platform.vars.window;
+import platform.vars.font;
+import platform.vars.view;
 
 import gui.application;
 import gui.window;

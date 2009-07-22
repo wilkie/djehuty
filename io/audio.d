@@ -16,8 +16,7 @@ import core.event;
 
 import synch.semaphore;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.wave;
 
 import scaffold.wave;
 

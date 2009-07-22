@@ -1,9 +1,8 @@
 module synch.semaphore;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
-
 import scaffold.thread;
+
+import platform.vars.semaphore;
 
 import core.definitions;
 

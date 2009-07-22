@@ -4,8 +4,7 @@ import core.stream;
 import core.string;
 import core.definitions;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.socket;
 
 import scaffold.socket;
 

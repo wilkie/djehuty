@@ -11,7 +11,6 @@
 module scaffold.time;
 
 import platform.win.common;
-import platform.win.vars;
 
 // Timing
 

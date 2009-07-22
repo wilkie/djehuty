@@ -9,9 +9,10 @@
 
 module scaffold.file;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.file;
 
 import core.stream;
 import core.string;

@@ -12,9 +12,11 @@ module scaffold.window;
 
 import scaffold.system;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.window;
+import platform.vars.view;
 
 import graphics.view;
 

@@ -22,8 +22,11 @@ public import graphics.pen;
 public import graphics.font;
 public import graphics.region;
 
-import platform.imports;
-mixin(PlatformGenericImport!("vars"));
+import platform.vars.view;
+import platform.vars.brush;
+import platform.vars.font;
+import platform.vars.pen;
+import platform.vars.region;
 
 import Scaffold = scaffold.graphics;
 

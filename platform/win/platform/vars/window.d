@@ -1,40 +1,31 @@
 /*
- * vars.d
+ * window.d
  *
- * This file holds implementations for the Platform Variables for Windows.
+ * This module has the structure that is kept with a Window class.
  *
  * Author: Dave Wilkinson
+ * Originated: July 22th, 2009
  *
  */
 
-module platform.win.vars;
+module platform.vars.window;
 
 import platform.win.common;
-import platform.win.main;
-
-import scaffold.opengl;
 
 import core.definitions;
-import core.stream;
-import core.main;
 import core.string;
-
-import io.audio;
-
-import synch.thread;
-import synch.semaphore;
 
 import gui.window;
 
 import opengl.window;
 import opengl.gl;
+import opengl.glu;
 
-import utils.linkedlist;
+import synch.thread;
 
-// platform vars
+import scaffold.opengl;
 
-struct WindowPlatformVars
-{
+struct WindowPlatformVars {
 	HWND hWnd;
 	HDC windhDC;
 
@@ -299,254 +290,4 @@ struct WindowPlatformVars
 			}
 		}
 	}
-}
-
-struct ViewPlatformVars
-{
-	RECT bounds;
-	HDC dc;
-
-	void* bits;
-	int length;
-
-	int penClr;
-
-	_clipList clipRegions;
-}
-
-struct DirectoryPlatformVars
-{
-}
-
-struct FilePlatformVars
-{
-    HANDLE f;
-}
-
-struct ThreadPlatformVars
-{
-	HANDLE thread = null;
-	DWORD thread_id = 0;
-}
-
-struct SemaphorePlatformVars
-{
-	HANDLE _semaphore;
-}
-
-struct MutexPlatformVars
-{
-	CRITICAL_SECTION* _mutex;
-}
-
-struct SocketPlatformVars
-{
-	SOCKET m_skt;
-	SOCKET m_bind_skt;
-	DWORD m_thread_id;
-	ubyte m_recvbuff[2048];
-
-	static bool inited = false;
-	static int init_ref = 0;
-}
-
-struct MenuPlatformVars
-{
-	HMENU hMenu;
-}
-
-struct WavePlatformVars
-{
-	// Handle to the device
-	HWAVEOUT waveOut;
-	WAVEFORMATEX wfx;
-
-	struct BufferNode
-	{
-		Stream waveBuffer;
-		WAVEHDR waveHeader;
-
-		bool inUse;
-		bool isLast;
-	}
-
-	BufferNode buffers[3];
-
-	// Semaphore to keep the queue clean
-	HANDLE queueLock;
-	HANDLE closeLock;
-	HANDLE opLock;
-
-	bool isClosed;
-	bool inited;
-
-	DWORD threadID;
-	HANDLE thread;
-
-	BufferNode* curQueueNode;
-
-	Audio wave;
-
-	HANDLE event;
-	HANDLE resumeEvent;
-	//_WaveThread waveThread;
-}
-
-struct BrushPlatformVars
-{
-	HBRUSH brushHandle;
-}
-
-struct PenPlatformVars
-{
-	HPEN penHandle;
-	int clr;
-}
-
-struct FontPlatformVars
-{
-	HFONT fontHandle;
-}
-
-struct RegionPlatformVars {
-	HRGN regionHandle;
-}
-
-
-
-// --- //
-
-class _clipList
-{
-	this()
-	{
-	}
-
-	// make sure to delete the regions from the list
-	~this()
-	{
-		HANDLE rgn;
-		while(remove(rgn))
-		{
-			DeleteObject(rgn);
-		}
-	}
-
-	// add to the head
-
-	// Description: Will add the data to the head of the list.
-	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
-	void addItem(HANDLE data)
-	{
-		LinkedListNode* newNode = new LinkedListNode;
-		newNode.data = data;
-
-		if (head is null)
-		{
-			head = newNode;
-			tail = newNode;
-
-			newNode.next = newNode;
-			newNode.prev = newNode;
-		}
-		else
-		{
-			newNode.next = head;
-			newNode.prev = tail;
-
-			head.prev = newNode;
-			tail.next = newNode;
-
-			head = newNode;
-		}
-
-		_count++;
-	}
-
-	// remove the tail
-
-	// Description: Will remove an item from the tail of the list, which would remove in a first-in-first-out ordering (FIFO).
-	// data: Will be set to the data retreived.
-	bool remove(out HANDLE data)
-	{
-		if (tail == null) {
-			return false;
-		}
-
-		data = tail.data;
-
-		//tail.next = null;
-		//tail.prev = null;
-
-		if (head is tail)
-		{
-			// unlink all
-			head = null;
-			tail = null;
-		}
-		else
-		{
-			tail = tail.prev;
-		}
-
-		_count--;
-
-		return true;
-	}
-
-	bool remove()
-	{
-		if (tail == null) {
-			return false;
-		}
-
-		//tail.next = null;
-		//tail.prev = null;
-
-		if (head is tail)
-		{
-			// unlink all
-			head = null;
-			tail = null;
-		}
-		else
-		{
-			tail = tail.prev;
-		}
-
-		_count--;
-
-		return true;
-	}
-
-	uint length()
-	{
-	   return _count;
-	}
-
-protected:
-
-	// the contents of a node
-	struct LinkedListNode
-	{
-		LinkedListNode* next;
-		LinkedListNode* prev;
-		HANDLE data;
-	}
-
-	// the head and tail of the list
-	LinkedListNode* head = null;
-	LinkedListNode* tail = null;
-
-	// the last accessed node is cached
-	LinkedListNode* last = null;
-	uint lastIndex = 0;
-
-	// the number of items in the list
-	uint _count;
-}
-
-struct LibraryPlatformVars
-{
-	HMODULE hmodule;
 }

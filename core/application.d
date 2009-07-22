@@ -22,7 +22,6 @@ import io.console;
 
 import platform.imports;
 mixin(PlatformGenericImport!("console"));
-mixin(PlatformGenericImport!("vars"));
 
 import analyzing.debugger;
 

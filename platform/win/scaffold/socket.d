@@ -10,9 +10,10 @@
 
 module scaffold.socket;
 
-import platform.win.vars;
 import platform.win.common;
 import platform.win.main;
+
+import platform.vars.socket;
 
 import core.string;
 import core.main;

@@ -10,13 +10,14 @@
 
 module scaffold.system;
 
-import platform.win.vars;
 import platform.win.common;
 
 import scaffold.directory;
 
 import core.definitions;
 import core.string;
+
+import platform.vars.library;
 
 private {
 	uint count;
