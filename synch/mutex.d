@@ -2,7 +2,6 @@ module synch.mutex;
 
 import platform.imports;
 mixin(PlatformGenericImport!("vars"));
-mixin(PlatformGenericImport!("definitions"));
 
 import scaffold.thread;
 

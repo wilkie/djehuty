@@ -15,8 +15,7 @@
 
 module core.random;
 
-import platform.imports;
-mixin(PlatformGenericImport!("definitions"));
+import core.definitions;
 
 import scaffold.time;
 
