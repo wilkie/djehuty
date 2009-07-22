@@ -49,7 +49,6 @@ public:
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(String filename) {
 		FileReader f = new FileReader();
-		_view = new Bitmap();
 
 		if (f.open(filename) == false) {
 			return false;
@@ -63,7 +62,6 @@ public:
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(string filename) {
 		FileReader f = new FileReader();
-		_view = new Bitmap();
 
 		if (f.open(filename) == false) {
 			return false;

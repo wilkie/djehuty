@@ -187,7 +187,7 @@ class PNGCodec : ImageCodec
 
 					}
 
-					break;
+					continue;
 
 				default:
 
@@ -262,8 +262,7 @@ class PNGCodec : ImageCodec
 			case PNG_STATE_READ_IHDR:
 	//				Console.putln("header good");
 
-				if(!(stream.read(&pngIHDR, _djehuty_image_png_ihdr.sizeof)))
-				{
+				if(!(stream.read(&pngIHDR, _djehuty_image_png_ihdr.sizeof))) {
 					return StreamData.Required;
 				}
 
@@ -274,12 +273,7 @@ class PNGCodec : ImageCodec
 
 				// determine whether png is valid by this header
 
-				//*
-
-
-
-				switch(pngIHDR.pngColorType)
-				{
+				switch(pngIHDR.pngColorType) {
 					//Greyscale
 				case 0:
 					switch (pngIHDR.pngBitDepth)
@@ -365,8 +359,6 @@ class PNGCodec : ImageCodec
 					return StreamData.Invalid;
 
 				}
-
-				//*/
 
 				if (pngIHDR.pngFilterMethod != 0)
 				{
@@ -1323,7 +1315,7 @@ class PNGCodec : ImageCodec
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
 					decoderState = PNG_STATE_READ_CHUNK_CRC;
-					break;
+					continue;
 				}
 
 				pngCounter++;
@@ -1347,7 +1339,7 @@ class PNGCodec : ImageCodec
 				}
 
 				// go to the next state
-				break;
+				continue;
 
 			case PNG_STATE_UNFILTER_PAETH:
 
@@ -1993,7 +1985,7 @@ class PNGCodec : ImageCodec
 
 	//			Console.putln("4th pixel!\n");
 
-				break;
+				continue;
 
 			case PNG_STATE_RENDER_STATE_BASE + PNG_INDEXED_COLOUR_4BPP:
 
@@ -2909,6 +2901,7 @@ class PNGCodec : ImageCodec
 			}
 			break;
 		}
+		Console.putln("mreh");
 		return StreamData.Invalid;
 	}
 

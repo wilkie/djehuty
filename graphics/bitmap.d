@@ -18,6 +18,8 @@ import synch.semaphore;
 
 import scaffold.view;
 
+import io.console;
+
 class Bitmap : View {
 	this() {
 		super();
@@ -33,6 +35,8 @@ class Bitmap : View {
 
 		_width = width;
 		_height = height;
+		
+		_hasAlpha = false;
 
 		ViewCreateDIB(this, _pfvars);
 

@@ -1131,8 +1131,7 @@ class JPEGCodec : ImageCodec
 						decoderState = JPEG_STATE_DECODE_IDCT;
 						huffman_code = 0;
 						huffman_bits = 0;
-						break;
-
+						continue;
 					}
 
 					//from the next bits in the stream...find the first valid huffman code
@@ -1404,8 +1403,7 @@ class JPEGCodec : ImageCodec
 					//place the RGB transformed pixels on the image
 
 					// LOCK the buffer, if it hasn't been locked yet
-					if (intermediate_imgPos_Start is null)
-					{
+					if (intermediate_imgPos_Start is null) {
 						view.lockBuffer(cast(void**)&intermediate_imgPos_Start, image_length);
 					}
 
