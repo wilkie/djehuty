@@ -7,7 +7,7 @@
  *
  */
 
-module machine.definitions;
+module platform.definitions;
 
 import platform.win.common;
 

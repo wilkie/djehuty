@@ -10,7 +10,7 @@
 
 module core.definitions;
 
-public import machine.definitions;
+public import platform.definitions;
 
 // String
 
