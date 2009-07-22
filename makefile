@@ -121,7 +121,7 @@ ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
 	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
-	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -unittest $<
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
 else
 endif
 endif
