@@ -1,8 +1,5 @@
 module tui.buffer;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 import core.string;
 import core.main;
 import core.definitions;

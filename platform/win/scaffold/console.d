@@ -8,7 +8,7 @@
  *
  */
 
-module platform.win.console;
+module scaffold.console;
 
 import platform.win.common;
 
