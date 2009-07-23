@@ -11,9 +11,6 @@ import core.definitions;
 
 import io.console;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
-
 // Description: This class represents a Text User Interface application (TUI).
 class TuiApplication : Application {
 public:

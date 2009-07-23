@@ -1,7 +1,6 @@
 module io.console;
 
-import platform.imports;
-mixin(PlatformGenericImport!("console"));
+import scaffold.console;
 
 import core.string;
 import core.format;
