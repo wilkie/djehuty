@@ -159,15 +159,25 @@ class MyControl : Widget {
 	override void onAdd() {
 		imgPNG = new Image("tests/test.png");
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
+
+		snd = new Sound("tests/begin.mp2");
+		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
 	}
-	
+
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
 	}
 
+	override bool onPrimaryMouseDown(ref Mouse mp) {
+		snd.play();
+		return false;
+	}
+
 	Image imgPNG;
 	Image imgJPEG;
+
+	Sound snd;
 }
 
 class MyWindow : Window {
