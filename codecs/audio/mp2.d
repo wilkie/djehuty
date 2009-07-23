@@ -969,7 +969,6 @@ class MP2Codec : AudioCodec
 					// if it knows its layer it will search for
 					// the sync bits plus that part of the header
 
-
 					// entry for getting another audio buffer
 				case MP2_BUFFER_AUDIO:
 
@@ -991,17 +990,6 @@ class MP2Codec : AudioCodec
 						isSeek = false;
 						return StreamData.Accepted;
 					}
-					else if (toBuffer is null && isSeek == false) { return StreamData.Accepted; }
-
-					if (toBuffer !is null)
-					{
-						if (toBuffer.length() != bufferSize)
-						{
-							Console.putln("resize ", bufferSize, " from ", toBuffer.length());
-							toBuffer.resize(bufferSize);
-						}
-						toBuffer.rewind();
-					}
 
 					decoderState = MP2_READ_HEADER;
 
@@ -1011,7 +999,10 @@ class MP2Codec : AudioCodec
 
 					if (!stream.read(mpeg_header))
 					{
-						return StreamData.Accepted;
+						if (accepted) {
+							return StreamData.Accepted;
+						}
+						return StreamData.Required;
 					}
 
 					decoderState = MP2_AMBIGUOUS_SYNC;
@@ -1026,8 +1017,7 @@ class MP2Codec : AudioCodec
 
 				case MP2_AMBIGUOUS_SYNC:
 
-					if ((mpeg_header & MPEG_SYNC_BITS) == MPEG_SYNC_BITS)
-					{
+					if ((mpeg_header & MPEG_SYNC_BITS) == MPEG_SYNC_BITS) {
 						// sync bits found
 						//writeln("sync bits found ", stream.getPosition() - 4);
 
@@ -1051,6 +1041,11 @@ class MP2Codec : AudioCodec
 
 						header.ID = (mpeg_header & MPEG_ID_BIT ? 1 : 0);
 						header.Layer = (mpeg_header & MPEG_LAYER) >> MPEG_LAYER_SHIFT;
+
+						if (header.Layer != 2) {
+							return StreamData.Invalid;
+						}
+
 						header.Protected = (mpeg_header & MPEG_PROTECTION_BIT ? 1 : 0);
 						header.BitrateIndex = (mpeg_header & MPEG_BITRATE_INDEX) >> MPEG_BITRATE_INDEX_SHIFT;
 						header.SamplingFrequency = (mpeg_header & MPEG_SAMPLING_FREQ) >> MPEG_SAMPLING_FREQ_SHIFT;
@@ -1062,7 +1057,7 @@ class MP2Codec : AudioCodec
 						header.Original = (mpeg_header & MPEG_ORIGINAL ? 1 : 0);
 						header.Emphasis = (mpeg_header & MPEG_EMPHASIS) >> MPEG_EMPHASIS_SHIFT;
 
-						/*writeln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
+						/*Console.putln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
 								"ID: ", header.ID, "\n",
 								"Layer: ", header.Layer, "\n",
 								"Protected: ", header.Protected, "\n",
@@ -1074,7 +1069,8 @@ class MP2Codec : AudioCodec
 								"ModeExtension: ", header.ModeExtension, "\n",
 								"Copyright: ", header.Copyright, "\n",
 								"Original: ", header.Original, "\n",
-								"Emphasis: ", header.Emphasis);//*/
+								"Emphasis: ", header.Emphasis);
+						*/
 
 						// Calculate the length of the Audio Data
 						audioDataLength = cast(uint)(144 * (cast(double)bitRates[header.BitrateIndex] / cast(double)samplingFrequencies[header.SamplingFrequency]));
@@ -1092,26 +1088,22 @@ class MP2Codec : AudioCodec
 
 						// set the format of the wave buffer
 
-						if (header.SamplingFrequency == 0)
-						{
+						if (header.SamplingFrequency == 0) {
 							// 44.1 kHz
 							wf.samplesPerSecond = 44100;
 						}
-						else if (header.SamplingFrequency == 1)
-						{
+						else if (header.SamplingFrequency == 1) {
 							// 48 kHz
 							wf.samplesPerSecond = 48000;
 						}
-						else
-						{
+						else {
 							// 32 kHz
 							wf.samplesPerSecond = 32000;
 						}
 
 						wf.compressionType = 1;
 
-						switch(header.Mode)
-						{
+						switch(header.Mode) {
 							case MPEG_MODE_STEREO:
 							case MPEG_MODE_DUAL_CHANNEL:
 								wf.numChannels = 2;
@@ -1135,29 +1127,40 @@ class MP2Codec : AudioCodec
 						wf.bitsPerSample = 16;
 
 						// set the wavelet's audio format
-						if (toBuffer !is null)
-						{
+						if (toBuffer !is null) {
 							toBuffer.setAudioFormat(wf);
 							bufferTime = toBuffer.time;
 						}
 
-						if (header.Protected == 0)
-						{
+						if (header.Protected == 0) {
 							decoderState = MP2_READ_CRC;
 						}
-						else
-						{
+						else {
 							decoderState = MP2_READ_AUDIO_DATA;
 						}
+						
+						if (!accepted) {
+							if (toBuffer !is null) {
+								if (toBuffer.length() != bufferSize) {
+									Console.putln("resize ", bufferSize, " from ", toBuffer.length());
+									toBuffer.resize(bufferSize);
+								}
+								toBuffer.rewind();
+							}
+
+							if (toBuffer is null && isSeek == false) {
+								return StreamData.Accepted;
+							}
+						}
+						
+						accepted = true;
 
 						continue;
 					}
-					else
-					{
-						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
+					else {
+//						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
 						ubyte curByte;
-						if (!stream.read(curByte))
-						{
+						if (!stream.read(curByte)) {
 							return StreamData.Required;
 						}
 
@@ -1169,8 +1172,7 @@ class MP2Codec : AudioCodec
 
 				case MP2_READ_CRC:
 
-					if (!stream.read(crc))
-					{
+					if (!stream.read(crc)) {
 						return StreamData.Required;
 					}
 
@@ -1184,16 +1186,13 @@ class MP2Codec : AudioCodec
 					// read in the audio data to a buffer
 					// then use that buffer to gather the useful information
 
-					if (isSeek)
-					{
+					if (isSeek) {
 						// skip over audio data
-						if (!stream.skip(audioData.length))
-						{
+						if (!stream.skip(audioData.length)) {
 							return StreamData.Required;
 						}
 
-						switch(header.Mode)
-						{
+						switch(header.Mode) {
 							case MPEG_MODE_STEREO:
 							case MPEG_MODE_DUAL_CHANNEL:
 								channels = 2;
@@ -1213,21 +1212,18 @@ class MP2Codec : AudioCodec
 						// do not decode
 						samplesLeft -= (12*32*3*channels);
 
-						if (samplesLeft <= 0)
-						{
+						if (samplesLeft <= 0) {
 							decoderState = MP2_BUFFER_AUDIO;
 							curTime += bufferTime;
 							curTime.toString();
 						}
-						else
-						{
+						else {
 							decoderState = MP2_READ_HEADER;
 						}
 						continue;
 					}
 
-					if (!stream.read(audioData))
-					{
+					if (!stream.read(audioData)) {
 						return StreamData.Required;
 					}
 //					toBuffer.setAudioFormat(wf);
@@ -1236,8 +1232,7 @@ class MP2Codec : AudioCodec
 					curByte = audioData.ptr;
 					curPos = 0;
 
-					switch(header.Mode)
-					{
+					switch(header.Mode) {
 						case MPEG_MODE_STEREO:
 						case MPEG_MODE_DUAL_CHANNEL:
 							channels = 2;
@@ -2442,6 +2437,8 @@ class MP2Codec : AudioCodec
 	}
 
 protected:
+
+	bool accepted;
 
 	uint mpeg_header;
 	uint known_sync_bits;

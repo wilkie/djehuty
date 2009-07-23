@@ -23,6 +23,12 @@ else {
 	public import codecs.audio.mp2 : MP2Codec;
 }
 
+version(NoMp3Audio) {
+}
+else {
+	public import codecs.audio.mp3 : MP3Codec;
+}
+
 // MP1
 // MP3
 // MP4
@@ -62,6 +68,12 @@ StreamData runAllCodecs(ref AudioCodec audioCodec, Stream stream, Wavelet buffer
 	}
 	else {
 		mixin(RunCodec!("MP2"));
+	}
+
+	version(NoMp3Audio) {
+	}
+	else {
+		mixin(RunCodec!("MP3"));
 	}
 
 	audioCodec = null;
