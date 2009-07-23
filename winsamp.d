@@ -153,32 +153,71 @@ private:
 
 class MyControl : Widget {
 	this() {
-		super(200,200,100,100);
+		super(0,50,360,297);
 	}
-	
+
 	override void onAdd() {
+		// create images array
+
+		images[0] = new Image("baby_ducks.png");
+		images[1] = new Image("duckling.png");
+		images[2] = new Image("ducks-cute.png");
+
+		/*
 		imgPNG = new Image("tests/test.png");
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
+		*/
 	}
 	
 	override void onDraw(ref Graphics g) {
-		g.drawImage(this.left,this.top,imgPNG);
-		g.drawImage(this.left,this.top,imgJPEG);
+	
+		g.drawImage(this.left,this.top,images[curImage]);
+
+		/*g.drawImage(this.left,this.top,imgPNG);
+		g.drawImage(this.left,this.top,imgJPEG);*/
 	}
 
-	Image imgPNG;
-	Image imgJPEG;
+	void nextImage() {
+		if(curImage == images.length-1)
+		{
+			curImage = 0;
+			return;
+		}
+
+		curImage++;
+	}
+
+private:
+	Image[3] images;
+	int curImage = 0;
 }
 
 class MyWindow : Window {
 	this() {
-		super("hey",WindowStyle.Fixed,Color.Red,0,0,300,300);
+		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,0,0,360,347);
+	}
+
+	override void onAdd() {
+		push(button = new OSButton(0,0,360,50,"MORE DUCKS!"));
+		push(imageBox = new MyControl());
 	}
 	
-	override void onAdd() {
-		push(new OSButton(0,0,100,50,"yo"));
-		push(new MyControl());
+	override bool onSignal(Dispatcher d, uint signal) {
+		if(d is button) {
+			if(signal == Button.Signal.Selected) {
+				imageBox.nextImage();
+				redraw();
+				return true;
+			}
+		}
+
+		return false;
 	}
+
+	
+private:
+	OSButton button;
+	MyControl imageBox;
 }
 
 class MyApp : GuiApplication {
