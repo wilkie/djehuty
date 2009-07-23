@@ -1173,7 +1173,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
+				continue;
 
 				// INTERPRET LENGTH CODE 17, 18
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_LEN18:
@@ -1219,7 +1219,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
+				continue;
 
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_DECODE_DIST:
 				//----writeln("deflate dynamic decode dist");
@@ -1239,7 +1239,7 @@ class DEFLATECodec : BinaryCodec {
 					//}
 
 					decoderState = DEFLATE_STATE_DEFLATE_DYNAMIC_BUILD_TREE;
-					break;
+					continue;
 				}
 
 				// FINISH INITIALIZING THE REST OF THE HUFFMAN CODE LENGTH ARRAY //
@@ -1277,9 +1277,7 @@ class DEFLATECodec : BinaryCodec {
 				deflateCurValue = 0;
 				deflateCurValueBit = 0;
 
-				break;
-
-
+				continue;
 
 				// BUILD BOTH LENGTH AND DISTANCE CODE TREES
 			case DEFLATE_STATE_DEFLATE_DYNAMIC_BUILD_TREE:
