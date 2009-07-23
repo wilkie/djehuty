@@ -183,10 +183,6 @@ void destroyPen(PenPlatformVars* pen) {
 	DeleteObject(pen.penHandle);
 }
 
-
-
-
-
 // View Interfacing
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
