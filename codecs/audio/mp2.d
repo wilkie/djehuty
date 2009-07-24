@@ -2034,32 +2034,25 @@ class MP2Codec : AudioCodec
 
 					uint gr, s, base;
 
-					for (gr=0, base=0; gr<12; gr++, base+=3)
-					{
-						for (sb=0; sb<sblimit; sb++)
-						{
-							if (allocClass[0][sb].numberOfSteps!=0)
-							{
-								if (allocClass[0][sb].grouping)
-								{
+					for (gr=0, base=0; gr<12; gr++, base+=3) {
+						for (sb=0; sb<sblimit; sb++) {
+							if (allocClass[0][sb].numberOfSteps!=0) {
+								if (allocClass[0][sb].grouping) {
 									samplecode = readBits(allocClass[0][sb].bitsPerCodeword);	// 5..10	bits	uimsbf
 										//writeln(samplecode, "@ bit");
 									assert((allocClass[0][sb].bitsPerCodeword > 4) && (allocClass[0][sb].bitsPerCodeword < 11));
 
 									// ungroup
 
-									for (s=0; s<3; s++)
-									{
+									for (s=0; s<3; s++) {
 										sample[0][base + s][sb] = samplecode % allocClass[0][sb].numberOfSteps;
 										samplecode /= allocClass[0][sb].numberOfSteps;
 
 										// requantize
 									}
 								}
-								else
-								{
-									for (s=0; s<3; s++)
-									{
+								else {
+									for (s=0; s<3; s++) {
 										sample[0][base + s][sb] = readBits(allocClass[0][sb].bitsPerCodeword); // 2..16	bits	uimsbf
 											//writeln(sample[0][s][sb], "! bit ", allocClass[0][sb].bitsPerCodeword);
 										assert((allocClass[0][sb].bitsPerCodeword > 1) && (allocClass[0][sb].bitsPerCodeword < 17));
@@ -2067,35 +2060,29 @@ class MP2Codec : AudioCodec
 									}
 								}
 							}
-							else
-							{
+							else {
 								sample[0][base + 0][sb] = 0;
 								sample[0][base + 1][sb] = 0;
 								sample[0][base + 2][sb] = 0;
 							}
 
-							if (allocClass[1][sb].numberOfSteps!=0)
-							{
-								if (allocClass[1][sb].grouping)
-								{
+							if (allocClass[1][sb].numberOfSteps!=0) {
+								if (allocClass[1][sb].grouping) {
 									samplecode = readBits(allocClass[1][sb].bitsPerCodeword);	// 5..10	bits	uimsbf
 										//writeln(samplecode, "+ bit");
 									assert((allocClass[1][sb].bitsPerCodeword > 4) && (allocClass[1][sb].bitsPerCodeword < 11));
 
 									// ungroup
 
-									for (s=0; s<3; s++)
-									{
+									for (s=0; s<3; s++) {
 										sample[1][base + s][sb] = samplecode % allocClass[1][sb].numberOfSteps;
 										samplecode /= allocClass[1][sb].numberOfSteps;
 
 										// requantize
 									}
 								}
-								else
-								{
-									for (s=0; s<3; s++)
-									{
+								else {
+									for (s=0; s<3; s++) {
 										sample[1][base + s][sb] = readBits(allocClass[1][sb].bitsPerCodeword); // 2..16	bits	uimsbf
 											//writeln(sample[1][s][sb], "- bit");
 										assert((allocClass[1][sb].bitsPerCodeword > 1) && (allocClass[1][sb].bitsPerCodeword < 17));
@@ -2103,18 +2090,15 @@ class MP2Codec : AudioCodec
 									}
 								}
 							}
-							else
-							{
+							else {
 								sample[1][base + 0][sb] = 0;
 								sample[1][base + 1][sb] = 0;
 								sample[1][base + 2][sb] = 0;
 							}
 						}
 
-						for ( ; sb<32; sb++)
-						{
-							for (s=0; s<3; s++)
-							{
+						for ( ; sb<32; sb++) {
+							for (s=0; s<3; s++) {
 								quantSample[0][base + s][sb] = 0.0;
 								quantSample[1][base + s][sb] = 0.0;
 							}
@@ -2123,18 +2107,16 @@ class MP2Codec : AudioCodec
 						// Now, pass these subband samples to
 						// the Synthesis Subband Filter
 
-						for ( sb =0; sb<sblimit; sb++)
-						{
-							for (s=0; s<3; s++)
-							{
+						for ( sb =0; sb<sblimit; sb++) {
+							for (s=0; s<3; s++) {
 								// dequantize
 								uint x = 0;
 
-								while ((1<<x) < allocClass[0][sb].numberOfSteps)
-									{ x++; }
+								while ((1<<x) < allocClass[0][sb].numberOfSteps) {
+									x++;
+								}
 
-								if ((sample[0][base + s][sb] >> (x-1)) == 1)
-								{
+								if ((sample[0][base + s][sb] >> (x-1)) == 1) {
 									quantSample[0][base + s][sb] = 0.0;
 								}
 								else
@@ -2142,10 +2124,9 @@ class MP2Codec : AudioCodec
 									quantSample[0][base + s][sb] = -1.0;
 								}
 
-								if (x > 0)
-								{
-									quantSample[0][base + s][sb] += cast(double)(sample[0][base + s][sb] & bitFills[x]) /
-																		cast(double)(1<<x-1);
+								if (x > 0) {
+									quantSample[0][base + s][sb] += cast(double)(sample[0][base + s][sb] & bitFills[x])
+										/ cast(double)(1<<x-1);
 								}
 
 								// s'' = ( s''' + D ) * C
@@ -2162,20 +2143,18 @@ class MP2Codec : AudioCodec
 
 								x=0;
 
-								while ((1<<x) < allocClass[1][sb].numberOfSteps)
-									{ x++; }
+								while ((1<<x) < allocClass[1][sb].numberOfSteps) {
+									x++;
+								}
 
-								if ((sample[1][base + s][sb] >> (x-1)) == 1)
-								{
+								if ((sample[1][base + s][sb] >> (x-1)) == 1) {
 									quantSample[1][base + s][sb] = 0.0;
 								}
-								else
-								{
+								else {
 									quantSample[1][base + s][sb] = -1.0;
 								}
 
-								if (x > 0)
-								{
+								if (x > 0) {
 									quantSample[1][base + s][sb] += cast(double)(sample[1][base + s][sb] & bitFills[x]) /
 																		cast(double)(1<<x-1);
 								}
@@ -2199,10 +2178,8 @@ class MP2Codec : AudioCodec
 
 						int clip;
 
-						for (s=0; s<3; s++)
-						{
-							for (uint channel = 0;channel<2;channel++)
-							{
+						for (s=0; s<3; s++) {
+							for (uint channel = 0;channel<2;channel++) {
 								long foo;
 								static int bufOffset[2] = [64,64];
 
@@ -2216,11 +2193,9 @@ class MP2Codec : AudioCodec
 								bufOffset[channel] = (bufOffset[channel] - 64) & 0x3ff;
 								bufOffsetPtr = cast(double*)&BB[channel][bufOffset[channel]];
 
-								for (i=0; i<64; i++)
-								{
+								for (i=0; i<64; i++) {
 									sum = 0;
-									for (k=0; k<32; k++)
-									{
+									for (k=0; k<32; k++) {
 										sum += quantSample[channel][base + s][k] * nCoefficients[i][k];
 							//	writeln("sum: ", sum, " ", quantSample[channel][base + s][k] ," ", nCoefficients[i][k]);
 									}
@@ -2229,22 +2204,18 @@ class MP2Codec : AudioCodec
 								}
 
 
-								for (j=0; j<32; j++)
-								{
+								for (j=0; j<32; j++) {
 									sum = 0;
-									for (i=0; i<16; i++)
-									{
+									for (i=0; i<16; i++) {
 										k = j + (i << 5);
 
 										sum += dCoefficients[k] * BB[channel][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[channel]) & 0x3ff];
 									}
 
-							        if(sum > 0)
-							        {
+							        if(sum > 0) {
 										foo = cast(long)(sum * cast(double)32768 + cast(double)0.5);
 							        }
-							        else
-							        {
+							        else {
 										foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
 							        }
 
@@ -2271,8 +2242,7 @@ class MP2Codec : AudioCodec
 
 					samplesLeft -= (12*32*3*2);
 
-					if (samplesLeft <= 0)
-					{
+					if (samplesLeft <= 0) {
 						decoderState = MP2_BUFFER_AUDIO;
 						curTime += bufferTime;
 						return StreamData.Accepted;
@@ -2316,6 +2286,11 @@ class MP2Codec : AudioCodec
 
 		int shift;
 
+		if (curByte >= audioData.ptr + audioData.length) {
+			// We have consumed everything in our buffer
+			return 0;
+		}
+
 		for (;;)
 		{
 			if (bits == 0) { return value; }
@@ -2356,6 +2331,11 @@ class MP2Codec : AudioCodec
 				bits -= (8 - curPos + maskbits);
 				curPos = 0;
 				curByte++;
+
+				if (curByte >= audioData.ptr + audioData.length) {
+					// We have consumed everything in our buffer
+					return 0;
+				}
 
 				//writeln("CURBYTE ** ", *curByte, " ** ");
 			}
