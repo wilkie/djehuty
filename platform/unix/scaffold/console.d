@@ -18,6 +18,7 @@ import platform.unix.main;
 
 import synch.thread;
 
+import tui.apploop;
 import tui.application;
 import tui.window;
 
@@ -25,6 +26,194 @@ void ConsoleSetColors(uint fg, uint bg, int bright)
 {
 	printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
 }
+
+//will return the next character pressed
+ulong consoleGetKey()
+{
+
+	ulong tmp;
+	tmp = getchar();
+
+	if (tmp != 0x1B)
+	{
+		return tmp;
+	}
+	else
+	{
+		//wait for extended commands
+		tmp = getchar();
+
+		if (tmp == KeyEscape)
+		{
+			return tmp;
+		}
+		else if (tmp == 0x5B) // [
+		{
+			tmp = getchar();
+
+			if (tmp == 0x31)
+			{
+				tmp <<= 8;
+				tmp |= getchar();
+
+				if ((tmp & 0xFF) == 0x7E)
+				{
+					return tmp;
+				}
+				else if (((tmp & 0xFF) == 0x35) || ((tmp & 0xFF) == 0x37) || ((tmp & 0xFF) == 0x38) || ((tmp & 0xFF) == 0x39))
+				{
+					tmp <<= 8;
+					tmp |=getchar();
+
+					if ((tmp & 0xFF) == 0x7E)
+					{
+						return tmp;
+					}
+
+					//shift + F5, F6, F7, or F8
+					tmp <<= 8;
+					tmp |= getchar();
+
+					if ((tmp & 0xFF) == 0x7E) { return tmp; }
+					if (getchar() == 0x7E) { return tmp; }
+				}
+				else if ((tmp & 0xFF) == 0x3B)
+				{
+					//ALT + ARROW KEYS, SHIFT + ARROW KEYS
+					tmp <<= 8;
+					tmp |= getchar();
+
+					if ((tmp & 0xFF) == 0x7E) { return tmp; }
+
+					//when we have added a '32' -- shift
+					//when we have added a '33' -- alt
+					//when we have added a '34' -- shift and alt
+
+					tmp <<= 8;
+					tmp |= getchar();
+				}
+				else
+				{
+					tmp <<=	8;
+					tmp |= getchar();
+				}
+			}
+			else if (tmp == 0x32)
+			{
+				tmp <<= 8;
+				tmp |= getchar();
+
+				if ((tmp & 0xFF) == 0x7E)
+				{
+					return tmp;
+				}
+
+				//ALT + INSERT
+				if ((tmp & 0xFF) == 0x3B)
+				{
+					tmp <<= 8;
+					tmp |= getchar();
+					if ((tmp & 0xFF) == 0x7E) { return tmp; }
+					if (getchar() == 0x7E) { return tmp; }
+				}
+
+				//SHIFT + F9, F10, F11, F12
+
+				tmp <<= 8;
+				tmp |= getchar();
+
+				if ((tmp & 0xFF) == 0x3B)
+				{
+					tmp <<= 8;
+					tmp |= getchar();
+					if ((tmp & 0xFF) == 0x7E) { return tmp; }
+					if (getchar() == 0x7E) { return tmp; }
+				}
+			}
+			else if (tmp == 0x33 || tmp == 0x34 || tmp == 0x35 || tmp == 0x36)
+			{
+				tmp <<= 8;
+				tmp |= getchar();
+
+				if ((tmp & 0xFF) != 0x7E)
+				{
+					tmp <<= 8;
+					tmp |= getchar();
+
+					if ((tmp & 0xFF) != 0x7E)
+					{
+						while (getchar() != 0x7E) {}
+					}
+				}
+			}
+			else
+			{
+				//return this code
+				tmp |= 0x5B00;
+			}
+		}
+		else if (tmp == 0x4F)
+		{
+			tmp = getchar();
+			tmp |= 0x4F00;
+
+			//curse for SHIFT + F1, F2, F3, or F4
+			if ((tmp & 0xFF) == 0x31)
+			{
+				if (getchar() == 0x3B)
+				{
+					tmp <<= 8;
+					tmp |= getchar();
+					if (((tmp & 0xFF) == 0x32) || ((tmp & 0xFF) == 0x34))
+					{
+						tmp <<= 8;
+						tmp |= getchar();
+					}
+				}
+			}
+		}
+		else
+		{
+			//ALT + CHAR
+			tmp |= 0x1B00;
+		}
+	}
+
+	return tmp;
+}
+
+uint consoleTranslateKey(ulong ky)
+{
+	switch (ky)
+	{
+		case _UNIX_ConsoleKeys.KeyTab:
+			return KeyTab;
+
+		case _UNIX_ConsoleKeys.KeyLeft:
+			return KeyArrowLeft;
+
+		case _UNIX_ConsoleKeys.KeyUp:
+			return KeyArrowUp;
+
+		case _UNIX_ConsoleKeys.KeyDown:
+			return KeyArrowDown;
+
+		case _UNIX_ConsoleKeys.KeyRight:
+			return KeyArrowRight;
+
+		case _UNIX_ConsoleKeys.KeyBackspace:
+			return KeyBackspace;
+
+		case 10:
+			return KeyReturn;
+
+		default:
+			return cast(uint)ky;
+	}
+
+	return 0;
+}
+
 
 
 struct winsize {

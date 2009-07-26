@@ -2,6 +2,7 @@ module output;
 
 import core.string;
 import core.unicode;
+import core.definitions;
 
 import io.file;
 import io.console;
@@ -9,7 +10,7 @@ import io.console;
 import ast;
 import parser;
 
-char[] header = 
+char[] header =
 `
 /*
  * test.d
@@ -39,7 +40,7 @@ class Output
 		}
 		printHeader();
 	}
-	
+
 	~this()
 	{
 	}
@@ -49,7 +50,7 @@ class Output
 		Console.putln("Outputting ... ");
 		AST working = result;
 		AST node;
-				
+
 		while(working !is null)
 		{
 			node = working.right;
@@ -70,7 +71,7 @@ class Output
 							tests = null;
 							className = null;
 
-							printDescribe(node);					
+							printDescribe(node);
 							break;
 						case "ParseImport":
 							printImport(node);
@@ -84,7 +85,7 @@ class Output
 			working = working.left;
 		}
 	}
-	
+
 	bool finalizeOutput()
 	{
 		if (outfp is null)
@@ -134,7 +135,7 @@ class Output
 		//fclose(outfp);
 		return true;
 	}
-	
+
 protected:
 
 	File outfp;
@@ -146,22 +147,22 @@ protected:
 	String[] classes;
 
 	String exception;
-	
+
 	bool shouldThrow = false;
 
 	bool readyOutput(String path)
 	{
 		//outfp = fopen(std.string.toStringz(path), "w+");
 		outfp = new File(path);
-		
-		if (outfp is null) 
+
+		if (outfp is null)
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	bool printHeader()
 	{
 		//fwritef(outfp, "%s", header);
@@ -176,7 +177,7 @@ protected:
 	{
 		AST working = tree;
 		AST node;
-		
+
 		if (describing !is null)
 		{
 			print(new String("done before_") ~ describing);
@@ -185,11 +186,11 @@ protected:
 		{
 			print("done before");
 		}
-		
+
 		print("()\n\t{");
 
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -206,19 +207,19 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		print("}");
-		
+
 		return true;
 	}
-	
+
 	bool printImport(AST tree)
 	{
 		AST working = tree;
 		AST node;
 
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -240,17 +241,17 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		return true;
 	}
-	
+
 	bool printIt(AST tree, String describing)
 	{
 		AST working = tree;
 		AST node;
-		
+
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
@@ -264,35 +265,35 @@ protected:
 						case "Identifier":
 							String val;
 							node.right.getValue(val);
-							
+
 							print("it ");
 							if (describing !is null)
 							{
 								val = describing ~ "_" ~ val;
 							}
-							
+
 							print(val ~ "()\n\t{");
-							
+
 							print("before");
 							if (describing !is null)
 							{
 								print(new String("_") ~ describing);
 							}
 							print("();\n");
-							
+
 							if (describing is null)
 							{
 								val = new String("_") ~ val;
 							}
-							
+
 							tests ~= val;
-		
+
 							print("try\n{");
 							break;
 						case "LineNumber":
 							ulong val;
 							node.right.getValue(val);
-							
+
 							lines ~= val;
 							break;
 						case "ParseDone":
@@ -303,7 +304,7 @@ protected:
 							break;
 						case "ParseShouldNot":
 							printShouldNot(node);
-							break;	
+							break;
 						case "ParseShouldThrow":
 							printShouldThrow(node);
 							break;
@@ -321,7 +322,7 @@ protected:
 
 			working = working.left;
 		}
-		
+
 		print("}catch(Exception _exception_)\n{\n");
 		if (shouldThrow)
 		{
@@ -341,21 +342,21 @@ protected:
 		{
 			print("return it.doesnt");
 		}
-		
+
 		print(";\n}\n\treturn it.does;\n\t}");
-		
+
 		return true;
 	}
-	
+
 	bool printShould(AST tree)
 	{
 		AST working = tree;
 		AST node;
-		
+
 		print("if(!(");
-		
+
 		while (working !is null)
-		{		
+		{
 			node = working.right;
 			if (node !is null)
 			{
