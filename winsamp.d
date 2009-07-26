@@ -21,8 +21,6 @@ import tui.textfield;
 
 import networking.irc;
 
-//import platform.win.controls.osbutton;
-
 import io.console;
 
 import hashes.md5;
@@ -160,8 +158,8 @@ class MyControl : Widget {
 		imgPNG = new Image("tests/test.png");
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
-		snd = new Sound("tests/begin.mp2");
-		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		//snd = new Sound("tests/begin.mp2");
+		snd = new Sound("tests/01 Block Shaped Heart.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {
