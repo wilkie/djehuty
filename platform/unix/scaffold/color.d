@@ -7,9 +7,8 @@
  *
  */
 
-module platform.unix.scaffolds.color;
+module scaffold.color;
 
-import platform.unix.vars;
 import platform.unix.common;
 
 import core.color;

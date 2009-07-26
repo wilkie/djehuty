@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.definitions;
+module platform.definitions;
 
 version(PlatformLinux)
 {

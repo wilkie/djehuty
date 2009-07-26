@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.scaffolds.thread;
+module scaffold.thread;
 
 import core.string;
 import core.color;
@@ -18,8 +18,10 @@ import core.string;
 import synch.thread;
 
 import platform.unix.common;
-import platform.unix.definitions;
-import platform.unix.vars;
+
+import platform.vars.thread;
+import platform.vars.mutex;
+import platform.vars.semaphore;
 
 void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 {

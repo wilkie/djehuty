@@ -8,11 +8,11 @@
  *
  */
 
-module platform.unix.scaffolds.time;
+module scaffold.time;
 
 import platform.unix.common;
-import platform.unix.definitions;
-import platform.unix.vars;
+
+import core.definitions;
 
 // Timing
 

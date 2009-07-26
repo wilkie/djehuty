@@ -7,9 +7,9 @@
  *
  */
 
-module platform.unix.scaffolds.wave;
+module scaffold.wave;
 
-import platform.unix.vars;
+import platform.vars.wave;
 
 import core.string;
 import core.stream;
