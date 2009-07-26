@@ -8,7 +8,7 @@ DFLAGS =
 # can be changed
 PLATFORM = PlatformWindows
 
-LFLAGS_LINUX = -Iplatform/unix-L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -J./tests
+LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -J./tests
 LFLAGS_MAC = -Iplatform/osx -lobjc -framework Cocoa -framework Foundation
 LFLAGS_WIN = -Iplatform/win platform/win/lib/gdi32.lib platform/win/lib/user32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
 
@@ -21,7 +21,7 @@ endif
 DFILES_PLATFORM_MAC = platform/osx/console.d platform/osx/definitions.d platform/osx/common.d platform/osx/main.d platform/osx/scaffold.d platform/osx/vars.d platform/osx/scaffolds/graphics.d platform/osx/scaffolds/app.d platform/unix/scaffolds/file.d platform/osx/scaffolds/thread.d platform/osx/scaffolds/socket.d platform/osx/scaffolds/file.d platform/unix/scaffolds/thread.d platform/unix/vars.d platform/unix/scaffolds/socket.d platform/osx/scaffolds/window.d platform/unix/common.d platform/osx/scaffolds/color.d platform/osx/scaffolds/menu.d platform/osx/scaffolds/wave.d platform/osx/scaffolds/view.d
 OBJC_FILES = platform/osx/objc/test.m platform/osx/objc/window.m platform/osx/objc/app.m platform/osx/objc/view.m
 
-DFILES_PLATFORM_UNIX = platform/unix/scaffolds/system.d platform/unix/scaffolds/thread.d platform/unix/scaffolds/time.d platform/unix/console.d platform/unix/definitions.d platform/unix/common.d binding/cairo/cairo.d binding/x/Xlib.d binding/x/X.d platform/unix/main.d platform/unix/scaffold.d platform/unix/scaffolds/opengl.d platform/unix/vars.d platform/unix/scaffolds/graphics.d platform/unix/scaffolds/app.d platform/unix/scaffolds/file.d platform/unix/scaffolds/socket.d platform/unix/scaffolds/window.d platform/unix/scaffolds/color.d platform/unix/scaffolds/menu.d platform/unix/scaffolds/wave.d platform/unix/scaffolds/view.d platform/unix/scaffolds/directory.d
+DFILES_PLATFORM_UNIX = platform/unix/scaffold/system.d platform/unix/scaffold/thread.d platform/unix/scaffold/time.d platform/unix/scaffold/console.d platform/unix/platform/definitions.d platform/unix/common.d binding/cairo/cairo.d binding/x/Xlib.d binding/x/X.d platform/unix/main.d platform/unix/scaffold/opengl.d platform/unix/scaffold/graphics.d platform/unix/scaffold/file.d platform/unix/scaffold/socket.d platform/unix/scaffold/window.d platform/unix/scaffold/color.d platform/unix/scaffold/menu.d platform/unix/scaffold/wave.d platform/unix/scaffold/view.d platform/unix/scaffold/directory.d platform/unix/gui/apploop.d platform/unix/tui/apploop.d platform/unix/gui/osbutton.d binding/c.d
 DFILES_PLATFORM_WIN = platform/win/scaffold/system.d platform/win/main.d platform/win/common.d platform/win/platform/vars/menu.d platform/win/platform/vars/view.d platform/win/platform/vars/semaphore.d platform/win/platform/vars/mutex.d platform/win/platform/vars/region.d platform/win/platform/vars/library.d platform/win/platform/vars/wave.d platform/win/platform/vars/pen.d platform/win/platform/vars/brush.d platform/win/platform/vars/window.d platform/win/platform/vars/file.d platform/win/platform/vars/directory.d platform/win/platform/vars/font.d platform/win/platform/vars/socket.d platform/win/scaffold/console.d platform/win/platform/definitions.d platform/win/scaffold/wave.d platform/win/scaffold/directory.d platform/win/scaffold/graphics.d platform/win/scaffold/thread.d platform/win/scaffold/menu.d platform/win/scaffold/window.d platform/win/scaffold/view.d platform/win/scaffold/color.d platform/win/scaffold/file.d platform/win/scaffold/socket.d platform/win/gui/osbutton.d platform/win/scaffold/time.d platform/win/widget.d platform/win/scaffold/opengl.d platform/win/widget.d platform/win/gui/apploop.d platform/win/tui/apploop.d
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
@@ -88,7 +88,7 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
 else
-	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests
+	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
 endif
 endif
 

@@ -8,9 +8,9 @@
  *
  */
 
-module platform.unix.scaffolds.system;
+module scaffold.system;
 
-import platform.unix.vars;
+import platform.vars.library;
 
 import core.definitions;
 import core.string;

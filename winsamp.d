@@ -155,22 +155,22 @@ class MyControl : Widget {
 	this() {
 		super(200,200,100,100);
 	}
-	
-	override void onAdd() {
-		imgPNG = new Image("tests/test.png");
-		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
-		snd = new Sound("tests/begin.mp2");
+	override void onAdd() {
+//		imgPNG = new Image("tests/test.png");
+//		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
+
+//		snd = new Sound("tests/begin.mp2");
 		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {
-		g.drawImage(this.left,this.top,imgPNG);
-		g.drawImage(this.left,this.top,imgJPEG);
+//		g.drawImage(this.left,this.top,imgPNG);
+//		g.drawImage(this.left,this.top,imgJPEG);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
-		snd.play();
+//		snd.play();
 		return false;
 	}
 
@@ -184,7 +184,7 @@ class MyWindow : Window {
 	this() {
 		super("hey",WindowStyle.Fixed,Color.Red,0,0,300,300);
 	}
-	
+
 	override void onAdd() {
 		push(new OSButton(0,0,100,50,"yo"));
 		push(new MyControl());

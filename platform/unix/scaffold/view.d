@@ -7,13 +7,16 @@
  *
  */
 
-module platform.unix.scaffolds.view;
+module scaffold.view;
 
-import platform.unix.vars;
+import platform.vars.view;
+import platform.vars.window;
+
 import platform.unix.common;
 import platform.unix.main;
 
 import graphics.view;
+import graphics.bitmap;
 import graphics.graphics;
 
 import core.string;
@@ -31,7 +34,7 @@ void ViewCreate(ref View view, ref ViewPlatformVars viewVars)
 {
 	// code to create a view
 
-	viewVars.surface = Cairo.cairo_image_surface_create(Cairo.cairo_format_t.CAIRO_FORMAT_ARGB32, view.getWidth(), view.getHeight());
+	viewVars.surface = Cairo.cairo_image_surface_create(Cairo.cairo_format_t.CAIRO_FORMAT_ARGB32, view.width(), view.height());
 	viewVars.cr = Cairo.cairo_create(viewVars.surface);
 
 	viewVars.attr_list_opaque = Pango.pango_attr_list_new();
@@ -59,18 +62,18 @@ void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
 	}
 }
 
-void ViewCreateDIB(ref View view, ref ViewPlatformVars viewVars)
+void ViewCreateDIB(ref Bitmap view, ViewPlatformVars viewVars)
 {
 	// code to create a DIB view
-	ViewCreate(view, viewVars);
+	View theView = cast(View)view;
+	ViewCreate(theView, viewVars);
 
-	viewVars.bits_length = view.getWidth() * view.getHeight() * 4;
+	viewVars.bits_length = view.width() * view.height() * 4;
 }
 
-void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowHelper windowHelper)
+void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to create a view for a window
-	WindowPlatformVars* windowVars = windowHelper.getPlatformVars();
 
 	int screen, depth;
 
@@ -115,7 +118,7 @@ void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref
 	//Pango.pango_attribute_destroy(viewVars.attr_bg);
 }
 
-void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowHelper windowHelper)
+void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowHelper)
 {
 }
 
@@ -126,8 +129,8 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 	// this is because of performance concerns, you don't necessarily care
 	// about such things...it is also similar to resizing anything dynamic
 
-	int _width = view.getWidth();
-	int _height = view.getHeight();
+	int _width = view.width();
+	int _height = view.height();
 
 	//make the buffer
 	X.XFreePixmap(_pfvars.display, viewVars.pixmap);

@@ -7,10 +7,11 @@
  *
  */
 
-module platform.unix.scaffolds.file;
+module scaffold.file;
 
-import platform.unix.vars;
 import platform.unix.common;
+
+import platform.vars.file;
 
 import core.string;
 import core.main;

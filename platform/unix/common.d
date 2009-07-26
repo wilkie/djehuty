@@ -20,6 +20,8 @@ public import Pango = binding.pango.pango;
 
 public import binding.c;
 
+extern(C):
+
 size_t readlink(char* path, char* buf, size_t len);
 int getpid();
 

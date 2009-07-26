@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.console;
+module scaffold.console;
 
 import core.main;
 import core.unicode;
@@ -63,7 +63,7 @@ termios m_term_info_working;
 //signal handler for terminal Size
 
 extern(C) void close_sig_handler(int signal) {
-	DjehutyEnd();
+	Djehuty.end(0);
 	for(int i=0; i<256; i++) {
 		printf("\x1B[48;5;%dma", i);
 	}

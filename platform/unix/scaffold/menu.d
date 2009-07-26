@@ -7,9 +7,10 @@
  *
  */
 
-module platform.unix.scaffolds.menu;
+module scaffold.menu;
 
-import platform.unix.vars;
+import platform.vars.window;
+import platform.vars.menu;
 import platform.unix.common;
 
 import core.string;
@@ -47,7 +48,7 @@ void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatform
 	}
 }
 
-void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, WindowHelper windowHelper)
+void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, WindowPlatformVars* windowHelper)
 {
 }
 
