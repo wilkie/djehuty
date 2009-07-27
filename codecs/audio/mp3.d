@@ -165,7 +165,7 @@ class MP3Codec : AudioCodec {
 						header.Original = (mpeg_header & MPEG_ORIGINAL ? 1 : 0);
 						header.Emphasis = (mpeg_header & MPEG_EMPHASIS) >> MPEG_EMPHASIS_SHIFT;
 
-						Console.putln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
+						/*Console.putln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
 								"ID: ", header.ID, "\n",
 								"Layer: ", header.Layer, "\n",
 								"Protected: ", header.Protected, "\n",
@@ -177,23 +177,17 @@ class MP3Codec : AudioCodec {
 								"ModeExtension: ", header.ModeExtension, "\n",
 								"Copyright: ", header.Copyright, "\n",
 								"Original: ", header.Original, "\n",
-								"Emphasis: ", header.Emphasis);
+								"Emphasis: ", header.Emphasis); //*/
 
 						// Calculate the length of the Audio Data
-						audioDataLength = cast(uint)(144 * (cast(double)bitRates[header.BitrateIndex] / cast(double)samplingFrequencies[header.SamplingFrequency]));
-						audioDataLength = 0x33f;
+						
+						bufferLength = cast(uint)(144 * (cast(double)bitRates[header.BitrateIndex] / cast(double)samplingFrequencies[header.SamplingFrequency]));
 						if (header.Padding) {
-							audioDataLength++;
+							bufferLength++;
 						}
 
 						// subtract the size of the header
-						//audioDataLength -= 4;
-
-						// allocate the buffer
-						audioData = new ubyte[audioDataLength];
-
-						Console.putln("Audio Data Length: ", audioDataLength);
-						Console.putln("curByte: ", cast(ulong)audioData.ptr);
+						bufferLength -= 4;
 
 						// set the format of the wave buffer
 
@@ -258,7 +252,7 @@ class MP3Codec : AudioCodec {
 						// test 5K worth
 						syncAmount++;
 						
-						if (syncAmount == 1024*5) {
+						if (syncAmount == 1024*15) {
 							return StreamData.Invalid;
 						}
 
@@ -285,13 +279,11 @@ class MP3Codec : AudioCodec {
 					
 				case MP3_READ_AUDIO_DATA:
 					Console.putln("pos: ", new String("%x", stream.position));
+					
+					// curByte is currently at the end of the last frame (supposedly)
+					// main_data_end depicts the end of the data frame
 
-					// Read in enough data for decoding a buffer
-					if (!stream.read(audioData)) {
-						return StreamData.Required;
-					}
-
-					curByte = audioData.ptr;
+					curByte = audioData.length - bufferLength;
 					curPos = 0;
 
 					switch(header.Mode) {
@@ -318,264 +310,31 @@ class MP3Codec : AudioCodec {
 
 				case MP3_READ_AUDIO_DATA_SINGLE_CHANNEL:
 
-					// read in allocation bits
+					// Read in enough data for decoding a buffer
+					audioHeaderLength = 32;
 
-					// Determine which allocation table to use
-					//   depending on the sample frequency and bitrate
+					if (channels == 1) { audioHeaderLength = 17; }
+				
+					Console.putln("reading ", audioHeaderLength, " info header buffer");
 
-					// Table A:
-					//    48 kHz 	: 56, 64, 80, 96, 112, 128, 160, 192 kbits/s
-					//    44.1		: 56, 64, 80
-					//    32		: 56, 64, 80
-
-					// Table B:
-					//    48		: N/A
-					//    44.1		: 96, 112, 128, 160, 192
-					//    32		: 96, 112, 128, 160, 192
-
-					// Table C:
-					//    48		: 32, 48
-					//    44.1		: 32, 48
-					//    32		: N/A
-
-					// Table D:
-					//    48		: N/A
-					//    44.1		: N/A
-					//    32		: 32, 48
-
-					// scfsi[scfsi_band] -- In Layer III, the scalefactor
-					// selection information works similarly to Layers I and
-					// II. The main difference is the use of variable
-					// scfsi_band to apply scfsi to groups of scalefactors
-					// instead of single scalefactors. scfsi controls the
-					// use of scalefactors to the granules.
-
-					uint scfsi[4][2];
-
-					// part2_3_length[gr] -- This value contains the number of
-					// main_data bits used for scalefactors and Huffman code
-					// data. Because the length of the side information is
-					// always the same, this value can be used to calculate
-					// the beginning of the main information for each granule
-					// and the position of ancillary information (if used).
-
-					uint part2_3_length[2][2];
+					// read in the side info
+					if (!stream.read(audioHeader.ptr, audioHeaderLength)) {
+						return StreamData.Required;
+					}
 					
-					// big_values[gr] -- The spectral values of each granule
-					// are coded with different Huffman code tables. The full
-					// frequency range from zero to the Nyquist frequency is
-					// divided into several regions, which then are coded using
-					// different table. Partitioning is done according to the
-					// maximum quantized values. This is done with the
-					// assumption the values at higher frequencies are expected
-					// to have lower amplitudes or don't need to be coded at all.
-					// Starting at high frequencies, the pairs of quantized values
-					// with absolute value not exceeding 1 (i.e. only 3 possible
-					// quantization levels) are counted. This number is named
-					// "count1". Again, an even number of values remains. Finally,
-					// the number of pairs of values in the region of the spectrum
-					// which extends down to zero is named "big_values". The
-					// maximum absolute value in this range is constrained to 8191.
-					
-					// The figure shows the partitioning:
-					// xxxxxxxxxxxxx------------------00000000000000000000000000000
-					// |           |                 |                            |
-					// 1      bigvalues*2    bigvalues*2+count1*4             iblen
-					//
-					// The values 000 are all zero
-					// The values --- are -1, 0, or +1. Their number is a multiple of 4
-					// The values xxx are not bound
-					// iblen = 576
+					// reset bit stream
+					audioRef = audioHeader;
+					audioRefLength = audioHeader.length;
+					curByte = 0;
+					curPos = 0;
 
-					uint big_values[2][2];
+					Console.putln(audioRefLength, " <--- header length");
 
-					// global_gain[gr] -- The quantizer step size information is
-					// transmitted in the side information variable global_gain.
-					// It is logarithmically quantized. For the application of
-					// global_gain, refer to the formula in 2.4.3.4 (ISO 11172-3)
+					// The reading of side info
 
-					uint global_gain[2][2];
+					main_data_begin = readBits(9);	// actually main_data_end in the spec,
+													// but that makes no sense in this context
 
-					// scalefac_compress[gr] -- selects the number of bits used
-					// for the transmission of the scalefactors according to the
-					// following table:
-
-					// if block_type is 0, 1, or 3:
-					// slen1: length of scalefactors for scalefactor bands 0 to 10
-					// slen2: length of scalefactors for scalefactor bands 11 to 20
-
-					// if block_type is 2 and switch_point is 0:
-					// slen1: length of scalefactors for scalefactor bands 0 to 5
-					// slen2: length of scalefactors for scalefactor bands 6 to 11
-
-					// if block_type is 2 and switch_point is 1:
-					// slen1: length of scalefactors for scalefactor bands 0 to 7
-					//		(long window scalefactor band) and 4 to 5 (short window
-					//		scalefactor band)
-					// slen2: length of scalefactors for scalefactor bands 6 to 11
-
-					// scalefactor_compress slen1 slen2
-					//                    0     0     0
-					//                    1     0     1
-					//                    2     0     2
-					//                    3     0     3
-					//                    4     3     0
-					//                    5     1     1
-					//                    6     1     2
-					//                    7     1     3
-					//                    8     2     1
-					//                    9     2     2
-					//                   10     2     3
-					//                   11     3     1
-					//                   12     3     2
-					//                   13     3     3
-					//                   14     4     2
-					//                   15     4     3
-
-					uint scalefac_compress[2][2];
-
-					// blocksplit_flag[gr] -- signals that the block uses an other
-					// than normal (type 0) window. If blocksplit_flag is set,
-					// several other variables are set by default:
-
-					// region_address1 = 8 (in case of block_type == 1 or 3)
-					// region_address1 = 9 (in case of block_type == 2)
-					// region_address2 = 0 and the length of region 2 is zero
-
-					// If it is not set, the value of block_type is zero
-
-					uint blocksplit_flag[2][2];
-
-					// block_type[gr] -- indicates the window type for the actual
-					// granule (see the description of filterbank)
-
-					// type 0 - reserved
-					// type 1 - start block
-					// type 2 - 3 short windows
-					// type 3 - end block
-
-					uint block_type[2][2];
-
-					// switch_point[gr] -- signals the split point of short/long
-					// transforms. The following table shows the number of the
-					// scalefactor band above which window switching (i.e.
-					// block_type different from 0) is used.
-
-					// switch_point switch_point_l switch_point_s
-					//                (num of sb)    (num of sb)
-					// --------------------------------------------
-					//       0             0              0
-					//       1             8              3
-
-					uint switch_point[2][2];
-
-					// switch_point_l -- Number of the scalefactor band (long
-					// block scalefactor band) from which point on window
-					// switching is used.
-
-					uint switch_point_l;
-
-					// switch_point_s -- Number of the scalefactor band (short
-					// block scalefactor band) from which point on window
-					// switching is used.
-
-					uint switch_point_s;
-
-					// cb_limit -- Number of scalefactor bands for long blocks
-					// (block_type != 2). This is a constant, 21, for Layer III
-					// in all modes and at all sampling frequencies.
-
-					const uint cb_limit = 21;
-
-					// cb_limit_short -- Number of scalefactor bands for long
-					// blocks (block_type == 2). This is a constant, 12, for
-					// Layer III in all modes and at all sampling frequencies.
-
-					const uint cb_limit_short = 12;
-
-					// table_select[region][gr] -- different Huffman code tables
-					// are used depending on the maximum quantized value and the
-					// local statistics of the signal. There are a total of 32
-					// possible tables given in 3-Annex-B Table 3-B.7 (ISO 11172-3)
-
-					uint table_select[3][2][2];
-
-					// subblock_gain[window][gr] -- indicates the gain offset
-					// (quantization: factor 4) from the global gain for one
-					// subblock. Used only with block type 2 (short windows).
-					// The values of the subblock have to be divided by 4.
-
-					uint subblock_gain[3][2][2];
-
-					// region_address1[gr] -- A further partitioning of the
-					// spectrum is used to enhance the performance of the Huffman
-					// coder. It is a subdivision of the region which is described
-					// by big_values. The purpose of this subdivision is to get
-					// better error robustness and better coding efficiency. Three
-					// regions are used. Each region is coded using a different
-					// Huffman code table depending on the maximum quantized value
-					// and the local statistics.
-
-					// The values region_address[1,2] are used to point to the
-					// boundaries of the regions. The region boundaries are
-					// aligned with the partitioning of the spectrum into critical
-					// bands.
-
-					// In the case of block_type == 2 (short blocks) the scalefactor
-					// bands representing the different time slots are counted
-					// separately. If switch_point == 0, the total amount of scalefactor
-					// bands for the granule in this case is 12*3=36. If block_type == 2
-					// and switch_point == 1, the amount of scalefactor bands is
-					// 8+9*3=35. region_address1 counts the number of scalefactor bands
-					// until the upper edge of the first region:
-
-					// region_address1   upper_edge of region is upper edge
-					//                      of scalefactor band number:
-					//               0   0 (no first region)
-					//               1   1
-					//               2   2
-					//             ...   ...
-					//              15   15
-
-					uint region_address1[2][2];
-
-					// region_address2[gr] -- counts the number of scalefactor bands
-					// which are partially or totally in region 3. Again, if
-					// block_type == 2, then the scalefactor bands representing
-					// different time slots are counted separately.
-
-					uint region_address2[2][2];
-
-					// preflag[gr] -- This is a shortcut for additional high
-					// frequency amplification of the quantized values. If preflag
-					// is set, the values of a table are added to the scalefactors
-					// (see 3-Annex B, Table 3-B.6 ISO 11172-3). This is equivalent
-					// to multiplication of the requantized scalefactors with table
-					// values. preflag is never used if block_type == 2 (short blocks)
-
-					uint preflag[2][2];
-
-					// scalefac_scale[gr] -- The scalefactors are logarithmically
-					// quantized with a step size of 2 or sqrt(2) depending on
-					// the value of scalefac_scale:
-
-					// scalefac_scale = 0 ... stepsize = sqrt(2)
-					// scalefac_scale = 1 ... stepsize = 2
-
-					uint scalefac_scale[2][2];
-
-					// count1table_select[gr] -- This flag selects one of two
-					// possible Huffman code tables for the region of
-					// quadruples of quantized values with magnitude not
-					// exceeding 1. (ref to ISO 11172-3)
-
-					// count1table_select = 0 .. Table A of 3-Annex B.7
-					// count1table_select = 1 .. Table B of 3-Annex B.7
-
-					uint count1table_select[2][2];
-
-					main_data_end = readBits(9);
-					
 					if (channels == 1) {
 						readBits(5); // ignore private_bits
 					}
@@ -586,7 +345,6 @@ class MP3Codec : AudioCodec {
 					for(uint ch = 0; ch < channels; ch++) {
 						for(uint scfsi_band = 0; scfsi_band < 4; scfsi_band++) {
 							scfsi[scfsi_band][ch] = readBits(1);
-							Console.putln(scfsi[scfsi_band][ch], "scfsi[", scfsi_band, "]");
 						}
 					}
 
@@ -594,24 +352,19 @@ class MP3Codec : AudioCodec {
 						for(uint ch = 0; ch < channels; ch++) {
 
 							part2_3_length[gr][ch] = readBits(12);
-							Console.putln(part2_3_length[gr][ch], "part2_3_length");
 							big_values[gr][ch] = readBits(9);
-							Console.putln(big_values[gr][ch], "big_values");
 							global_gain[gr][ch] = readBits(8);
-							Console.putln(global_gain[gr][ch], "global_gain");
 							scalefac_compress[gr][ch] = readBits(4);
-							Console.putln(scalefac_compress[gr][ch], "scalefac_compress");
 							blocksplit_flag[gr][ch] = readBits(1);
-							Console.putln(blocksplit_flag[gr][ch], "blocksplit_flag");
+
+							slen1[gr][ch] = slen1_interpret[scalefac_compress[gr][ch]];
+							slen2[gr][ch] = slen2_interpret[scalefac_compress[gr][ch]];
 
 							if (blocksplit_flag[gr][ch]) {
 								block_type[gr][ch] = readBits(2);
-							Console.putln(block_type[gr][ch], "block_type");
 								switch_point[gr][ch] = readBits(1);
-							Console.putln(switch_point[gr][ch], "switch_point");
 								for (uint region = 0; region < 2; region++) {
 									table_select[region][gr][ch] = readBits(5);
-							Console.putln(table_select[region][gr][ch], "table_select[", region, "]");
 								}
 
 								// window -- Number of actual time slot in case of
@@ -619,7 +372,6 @@ class MP3Codec : AudioCodec {
 
 								for (uint window = 0; window < 3; window++) {
 									subblock_gain[window][gr][ch] = readBits(3);
-									Console.putln(subblock_gain[window][gr][ch], "subblock_gain[", window, "]");
 								}
 
 								if (block_type[gr][ch] == 2 && switch_point[gr][ch] == 0) {
@@ -628,38 +380,96 @@ class MP3Codec : AudioCodec {
 								else {
 									region_address1[gr][ch] = 7;
 								}
-								Console.putln(region_address1[gr][ch], "region_address1");
 
 								region_address2[gr][ch] = 20 - region_address1[gr][ch];
-							Console.putln(region_address2[gr][ch], "region_address2");
+							
+								if (switch_point[gr][ch] == 1) {
+									switch_point_l[gr][ch] = 8;
+									switch_point_s[gr][ch] = 3;
+								}
+								else {
+									switch_point_l[gr][ch] = 0;
+									switch_point_s[gr][ch] = 0;
+								}
 							}
 							else {
+								block_type[gr][ch] = 0;
+
 								for (uint region = 0; region < 3; region++) {
 									table_select[region][gr][ch] = readBits(5);
-							Console.putln(table_select[region][gr][ch], "table_select[", region, "]");
 								}
 
 								region_address1[gr][ch] = readBits(4);
-							Console.putln(region_address1[gr][ch], "region_address1");
 								region_address2[gr][ch] = readBits(3);
-							Console.putln(region_address2[gr][ch], "region_address2");
+
+								switch_point[gr][ch] = 0;
+								switch_point_l[gr][ch] = 0;
+								switch_point_s[gr][ch] = 0;
 							}
 
 							preflag[gr][ch] = readBits(1);
-							Console.putln(preflag[gr][ch], "preflag");
 							scalefac_scale[gr][ch] = readBits(1);
-							Console.putln(scalefac_scale[gr][ch], "scalefac_scale");
 							count1table_select[gr][ch] = readBits(1);
-							Console.putln(count1table_select[gr][ch], "count1table_select");
+						}
+					}
+					
+					bufferLength -= audioHeaderLength;
+
+					Console.putln("Audio Data Length: ", bufferLength);
+
+					// append the buffer
+					audioData ~= new ubyte[bufferLength];
+
+					/* followed by main data (at main_data_end... not immediately following) */
+
+					decoderState = MP3_READ_AUDIO_DATA_SCALE_FACTORS;
+
+				case MP3_READ_AUDIO_DATA_SCALE_FACTORS:
+				
+					Console.putln("reading ", bufferLength, " info decode buffer");
+
+					// read in the data
+					if (!stream.read(&audioData[$ - bufferLength], bufferLength)) {
+						return StreamData.Required;
+					}
+
+					// reset bit stream
+					curByte = audioData.length;
+					curByte -= bufferLength;
+					curByte -= main_data_begin;
+
+					main_data_begin = curByte;
+
+					Console.putln(curByte, " start of read");
+
+					audioRefLength = audioData.length;
+					audioRef = audioData;
+
+					curPos = 0;
+
+					for (uint gr = 0; gr < 2; gr++) {
+						for (uint ch = 0; ch < channels; ch++) {
+
+							part2_length = (curByte * 8) + curPos;
+
+							// Read the scalefactors for this granule
+
+							readScalefactors(gr, ch);
+
+							part2_length = ((curByte * 8) + curPos) - part2_length;
+
+							// Decode the current huffman data
+
+							decodeHuffman(gr, ch);
 						}
 					}
 
-					// followed by main data (at main_data_end... not immediately following)
-					
-					decoderState = MP3_READ_AUDIO_DATA_FRAME;
+					Console.putln(curByte, " end of read");
+					Console.putln(curByte - main_data_begin, " read");
 
-				case MP3_READ_AUDIO_DATA_FRAME:
+					main_data_end = curByte+1;
 
+					/* followed by huffman encoded data */
 
 					decoderState = MP3_READ_HEADER;
 					continue;
@@ -677,6 +487,112 @@ class MP3Codec : AudioCodec {
 
 protected:
 
+	void readScalefactors(uint gr, uint ch) {
+		if (blocksplit_flag[gr][ch] == 1 && block_type[gr][ch] == 2) {
+			if (switch_point[gr][ch] == 0) {
+
+				// Decoding scalefactors for a short window.
+
+            	for (uint cb = 0; cb < 6; cb++) {
+            		for (uint window = 0; window < 3; window++) {
+						scalefac[gr][ch].short_window[cb][window] = readBits(slen1[gr][ch]);
+						Console.putln(scalefac[gr][ch].short_window[cb][window], " ", slen1[gr][ch]);
+            		}
+            	}
+
+            	for (uint cb = 6; cb < cb_limit_short; cb++) {
+            		for (uint window = 0; window < 3; window++) {
+						scalefac[gr][ch].short_window[cb][window] = readBits(slen2[gr][ch]);
+						Console.putln(scalefac[gr][ch].short_window[cb][window], " ", slen2[gr][ch]);
+            		}
+            	}
+
+            	for (uint window = 0; window < 3; window++) {
+            		scalefac[gr][ch].short_window[12][window] = 0;
+            	}
+			}
+			else {
+
+				// Decoding scalefactors for a long window with a switch point to short.
+
+				for (uint cb = 0; cb < 8; cb++) {
+					if ((scfsi[cb][ch] == 0) || (gr == 0)) {
+						scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
+						Console.putln(scalefac[gr][ch].long_window[cb]);
+					}
+				}
+
+				for (uint cb = 3; cb < 6; cb++) {
+					for (uint window = 0; window < 3; window++) {
+						if ((scfsi[cb][ch] == 0) || (gr == 0)) {
+							scalefac[gr][ch].short_window[cb][window] = readBits(slen1[gr][ch]);
+							Console.putln(scalefac[gr][ch].short_window[cb][window]);
+						}
+					}
+				}
+
+				for (uint cb = 6; cb < cb_limit_short; cb++) {
+					for (uint window = 0; window < 3; window++) {
+						if ((scfsi[cb][ch] == 0) || (gr == 0)) {
+							scalefac[gr][ch].short_window[cb][window] = readBits(slen2[gr][ch]);
+							Console.putln(scalefac[gr][ch].short_window[cb][window]);
+						}
+					}
+				}
+
+				for (uint window = 0; window < 3; window++) {
+					if ((scfsi[cb_limit_short][ch] == 0) || (gr == 0)) {
+						scalefac[gr][ch].short_window[cb_limit_short][window] = 0;
+					}
+				}
+			}
+		}
+		else {
+
+			// The block_type cannot be 2 in this block (so, it must be block 0, 1, or 3).
+
+			// Decoding the scalefactors for a long window
+
+			if ((scfsi[0][ch] == 0) || (gr == 0)) {
+        		for (uint cb = 0; cb < 6; cb++) {
+					scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
+					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen1[gr][ch]);
+        		}
+			}
+
+			if ((scfsi[1][ch] == 0) || (gr == 0)) {
+        		for (uint cb = 6; cb < 11; cb++) {
+					scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
+					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen1[gr][ch]);
+        		}
+			}
+
+			if ((scfsi[2][ch] == 0) || (gr == 0)) {
+        		for (uint cb = 11; cb < 16; cb++) {
+					scalefac[gr][ch].long_window[cb] = readBits(slen2[gr][ch]);
+					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen2[gr][ch]);
+        		}
+			}
+
+			if ((scfsi[3][ch] == 0) || (gr == 0)) {
+        		for (uint cb = 16; cb < 21; cb++) {
+					scalefac[gr][ch].long_window[cb] = readBits(slen2[gr][ch]);
+					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen2[gr][ch]);
+        		}
+			}
+			
+			scalefac[gr][ch].long_window[22] = 0;
+		}
+	}
+	
+	void decodeHuffman(uint gr, uint ch) {							
+		// part2_3_length is the length of all of the data
+		// (huffman + scalefactors). part2_length is just
+		// the scalefactors by themselves.
+
+		readBits(part2_3_length[gr][ch] - part2_length);
+	}
+
 	uint readBits(uint bits) {
 		// read a byte, read bits, whatever necessary to get the value
 		//writeln("reading, # bits:", bits, " curbyte:", *curByte);
@@ -689,7 +605,7 @@ protected:
 
 		int shift;
 
-		if (curByte >= audioData.ptr + audioData.length) {
+		if (curByte >= audioRefLength) {
 			// We have consumed everything in our buffer
 			return 0;
 		}
@@ -705,7 +621,7 @@ protected:
 			}
 			//Console.putln("curpos:", curPos, " for bits:", bits, " maskbits:", maskbits);
 
-			curvalue = ((*curByte) & (byteMasks[maskbits][curPos]));
+			curvalue = (audioRef[curByte] & (byteMasks[maskbits][curPos]));
 
 			shift = ((8-cast(int)curPos) - cast(int)bits);
 
@@ -729,7 +645,7 @@ protected:
 				curPos = 0;
 				curByte++;
 
-				if (curByte >= audioData.ptr + audioData.length) {
+				if (curByte >= audioRefLength) {
 					// We have consumed everything in our buffer
 					return 0;
 				}
@@ -745,8 +661,11 @@ protected:
 	uint mpeg_header;
 
 	// bit building
-	ubyte* curByte;
+	uint curByte;
 	uint curPos;
+		
+	uint bufferLength;
+	uint audioHeaderLength;
 
 	// header information for the frame
 	MP3HeaderInformation header;
@@ -765,10 +684,15 @@ protected:
 	uint bufferSize;
 	Time bufferTime;
 	AudioFormat wf;
+	
+	ubyte[] audioRef;
+	uint audioRefLength;
 
-	uint audioDataLength;
+	ubyte[] audioData;
+	ubyte[32] audioHeader;
 
-	ubyte audioData[];
+	uint frame_start;
+	uint frame_end;
 
 	uint syncAmount;
 	
@@ -776,9 +700,290 @@ protected:
 	
 	// the main data end pointer
 	uint main_data_end;
+	uint main_data_begin;
 
 	// the current pointer (of last frame)
 	uint cur_data_ptr;
+
+	// cb_limit -- Number of scalefactor bands for long blocks
+	// (block_type != 2). This is a constant, 21, for Layer III
+	// in all modes and at all sampling frequencies.
+
+	const uint cb_limit = 21;
+
+	// cb_limit_short -- Number of scalefactor bands for long
+	// blocks (block_type == 2). This is a constant, 12, for
+	// Layer III in all modes and at all sampling frequencies.
+
+	const uint cb_limit_short = 12;
+
+	// scfsi[scfsi_band] -- In Layer III, the scalefactor
+	// selection information works similarly to Layers I and
+	// II. The main difference is the use of variable
+	// scfsi_band to apply scfsi to groups of scalefactors
+	// instead of single scalefactors. scfsi controls the
+	// use of scalefactors to the granules.
+
+	uint[2][cb_limit] scfsi;
+
+	// part2_3_length[gr] -- This value contains the number of
+	// main_data bits used for scalefactors and Huffman code
+	// data. Because the length of the side information is
+	// always the same, this value can be used to calculate
+	// the beginning of the main information for each granule
+	// and the position of ancillary information (if used).
+
+	uint[2][2] part2_3_length;
+	
+	// part2_length -- This value contains the number of
+	// main_data bits used for scalefactors and Huffman code
+	// data. Because the length of the side information is
+	// always the same, this value can be used to calculate
+	// the beginning of the main information for each granule
+	// and the position of ancillary information (if used).
+
+	uint part2_length;
+
+	// big_values[gr] -- The spectral values of each granule
+	// are coded with different Huffman code tables. The full
+	// frequency range from zero to the Nyquist frequency is
+	// divided into several regions, which then are coded using
+	// different table. Partitioning is done according to the
+	// maximum quantized values. This is done with the
+	// assumption the values at higher frequencies are expected
+	// to have lower amplitudes or don't need to be coded at all.
+	// Starting at high frequencies, the pairs of quantized values
+	// with absolute value not exceeding 1 (i.e. only 3 possible
+	// quantization levels) are counted. This number is named
+	// "count1". Again, an even number of values remains. Finally,
+	// the number of pairs of values in the region of the spectrum
+	// which extends down to zero is named "big_values". The
+	// maximum absolute value in this range is constrained to 8191.
+	
+	// The figure shows the partitioning:
+	// xxxxxxxxxxxxx------------------00000000000000000000000000000
+	// |           |                 |                            |
+	// 1      bigvalues*2    bigvalues*2+count1*4             iblen
+	//
+	// The values 000 are all zero
+	// The values --- are -1, 0, or +1. Their number is a multiple of 4
+	// The values xxx are not bound
+	// iblen = 576
+
+	uint[2][2] big_values;
+
+	// global_gain[gr] -- The quantizer step size information is
+	// transmitted in the side information variable global_gain.
+	// It is logarithmically quantized. For the application of
+	// global_gain, refer to the formula in 2.4.3.4 (ISO 11172-3)
+
+	uint[2][2] global_gain;
+
+	// scalefac_compress[gr] -- selects the number of bits used
+	// for the transmission of the scalefactors according to the
+	// following table:
+
+	// if block_type is 0, 1, or 3:
+	// slen1: length of scalefactors for scalefactor bands 0 to 10
+	// slen2: length of scalefactors for scalefactor bands 11 to 20
+
+	// if block_type is 2 and switch_point is 0:
+	// slen1: length of scalefactors for scalefactor bands 0 to 5
+	// slen2: length of scalefactors for scalefactor bands 6 to 11
+
+	// if block_type is 2 and switch_point is 1:
+	// slen1: length of scalefactors for scalefactor bands 0 to 7
+	//		(long window scalefactor band) and 4 to 5 (short window
+	//		scalefactor band)
+	// slen2: length of scalefactors for scalefactor bands 6 to 11
+
+	// scalefactor_compress slen1 slen2
+	//                    0     0     0
+	//                    1     0     1
+	//                    2     0     2
+	//                    3     0     3
+	//                    4     3     0
+	//                    5     1     1
+	//                    6     1     2
+	//                    7     1     3
+	//                    8     2     1
+	//                    9     2     2
+	//                   10     2     3
+	//                   11     3     1
+	//                   12     3     2
+	//                   13     3     3
+	//                   14     4     2
+	//                   15     4     3
+
+	uint[2][2] scalefac_compress;
+	
+	uint[2][2] slen1;
+	uint[2][2] slen2;
+
+	const int[16] slen1_interpret = [0, 0, 0, 0, 3, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4];
+	const int[16] slen2_interpret = [0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 3];
+
+	// blocksplit_flag[gr] -- signals that the block uses an other
+	// than normal (type 0) window. If blocksplit_flag is set,
+	// several other variables are set by default:
+
+	// region_address1 = 8 (in case of block_type == 1 or 3)
+	// region_address1 = 9 (in case of block_type == 2)
+	// region_address2 = 0 and the length of region 2 is zero
+
+	// If it is not set, the value of block_type is zero
+
+	uint[2][2] blocksplit_flag;
+
+	// block_type[gr] -- indicates the window type for the actual
+	// granule (see the description of filterbank)
+
+	// type 0 - reserved
+	// type 1 - start block
+	// type 2 - 3 short windows
+	// type 3 - end block
+
+	uint[2][2] block_type;
+
+	// switch_point[gr] -- signals the split point of short/long
+	// transforms. The following table shows the number of the
+	// scalefactor band above which window switching (i.e.
+	// block_type different from 0) is used.
+
+	// switch_point switch_point_l switch_point_s
+	//                (num of sb)    (num of sb)
+	// --------------------------------------------
+	//       0             0              0
+	//       1             8              3
+
+	uint[2][2] switch_point;
+
+	// switch_point_l -- Number of the scalefactor band (long
+	// block scalefactor band) from which point on window
+	// switching is used.
+
+	uint[2][2] switch_point_l;
+
+	// switch_point_s -- Number of the scalefactor band (short
+	// block scalefactor band) from which point on window
+	// switching is used.
+
+	uint[2][2] switch_point_s;
+
+	// table_select[region][gr] -- different Huffman code tables
+	// are used depending on the maximum quantized value and the
+	// local statistics of the signal. There are a total of 32
+	// possible tables given in 3-Annex-B Table 3-B.7 (ISO 11172-3)
+
+	uint[2][2][3] table_select;
+
+	// subblock_gain[window][gr] -- indicates the gain offset
+	// (quantization: factor 4) from the global gain for one
+	// subblock. Used only with block type 2 (short windows).
+	// The values of the subblock have to be divided by 4.
+
+	uint[2][2][3] subblock_gain;
+
+	// region_address1[gr] -- A further partitioning of the
+	// spectrum is used to enhance the performance of the Huffman
+	// coder. It is a subdivision of the region which is described
+	// by big_values. The purpose of this subdivision is to get
+	// better error robustness and better coding efficiency. Three
+	// regions are used. Each region is coded using a different
+	// Huffman code table depending on the maximum quantized value
+	// and the local statistics.
+
+	// The values region_address[1,2] are used to point to the
+	// boundaries of the regions. The region boundaries are
+	// aligned with the partitioning of the spectrum into critical
+	// bands.
+
+	// In the case of block_type == 2 (short blocks) the scalefactor
+	// bands representing the different time slots are counted
+	// separately. If switch_point == 0, the total amount of scalefactor
+	// bands for the granule in this case is 12*3=36. If block_type == 2
+	// and switch_point == 1, the amount of scalefactor bands is
+	// 8+9*3=35. region_address1 counts the number of scalefactor bands
+	// until the upper edge of the first region:
+
+	// region_address1   upper_edge of region is upper edge
+	//                      of scalefactor band number:
+	//               0   0 (no first region)
+	//               1   1
+	//               2   2
+	//             ...   ...
+	//              15   15
+
+	uint[2][2] region_address1;
+
+	// region_address2[gr] -- counts the number of scalefactor bands
+	// which are partially or totally in region 3. Again, if
+	// block_type == 2, then the scalefactor bands representing
+	// different time slots are counted separately.
+
+	uint[2][2] region_address2;
+
+	// preflag[gr] -- This is a shortcut for additional high
+	// frequency amplification of the quantized values. If preflag
+	// is set, the values of a table are added to the scalefactors
+	// (see 3-Annex B, Table 3-B.6 ISO 11172-3). This is equivalent
+	// to multiplication of the requantized scalefactors with table
+	// values. preflag is never used if block_type == 2 (short blocks)
+
+	uint[2][2] preflag;
+
+	// scalefac_scale[gr] -- The scalefactors are logarithmically
+	// quantized with a step size of 2 or sqrt(2) depending on
+	// the value of scalefac_scale:
+
+	// scalefac_scale = 0 ... stepsize = sqrt(2)
+	// scalefac_scale = 1 ... stepsize = 2
+
+	uint[2][2] scalefac_scale;
+
+	// count1table_select[gr] -- This flag selects one of two
+	// possible Huffman code tables for the region of
+	// quadruples of quantized values with magnitude not
+	// exceeding 1. (ref to ISO 11172-3)
+
+	// count1table_select = 0 .. Table A of 3-Annex B.7
+	// count1table_select = 1 .. Table B of 3-Annex B.7
+
+	uint[2][2] count1table_select;
+	
+	// scalefac[cb][gr] -- The scalefactors are used to color
+	// the quantization noise. If the quantization noise is
+	// colored with the right shape, it is masked completely.
+	// Unlike Layers I and II, the Layer III scalefactors say
+	// nothing about the local maximum of the quantized signal.
+	// In Layer III, the blocks stretch over several frequency
+	// lines. These blocks are called scalefactor bands and are
+	// selected to resemble critical bands as closely as possible.
+	
+	// The scalefac_compress table shows that scalefactors 0-10
+	// have a range of 0 to 15 (maximum length 4 bits) and the
+	// scalefactors 11-21 have a range of 0 to 7 (3 bits).
+
+	// If intensity_stereo is enabled (modebit_extension) the
+	// scalefactors of the "zero_part" of the difference (right)
+	// channel are used as intensity_stereo positions
+	
+	// The subdivision of the spectrum into scalefactor bands is
+	// fixed for every block length and sampling frequency and
+	// stored in tables in the coder and decoder. (3-Annex 3-B.8)
+	
+	// The scalefactors are logarithmically quantized. The
+	// quantization step is set with scalefac_scale.
+
+	// scalefac[cb][window][gr] -- same as scalefac[cb][gr] but for
+	// different windows when block_type == 2.
+
+	struct ScaleFactor {
+		uint[3][13] short_window;
+		uint[23] long_window;
+	}
+
+	ScaleFactor[2][2] scalefac;
 
 private:
 
@@ -790,7 +995,7 @@ private:
 		MP3_READ_CRC,
 		MP3_READ_AUDIO_DATA,
 		MP3_READ_AUDIO_DATA_SINGLE_CHANNEL,
-		MP3_READ_AUDIO_DATA_FRAME,
+		MP3_READ_AUDIO_DATA_SCALE_FACTORS,
 		MP3_READ_AUDIO_DATA_JOINT_STEREO,
 	}
 
