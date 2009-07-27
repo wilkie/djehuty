@@ -1,5 +1,6 @@
 import tui.application;
-import console.main;
+
+import io.console;
 
 import gamewindow;
 

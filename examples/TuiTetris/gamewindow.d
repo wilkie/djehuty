@@ -1,6 +1,7 @@
 import tui.window;
 import tui.label;
-import console.main;
+
+import io.console;
 
 import djehuty;
 

@@ -7,9 +7,11 @@
  *
  */
 
-module platform.unix.scaffolds.window;
+module scaffold.window;
 
-import platform.unix.vars;
+import platform.vars.window;
+import platform.vars.view;
+
 import platform.unix.common;
 import platform.unix.main;
 
@@ -88,9 +90,9 @@ const int PAllHints     = (PPosition|PSize|
 
 
 // all windows
-void WindowCreate(ref Window window, WindowHelper windowHelper)
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code to create the window
 	windowVars.destroy_called = false;
@@ -120,9 +122,9 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 
 	X.Status r = X.XSetWMProtocols(_pfvars.display, windowVars.window, &_pfvars.wm_destroy_window, 1);
 
-	WindowRebound(window, windowHelper);
+	WindowRebound(window, windowVars);
 
-	WindowSetTitle(window, windowHelper);
+	WindowSetTitle(window, windowVars);
 
 	X.XChangeWindowAttributes(_pfvars.display, windowVars.window, X.WindowAttribute.CWOverrideRedirect, &attributes);
 
@@ -130,7 +132,7 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 
 	if (window.visible)
 	{
-		WindowSetVisible(window, windowHelper, true);
+		WindowSetVisible(window, windowVars, true);
 	}
 
 	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
@@ -142,36 +144,36 @@ void WindowCreate(ref Window window, WindowHelper windowHelper)
 	window.onAdd();
 }
 
-void WindowCreate(ref Window parent, WindowHelper parentHelper, ref Window window, WindowHelper windowHelper)
+void WindowCreate(ref Window parent, WindowPlatformVars* parentHelper, ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to create a child window
 	//int screen;
 
-	WindowCreate(window, windowHelper);
+	WindowCreate(window, windowVars);
 	return;
 }
 
-void WindowSetStyle(ref Window window, WindowHelper windowHelper)
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to change the style of a window
 }
 
-void WindowReposition(ref Window window, WindowHelper windowHelper)
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to move a window
 }
 
-void WindowSetState(ref Window window, WindowHelper windowHelper)
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to change the state of a window
 }
 
-void WindowRebound(ref Window window, WindowHelper windowHelper)
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 	// code to Size a window
 	int width, height;
 	width = window.width;
@@ -242,9 +244,9 @@ void WindowRebound(ref Window window, WindowHelper windowHelper)
 	}
 }
 
-void WindowDestroy(ref Window window, WindowHelper windowHelper)
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code to destroy a window
 	windowVars.destroy_called = true;
@@ -253,9 +255,9 @@ void WindowDestroy(ref Window window, WindowHelper windowHelper)
 	X.XDestroyWindow(_pfvars.display, windowVars.window);
 }
 
-void WindowSetVisible(ref Window window, WindowHelper windowHelper, bool bShow)
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code to show or hide a window
 	if (bShow)
@@ -268,9 +270,9 @@ void WindowSetVisible(ref Window window, WindowHelper windowHelper, bool bShow)
 	}
 }
 
-void WindowSetTitle(ref Window window, WindowHelper windowHelper)
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code to change a window's title
 
@@ -317,28 +319,28 @@ void WindowSetTitle(ref Window window, WindowHelper windowHelper)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref int x, ref int y)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
 {
 	//Coord pt = {x,y};
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
-	auto windowVars = windowHelper.getPlatformVars();
+
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
 		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Coord pt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
 {
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
-	auto windowVars = windowHelper.getPlatformVars();
+
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
 		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect rt)
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 }
 
 
@@ -346,9 +348,9 @@ void WindowClientToScreen(ref Window window, WindowHelper windowHelper, ref Rect
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code executed at the start of a redraw for a window
 
@@ -373,9 +375,9 @@ void WindowStartDraw(ref Window window, WindowHelper windowHelper, ref WindowVie
 	viewVars.isOpaqueRendering = 0;
 }
 
-void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref WindowView view, ref ViewPlatformVars viewVars)
+void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
 {
-	auto windowVars = windowHelper.getPlatformVars();
+
 
 	// code to reclaim resources, and executed after all components have drawn to the window
 
@@ -387,12 +389,12 @@ void WindowEndDraw(ref Window window, WindowHelper windowHelper, ref WindowView 
 		0, 0, window.width, window.height, 0, 0);
 }
 
-void WindowCaptureMouse(ref Window window, WindowHelper windowHelper)
+void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars)
 {
 	// capture the mouse
 }
 
-void WindowReleaseMouse(ref Window window, WindowHelper windowHelper)
+void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars)
 {
 	// release the mouse
 }

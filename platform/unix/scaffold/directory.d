@@ -7,10 +7,13 @@
  *
  */
 
-module platform.unix.scaffolds.directory;
+module scaffold.directory;
 
-import platform.unix.vars;
 import platform.unix.common;
+import binding.c;
+
+import platform.vars.directory;
+import platform.vars.file;
 
 import io.file;
 

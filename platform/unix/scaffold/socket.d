@@ -7,9 +7,10 @@
  *
  */
 
-module platform.unix.scaffolds.socket;
+module scaffold.socket;
 
-import platform.unix.vars;
+import platform.vars.socket;
+
 import platform.unix.common;
 
 import core.string;

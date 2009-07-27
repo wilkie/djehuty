@@ -7,13 +7,14 @@
  *
  */
 
-module platform.unix.scaffolds.opengl;
+module scaffold.opengl;
 
 import opengl.gl;
 import opengl.window;
 
 import platform.unix.common;
-import platform.unix.vars;
+
+import platform.vars.window;
 
 void OpenGLWindowInitialize(ref GLWindow glWindow, WindowPlatformVars* windowVars)
 {

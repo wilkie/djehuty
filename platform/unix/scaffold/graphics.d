@@ -7,7 +7,7 @@
  *
  */
 
-module platform.unix.scaffolds.graphics;
+module scaffold.graphics;
 
 import core.string;
 import core.color;
@@ -19,8 +19,13 @@ import graphics.view;
 import graphics.graphics;
 
 import platform.unix.common;
-import platform.unix.definitions;
-import platform.unix.vars;
+import platform.unix.main;
+
+import platform.vars.view;
+import platform.vars.region;
+import platform.vars.brush;
+import platform.vars.pen;
+import platform.vars.font;
 
 import graphics.region;
 
@@ -428,8 +433,8 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	double x1,y1,x2,y2;
 	x1 = x;
 	y1 = y;
-	x2 = view.getWidth() - viewX;
-	y2 = view.getHeight() - viewY;
+	x2 = view.width() - viewX;
+	y2 = view.height() - viewY;
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
 	Cairo.cairo_fill(viewVars.cr);
 }
@@ -458,8 +463,8 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	double x1,y1,x2,y2;
 	x1 = x;
 	y1 = y;
-	x2 = view.getWidth() - viewX;
-	y2 = view.getHeight() - viewY;
+	x2 = view.width() - viewX;
+	y2 = view.height() - viewY;
 	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
 	Cairo.cairo_clip(viewVars.cr);

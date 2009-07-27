@@ -1,9 +1,11 @@
 import djehuty;
 
 import tui.widget;
+
 import synch.timer;
 import synch.semaphore;
-import console.main;
+
+import io.console;
 
 import tetris;
 
