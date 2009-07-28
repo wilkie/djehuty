@@ -39,6 +39,7 @@ class GuiApplicationController {
 	}
 
 	void end(uint code) {
+		_pfvars.running = false;
 	}
 
 private:
