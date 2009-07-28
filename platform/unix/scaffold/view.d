@@ -46,7 +46,6 @@ void ViewCreate(ref View view, ref ViewPlatformVars viewVars)
 	viewVars.attr_bg.end_index = -1;
 
 	Pango.pango_attr_list_insert(viewVars.attr_list_opaque, viewVars.attr_bg);
-
 }
 
 void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
@@ -62,11 +61,19 @@ void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
 	}
 }
 
-void ViewCreateDIB(ref Bitmap view, ViewPlatformVars viewVars)
+void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
 {
 	// code to create a DIB view
-	View theView = cast(View)view;
-	ViewCreate(theView, viewVars);
+	viewVars.surface = Cairo.cairo_image_surface_create(Cairo.cairo_format_t.CAIRO_FORMAT_ARGB32, view.width(), view.height());
+	viewVars.cr = Cairo.cairo_create(viewVars.surface);
+
+	viewVars.attr_list_opaque = Pango.pango_attr_list_new();
+	viewVars.attr_list_transparent = Pango.pango_attr_list_new();
+
+	viewVars.attr_bg = Pango.pango_attr_background_new(0xFFFF, 0xFFFF, 0xFFFF);
+
+	viewVars.attr_bg.start_index = 0;
+	viewVars.attr_bg.end_index = -1;
 
 	viewVars.bits_length = view.width() * view.height() * 4;
 }
