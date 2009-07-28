@@ -30,7 +30,7 @@ import utils.linkedlist;
 
 
 // views
-void ViewCreate(View view, ref ViewPlatformVars viewVars)
+void ViewCreate(View view, ViewPlatformVars*viewVars)
 {
 	HDC dc;
 
@@ -49,12 +49,12 @@ void ViewCreate(View view, ref ViewPlatformVars viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
+void ViewDestroy(ref View view, ViewPlatformVars*viewVars)
 {
 	DeleteDC(viewVars.dc);
 }
 
-void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
+void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars)
 {
 	HDC dc;
 
@@ -84,17 +84,17 @@ void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
+void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 	//will set _inited to true:
 	ViewCreate(view, viewVars);
 }
 
-void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
+void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 }
 
-void ViewResize(ref View view, ref ViewPlatformVars viewVars)
+void ViewResize(ref View view, ViewPlatformVars*viewVars)
 {
 	HDC dc;
 
@@ -125,18 +125,18 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 	DeleteObject(bmp);
 }
 
-void* ViewGetBytes(ref ViewPlatformVars viewVars, ref ulong length)
+void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length)
 {
 	length = viewVars.length;
 	return viewVars.bits;
 }
 
-void* ViewGetBytes(ref ViewPlatformVars viewVars)
+void* ViewGetBytes(ViewPlatformVars*viewVars)
 {
 	return viewVars.bits;
 }
 
-uint ViewRGBAToInt32(ref bool _forcenopremultiply, ref ViewPlatformVars _pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
+uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
 {
 	//writeln("rgba");
 	if (!_forcenopremultiply)
@@ -151,7 +151,7 @@ uint ViewRGBAToInt32(ref bool _forcenopremultiply, ref ViewPlatformVars _pfvars,
 	return (r << 16) | (g << 8) | (b) | (a << 24);
 }
 
-uint ViewRGBAToInt32(ref ViewPlatformVars _pfvars, ref uint r, ref uint g, ref uint b)
+uint ViewRGBAToInt32(ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b)
 {
 	//writeln("rgb");
 	return (r << 16) | (g << 8) | (b) | 0xFF000000;

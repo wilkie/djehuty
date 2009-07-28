@@ -35,10 +35,10 @@ class Bitmap : View {
 
 		_width = width;
 		_height = height;
-		
+
 		_hasAlpha = false;
 
-		ViewCreateDIB(this, _pfvars);
+		ViewCreateDIB(this, &_pfvars);
 
 		_inited = true;
 
@@ -46,12 +46,12 @@ class Bitmap : View {
 	}
 
 	void* getBufferUnsafe() {
-		return ViewGetBytes(_pfvars);
+		return ViewGetBytes(&_pfvars);
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		_buffer_mutex.down();
-		bufferPtr[0] = ViewGetBytes(_pfvars, length);
+		bufferPtr[0] = ViewGetBytes(&_pfvars, length);
 	}
 
 	void unlockBuffer() {

@@ -68,7 +68,7 @@ public:
 		_height = height;
 
 		if (_inited) {
-			ViewResize(this, _pfvars);
+			ViewResize(this, &_pfvars);
 		}
 
 		_mutex.up();
@@ -142,11 +142,11 @@ public:
 	}
 
 	uint rgbaTouint(uint r, uint g, uint b, uint a) {
-		return ViewRGBAToInt32(_forcenopremultiply,_pfvars,r,g,b,a);
+		return ViewRGBAToInt32(_forcenopremultiply,&_pfvars,r,g,b,a);
 	}
 
 	uint rgbTouint(uint r, uint g, uint b) {
-		return ViewRGBAToInt32(_pfvars,r,g,b);
+		return ViewRGBAToInt32(&_pfvars,r,g,b);
 	}
 
 protected:
@@ -169,7 +169,7 @@ protected:
 	Semaphore _mutex;
 
 	void _destroy() {
-		ViewDestroy(this, _pfvars);
+		ViewDestroy(this, &_pfvars);
 
 		_inited = false;
 
@@ -178,7 +178,7 @@ protected:
 	}
 
 	void _platformCreate() {
-		ViewCreate(this, _pfvars);
+		ViewCreate(this, &_pfvars);
 	}
 
 	// Retained Objects
