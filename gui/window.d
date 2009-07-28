@@ -660,7 +660,7 @@ public:
 	}
 
 	void onResize() {
-		ViewResizeForWindow(_view, *_viewVars, this, &_pfvars);
+		ViewResizeForWindow(_view, _viewVars, this, &_pfvars);
 
 		onDraw();
 	}
@@ -1056,7 +1056,7 @@ class WindowView : View {
 protected:
 
 	override void _platformCreate() {
-		ViewCreateForWindow(this, _pfvars, _window, _windowVars);
+		ViewCreateForWindow(this, &_pfvars, _window, _windowVars);
 	}
 
 private:
@@ -1065,7 +1065,7 @@ private:
 		_window = window;
 		_windowVars = windowVars;
 		View.create(window.width, window.height);
-		
+
 		return &_pfvars;
 	}
 

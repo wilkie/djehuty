@@ -30,7 +30,7 @@ import gui.window;
 //import console.main;
 
 // views
-void ViewCreate(ref View view, ref ViewPlatformVars viewVars)
+void ViewCreate(ref View view, ViewPlatformVars*viewVars)
 {
 	// code to create a view
 
@@ -48,7 +48,7 @@ void ViewCreate(ref View view, ref ViewPlatformVars viewVars)
 	Pango.pango_attr_list_insert(viewVars.attr_list_opaque, viewVars.attr_bg);
 }
 
-void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
+void ViewDestroy(ref View view, ViewPlatformVars*viewVars)
 {
 	// code to destroy a view
 	Cairo.cairo_destroy(viewVars.cr);
@@ -61,7 +61,7 @@ void ViewDestroy(ref View view, ref ViewPlatformVars viewVars)
 	}
 }
 
-void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
+void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars)
 {
 	// code to create a DIB view
 	viewVars.surface = Cairo.cairo_image_surface_create(Cairo.cairo_format_t.CAIRO_FORMAT_ARGB32, view.width(), view.height());
@@ -78,7 +78,7 @@ void ViewCreateDIB(ref Bitmap view, ref ViewPlatformVars viewVars)
 	viewVars.bits_length = view.width() * view.height() * 4;
 }
 
-void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowVars)
+void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars)
 {
 	// code to create a view for a window
 
@@ -125,11 +125,11 @@ void ViewCreateForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref
 	//Pango.pango_attribute_destroy(viewVars.attr_bg);
 }
 
-void ViewResizeForWindow(ref WindowView view, ref ViewPlatformVars viewVars, ref Window window, WindowPlatformVars* windowHelper)
+void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowHelper)
 {
 }
 
-void ViewResize(ref View view, ref ViewPlatformVars viewVars)
+void ViewResize(ref View view, ViewPlatformVars*viewVars)
 {
 	// code to Size a view, no concern needs to be taken
 	// to preserve the view's contents and the image within the view
@@ -168,18 +168,18 @@ void ViewResize(ref View view, ref ViewPlatformVars viewVars)
 		viewVars.pixmap, 0, null);
 }
 
-void* ViewGetBytes(ref ViewPlatformVars viewVars, ref ulong length)
+void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length)
 {
 	length = viewVars.bits_length;
 	return Cairo.cairo_image_surface_get_data(viewVars.surface);
 }
 
-void* ViewGetBytes(ref ViewPlatformVars viewVars)
+void* ViewGetBytes(ViewPlatformVars*viewVars)
 {
 	return Cairo.cairo_image_surface_get_data(viewVars.surface);
 }
 
-uint ViewRGBAToInt32(ref bool _forcenopremultiply, ref ViewPlatformVars _pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
+uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
 {
 	if (!_forcenopremultiply)
 	{
@@ -193,7 +193,7 @@ uint ViewRGBAToInt32(ref bool _forcenopremultiply, ref ViewPlatformVars _pfvars,
 	return (r << 16) | (g << 8) | (b) | (a << 24);
 }
 
-uint ViewRGBAToInt32(ref ViewPlatformVars _pfvars, ref uint r, ref uint g, ref uint b)
+uint ViewRGBAToInt32(ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b)
 {
 	return (r << 16) | (g << 8) | (b) | 0xFF000000;
 }
