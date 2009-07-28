@@ -68,6 +68,8 @@ TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
 
 EXAMPLES_TUITETRIS = examples/tuitetris/app.d examples/tuitetris/gamewindow.d examples/tuitetris/tetris.d examples/tuitetris/gamecontrol.d
 
+EXAMPLES_MOREDUCKS = examples/MoreDucks/MoreDucks.d
+
 libdeps_linux: $(OBJS_LINUX)
 	@echo ">> framework compilation complete. <<"
 
@@ -210,6 +212,19 @@ ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -oftuitetris -d-version=PlatformLinux $(EXAMPLES_TUITETRIS) $(OBJS_LINUX)
+endif
+endif
+
+moreducks: lib
+
+	@echo compiling More Ducks example and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o tuitetris winsamp.o $(OBJS_MAC)
+else
+ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=$(PLATFORM) -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
 endif
 endif
 
