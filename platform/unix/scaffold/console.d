@@ -30,7 +30,6 @@ void ConsoleSetColors(uint fg, uint bg, int bright)
 //will return the next character pressed
 ulong consoleGetKey()
 {
-
 	ulong tmp;
 	tmp = getchar();
 
@@ -145,6 +144,36 @@ ulong consoleGetKey()
 						while (getchar() != 0x7E) {}
 					}
 				}
+			}
+			else if (tmp >= cast(uint)'0' && tmp <= cast(uint)'9') {
+				// Hopefully this is a row and column request
+
+				// So, grab them
+
+				uint row = 0;
+				uint col = 0;
+				while(tmp != cast(uint)';') {
+					row *= 10;
+					row += tmp - cast(uint)'0';
+
+					tmp = getchar();
+				}
+
+				// We have received a ';'
+
+				tmp = getchar();
+
+				while(tmp != cast(uint)'R') {
+					col *= 10;
+					col += tmp - cast(uint)'0';
+
+					tmp = getchar();
+				}
+
+				printf("row: %d col: %d\n", row, col);
+
+				// call again, to obtain next code
+				return consoleGetKey();
 			}
 			else
 			{
@@ -327,6 +356,73 @@ void ConsoleInit()
     //m_term_info_working.c_iflag &= (~(ISTRIP | INLCR | IGNCR | IXON | IXOFF));
     m_term_info_working.c_lflag &= ~(ECHO | ICANON); //ISIG -- stops ctrl_c, ect
     ioctl(STDIN, TCSETS, &m_term_info_working);
+
+	// Get current position
+//	printf("\x1B[6n");
+	m_x = 0;
+	m_y = 0;
+
+	// Start gathering input for escape sequence
+	uint tmp;
+	uint state;
+
+	uint row;
+	uint col;
+/*
+	for(;state < 4;) {
+		tmp = getchar();
+		putChar(tmp);
+		printf("another char %d\n", bufferPosWrite);
+		switch(state) {
+			case 0:
+				if (tmp == 0x1b) {
+					state++;
+					continue;
+				}
+				state = 0;
+				break;
+			case 1:
+				if (tmp == cast(uint)'[') {
+					state++;
+					continue;
+				}
+				state = 0;
+				break;
+			case 2:
+				if (tmp >= '0' && tmp <= '9') {
+					row *= 10;
+					row += tmp - '0';
+					continue;
+				}
+				else if (tmp == ';') {
+					state++;
+					continue;
+				}
+				state = 0;
+				break;
+			case 3:
+				if (tmp >= '0' && tmp <= '9') {
+					col *= 10;
+					col += tmp - '0';
+					continue;
+				}
+				else if (tmp == 'R') {
+					state++;
+					continue;
+				}
+				state = 0;
+				break;
+			default:
+				break;
+		}
+	}
+
+	// Somebody, for some reason, before the advent of sanity
+	// figured, what the hai, lets index rows and columns starting
+	// at 1. That won't be annoying AT ALL.
+	row--;
+	col--;
+	*/
 }
 
 void ConsoleUninit()
@@ -362,8 +458,17 @@ void ConsoleSetRelative(int x, int y)
 	else if (y > 0)
 	{
 		// move down
-		printf("\x1B[%dB", y);
+		for (;y>0;y--) {
+		//	printf("\x1B[%dB", y);
+			printf("\n");
+		}
 	}
+}
+
+uint[] ConsoleGetPosition()
+{
+
+	return [m_x, m_y];
 }
 
 void ConsoleSetPosition(uint x, uint y)

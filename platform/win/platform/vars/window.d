@@ -104,11 +104,12 @@ struct WindowPlatformVars {
 		}
 
 		oldTitle.appendChar('\0');
-		hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle,// | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-			oldX, oldY, oldWidth, oldHeight, null,
-			cast(HMENU) null, null, cast(void*)userData);
-
-		assert(hWnd);
+		
+		while(hWnd is null) {
+			hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle,// | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+				oldX, oldY, oldWidth, oldHeight, null,
+				cast(HMENU) null, null, cast(void*)userData);
+		}
 
 		// create the window's view object
 		windowClass.onInitialize();
