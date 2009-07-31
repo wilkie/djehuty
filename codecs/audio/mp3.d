@@ -589,7 +589,31 @@ protected:
 		// part2_3_length is the length of all of the data
 		// (huffman + scalefactors). part2_length is just
 		// the scalefactors by themselves.
+		
+		static const auto max_table_entry = 15;
+		
+		uint region1Start;
+		uint region2Start;
 
+		if (blocksplit_flag[gr][ch] == 1 && block_type[gr][ch] == 2) {
+			// Short Blocks
+			region1Start = 36;
+			region2Start = 576; // There isn't a region 2 for short blocks
+		}
+/*		else {
+			// Long Blocks
+			region1Start = ;
+			region2Start = ;
+		}
+   else {          /Find region boundary for long block case. *
+
+      region1Start = sfBandIndex[sfreq]
+                           .l[(*si).ch[ch].gr[gr].region0_count + 1]; /* MI *
+      region2Start = sfBandIndex[sfreq]
+                              .l[(*si).ch[ch].gr[gr].region0_count +
+                              (*si).ch[ch].gr[gr].region1_count + 2]; /* MI *
+      }
+*/
 		readBits(part2_3_length[gr][ch] - part2_length);
 	}
 
@@ -1063,4 +1087,48 @@ private:
 	// layer 3 bit rates (MPEG-1)
 	const uint[] bitRates = [ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 ]; // the first entry is the 'free' bitrate
 	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
+	
+	// Scalefactor band widths
+	const uint[21][3] sfwidth_long = [
+		// 44.1
+		[4, 4, 4, 4, 4, 4, 6, 6, 8, 8, 10, 12, 16, 20, 24, 28, 34, 42, 50, 54, 76],
+		// 48.0
+		[4, 4, 4, 4, 4, 4, 6, 6, 6, 8, 10, 12, 16, 18, 22, 28, 34, 40, 46, 54, 54],
+		// 32.0
+		[4, 4, 4, 4, 4, 4, 6, 6, 8, 10, 12, 16, 20, 24, 30, 38, 46, 56, 68, 84, 102]
+	];
+
+	const uint[21][3] sfindex_l = [
+		// 44.1
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342],
+		// 48.0
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330],
+		// 32.0
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448]
+	];
+
+	const uint[12][3] sfwidth_short = [
+		// 44.1
+		[4, 4, 4, 4, 6, 8, 10, 12, 14, 18, 22, 30],
+		// 48.0
+		[4, 4, 4, 4, 6, 6, 10, 12, 14, 16, 20, 26],
+		// 32.0
+		[4, 4, 4, 4, 6, 8, 12, 16, 20, 26, 34, 42]
+	];
+
+	const uint[12][3] sfindex_short = [
+		// 44.1
+		[0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106],
+		// 48.0
+		[0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100],
+		// 32.0
+		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138]
+	];
+
+	// Static Huffman tables
+	
+	// Quadruples (A)
+
+	// Note: Quadruples (B) is trivial, and is considered a special case
+	//     : It is simply ~readBits(4);
 }
