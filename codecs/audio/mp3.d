@@ -10,6 +10,7 @@
 module codecs.audio.mp3;
 
 import codecs.audio.codec;
+
 import codecs.codec;
 
 import core.stream;
@@ -580,18 +581,20 @@ protected:
 					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen2[gr][ch]);
         		}
 			}
-			
+
 			scalefac[gr][ch].long_window[22] = 0;
 		}
 	}
-	
-	void decodeHuffman(uint gr, uint ch) {							
+
+	void decodeHuffman(uint gr, uint ch) {
 		// part2_3_length is the length of all of the data
 		// (huffman + scalefactors). part2_length is just
 		// the scalefactors by themselves.
-		
+
+		Console.putln("-=-=-=-");
+
 		static const auto max_table_entry = 15;
-		
+
 		uint region1Start;
 		uint region2Start;
 
@@ -600,20 +603,59 @@ protected:
 			region1Start = 36;
 			region2Start = 576; // There isn't a region 2 for short blocks
 		}
-/*		else {
+		else {
 			// Long Blocks
-			region1Start = ;
-			region2Start = ;
+			region1Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + 1];
+			region2Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + region_address2[gr][ch] + 2];
 		}
-   else {          /Find region boundary for long block case. *
 
-      region1Start = sfBandIndex[sfreq]
-                           .l[(*si).ch[ch].gr[gr].region0_count + 1]; /* MI *
-      region2Start = sfBandIndex[sfreq]
-                              .l[(*si).ch[ch].gr[gr].region0_count +
-                              (*si).ch[ch].gr[gr].region1_count + 2]; /* MI *
-      }
-*/
+		Console.putln(region1Start, " to ", region2Start);
+
+		uint freqIndex;
+		
+		uint pos = curByte;
+		uint posbit = curPos;
+
+		// Region 0
+		if (freqIndex < region1Start) {
+			Console.putln("region 0 -=-=-");
+			initializeHuffman(0,gr,ch);
+		}
+
+		for (; freqIndex < region1Start; freqIndex+=2) {
+			int[] code = readCode();
+		}
+
+		// Region 1
+		if (freqIndex < region2Start) {
+			Console.putln("region 1 -=-=-");
+			initializeHuffman(1,gr,ch);
+		}
+
+		for (; freqIndex < region2Start; freqIndex+=2) {
+			int[] code = readCode();
+		}
+
+		// Region 2
+		if (freqIndex < 576) {
+			Console.putln("region 2 -=-=-");
+			initializeHuffman(2,gr,ch);
+		}
+
+		for (; freqIndex < 576; freqIndex+=2) {
+			int[] code = readCode();
+		}
+        
+		Console.putln("big values decoded -=-=-");
+
+		// The number of bits used for the huffman data
+		uint huffmanLength = (part2_3_length[gr][ch] - part2_length);
+
+		// Start Decoding
+		
+		curByte = pos;
+		curPos = posbit;
+
 		readBits(part2_3_length[gr][ch] - part2_length);
 	}
 
@@ -1087,7 +1129,7 @@ private:
 	// layer 3 bit rates (MPEG-1)
 	const uint[] bitRates = [ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 ]; // the first entry is the 'free' bitrate
 	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
-	
+
 	// Scalefactor band widths
 	const uint[21][3] sfwidth_long = [
 		// 44.1
@@ -1098,13 +1140,13 @@ private:
 		[4, 4, 4, 4, 4, 4, 6, 6, 8, 10, 12, 16, 20, 24, 30, 38, 46, 56, 68, 84, 102]
 	];
 
-	const uint[21][3] sfindex_l = [
+	const uint[23][3] sfindex_long = [
 		// 44.1
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342],
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342, 418, 576],
 		// 48.0
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330],
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330, 384, 576],
 		// 32.0
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448]
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448, 550, 576]
 	];
 
 	const uint[12][3] sfwidth_short = [
@@ -1116,17 +1158,158 @@ private:
 		[4, 4, 4, 4, 6, 8, 12, 16, 20, 26, 34, 42]
 	];
 
-	const uint[12][3] sfindex_short = [
+	const uint[14][3] sfindex_short = [
 		// 44.1
-		[0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106],
+		[0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192],
 		// 48.0
-		[0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100],
+		[0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192],
 		// 32.0
-		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138]
+		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192]
 	];
 
 	// Static Huffman tables
-	
+
+	// Imports huffmanTables[][][] and huffmanValues[][]
+	// These are in an array from 0 - 16 and then table 24 being 17
+	// Index as: huffmanTables[tableIndex][bitlength][value]
+	//           huffmanValues[tableIndex][value]
+	// Both tables correspond in their order.
+	import codecs.audio.mp3Huffman;
+
+	uint[][] curTable;
+	uint[] curValues;
+	uint linbits;
+
+	// Select the table to use for decoding and reset state.
+	void initializeHuffman(uint region, uint gr, uint ch) {
+		uint tableIndex = table_select[region][gr][ch];
+		
+		switch (tableIndex) {
+
+			case 16:
+				linbits = 1;
+				break;
+
+			case 17:
+				linbits = 2;
+				break;
+
+			case 18:
+				linbits = 3;
+				break;
+
+			case 24:
+			case 19:
+				linbits = 4;
+				break;
+				
+			case 25:
+				linbits = 5;
+				break;
+
+			case 26:
+			case 20:
+				linbits = 6;
+				break;
+
+			case 27:
+				linbits = 7;
+				break;
+
+			case 28:
+			case 21:
+				linbits = 8;
+				break;
+
+			case 29:
+				linbits = 9;
+				break;
+
+			case 22:
+				linbits = 10;
+				break;
+
+			case 30:
+				linbits = 11;
+				break;
+
+			case 31:
+			case 23:
+				linbits = 13;
+				break;
+
+			default:
+				linbits = 0;
+				break;
+		}
+
+		if (tableIndex >= 24) {
+			tableIndex = 17;
+		}
+		else if (tableIndex >= 16) {
+			tableIndex = 16;
+		}
+
+		curTable = huffmanTables[tableIndex];
+		curValues = huffmanValues[tableIndex];
+	}
+
+	int[] readCode() {
+		uint code;
+		uint bitlength;
+		uint valoffset;
+
+		for(;;) {
+			code <<= 1;
+			code |= readBits(1);
+
+			foreach(uint i, foo; curTable[bitlength]) {
+				if (foo == code) {
+					// found code
+
+					// get value offset
+					valoffset += i;
+					valoffset *= 2;
+
+     				int[] values = [curValues[valoffset], curValues[valoffset+1]];
+     				Console.putln("b:", values[0], " ", values[1]);
+
+					// read linbits (x)
+					if (linbits > 0 && values[0] == 15) {
+						values[0] += readBits(linbits);
+					}
+
+					if (values[0] > 0) {
+						if (readBits(1) == 1) {
+							values[0] = -values[0];
+						}
+					}
+
+					if (linbits > 0 && values[1] == 15) {
+						values[1] += readBits(linbits);
+					}
+
+					if (values[1] > 0) {
+						if (readBits(1) == 1) {
+							values[1] = -values[1];
+						}
+					}
+
+     				Console.putln("a:", values[0], " ", values[1]);
+					return [curValues[valoffset], curValues[valoffset+1]];
+				}
+			}
+
+			valoffset += curTable[bitlength].length;
+			bitlength++;
+			if (bitlength >= curTable.length) {
+				return [128, 128];
+			}
+		}
+
+		return [128, 128];
+	}
+
 	// Quadruples (A)
 
 	// Note: Quadruples (B) is trivial, and is considered a special case
