@@ -417,7 +417,7 @@ class MP3Codec : AudioCodec {
 							count1table_select[gr][ch] = readBits(1);
 						}
 					}
-					
+
 					bufferLength -= audioHeaderLength;
 
 					Console.putln("Audio Data Length: ", bufferLength);
@@ -430,7 +430,7 @@ class MP3Codec : AudioCodec {
 					decoderState = MP3_READ_AUDIO_DATA_SCALE_FACTORS;
 
 				case MP3_READ_AUDIO_DATA_SCALE_FACTORS:
-				
+
 					Console.putln("reading ", bufferLength, " info decode buffer");
 
 					// read in the data
@@ -458,14 +458,26 @@ class MP3Codec : AudioCodec {
 							part2_length = (curByte * 8) + curPos;
 
 							// Read the scalefactors for this granule
-
 							readScalefactors(gr, ch);
 
 							part2_length = ((curByte * 8) + curPos) - part2_length;
 
 							// Decode the current huffman data
-
 							decodeHuffman(gr, ch);
+
+							// Requantize
+							requantizeSample(gr, ch);
+						}
+
+						// Account for a mode switch from intensity stereo to MS_stereo
+						normalizeStereo(gr);
+
+						for (uint ch = 0; ch < channels; ch++) {
+							// Reorder the short blocks
+							reorder(gr, ch);
+							
+							// Perform anti-alias pass on subband butterflies
+							antialias(gr, ch);
 						}
 					}
 
@@ -588,7 +600,16 @@ protected:
 	long[SSLIMIT][SBLIMIT] codedData;
 	
 	// Requantizated Data -- xr(i) in the spec
-	double[SSLIMIT][SBLIMIT] quantizedData;
+	double[SSLIMIT][SBLIMIT][2] quantizedData;
+	
+	// Normalized Data -- lr(i)
+	double[SSLIMIT][SBLIMIT][2] normalizedData;
+	
+	// reordered data -- re(i)
+	double[SSLIMIT][SBLIMIT] reorderedData;
+
+	// anti-aliased hybrid synthesis data -- hybrid(i)
+	double[SSLIMIT][SBLIMIT] hybridData;
 
 	void decodeHuffman(uint gr, uint ch) {
 		// part2_3_length is the length of all of the data
@@ -623,7 +644,7 @@ protected:
 		if (region2Start > maxBand) { region2Start = maxBand; }
 
 		uint freqIndex;
-		
+
 		uint pos = curByte;
 		uint posbit = curPos;
 
@@ -681,7 +702,7 @@ protected:
 			codedData[(freqIndex+2)/SSLIMIT][(freqIndex+2)%SSLIMIT] = code[2];
 			codedData[(freqIndex+3)/SSLIMIT][(freqIndex+3)%SSLIMIT] = code[3];
 		}
-		
+
 		// Zero rest
 		for (; freqIndex < 576; freqIndex++) {
 			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = 0;
@@ -693,8 +714,527 @@ protected:
 		curPos = maxBit % 8;
 	}
 	
-	void dequantizeSample(uint gr, uint ch) {
-		pow(2.0, 0.25);
+	void requantizeSample(uint gr, uint ch) {
+		uint criticalBandBegin;
+		uint criticalBandWidth;
+		uint criticalBandBoundary;
+		uint criticalBandIndex;
+
+		const int[22] pretab = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0];
+
+		// Initialize the critical boundary information
+		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2)) {
+			if (switch_point[gr][ch] == 0) {
+				// Short blocks
+				criticalBandBoundary = sfindex_short[header.SamplingFrequency][1] * 3;
+				criticalBandWidth = sfindex_short[header.SamplingFrequency][1];
+				criticalBandBegin = 0;
+			}
+			else {
+				// Long blocks come first for switched windows
+				criticalBandBoundary = sfindex_long[header.SamplingFrequency][1];
+			}
+		}
+		else {
+			// Long windows
+			criticalBandBoundary = sfindex_long[header.SamplingFrequency][1];
+		}
+
+		for (uint sb; sb < SBLIMIT; sb++) {
+			for (uint ss; ss < SSLIMIT; ss++) {
+
+				// Get the critical band boundary
+				if ((sb * 18) + ss == criticalBandBoundary) {
+					if (blocksplit_flag[gr][ch] == 1 && block_type[gr][ch] == 2) {
+						if (switch_point[gr][ch] == 0) {
+							// Requantizing the samples for a short window.
+							criticalBandIndex++;
+							criticalBandBoundary = sfindex_short[header.SamplingFrequency][criticalBandIndex+1]*3;
+							criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+							criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+						}
+						else {
+							// Requantizing the samples for a long window that switches to short.
+
+							// The first two are long windows and the last two are short windows
+							if (((sb * 18) + ss) == sfindex_long[header.SamplingFrequency][8]) {
+								criticalBandBoundary = sfindex_short[header.SamplingFrequency][4] * 3;
+								criticalBandIndex = 3;
+								criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+								criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+							}
+							else if (((sb * 18) + ss) < sfindex_long[header.SamplingFrequency][8]) {
+								criticalBandIndex++;
+								criticalBandBoundary = sfindex_long[header.SamplingFrequency][criticalBandIndex+1];
+							}
+							else {
+								criticalBandIndex++;
+								criticalBandBoundary = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] * 3;
+								criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+								criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+							}
+						}
+					}
+					else {
+						// The block_type cannot be 2 in this block (so, it must be block 0, 1, or 3).
+
+						// Requantizing the samples for a long window
+						criticalBandIndex++;
+						criticalBandBoundary = sfindex_long[header.SamplingFrequency][criticalBandIndex+1];
+					}
+				}
+
+				// Global gain
+				quantizedData[ch][sb][ss] = pow(2.0, (0.25 * (global_gain[gr][ch] - 210.0)));
+
+				// Perform the scaling that depends on the type of window
+				if (blocksplit_flag[gr][ch] == 1
+					&& (((block_type[gr][ch] == 2) && (switch_point[gr][ch] == 0))
+					|| ((block_type[gr][ch] == 2) && (switch_point[gr][ch] == 1) && (sb >= 2)))) {
+
+					// Short blocks (either via block_type 2 or the last 2 bands for switched windows)
+					
+					uint sbgainIndex = (((sb * 18) + ss) - criticalBandBegin) / criticalBandWidth;
+
+					quantizedData[ch][sb][ss] *= pow(2.0, 0.25 * -8.0
+						* subblock_gain[sbgainIndex][gr][ch]);
+					quantizedData[ch][sb][ss] *= pow(2.0, 0.25 * -2.0 * (1.0 + scalefac_scale[gr][ch])
+						* scalefac[gr][ch].short_window[criticalBandIndex][sbgainIndex]);
+				}
+				else {
+					// Long blocks (either via block_type 0, 1, or 3, or the 1st 2 bands
+					quantizedData[ch][sb][ss] *= pow(2.0, -0.5 * (1.0 + scalefac_scale[gr][ch])
+						* scalefac[gr][ch].long_window[criticalBandIndex]
+						* preflag[gr][ch] * pretab[criticalBandIndex]);
+				}
+
+				// Scale values
+				bool sign = quantizedData[ch][sb][ss] < 0;
+				quantizedData[ch][sb][ss] *= pow(abs(quantizedData[ch][sb][ss]), 4.0/3.0);
+				if (sign) {
+					quantizedData[ch][sb][ss] = -quantizedData[ch][sb][ss];
+				}
+			}
+		}
+	}
+	
+	void normalizeStereo(uint gr) {
+	
+		double io;
+
+		if ((scalefac_compress[gr][0] % 2) == 1) {
+			io = 0.707106781188;
+		}
+		else {
+			io = 0.840896415256;
+		}
+
+		short[576] decodedPos;
+		double[576] decodedRatio;
+		double[576][2] k;
+
+		int i;
+		int sb;
+		int ss;
+		int ch;
+		
+		int scalefactorBand;
+
+  		// Initialize
+  		decodedPos[0..$] = 7;
+
+  		bool intensityStereo = (header.Mode == MPEG_MODE_JOINT_STEREO) && (header.ModeExtension & 0x1);
+  		bool msStereo = (header.Mode == MPEG_MODE_JOINT_STEREO) && (header.ModeExtension & 0x2);
+  		
+  		if ((channels == 2) && intensityStereo) {
+			if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2)) {
+				if (switch_point[gr][ch] == 0) {
+					for (uint j = 0; j < 3; j++) {
+						int scalefactorCount = -1;
+						
+						for (scalefactorBand = 12; scalefactorBand >= 0; scalefactorBand--) {
+							int lines = sfindex_short[header.SamplingFrequency][scalefactorBand + 1]
+								- sfindex_short[header.SamplingFrequency][scalefactorBand];
+
+							i = 3 * sfindex_short[header.SamplingFrequency][scalefactorBand]
+								+ ((j + 1) * lines) - 1;
+							
+							for (; lines > 0; lines--) {
+								if (quantizedData[1][i/SSLIMIT][i%SSLIMIT] != 0.0) {
+									scalefactorCount = scalefactorBand;
+									scalefactorBand = -10;
+									lines = -10;
+								}
+								i--;
+							}
+						}
+						
+						scalefactorBand = scalefactorCount + 1;
+						
+						for (; scalefactorBand < 12; scalefactorBand++) {
+							sb = sfindex_short[header.SamplingFrequency][scalefactorBand+1]
+								- sfindex_short[header.SamplingFrequency][scalefactorBand];
+
+							i = 3 * sfindex_short[header.SamplingFrequency][scalefactorBand] + (j * sb);
+
+							for ( ; sb > 0; sb--) {
+								decodedPos[i] = cast(short)scalefac[gr][1].short_window[scalefactorBand][j];
+								if (decodedPos[i] != 7) {
+									// IF (MPEG2) { ... }
+									// ELSE {
+										decodedRatio[i] = tan(cast(double)decodedPos[i] * (PI / 12));
+									// }
+								}
+								i++;
+							}
+						}
+
+						sb = sfindex_short[header.SamplingFrequency][12] - sfindex_short[header.SamplingFrequency][11];
+						scalefactorBand = (3 * sfindex_short[header.SamplingFrequency][11]) + (j * sb);
+						sb = sfindex_short[header.SamplingFrequency][13] - sfindex_short[header.SamplingFrequency][12];
+
+						i = (3 * sfindex_short[header.SamplingFrequency][11]) + (j * sb);
+
+						for (; sb > 0; sb--) {
+							decodedPos[i] = decodedPos[scalefactorBand];
+							decodedRatio[i] = decodedRatio[scalefactorBand];
+							k[0][i] = k[0][scalefactorBand];
+							k[1][i] = k[1][scalefactorBand];
+							i++;
+						}
+					}
+				}
+				else {
+					int maxScalefactorBand;
+
+					for (uint j; j<3; j++) {
+						int scalefactorCount = 2;
+						for (scalefactorBand = 12; scalefactorBand >= 3; scalefactorBand--) {
+							int lines = sfindex_short[header.SamplingFrequency][scalefactorBand+1]
+								- sfindex_short[header.SamplingFrequency][scalefactorBand];
+
+							i = 3 * sfindex_short[header.SamplingFrequency][scalefactorBand]
+								+ ((j + 1) * lines) - 1;
+							
+							for (; lines > 0; lines--) {
+								if (quantizedData[1][i/SSLIMIT][i%SSLIMIT] != 0.0) {
+									scalefactorCount = scalefactorBand;
+									scalefactorBand = -10;
+									lines = -10;
+								}
+								i--;
+							}
+						}
+
+						scalefactorBand = scalefactorCount + 1;
+						
+						if (scalefactorBand > maxScalefactorBand) {
+							maxScalefactorBand = scalefactorBand;
+						}
+						
+						for (; scalefactorBand < 12; scalefactorBand++) {
+							sb = sfindex_short[header.SamplingFrequency][scalefactorBand+1]
+								- sfindex_short[header.SamplingFrequency][scalefactorBand];
+
+							i = 3 * sfindex_short[header.SamplingFrequency][scalefactorBand]
+								+ (j * sb);
+
+							for (; sb > 0; sb--) {
+								decodedPos[i] = cast(short)scalefac[gr][1].short_window[scalefactorBand][j];
+								if (decodedPos[i] != 7) {
+									// IF (MPEG2) { ... }
+									// ELSE {
+									decodedRatio[i] = tan(cast(double)decodedPos[i] * (PI / 12.0));
+									// }
+								}
+								i++;
+							}
+						}
+
+						sb = sfindex_short[header.SamplingFrequency][12]
+								- sfindex_short[header.SamplingFrequency][11];
+						scalefactorBand = 3 * sfindex_short[header.SamplingFrequency][11]
+								+ j * sb;
+						sb = sfindex_short[header.SamplingFrequency][13]
+								- sfindex_short[header.SamplingFrequency][12];
+
+						i = 3 * sfindex_short[header.SamplingFrequency][11] + j * sb;
+						for (; sb > 0; sb--) {
+							decodedPos[i] = decodedPos[scalefactorBand];
+							decodedRatio[i] = decodedRatio[scalefactorBand];
+							k[0][i] = k[0][scalefactorBand];
+							k[1][i] = k[1][scalefactorBand];
+							i++;
+						}
+					}
+					
+					if (maxScalefactorBand <= 3) {
+						i = 2;
+						ss = 17;
+						sb = -1;
+						while (i >= 0) {
+							if (quantizedData[1][i][ss] != 0.0) {
+								sb = (i * 18) + ss;
+								i = -1;
+							}
+							else {
+								ss--;
+								if (ss < 0) {
+									i--;
+									ss = 17;
+								}
+							}
+						}
+
+						i = 0;
+
+						while (sfindex_long[header.SamplingFrequency][i] <= sb) {
+							i++;
+						}
+						
+						scalefactorBand = i;
+						i = sfindex_long[header.SamplingFrequency][i];
+						
+						for (; scalefactorBand < 8; scalefactorBand++) {
+							sb = sfindex_long[header.SamplingFrequency][scalefactorBand+1]
+									- sfindex_long[header.SamplingFrequency][scalefactorBand];
+							for (; sb > 0; sb--) {
+								decodedPos[i] = cast(short)scalefac[gr][1].long_window[scalefactorBand];
+								if (decodedPos[i] != 7) {
+									// IF (MPEG2) { ... }
+									// ELSE {
+										decodedRatio[i] = tan(cast(double)decodedPos[i] * (PI / 12.0));
+									// }
+								}
+								i++;
+							}
+						}
+					}
+				}
+			}
+			else {
+				i = 31;
+				ss = 17;
+				sb = 0;
+				
+				while (i >= 0) {
+					if (quantizedData[1][i][ss] != 0.0) {
+						sb = (i * 18) + ss;
+						i = -1;
+					}
+					else {
+						ss--;
+						if (ss < 0) {
+							i--;
+							ss = 17;
+						}
+					}
+				}
+				i = 0;
+				
+				while (sfindex_long[header.SamplingFrequency][i] <= sb) {
+					i++;
+				}
+
+				scalefactorBand = i;
+				i = sfindex_long[header.SamplingFrequency][i];
+
+				for (; scalefactorBand < 21; scalefactorBand++) {
+					sb = sfindex_long[header.SamplingFrequency][scalefactorBand+1]
+						- sfindex_long[header.SamplingFrequency][scalefactorBand];
+					
+					for (; sb > 0; sb--) {
+						decodedPos[i] = cast(short)scalefac[gr][1].long_window[scalefactorBand];
+						if (decodedPos[i] != 7) {
+							// IF (MPEG2) { ... }
+							// ELSE {
+							decodedRatio[i] = tan(cast(double)decodedPos[i] * (PI / 12.0));
+							// }
+						}
+						i++;
+					}
+				}
+				
+				scalefactorBand = sfindex_long[header.SamplingFrequency][20];
+
+				for (sb = 576 - sfindex_long[header.SamplingFrequency][21]; sb > 0; sb--) {
+					decodedPos[i] = decodedPos[scalefactorBand];
+					decodedRatio[i] = decodedRatio[scalefactorBand];
+					k[0][i] = k[0][scalefactorBand];
+					k[1][i] = k[1][scalefactorBand];
+					i++;
+				}
+			}
+  		}
+
+		for (ch = 0; ch < 2; ch++) {
+			for (sb = 0; sb < SBLIMIT; sb++) {
+				for (ss = 0; ss < SSLIMIT; ss++) {
+					normalizedData[ch][sb][ss] = 0;
+				}
+			}
+		}
+
+        if (channels == 2) {
+        	for (sb = 0; sb < SBLIMIT; sb++) {
+        		for (ss = 0; ss < SSLIMIT; ss++) {
+        			i = (sb * 18) + ss;
+        			if (decodedPos[i] == 7) {
+        				if (msStereo) {
+        					normalizedData[0][sb][ss] = (quantizedData[0][sb][ss] + quantizedData[1][sb][ss])
+        						/ 1.41421356;
+        					normalizedData[1][sb][ss] = (quantizedData[0][sb][ss] - quantizedData[1][sb][ss])
+        						/ 1.41421356;
+        				}
+        				else {
+        					normalizedData[0][sb][ss] = quantizedData[0][sb][ss];
+        					normalizedData[1][sb][ss] = quantizedData[1][sb][ss];
+        				}
+        			}
+        			else if (intensityStereo) {
+        				// IF (MPEG2) {
+        				// normalizedData[0][sb][ss] = quantizedData[0][sb][ss] * k[0][i];
+        				// normalizedData[1][sb][ss] = quantizedData[0][sb][ss] * k[1][i];
+        				// }
+        				// ELSE {
+        				normalizedData[0][sb][ss] = quantizedData[0][sb][ss] * (decodedRatio[i] / (1 + decodedRatio[i]));
+        				normalizedData[0][sb][ss] = quantizedData[0][sb][ss] * (1 / (1 + decodedRatio[i]));
+        				// }
+        			}
+        			else {
+        				// Error ...
+        			}
+        		}
+        	}
+        }
+        else { // Mono
+        	for (sb = 0; sb < SBLIMIT; sb++) {
+        		for (ss = 0; ss < SSLIMIT; ss++) {
+        			normalizedData[0][sb][ss] = quantizedData[0][sb][ss];
+        		}
+        	}
+        }
+	}
+
+	void reorder(uint gr, uint ch) {
+		int sfreq = header.SamplingFrequency;
+
+		for (uint sb; sb < SBLIMIT; sb++) {
+			for (uint ss; ss < SSLIMIT; ss++) {
+				reorderedData[sb][ss] = 0;
+			}
+		}
+
+		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2)) {
+			if (switch_point[gr][ch] == 0) {
+				// Recoder the short blocks
+				uint scalefactorStart = 0;
+				uint scalefactorLines = sfindex_short[sfreq][1];
+
+				for (uint scalefactorBand = 3; scalefactorBand < 13; scalefactorBand++) {
+					for (uint window; window < 3; window++) {
+						for (uint freq; freq < scalefactorLines; freq++) {
+							uint srcLine = (scalefactorStart * 3) + (window * scalefactorLines) + freq;
+							uint destLine = (scalefactorStart * 3) + window + (freq * 3);
+							reorderedData[destLine / SSLIMIT][destLine % SSLIMIT] =
+								quantizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
+						}
+					}
+					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
+					scalefactorLines = sfindex_short[sfreq][scalefactorBand + 1] - scalefactorStart;
+				}
+			}
+			else {
+				// We do not reorder the long blocks
+				for (uint sb; sb < 2; sb++) {
+					for (uint ss; ss < SSLIMIT; ss++) {
+						reorderedData[sb][ss] = quantizedData[ch][sb][ss];
+					}
+				}
+
+				// We reorder the short blocks
+				uint scalefactorStart = sfindex_short[sfreq][3];
+				uint scalefactorLines = sfindex_short[sfreq][4] - scalefactorStart;
+
+				for (uint scalefactorBand = 3; scalefactorBand < 13; scalefactorBand++) {
+					for (uint window; window < 3; window++) {
+						for (uint freq; freq < scalefactorLines; freq++) {
+							uint srcLine = (scalefactorStart * 3) + (window * scalefactorLines) + freq;
+							uint destLine = (scalefactorStart * 3) + window + (freq * 3);
+							reorderedData[destLine / SSLIMIT][destLine % SSLIMIT] =
+								quantizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
+						}
+					}
+
+					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
+					scalefactorLines = sfindex_short[sfreq][scalefactorBand+1] - scalefactorStart;
+				}
+			}
+		}
+		else {
+			// We do not reorder long blocks
+			for (uint sb; sb < SBLIMIT; sb++) {
+				for (uint ss; ss < SSLIMIT; ss++) {
+					reorderedData[sb][ss] = quantizedData[ch][sb][ss];
+				}
+			}
+		}
+	}
+
+	// Butterfly anti-alias
+	void antialias(uint gr, uint ch) {
+		uint subbandLimit = SBLIMIT - 1;
+		
+		// Ci[i] = [-0.6,-0.535,-0.33,-0.185,-0.095,-0.041,-0.0142,-0.0037];
+		// cs[i] = 1.0 / (sqrt(1.0 + (Ci[i] * Ci[i])));
+		// ca[i] = ca[i] * Ci[i];
+
+		const double cs[8] = [
+			0.85749292571254418689325777610964,
+			0.88174199731770518177557399759066,
+			0.94962864910273289204833276115398,
+			0.98331459249179014599030200066392,
+			0.99551781606758576429088040422867,
+			0.99916055817814750452934664352117,
+			0.99989919524444704626703489425565,
+			0.99999315507028023572010150517204
+		];
+
+		const double ca[8] = [
+			-0.5144957554275265121359546656654,
+			-0.47173196856497227224993208871065,
+			-0.31337745420390185437594981118049,
+			-0.18191319961098117700820587012266,
+			-0.09457419252642064760763363840166,
+			-0.040965582885304047685703212384361,
+			-0.014198568572471148056991895498421,
+			-0.0036999746737600368721643755691364
+		];
+
+		// Init our working array with quantized data
+		for (uint sb; sb < SBLIMIT; sb++) {
+			for (uint ss; ss < SSLIMIT; ss++) {
+				hybridData[sb][ss] = quantizedData[ch][sb][ss];
+			}
+		}
+
+		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2) && (switch_point[gr][ch] == 0)) {
+			return;
+		}
+
+		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2) && (switch_point[gr][ch] == 1)) {
+			subbandLimit = 1;
+		}
+
+		// 8 butterflies for each pair of subbands
+		for (uint sb; sb < subbandLimit; sb++) {
+			for (uint ss; ss < 8; ss++) {
+				double bu = quantizedData[ch][sb][17 - ss];
+				double bd = quantizedData[ch][sb + 1][ss];
+				hybridData[sb][17 - ss] = (bu * cs[ss]) + (bd * ca[ss]);
+				hybridData[sb + 1][ss] = (bd * cs[ss]) + (bu * ca[ss]);
+			}
+		}
 	}
 
 	uint readBits(uint bits) {
