@@ -22,19 +22,12 @@ template _mathFunc(StringLiteral8 func) {
 
 mixin(_mathFunc!("sqrt"));
 
-double sqrt(double operand) {
-	double x, z, tempf;
-	uint *tfptr = (cast(uint *)&tempf) + 1;
-
-	tempf = operand;
-	*tfptr = (0xbfcdd90a - *tfptr)>>1;
-	x =  tempf;
-	z =  operand*0.5;
-	x = (1.5*x) - (x*x)*(x*z);
-	x = (1.5*x) - (x*x)*(x*z);
-	x = (1.5*x) - (x*x)*(x*z);
-	x = (1.5*x) - (x*x)*(x*z);
-	x = (1.5*x) - (x*x)*(x*z);
-	
-	return x*operand;
+// Abstract standard library (silliness)
+version(Tango) {
+	// Tango
+	public import tango.math;
+}
+else {
+	// Phobos
+	public import std.math;
 }

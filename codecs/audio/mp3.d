@@ -21,6 +21,8 @@ import io.wavelet;
 import io.audio;
 import io.console;
 
+import math.common;
+
 // initialize the array to zero
 typedef double zerodouble = 0.0;
 
@@ -349,6 +351,8 @@ class MP3Codec : AudioCodec {
 						}
 					}
 
+					// 18 or 16 bits read
+
 					for(uint gr=0; gr < 2; gr++) {
 						for(uint ch = 0; ch < channels; ch++) {
 
@@ -383,7 +387,7 @@ class MP3Codec : AudioCodec {
 								}
 
 								region_address2[gr][ch] = 20 - region_address1[gr][ch];
-							
+
 								if (switch_point[gr][ch] == 1) {
 									switch_point_l[gr][ch] = 8;
 									switch_point_s[gr][ch] = 3;
@@ -497,14 +501,12 @@ protected:
             	for (uint cb = 0; cb < 6; cb++) {
             		for (uint window = 0; window < 3; window++) {
 						scalefac[gr][ch].short_window[cb][window] = readBits(slen1[gr][ch]);
-						Console.putln(scalefac[gr][ch].short_window[cb][window], " ", slen1[gr][ch]);
             		}
             	}
 
             	for (uint cb = 6; cb < cb_limit_short; cb++) {
             		for (uint window = 0; window < 3; window++) {
 						scalefac[gr][ch].short_window[cb][window] = readBits(slen2[gr][ch]);
-						Console.putln(scalefac[gr][ch].short_window[cb][window], " ", slen2[gr][ch]);
             		}
             	}
 
@@ -519,7 +521,6 @@ protected:
 				for (uint cb = 0; cb < 8; cb++) {
 					if ((scfsi[cb][ch] == 0) || (gr == 0)) {
 						scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
-						Console.putln(scalefac[gr][ch].long_window[cb]);
 					}
 				}
 
@@ -527,7 +528,6 @@ protected:
 					for (uint window = 0; window < 3; window++) {
 						if ((scfsi[cb][ch] == 0) || (gr == 0)) {
 							scalefac[gr][ch].short_window[cb][window] = readBits(slen1[gr][ch]);
-							Console.putln(scalefac[gr][ch].short_window[cb][window]);
 						}
 					}
 				}
@@ -536,7 +536,6 @@ protected:
 					for (uint window = 0; window < 3; window++) {
 						if ((scfsi[cb][ch] == 0) || (gr == 0)) {
 							scalefac[gr][ch].short_window[cb][window] = readBits(slen2[gr][ch]);
-							Console.putln(scalefac[gr][ch].short_window[cb][window]);
 						}
 					}
 				}
@@ -557,39 +556,46 @@ protected:
 			if ((scfsi[0][ch] == 0) || (gr == 0)) {
         		for (uint cb = 0; cb < 6; cb++) {
 					scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
-					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen1[gr][ch]);
         		}
 			}
 
 			if ((scfsi[1][ch] == 0) || (gr == 0)) {
         		for (uint cb = 6; cb < 11; cb++) {
 					scalefac[gr][ch].long_window[cb] = readBits(slen1[gr][ch]);
-					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen1[gr][ch]);
         		}
 			}
 
 			if ((scfsi[2][ch] == 0) || (gr == 0)) {
         		for (uint cb = 11; cb < 16; cb++) {
 					scalefac[gr][ch].long_window[cb] = readBits(slen2[gr][ch]);
-					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen2[gr][ch]);
         		}
 			}
 
 			if ((scfsi[3][ch] == 0) || (gr == 0)) {
         		for (uint cb = 16; cb < 21; cb++) {
 					scalefac[gr][ch].long_window[cb] = readBits(slen2[gr][ch]);
-					Console.putln(scalefac[gr][ch].long_window[cb], " ", slen2[gr][ch]);
         		}
 			}
 
 			scalefac[gr][ch].long_window[22] = 0;
 		}
 	}
+	
+	const auto SBLIMIT = 32;
+	const auto SSLIMIT = 18;
+
+	// Decoded Huffman Data -- is(i) in the spec
+	long[SSLIMIT][SBLIMIT] codedData;
+	
+	// Requantizated Data -- xr(i) in the spec
+	double[SSLIMIT][SBLIMIT] quantizedData;
 
 	void decodeHuffman(uint gr, uint ch) {
 		// part2_3_length is the length of all of the data
 		// (huffman + scalefactors). part2_length is just
 		// the scalefactors by themselves.
+		
+		// Note: SSLIMIT * SBLIMIT = 32 * 18 = 576
 
 		Console.putln("-=-=-=-");
 
@@ -608,13 +614,24 @@ protected:
 			region1Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + 1];
 			region2Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + region_address2[gr][ch] + 2];
 		}
+		
+		uint maxBand = big_values[gr][ch] * 2;
 
 		Console.putln(region1Start, " to ", region2Start);
+
+		if (region1Start > maxBand) { region1Start = maxBand; }
+		if (region2Start > maxBand) { region2Start = maxBand; }
 
 		uint freqIndex;
 		
 		uint pos = curByte;
 		uint posbit = curPos;
+
+		// The number of bits used for the huffman data
+ 		uint huffmanLength = (part2_3_length[gr][ch] - part2_length);
+
+ 		// The bit position in the stream to stop.
+ 		uint maxBit = huffmanLength + curPos + (curByte * 8);
 
 		// Region 0
 		if (freqIndex < region1Start) {
@@ -624,6 +641,8 @@ protected:
 
 		for (; freqIndex < region1Start; freqIndex+=2) {
 			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
 		}
 
 		// Region 1
@@ -634,29 +653,48 @@ protected:
 
 		for (; freqIndex < region2Start; freqIndex+=2) {
 			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
 		}
 
 		// Region 2
-		if (freqIndex < 576) {
+		if (freqIndex < maxBand) {
 			Console.putln("region 2 -=-=-");
 			initializeHuffman(2,gr,ch);
 		}
 
-		for (; freqIndex < 576; freqIndex+=2) {
+		for (; freqIndex < maxBand; freqIndex+=2) {
 			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
 		}
-        
+
 		Console.putln("big values decoded -=-=-");
 
-		// The number of bits used for the huffman data
-		uint huffmanLength = (part2_3_length[gr][ch] - part2_length);
+		// Read in Count1 Area
+		initializeQuantizationHuffman(gr,ch);
 
-		// Start Decoding
+		for (; (curPos + (curByte * 8)) < maxBit && freqIndex < 576; freqIndex += 4) {
+			int[] code = readQuantizationCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
+			codedData[(freqIndex+2)/SSLIMIT][(freqIndex+2)%SSLIMIT] = code[2];
+			codedData[(freqIndex+3)/SSLIMIT][(freqIndex+3)%SSLIMIT] = code[3];
+		}
 		
-		curByte = pos;
-		curPos = posbit;
+		// Zero rest
+		for (; freqIndex < 576; freqIndex++) {
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = 0;
+		}
 
-		readBits(part2_3_length[gr][ch] - part2_length);
+		// Resync to the correct position
+		// (where we started + the number of bits that would have been used)
+		curByte = maxBit / 8;
+		curPos = maxBit % 8;
+	}
+	
+	void dequantizeSample(uint gr, uint ch) {
+		pow(2.0, 0.25);
 	}
 
 	uint readBits(uint bits) {
@@ -673,7 +711,7 @@ protected:
 
 		if (curByte >= audioRefLength) {
 			// We have consumed everything in our buffer
-			return 0;
+			return 5;
 		}
 
 		for (;;) {
@@ -713,7 +751,7 @@ protected:
 
 				if (curByte >= audioRefLength) {
 					// We have consumed everything in our buffer
-					return 0;
+					return value;
 				}
 			}
 			else {
@@ -1130,16 +1168,7 @@ private:
 	const uint[] bitRates = [ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 ]; // the first entry is the 'free' bitrate
 	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
 
-	// Scalefactor band widths
-	const uint[21][3] sfwidth_long = [
-		// 44.1
-		[4, 4, 4, 4, 4, 4, 6, 6, 8, 8, 10, 12, 16, 20, 24, 28, 34, 42, 50, 54, 76],
-		// 48.0
-		[4, 4, 4, 4, 4, 4, 6, 6, 6, 8, 10, 12, 16, 18, 22, 28, 34, 40, 46, 54, 54],
-		// 32.0
-		[4, 4, 4, 4, 4, 4, 6, 6, 8, 10, 12, 16, 20, 24, 30, 38, 46, 56, 68, 84, 102]
-	];
-
+	// Scalefactor Band Indices
 	const uint[23][3] sfindex_long = [
 		// 44.1
 		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342, 418, 576],
@@ -1147,15 +1176,6 @@ private:
 		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330, 384, 576],
 		// 32.0
 		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448, 550, 576]
-	];
-
-	const uint[12][3] sfwidth_short = [
-		// 44.1
-		[4, 4, 4, 4, 6, 8, 10, 12, 14, 18, 22, 30],
-		// 48.0
-		[4, 4, 4, 4, 6, 6, 10, 12, 14, 16, 20, 26],
-		// 32.0
-		[4, 4, 4, 4, 6, 8, 12, 16, 20, 26, 34, 42]
 	];
 
 	const uint[14][3] sfindex_short = [
@@ -1308,6 +1328,99 @@ private:
 		}
 
 		return [128, 128];
+	}
+
+	uint curCountTable;
+
+	void initializeQuantizationHuffman(uint gr, uint ch) {
+		curCountTable = count1table_select[gr][ch];
+	}
+
+	int[] readQuantizationCode() {
+		uint code = decodeQuantization();
+
+		int v = ((code >> 3) & 1);
+		int w = ((code >> 2) & 1);
+		int x = ((code >> 1) & 1);
+		int y = (code & 1);
+
+		// Get Sign Bits (for non-zero values)
+
+		if (v > 0 && readBits(1) == 1) {
+			v = -v;
+		}
+
+		if (w > 0 && readBits(1) == 1) {
+			w = -w;
+		}
+
+		if (x > 0 && readBits(1) == 1) {
+			x = -x;
+		}
+
+		if (y > 0 && readBits(1) == 1) {
+			y = -y;
+		}
+
+     	Console.putln("q:", v, " ", w, " ", x, " ", y);
+
+		return [v,w,x,y];
+	}
+
+	uint decodeQuantization() {
+		uint code;
+
+		if (curCountTable == 1) {
+			// Quantization Huffman Table B is trivial...
+			// It is simply the bitwise negation of 4 bits from the stream.
+			// code = ~readBits(4);
+			code = readBits(4);
+			code = ~code;
+		}
+		else {
+			// Quantization Huffman Table A is the only case,
+			// so it is written here by hand:
+
+			// state 1
+			code = readBits(1);
+
+			if (code == 0b1) {
+				return 0b0000;
+			}
+
+			// state 2
+			code = readBits(3);
+
+			if (code >= 0b0100 && code <= 0b0111) {
+				uint idx = code - 0b0100;
+				const uint[] stage2_values = [0b0010, 0b0101, 0b0110, 0b0111];
+				return stage2_values[idx];
+			}
+
+			// state 3
+			code <<= 1;
+			code |= readBits(1);
+
+			if (code >= 0b00011 && code <= 0b00111) {
+				uint idx = code - 0b00011;
+				const uint[] stage3_values = [0b1001, 0b0110, 0b0011, 0b1010, 0b1100];
+				return stage3_values[idx];
+			}
+
+			// state 4
+			code <<= 1;
+			code |= readBits(1);
+
+			if (code <= 0b000101) {
+				const uint[] stage4_values = [0b1011, 0b1111, 0b1101, 0b1110, 0b0111, 0b0101];
+				return stage4_values[code];
+			}
+
+			// invalid code;
+			code = 0;
+		}
+
+		return code;
 	}
 
 	// Quadruples (A)
