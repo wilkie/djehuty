@@ -112,6 +112,15 @@ public:
 	// Returns: Will return true when the Stream can be resized to this amount.
 	// newLength: the new length of the stream
 	bool resize(ulong newLength) {
+		if (newLength == 0) {
+			_length = 0;
+			_curpos = 0;
+			_data = new ubyte[100];
+			_pos = _data.ptr;
+			_capacity = 100;
+			return true;
+		}
+
 		ubyte tmp[] = new ubyte[cast(uint)newLength];
 
 		if (newLength > _length) {
