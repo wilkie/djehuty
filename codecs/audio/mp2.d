@@ -290,7 +290,7 @@ private
 	//const auto bitRates[] = [ 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448 ];
 
 	// layer 2
-	const uint[] bitRates = [ 0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384 ]; // the first entry is the 'free' bitrate
+	const uint[] bitRates = [ 0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 0 ]; // the first entry is the 'free' bitrate
 	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
 
 	const uint byteMasks[9][] = [
@@ -424,6 +424,35 @@ class MP2Codec : AudioCodec
 
 				case MP2_AMBIGUOUS_SYNC:
 
+     				if ((mpeg_header & FromBigEndian!(0xFFFFFF00)) == FromBigEndian!(0x49443300)) {
+
+     					if (id3.signature[0] != 0x49) {
+							if (!stream.read((cast(ubyte*)&id3) + 4, id3.sizeof - 4)) {
+								return StreamData.Required;
+							}
+
+							id3.signature[0] = 0x49;
+
+							id3.ver[0] = cast(ubyte)(mpeg_header & 0xFF);
+
+							// skip the ID3 section
+							foreach(b; id3.len) {
+								id3length <<= 7;
+								b &= 0x7f;
+								id3length |= b;
+							}
+
+							//Console.putln("id3 length: ", new String("%x", id3length));
+						}
+
+						if (!stream.skip(id3length)) {
+							return StreamData.Required;
+						}
+
+						decoderState = MP2_READ_HEADER;
+						continue;
+					}
+
 					if ((mpeg_header & MPEG_SYNC_BITS) == MPEG_SYNC_BITS) {
 						// sync bits found
 						//writeln("sync bits found ", stream.getPosition() - 4);
@@ -464,7 +493,7 @@ class MP2Codec : AudioCodec
 						header.Original = (mpeg_header & MPEG_ORIGINAL ? 1 : 0);
 						header.Emphasis = (mpeg_header & MPEG_EMPHASIS) >> MPEG_EMPHASIS_SHIFT;
 
-						/*Console.putln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
+						Console.putln("Header: ", mpeg_header & MPEG_SYNC_BITS, "\n",
 								"ID: ", header.ID, "\n",
 								"Layer: ", header.Layer, "\n",
 								"Protected: ", header.Protected, "\n",
@@ -477,7 +506,7 @@ class MP2Codec : AudioCodec
 								"Copyright: ", header.Copyright, "\n",
 								"Original: ", header.Original, "\n",
 								"Emphasis: ", header.Emphasis);
-						*/
+
 
 						// Calculate the length of the Audio Data
 						audioDataLength = cast(uint)(144 * (cast(double)bitRates[header.BitrateIndex] / cast(double)samplingFrequencies[header.SamplingFrequency]));
@@ -1853,6 +1882,17 @@ protected:
 	uint curPos;
 
 	MP2HeaderInformation header;
+
+	align(1) struct ID3HeaderInformation {
+		ubyte[3] signature;
+		ubyte[2] ver;
+		ubyte flags;
+		ubyte[4] len;
+	}
+
+	ID3HeaderInformation id3;
+	
+	uint id3length;
 
 	int bufOffset[2] = [64,64];
 

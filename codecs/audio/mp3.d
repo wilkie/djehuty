@@ -320,7 +320,8 @@ class MP3Codec : AudioCodec {
 							break;
 
 						case MPEG_MODE_JOINT_STEREO:
-							decoderState = MP3_READ_AUDIO_DATA_JOINT_STEREO;
+							channels = 2;
+							decoderState = MP3_READ_AUDIO_DATA_SINGLE_CHANNEL;
 							break;
 
 						default: // impossible!
@@ -564,7 +565,7 @@ class MP3Codec : AudioCodec {
 					{
 						decoderState = MP3_BUFFER_AUDIO;
 						curTime += bufferTime;
-							curTime.toString();
+							//curTime.toString();
 						return StreamData.Accepted; /*
 					toBuffer.rewind();
 						continue; //*/
@@ -2396,15 +2397,10 @@ private:
 		return code;
 	}
 
-	// Quadruples (A)
-
-	// Note: Quadruples (B) is trivial, and is considered a special case
-	//     : It is simply ~readBits(4);
-
 	import codecs.audio.mpegCommon;
 
 	bool accepted = false;
 
 	// number of blocks (of 1728 samples) to buffer
-	const auto NUM_BLOCKS = 80;
+	const auto NUM_BLOCKS = 40;
 }

@@ -159,7 +159,8 @@ class MyControl : Widget {
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
 		//snd = new Sound("tests/begin.mp2");
-		snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		snd = new Sound("tests/fazed.dreamer.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {

@@ -273,7 +273,7 @@ protected:
 	Thread _audioLoader;
 
 	void _bufferCallback() {
-			Console.putln("Callback");
+		//	Console.putln("Callback");
 		if (_state == State.Stopped) { return; }
 		if (_doneBuffering) {
 			Console.putln("Done");
@@ -293,7 +293,7 @@ protected:
 			_doneBuffering = true;
 		}
 		else {
-			Console.putln("Sound : Decoded Buffer");
+		//	Console.putln("Sound : Decoded Buffer");
 			wavDevice.sendBuffer(buffers[bufferIndex]);
 		}
 
