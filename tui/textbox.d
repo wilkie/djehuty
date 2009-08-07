@@ -50,6 +50,7 @@ class TuiTextBox : TuiWidget {
 					_lines.remove(oldLine, _row+1);
 					draw();
 					positionCaret();
+					_lineColumn = _column;
 					break;
 				}
 				else if (_column == 1) {
@@ -63,6 +64,7 @@ class TuiTextBox : TuiWidget {
 				}
 				
 				_column--;
+				_lineColumn = _column;
 
 				drawLine(_row);
 				positionCaret();
@@ -133,9 +135,13 @@ class TuiTextBox : TuiWidget {
 	}
 
 	override void onKeyChar(dchar chr) {
+		if (chr == 0x8) {
+			return;
+		}
 		_lines[_row] = _lines[_row].subString(0, _column) ~ [chr] ~ _lines[_row].subString(_column);
 		drawLine(_row);
 		_column++;
+		_lineColumn = _column;
 		positionCaret();
 	}
 
