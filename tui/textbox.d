@@ -234,5 +234,4 @@ protected:
 
 	// The column that the caret is in while pressing up and down or scrolling.
 	int _lineColumn;
->>>>>>> ed1759f0335872433d8d3463ce523f35271e6d67:tui/textbox.d
 }
