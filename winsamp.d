@@ -92,8 +92,10 @@ private:
 import tui.textfield;
 import core.application;
 
+import tui.textbox;
+
 class MyTApp :TuiApplication {
-//	static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -121,14 +123,15 @@ class MyTWindow : TuiWindow {
 	this() {
 		super();
 
-		push(tuitext = new TuiTextField(0,Console.height,Console.width, "boo"));
+/*		push(tuitext = new TuiTextField(0,Console.height,Console.width, "boo"));
 
 		tuitext.basecolor = fgColor.White;
 		tuitext.forecolor = fgColor.BrightYellow;
 		tuitext.backcolor = bgColor.Green;
 
 		string foo = tuitext.text;
-		tuitext.text = "hahaha" ~ foo;
+		tuitext.text = "hahaha" ~ foo;*/
+		push(tuibox = new TuiTextBox(0,0,this.width,this.height));
 	}
 
 	override void onKeyDown(uint keyCode) {
@@ -147,6 +150,7 @@ class MyTWindow : TuiWindow {
 
 private:
 	TuiTextField tuitext;
+	TuiTextBox tuibox;
 }
 
 class MyControl : Widget {
@@ -159,7 +163,8 @@ class MyControl : Widget {
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
 		//snd = new Sound("tests/begin.mp2");
-		snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		snd = new Sound("tests/fazed.dreamer.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -191,7 +196,7 @@ class MyWindow : Window {
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
+	//static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();

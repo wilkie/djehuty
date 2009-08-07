@@ -15,7 +15,11 @@ LFLAGS_WIN = -Iplatform/win platform/win/lib/gdi32.lib platform/win/lib/user32.l
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	OBJEXT = .obj
+else
 	OBJEXT = .o
+endif
 endif
 
 DFILES_PLATFORM_MAC = platform/osx/console.d platform/osx/definitions.d platform/osx/common.d platform/osx/main.d platform/osx/scaffold.d platform/osx/vars.d platform/osx/scaffolds/graphics.d platform/osx/scaffolds/app.d platform/unix/scaffolds/file.d platform/osx/scaffolds/thread.d platform/osx/scaffolds/socket.d platform/osx/scaffolds/file.d platform/unix/scaffolds/thread.d platform/unix/vars.d platform/unix/scaffolds/socket.d platform/osx/scaffolds/window.d platform/unix/common.d platform/osx/scaffolds/color.d platform/osx/scaffolds/menu.d platform/osx/scaffolds/wave.d platform/osx/scaffolds/view.d
@@ -33,7 +37,7 @@ DFILES_PARSING = parsing/lexer.d parsing/cfg.d
 DFILES = djehuty.d
 DFILES_BINARY_CODECS = codecs/binary/codec.d codecs/binary/base64.d codecs/binary/yEnc.d codecs/binary/deflate.d codecs/binary/zlib.d
 DFILES_IMAGE_CODECS = codecs/image/codec.d codecs/image/all.d codecs/image/bmp.d codecs/image/png.d codecs/image/gif.d codecs/image/jpeg.d
-DFILES_AUDIO_CODECS = codecs/audio/codec.d codecs/audio/all.d codecs/audio/mp2.d codecs/audio/mp3.d codecs/audio/mp3Huffman.d codecs/audio/wav.d codecs/audio/mp3Huffman.d
+DFILES_AUDIO_CODECS = codecs/audio/codec.d codecs/audio/all.d codecs/audio/mp2.d codecs/audio/mp3.d codecs/audio/mp3Huffman.d codecs/audio/wav.d codecs/audio/mp3Huffman.d codecs/audio/mpegCommon.d
 DFILES_GRAPHICS = graphics/bitmap.d graphics/view.d graphics/graphics.d graphics/convexhull.d graphics/region.d graphics/brush.d graphics/font.d graphics/pen.d
 DFILES_NETWORKING = networking/http.d networking/telnet.d networking/irc.d
 DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d io/socket.d
@@ -41,7 +45,7 @@ DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d
-DFILES_TUI = tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d
+DFILES_TUI = tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d tui/textbox.d tui/codebox.d
 DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d
@@ -90,7 +94,10 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
 else
+ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
+else
 	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
+endif
 endif
 endif
 
@@ -101,6 +108,10 @@ else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
 	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
 else
+ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
+	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
+else
+endif
 endif
 endif
 
@@ -111,6 +122,10 @@ else
 ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
 	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
 else
+ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
+else
+endif
 endif
 endif
 
@@ -133,8 +148,13 @@ ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@echo Windows detected...
 	@make libdeps_win
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@echo Windows detected...
+	@make libdeps_win
+else
 	@echo UNIX detected...
 	@make libdeps_linux
+endif
 endif
 endif
 
@@ -146,9 +166,15 @@ app: libdeps_xomb
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@lib -c -p64 djehutyxomb.lib $(OBJS_XOMB) $(LFLAGS_WIN)
 endif
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@lib -c -p64 djehutyxomb.lib $(OBJS_XOMB) $(LFLAGS_WIN)
+endif
 
 	@echo linking...
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
+	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
+endif
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
 	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
 endif
 
@@ -172,7 +198,11 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
+else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+endif
 endif
 endif
 
@@ -185,7 +215,11 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
+else
 	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux $(TOOLS_DSPEC) $(OBJS_LINUX)
+endif
 endif
 endif
 
@@ -198,7 +232,11 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
+else
 	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
+endif
 endif
 endif
 
@@ -211,7 +249,11 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
+else
 	@$(DC) $(LFLAGS_LINUX) -oftuitetris -d-version=PlatformLinux $(EXAMPLES_TUITETRIS) $(OBJS_LINUX)
+endif
 endif
 endif
 
@@ -224,10 +266,13 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	@dmd.exe -w -version=$(PLATFORM) -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	@dmd.exe -w -version=$(PLATFORM) -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
+else
 	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
 endif
 endif
-
+endif
 
 
 clean:
@@ -237,6 +282,10 @@ else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	rm -f $(OBJS_WIN)
 else
+ifeq (${MY_ARCH},MINGW32_NT-6.1)
+	rm -f $(OBJS_WIN)
+else
 	rm -f $(OBJS_LINUX)
+endif
 endif
 endif

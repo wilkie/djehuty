@@ -107,8 +107,8 @@ void ConsoleGetSize(out uint width, out uint height)
 
 	GetConsoleScreenBufferInfo(hStdout, &cinfo);
 
-	width = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
-	height = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
+	width = cinfo.srWindow.Right - cinfo.srWindow.Left + 1;
+	height = cinfo.srWindow.Bottom - cinfo.srWindow.Top + 1;
 }
 
 void ConsoleClear() {

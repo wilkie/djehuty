@@ -55,14 +55,14 @@ class MP3Codec : AudioCodec {
 	String name() {
 		return new String("MPEG Layer 3");
 	}
-	
+
 	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {
 		for(;;) {
 			switch (decoderState) {
 				case MP3_STATE_INIT:
 
 					decoderState = MP3_BUFFER_AUDIO;
-					
+
 					/* follow through */
 
 					// attempts to find the 12-16 sync bits
@@ -71,13 +71,16 @@ class MP3Codec : AudioCodec {
 					// if it knows its layer it will search for
 					// the sync bits plus that part of the header
 				case MP3_BUFFER_AUDIO:
+				
+					samplesLeft = 1728 * NUM_BLOCKS;
+					bufferSize = samplesLeft;
 
 					decoderState = MP3_READ_HEADER;
 
 					// *** fall through *** //
 
 				case MP3_READ_HEADER:
-					Console.putln("pos: ", new String("%x", stream.position));
+					//Console.putln("pos: ", new String("%x", stream.position));
 
 					if (!stream.read(mpeg_header))
 					{
@@ -114,7 +117,7 @@ class MP3Codec : AudioCodec {
 								id3length |= b;
 							}
 
-							Console.putln("id3 length: ", new String("%x", id3length));
+							//Console.putln("id3 length: ", new String("%x", id3length));
 						}
 
 						if (!stream.skip(id3length)) {
@@ -125,10 +128,9 @@ class MP3Codec : AudioCodec {
 						continue;
 					}
 
-					Console.putln("mpeg_header ", new String("%x", mpeg_header)	);
+//					Console.putln("mpeg_header ", new String("%x", mpeg_header)	);
 
 					if ((mpeg_header & MPEG_SYNC_BITS) == MPEG_SYNC_BITS) {
-						Console.putln("sync");
 						// sync bits found
 						//writeln("sync bits found ", stream.getPosition() - 4);
 
@@ -183,7 +185,7 @@ class MP3Codec : AudioCodec {
 								"Emphasis: ", header.Emphasis); //*/
 
 						// Calculate the length of the Audio Data
-						
+
 						bufferLength = cast(uint)(144 * (cast(double)bitRates[header.BitrateIndex] / cast(double)samplingFrequencies[header.SamplingFrequency]));
 						if (header.Padding) {
 							bufferLength++;
@@ -244,6 +246,22 @@ class MP3Codec : AudioCodec {
 						else {
 							decoderState = MP3_READ_AUDIO_DATA;
 						}
+						
+						if (!accepted) {
+							if (toBuffer !is null) {
+								if (toBuffer.length() != bufferSize) {
+									Console.putln("resize ", bufferSize, " from ", toBuffer.length());
+									toBuffer.resize(bufferSize);
+								}
+								toBuffer.rewind();
+							}
+
+							if (toBuffer is null && isSeek == false) {
+								return StreamData.Accepted;
+							}
+						}
+						
+						accepted = true;
 
 						continue;
 					}
@@ -281,7 +299,7 @@ class MP3Codec : AudioCodec {
 					continue;
 					
 				case MP3_READ_AUDIO_DATA:
-					Console.putln("pos: ", new String("%x", stream.position));
+					//Console.putln("pos: ", new String("%x", stream.position));
 					
 					// curByte is currently at the end of the last frame (supposedly)
 					// main_data_end depicts the end of the data frame
@@ -302,7 +320,8 @@ class MP3Codec : AudioCodec {
 							break;
 
 						case MPEG_MODE_JOINT_STEREO:
-							decoderState = MP3_READ_AUDIO_DATA_JOINT_STEREO;
+							channels = 2;
+							decoderState = MP3_READ_AUDIO_DATA_SINGLE_CHANNEL;
 							break;
 
 						default: // impossible!
@@ -317,8 +336,8 @@ class MP3Codec : AudioCodec {
 					audioHeaderLength = 32;
 
 					if (channels == 1) { audioHeaderLength = 17; }
-				
-					Console.putln("reading ", audioHeaderLength, " info header buffer");
+
+					//Console.putln("reading ", audioHeaderLength, " info header buffer");
 
 					// read in the side info
 					if (!stream.read(audioHeader.ptr, audioHeaderLength)) {
@@ -331,7 +350,7 @@ class MP3Codec : AudioCodec {
 					curByte = 0;
 					curPos = 0;
 
-					Console.putln(audioRefLength, " <--- header length");
+					//Console.putln(audioRefLength, " <--- header length");
 
 					// The reading of side info
 
@@ -420,7 +439,7 @@ class MP3Codec : AudioCodec {
 
 					bufferLength -= audioHeaderLength;
 
-					Console.putln("Audio Data Length: ", bufferLength);
+					//Console.putln("Audio Data Length: ", bufferLength);
 
 					// append the buffer
 					audioData ~= new ubyte[bufferLength];
@@ -431,7 +450,7 @@ class MP3Codec : AudioCodec {
 
 				case MP3_READ_AUDIO_DATA_SCALE_FACTORS:
 
-					Console.putln("reading ", bufferLength, " info decode buffer");
+					//Console.putln("reading ", bufferLength, " info decode buffer");
 
 					// read in the data
 					if (!stream.read(&audioData[$ - bufferLength], bufferLength)) {
@@ -445,12 +464,14 @@ class MP3Codec : AudioCodec {
 
 					main_data_begin = curByte;
 
-					Console.putln(curByte, " start of read");
+					//Console.putln(curByte, " start of read");
 
 					audioRefLength = audioData.length;
 					audioRef = audioData;
 
 					curPos = 0;
+					
+					bool output = false;
 
 					for (uint gr = 0; gr < 2; gr++) {
 						for (uint ch = 0; ch < channels; ch++) {
@@ -467,22 +488,103 @@ class MP3Codec : AudioCodec {
 
 							// Requantize
 							requantizeSample(gr, ch);
+<<<<<<< HEAD:codecs/audio/mp3.d
+=======
+							// ro[ch] == quantizedData[ch]
+							for (uint sb = 0; sb < SBLIMIT; sb++) {
+								for (uint ss = 0; ss < SSLIMIT; ss++) {
+									//printf("%f\n", quantizedData[ch][sb][ss]);
+								}
+							}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						}
 
 						// Account for a mode switch from intensity stereo to MS_stereo
 						normalizeStereo(gr);
+<<<<<<< HEAD:codecs/audio/mp3.d
+=======
+						for (uint ch = 0; ch < channels; ch++) {
+							for (uint sb = 0; sb < SBLIMIT; sb++) {
+								for (uint ss = 0; ss < SSLIMIT; ss++) {
+									//if (normalizedData[ch][sb][ss] > 0.0) {
+									//	printf("%f\n", normalizedData[ch][sb][ss]);
+									//}
+								}
+							}
+						}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 
 						for (uint ch = 0; ch < channels; ch++) {
 							// Reorder the short blocks
 							reorder(gr, ch);
+<<<<<<< HEAD:codecs/audio/mp3.d
 							
 							// Perform anti-alias pass on subband butterflies
 							antialias(gr, ch);
+=======
+							for (uint sb = 0; sb < SBLIMIT; sb++) {
+								for (uint ss = 0; ss < SSLIMIT; ss++) {
+									//if (reorderedData[sb][ss] > 0.0) {
+										//printf("%f\n", reorderedData[sb][ss]);
+									//}
+								}
+							}
+
+							// Perform anti-alias pass on subband butterflies
+							antialias(gr, ch);
+							for (uint sb = 0; sb < SBLIMIT; sb++) {
+								for (uint ss = 0; ss < SSLIMIT; ss++) {
+								//	if (hybridData[sb][ss] > 0.0) {
+										//printf("%f\n", hybridData[sb][ss]);
+								//	}
+								}
+							}
+
+							// Perform hybrid synthesis pass
+							for (uint sb; sb < SBLIMIT; sb++) {
+								hybridSynthesis(gr, ch, sb);
+							}
+							
+							// Multiply every second subband's every second input by -1
+							// To correct for frequency inversion of the polyphase filterbank
+							for (uint sb; sb < SBLIMIT; sb++) {
+								for (uint ss; ss < SSLIMIT; ss++) {
+									if (((ss % 2) == 1) && ((sb % 2) == 1)) {
+										polysynthData[ch][sb][ss] = -polysynthData[ch][sb][ss];
+									}
+								}
+							}
+
+							for (uint sb = 0; sb < SBLIMIT; sb++) {
+								for (uint ss = 0; ss < SSLIMIT; ss++) {
+									//if (polysynthData[ch][sb][ss] > 0.0) {
+									//	printf("%f\n", polysynthData[ch][sb][ss]);
+									//}
+								}
+							}
+						}
+							
+						// Polyphase Synthesis
+						for (uint ss; ss < 18; ss++) {
+							polyphaseSynthesis(gr, ss, toBuffer);
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						}
 					}
 
-					Console.putln(curByte, " end of read");
-					Console.putln(curByte - main_data_begin, " read");
+					samplesLeft -= (3*18*32*channels);
+
+					if (samplesLeft <= 0)
+					{
+						decoderState = MP3_BUFFER_AUDIO;
+						curTime += bufferTime;
+							//curTime.toString();
+						return StreamData.Accepted; /*
+					toBuffer.rewind();
+						continue; //*/
+					}
+
+					//Console.putln(curByte, " end of read");
+					//Console.putln(curByte - main_data_begin, " read");
 
 					main_data_end = curByte+1;
 
@@ -589,14 +691,27 @@ protected:
         		}
 			}
 
+<<<<<<< HEAD:codecs/audio/mp3.d
 			scalefac[gr][ch].long_window[22] = 0;
 		}
 	}
 	
+=======
+			// (The reference implementation does nothing with subband 21)
+
+			// We fill it with a high negative integer:
+			scalefac[gr][ch].long_window[21] = -858993460;
+
+			scalefac[gr][ch].long_window[22] = 0;
+		}
+	}
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 	const auto SBLIMIT = 32;
 	const auto SSLIMIT = 18;
 
 	// Decoded Huffman Data -- is(i) in the spec
+<<<<<<< HEAD:codecs/audio/mp3.d
 	long[SSLIMIT][SBLIMIT] codedData;
 	
 	// Requantizated Data -- xr(i) in the spec
@@ -611,6 +726,25 @@ protected:
 	// anti-aliased hybrid synthesis data -- hybrid(i)
 	double[SSLIMIT][SBLIMIT] hybridData;
 
+=======
+	int[SSLIMIT][SBLIMIT] codedData;
+
+	// Requantizated Data -- xr(i) in the spec
+	double[SSLIMIT][SBLIMIT][2] quantizedData;
+
+	// Normalized Data -- lr(i)
+	double[SSLIMIT][SBLIMIT][2] normalizedData;
+
+	// reordered data -- re(i)
+	double[SSLIMIT][SBLIMIT] reorderedData;
+
+	// anti-aliased hybrid synthesis data -- hybridIn
+	double[SSLIMIT][SBLIMIT] hybridData;
+
+	// data for the polysynth phase -- hybridOut
+	double[SSLIMIT][SBLIMIT][2] polysynthData;
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 	void decodeHuffman(uint gr, uint ch) {
 		// part2_3_length is the length of all of the data
 		// (huffman + scalefactors). part2_length is just
@@ -778,6 +912,171 @@ protected:
 					else {
 						// The block_type cannot be 2 in this block (so, it must be block 0, 1, or 3).
 
+<<<<<<< HEAD:codecs/audio/mp3.d
+=======
+		// Note: SSLIMIT * SBLIMIT = 32 * 18 = 576
+
+//		Console.putln("-=-=-=-");
+
+		static const auto max_table_entry = 15;
+
+		uint region1Start;
+		uint region2Start;
+
+		if (blocksplit_flag[gr][ch] == 1 && block_type[gr][ch] == 2) {
+			// Short Blocks
+			region1Start = 36;
+			region2Start = 576; // There isn't a region 2 for short blocks
+		}
+		else {
+			// Long Blocks
+			region1Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + 1];
+			region2Start = sfindex_long[header.SamplingFrequency][region_address1[gr][ch] + region_address2[gr][ch] + 2];
+		}
+		
+		uint maxBand = big_values[gr][ch] * 2;
+
+//		Console.putln(region1Start, " to ", region2Start);
+
+		if (region1Start > maxBand) { region1Start = maxBand; }
+		if (region2Start > maxBand) { region2Start = maxBand; }
+
+		uint freqIndex;
+
+		uint pos = curByte;
+		uint posbit = curPos;
+
+		// The number of bits used for the huffman data
+ 		uint huffmanLength = (part2_3_length[gr][ch] - part2_length);
+
+ 		// The bit position in the stream to stop.
+ 		uint maxBit = huffmanLength + curPos + (curByte * 8);
+
+		// Region 0
+		if (freqIndex < region1Start) {
+			//Console.putln("region 0 -=-=-");
+			initializeHuffman(0,gr,ch);
+		}
+
+		for (; freqIndex < region1Start; freqIndex+=2) {
+			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
+		}
+
+		// Region 1
+		if (freqIndex < region2Start) {
+		//	Console.putln("region 1 -=-=-");
+			initializeHuffman(1,gr,ch);
+		}
+
+		for (; freqIndex < region2Start; freqIndex+=2) {
+			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
+		}
+
+		// Region 2
+		if (freqIndex < maxBand) {
+	//		Console.putln("region 2 -=-=-");
+			initializeHuffman(2,gr,ch);
+		}
+
+		for (; freqIndex < maxBand; freqIndex+=2) {
+			int[] code = readCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
+		}
+
+//		Console.putln("big values decoded -=-=-");
+
+		// Read in Count1 Area
+		initializeQuantizationHuffman(gr,ch);
+
+		for (; (curPos + (curByte * 8)) < maxBit && freqIndex < 574; freqIndex += 4) {
+			int[4] code = readQuantizationCode();
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = code[0];
+			codedData[(freqIndex+1)/SSLIMIT][(freqIndex+1)%SSLIMIT] = code[1];
+			codedData[(freqIndex+2)/SSLIMIT][(freqIndex+2)%SSLIMIT] = code[2];
+			codedData[(freqIndex+3)/SSLIMIT][(freqIndex+3)%SSLIMIT] = code[3];
+		}
+
+		// Zero rest
+		for (; freqIndex < 576; freqIndex++) {
+			codedData[freqIndex/SSLIMIT][freqIndex%SSLIMIT] = 0;
+		}
+
+		// Resync to the correct position
+		// (where we started + the number of bits that would have been used)
+		curByte = maxBit / 8;
+		curPos = maxBit % 8;
+	}
+	
+	void requantizeSample(uint gr, uint ch) {
+		uint criticalBandBegin;
+		uint criticalBandWidth;
+		uint criticalBandBoundary;
+		uint criticalBandIndex;
+
+		const int[22] pretab = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0];
+
+		// Initialize the critical boundary information
+		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2)) {
+			if (switch_point[gr][ch] == 0) {
+				// Short blocks
+				criticalBandBoundary = sfindex_short[header.SamplingFrequency][1] * 3;
+				criticalBandWidth = sfindex_short[header.SamplingFrequency][1];
+				criticalBandBegin = 0;
+			}
+			else {
+				// Long blocks come first for switched windows
+				criticalBandBoundary = sfindex_long[header.SamplingFrequency][1];
+			}
+		}
+		else {
+			// Long windows
+			criticalBandBoundary = sfindex_long[header.SamplingFrequency][1];
+		}
+
+		for (uint sb; sb < SBLIMIT; sb++) {
+			for (uint ss; ss < SSLIMIT; ss++) {
+
+				// Get the critical band boundary
+				if ((sb * 18) + ss == criticalBandBoundary) {
+					if (blocksplit_flag[gr][ch] == 1 && block_type[gr][ch] == 2) {
+						if (switch_point[gr][ch] == 0) {
+							// Requantizing the samples for a short window.
+							criticalBandIndex++;
+							criticalBandBoundary = sfindex_short[header.SamplingFrequency][criticalBandIndex+1]*3;
+							criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+							criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+						}
+						else {
+							// Requantizing the samples for a long window that switches to short.
+
+							// The first two are long windows and the last two are short windows
+							if (((sb * 18) + ss) == sfindex_long[header.SamplingFrequency][8]) {
+								criticalBandBoundary = sfindex_short[header.SamplingFrequency][4] * 3;
+								criticalBandIndex = 3;
+								criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+								criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+							}
+							else if (((sb * 18) + ss) < sfindex_long[header.SamplingFrequency][8]) {
+								criticalBandIndex++;
+								criticalBandBoundary = sfindex_long[header.SamplingFrequency][criticalBandIndex+1];
+							}
+							else {
+								criticalBandIndex++;
+								criticalBandBoundary = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] * 3;
+								criticalBandWidth = sfindex_short[header.SamplingFrequency][criticalBandIndex + 1] - sfindex_short[header.SamplingFrequency][criticalBandIndex];
+								criticalBandBegin = sfindex_short[header.SamplingFrequency][criticalBandIndex] * 3;
+							}
+						}
+					}
+					else {
+						// The block_type cannot be 2 in this block (so, it must be block 0, 1, or 3).
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						// Requantizing the samples for a long window
 						criticalBandIndex++;
 						criticalBandBoundary = sfindex_long[header.SamplingFrequency][criticalBandIndex+1];
@@ -785,17 +1084,30 @@ protected:
 				}
 
 				// Global gain
+<<<<<<< HEAD:codecs/audio/mp3.d
 				quantizedData[ch][sb][ss] = pow(2.0, (0.25 * (global_gain[gr][ch] - 210.0)));
 
+=======
+				quantizedData[ch][sb][ss] = pow(2.0, (0.25 * (cast(double)global_gain[gr][ch] - 210.0)));
+         //printf("g : %d %d: %f\n", sb,ss,quantizedData[ch][sb][ss]);
+static bool output = false;
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 				// Perform the scaling that depends on the type of window
 				if (blocksplit_flag[gr][ch] == 1
 					&& (((block_type[gr][ch] == 2) && (switch_point[gr][ch] == 0))
 					|| ((block_type[gr][ch] == 2) && (switch_point[gr][ch] == 1) && (sb >= 2)))) {
 
 					// Short blocks (either via block_type 2 or the last 2 bands for switched windows)
+<<<<<<< HEAD:codecs/audio/mp3.d
 					
 					uint sbgainIndex = (((sb * 18) + ss) - criticalBandBegin) / criticalBandWidth;
 
+=======
+
+					uint sbgainIndex = (((sb * 18) + ss) - criticalBandBegin) / criticalBandWidth;
+
+					// if (output) printf("%d %d\n", sbgainIndex, criticalBandIndex);
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 					quantizedData[ch][sb][ss] *= pow(2.0, 0.25 * -8.0
 						* subblock_gain[sbgainIndex][gr][ch]);
 					quantizedData[ch][sb][ss] *= pow(2.0, 0.25 * -2.0 * (1.0 + scalefac_scale[gr][ch])
@@ -803,6 +1115,7 @@ protected:
 				}
 				else {
 					// Long blocks (either via block_type 0, 1, or 3, or the 1st 2 bands
+<<<<<<< HEAD:codecs/audio/mp3.d
 					quantizedData[ch][sb][ss] *= pow(2.0, -0.5 * (1.0 + scalefac_scale[gr][ch])
 						* scalefac[gr][ch].long_window[criticalBandIndex]
 						* preflag[gr][ch] * pretab[criticalBandIndex]);
@@ -820,6 +1133,36 @@ protected:
 	
 	void normalizeStereo(uint gr) {
 	
+=======
+					double powExp = -0.5 * (1.0 + cast(double)scalefac_scale[gr][ch])
+						* (cast(double)scalefac[gr][ch].long_window[criticalBandIndex]
+						+ (cast(double)preflag[gr][ch] * cast(double)pretab[criticalBandIndex]));
+					double powResult = pow(2.0, powExp);
+						//if (powResult > 0.0) {
+							//printf("r : %f\nfrom : %f\n", powResult, powExp);
+							//printf("with : %f %d [%d, %d, %d] %f %f\n", cast(double)scalefac_scale[gr][ch], scalefac[gr][ch].long_window[criticalBandIndex], gr, ch, criticalBandIndex,
+						//	cast(double)preflag[gr][ch], cast(double)pretab[criticalBandIndex]);
+						//}
+					quantizedData[ch][sb][ss] *= powResult;
+				}
+
+				// Scale values
+
+				double powResult = pow(cast(double)abs(codedData[sb][ss]), 4.0/3.0);
+			//	printf("%f\n", powResult);
+
+				quantizedData[ch][sb][ss] *= powResult;
+				if (codedData[sb][ss] < 0) {
+					quantizedData[ch][sb][ss] = -quantizedData[ch][sb][ss];
+				}
+//printf("%d %d: [%d] %.21f\n", sb,ss, codedData[sb][ss], quantizedData[ch][sb][ss]);
+			}
+		}
+	}
+
+	void normalizeStereo(uint gr) {
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 		double io;
 
 		if ((scalefac_compress[gr][0] % 2) == 1) {
@@ -868,7 +1211,11 @@ protected:
 								i--;
 							}
 						}
+<<<<<<< HEAD:codecs/audio/mp3.d
 						
+=======
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						scalefactorBand = scalefactorCount + 1;
 						
 						for (; scalefactorBand < 12; scalefactorBand++) {
@@ -927,7 +1274,11 @@ protected:
 						}
 
 						scalefactorBand = scalefactorCount + 1;
+<<<<<<< HEAD:codecs/audio/mp3.d
 						
+=======
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						if (scalefactorBand > maxScalefactorBand) {
 							maxScalefactorBand = scalefactorBand;
 						}
@@ -994,7 +1345,11 @@ protected:
 						
 						scalefactorBand = i;
 						i = sfindex_long[header.SamplingFrequency][i];
+<<<<<<< HEAD:codecs/audio/mp3.d
 						
+=======
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 						for (; scalefactorBand < 8; scalefactorBand++) {
 							sb = sfindex_long[header.SamplingFrequency][scalefactorBand+1]
 									- sfindex_long[header.SamplingFrequency][scalefactorBand];
@@ -1098,7 +1453,11 @@ protected:
         				// }
         				// ELSE {
         				normalizedData[0][sb][ss] = quantizedData[0][sb][ss] * (decodedRatio[i] / (1 + decodedRatio[i]));
+<<<<<<< HEAD:codecs/audio/mp3.d
         				normalizedData[0][sb][ss] = quantizedData[0][sb][ss] * (1 / (1 + decodedRatio[i]));
+=======
+        				normalizedData[1][sb][ss] = quantizedData[0][sb][ss] * (1 / (1 + decodedRatio[i]));
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
         				// }
         			}
         			else {
@@ -1128,46 +1487,83 @@ protected:
 		if ((blocksplit_flag[gr][ch] == 1) && (block_type[gr][ch] == 2)) {
 			if (switch_point[gr][ch] == 0) {
 				// Recoder the short blocks
+<<<<<<< HEAD:codecs/audio/mp3.d
 				uint scalefactorStart = 0;
 				uint scalefactorLines = sfindex_short[sfreq][1];
 
 				for (uint scalefactorBand = 3; scalefactorBand < 13; scalefactorBand++) {
+=======
+				uint scalefactorStart;
+				uint scalefactorLines;
+
+				for (uint scalefactorBand; scalefactorBand < 13; scalefactorBand++) {
+					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
+					scalefactorLines = sfindex_short[sfreq][scalefactorBand + 1] - scalefactorStart;
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 					for (uint window; window < 3; window++) {
 						for (uint freq; freq < scalefactorLines; freq++) {
 							uint srcLine = (scalefactorStart * 3) + (window * scalefactorLines) + freq;
 							uint destLine = (scalefactorStart * 3) + window + (freq * 3);
 							reorderedData[destLine / SSLIMIT][destLine % SSLIMIT] =
+<<<<<<< HEAD:codecs/audio/mp3.d
 								quantizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
 						}
 					}
 					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
 					scalefactorLines = sfindex_short[sfreq][scalefactorBand + 1] - scalefactorStart;
+=======
+								normalizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
+                                 //   printf("::%d %d %f\n", srcLine, destLine, reorderedData[destLine / SSLIMIT][destLine % SSLIMIT]);
+						}
+					}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 				}
 			}
 			else {
 				// We do not reorder the long blocks
 				for (uint sb; sb < 2; sb++) {
 					for (uint ss; ss < SSLIMIT; ss++) {
+<<<<<<< HEAD:codecs/audio/mp3.d
 						reorderedData[sb][ss] = quantizedData[ch][sb][ss];
+=======
+						reorderedData[sb][ss] = normalizedData[ch][sb][ss];
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 					}
 				}
 
 				// We reorder the short blocks
+<<<<<<< HEAD:codecs/audio/mp3.d
 				uint scalefactorStart = sfindex_short[sfreq][3];
 				uint scalefactorLines = sfindex_short[sfreq][4] - scalefactorStart;
 
 				for (uint scalefactorBand = 3; scalefactorBand < 13; scalefactorBand++) {
+=======
+				uint scalefactorStart;
+				uint scalefactorLines;
+
+				for (uint scalefactorBand = 3; scalefactorBand < 13; scalefactorBand++) {
+					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
+					scalefactorLines = sfindex_short[sfreq][scalefactorBand + 1] - scalefactorStart;
+
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 					for (uint window; window < 3; window++) {
 						for (uint freq; freq < scalefactorLines; freq++) {
 							uint srcLine = (scalefactorStart * 3) + (window * scalefactorLines) + freq;
 							uint destLine = (scalefactorStart * 3) + window + (freq * 3);
 							reorderedData[destLine / SSLIMIT][destLine % SSLIMIT] =
+<<<<<<< HEAD:codecs/audio/mp3.d
 								quantizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
 						}
 					}
 
 					scalefactorStart = sfindex_short[sfreq][scalefactorBand];
 					scalefactorLines = sfindex_short[sfreq][scalefactorBand+1] - scalefactorStart;
+=======
+								normalizedData[ch][srcLine / SSLIMIT][srcLine % SSLIMIT];
+						}
+					}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 				}
 			}
 		}
@@ -1175,7 +1571,11 @@ protected:
 			// We do not reorder long blocks
 			for (uint sb; sb < SBLIMIT; sb++) {
 				for (uint ss; ss < SSLIMIT; ss++) {
+<<<<<<< HEAD:codecs/audio/mp3.d
 					reorderedData[sb][ss] = quantizedData[ch][sb][ss];
+=======
+					reorderedData[sb][ss] = normalizedData[ch][sb][ss];
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 				}
 			}
 		}
@@ -1214,7 +1614,11 @@ protected:
 		// Init our working array with quantized data
 		for (uint sb; sb < SBLIMIT; sb++) {
 			for (uint ss; ss < SSLIMIT; ss++) {
+<<<<<<< HEAD:codecs/audio/mp3.d
 				hybridData[sb][ss] = quantizedData[ch][sb][ss];
+=======
+				hybridData[sb][ss] = reorderedData[sb][ss];
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 			}
 		}
 
@@ -1229,12 +1633,338 @@ protected:
 		// 8 butterflies for each pair of subbands
 		for (uint sb; sb < subbandLimit; sb++) {
 			for (uint ss; ss < 8; ss++) {
+<<<<<<< HEAD:codecs/audio/mp3.d
 				double bu = quantizedData[ch][sb][17 - ss];
 				double bd = quantizedData[ch][sb + 1][ss];
 				hybridData[sb][17 - ss] = (bu * cs[ss]) + (bd * ca[ss]);
 				hybridData[sb + 1][ss] = (bd * cs[ss]) + (bu * ca[ss]);
 			}
 		}
+=======
+				double bu = reorderedData[sb][17 - ss];
+				double bd = reorderedData[sb + 1][ss];
+				hybridData[sb][17 - ss] = (bu * cs[ss]) - (bd * ca[ss]);
+				hybridData[sb + 1][ss] = (bd * cs[ss]) + (bu * ca[ss]);
+			}
+		}
+	}
+	// zerodouble initializes to 0.0 instead of nil
+	zerodouble[SSLIMIT][SBLIMIT][2] previousBlock;
+
+	void hybridSynthesis(uint gr, uint ch, uint sb) {
+
+		int blockType = block_type[gr][ch];
+
+		if ((blocksplit_flag[gr][ch] == 1) && (switch_point[gr][ch] == 1) && (sb < 2)) {
+			blockType = 0;
+		}
+
+		double[36] output = inverseMDCT(hybridData[sb], blockType);
+
+		// Overlapping and Adding with Previous Block:
+		// The last half gets reserved for the next block, and used in this block
+		for (uint ss; ss < SSLIMIT; ss++) {
+			polysynthData[ch][sb][ss] = output[ss] + previousBlock[ch][sb][ss];
+			previousBlock[ch][sb][ss] = cast(zerodouble)output[ss+18];
+		}
+	}
+
+	double[] inverseMDCT(double[18] working, int blockType) {
+		double[] ret = new double[36];
+
+		// The Constant Parts of the Windowing equations
+
+		const double[36][4] win = [
+			// Block Type 0
+			// win[i] = sin( (PI / 36) * ( i + 0.5 ) ) ; i = 0 to 35
+			[
+				0.043619387365336000084, 0.130526192220051573400, 0.216439613938102876070,
+				0.300705799504273119100, 0.382683432365089781770, 0.461748613235033911190,
+				0.537299608346823887030, 0.608761429008720655880, 0.675590207615660132130,
+				0.737277336810123973260, 0.793353340291235165080, 0.843391445812885720550,
+				0.887010833178221602670, 0.923879532511286738480, 0.953716950748226821580,
+				0.976296007119933362260, 0.991444861373810382150, 0.999048221581857798230,
+				0.999048221581857798230, 0.991444861373810382150, 0.976296007119933362260,
+				0.953716950748226932610, 0.923879532511286738480, 0.887010833178221824720,
+				0.843391445812885831570, 0.793353340291235165080, 0.737277336810124084280,
+				0.675590207615660354170, 0.608761429008720877930, 0.537299608346824109080,
+				0.461748613235033911190, 0.382683432365089892800, 0.300705799504273341140,
+				0.216439613938103181380, 0.130526192220051573400, 0.043619387365336069473
+			],
+			// Block Type 1
+			// win[i] = sin( (PI / 36) * ( i + 0.5 ) ) ; i = 0 to 17
+			// win[i] = 1 ; i = 18 to 23
+			// win[i] = sin( (PI / 12) * ( i - 18 + 0.5 ) ) ; i = 24 to 29
+			// win[i] = 0 ; i = 30 to 35
+			[
+				0.043619387365336000084, 0.130526192220051573400, 0.216439613938102876070,
+				0.300705799504273119100, 0.382683432365089781770, 0.461748613235033911190,
+				0.537299608346823887030, 0.608761429008720655880, 0.675590207615660132130,
+				0.737277336810123973260, 0.793353340291235165080, 0.843391445812885720550,
+				0.887010833178221602670, 0.923879532511286738480, 0.953716950748226821580,
+				0.976296007119933362260, 0.991444861373810382150, 0.999048221581857798230,
+				1.000000000000000000000, 1.000000000000000000000, 1.000000000000000000000,
+				1.000000000000000000000, 1.000000000000000000000, 1.000000000000000000000,
+				0.991444861373810382150, 0.923879532511286738480, 0.793353340291235165080,
+				0.608761429008720433840, 0.382683432365089448710, 0.130526192220051129310,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000
+			],
+			// Block Type 2
+			// win[i] = sin( (PI / 12.0) * (i + 0.5) ) ; i = 0 to 11
+			// win[i] = 0.0 ; i = 12 to 35
+			[
+				0.130526192220051601150, 0.382683432365089781770, 0.608761429008720766900,
+				0.793353340291235165080, 0.923879532511286849500, 0.991444861373810382150,
+				0.991444861373810382150, 0.923879532511286738480, 0.793353340291235165080,
+				0.608761429008720433840, 0.382683432365089448710, 0.130526192220051129310,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000
+			],
+			// Block Type 3
+			// win[i] = 0 ; i = 0 to 5
+			// win[i] = sin( (PI / 12) * ( i - 6 + 0.5 ) ) ; i = 6 to 11
+			// win[i] = 1 ; i = 12 to 17
+			// win[i] = sin( (PI / 36) * ( i + 0.5 ) ) ; i = 18 to 35
+			[
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.000000000000000000000, 0.000000000000000000000, 0.000000000000000000000,
+				0.130526192220051601150, 0.382683432365089781770, 0.608761429008720766900,
+				0.793353340291235165080, 0.923879532511286849500, 0.991444861373810382150,
+				1.000000000000000000000, 1.000000000000000000000, 1.000000000000000000000,
+				1.000000000000000000000, 1.000000000000000000000, 1.000000000000000000000,
+				0.999048221581857798230, 0.991444861373810382150, 0.976296007119933362260,
+				0.953716950748226932610, 0.923879532511286738480, 0.887010833178221824720,
+				0.843391445812885831570, 0.793353340291235165080, 0.737277336810124084280,
+				0.675590207615660354170, 0.608761429008720877930, 0.537299608346824109080,
+				0.461748613235033911190, 0.382683432365089892800, 0.300705799504273341140,
+				0.216439613938103181380, 0.130526192220051573400, 0.043619387365336069473
+		    ]
+		];
+
+		double[4*36] cosLookup = [
+			1.000000000000000000000, 0.999048221581857798230, 0.996194698091745545190, 0.991444861373810382150,
+			0.984807753012208020310, 0.976296007119933362260, 0.965925826289068312210, 0.953716950748226932610,
+			0.939692620785908427900, 0.923879532511286738480, 0.906307787036649936670, 0.887010833178221713700,
+			0.866025403784438707610, 0.843391445812885720550, 0.819152044288991798550, 0.793353340291235165080,
+			0.766044443118978013450, 0.737277336810124084280, 0.707106781186547572730, 0.675590207615660354170,
+			0.642787609686539362910, 0.608761429008720655880, 0.573576436351046159420, 0.537299608346823887030,
+			0.500000000000000111020, 0.461748613235034077720, 0.422618261740699441280, 0.382683432365089837290,
+			0.342020143325668823930, 0.300705799504273285630, 0.258819045102520739470, 0.216439613938102903830,
+			0.173648177666930414450, 0.130526192220051712170, 0.087155742747658360158, 0.043619387365336007023,
+			0.000000000000000061230, -0.043619387365335889061, -0.087155742747658013214, -0.130526192220051601150,
+			-0.173648177666930303430, -0.216439613938102792810, -0.258819045102520628450, -0.300705799504272952570,
+			-0.342020143325668712900, -0.382683432365089726260, -0.422618261740699330260, -0.461748613235033744660,
+			-0.499999999999999777950, -0.537299608346823553970, -0.573576436351045826350, -0.608761429008720655880,
+			-0.642787609686539362910, -0.675590207615660243150, -0.707106781186547461710, -0.737277336810123973260,
+			-0.766044443118977902420, -0.793353340291235054060, -0.819152044288991576510, -0.843391445812885498510,
+			-0.866025403784438707610, -0.887010833178221713700, -0.906307787036649936670, -0.923879532511286738480,
+			-0.939692620785908316880, -0.953716950748226821580, -0.965925826289068201190, -0.976296007119933251230,
+			-0.984807753012208020310, -0.991444861373810382150, -0.996194698091745545190, -0.999048221581857798230,
+			-1.000000000000000000000, -0.999048221581857798230, -0.996194698091745545190, -0.991444861373810493170,
+			-0.984807753012208131330, -0.976296007119933473280, -0.965925826289068312210, -0.953716950748226932610,
+			-0.939692620785908427900, -0.923879532511286849500, -0.906307787036650047690, -0.887010833178221824720,
+			-0.866025403784438818630, -0.843391445812885831570, -0.819152044288992020600, -0.793353340291235165080,
+			-0.766044443118978013450, -0.737277336810124084280, -0.707106781186547683750, -0.675590207615660354170,
+			-0.642787609686539473940, -0.608761429008720877930, -0.573576436351046381460, -0.537299608346824220100,
+			-0.500000000000000444080, -0.461748613235034410790, -0.422618261740699940880, -0.382683432365090336890,
+			-0.342020143325669379040, -0.300705799504272952570, -0.258819045102520628450, -0.216439613938102820560,
+			-0.173648177666930331180, -0.130526192220051628910, -0.087155742747658249136, -0.043619387365336131923,
+			-0.000000000000000183690, 0.043619387365335764161, 0.087155742747657888314, 0.130526192220051268080,
+			0.173648177666929970360, 0.216439613938102459740, 0.258819045102520295380, 0.300705799504272619500,
+			0.342020143325668157790, 0.382683432365089171150, 0.422618261740698830660, 0.461748613235034077720,
+			0.500000000000000111020, 0.537299608346823887030, 0.573576436351046048400, 0.608761429008720544860,
+			0.642787609686539251890, 0.675590207615660132130, 0.707106781186547350690, 0.737277336810123862240,
+			0.766044443118977791400, 0.793353340291234943030, 0.819152044288991576510, 0.843391445812885498510,
+			0.866025403784438374540, 0.887010833178221491650, 0.906307787036649714620, 0.923879532511286516430,
+			0.939692620785908094830, 0.953716950748226710560, 0.965925826289068312210, 0.976296007119933362260,
+			0.984807753012208020310, 0.991444861373810382150, 0.996194698091745545190, 0.999048221581857798230,
+		];
+		
+		// Zero to initialize
+		ret[0..$] = 0.0;
+
+		if (blockType == 2) {
+			uint N = 12;
+			for (uint i; i < 3; i++) {
+				double[12] tmp;
+
+				for (uint p; p < N; p++) {
+					double sum = 0.0;
+					for (uint m; m < (N / 2); m++) {
+						sum += working[i + (3 * m)] * cos((PI / cast(double)(2 * N)) * cast(double)((2 * p) + 1 + (N / 2)) * ((2 * m) + 1));
+//						if (sum > 0.0) printf("sa:%f\n", sum);
+					}
+					tmp[p] = sum * win[2][p];
+				}
+				for (uint p; p < N; p++) {
+					ret[(6 * i) + p + 6] += tmp[p];
+				}
+			}
+		}
+		else {
+			uint N = 36;
+			for (uint p; p < 36; p++) {
+				double sum = 0.0;
+				for (uint m; m < 18; m++) {
+					sum += working[m] * cosLookup[(((2 * p) + 1 + 18) * ((2 * m) + 1)) % (4 * 36)];
+				}
+				ret[p] = sum * win[blockType][p];
+			}
+		}
+
+		return ret;
+	}
+
+	void polyphaseSynthesis(uint gr, uint ss, ref Wavelet toBuffer) {
+		double sum;
+
+		uint i;
+		uint k;
+		uint j;
+
+		long foo;
+
+		double* bufOffsetPtr;
+		double* bufOffsetPtr2;
+
+		if (channels == 1) {
+			uint channel = 0;
+
+		    bufOffset[channel] = (bufOffset[channel] - 64) & 0x3ff;
+		    bufOffsetPtr = cast(double*)&BB[channel][bufOffset[channel]];
+
+			for (i=0; i<64; i++) {
+				sum = 0;
+				for (k=0; k<32; k++) {
+					sum += polysynthData[channel][k][ss] * nCoefficients[i][k];
+				}
+				bufOffsetPtr[i] = sum;
+			}
+
+			for (j=0; j<32; j++) {
+				sum = 0;
+				for (i=0; i<16; i++) {
+					k = j + (i << 5);
+
+					sum += windowCoefficients[k] * BB[channel][((k + (((i + 1) >> 1) << 6)) + bufOffset[channel]) & 0x3ff];
+				}
+
+		        if(sum > 0) {
+					foo = cast(long)(sum * cast(double)32768 + cast(double)0.5);
+		        }
+		        else {
+					foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
+		        }
+
+				if (foo >= cast(long)32768) {
+					toBuffer.write(cast(short)(32768-1));
+					//++clip;
+				}
+				else if (foo < cast(long)-32768) {
+					toBuffer.write(cast(short)(-32768));
+					//++clip;
+				}
+				else {
+					toBuffer.write(cast(short)foo);
+				}
+
+				//printf("%d\n", foo);
+			}
+		}
+		else {
+			// INTERLEAVE CHANNELS!
+
+		    bufOffset[0] = (bufOffset[0] - 64) & 0x3ff;
+		    bufOffsetPtr = cast(double*)&BB[0][bufOffset[0]];
+
+		    bufOffset[1] = (bufOffset[1] - 64) & 0x3ff;
+		    bufOffsetPtr2 = cast(double*)&BB[1][bufOffset[1]];
+
+		    double sum2;
+
+			for (i=0; i<64; i++) {
+				sum = 0;
+				sum2 = 0;
+				for (k=0; k<32; k++) {
+					sum += polysynthData[0][k][ss] * nCoefficients[i][k];
+					sum2 += polysynthData[1][k][ss] * nCoefficients[i][k];
+				}
+				bufOffsetPtr[i] = sum;
+				bufOffsetPtr2[i] = sum2;
+			}
+
+			long[32] ch1;
+			long[32] ch2;
+
+			for (j=0; j<32; j++) {
+				sum = 0;
+				sum2 = 0;
+				for (i=0; i<16; i++) {
+					k = j + (i << 5);
+
+					sum += windowCoefficients[k] * BB[0][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[0]) & 0x3ff];
+					sum2 += windowCoefficients[k] * BB[1][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[1]) & 0x3ff];
+				}
+
+		        if(sum > 0) {
+					foo = cast(long)(sum * cast(double)32768 + cast(double)0.5);
+		        }
+		        else {
+					foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
+		        }
+
+				if (foo >= cast(long)32768) {
+					toBuffer.write(cast(short)(32768-1));
+					//++clip;
+					ch1[j] = 32768;
+				}
+				else if (foo < cast(long)-32768) {
+					toBuffer.write(cast(short)(-32768));
+					//++clip;
+					ch1[j] = -32768;
+				}
+				else {
+					toBuffer.write(cast(short)foo);
+					ch1[j] = foo;
+				}
+
+		        if(sum2 > 0) {
+					foo = cast(long)(sum2 * cast(double)32768 + cast(double)0.5);
+		        }
+		        else {
+					foo = cast(long)(sum2 * cast(double)32768 - cast(double)0.5);
+		        }
+
+				if (foo >= cast(long)32768) {
+					toBuffer.write(cast(short)(32768-1));
+					//++clip;
+					ch2[j] = 32768;
+				}
+				else if (foo < cast(long)-32768) {
+					toBuffer.write(cast(short)(-32768));
+					//++clip;
+					ch2[j] = -32768;
+				}
+				else {
+					toBuffer.write(cast(short)foo);
+					ch2[j] = foo;
+				}
+
+			//	printf("%d\n", ch1[j]);
+			}
+			
+			for (j=0; j < 32; j++) {
+//				printf("%d\n", ch2[j]);
+			}
+		}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 	}
 
 	uint readBits(uint bits) {
@@ -1726,6 +2456,13 @@ private:
 		// 32.0
 		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192]
 	];
+<<<<<<< HEAD:codecs/audio/mp3.d
+=======
+	
+	// Synthesis Filter Working Area:
+	int bufOffset[2] = [64,64];
+	zerodouble BB[2][2*512];
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 
 	// Static Huffman tables
 
@@ -1810,7 +2547,17 @@ private:
 			tableIndex = 16;
 		}
 
+<<<<<<< HEAD:codecs/audio/mp3.d
 		curTable = huffmanTables[tableIndex];
+=======
+		// XXX: This silliness is due to a compiler bug in DMD 1.046
+		if (tableIndex == 17) {
+			curTable = huffmanTable24;
+		}
+		else {
+			curTable = huffmanTables[tableIndex];
+		}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 		curValues = huffmanValues[tableIndex];
 	}
 
@@ -1822,6 +2569,13 @@ private:
 		for(;;) {
 			code <<= 1;
 			code |= readBits(1);
+<<<<<<< HEAD:codecs/audio/mp3.d
+=======
+			
+			if (bitlength > curTable.length) {
+				break;
+			}
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 
 			foreach(uint i, foo; curTable[bitlength]) {
 				if (foo == code) {
@@ -1832,7 +2586,11 @@ private:
 					valoffset *= 2;
 
      				int[] values = [curValues[valoffset], curValues[valoffset+1]];
+<<<<<<< HEAD:codecs/audio/mp3.d
      				Console.putln("b:", values[0], " ", values[1]);
+=======
+     			//	Console.putln("b:", values[0], " ", values[1]);
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 
 					// read linbits (x)
 					if (linbits > 0 && values[0] == 15) {
@@ -1855,8 +2613,13 @@ private:
 						}
 					}
 
+<<<<<<< HEAD:codecs/audio/mp3.d
      				Console.putln("a:", values[0], " ", values[1]);
 					return [curValues[valoffset], curValues[valoffset+1]];
+=======
+     				//Console.putln("a:", values[0], " ", values[1]);
+					return values;
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 				}
 			}
 
@@ -1902,7 +2665,11 @@ private:
 			y = -y;
 		}
 
+<<<<<<< HEAD:codecs/audio/mp3.d
      	Console.putln("q:", v, " ", w, " ", x, " ", y);
+=======
+	//	Console.putln("v: ", v, " w: ", w, " x: ", x , " y: ",y );
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 
 		return [v,w,x,y];
 	}
@@ -1963,8 +2730,17 @@ private:
 		return code;
 	}
 
+<<<<<<< HEAD:codecs/audio/mp3.d
 	// Quadruples (A)
 
 	// Note: Quadruples (B) is trivial, and is considered a special case
 	//     : It is simply ~readBits(4);
+=======
+	import codecs.audio.mpegCommon;
+
+	bool accepted = false;
+
+	// number of blocks (of 1728 samples) to buffer
+	const auto NUM_BLOCKS = 40;
+>>>>>>> 527f80074843e17abec90f465262e2cecf2aa803:codecs/audio/mp3.d
 }

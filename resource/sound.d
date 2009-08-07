@@ -72,7 +72,7 @@ class Sound : Responder {
 		tmr.stop();
 	}
 
-	bool OnSignal(Dispatcher dsp, uint signal) {
+	override bool onSignal(Dispatcher dsp, uint signal) {
 		if (dsp is wavDevice && signal == Audio.Signal.BufferPlayed) {
 			_bufferCallback();
 		}
@@ -273,6 +273,7 @@ protected:
 	Thread _audioLoader;
 
 	void _bufferCallback() {
+		//	Console.putln("Callback");
 		if (_state == State.Stopped) { return; }
 		if (_doneBuffering) {
 			Console.putln("Done");
@@ -281,6 +282,7 @@ protected:
 			return;
 		}
 
+		buffers[bufferIndex].rewind();
 		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
 
 		// send the next buffer
@@ -291,7 +293,7 @@ protected:
 			_doneBuffering = true;
 		}
 		else {
-			Console.putln("Sound : Decoded Buffer");
+		//	Console.putln("Sound : Decoded Buffer");
 			wavDevice.sendBuffer(buffers[bufferIndex]);
 		}
 
