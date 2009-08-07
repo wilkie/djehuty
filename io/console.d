@@ -227,12 +227,12 @@ class Console {
 					toParse = va_arg!(String)(_argptr);
 				}
 				else if (_arguments[curArg] is typeid(long)) {
-					ulong argval = cast(ulong)va_arg!(long)(_argptr);
+					long argval = cast(long)va_arg!(long)(_argptr);
 					toParse = new String(argval);
 				}
 				else if (_arguments[curArg] is typeid(ulong)) {
 					ulong argval = va_arg!(ulong)(_argptr);
-					toParse = new String(argval);
+					toParse = new String("%d", argval);
 				}
 				else if (_arguments[curArg] is typeid(int)) {
 					int argval = cast(int)va_arg!(int)(_argptr);
@@ -308,12 +308,12 @@ class Console {
 					toParse = va_arg!(String)(_argptr);
 				}
 				else if (_arguments[curArg] is typeid(long)) {
-					ulong argval = cast(ulong)va_arg!(long)(_argptr);
+					long argval = cast(long)va_arg!(long)(_argptr);
 					toParse = new String(argval);
 				}
 				else if (_arguments[curArg] is typeid(ulong)) {
 					ulong argval = va_arg!(ulong)(_argptr);
-					toParse = new String(argval);
+					toParse = new String("%d", argval);
 				}
 				else if (_arguments[curArg] is typeid(int)) {
 					int argval = cast(int)va_arg!(int)(_argptr);

@@ -20,6 +20,8 @@ import platform.vars.wave;
 
 import scaffold.wave;
 
+import io.console;
+
 // Section: Types
 
 // Description: This structure contains information about an audio file and its uncompressed format.  The Audio class uses this to know how to send buffers given by the audio codec to the audio device.

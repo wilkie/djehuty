@@ -16,7 +16,7 @@ module core.string;
 import core.definitions;
 import core.unicode;
 import core.format;
-
+import std.stdio;
 public import core.string;
 
 template _StringFormat()
@@ -168,7 +168,6 @@ template _StringFormat()
 						curArg++;
 					}
 
-
 					if (curArg == _arguments.length)// just append the rest and not care
 					{
 						i++;
@@ -222,7 +221,7 @@ class String
 
 	// Description: Will create a string for the given integer.
 	// val: The value to use.
-	this(ulong val)
+	this(long val)
 	{
 		fromInteger(val);
 	}
@@ -880,10 +879,10 @@ class String
 		return true;
 	}
 
-	void fromInteger(ulong val)
+	void fromInteger(long val)
 	{
-	    int intlen;
-	    ulong tmp = val;
+		int intlen;
+		long tmp = val;
 
 	    bool negative;
 

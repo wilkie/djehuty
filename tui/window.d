@@ -27,9 +27,6 @@ class TuiWindow : Responder
 	{
 		// go through control list, init
 
-		_width = Console.width();
-		_height = Console.height();
-
 		Console.setColor(_bgClr);
 		Console.clear();
 
@@ -64,8 +61,6 @@ class TuiWindow : Responder
 
 	void onResize()
 	{
-		_width = Console.width();
-		_height = Console.height();
 	}
 
 	void onKeyDown(uint keyCode)
@@ -165,11 +160,11 @@ class TuiWindow : Responder
 	}
 
 	uint width() {
-		return _width;
+		return Console.width();
 	}
 
 	uint height() {
-		return _height;
+		return Console.height();
 	}
 
 	// Methods
@@ -274,7 +269,4 @@ private:
 	TuiWidget _captured_control;
 	TuiWidget _last_control;
 	TuiWidget _focused_control;
-
-	uint _width;
-	uint _height;
 }
