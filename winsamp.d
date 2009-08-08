@@ -139,10 +139,6 @@ class MyTWindow : TuiWindow {
 			//quit
 			application.exit(0);
 		}
-		else if (keyCode == KeyPageUp) {
-			// meh
-			tuitext.forecolor = fgColor.Red;
-		}
 		else {
 			super.onKeyDown(keyCode);
 		}
