@@ -129,6 +129,45 @@ class TuiTextBox : TuiWidget {
 				}
 				positionCaret();
 				break;
+			case KeyPageUp:
+				_row -= this.height;
+				_firstVisible -= this.height;
+				
+				if (_firstVisible < 0) {
+					_firstVisible = 0;
+				}
+
+				if (_row < 0) {
+					_row = 0;
+					_column = 0;
+					_lineColumn = _column;
+				}
+
+				if (_column > _lines[_row].length) {
+					_column = _lines[_row].length;
+				}
+				draw();
+				positionCaret();
+				break;
+			case KeyPageDown:
+				_row += this.height;
+				_firstVisible += this.height;
+				
+				if (_firstVisible >= _lines.length) {
+					_firstVisible = _lines.length - 1;
+				}
+
+				if (_row >= _lines.length) {
+					_row = _lines.length - 1;
+					_column = _lines[_row].length;
+				}
+
+				if (_column > _lines[_row].length) {
+					_column = _lines[_row].length;
+				}
+				draw();
+				positionCaret();
+				break;
 			default:
 				break;
 		}
@@ -218,6 +257,10 @@ protected:
 			// Draw line
 			drawLine(i);
 		}
+
+		for (; i < _firstVisible + this.height; i++) {
+			drawEmptyLine(i);
+		}
 	}
 
 	void drawLine(uint lineNumber) {
@@ -225,10 +268,43 @@ protected:
 		Console.put(_lines[lineNumber]);
 
 		// Pad with spaces
-		for (uint k = _lines[lineNumber].length; k < this.right; k++) {
-			Console.put(" ");
+		uint num = this.right - _lines[lineNumber].length;
+		uint pad;
+
+		for (uint k = this.left + _lines[lineNumber].length; k < this.right; k += pad) {
+			pad = num;
+
+			if (pad > spaces.length) {
+				Console.put(spaces);
+			}
+			else {
+				Console.put(spaces[0..pad]);
+			}
+			num -= pad;
 		}
 	}
+
+	void drawEmptyLine(uint lineNumber) {
+		Console.setPosition(this.left, this.top + (lineNumber - _firstVisible));
+
+		// Pad with spaces
+		uint num = this.width;
+		uint pad;
+
+		for (uint k; k < this.width; k += pad) {
+			pad = num;
+
+			if (pad > spaces.length) {
+				Console.put(spaces);
+			}
+			else {
+				Console.put(spaces[0..pad]);
+			}
+			num -= pad;
+		}
+	}
+
+	char[] spaces = "                                                           ";
 
 	ArrayList!(String) _lines;
 
