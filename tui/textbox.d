@@ -177,6 +177,16 @@ class TuiTextBox : TuiWidget {
 		if (chr == 0x8) {
 			return;
 		}
+		else if (chr == 0xd) {
+			_lines.addItem(_lines[_row].subString(_column), _row+1);
+			_lines[_row] = _lines[_row].subString(0, _column);
+			_column = 0;
+			_row++;
+			_lineColumn = _column;
+			draw();
+			positionCaret();
+			return;
+		}
 		_lines[_row] = _lines[_row].subString(0, _column) ~ [chr] ~ _lines[_row].subString(_column);
 		drawLine(_row);
 		_column++;
