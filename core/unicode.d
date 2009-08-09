@@ -1235,7 +1235,7 @@ static:
 
 	uint[] calcIndices(wstring src)
 	{
-		if (src is null)
+		if (src is null || src == "")
 		{
 			return [];
 		}
