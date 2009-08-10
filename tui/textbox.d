@@ -59,9 +59,12 @@ class TuiTextBox : TuiWidget {
 					LineInfo oldLine;
 					_lines.remove(oldLine, _row+1);
 
+					_lineColumn = _column;
+
+					onLineChanged(_row);
+
 					draw();
 					positionCaret();
-					_lineColumn = _column;
 					break;
 				}
 				else if (_column == 1) {
@@ -120,6 +123,8 @@ class TuiTextBox : TuiWidget {
 
 				_column--;
 				_lineColumn = _column;
+
+				onLineChanged(_row);
 
 				drawLine(_row);
 				positionCaret();
@@ -313,6 +318,7 @@ class TuiTextBox : TuiWidget {
 			_row++;
 			_lineColumn = _column;
 
+			onLineChanged(_row);
 
 			draw();
 			//positionCaret();
@@ -329,10 +335,12 @@ class TuiTextBox : TuiWidget {
 			_lines[_row].format[_formatIndex]++;
 		}
 
-		drawLine(_row);
-
 		_column++;
 		_lineColumn = _column;
+
+		onLineChanged(_row);
+
+		drawLine(_row);
 
 		positionCaret();
 	}

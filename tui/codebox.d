@@ -32,13 +32,27 @@ class TuiCodeBox : TuiTextBox {
 		// When a line is changed, look for language syntax features
 		String line = _lines[lineNumber].value;
 
-		// Keyword Parse
-		String work = Regex.eval(line, _keywords);
+		// Reset formatting
+		_lines[lineNumber].format = null;
 
-		// Add Formatting
-		if (work !is null) {
-			addFormat(lineNumber, line.find(work), work.length);
-		}
+		String work;
+		uint pos;
+		uint findPos;
+
+		// Keyword Parse
+		do {
+			work = Regex.eval(line, _keywords);
+
+			// Add Formatting
+			if (work !is null) {
+				findPos = line.find(work);
+				pos += findPos;
+				addFormat(lineNumber, pos, work.length);
+				pos += work.length;
+				findPos += work.length;
+				line = line.subString(findPos);
+			}
+		} while (work !is null)
 	}
 
 	// Properties
@@ -48,26 +62,36 @@ private:
 	void addFormat(uint lineNumber, uint firstPos, uint length) {
 		if (_lines[lineNumber].format is null) {
 			// Simply add
-			_lines[lineNumber].format = 
-				[cast(uint)_forecolor, cast(uint)_backcolor, firstPos, 
+			_lines[lineNumber].format =
+				[cast(uint)_forecolor, cast(uint)_backcolor, firstPos,
 				 cast(uint)fgColor.BrightBlue, cast(uint)bgColor.Black, length,
-				cast(uint)_forecolor, cast(uint)_backcolor, _lines[lineNumber].value.length - firstPos + length];
+				 cast(uint)_forecolor, cast(uint)_backcolor, _lines[lineNumber].value.length - (firstPos + length)];
 		}
 		else {
+			uint[] newFormat;
+
 			uint last;
 			uint pos;
+			uint formatIdx;
 			for (uint idx = 2; idx < _lines[lineNumber].format.length; idx += 3) {
 				pos += _lines[lineNumber].format[idx];
 				if (pos > firstPos) {
+					formatIdx = idx-2;
 					break;
 				}
 				last = pos;
 			}
 
-			// Split format at firstPos and firstPos + length
-			// Add format for this word
+			// Split format at firstPos
+			newFormat = _lines[lineNumber].format[0..formatIdx+3];
+			newFormat[formatIdx+2] = firstPos - last;
+			newFormat ~= [cast(uint)fgColor.BrightBlue, cast(uint)bgColor.Black, length];
+			newFormat ~= _lines[lineNumber].format[formatIdx..formatIdx+3];
+			newFormat[formatIdx+2+6] = pos - (firstPos + length);
+
+			_lines[lineNumber].format = newFormat;
 		}
 	}
 
-	char[] _keywords = `if|else|import`;
+	char[] _keywords = `\b(?:if|else|import)\b`;
 }
