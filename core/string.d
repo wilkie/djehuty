@@ -567,22 +567,22 @@ class String
 		foreach (i, aPos; _indices)
 		{
 			found = true;
-			o=i;
+			o=i-1;
 			foreach (bPos; search._indices)
 			{
+				o++;
+				if (o >= _indices.length)
+				{
+					found = false;
+					break;
+				}
+
 				dchar aChr, bChr;
 
 				aChr = Unicode.toUtf32Char(_data[_indices[o]..$]);
 				bChr = Unicode.toUtf32Char(search._data[bPos..$]);
 
 				if (aChr != bChr)
-				{
-					found = false;
-					break;
-				}
-
-				o++;
-				if (o >= _indices.length)
 				{
 					found = false;
 					break;

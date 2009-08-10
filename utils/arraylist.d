@@ -144,14 +144,14 @@ class ArrayList(T) : AbstractList!(T)
 		return true;
 	}
 
-	T opIndex(size_t i1)
+	T* opIndex(size_t i1)
 	{
 		if (i1 < 0 || i1 > _count)
 		{
-			return _list[0];
+			return &_list[0];
 		}
 
-		return _list[i1];
+		return &_list[i1];
 	}
 
 	int opIndexAssign(T value, size_t i1)
