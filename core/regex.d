@@ -851,6 +851,9 @@ class Regex {
 				}
 			}
 			else if (regex[regexPos] == '$') {
+
+				// dollar anchor
+
 				if (strPos == str.length || str[strPos] == '\n' || str[strPos] == '\r') {
 					matchMade = true;
 				}
@@ -863,6 +866,9 @@ class Regex {
 				regexPos++;
 			}
 			else if (regex[regexPos] == '^') {
+
+				// caret anchor
+
 				if (multiline) {
 					if (strPos == 0 || str[strPos-1] == '\n' || str[strPos-1] == '\r') {
 						matchMade = true;
@@ -885,6 +891,77 @@ class Regex {
 					}
 				}
 				regexPos++;
+			}
+			else if (((regexPos + 1) < regex.length) && (regex[regexPos] == '\\') && (regex[regexPos+1] == 'b')) {
+
+				// word boundary anchor
+
+				// Check for boundary
+				if (strPos == 0) {
+					// Anchored to the beginning of the string
+
+					// The first character should be a word character
+					if ( (str[strPos] >= 'a' && str[strPos] <= 'z') ||
+						 (str[strPos] >= 'A' && str[strPos] <= 'Z') ||
+						 (str[strPos] >= '0' && str[strPos] <= '9') ||
+						 (str[strPos] == '_')) {
+						matchMade = true;
+					}
+					else {
+						backtrack = true;
+						continue;
+					}
+				}
+				else if ((strPos == str.length) && (str.length > 0)) {
+					// Anchored at end of string
+					matchMade = true;
+
+					// The last character should be a word character
+					if ( (str[strPos-1] >= 'a' && str[strPos-1] <= 'z') ||
+						 (str[strPos-1] >= 'A' && str[strPos-1] <= 'Z') ||
+						 (str[strPos-1] >= '0' && str[strPos-1] <= '9') ||
+						 (str[strPos-1] == '_')) {
+						matchMade = true;
+					}
+					else {
+						backtrack = true;
+						continue;
+					}
+				}
+				else {
+					// It is between two characters
+					// One or the other (exclusive) should be a word character
+
+					bool firstWordCharacter = false;
+
+					if ( (str[strPos-1] >= 'a' && str[strPos-1] <= 'z') ||
+						 (str[strPos-1] >= 'A' && str[strPos-1] <= 'Z') ||
+						 (str[strPos-1] >= '0' && str[strPos-1] <= '9') ||
+						 (str[strPos-1] == '_')) {
+						firstWordCharacter = true;
+					}
+
+					if ( (str[strPos] >= 'a' && str[strPos] <= 'z') ||
+						 (str[strPos] >= 'A' && str[strPos] <= 'Z') ||
+						 (str[strPos] >= '0' && str[strPos] <= '9') ||
+						 (str[strPos] == '_')) {
+						if (!firstWordCharacter) {
+							matchMade = true;
+						}
+						else {
+							backtrack = true;
+							continue;
+						}
+					}
+					else if (firstWordCharacter) {
+						matchMade = true;
+					}
+					else {
+						backtrack = true;
+						continue;
+					}
+				}
+				regexPos+=2;
 			}
 			else {
 				// concatentation
@@ -1022,14 +1099,17 @@ class Regex {
 									break;
 
 								case 'b':
+									// backspace
 									matchMade = str[strPos] == '\b';
 									break;
 
 								case 'n':
+									// newline
 									matchMade = str[strPos] == '\n';
 									break;
 
 								case 'e':
+									// escape
 									matchMade = str[strPos] == '\x1b';
 									break;
 

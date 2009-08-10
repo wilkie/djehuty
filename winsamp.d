@@ -93,6 +93,7 @@ import tui.textfield;
 import core.application;
 
 import tui.textbox;
+import tui.codebox;
 
 class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
@@ -131,21 +132,7 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-		push(tuibox = new TuiTextBox(0,0,this.width,this.height));
-	}
-
-	override void onKeyDown(uint keyCode) {
-		if(keyCode == KeyEnd) {
-			//quit
-			application.exit(0);
-		}
-		else if (keyCode == KeyPageUp) {
-			// meh
-			tuitext.forecolor = fgColor.Red;
-		}
-		else {
-			super.onKeyDown(keyCode);
-		}
+		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
 	}
 
 private:

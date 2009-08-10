@@ -2244,7 +2244,13 @@ private:
 			tableIndex = 16;
 		}
 
-		curTable = huffmanTables[tableIndex];
+		// XXX: This silliness is due to a compiler bug in DMD 1.046
+		if (tableIndex == 17) {
+			curTable = huffmanTable24;
+		}
+		else {
+			curTable = huffmanTables[tableIndex];
+		}
 		curValues = huffmanValues[tableIndex];
 	}
 
@@ -2256,6 +2262,10 @@ private:
 		for(;;) {
 			code <<= 1;
 			code |= readBits(1);
+			
+			if (bitlength > curTable.length) {
+				break;
+			}
 
 			foreach(uint i, foo; curTable[bitlength]) {
 				if (foo == code) {

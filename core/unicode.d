@@ -1155,7 +1155,7 @@ static:
 
 	uint[] calcIndices(string src)
 	{
-		if (src is null)
+		if (src is null || src == "")
 		{
 			return [];
 		}
@@ -1235,7 +1235,7 @@ static:
 
 	uint[] calcIndices(wstring src)
 	{
-		if (src is null)
+		if (src is null || src == "")
 		{
 			return [];
 		}
@@ -1297,7 +1297,7 @@ static:
 
 	uint[] calcIndices(dstring src)
 	{
-		if (src is null)
+		if (src is null || src == "")
 		{
 			return [];
 		}
