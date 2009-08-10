@@ -36,8 +36,8 @@ class TuiCodeBox : TuiTextBox {
 		_lines[lineNumber].format = null;
 
 		String work;
-		uint pos;
-		uint findPos;
+		int pos;
+		int findPos;
 
 		// Keyword Parse
 		do {
