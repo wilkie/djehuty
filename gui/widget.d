@@ -24,7 +24,6 @@ import core.main;
 import core.string;
 import core.color;
 import core.event;
-import core.literals;
 
 // Description: This class implements and abstracts a control, which is a special container that can be drawn and added to a Window.  The control receives many events for different tasks, and allows reusable components within the static version of an application.
 class Widget : Responder {

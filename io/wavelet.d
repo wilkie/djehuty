@@ -2,7 +2,6 @@ module io.wavelet;
 
 import core.stream;
 import core.string;
-import core.literals;
 import core.definitions;
 import core.time;
 

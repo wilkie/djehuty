@@ -8,9 +8,7 @@ module math.common;
 
 import math.mathobject;
 
-import core.literals;
-
-template _mathFunc(StringLiteral8 func) {
+template _mathFunc(string func) {
 	const char[] _mathFunc = `
 		MathObject ` ~ func ~ `(MathObject operand) {
 			// call corresponding op for the MathObject

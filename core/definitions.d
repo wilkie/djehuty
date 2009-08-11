@@ -13,11 +13,42 @@ module core.definitions;
 public import platform.definitions;
 
 // String
+version(D_Version2) {
+	template _D2_Support_string() {
+		version(D_Version2) {
+			const char[] _D2_Support_string = `alias invariant(char)[] string;`;
+		}
+		else {
+			const char[] _D2_Support_string = `alias char[] string;`;
+		}
+	}
+	template _D2_Support_wstring() {
+		version(D_Version2) {
+			const char[] _D2_Support_wstring = `alias invariant(wchar)[] wstring;`;
+		}
+		else {
+			const char[] _D2_Support_wstring = `alias wchar[] wstring;`;
+		}
+	}
+	template _D2_Support_dstring() {
+		version(D_Version2) {
+			const char[] _D2_Support_dstring = `alias invariant(dchar)[] dstring;`;
+		}
+		else {
+			const char[] _D2_Support_dstring = `alias dchar[] dstring;`;
+		}
+	}
 
-version(Tango) {
-	alias char[] string;
-	alias wchar[] wstring;
-	alias dchar[] dstring;
+	mixin(_D2_Support_string!());
+	mixin(_D2_Support_wstring!());
+	mixin(_D2_Support_dstring!());
+}
+else {
+	version(Tango) {
+		alias char[] string;
+		alias wchar[] wstring;
+		alias dchar[] dstring;
+	}
 }
 
 // Section: Types
@@ -60,15 +91,7 @@ struct Rect {
 	uint right;
 }
 
-struct Date {
-
-}
-
-
 // Section: Enums
-
-
-
 
 // Window Styles
 
@@ -84,8 +107,6 @@ enum WindowStyle : int
 	// Description: Represents a borderless window.
 	Popup = 2,
 }
-
-
 
 // Window States
 

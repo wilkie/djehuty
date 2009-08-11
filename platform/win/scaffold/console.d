@@ -13,7 +13,6 @@ module scaffold.console;
 import platform.win.common;
 
 import core.main;
-import core.literals;
 import core.unicode;
 import core.string;
 
@@ -354,8 +353,8 @@ void ConsolePutChar(dchar chr)
 
 	WriteConsoleOutputAttribute(hStdout, &_curAttribs, 1, csbi.dwCursorPosition, &ret);
 
-	StringLiteral32 chrs32 = [ chr ];
-	StringLiteral16 chrs = Unicode.toUtf16(chrs32);
+	dstring chrs32 = [ chr ];
+	wstring chrs = Unicode.toUtf16(chrs32);
 
 	WriteConsoleOutputCharacterW(hStdout, chrs.ptr, chrs.length, csbi.dwCursorPosition, &ret);
 

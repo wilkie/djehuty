@@ -1,7 +1,6 @@
 module interfaces.mod;
 
 import core.string;
-import core.literals;
 
 // Section: Interfaces
 
