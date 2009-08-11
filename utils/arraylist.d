@@ -5,25 +5,20 @@ import interfaces.list;
 // Section: Utils
 
 // Description: This template class abstracts the stack data structure. T is the type you wish to store.
-class ArrayList(T) : AbstractList!(T)
-{
-	this()
-	{
+class ArrayList(T) : AbstractList!(T) {
+	this() {
 		_list = new T[_capacity];
 	}
 
-	this(uint size)
-	{
+	this(uint size) {
 		_capacity = size;
 		this();
 	}
 
 	// Description: Adds a new node to the end of the list.
 	// data: The data to store in the node.
-	void addItem(T data)
-	{
-		if (_count == _capacity)
-		{
+	void addItem(T data) {
+		if (_count == _capacity) {
 			_capacity *= 2;
 
 			T tmp[] = new T[_capacity];
@@ -39,10 +34,8 @@ class ArrayList(T) : AbstractList!(T)
 
 	// Description: Adds a new node to the end of the list.
 	// data: The data to store in the node.
-	void addItem(T data, uint index)
-	{
-		if (_count == _capacity)
-		{
+	void addItem(T data, uint index) {
+		if (_count == _capacity) {
 			_capacity *= 2;
 
 			T tmp[] = new T[_capacity];
@@ -51,46 +44,38 @@ class ArrayList(T) : AbstractList!(T)
 
 			_list = tmp;
 		}
-		
-		_count++;
 
-		for (uint i=_count; i > index; i--)
-		{
+		for (uint i = _count; i > index; i--) {
 			_list[i] = _list[i-1];
 		}
+
+		_count++;
 
 		_list[index] = data;
 	}
 
-	void addList(AbstractList!(T) list)
-	{
+	void addList(AbstractList!(T) list) {
 		Iterator irate = list.getIterator();
 
 		T data;
 
-		while(list.getItem(data, irate))
-		{
+		while(list.getItem(data, irate)) {
 			addItem(data);
 		}
 	}
 
-	void addList(T[] list)
-	{
-		foreach(item; list)
-		{
+	void addList(T[] list) {
+		foreach(item; list) {
 			addItem(item);
 		}
 	}
 
-	T[] getList()
-	{
+	T[] getList() {
 		return _list[0.._count].dup;
 	}
 
-    bool getItem(out T data, uint index)
-    {
-        if (index < _count)
-        {
+    bool getItem(out T data, uint index) {
+        if (index < _count) {
             data = _list[index];
             return true;
         }
@@ -98,10 +83,8 @@ class ArrayList(T) : AbstractList!(T)
         return false;
     }
 
-	bool setItem(T data, uint index)
-	{
-		if (index < _count)
-		{
+	bool setItem(T data, uint index) {
+		if (index < _count) {
 			_list[index] = data;
 			return true;
 		}
@@ -109,8 +92,7 @@ class ArrayList(T) : AbstractList!(T)
         return false;
     }
 
-	Iterator getIterator()
-	{
+	Iterator getIterator() {
 		Iterator irate = new Iterator;
 		irate.irate_ptr = null;
 		irate.irate_int = 0;
@@ -119,10 +101,8 @@ class ArrayList(T) : AbstractList!(T)
 		return irate;
 	}
 
-	bool getItem(out T data, ref Iterator irate)
-	{
-		if (irate.irate_int < _count)
-		{
+	bool getItem(out T data, ref Iterator irate) {
+		if (irate.irate_int < _count) {
 			data = _list[cast(uint)irate.irate_int];
 			irate.irate_int++;
 			return true;
@@ -132,8 +112,7 @@ class ArrayList(T) : AbstractList!(T)
 
 	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a last-in-first-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.
-	bool remove(out T data)
-	{
+	bool remove(out T data) {
 		if (_count == 0) {
 			return false;
 		}
@@ -145,21 +124,17 @@ class ArrayList(T) : AbstractList!(T)
 	}
 
 	static if (is(T == class)) {
-		T opIndex(size_t i1)
-		{
-			if (i1 < 0 || i1 > _count)
-			{
+		T opIndex(size_t i1) {
+			if (i1 < 0 || i1 > _count) {
 				return _list[0];
 			}
-	
+
 			return _list[i1];
 		}
 	}
 	else {
-		T* opIndex(size_t i1)
-		{
-			if (i1 < 0 || i1 > _count)
-			{
+		T* opIndex(size_t i1) {
+			if (i1 < 0 || i1 > _count) {
 				return &_list[0];
 			}
 
@@ -167,29 +142,24 @@ class ArrayList(T) : AbstractList!(T)
 		}
 	}
 
-	int opIndexAssign(T value, size_t i1)
-	{
+	int opIndexAssign(T value, size_t i1) {
 		_list[i1] = value;
 
 		return i1;
     }
 
-	T[] opSlice()
-	{
+	T[] opSlice() {
 		return getList();
 	}
 
-	T[] opSlice(size_t start, size_t end)
-	{
+	T[] opSlice(size_t start, size_t end) {
 		return _list[start..end];
 	}
 
-	int opApply(int delegate(inout T) loopFunc)
-	{
+	int opApply(int delegate(inout T) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < _count; i++)
-		{
+		for(int i = 0; i < _count; i++) {
 			ret = loopFunc(_list[i]);
 			if (ret) { break; }
 		}
@@ -197,12 +167,10 @@ class ArrayList(T) : AbstractList!(T)
 		return ret;
 	}
 
-	int opApply(int delegate(inout int, inout T) loopFunc)
-	{
+	int opApply(int delegate(inout int, inout T) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < _count; i++)
-		{
+		for(int i = 0; i < _count; i++) {
 			ret = loopFunc(i,_list[i]);
 			if (ret) { break; }
 		}
@@ -212,20 +180,17 @@ class ArrayList(T) : AbstractList!(T)
 
 	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.
-	bool remove(out T data, uint index)
-	{
+	bool remove(out T data, uint index) {
 		if (_count == 0) {
 			return false;
 		}
 
-		if (index < _count)
-		{
+		if (index < _count) {
 			data = _list[index];
 
 			_count--;
 
-			for (uint i=index; i<_count; i++)
-			{
+			for (uint i=index; i<_count; i++) {
 				_list[i] = _list[i+1];
 			}
 			return true;
@@ -234,13 +199,11 @@ class ArrayList(T) : AbstractList!(T)
 		return false;
 	}
 
-	uint length()
-	{
+	uint length() {
 	   return _count;
 	}
 
-	void clear()
-	{
+	void clear() {
 		_list = new T[_capacity];
 		_count = 0;
 	}
