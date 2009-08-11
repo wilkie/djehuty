@@ -48,6 +48,7 @@ class TuiTextBox : TuiWidget {
 				if (_column == 0) {
 					_row--;
 					if (_row < 0) {
+						_row = 0;
 						break;
 					}
 
