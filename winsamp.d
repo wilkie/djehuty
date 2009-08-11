@@ -133,6 +133,7 @@ class MyTWindow : TuiWindow {
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
 		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
+		tuibox.lineNumbers = true;
 	}
 
 private:

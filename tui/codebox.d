@@ -93,5 +93,5 @@ private:
 		}
 	}
 
-	char[] _keywords = `\b(?:if|else|import)\b`;
+	char[] _keywords = `\b(if|else|import|ubyte|byte|ushort|short|uint|int|ulong|long|bool|for|do|while|foreach|foreach_reverse|void|break|continue|goto|cast|case|default|switch|function|delegate)\b`;
 }

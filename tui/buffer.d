@@ -150,9 +150,8 @@ class TuiBuffer : TuiWidget
 
 		for (uint y = _y; y < _b; y++, cury++)
 		{
-
-		Console.setPosition(0,30);
-		Console.put("y ", _curx, " ", _cury);
+			Console.setPosition(0,30);
+			Console.put("y ", _curx, " ", _cury);
 			Console.setPosition(_x, y);
 
 			bf = _buffer[cury];
