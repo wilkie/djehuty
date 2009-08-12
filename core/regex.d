@@ -209,6 +209,7 @@ class Regex {
 			stack.push(newRegexPos);
 			stack.push(newStrPos);
 			stack.push(regexGroupStart);
+			stack.push(currentGroupIdx);
 			stack.push(regexFlagPotential);
 		}
 
@@ -282,6 +283,7 @@ class Regex {
 				int oldRegexPos = regexPos;
 
 				regexFlagPotential = stack.pop();
+				currentGroupIdx = stack.pop();
 				regexGroupStart = stack.pop();
 				strPos = stack.pop();
 				regexPos = stack.pop();
@@ -416,7 +418,7 @@ class Regex {
 					}
 					else if (!noMatch) {
 						// undo actions
-						strPos = groupInfo[currentGroupIdx].strPos;
+						strPos = groupInfo[currentGroupIdx].strStartPos;
 
 						noMatch = false;
 
@@ -562,7 +564,7 @@ class Regex {
 					}
 				}
 
-				if (noMatch && noMatchUntilClosedAtPos == groupInfo[regexPos].startPos) {
+				if (noMatch && noMatchUntilClosedAtPos == currentGroupIdx) {
 					noMatch = false;
 				}
 
