@@ -593,7 +593,7 @@ protected:
 			print(new String("\ttester = new ") ~ className ~ "();\n\n");
 			print(new String("\tresult = tester.") ~ test ~ "();\n\t");
 			print(new String("\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
-			print(new String(lines[i]));
+			print(new String(cast(long)lines[i]));
 			//fwritef(outfp, "", lines[i]);
 			print("\");\n\n");
 		}

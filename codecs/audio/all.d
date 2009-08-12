@@ -4,7 +4,6 @@ import io.audio;
 import io.wavelet;
 
 import core.time;
-import core.literals;
 import core.string;
 import core.stream;
 
@@ -40,7 +39,7 @@ else {
 // WMA
 // OGG
 
-template RunCodec(StringLiteral8 codec) {
+template RunCodec(string codec) {
 	const char[] RunCodec = `
 		audioCodec = new ` ~ codec ~ `Codec();
 		

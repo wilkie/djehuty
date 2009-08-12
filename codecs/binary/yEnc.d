@@ -10,7 +10,6 @@
 module codecs.binary.yEnc;
 
 import core.endian;
-import core.literals;
 import core.stream;
 
 import codecs.binary.codec;

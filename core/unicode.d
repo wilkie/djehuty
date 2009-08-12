@@ -10,7 +10,6 @@
 module core.unicode;
 
 import core.definitions;
-import core.literals;
 
 private static const uint halfShift = 10;
 private static const uint halfBase = 0x0010000;
@@ -67,9 +66,9 @@ static const uint offsetsFromUTF8[6] = [ 0x00000000, 0x00003080, 0x000E2080,
  * definition of UTF-8 goes up to 4-byte sequences.
  */
 
-private bool isLegalUTF8(CharLiteral8* source, int length) {
+private bool isLegalUTF8(char* source, int length) {
     char a;
-    CharLiteral8 *srcptr = source+length;
+    char *srcptr = source+length;
     switch (length) {
 	    default: return false;
 		/* Everything else falls through when "true"... */
@@ -116,8 +115,8 @@ static:
 		const auto byteMask = 0xBF;
 		const auto byteMark = 0x80;
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		char* target = container.ptr;
 		char* targetEnd = &container[$-1] + 1;
@@ -212,8 +211,8 @@ static:
 		const auto byteMask = 0xBF;
 		const auto byteMark = 0x80;
 
-		CharLiteral32* source = src.ptr;
-		CharLiteral32* sourceEnd = &src[$-1] + 1;
+		dchar* source = src.ptr;
+		dchar* sourceEnd = &src[$-1] + 1;
 
 		char* target = container.ptr;
 		char* targetEnd = &container[$-1] + 1;
@@ -282,8 +281,8 @@ static:
 
 		wchar[] container = new wchar[src.length];
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		wchar* target = container.ptr;
 		wchar* targetEnd = &container[$-1] + 1;
@@ -361,8 +360,8 @@ static:
 
 		wchar[] container = new wchar[src.length];
 
-		CharLiteral32* source = src.ptr;
-		CharLiteral32* sourceEnd = &src[$-1] + 1;
+		dchar* source = src.ptr;
+		dchar* sourceEnd = &src[$-1] + 1;
 
 		wchar* target = container.ptr;
 		wchar* targetEnd = &container[$-1] + 1;
@@ -410,8 +409,8 @@ static:
 
 		dchar[] container = new dchar[src.length];
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		dchar* target = container.ptr;
 		dchar* targetEnd = &container[$-1] + 1;
@@ -483,8 +482,8 @@ static:
 
 		dchar[] container = new dchar[src.length];
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		dchar* target = container.ptr;
 		dchar* targetEnd = &container[$-1] + 1;
@@ -587,8 +586,8 @@ static:
 
 		/+dchar[] container = new dchar[src.length];
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		dchar* target = container.ptr;
 		dchar* targetEnd = &container[$-1] + 1;
@@ -652,8 +651,8 @@ static:
 		// convert it to a UTF-32 character,
 		// and then return
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		dchar ch, ch2;
 
@@ -738,8 +737,8 @@ static:
 			return [];
 		}
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		ushort extraBytesToRead;
 
@@ -835,8 +834,8 @@ static:
 			return [];
 		}
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		dchar ch, ch2;
 
@@ -893,7 +892,7 @@ static:
 
 	dchar[] toUtf32Chars(dstring src)
 	{
-		CharLiteral32[] container;
+		dchar[] container;
 
 		if (src.length == 0)
 		{
@@ -922,15 +921,15 @@ static:
 
 	wchar[] toUtf16Chars(dstring src)
 	{
-		CharLiteral16[] container;
+		wchar[] container;
 
 		if (src.length == 0)
 		{
 			return cast(wchar[])container;
 		}
 
-		CharLiteral32* source = src.ptr;
-		CharLiteral32* sourceEnd = &src[$-1] + 1;
+		dchar* source = src.ptr;
+		dchar* sourceEnd = &src[$-1] + 1;
 
 		dchar ch;
 
@@ -974,8 +973,8 @@ static:
 				{
 					break;
 				}
-				container ~= cast(CharLiteral16)((ch >> halfShift) + UNI_SUR_HIGH_START);
-				container ~= cast(CharLiteral16)((ch & halfMask) + UNI_SUR_LOW_START);
+				container ~= cast(wchar)((ch >> halfShift) + UNI_SUR_HIGH_START);
+				container ~= cast(wchar)((ch & halfMask) + UNI_SUR_LOW_START);
 			}
 		}
 
@@ -987,15 +986,15 @@ static:
 
 	char[] toUtf8Chars(dstring src)
 	{
-		CharLiteral8[] container;
+		char[] container;
 
 		if (src.length == 0)
 		{
 			return [];
 		}
 
-		CharLiteral32* source = src.ptr;
-		CharLiteral32* sourceEnd = &src[$-1] + 1;
+		dchar* source = src.ptr;
+		dchar* sourceEnd = &src[$-1] + 1;
 
 		dchar ch;
 
@@ -1013,8 +1012,8 @@ static:
 			return 0;
 		}
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		ushort extraBytesToRead;
 
@@ -1086,8 +1085,8 @@ static:
 			return 0;
 		}
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		uint len = 0;
 
@@ -1162,8 +1161,8 @@ static:
 
 		uint[] ret = new uint[src.length];
 
-		CharLiteral8* source = src.ptr;
-		CharLiteral8* sourceEnd = &src[$-1] + 1;
+		char* source = src.ptr;
+		char* sourceEnd = &src[$-1] + 1;
 
 		ushort extraBytesToRead;
 
@@ -1242,8 +1241,8 @@ static:
 
 		uint[] ret = new uint[src.length];
 
-		CharLiteral16* source = src.ptr;
-		CharLiteral16* sourceEnd = &src[$-1] + 1;
+		wchar* source = src.ptr;
+		wchar* sourceEnd = &src[$-1] + 1;
 
 		uint len;
 		uint i;

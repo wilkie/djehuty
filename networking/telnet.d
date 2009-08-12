@@ -9,7 +9,6 @@
 
 module networking.telnet;
 
-import core.literals;
 import core.string;
 import core.unicode;
 import core.definitions;

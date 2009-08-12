@@ -43,8 +43,10 @@ class ParseUnit
 				tokens = feeder.feed();
 				idx = 0;
 
-				if (tokens is null) { return original; }
-   }
+				if (tokens is null) {
+					break;
+				}
+			}
 
 			for( ; idx < tokens.length ; idx++)
 			{
@@ -57,7 +59,7 @@ class ParseUnit
 				{
 					parseDefault();
 				}
-				
+
 				// Finished?
 				if (iAmDone) { idx++; return original; }
 			}
@@ -66,7 +68,7 @@ class ParseUnit
 			tokens = feeder.feed();
 			idx=0;
 		}
-		
+
 		return original;
 	}
 	

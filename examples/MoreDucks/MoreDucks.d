@@ -9,7 +9,6 @@ import gui.osbutton;
 import graphics.graphics;
 import resource.image;
 
-
 class MyControl : Widget {
 	this() {
 		super(0,50,360,297);

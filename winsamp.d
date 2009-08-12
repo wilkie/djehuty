@@ -95,6 +95,15 @@ import core.application;
 import tui.textbox;
 import tui.codebox;
 
+class MyConsoleApp : Application {
+//	static this() { new MyConsoleApp(); }
+
+	override void onApplicationStart() {
+		String str = Regex.eval(" foreach d ", `\b(for|do|foreach)\b`);
+		Console.putln(str);
+	}
+}
+
 class MyTApp :TuiApplication {
 	static this() { new MyTApp(); }
 
@@ -133,6 +142,7 @@ class MyTWindow : TuiWindow {
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
 		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
+		tuibox.lineNumbers = true;
 	}
 
 private:

@@ -1,7 +1,6 @@
 module console.prompt;
 
 import core.string;
-import core.literals;
 
 import io.console;
 
