@@ -25,7 +25,7 @@ class TuiTextBox : TuiWidget {
 
 		_lines = new ArrayList!(LineInfo);
 		LineInfo newItem;
-		newItem.value = new String("asdfasf asdf import");
+		newItem.value = new String("if (something) { /* in comment block */ init(); }");
 
 		_lines.addItem(newItem);
 		onLineChanged(_lines.length - 1);
