@@ -217,9 +217,9 @@ public:
 
 	// Key Presses
 
-	override bool onKeyDown(uint keyCode) {
-		switch(keyCode) {
-			case KeyArrowLeft:
+	override bool onKeyDown(Key key) {
+		switch(key.code) {
+			case Key.Left:
 				if (_caret_pos != 0) {
 					_sel_start = --_caret_pos;
 				}
@@ -227,7 +227,7 @@ public:
 				RefreshViewport(_caret_pos);
 
 				break;
-			case KeyArrowRight:
+			case Key.Right:
 				if (_caret_pos != _value.length) {
 					_sel_start = ++_caret_pos;
 				}
@@ -235,11 +235,11 @@ public:
 				RefreshViewport(_caret_pos);
 
 				break;
-			case KeyArrowUp:
+			case Key.Up:
 				break;
-			case KeyArrowDown:
+			case Key.Down:
 				break;
-			case KeyDelete:
+			case Key.Delete:
 
 				if (_caret_pos == _sel_start) {
 					if ( _caret_pos != _value.length ) {
@@ -279,7 +279,7 @@ public:
 
 				break;
 
-			case KeyBackspace:
+			case Key.Backspace:
 
 				//erase
 

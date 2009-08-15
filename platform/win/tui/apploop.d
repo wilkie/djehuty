@@ -18,6 +18,7 @@ import synch.thread;
 import io.console;
 
 import core.main;
+import core.definitions;
 
 import platform.win.common;
 import platform.win.main;
@@ -167,9 +168,16 @@ private:
 								// KeyDown
 
 								// The Current Console View Receives the Event
-								curWindow.onKeyDown(irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
+								Key key;
+								key.code = irInBuf[i].Event.KeyEvent.wVirtualKeyCode;
+								
+								key.ctrl = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
+								key.alt = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
+								key.shift = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
 
-								if (irInBuf[i].Event.KeyEvent.uChar.UnicodeChar > 0) {
+								curWindow.onKeyDown(key);
+
+								if ((irInBuf[i].Event.KeyEvent.uChar.UnicodeChar > 0) && key.ctrl == false && key.alt == false) {
 									curWindow.onKeyChar(irInBuf[i].Event.KeyEvent.uChar.UnicodeChar);
 								}
 							}
@@ -177,7 +185,14 @@ private:
 								// KeyUp
 
 								// The Current Console View Receives the Event
-								curWindow.onKeyUp(irInBuf[i].Event.KeyEvent.wVirtualKeyCode);
+								Key key;
+								key.code = irInBuf[i].Event.KeyEvent.wVirtualKeyCode;
+								
+								key.ctrl = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
+								key.alt = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
+								key.shift = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
+
+								curWindow.onKeyUp(key);
 							}
 		                    break;
 

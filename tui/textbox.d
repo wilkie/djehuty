@@ -37,14 +37,9 @@ class TuiTextBox : TuiWidget {
 		}
 	}
 
-	override void onInit() {
-		draw();
-		positionCaret();
-	}
-
-	override void onKeyDown(uint keyCode) {
-		switch (keyCode) {
-			case KeyBackspace:
+	override void onKeyDown(Key key) {
+		switch (key.code) {
+			case Key.Backspace:
 				if (_column == 0) {
 					_row--;
 					if (_row < 0) {
@@ -64,7 +59,7 @@ class TuiTextBox : TuiWidget {
 
 					onLineChanged(_row);
 
-					draw();
+					onDraw();
 					positionCaret();
 					break;
 				}
@@ -130,7 +125,7 @@ class TuiTextBox : TuiWidget {
 				drawLine(_row);
 				positionCaret();
 				break;
-			case KeyArrowLeft:
+			case Key.Left:
 				_column--;
 				if (_column < 0) {
 					_row--;
@@ -145,7 +140,7 @@ class TuiTextBox : TuiWidget {
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyArrowRight:
+			case Key.Right:
 				_column++;
 				if (_column > _lines[_row].value.length) {
 					_row++;
@@ -161,7 +156,7 @@ class TuiTextBox : TuiWidget {
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyArrowUp:
+			case Key.Up:
 				_row--;
 				_column = _lineColumn;
 
@@ -176,7 +171,7 @@ class TuiTextBox : TuiWidget {
 				}
 				positionCaret();
 				break;
-			case KeyArrowDown:
+			case Key.Down:
 				_row++;
 				_column = _lineColumn;
 
@@ -190,7 +185,7 @@ class TuiTextBox : TuiWidget {
 				}
 				positionCaret();
 				break;
-			case KeyPageUp:
+			case Key.PageUp:
 				_row -= this.height;
 				_firstVisible -= this.height;
 
@@ -207,10 +202,10 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				draw();
+				onDraw();
 				positionCaret();
 				break;
-			case KeyPageDown:
+			case Key.PageDown:
 				_row += this.height;
 				_firstVisible += this.height;
 
@@ -226,15 +221,15 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				draw();
+				onDraw();
 				positionCaret();
 				break;
-			case KeyEnd:
+			case Key.End:
 				_column = _lines[_row].value.length;
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyHome:
+			case Key.Home:
 				_column = 0;
 				_lineColumn = 0;
 				positionCaret();
@@ -321,7 +316,7 @@ class TuiTextBox : TuiWidget {
 
 			onLineChanged(_row);
 
-			draw();
+			onDraw();
 			//positionCaret();
 			return;
 		}
@@ -385,9 +380,7 @@ class TuiTextBox : TuiWidget {
 		_lineNumbers = value;
 	}
 
-protected:
-
-	void draw() {
+	override void onDraw() {
 		// Draw each line and pad any remaining spaces
 
 		uint i;
@@ -401,6 +394,8 @@ protected:
 			drawEmptyLine(i);
 		}
 	}
+
+protected:
 
 	void drawLine(uint lineNumber) {
 		Console.setPosition(this.left, this.top + (lineNumber - _firstVisible));
@@ -507,7 +502,7 @@ protected:
 		}
 
 		if (shouldDraw) {
-			draw();
+			onDraw();
 		}
 
 		// Calculate Format Index

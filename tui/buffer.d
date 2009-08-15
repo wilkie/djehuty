@@ -126,9 +126,8 @@ class TuiBuffer : TuiWidget
 			redraw();
 		}
 	}
-
-	void redraw()
-	{
+	
+	override void onDraw() {
 		_drawLock.down();
 
 		Console.setPosition(0,30);
@@ -170,6 +169,10 @@ class TuiBuffer : TuiWidget
 		}
 
 		_drawLock.up();
+	}
+
+	void redraw() {
+		onDraw();
 	}
 
 	// Methods

@@ -9,6 +9,8 @@
 
 module core.color;
 
+import platform.definitions;
+
 import core.definitions;
 import core.parameters;
 

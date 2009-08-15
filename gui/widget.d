@@ -161,16 +161,16 @@ class Widget : Responder {
 	}
 
 	// Description: Called when the control is focused during a key press.
-	// keyCode: The ID of the code.
+	// key: The description of the key.
 	// Returns: The user should return true when the control should be redrawn.
-	bool onKeyDown(uint keyCode) {
+	bool onKeyDown(Key key) {
 		return false;
 	}
 
 	// Description: Called when the control is focused during a key release.
-	// keyCode: The ID of the code.
+	// keyCode: The description of the key.
 	// Returns: The user should return true when the control should be redrawn.
-	bool onKeyUp(uint keyCode) {
+	bool onKeyUp(Key key) {
 		return false;
 	}
 

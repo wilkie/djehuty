@@ -9,22 +9,19 @@ import core.definitions;
 import io.console;
 
 // Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
-class TuiWindow : Responder
-{
+class TuiWindow : Responder {
 	// Constructor
 
 	this() {
 	}
 
-	this(bgColor bgClr)
-	{
+	this(bgColor bgClr) {
 		_bgClr = bgClr;
 	}
 
 	// Events
 
-	void onInitialize()
-	{
+	void onInitialize() {
 		// go through control list, init
 
 		Console.setColor(_bgClr);
@@ -32,22 +29,19 @@ class TuiWindow : Responder
 
 		TuiWidget c = _firstControl;
 
-		if (c !is null)
-		{
-			do
-			{
+		if (c !is null) {
+			do {
 				c =	c._prevControl;
 
 				c.onInit();
+				c.onDraw();
 			} while (c !is _firstControl)
 
 			_focused_control = c;
 
-			do
-			{
+			do {
 				_focused_control = _focused_control._prevControl;
-				if (_focused_control.isTabStop())
-				{
+				if (_focused_control.isTabStop()) {
 					_focused_control.onGotFocus();
 					break;
 				}
@@ -55,106 +49,93 @@ class TuiWindow : Responder
 		}
 	}
 
-	void onUninitialize()
-	{
+	void onUninitialize() {
 	}
 
-	void onResize()
-	{
+	void onResize() {
 	}
 
-	void onKeyDown(uint keyCode)
-	{
-		if (_focused_control !is null)
-		{
-			_focused_control.onKeyDown(keyCode);
+	void redraw() {
+
+		TuiWidget c = _firstControl;
+
+		if (c !is null) {
+			do {
+				c =	c._prevControl;
+
+				c.onDraw();
+			} while (c !is _firstControl)
 		}
 	}
 
-	void onKeyChar(dchar keyChar)
-	{
-		if (_focused_control !is null)
-		{
+	void onKeyDown(Key key) {
+		if (_focused_control !is null) {
+			_focused_control.onKeyDown(key);
+		}
+	}
+
+	void onKeyChar(dchar keyChar) {
+		if (_focused_control !is null) {
 			_focused_control.onKeyChar(keyChar);
 		}
 	}
 
-	void onKeyUp(uint keyCode)
-	{
-		if (_focused_control !is null)
-		{
-			_focused_control.onKeyUp(keyCode);
+	void onKeyUp(Key key) {
+		if (_focused_control !is null) {
+			_focused_control.onKeyUp(key);
 		}
 	}
 
-	void onPrimaryMouseDown()
-	{
-		if (_focused_control !is null)
-		{
+	void onPrimaryMouseDown() {
+		if (_focused_control !is null) {
 			_focused_control.onPrimaryMouseDown();
 		}
 	}
 
-	void onPrimaryMouseUp()
-	{
-		if (_focused_control !is null)
-		{
+	void onPrimaryMouseUp() {
+		if (_focused_control !is null) {
 			_focused_control.onPrimaryMouseUp();
 		}
 	}
 
-	void onSecondaryMouseDown()
-	{
-		if (_focused_control !is null)
-		{
+	void onSecondaryMouseDown() {
+		if (_focused_control !is null) {
 			_focused_control.onSecondaryMouseDown();
 		}
 	}
 
-	void onSecondaryMouseUp()
-	{
-		if (_focused_control !is null)
-		{
+	void onSecondaryMouseUp() {
+		if (_focused_control !is null) {
 			_focused_control.onSecondaryMouseUp();
 		}
 	}
 
-	void onTertiaryMouseDown()
-	{
-		if (_focused_control !is null)
-		{
+	void onTertiaryMouseDown() {
+		if (_focused_control !is null) {
 			_focused_control.onTertiaryMouseDown();
 		}
 	}
 
-	void onTertiaryMouseUp()
-	{
-		if (_focused_control !is null)
-		{
+	void onTertiaryMouseUp() {
+		if (_focused_control !is null) {
 			_focused_control.onTertiaryMouseUp();
 		}
 	}
 
-	void onMouseWheelY(uint amount)
-	{
-		if (_focused_control !is null)
-		{
+	void onMouseWheelY(uint amount) {
+		if (_focused_control !is null) {
 			_focused_control.onMouseWheelY(amount);
 		}
 	}
 
-	void onMouseWheelX(uint amount)
-	{
-		if (_focused_control !is null)
-		{
+	void onMouseWheelX(uint amount) {
+		if (_focused_control !is null) {
 			_focused_control.onMouseWheelX(amount);
 		}
 	}
 
-	void onMouseMove()
-	{
-		if (_focused_control !is null)
-		{
+	void onMouseMove() {
+		if (_focused_control !is null) {
 			_focused_control.onMouseMove();
 		}
 	}
@@ -220,11 +201,9 @@ class TuiWindow : Responder
 
 		_focused_control.onLostFocus();
 
-		do
-		{
+		do {
 			_focused_control = _focused_control._prevControl;
-			if (_focused_control.isTabStop())
-			{
+			if (_focused_control.isTabStop()) {
 				_focused_control.onGotFocus();
 				break;
 			}

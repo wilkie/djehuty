@@ -95,14 +95,14 @@ class Prompt {
 		for(;;) {
 			Console.getChar(chr, code);
 
-			if (code == KeyReturn) {
+			if (code == Key.Return) {
 				// enter
 
 				_pos = 0;
 
 				break;
 			}
-			else if (code == KeyBackspace) {
+			else if (code == Key.Backspace) {
 				// backspace
 
 				if (line.length() > 0 && _pos > 0) {
@@ -136,21 +136,21 @@ class Prompt {
 					_pos--;
 				}
 			}
-			else if (code == KeyArrowLeft) {
+			else if (code == Key.Left) {
 				if (_pos > 0) {
 					Console.put(cast(char)0x8);
 
 					_pos--;
 				}
 			}
-			else if (code == KeyArrowRight) {
+			else if (code == Key.Right) {
 				if (_pos < line.length()) {
 					Console.setRelative(1,0);
 
 					_pos++;
 				}
 			}
-			else if (code == KeyArrowUp) {
+			else if (code == Key.Up) {
 				// The current line is still stored
 
 				// And then the line buffer spits out
@@ -185,7 +185,7 @@ class Prompt {
 					}
 				}
 			}
-			else if (code == KeyArrowDown) {
+			else if (code == Key.Down) {
 				// The current line is still stored
 
 				// And then the line buffer spits out
