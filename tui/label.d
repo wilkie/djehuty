@@ -39,17 +39,16 @@ class TuiLabel : TuiWidget {
 	}
 
 	override void onInit() {
-		draw();
 	}
 
 	void text(String newValue) {
 		_value = new String(newValue);
-		draw();
+		onDraw();
 	}
 
 	void text(string newValue) {
 		_value = new String(newValue);
-		draw();
+		onDraw();
 	}
 
 	String text() {
@@ -58,7 +57,7 @@ class TuiLabel : TuiWidget {
 
 	void forecolor(fgColor fgclr) {
 		_forecolor = fgclr;
-		draw();
+		onDraw();
 	}
 
 	fgColor forecolor() {
@@ -67,16 +66,14 @@ class TuiLabel : TuiWidget {
 
 	void backcolor(bgColor bgclr) {
 		_backcolor = bgclr;
-		draw();
+		onDraw();
 	}
 
 	bgColor backcolor() {
 		return _backcolor;
 	}
 
-protected:
-
-	void draw() {
+	override void onDraw() {
 		if (canDraw) {
 			Console.setPosition(this.left, this.top);
 			Console.setColor(_forecolor, _backcolor);
@@ -91,6 +88,8 @@ protected:
 			}
 		}
 	}
+
+protected:
 
 private:
 

@@ -269,10 +269,6 @@ class ToggleField : Widget {
 		return true;
 	}
 
-	override bool onKeyDown(uint keyCode) {
-		return false;
-	}
-
 private:
 	String _value;
 

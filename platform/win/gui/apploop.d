@@ -882,7 +882,9 @@ static:
 
 			case WM_KEYDOWN:
 
-				w.onKeyDown(cast(uint)wParam);
+				Key key;
+				key.code = cast(uint)wParam;
+				w.onKeyDown(key);
 
 				break;
 
@@ -890,9 +892,9 @@ static:
 
 			case WM_CHAR:
 
-				if ((wParam == KeyBackspace)
-					|| (wParam == KeyReturn)
-					|| (wParam == KeyTab)) {
+				if ((wParam == Key.Backspace)
+					|| (wParam == Key.Return)
+					|| (wParam == Key.Tab)) {
 					break;
 				}
 
@@ -928,7 +930,9 @@ static:
 
 			case WM_KEYUP:
 
-				w.onKeyUp(cast(uint)wParam);
+				Key key;
+				key.code = cast(uint)wParam;
+				w.onKeyUp(key);
 
 				break;
 

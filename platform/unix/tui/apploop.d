@@ -45,7 +45,9 @@ private:
 			tky = consoleTranslateKey(ky);
 
 			if (ky < 0xfffffff) {
-				window.onKeyDown(tky);
+				Key key;
+				key.code = tky;
+				window.onKeyDown(key);
 
 				if (tky != KeyBackspace && tky != KeyArrowLeft && tky != KeyArrowRight
 						&& tky != KeyArrowUp && tky != KeyArrowDown)

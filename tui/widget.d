@@ -5,6 +5,7 @@ import tui.application;
 
 import core.event;
 import core.main;
+import core.definitions;
 
 // Description: This class abstracts part of the console's screen.  When attached to a window, this class will receive input through the events.  Keyboard events will be passed only when the control is activated.  A control can decide not to be activatable by setting it's _isTabStop to false.
 class TuiWidget : Responder {
@@ -32,6 +33,9 @@ class TuiWidget : Responder {
 
 	void onGotFocus() {
 	}
+	
+	void onDraw() {
+	}
 
 	void onLostFocus() {
 	}
@@ -39,13 +43,13 @@ class TuiWidget : Responder {
 	void onResize() {
 	}
 
-	void onKeyDown(uint keyCode) {
+	void onKeyDown(Key key) {
 	}
 
 	void onKeyChar(dchar keyChar) {
 	}
 
-	void onKeyUp(uint keyCode) {
+	void onKeyUp(Key key) {
 	}
 
 	void onPrimaryMouseDown() {

@@ -10,7 +10,7 @@
 
 module core.definitions;
 
-public import platform.definitions;
+import Platform = platform.definitions;
 
 // String
 version(D_Version2) {
@@ -96,8 +96,7 @@ struct Rect {
 // Window Styles
 
 // Description: This enum gives all possible window styles.  Use the SetStyle() function within the BaseWindow class to set the style of the window to this value.
-enum WindowStyle : int
-{
+enum WindowStyle : int {
 	// Description: Represents a non-sizable window.
 	Fixed = 0,
 
@@ -111,8 +110,7 @@ enum WindowStyle : int
 // Window States
 
 // Description: This enum gives all possible window states.  Use the SetState() function within the BaseWindow class to set the state of the window to this value.
-enum WindowState : int
-{
+enum WindowState : int {
 	// Description: This would be the normal view of the window.  Sometimes refered to as the restored view.
 	Normal = 0,
 	// Description: This state will cause the window to be minimized.  Sometimes refered to as shrinking, or even rarely iconizing.
@@ -126,8 +124,7 @@ enum WindowState : int
 // System Colors
 
 // Description: This enum gives all possible system colors to query.
-enum SystemColor : ubyte
-{
+enum SystemColor : ubyte {
 	// Description: This would be the normal window background style.  Give this to the constructor, and it will produce a normal looking window.
 	Window = 0,
 }
@@ -140,8 +137,7 @@ enum SystemColor : ubyte
 //   from the Window class
 
 // Description: This struct gives the state of the mouse input for a window.
-struct Mouse
-{
+struct Mouse {
 	// Description: The x coordinate in coordination to the client area of the window of the mouse cursor.
 	int x;
 	// Description: The y coordinate in coordination to the client area of the window of the mouse cursor.
@@ -158,18 +154,116 @@ struct Mouse
 	bool middleDown;
 }
 
+struct Key {
+	uint code;
+
+	bool ctrl;
+	bool alt;
+	bool shift;
+
+	const uint Backspace = Platform.KeyBackspace;
+	const uint Tab = Platform.KeyTab;
+
+	const uint Return = Platform.KeyReturn;
+	const uint Pause = Platform.KeyPause;
+	const uint Escape = Platform.KeyEscape;
+	const uint Space = Platform.KeySpace;
+
+	const uint PageUp = Platform.KeyPageUp;
+	const uint PageDown = Platform.KeyPageDown;
+
+	const uint End = Platform.KeyEnd;
+	const uint Home = Platform.KeyHome;
+
+	const uint Left = Platform.KeyArrowLeft;
+	const uint Right = Platform.KeyArrowRight;
+	const uint Up = Platform.KeyArrowUp;
+	const uint Down = Platform.KeyArrowDown;
+
+	const uint Insert = Platform.KeyInsert;
+	const uint Delete = Platform.KeyDelete;
+
+	const uint NumLock = Platform.KeyNumLock;
+	const uint ScrollLock = Platform.KeyScrollLock;
+
+	const uint LeftShift = Platform.KeyLeftShift;
+	const uint RightShift = Platform.KeyRightShift;
+
+	const uint LeftControl = Platform.KeyLeftControl;
+	const uint RightControl = Platform.KeyRightControl;
+
+	const uint LeftAlt = Platform.KeyLeftAlt;
+	const uint RightAlt = Platform.KeyRightAlt;
+
+	const uint Zero = Platform.Key0;
+	const uint One = Platform.Key1;
+	const uint Two = Platform.Key2;
+	const uint Three = Platform.Key3;
+	const uint Four = Platform.Key4;
+	const uint Five = Platform.Key5;
+	const uint Six = Platform.Key6;
+	const uint Seven = Platform.Key7;
+	const uint Eight = Platform.Key8;
+	const uint Nine = Platform.Key9;
+
+	const uint A = Platform.KeyA;
+	const uint B = Platform.KeyB;
+	const uint C = Platform.KeyC;
+	const uint D = Platform.KeyD;
+	const uint E = Platform.KeyE;
+	const uint F = Platform.KeyF;
+	const uint G = Platform.KeyG;
+	const uint H = Platform.KeyH;
+	const uint I = Platform.KeyI;
+	const uint J = Platform.KeyJ;
+	const uint K = Platform.KeyK;
+	const uint L = Platform.KeyL;
+	const uint M = Platform.KeyM;
+	const uint N = Platform.KeyN;
+	const uint O = Platform.KeyO;
+	const uint P = Platform.KeyP;
+	const uint Q = Platform.KeyQ;
+	const uint R = Platform.KeyR;
+	const uint S = Platform.KeyS;
+	const uint T = Platform.KeyT;
+	const uint U = Platform.KeyU;
+	const uint V = Platform.KeyV;
+	const uint W = Platform.KeyW;
+	const uint X = Platform.KeyX;
+	const uint Y = Platform.KeyY;
+	const uint Z = Platform.KeyZ;
+
+	const uint F1 = Platform.KeyF1;
+	const uint F2 = Platform.KeyF2;
+	const uint F3 = Platform.KeyF3;
+	const uint F4 = Platform.KeyF4;
+	const uint F5 = Platform.KeyF5;
+	const uint F6 = Platform.KeyF6;
+	const uint F7 = Platform.KeyF7;
+	const uint F8 = Platform.KeyF8;
+	const uint F9 = Platform.KeyF9;
+	const uint F10 = Platform.KeyF10;
+	const uint F11 = Platform.KeyF11;
+	const uint F12 = Platform.KeyF12;
+	const uint F13 = Platform.KeyF13;
+	const uint F14 = Platform.KeyF14;
+	const uint F15 = Platform.KeyF15;
+	const uint F16 = Platform.KeyF16;
+}
+
+// Redefine Platform Hints
+alias Platform.FontSans FontSans;
+alias Platform.Char Char;
 
 // Default parameters
 const int Default = -1;
 
 // C Types
-version(X86)
-{
+version(X86) {
 	alias uint Culong;
 	alias int Clong;
 }
-else
-{
+else {
 	alias ulong Culong;
 	alias long Clong;
 }

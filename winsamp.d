@@ -144,6 +144,15 @@ class MyTWindow : TuiWindow {
 		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
 		tuibox.lineNumbers = true;
 	}
+	
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Q && key.ctrl) {
+			// Exit
+			application.exit(0);
+			return;
+		}
+		super.onKeyDown(key);
+	}
 
 private:
 	TuiTextField tuitext;
