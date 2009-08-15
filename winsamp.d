@@ -7,6 +7,8 @@ import gui.window;
 import gui.button;
 import gui.widget;
 
+import resource.menu;
+
 import graphics.graphics;
 
 import core.regex;
@@ -141,10 +143,12 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
+		push(tuibox = new TuiCodeBox(0,1,this.width,this.height-1));
+		Menu foo = new Menu("root", [new Menu("File"), new Menu("Edit"), new Menu("Options")]);
+		menu = foo;
 		tuibox.lineNumbers = true;
 	}
-	
+
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Q && key.ctrl) {
 			// Exit
@@ -195,6 +199,8 @@ class MyWindow : Window {
 	}
 
 	override void onAdd() {
+		Menu foo = new Menu("root", [new Menu("File"), new Menu("Edit"), new Menu("Options")]);
+		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
 		push(new MyControl());
 	}

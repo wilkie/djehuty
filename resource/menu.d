@@ -1,4 +1,4 @@
-module gui.menu;
+module resource.menu;
 
 import core.string;
 import core.definitions;
@@ -28,11 +28,11 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		MenuCreate(this, _pfvars);
+		MenuCreate(&_pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(cast(void*)this, &_pfvars, &mnu._pfvars, mnu.text, (mnu.length > 0));
 		}
 	}
 
@@ -47,11 +47,11 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		MenuCreate(this, _pfvars);
+		MenuCreate(&_pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(cast(void*)this, &_pfvars, &mnu._pfvars, mnu.text, (mnu.length > 0));
 		}
 	}
 
@@ -62,7 +62,7 @@ class Menu {
 		_subitems = null;
 
 		// platform specific destroy
-		MenuDestroy(this, _pfvars);
+		MenuDestroy(&_pfvars);
 	}
 
 	// -- Methods -- //
@@ -101,9 +101,23 @@ class Menu {
 
 		_updateItem();
 
-		MenuAppend(this, inMenu, _pfvars, inMenu._pfvars);
+		MenuAppend(cast(void*)this, &_pfvars, &inMenu._pfvars, inMenu.text, (inMenu.length > 0));
 	}
-
+	
+	Menu opIndex(size_t idx) {
+		return _subitems[idx];
+	}
+	
+	int opApply(int delegate(inout Menu) loopFunc) {
+		int ret;
+		
+		for (int i = 0; i < length; i++) {
+			ret = loopFunc(_subitems[i]);
+			if (ret) { break; }
+		}
+		
+		return ret;
+	}
 
 protected:
 
@@ -129,7 +143,7 @@ protected:
 		uint pos = 0;
 		foreach(sitm; _subitems) {
 			if (sitm is child) {
-				MenuUpdate(pos, this, child, _pfvars, child._pfvars);
+				MenuUpdate(cast(void*)this, &_pfvars, &child._pfvars, child.text, pos, (child.length > 0));
 			}
 			pos++;
 		}
@@ -159,6 +173,6 @@ protected:
 	}
 }
 
-MenuPlatformVars MenuGetPlatformVars(ref Menu mnu) {
-	return mnu._pfvars;
+MenuPlatformVars* MenuGetPlatformVars(ref Menu mnu) {
+	return &mnu._pfvars;
 }
