@@ -6,6 +6,8 @@ import tui.widget;
 import core.event;
 import core.definitions;
 
+import resource.menu;
+
 import io.console;
 
 // Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
@@ -37,6 +39,11 @@ class TuiWindow : Responder {
 				c.onDraw();
 			} while (c !is _firstControl)
 
+		}
+		
+		drawMenu();
+
+		if (c !is null) {
 			_focused_control = c;
 
 			do {
@@ -232,10 +239,45 @@ class TuiWindow : Responder {
 	bool isActive() {
 		return (application() !is null && application.window is this);
 	}
+	
+	void menu(Menu mnu) {
+		_menu = mnu;
+		if (isActive) {
+			drawMenu();
+		}
+	}
 
 	Mouse mouseProps;
 
 private:
+
+	void drawMenu() {
+		if (_menu is null) {
+			return;
+		}
+		
+		uint curWidth = this.width;
+
+		Console.setPosition(0,0);
+		Console.setColor(fgColor.Black, bgColor.White);
+
+		Console.put(" ");
+		curWidth--;
+
+		foreach(mnuItem; _menu) {
+			if (curWidth > mnuItem.text.length) {
+				Console.put(mnuItem.text);
+				Console.put(" ");
+				curWidth -= (mnuItem.text.length + 1);
+			}
+		}
+		
+		if (curWidth > 0) {
+			for (; curWidth != 0; curWidth--) {
+				Console.put(" ");
+			}
+		}
+	}
 
 	bgColor _bgClr = bgColor.Black;
 
@@ -248,4 +290,7 @@ private:
 	TuiWidget _captured_control;
 	TuiWidget _last_control;
 	TuiWidget _focused_control;
+
+	// Current Menu
+	Menu _menu;
 }

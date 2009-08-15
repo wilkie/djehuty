@@ -27,7 +27,7 @@ DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb
 
 DFILES_ANALYZING = analyzing/debugger.d
 DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/definitions.d core/application.d core/format.d core/time.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d
-DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d gui/menu.d
+DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
 DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
 DFILES_PARSING = parsing/lexer.d parsing/cfg.d
 DFILES = djehuty.d
@@ -37,7 +37,7 @@ DFILES_AUDIO_CODECS = codecs/audio/codec.d codecs/audio/all.d codecs/audio/mp2.d
 DFILES_GRAPHICS = graphics/bitmap.d graphics/view.d graphics/graphics.d graphics/convexhull.d graphics/region.d graphics/brush.d graphics/font.d graphics/pen.d
 DFILES_NETWORKING = networking/http.d networking/telnet.d networking/irc.d
 DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d io/socket.d
-DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d
+DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d resource/menu.d
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d

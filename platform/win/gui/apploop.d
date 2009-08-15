@@ -22,7 +22,8 @@ import platform.vars.view;
 
 import gui.application;
 import gui.window;
-import gui.menu;
+
+import resource.menu;
 
 import opengl.window;
 

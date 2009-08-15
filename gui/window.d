@@ -12,7 +12,8 @@ module gui.window;
 
 import gui.widget;
 import gui.application;
-import gui.menu;
+
+import resource.menu;
 
 import platform.vars.view;
 import platform.vars.menu;
@@ -847,8 +848,8 @@ public:
 			// Switch out and apply the menu
 
 			// platform specific
-			MenuPlatformVars mnuVars = MenuGetPlatformVars(mnuMain);
-			WindowSetMenu(mnuMain, mnuVars, this, &_pfvars);
+			MenuPlatformVars* mnuVars = MenuGetPlatformVars(mnuMain);
+			WindowSetMenu(mnuVars, this, &_pfvars);
 		}
 	}
 

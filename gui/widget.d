@@ -11,7 +11,6 @@ module gui.widget;
 
 import gui.application;
 import gui.window;
-import gui.menu;
 
 import core.definitions;
 
