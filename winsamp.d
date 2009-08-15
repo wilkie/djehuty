@@ -19,6 +19,7 @@ import resource.sound;
 
 import tui.application;
 import tui.window;
+import tui.label;
 import tui.textfield;
 
 import networking.irc;
@@ -143,7 +144,8 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-		push(tuibox = new TuiCodeBox(0,1,this.width,this.height-1));
+		push(new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		push(tuibox = new TuiCodeBox(0,1,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("File"), new Menu("Edit"), new Menu("Options")]);
 		menu = foo;
 		tuibox.lineNumbers = true;

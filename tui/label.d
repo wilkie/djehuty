@@ -80,11 +80,14 @@ class TuiLabel : TuiWidget {
 
 			// draw as much as we can
 
-			if (_value.length > width) {
+			if (_value.length > this.width) {
 				Console.put((new String(_value[0..width])));
 			}
 			else {
 				Console.put(_value);
+				for (uint i; i < this.width - _value.length; i++) {
+					Console.put(" ");
+				}
 			}
 		}
 	}
