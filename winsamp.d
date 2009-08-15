@@ -107,30 +107,6 @@ class MyConsoleApp : Application {
 	}
 }
 
-class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
-
-	override void onApplicationStart() {
-		tuiwnd = new MyTWindow();
-		push(tuiwnd);
-
-		//snd = new Sound("tests/begin.mp2");
-		//snd.play();
-	}
-
-	override void onApplicationEnd() {
-		Console.setColor(fgColor.BrightWhite, bgColor.Black);
-		Console.clear();
-		Console.putln("Your app has been ended.");
-		//Console.putln("Go away");
-	}
-
-private:
-	MyTWindow tuiwnd;
-
-	Sound snd;
-}
-
 class MyTWindow : TuiWindow {
 
 	this() {
@@ -146,7 +122,7 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;*/
 		push(new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 		push(tuibox = new TuiCodeBox(0,1,this.width,this.height-2));
-		Menu foo = new Menu("root", [new Menu("File"), new Menu("Edit"), new Menu("Options")]);
+		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
 		menu = foo;
 		tuibox.lineNumbers = true;
 	}
@@ -201,11 +177,35 @@ class MyWindow : Window {
 	}
 
 	override void onAdd() {
-		Menu foo = new Menu("root", [new Menu("File"), new Menu("Edit"), new Menu("Options")]);
+		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
 		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
 		push(new MyControl());
 	}
+}
+
+class MyTApp :TuiApplication {
+	static this() { new MyTApp(); }
+
+	override void onApplicationStart() {
+		tuiwnd = new MyTWindow();
+		push(tuiwnd);
+
+		//snd = new Sound("tests/begin.mp2");
+		//snd.play();
+	}
+
+	override void onApplicationEnd() {
+		Console.setColor(fgColor.BrightWhite, bgColor.Black);
+		Console.clear();
+		Console.putln("Your app has been ended.");
+		//Console.putln("Go away");
+	}
+
+private:
+	MyTWindow tuiwnd;
+
+	Sound snd;
 }
 
 class MyApp : GuiApplication {

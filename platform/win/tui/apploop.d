@@ -164,16 +164,42 @@ private:
 					TuiWindow curWindow = (cast(TuiApplication)Djehuty.app).window;
 					switch(irInBuf[i].EventType) {
 						case KEY_EVENT: // keyboard input
+							Key key;
+							key.code = irInBuf[i].Event.KeyEvent.wVirtualKeyCode;
+							
+							if (key.code == VK_MENU) {
+								// Alt pressed, figure out which one
+								if ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0002) > 0) {
+									key.code = VK_LMENU;
+								}
+								else {
+									key.code = VK_RMENU;
+								}
+							}
+
+							if (key.code == VK_CONTROL) {
+								// Control pressed, figure out which one
+								if ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0008) > 0) {
+									key.code = VK_LCONTROL;
+								}
+								else {
+									key.code = VK_RCONTROL;
+								}
+							}
+							
+							if (key.code == VK_SHIFT) {
+								// Control pressed, figure out which one (eventually)
+								key.code = VK_LSHIFT;
+							}
+	
+							key.ctrl = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
+							key.alt = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
+							key.shift = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
+
 							if (irInBuf[i].Event.KeyEvent.bKeyDown == TRUE) {
 								// KeyDown
 
 								// The Current Console View Receives the Event
-								Key key;
-								key.code = irInBuf[i].Event.KeyEvent.wVirtualKeyCode;
-								
-								key.ctrl = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
-								key.alt = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
-								key.shift = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
 
 								curWindow.onKeyDown(key);
 
@@ -185,12 +211,6 @@ private:
 								// KeyUp
 
 								// The Current Console View Receives the Event
-								Key key;
-								key.code = irInBuf[i].Event.KeyEvent.wVirtualKeyCode;
-								
-								key.ctrl = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
-								key.alt = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
-								key.shift = ((irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
 
 								curWindow.onKeyUp(key);
 							}

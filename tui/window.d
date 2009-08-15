@@ -4,6 +4,7 @@ import tui.application;
 import tui.widget;
 
 import core.event;
+import core.string;
 import core.definitions;
 
 import resource.menu;
@@ -76,18 +77,101 @@ class TuiWindow : Responder {
 	}
 
 	void onKeyDown(Key key) {
+		if (_focusedMenu !is null) {
+			if (key.code == Key.Down) {
+				_selectedMenuIndex++;
+				if (_selectedMenuIndex < _focusedMenu.length) {
+					_selectedMenu = _focusedMenu[_selectedMenuIndex];
+					drawSubmenu(_focusedMenu, _focusedMenuPos);
+				}
+				else {
+					_selectedMenuIndex = _focusedMenu.length - 1;
+				}
+			}
+			else if (key.code == Key.Up) {
+				if (_selectedMenuIndex > 0) {
+					_selectedMenuIndex--;
+					_selectedMenu = _focusedMenu[_selectedMenuIndex];
+					drawSubmenu(_focusedMenu, _focusedMenuPos);
+				}
+			}
+			else if (key.code >= Key.A && key.code <= Key.Z) {
+				uint chr = key.code - Key.A;
+				// Look for a hint
+				foreach(mnuItem; _focusedMenu) {
+					// Does the menu item have a hint?
+					if (mnuItem.hintPosition == -1) {
+						continue;
+					}
+
+					auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
+					uint chr2 = cast(uint)(hint - 'a');
+
+					if (chr == chr2) {
+						// This menu item is selected
+						_selectMenu(mnuItem);
+					}
+				}
+			}
+
+			// Do not pass the key off to a widget
+			return;
+		}
+		else if (_menu !is null) {
+			if ((key.code == Key.LeftAlt) || (key.code == Key.RightAlt)) {
+				drawMenu(true);
+			}
+			else if (key.alt) {
+				uint chr = key.code - Key.A;
+				if (chr <= Key.Z) {
+					// compare to menu hints
+					foreach(mnuItem; _menu) {
+						// Does the menu item have a hint?
+						if (mnuItem.hintPosition == -1) {
+							continue;
+						}
+
+						auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
+						uint chr2 = cast(uint)(hint - 'a');
+
+						if (chr == chr2) {
+							// This menu item is selected
+							_selectMenu(mnuItem);
+
+							// Do not pass the key off to a widget
+							return;
+						}
+					}
+				}
+			}
+		}
+
 		if (_focused_control !is null) {
 			_focused_control.onKeyDown(key);
 		}
 	}
 
+	void onMenu(Menu mnu) {
+	}
+
 	void onKeyChar(dchar keyChar) {
+		if (_focusedMenu !is null) {
+			return;
+		}
 		if (_focused_control !is null) {
 			_focused_control.onKeyChar(keyChar);
 		}
 	}
 
 	void onKeyUp(Key key) {
+		if (_focusedMenu !is null) {
+			return;
+		}
+		if (_menu !is null) {
+			if (key.code == Key.LeftAlt || key.code == Key.RightAlt) {
+				drawMenu();
+			}
+		}
 		if (_focused_control !is null) {
 			_focused_control.onKeyUp(key);
 		}
@@ -251,32 +335,151 @@ class TuiWindow : Responder {
 
 private:
 
-	void drawMenu() {
+	void drawSubmenu(Menu mnu, uint x) {
+		uint y = 1;
+		
+		uint maxLength = 0;
+
+		foreach(subItem; mnu) {
+			if (subItem.displayText.length > maxLength) {
+				maxLength = subItem.displayText.length;
+			}
+		}
+
+		foreach(subItem; mnu) {
+			Console.setPosition(x, y);
+			if (subItem is _selectedMenu) {
+				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+			}
+			else {
+				Console.setColor(fgColor.Black, bgColor.White);
+			}
+			Console.put("| ");
+			drawMenuItem(subItem, false, subItem.displayText.length - maxLength + 1);
+			if (subItem is _selectedMenu) {
+				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+			}
+			else {
+				Console.setColor(fgColor.Black, bgColor.White);
+			}
+			Console.put(" ");
+			y++;
+		}
+	}
+
+	void drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 1) {
+		if (mnuItem is _selectedMenu) {
+			Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+		}
+		else {
+			Console.setColor(fgColor.Black, bgColor.White);
+		}
+
+		if (mnuItem.hintPosition >= 0) {
+			if (mnuItem.hintPosition > 0) {
+				Console.put(mnuItem.displayText[0..mnuItem.hintPosition]);
+			}
+
+			if (mnuItem !is _selectedMenu) {
+				if (drawHints) {
+					Console.setColor(fgColor.BrightBlue);
+				}
+				else {
+					Console.setColor(fgColor.Blue);
+				}
+			}
+
+			Console.put(mnuItem.displayText[mnuItem.hintPosition]);
+
+			if (mnuItem !is _selectedMenu) {
+				Console.setColor(fgColor.Black, bgColor.White);
+			}
+			if (mnuItem.hintPosition < mnuItem.displayText.length) {
+				Console.put(mnuItem.displayText[mnuItem.hintPosition + 1..mnuItem.displayText.length]);
+			}
+		}
+		else {
+			Console.put(mnuItem.displayText);
+		}
+
+		if (mnuItem is _selectedMenu) {
+			Console.setColor(fgColor.Black, bgColor.White);
+		}
+	}
+
+	void drawMenu(bool drawHints = false) {
 		if (_menu is null) {
 			return;
 		}
-		
+
 		uint curWidth = this.width;
 
 		Console.setPosition(0,0);
 		Console.setColor(fgColor.Black, bgColor.White);
 
+		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {
+			Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+		}
+		else {
+			Console.setColor(fgColor.Black, bgColor.White);
+		}
 		Console.put(" ");
 		curWidth--;
 
-		foreach(mnuItem; _menu) {
-			if (curWidth > mnuItem.text.length) {
-				Console.put(mnuItem.text);
-				Console.put(" ");
-				curWidth -= (mnuItem.text.length + 1);
+		foreach(i, mnuItem; _menu) {
+			if (curWidth > mnuItem.displayText.length) {
+				drawMenuItem(mnuItem, drawHints, 1);
+				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
+					Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+					Console.put(" ");
+					Console.setColor(fgColor.Black, bgColor.White);
+				}
+				else {
+					Console.put(" ");
+				}
+				curWidth -= (mnuItem.displayText.length + 1);
 			}
 		}
-		
+
 		if (curWidth > 0) {
 			for (; curWidth != 0; curWidth--) {
 				Console.put(" ");
 			}
 		}
+	}
+	
+	void _selectMenu(Menu mnu) {
+		// draw menu
+		if (_menu is null) {
+			return;
+		}
+
+		if (mnu.isChildOf(_menu)) {
+			// Find this menu is the root menu
+			_selectedMenu = mnu;
+			drawMenu();
+			uint curPos = 1;
+			if (mnu.length > 0) {
+				_selectedMenu = mnu[0];
+			}
+			else {
+				_selectedMenu = null;
+			}
+			foreach(mnuItem; _menu) {
+				if (mnuItem is mnu) {
+					break;
+				}
+
+				curPos += mnuItem.displayText.length;
+				curPos ++;
+			}
+
+			_focusedMenu = mnu;
+			_focusedMenuPos = curPos;
+			drawSubmenu(_focusedMenu, _focusedMenuPos);
+		}
+
+		onMenu(mnu);
 	}
 
 	bgColor _bgClr = bgColor.Black;
@@ -293,4 +496,12 @@ private:
 
 	// Current Menu
 	Menu _menu;
+
+	// In a menu?
+	Menu _focusedMenu;
+	uint _focusedMenuPos;
+
+	uint _selectedMenuIndex;
+	Menu _selectedMenu;
+	uint _selectedMenuPos;
 }
