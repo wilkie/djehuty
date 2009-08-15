@@ -20,6 +20,9 @@ class Menu {
 	this(string text, Menu[] submenus = null) {
 		_value = new String(text);
 
+		// Get the working text
+		_updateDisplay();
+
 		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
 		}
@@ -38,6 +41,9 @@ class Menu {
 
 	this(String text, Menu[] submenus = null) {
 		_value = new String(text);
+
+		// Get the working text
+		_updateDisplay();
 
 		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
@@ -64,8 +70,17 @@ class Menu {
 		// platform specific destroy
 		MenuDestroy(&_pfvars);
 	}
+	
+	bool isChildOf(Menu mnu) {
+		foreach (parent; _parents) {
+			if (mnu is parent) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	// -- Methods -- //
+	// -- Properties -- //
 
 	void text(String newValue) {
 		_value = new String(newValue);
@@ -81,6 +96,14 @@ class Menu {
 
 	String text() {
 		return _value;
+	}
+	
+	String displayText() {
+		return _displayValue;
+	}
+	
+	int hintPosition() {
+		return _hintPosition;
 	}
 
 	uint length() {
@@ -118,10 +141,23 @@ class Menu {
 		
 		return ret;
 	}
+	
+	int opApply(int delegate(ref uint, ref Menu) loopFunc) {
+		int ret;
+
+		for (uint i = 0; i < length; i++) {
+			ret = loopFunc(i, _subitems[i]);
+			if (ret) { break; }
+		}
+		
+		return ret;
+	}
 
 protected:
 
 	String _value;
+	String _displayValue;
+	int _hintPosition;
 	Menu[] _subitems;
 	Menu[] _parents;
 
@@ -164,9 +200,46 @@ protected:
 		return false;
 	}
 
-	void _updateItem() {
-		// for each parent, update their lists as well
+	void _updateDisplay() {
+		// get the value
+		int curPos = 0;
+		int ampPos = int.max;
 
+		String itemText = new String("");
+		
+		_hintPosition = -1;
+
+		while(ampPos != -1) {
+			ampPos = _value.find("&", curPos);
+
+			if (ampPos == -1) {
+				itemText ~= _value.subString(curPos);
+			}
+			else {
+				itemText ~= _value.subString(curPos, ampPos - curPos);
+				if ((ampPos < _value.length) && (_value[ampPos+1] == '&')) {
+					// This is an actual amp
+					itemText ~= "&";
+					ampPos++;
+				}
+				else {
+					// The next letter is the hint
+					if (ampPos < _value.length) {
+						_hintPosition = itemText.length;
+					}
+				}
+			}
+			curPos = ampPos + 1;
+		}
+		
+		_displayValue = itemText;
+	}
+
+	void _updateItem() {
+		// Get the working text
+		_updateDisplay();
+
+		// for each parent, update their lists as well
 		foreach(ent; _parents) {
 			ent._updateChild(this);
 		}

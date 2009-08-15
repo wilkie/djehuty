@@ -470,8 +470,12 @@ class String {
 
 		return -1;
 	}
+	
+	int find(string search, uint start = 0) {
+		return find(new String(search), start);
+	}
 
-	int find(String search) {
+	int find(String search, uint start = 0) {
 		// look through string for term search
 		// in some, hopefully later on, efficient manner
 
@@ -484,14 +488,18 @@ class String {
 			search._indices = Unicode.calcIndices(search._data);
 			search._calcIndices = true;
 		}
+		
+		if (start >= _indices.length) {
+			return -1;
+		}
 
 		bool found;
 
 		int o;
 
-		foreach (i, aPos; _indices) {
+		foreach (i, aPos; _indices[start..$]) {
 			found = true;
-			o=i-1;
+			o=i-1+start;
 			foreach (bPos; search._indices) {
 				o++;
 				if (o >= _indices.length) {
