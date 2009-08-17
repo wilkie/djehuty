@@ -8,6 +8,8 @@ module math.common;
 
 import math.mathobject;
 
+import core.definitions;
+
 template _mathFunc(string func) {
 	const char[] _mathFunc = `
 		MathObject ` ~ func ~ `(MathObject operand) {
@@ -23,7 +25,7 @@ mixin(_mathFunc!("sqrt"));
 // Abstract standard library (silliness)
 version(Tango) {
 	// Tango
-	public import tango.math;
+	public import tango.math.Math;
 }
 else {
 	// Phobos

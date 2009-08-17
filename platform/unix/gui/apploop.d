@@ -25,6 +25,7 @@ import gui.application;
 import graphics.view;
 
 import core.main;
+import core.definitions;
 
 import io.console;
 

@@ -17,20 +17,21 @@ import core.string;
 import core.main;
 import core.definitions;
 
-import gui.menu;
+import resource.menu;
+
 import gui.window;
 
-void MenuCreate(ref Menu mnu, ref MenuPlatformVars menuVars)
+void MenuCreate(MenuPlatformVars* menuVars)
 {
 }
 
-void MenuDestroy(ref Menu mnu, ref MenuPlatformVars menuVars)
+void MenuDestroy(MenuPlatformVars* menuVars)
 {
 }
 
-void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toAppendVars)
+void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toAppendVars, String text, bool hasSubitems)
 {
-	if (toAppend.length > 0)
+	if (hasSubitems)
 	{
 	}
 	else
@@ -38,9 +39,9 @@ void MenuAppend(ref Menu mnu, ref Menu toAppend, ref MenuPlatformVars mnuVars, r
 	}
 }
 
-void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatformVars mnuVars, ref MenuPlatformVars toUpdateVars)
+void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toUpdateVars, String text, uint position, bool hasSubitems)
 {
-	if (toUpdate.length > 0)
+	if (hasSubitems)
 	{
 	}
 	else
@@ -48,7 +49,7 @@ void MenuUpdate(uint position, ref Menu mnu, ref Menu toUpdate, ref MenuPlatform
 	}
 }
 
-void WindowSetMenu(ref Menu mnu, ref MenuPlatformVars mnuVars, ref Window wnd, WindowPlatformVars* windowHelper)
+void WindowSetMenu(MenuPlatformVars* mnuVars, ref Window wnd, WindowPlatformVars* windowVars)
 {
 }
 

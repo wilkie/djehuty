@@ -428,10 +428,10 @@ protected:
 		}
 
 		// Pad with spaces
-		uint num = this.right - _lines[lineNumber].value.length;
+		uint num = this.right - (_lines[lineNumber].value.length + _lineNumbersWidth + 2);
 		uint pad;
 
-		for (uint k = this.left + _lines[lineNumber].value.length; k < this.right; k += pad) {
+		for (uint k = this.left + _lines[lineNumber].value.length + 2 + _lineNumbersWidth; k < this.right; k += pad) {
 			pad = num;
 
 			if (pad > spaces.length) {

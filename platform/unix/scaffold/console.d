@@ -12,6 +12,7 @@ module scaffold.console;
 import core.main;
 import core.unicode;
 import core.definitions;
+import core.string;
 
 import platform.unix.common;
 import platform.unix.main;
@@ -22,227 +23,589 @@ import tui.apploop;
 import tui.application;
 import tui.window;
 
-void ConsoleSetColors(uint fg, uint bg, int bright)
-{
-	printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
+void ConsoleSetColors(uint fg, uint bg, int bright) {
+//	printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
+	int idx = fg << 3;
+	idx |= bg;
+
+	if (bright) {
+		Curses.attron(Curses.A_BOLD);
+	}
+	else {
+		Curses.attroff(Curses.A_BOLD);
+	}
+
+	Curses.init_pair(idx, fg, bg);
+	Curses.attron(Curses.COLOR_PAIR(idx));
 }
+
+import io.console;
 
 //will return the next character pressed
-ulong consoleGetKey()
-{
-	ulong tmp;
-	tmp = getchar();
+Key consoleGetKey() {
+	Key ret;
 
-	if (tmp != 0x1B)
-	{
-		return tmp;
-	}
-	else
-	{
-		//wait for extended commands
-		tmp = getchar();
+	ubyte[18] tmp;
+	uint count;
 
-		if (tmp == KeyEscape)
-		{
-			return tmp;
+	ret.code = Curses.getch();
+	//Curses.move(0,0);
+	//Console.put("                                                ");
+	//Curses.move(0,0);
+	//Console.put(ret.code, " ");
+
+	if (ret.code != 0x1B) {
+		// Not an escape sequence
+
+		if (ret.code == Curses.KEY_MOUSE || ret.code == Curses.KEY_RESIZE || ret.code == Curses.KEY_EVENT || ret.code >= Curses.KEY_MAX) {
+			return ret;
 		}
-		else if (tmp == 0x5B) // [
-		{
-			tmp = getchar();
-
-			if (tmp == 0x31)
-			{
-				tmp <<= 8;
-				tmp |= getchar();
-
-				if ((tmp & 0xFF) == 0x7E)
-				{
-					return tmp;
-				}
-				else if (((tmp & 0xFF) == 0x35) || ((tmp & 0xFF) == 0x37) || ((tmp & 0xFF) == 0x38) || ((tmp & 0xFF) == 0x39))
-				{
-					tmp <<= 8;
-					tmp |=getchar();
-
-					if ((tmp & 0xFF) == 0x7E)
-					{
-						return tmp;
-					}
-
-					//shift + F5, F6, F7, or F8
-					tmp <<= 8;
-					tmp |= getchar();
-
-					if ((tmp & 0xFF) == 0x7E) { return tmp; }
-					if (getchar() == 0x7E) { return tmp; }
-				}
-				else if ((tmp & 0xFF) == 0x3B)
-				{
-					//ALT + ARROW KEYS, SHIFT + ARROW KEYS
-					tmp <<= 8;
-					tmp |= getchar();
-
-					if ((tmp & 0xFF) == 0x7E) { return tmp; }
-
-					//when we have added a '32' -- shift
-					//when we have added a '33' -- alt
-					//when we have added a '34' -- shift and alt
-
-					tmp <<= 8;
-					tmp |= getchar();
-				}
-				else
-				{
-					tmp <<=	8;
-					tmp |= getchar();
-				}
-			}
-			else if (tmp == 0x32)
-			{
-				tmp <<= 8;
-				tmp |= getchar();
-
-				if ((tmp & 0xFF) == 0x7E)
-				{
-					return tmp;
-				}
-
-				//ALT + INSERT
-				if ((tmp & 0xFF) == 0x3B)
-				{
-					tmp <<= 8;
-					tmp |= getchar();
-					if ((tmp & 0xFF) == 0x7E) { return tmp; }
-					if (getchar() == 0x7E) { return tmp; }
-				}
-
-				//SHIFT + F9, F10, F11, F12
-
-				tmp <<= 8;
-				tmp |= getchar();
-
-				if ((tmp & 0xFF) == 0x3B)
-				{
-					tmp <<= 8;
-					tmp |= getchar();
-					if ((tmp & 0xFF) == 0x7E) { return tmp; }
-					if (getchar() == 0x7E) { return tmp; }
-				}
-			}
-			else if (tmp == 0x33 || tmp == 0x34 || tmp == 0x35 || tmp == 0x36)
-			{
-				tmp <<= 8;
-				tmp |= getchar();
-
-				if ((tmp & 0xFF) != 0x7E)
-				{
-					tmp <<= 8;
-					tmp |= getchar();
-
-					if ((tmp & 0xFF) != 0x7E)
-					{
-						while (getchar() != 0x7E) {}
-					}
-				}
-			}
-			else if (tmp >= cast(uint)'0' && tmp <= cast(uint)'9') {
-				// Hopefully this is a row and column request
-
-				// So, grab them
-
-				uint row = 0;
-				uint col = 0;
-				while(tmp != cast(uint)';') {
-					row *= 10;
-					row += tmp - cast(uint)'0';
-
-					tmp = getchar();
-				}
-
-				// We have received a ';'
-
-				tmp = getchar();
-
-				while(tmp != cast(uint)'R') {
-					col *= 10;
-					col += tmp - cast(uint)'0';
-
-					tmp = getchar();
-				}
-
-				printf("row: %d col: %d\n", row, col);
-
-				// call again, to obtain next code
-				return consoleGetKey();
-			}
-			else
-			{
-				//return this code
-				tmp |= 0x5B00;
-			}
+		// For ctrl+char
+		if (ret.code < 26) {
+			ret.ctrl = true;
+			ret.code = Key.A + ret.code - 1;
+	//Curses.move(1,0);
+	//Console.put("                                                ");
+	//Curses.move(1,0);
+	//Console.put("alt: ", ret.alt, " ctrl: ", ret.ctrl, " shift: ", ret.shift, " code: ", ret.code);
+			return ret;
 		}
-		else if (tmp == 0x4F)
-		{
-			tmp = getchar();
-			tmp |= 0x4F00;
+		// For F5-F16:
+		else if (ret.code >= 281 && ret.code <= 292) {
+			ret.code -= 12;
+			ret.shift = true;
+		}
+		else if (ret.code >= 293 && ret.code <= 304) {
+			ret.code -= 24;
+			ret.ctrl = true;
+		}
+		else if (ret.code >= 305 && ret.code <= 316) {
+			ret.code -= 36;
+			ret.ctrl = true;
+			ret.shift = true;
+		}
+		else if (ret.code >= 317 && ret.code <= 328) {
+			ret.code -= 48;
+			ret.alt = true;
+		}
 
-			//curse for SHIFT + F1, F2, F3, or F4
-			if ((tmp & 0xFF) == 0x31)
-			{
-				if (getchar() == 0x3B)
-				{
-					tmp <<= 8;
-					tmp |= getchar();
-					if (((tmp & 0xFF) == 0x32) || ((tmp & 0xFF) == 0x34))
-					{
-						tmp <<= 8;
-						tmp |= getchar();
-					}
-				}
-			}
-		}
-		else
-		{
-			//ALT + CHAR
-			tmp |= 0x1B00;
-		}
+		consoleTranslateKey(ret);
+	//Curses.move(1,0);
+	//Console.put("                                                ");
+	//Curses.move(1,0);
+	//Console.put("alt: ", ret.alt, " ctrl: ", ret.ctrl, " shift: ", ret.shift, " code: ", ret.code);
+
+		return ret;
 	}
 
-	return tmp;
+	// Escape sequence...
+	ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+
+	// Get extended commands
+	if (ret.code == 0x1B) {
+		// ESCAPE ESCAPE -> Escape
+		ret.code = Key.Escape;
+	}
+	else if (ret.code == '[') {
+		ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+		if (ret.code == '1') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+			if (ret.code == '~') {
+				ret.code = Key.Home;
+			}
+			else if (ret.code == '#') {
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+				if (ret.code == '~') {
+					ret.code = Key.F5;
+				}
+				else if (ret.code == ';') {
+					ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+					if (ret.code == '2') {
+						ret.shift = true;
+						ret.code = Key.F5;
+					}
+				}
+			}
+			else if (ret.code == '7') {
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+				if (ret.code == '~') {
+					ret.code = Key.F6;
+				}
+				else if (ret.code == ';') {
+					ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+					if (ret.code == '2') {
+						ret.shift = true;
+						ret.code = Key.F6;
+					}
+				}
+			}
+			else if (ret.code == ';') {
+				// Arrow Keys
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+				getModifiers(ret);
+	//Console.put(ret.code, " ");
+
+				if (ret.code == 'A') {
+					ret.code = Key.Up;
+				}
+				else if (ret.code == 'B') {
+					ret.code = Key.Down;
+				}
+				else if (ret.code == 'C') {
+					ret.code = Key.Right;
+				}
+				else if (ret.code == 'D') {
+					ret.code = Key.Left;
+				}
+			}
+			else {
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+			}
+		}
+		else if (ret.code == '2') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+			if (ret.code == '~') {
+			}
+			else if (ret.code == ';') {
+				// Alt + Insert
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+				getModifiers(ret);
+	//Console.put(ret.code, " ");
+				if (ret.code == '~') {
+					ret.code = Key.Insert;
+				}
+			}
+		}
+		else if (ret.code == '3') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+		}
+		else if (ret.code == '4') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+		}
+		else if (ret.code == '5') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+		}
+		else if (ret.code == '6') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+		}
+		else {
+		}
+	}
+	else if (ret.code == 'O') {
+		ret.code = Curses.getch();
+
+		// F1, F2, F3, F4
+		if (ret.code == '1') {
+			ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+			if (ret.code == ';') {
+				ret.code = Curses.getch();
+	//Console.put(ret.code, " ");
+				getModifiers(ret);
+	//Console.put(ret.code, " ");
+
+				if (ret.code == 'P') {
+					ret.code = Key.F1;
+				}
+				else if (ret.code == 'Q') {
+					ret.code = Key.F2;
+				}
+				else if (ret.code == 'R') {
+					ret.code = Key.F3;
+				}
+				else if (ret.code == 'S') {
+					ret.code = Key.F4;
+				}
+			}
+		}
+		else if (ret.code == 'H') {
+			ret.code = Key.Home;
+		}
+		else if (ret.code == 'F') {
+			ret.code = Key.End;
+		}
+		else if (ret.code == 0x80) {
+			ret.code = Key.F1;
+		}
+		else if (ret.code == 0x81) {
+			ret.code = Key.F2;
+		}
+		else if (ret.code == 0x82) {
+			ret.code = Key.F3;
+		}
+		else if (ret.code == 0x83) {
+			ret.code = Key.F4;
+		}
+	}
+	else {
+		// Alt + Char
+		ret.alt = true;
+		consoleTranslateKey(ret);
+	}
+
+	//Curses.move(1,0);
+	//Console.put("                                                ");
+	//Curses.move(1,0);
+	//Console.put("alt: ", ret.alt, " ctrl: ", ret.ctrl, " shift: ", ret.shift, " code: ", ret.code);
+
+	return ret;
 }
 
-uint consoleTranslateKey(ulong ky)
+void getModifiers(ref Key key) {
+	if (key.code == '2' || key.code == '4' || key.code == '6' || key.code == '8') {
+		key.shift = true;
+	}
+
+	if (key.code == '3' || key.code == '4' || key.code == '7' || key.code == '8') {
+		key.alt = true;
+	}
+
+	if (key.code == '5' || key.code == '6' || key.code == '7' || key.code == '8') {
+		key.ctrl = true;
+	}
+
+	if (key.shift || key.alt || key.ctrl) {
+		key.code = Curses.getch();
+	}
+}
+
+bool isPrintable(Key key, out dchar chr) {
+	if (key.ctrl || key.alt) {
+		return false;
+	}
+
+	if (key.code >= Key.A && key.code <= Key.Z) {
+		if (key.shift) {
+			chr = (key.code - Key.A) + 'A';
+		}
+		else {
+			chr = (key.code - Key.A) + 'a';
+		}
+	}
+	else if (key.code >= Key.Zero && key.code <= Key.Nine) {
+		if (key.shift) {
+			switch (key.code) {
+				case Key.Zero:
+					chr = ')';
+					break;
+				case Key.One:
+					chr = '!';
+					break;
+				case Key.Two:
+					chr = '@';
+					break;
+				case Key.Three:
+					chr = '#';
+					break;
+				case Key.Four:
+					chr = '$';
+					break;
+				case Key.Five:
+					chr = '%';
+					break;
+				case Key.Six:
+					chr = '^';
+					break;
+				case Key.Seven:
+					chr = '&';
+					break;
+				case Key.Eight:
+					chr = '*';
+					break;
+				case Key.Nine:
+					chr = '(';
+					break;
+				default:
+					return false;
+			}
+		}
+		else {
+			chr = (key.code - Key.Zero) + '0';
+		}
+	}
+	else if (key.code == Key.SingleQuote) {
+		if (key.shift) {
+			chr = '~';
+		}
+		else {
+			chr = '`';
+		}
+	}
+	else if (key.code == Key.Minus) {
+		if (key.shift) {
+			chr = '_';
+		}
+		else {
+			chr = '-';
+		}
+	}
+	else if (key.code == Key.Equals) {
+		if (key.shift) {
+			chr = '+';
+		}
+		else {
+			chr = '=';
+		}
+	}
+	else if (key.code == Key.LeftBracket) {
+		if (key.shift) {
+			chr = '{';
+		}
+		else {
+			chr = '[';
+		}
+	}
+	else if (key.code == Key.RightBracket) {
+		if (key.shift) {
+			chr = '}';
+		}
+		else {
+			chr = '}';
+		}
+	}
+	else if (key.code == Key.Semicolon) {
+		if (key.shift) {
+			chr = ':';
+		}
+		else {
+			chr = ';';
+		}
+	}
+	else if (key.code == Key.Comma) {
+		if (key.shift) {
+			chr = '<';
+		}
+		else {
+			chr = ',';
+		}
+	}
+	else if (key.code == Key.Period) {
+		if (key.shift) {
+			chr = '>';
+		}
+		else {
+			chr = '.';
+		}
+	}
+	else if (key.code == Key.Foreslash) {
+		if (key.shift) {
+			chr = '?';
+		}
+		else {
+			chr = '/';
+		}
+	}
+	else if (key.code == Key.Backslash) {
+		if (key.shift) {
+			chr = '|';
+		}
+		else {
+			chr = '\\';
+		}
+	}
+	else if (key.code == Key.Quote) {
+		if (key.shift) {
+			chr = '"';
+		}
+		else {
+			chr = '\'';
+		}
+	}
+	else if (key.code == Key.Tab && !key.shift) {
+		chr = '\t';
+	}
+	else if (key.code == Key.Space && !key.shift) {
+		chr = ' ';
+	}
+	else if (key.code == Key.Return && !key.shift) {
+		chr = '\n';
+	}
+	else {
+		return false;
+	}
+
+	return true;
+}
+
+void consoleTranslateKey(ref Key ky)
 {
-	switch (ky)
-	{
-		case _UNIX_ConsoleKeys.KeyTab:
-			return KeyTab;
-
-		case _UNIX_ConsoleKeys.KeyLeft:
-			return KeyArrowLeft;
-
-		case _UNIX_ConsoleKeys.KeyUp:
-			return KeyArrowUp;
-
-		case _UNIX_ConsoleKeys.KeyDown:
-			return KeyArrowDown;
-
-		case _UNIX_ConsoleKeys.KeyRight:
-			return KeyArrowRight;
-
-		case _UNIX_ConsoleKeys.KeyBackspace:
-			return KeyBackspace;
-
-		case 10:
-			return KeyReturn;
-
+	switch(ky.code) {
+		case '~':
+		case '!':
+		case '@':
+		case '#':
+		case '$':
+		case '%':
+		case '^':
+		case '&':
+		case '*':
+		case '(':
+		case ')':
+		case '_':
+		case '+':
+		case '{':
+		case '}':
+		case ':':
+		case '"':
+		case '<':
+		case '>':
+		case '|':
+		case '?':
+			ky.shift = true;
+			break;
 		default:
-			return cast(uint)ky;
+			if (ky.code >= 'A' && ky.code <= 'Z') {
+				ky.shift = true;
+			}
+			else if (ky.code >= '0' && ky.code <= '9') {
+				ky.shift = true;
+			}
+			break;
 	}
-
-	return 0;
+	ky.code = keyTranslation[ky.code];
 }
 
+uint keyTranslation[Curses.KEY_MAX] = [
+	' ': Key.Space,
+	'\n': Key.Return,
+	'\r': Key.Return,
+	'\t': Key.Tab,
+	'a': Key.A,
+	'b': Key.B,
+	'c': Key.C,
+	'd': Key.D,
+	'e': Key.E,
+	'f': Key.F,
+	'g': Key.G,
+	'h': Key.H,
+	'i': Key.I,
+	'j': Key.J,
+	'k': Key.K,
+	'l': Key.L,
+	'm': Key.M,
+	'n': Key.N,
+	'o': Key.O,
+	'p': Key.P,
+	'q': Key.Q,
+	'r': Key.R,
+	's': Key.S,
+	't': Key.T,
+	'u': Key.U,
+	'v': Key.V,
+	'w': Key.W,
+	'x': Key.X,
+	'y': Key.Y,
+	'z': Key.Z,
+	'A': Key.A,
+	'B': Key.B,
+	'C': Key.C,
+	'D': Key.D,
+	'E': Key.E,
+	'F': Key.F,
+	'G': Key.G,
+	'H': Key.H,
+	'I': Key.I,
+	'J': Key.J,
+	'K': Key.K,
+	'L': Key.L,
+	'M': Key.M,
+	'N': Key.N,
+	'O': Key.O,
+	'P': Key.P,
+	'Q': Key.Q,
+	'R': Key.R,
+	'S': Key.S,
+	'T': Key.T,
+	'U': Key.U,
+	'V': Key.V,
+	'W': Key.W,
+	'X': Key.X,
+	'Y': Key.Y,
+	'Z': Key.Z,
+	'0': Key.Zero,
+	'1': Key.One,
+	'2': Key.Two,
+	'3': Key.Three,
+	'4': Key.Four,
+	'5': Key.Five,
+	'6': Key.Six,
+	'7': Key.Seven,
+	'8': Key.Eight,
+	'9': Key.Nine,
+	'`': Key.SingleQuote,
+	'~': Key.SingleQuote,
+	'!': Key.One,
+	'@': Key.Two,
+	'#': Key.Three,
+	'$': Key.Four,
+	'%': Key.Five,
+	'^': Key.Six,
+	'&': Key.Seven,
+	'*': Key.Eight,
+	'(': Key.Nine,
+	')': Key.Zero,
+	'-': Key.Minus,
+	'_': Key.Minus,
+	'=': Key.Equals,
+	'+': Key.Equals,
+	'[': Key.LeftBracket,
+	'{': Key.LeftBracket,
+	']': Key.RightBracket,
+	'}': Key.RightBracket,
+	';': Key.Semicolon,
+	':': Key.Semicolon,
+	'\'': Key.Quote,
+	'"': Key.Quote,
+	',': Key.Comma,
+	'<': Key.Comma,
+	'>': Key.Period,
+	'.': Key.Period,
+	'/': Key.Foreslash,
+	'?': Key.Foreslash,
+	'\\': Key.Backslash,
+	'|': Key.Backslash,
+	Curses.KEY_DOWN: Key.Down,
+	Curses.KEY_UP: Key.Up,
+	Curses.KEY_LEFT: Key.Left,
+	Curses.KEY_RIGHT: Key.Right,
+	Curses.KEY_HOME: Key.Home,
+	Curses.KEY_BACKSPACE: Key.Backspace,
+	Curses.KEY_F1: Key.F1,
+	Curses.KEY_F2: Key.F2,
+	Curses.KEY_F3: Key.F3,
+	Curses.KEY_F4: Key.F4,
+	Curses.KEY_F5: Key.F5,
+	Curses.KEY_F6: Key.F6,
+	Curses.KEY_F7: Key.F7,
+	Curses.KEY_F8: Key.F8,
+	Curses.KEY_F9: Key.F9,
+	Curses.KEY_F10: Key.F10,
+	Curses.KEY_F11: Key.F11,
+	Curses.KEY_F12: Key.F12,
+	Curses.KEY_F13: Key.F13,
+	Curses.KEY_F14: Key.F14,
+	Curses.KEY_F15: Key.F15,
+	Curses.KEY_F16: Key.F16,
+	Curses.KEY_NPAGE: Key.PageDown,
+	Curses.KEY_PPAGE: Key.PageUp,
+	Curses.KEY_ENTER: Key.Return,
+	Curses.KEY_END: Key.End
+];
 
 
 struct winsize {
@@ -322,157 +685,64 @@ extern(C) void size_sig_handler(int signal) {
 
 void ConsoleInit()
 {
-    //get terminal information
-
-    //ioctl(STDIN, TCGETS, &m_term_info_saved);
-
-    //get the current terminal vars
-
-    //ioctl(STDIN, TCGETS, &m_term_info_working);
-
-    m_winsize_state = false;
-
-    ioctl(STDIN, TIOCGWINSZ, &m_winsize_saved);
-    m_width = m_winsize_saved.ws_col;
-    m_height = m_winsize_saved.ws_row;
-
     //direct the Size signal to the internal function
-    sigset(SIGWINCH, &size_sig_handler);
-	sigset(SIGINT, &close_sig_handler);
+//    signal(SIGWINCH, &size_sig_handler);
+//	signal(SIGINT, &close_sig_handler);
 	//sigset(SIGKILL, &close_sig_handler);
 	//sigset(SIGTERM, &close_sig_handler);
 
 	// set buffer to print without newline
 	setvbuf (stdout, null, _IONBF, 0);
 
-    //get terminal information
-    ioctl(STDIN, TCGETS, &m_term_info_saved);
+	Curses.initscr();
+	Curses.start_color();
+	Curses.keypad(Curses.stdscr, 1);
 
-    //get the current terminal vars
-    ioctl(STDIN, TCGETS, &m_term_info_working);
+	Curses.move(0,0);
 
-    //tell the terminal to not echo anything
-    //streamed from stdin
-    //m_term_info_working.c_iflag &= (~(ISTRIP | INLCR | IGNCR | IXON | IXOFF));
-    m_term_info_working.c_lflag &= ~(ECHO | ICANON); //ISIG -- stops ctrl_c, ect
-    ioctl(STDIN, TCSETS, &m_term_info_working);
+	Curses.nonl();
+	Curses.cbreak();
+	Curses.noecho();
+
+	Curses.raw();
+
+	Curses.mmask_t oldmask;
+	Curses.mousemask(Curses.ALL_MOUSE_EVENTS | Curses.REPORT_MOUSE_POSITION, &oldmask);
+	Curses.mouseinterval(0);
 
 	// Get current position
-//	printf("\x1B[6n");
 	m_x = 0;
 	m_y = 0;
-
-	// Start gathering input for escape sequence
-	uint tmp;
-	uint state;
-
-	uint row;
-	uint col;
-/*
-	for(;state < 4;) {
-		tmp = getchar();
-		putChar(tmp);
-		printf("another char %d\n", bufferPosWrite);
-		switch(state) {
-			case 0:
-				if (tmp == 0x1b) {
-					state++;
-					continue;
-				}
-				state = 0;
-				break;
-			case 1:
-				if (tmp == cast(uint)'[') {
-					state++;
-					continue;
-				}
-				state = 0;
-				break;
-			case 2:
-				if (tmp >= '0' && tmp <= '9') {
-					row *= 10;
-					row += tmp - '0';
-					continue;
-				}
-				else if (tmp == ';') {
-					state++;
-					continue;
-				}
-				state = 0;
-				break;
-			case 3:
-				if (tmp >= '0' && tmp <= '9') {
-					col *= 10;
-					col += tmp - '0';
-					continue;
-				}
-				else if (tmp == 'R') {
-					state++;
-					continue;
-				}
-				state = 0;
-				break;
-			default:
-				break;
-		}
-	}
-
-	// Somebody, for some reason, before the advent of sanity
-	// figured, what the hai, lets index rows and columns starting
-	// at 1. That won't be annoying AT ALL.
-	row--;
-	col--;
-	*/
 }
 
-void ConsoleUninit()
-{
-	printf("uninit\n");
-	m_term_info_saved.c_lflag |= ECHO;
-    ioctl(STDIN, TCSETS, &m_term_info_saved);
+void ConsoleUninit() {
+	Curses.endwin();
 }
 
-void ConsoleClear()
-{
-	printf("\x1B[2J\x1B[0;0H");
+void ConsoleClear() {
+//	printf("\x1B[2J\x1B[0;0H");
+	Curses.clear();
+	Curses.refresh();
 }
 
-void ConsoleSetRelative(int x, int y)
-{
-	if (x < 0)
-	{
-		// move left
-		printf("\x1D[%dB", -x);
-	}
-	else if (x > 0)
-	{
-		// move right
-		printf("\x1C[%dB", x);
-	}
+void ConsoleSetRelative(int x, int y) {
+	int newx;
+	int newy;
 
-	if (y < 0)
-	{
-		// move up
-		printf("\x1A[%dB", -y);
-	}
-	else if (y > 0)
-	{
-		// move down
-		for (;y>0;y--) {
-		//	printf("\x1B[%dB", y);
-			printf("\n");
-		}
-	}
+	Curses.getyx(Curses.stdscr, m_y, m_x);
+
+	newx = m_x + x;
+	newy = m_y + y;
+
+	Curses.move(m_y, m_x);
 }
 
-uint[] ConsoleGetPosition()
-{
-
+uint[] ConsoleGetPosition() {
+	Curses.getyx(Curses.stdscr, m_y, m_x);
 	return [m_x, m_y];
 }
 
-void ConsoleSetPosition(uint x, uint y)
-{
+void ConsoleSetPosition(uint x, uint y) {
     if (x >= m_width) { x = m_width-1; }
 
     if (y >= m_height) { y = m_height-1; }
@@ -481,90 +751,54 @@ void ConsoleSetPosition(uint x, uint y)
 
     if (y < 0) { y = 0; }
 
-    printf("\x1B[%d;%dH", y + 1, x + 1);
+	Curses.move(y,x);
 }
 
-void ConsoleSavePosition()
-{
-	printf("\x1B[s");
+void ConsoleHideCaret() {
+//	printf("\x1B[?25l");
+	Curses.curs_set(0);
 }
 
-void ConsoleRestorePosition()
-{
-	printf("\x1B[u");
+void ConsoleShowCaret() {
+//	printf("\x1B[?25h");
+	Curses.curs_set(1);
 }
 
-void ConsoleHideCaret()
-{
-	printf("\x1B[?25l");
+void ConsoleSetHome() {
+//	printf("\x1B[0G");
+	Curses.getyx(Curses.stdscr, m_y, m_x);
+	m_x = 0;
+	Curses.move(m_y, m_x);
 }
 
-void ConsoleShowCaret()
-{
-	printf("\x1B[?25h");
-}
-
-void ConsoleSetHome()
-{
-	printf("\x1B[0G");
-}
-
-void ConsolePutString(dchar[] chrs)
-{
+void ConsolePutString(dchar[] chrs) {
 	chrs ~= '\0';
 	char[] utf8 = Unicode.toUtf8(chrs);
-	printf("%s", utf8.ptr);
+//	printf("%s", utf8.ptr);
+	Curses.wprintw(Curses.stdscr, "%s", utf8.ptr);
+	Curses.refresh();
 }
 
-void ConsolePutChar(dchar chr)
-{
+void ConsolePutChar(dchar chr) {
 	dchar[] chrarray = [ chr, '\0' ];
 	char[] chrs = Unicode.toUtf8(chrarray);
 
-	printf("%s", chrs.ptr);
+//	printf("%s", chrs.ptr);
+	Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
+	Curses.refresh();
 }
 
-void ConsoleGetChar(out dchar chr, out uint code)
-{
-	for (;;)
-	{
+void ConsoleGetChar(out dchar chr, out uint code) {
+	for (;;) {
 		//become IO bound
 
-		ulong ky; uint tky;
-		ky = consoleGetKey();
-		tky = consoleTranslateKey(ky);
-
-		if (ky < 0xfffffff)
-		{
-			code = tky;
-//        	ConsoleWindowOnKeyDown(tky);
-
-			if (tky != KeyBackspace && tky != KeyArrowLeft && tky != KeyArrowRight
-				&& tky != KeyArrowUp && tky != KeyArrowDown)
-			{
-				chr = ky;
-				//ConsoleWindowOnKeyChar(cast(uint)ky);
-			}
-			else
-			{
-				chr = 0;
-			}
-			return;
-        }
-
-        /* if (m_exit)
-        {
-            fireEvent(EventUninitState, 0);
-            break;
-        } */
+		Key key; uint tky;
+		key = consoleGetKey();
     }
 }
 
-void ConsoleGetSize(out uint width, out uint height)
-{
-    ioctl(STDIN, TIOCGWINSZ, &m_winsize_saved);
-    m_width = m_winsize_saved.ws_col;
-    m_height = m_winsize_saved.ws_row;
+void ConsoleGetSize(out uint width, out uint height) {
+	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
 
 	width = m_width;
 	height = m_height;
