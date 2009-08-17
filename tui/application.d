@@ -9,6 +9,10 @@ import core.event;
 import core.main;
 import core.definitions;
 
+import scaffold.tui;
+
+import platform.vars.tui;
+
 import io.console;
 
 // Description: This class represents a Text User Interface application (TUI).
@@ -17,7 +21,7 @@ public:
 
 	this() {
 		super();
-		_appController = new TuiApplicationController();
+		TuiStart(&_pfvars);
 	}
 
 	this(String appName) {
@@ -46,27 +50,58 @@ public:
 
 protected:
 
-	package TuiWindow _curConsoleWindow;
+	TuiWindow _curConsoleWindow;
+
+    TuiPlatformVars _pfvars;
 
 	override void start() {
-		_appController.start();
+		eventLoop();
 	}
 
 	override void end(uint exitCode) {
-		if (_appController !is null) {
-			_appController.end(exitCode);
-		}
+		_running = false;
+		TuiEnd(&_pfvars);
 	}
 
 private:
-
-	TuiApplicationController _appController;
 
 	void setWindow(TuiWindow window) {
 		_curConsoleWindow = window;
 
 		// Draw Window
 		window.onInitialize();
+	}
+	
+	bool _running = true;
+
+	void eventLoop() {
+		while(_running) {
+			TuiEvent evt;
+			TuiNextEvent(&evt, &_pfvars);
+	
+			switch(evt.type) {
+				case TuiEvent.Type.KeyDown:
+					_curConsoleWindow.onKeyDown(evt.info.key);
+					break;
+				case TuiEvent.Type.KeyChar:
+					_curConsoleWindow.onKeyChar(cast(dchar)evt.aux);
+					break;
+				case TuiEvent.Type.KeyUp:
+					_curConsoleWindow.onKeyUp(evt.info.key);
+					break;
+				case TuiEvent.Type.MouseDown:
+					break;
+				case TuiEvent.Type.MouseUp:
+					break;
+				case TuiEvent.Type.MouseMove:
+					break;
+				case TuiEvent.Type.Close:
+					Djehuty.end(evt.aux);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	bool _inited;
