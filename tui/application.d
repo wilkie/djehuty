@@ -1,7 +1,6 @@
 module tui.application;
 
 import tui.window;
-import tui.apploop; // Platform Specific Entry
 
 import core.application;
 import core.string;
@@ -71,20 +70,21 @@ private:
 		// Draw Window
 		window.onInitialize();
 	}
-	
+
 	bool _running = true;
 
 	void eventLoop() {
 		while(_running) {
 			TuiEvent evt;
 			TuiNextEvent(&evt, &_pfvars);
-	
+
 			switch(evt.type) {
 				case TuiEvent.Type.KeyDown:
 					_curConsoleWindow.onKeyDown(evt.info.key);
-					break;
-				case TuiEvent.Type.KeyChar:
-					_curConsoleWindow.onKeyChar(cast(dchar)evt.aux);
+					dchar chr;
+					if (isPrintable(evt.info.key, chr)) {
+						_curConsoleWindow.onKeyChar(chr);
+					}
 					break;
 				case TuiEvent.Type.KeyUp:
 					_curConsoleWindow.onKeyUp(evt.info.key);
@@ -105,4 +105,163 @@ private:
 	}
 
 	bool _inited;
+
+	bool isPrintable(Key key, out dchar chr) {
+				if (key.ctrl || key.alt) {
+			return false;
+		}
+
+		if (key.code >= Key.A && key.code <= Key.Z) {
+			if (key.shift) {
+				chr = (key.code - Key.A) + 'A';
+			}
+			else {
+				chr = (key.code - Key.A) + 'a';
+			}
+		}
+		else if (key.code >= Key.Zero && key.code <= Key.Nine) {
+			if (key.shift) {
+				switch (key.code) {
+					case Key.Zero:
+						chr = ')';
+						break;
+					case Key.One:
+						chr = '!';
+						break;
+					case Key.Two:
+						chr = '@';
+						break;
+					case Key.Three:
+						chr = '#';
+						break;
+					case Key.Four:
+						chr = '$';
+						break;
+					case Key.Five:
+						chr = '%';
+						break;
+					case Key.Six:
+						chr = '^';
+						break;
+					case Key.Seven:
+						chr = '&';
+						break;
+					case Key.Eight:
+						chr = '*';
+						break;
+					case Key.Nine:
+						chr = '(';
+						break;
+					default:
+						return false;
+				}
+			}
+			else {
+				chr = (key.code - Key.Zero) + '0';
+			}
+		}
+		else if (key.code == Key.SingleQuote) {
+			if (key.shift) {
+				chr = '~';
+			}
+			else {
+				chr = '`';
+			}
+		}
+		else if (key.code == Key.Minus) {
+			if (key.shift) {
+				chr = '_';
+			}
+			else {
+				chr = '-';
+			}
+		}
+		else if (key.code == Key.Equals) {
+			if (key.shift) {
+				chr = '+';
+			}
+			else {
+				chr = '=';
+			}
+		}
+		else if (key.code == Key.LeftBracket) {
+			if (key.shift) {
+				chr = '{';
+			}
+			else {
+				chr = '[';
+			}
+		}
+		else if (key.code == Key.RightBracket) {
+			if (key.shift) {
+				chr = '}';
+			}
+			else {
+				chr = '}';
+			}
+		}
+		else if (key.code == Key.Semicolon) {
+			if (key.shift) {
+				chr = ':';
+			}
+			else {
+				chr = ';';
+			}
+		}
+		else if (key.code == Key.Comma) {
+			if (key.shift) {
+				chr = '<';
+			}
+			else {
+				chr = ',';
+			}
+		}
+		else if (key.code == Key.Period) {
+			if (key.shift) {
+				chr = '>';
+			}
+			else {
+				chr = '.';
+			}
+		}
+		else if (key.code == Key.Foreslash) {
+			if (key.shift) {
+				chr = '?';
+			}
+			else {
+				chr = '/';
+			}
+		}
+		else if (key.code == Key.Backslash) {
+			if (key.shift) {
+				chr = '|';
+			}
+			else {
+				chr = '\\';
+			}
+		}
+		else if (key.code == Key.Quote) {
+			if (key.shift) {
+				chr = '"';
+			}
+			else {
+				chr = '\'';
+			}
+		}
+		else if (key.code == Key.Tab && !key.shift) {
+			chr = '\t';
+		}
+		else if (key.code == Key.Space && !key.shift) {
+			chr = ' ';
+		}
+		else if (key.code == Key.Return && !key.shift) {
+			chr = '\r';
+		}
+		else {
+			return false;
+		}
+
+		return true;
+
+	}
 }
