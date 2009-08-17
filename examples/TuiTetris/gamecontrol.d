@@ -27,6 +27,9 @@ class GameControl : TuiWidget {
 	}
 
 	override void onInit() {
+	}
+
+	override void onDraw() {
 		// draw board
 		drawBoard();
 
@@ -34,13 +37,13 @@ class GameControl : TuiWidget {
 		drawPiece();
 	}
 
-	void onKeyDown(uint keyCode) {
-		if (keyCode == KeyArrowDown) {
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Down) {
 			tmr.stop();
 			timerProc();
-			tmr.start();
+			//tmr.start();
 		}
-		else if (keyCode == KeyArrowLeft) {
+		else if (key.code == Key.Left) {
 			if (board.moveLeft()) {
 				lock.down();
 				clearPiece();
@@ -48,7 +51,7 @@ class GameControl : TuiWidget {
 				lock.up();
 			}
 		}
-		else if (keyCode == KeyArrowRight) {
+		else if (key.code == Key.Right) {
 			if (board.moveRight()) {
 				lock.down();
 				clearPiece();
@@ -56,7 +59,7 @@ class GameControl : TuiWidget {
 				lock.up();
 			}
 		}
-		else if (keyCode == KeyArrowUp) {
+		else if (key.code == Key.Up) {
 			if (board.rotate()) {
 				lock.down();
 				clearPiece();
@@ -64,7 +67,7 @@ class GameControl : TuiWidget {
 				lock.up();
 			}
 		}
-		else if (keyCode == KeySpace) {
+		else if (key.code == Key.Space) {
 			tmr.stop();
 
 			lock.down();
@@ -111,10 +114,10 @@ class GameControl : TuiWidget {
 					if (clr != board[i,j]) {
 						clr = board[i,j];
 
-						Console.setColor(cast(fgColor)clr);
+						Console.setColor(cast(bgColor)clr);
 					}
 
-					Console.put("\u2592\u2592\u2592\u2592");
+					Console.put("    ");
 				}
 				Console.putln("");
 			}
@@ -122,11 +125,9 @@ class GameControl : TuiWidget {
 	}
 
 	void drawPiece() {
-		Console.setColor(cast(fgColor)(board.getPieceType() + 1));
-
 		lastPiece = new Coord[](4);
 
-		Console.setColor(cast(fgColor)(board.getPieceType() + 1));
+		Console.setColor(cast(bgColor)(board.getPieceType() + 1));
 
 		foreach(i, pt; board.getPiece()) {
 			Coord curPt;
@@ -137,9 +138,9 @@ class GameControl : TuiWidget {
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
 				Console.setPosition(this.left + pt.x, this.top + pt.y);
-				Console.put("\u2592\u2592\u2592\u2592");
+				Console.put("    ");
 				Console.setPosition(this.left + pt.x, this.top + pt.y + 1);
-				Console.put("\u2592\u2592\u2592\u2592");
+				Console.put("    ");
 			}
 		}
 
@@ -147,13 +148,13 @@ class GameControl : TuiWidget {
 	}
 
 	void clearPiece() {
-		Console.setColor(fgColor.Black);
+		Console.setColor(fgColor.Blue, bgColor.Black);
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
 				Console.setPosition(this.left + pt.x, this.top + pt.y);
-				Console.put("\u2592\u2592\u2592\u2592");
+				Console.put("    ");
 				Console.setPosition(this.left + pt.x, this.top + pt.y + 1);
-				Console.put("\u2592\u2592\u2592\u2592");
+				Console.put("    ");
 			}
 		}
 		Console.setColor(fgColor.White);

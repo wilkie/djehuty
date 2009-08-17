@@ -9,11 +9,8 @@ import gamecontrol;
 
 class GameWindow : TuiWindow {
 	this() {
-		Console.putln("boo");
 		scoreLabel = new TuiLabel(4, 5, 10, "0");
-		Console.putln("boo b");
 		game = new GameControl();
-		Console.putln("boo c");
 
 		push(scoreLabel);
 		push(new TuiLabel(2, 3, 10, "Score", fgColor.BrightYellow));
@@ -29,6 +26,14 @@ class GameWindow : TuiWindow {
 		}
 
 		return false;
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.ctrl && key.code == Key.Q) {
+			application.exit(0);
+			return;
+		}
+		super.onKeyDown(key);
 	}
 
 	int getScore() {

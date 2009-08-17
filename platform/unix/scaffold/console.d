@@ -529,6 +529,8 @@ extern(C) void size_sig_handler(int signal) {
 
 void ConsoleInit()
 {
+	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "");
     //direct the Size signal to the internal function
 //    signal(SIGWINCH, &size_sig_handler);
 //	signal(SIGINT, &close_sig_handler);
@@ -539,6 +541,8 @@ void ConsoleInit()
 	setvbuf (stdout, null, _IONBF, 0);
 
 	Curses.initscr();
+	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "");
 	Curses.start_color();
 	Curses.keypad(Curses.stdscr, 1);
 
@@ -557,6 +561,11 @@ void ConsoleInit()
 	// Get current position
 	m_x = 0;
 	m_y = 0;
+
+	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
+
+	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "");
 }
 
 void ConsoleUninit() {
