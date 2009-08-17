@@ -49,10 +49,10 @@ Key consoleGetKey() {
 	uint count;
 
 	ret.code = Curses.getch();
-	//Curses.move(0,0);
-	//Console.put("                                                ");
-	//Curses.move(0,0);
-	//Console.put(ret.code, " ");
+//	Curses.move(0,0);
+//	Console.put("                                                ");
+//	Curses.move(0,0);
+//	Console.put(ret.code, " ");
 
 	if (ret.code != 0x1B) {
 		// Not an escape sequence
@@ -60,8 +60,11 @@ Key consoleGetKey() {
 		if (ret.code == Curses.KEY_MOUSE || ret.code == Curses.KEY_RESIZE || ret.code == Curses.KEY_EVENT || ret.code >= Curses.KEY_MAX) {
 			return ret;
 		}
+
+		if (ret.code == 9 || ret.code == 13) {
+		}
 		// For ctrl+char
-		if (ret.code < 26) {
+		else if (ret.code < 26) {
 			ret.ctrl = true;
 			ret.code = Key.A + ret.code - 1;
 	//Curses.move(1,0);
@@ -433,7 +436,7 @@ bool isPrintable(Key key, out dchar chr) {
 		chr = ' ';
 	}
 	else if (key.code == Key.Return && !key.shift) {
-		chr = '\n';
+		chr = '\r';
 	}
 	else {
 		return false;
@@ -645,9 +648,9 @@ termios m_term_info_working;
 
 extern(C) void close_sig_handler(int signal) {
 	Djehuty.end(0);
-	for(int i=0; i<256; i++) {
-		printf("\x1B[48;5;%dma", i);
-	}
+//	for(int i=0; i<256; i++) {
+//		printf("\x1B[48;5;%dma", i);
+//	}
 	ConsoleUninit();
 	exit(0);
 }
