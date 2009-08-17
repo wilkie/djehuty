@@ -28,7 +28,7 @@ else {
 
 version(Tango) {
 	public import ldc.cstdarg;
-	public import tango.stdc.stdio : stdout, _IONBF, _iobuf, FILE, fpos_t;
+	public import tango.stdc.stdio : wchar_t, stdout, _IONBF, _iobuf, FILE, fpos_t;
 
 	extern(C) int printf(char *,...);	///
 }

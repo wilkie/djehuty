@@ -33,7 +33,7 @@ class TuiWidget : Responder {
 
 	void onGotFocus() {
 	}
-	
+
 	void onDraw() {
 	}
 
@@ -96,10 +96,16 @@ class TuiWidget : Responder {
 		}
 	}
 
+	void resize(uint width, uint height) {
+		_width = width;
+		_height = height;
+		onDraw();
+	}
+
 	bool isTabStop() {
 		return false;
 	}
-	
+
 	uint left() {
 		return _x;
 	}
@@ -107,7 +113,7 @@ class TuiWidget : Responder {
 	uint top() {
 		return _y;
 	}
-	
+
 	uint right() {
 		return _x + _width;
 	}
@@ -115,21 +121,21 @@ class TuiWidget : Responder {
 	uint bottom() {
 		return _y + _height;
 	}
-	
+
 	uint width() {
 		return _width;
 	}
-	
+
 	uint height() {
 		return _height;
 	}
-	
+
 	TuiWindow window() {
 		return _window;
 	}
 
 protected:
-	
+
 	bool canDraw() {
 		return _window !is null && _window.isActive;
 	}

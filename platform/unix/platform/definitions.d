@@ -12,9 +12,7 @@ module platform.definitions;
 version(PlatformLinux)
 {
 
-import platform.unix.common;
 
-import core.definitions;
 import core.parameters;
 
 // String Representation
@@ -44,6 +42,7 @@ const auto FontSystem = "sans"c;
 
 
 
+import platform.unix.common;
 
 const uint KeyBackspace = X.XK_BackSpace;
 const uint KeyTab = X.XK_Tab;
@@ -104,6 +103,17 @@ const uint KeyW = 0x57;
 const uint KeyX = 0x58;
 const uint KeyY = 0x59;
 const uint KeyZ = 0x5A;
+const uint KeySingleQuote = '`';
+const uint KeySemicolon = ';';
+const uint KeyLeftBracket = '[';
+const uint KeyRightBracket = ']';
+const uint KeyComma = ',';
+const uint KeyPeriod = '.';
+const uint KeyForeslash = '/';
+const uint KeyBackslash = '\\';
+const uint KeyQuote = '\'';
+const uint KeyMinus = '-';
+const uint KeyEquals = '=';
 const uint KeyNumPad0 = X.XK_KP_0; //0x60
 const uint KeyNumPad1 = X.XK_KP_1; //0x61
 const uint KeyNumPad2 = X.XK_KP_2; //0x62

@@ -41,7 +41,7 @@ class TuiWindow : Responder {
 			} while (c !is _firstControl)
 
 		}
-		
+
 		drawMenu();
 
 		if (c !is null) {
@@ -74,6 +74,8 @@ class TuiWindow : Responder {
 				c.onDraw();
 			} while (c !is _firstControl)
 		}
+
+		drawMenu();
 	}
 
 	void onKeyDown(Key key) {
@@ -213,6 +215,16 @@ class TuiWindow : Responder {
 		}
 	}
 
+	void onOtherMouseDown(uint button) {
+		if (_focused_control !is null) {
+		}
+	}
+
+	void onOtherMouseUp(uint button) {
+		if (_focused_control !is null) {
+		}
+	}
+
 	void onMouseWheelY(uint amount) {
 		if (_focused_control !is null) {
 			_focused_control.onMouseWheelY(amount);
@@ -229,6 +241,18 @@ class TuiWindow : Responder {
 		if (_focused_control !is null) {
 			_focused_control.onMouseMove();
 		}
+	}
+
+	void text(string value) {
+		_value = new String(value);
+	}
+
+	void text(String value) {
+		_value = new String(value);
+	}
+
+	String text() {
+		return _value;
 	}
 
 	uint width() {
@@ -323,7 +347,7 @@ class TuiWindow : Responder {
 	bool isActive() {
 		return (application() !is null && application.window is this);
 	}
-	
+
 	void menu(Menu mnu) {
 		_menu = mnu;
 		if (isActive) {
@@ -337,7 +361,7 @@ private:
 
 	void drawSubmenu(Menu mnu, uint x) {
 		uint y = 1;
-		
+
 		uint maxLength = 0;
 
 		foreach(subItem; mnu) {
@@ -441,13 +465,23 @@ private:
 			}
 		}
 
+		bool drawCaption = false;
+		if (_value !is null && curWidth >= (_value.length + 1)) {
+			curWidth -= _value.length + 1;
+			drawCaption = true;
+		}
+
 		if (curWidth > 0) {
 			for (; curWidth != 0; curWidth--) {
 				Console.put(" ");
 			}
 		}
+
+		if (drawCaption) {
+			Console.put(_value, " ");
+		}
 	}
-	
+
 	void _selectMenu(Menu mnu) {
 		// draw menu
 		if (_menu is null) {
@@ -504,4 +538,6 @@ private:
 	uint _selectedMenuIndex;
 	Menu _selectedMenu;
 	uint _selectedMenuPos;
+
+	String _value;
 }

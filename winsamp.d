@@ -121,10 +121,16 @@ class MyTWindow : TuiWindow {
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
 		push(new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
-		push(tuibox = new TuiCodeBox(0,1,this.width,this.height-2));
+		push(tuibox = new TuiTextBox(0,1,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
 		menu = foo;
+		text = "unsaved";
 		tuibox.lineNumbers = true;
+	}
+
+	override void onResize() {
+		tuibox.resize(this.width, this.height-2);
+		redraw();
 	}
 
 	override void onKeyDown(Key key) {

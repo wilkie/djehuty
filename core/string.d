@@ -16,7 +16,7 @@ module core.string;
 import core.definitions;
 import core.unicode;
 import core.format;
-import std.stdio;
+
 public import core.string;
 
 template _StringFormat() {
@@ -470,7 +470,7 @@ class String {
 
 		return -1;
 	}
-	
+
 	int find(string search, uint start = 0) {
 		return find(new String(search), start);
 	}
@@ -488,7 +488,7 @@ class String {
 			search._indices = Unicode.calcIndices(search._data);
 			search._calcIndices = true;
 		}
-		
+
 		if (start >= _indices.length) {
 			return -1;
 		}

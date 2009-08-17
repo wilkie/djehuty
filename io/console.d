@@ -226,6 +226,15 @@ class Console {
 				if (_arguments[curArg] is typeid(String)) {
 					toParse = va_arg!(String)(_argptr);
 				}
+				else if (_arguments[curArg] is typeid(bool)) {
+					bool argval = cast(bool)va_arg!(bool)(_argptr);
+					if (argval) {
+						toParse = new String("true");
+					}
+					else {
+						toParse = new String("false");
+					}
+				}
 				else if (_arguments[curArg] is typeid(long)) {
 					long argval = cast(long)va_arg!(long)(_argptr);
 					toParse = new String(argval);
@@ -306,6 +315,15 @@ class Console {
 			for(int curArg = 0; curArg < _arguments.length; curArg++) {
 				if (_arguments[curArg] is typeid(String)) {
 					toParse = va_arg!(String)(_argptr);
+				}
+				else if (_arguments[curArg] is typeid(bool)) {
+					bool argval = cast(bool)va_arg!(bool)(_argptr);
+					if (argval) {
+						toParse = new String("true");
+					}
+					else {
+						toParse = new String("false");
+					}
 				}
 				else if (_arguments[curArg] is typeid(long)) {
 					long argval = cast(long)va_arg!(long)(_argptr);
@@ -416,11 +434,11 @@ class Console {
 				}
 				else if (chr == 's') {
 					// save position
-					ConsoleSavePosition();
+					//ConsoleSavePosition();
 				}
 				else if (chr == 'u') {
 					// restore position
-					ConsoleRestorePosition();
+					//ConsoleRestorePosition();
 				}
 				else if (chr == 'A') {
 					if (_vt100_params[0] == 0) {

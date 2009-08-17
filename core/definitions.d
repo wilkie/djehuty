@@ -206,6 +206,18 @@ struct Key {
 	const uint Eight = Platform.Key8;
 	const uint Nine = Platform.Key9;
 
+	const uint SingleQuote = Platform.KeySingleQuote;
+	const uint Quote = Platform.KeyQuote;
+	const uint Comma = Platform.KeyComma;
+	const uint Period = Platform.KeyPeriod;
+	const uint Foreslash = Platform.KeyForeslash;
+	const uint Backslash = Platform.KeyBackslash;
+	const uint LeftBracket = Platform.KeyLeftBracket;
+	const uint RightBracket = Platform.KeyRightBracket;
+	const uint Semicolon = Platform.KeySemicolon;
+	const uint Minus = Platform.KeyMinus;
+	const uint Equals = Platform.KeyEquals;
+
 	const uint A = Platform.KeyA;
 	const uint B = Platform.KeyB;
 	const uint C = Platform.KeyC;
