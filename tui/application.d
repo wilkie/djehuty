@@ -98,6 +98,9 @@ private:
 				case TuiEvent.Type.Close:
 					Djehuty.end(evt.aux);
 					break;
+				case TuiEvent.Type.Size:
+					_curConsoleWindow.onResize();
+					break;
 				default:
 					break;
 			}
