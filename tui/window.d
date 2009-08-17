@@ -378,7 +378,7 @@ private:
 			else {
 				Console.setColor(fgColor.Black, bgColor.White);
 			}
-			Console.put("| ");
+			Console.put(" ");
 			drawMenuItem(subItem, false, subItem.displayText.length - maxLength + 1);
 			if (subItem is _selectedMenu) {
 				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
