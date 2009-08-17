@@ -1106,8 +1106,10 @@ extern(Windows)
 	BOOL FindNextFileW(HANDLE hFindFile, WIN32_FIND_DATAW*);
 
 	BOOL ReadConsoleInputW(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
-	BOOL PeekConsoleInput(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
+	BOOL PeekConsoleInputW(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
 	BOOL WriteConsoleInput(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
+	
+	BOOL GetNumberOfConsoleInputEvents(HANDLE, DWORD*);
 
 	BOOL WriteConsoleOutputCharacterW(HANDLE, LPCWSTR, DWORD, COORD, DWORD*);
 	BOOL WriteConsoleOutputCharacterA(HANDLE, LPCTSTR, DWORD, COORD, DWORD*);

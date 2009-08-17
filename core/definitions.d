@@ -279,3 +279,28 @@ else {
 	alias ulong Culong;
 	alias long Clong;
 }
+
+union TuiEventInfo {
+	Key key;
+	Mouse mouse;
+	Size size;
+}
+
+struct TuiEvent {
+	enum Type {
+		KeyDown,
+		KeyChar,
+		KeyUp,
+		MouseDown,
+		MouseUp,
+		MouseMove,
+		MouseWheelX,
+		MouseWheelY,
+		Size,
+		Close,
+	}
+
+	Type type;
+	TuiEventInfo info;
+	uint aux;
+}
