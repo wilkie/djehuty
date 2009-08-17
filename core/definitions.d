@@ -289,7 +289,6 @@ union TuiEventInfo {
 struct TuiEvent {
 	enum Type {
 		KeyDown,
-		KeyChar,
 		KeyUp,
 		MouseDown,
 		MouseUp,

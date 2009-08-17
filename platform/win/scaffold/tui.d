@@ -108,12 +108,12 @@ private {
 				sleep(100);
 			}
 		}
-		
+
 		static TuiPlatformVars* vars;
 
 		bool running = true;
 	}
-	
+
 	BOOL consoleProc(DWORD fdwCtrlType) {
 		switch(fdwCtrlType) {
 			// Handle the CTRL-C signal.
@@ -121,35 +121,35 @@ private {
 			case CTRL_C_EVENT:
 			case CTRL_CLOSE_EVENT:
 				Console.putln("Ctrl-Close event");
-				
+
 				TuiEvent evt;
 				evt.type = TuiEvent.Type.Close;
 				evt.aux = 0;
 
 				ResizeThread.vars.events.addItem(evt);
-	
+
 				return( TRUE );
 
 			// Pass other signals to the next handler.
 			case CTRL_BREAK_EVENT:
 				Console.putln("Ctrl-Break event");
 				return FALSE;
-	
+
 			case CTRL_LOGOFF_EVENT:
 				Console.putln("Ctrl-Logoff event");
 				return FALSE;
-	
+
 			case CTRL_SHUTDOWN_EVENT:
 				printf( "Ctrl-Shutdown event\n\n" );
 				return FALSE;
-	
+
 			default:
 				break;
 		}
-	
+
 		return FALSE;
 	}
-	
+
 	void grabEvent(TuiPlatformVars* vars) {
 		DWORD cNumRead;
 
@@ -208,12 +208,6 @@ private {
 
 						evt.type = TuiEvent.Type.KeyDown;
 						vars.events.addItem(evt);
-
-						if ((vars.irInBuf[i].Event.KeyEvent.uChar.UnicodeChar > 0) && evt.info.key.ctrl == false && evt.info.key.alt == false) {
-							evt.aux = vars.irInBuf[i].Event.KeyEvent.uChar.UnicodeChar;
-							evt.type = TuiEvent.Type.KeyChar;
-							vars.events.addItem(evt);
-						}
 					}
 					else {
 						// KeyUp
