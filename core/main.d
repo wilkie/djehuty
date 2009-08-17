@@ -20,7 +20,6 @@ import synch.semaphore;
 import synch.thread;
 
 import gui.apploop;
-import tui.apploop;
 
 // Section: Core
 
@@ -36,7 +35,7 @@ public:
 
 		app = application;
 	}
-	
+
 	void start() {
 		// Can only start the framework once
 		if (!_hasStarted) {
@@ -45,7 +44,7 @@ public:
 		else {
 			throw new Exception("Framework Already Started");
 		}
-	
+
 		// Constitute the main thread class
 		ThreadModuleInit();
 
@@ -57,7 +56,7 @@ public:
 			app.arguments = Arguments.instance;
 			app.onApplicationStart();
 		}
-	
+
 		// If no event controllers are in play, then end
 		if (app.isZombie) {
 			end(0);
