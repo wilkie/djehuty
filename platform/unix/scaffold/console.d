@@ -587,13 +587,13 @@ void ConsoleSetRelative(int x, int y) {
 	newx = m_x + x;
 	newy = m_y + y;
 
-	Curses.move(m_y, m_x);
+	Curses.move(newy, newx);
 }
 
 void ConsoleGetPosition(out uint x, out uint y) {
 	Curses.getyx(Curses.stdscr, m_y, m_x);
-	x = m_x-1;
-	y = m_y-1;
+	x = m_x;
+	y = m_y;
 }
 
 void ConsoleSetPosition(uint x, uint y) {

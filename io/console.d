@@ -620,15 +620,6 @@ private:
 		ConsoleGetPosition(x,y);
 
 		if (clippingRegions.length == 0) {
-			Rect region;
-			region.left = 2;
-			region.right = 4;
-			region.top = 2;
-			region.bottom = 4;
-			clippingRegions ~= region;
-		}
-
-		if (clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
 		}
