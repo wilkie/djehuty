@@ -101,6 +101,12 @@ class TuiWidget : Responder {
 		_height = height;
 		onDraw();
 	}
+	
+	void move(uint left, uint top) {
+		_x = left;
+		_y = top;
+		onDraw();
+	}
 
 	bool isTabStop() {
 		return false;

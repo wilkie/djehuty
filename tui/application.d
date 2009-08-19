@@ -86,9 +86,6 @@ private:
 						_curConsoleWindow.onKeyChar(chr);
 					}
 					break;
-				case TuiEvent.Type.KeyUp:
-					_curConsoleWindow.onKeyUp(evt.info.key);
-					break;
 				case TuiEvent.Type.MouseDown:
 					break;
 				case TuiEvent.Type.MouseUp:

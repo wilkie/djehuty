@@ -89,6 +89,13 @@ struct Rect {
 
 	// Description: The x point of the bottom-right of the rectangle.
 	uint right;
+	
+	// Description: This function will test whether another rectangle intersects (overlaps) this one.
+	// test: A rectangle to test.
+	// Returns: Will return true when the rectangle given by test overlaps.
+	bool intersects(Rect test) {
+		return !(left > test.right || right < test.left || top > test.bottom || bottom < test.top);
+	}
 }
 
 // Section: Enums

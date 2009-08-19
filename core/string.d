@@ -239,7 +239,12 @@ class String {
 	// str: The String to append to the internal character array of this String class.
 	void append(String str) {
 		_data ~= str._data;
-		_length += str._length;
+		if (str._calcLength) {
+			_length += str._length;
+		}
+		else {
+			_calcLength = false;
+		}
 		_calcIndices = false;
 	}
 
