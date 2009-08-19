@@ -221,7 +221,7 @@ static:
 	void getChar(out dchar chr, out uint code) {
 		ConsoleGetChar(chr, code);
 	}
-	
+
 	// Description: This function will clear the clipping context.
 	void clipClear() {
 		clippingRegions = null;
@@ -598,11 +598,11 @@ private:
 	int _vt100_paramFilled = 0;
 
 	Rect[] clippingRegions;
-	
+
 	void _putChar(dchar chr) {
 		ConsolePutChar(chr);
 	}
-	
+
 	void _putInt(uint value) {
 		dstring foo = "";
 		do {
@@ -618,6 +618,15 @@ private:
 		uint b;
 
 		ConsoleGetPosition(x,y);
+
+		if (clippingRegions.length == 0) {
+			Rect region;
+			region.left = 2;
+			region.right = 4;
+			region.top = 2;
+			region.bottom = 4;
+			clippingRegions ~= region;
+		}
 
 		if (clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
@@ -657,7 +666,7 @@ private:
 				if (end > str.length) {
 					end = str.length;
 				}
-				
+
 				uint strLength = end - start;
 
 				// Find and inject into formatArray
@@ -788,6 +797,7 @@ private:
 			//ConsolePutString(", ");
 			if (isOut) {
 				ConsoleSetRelative(formatArray[i], 0);
+//				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
 			}
 			else {
 				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
