@@ -60,7 +60,7 @@ Key consoleGetKey() {
 			return ret;
 		}
 
-		if (ret.code == 9 || ret.code == 13) {
+		if (ret.code == 127 || ret.code == 8 || ret.code == 9 || ret.code == 13) {
 		}
 		// For ctrl+char
 		else if (ret.code < 26) {
@@ -329,6 +329,8 @@ uint keyTranslation[Curses.KEY_MAX] = [
 	'\n': Key.Return,
 	'\r': Key.Return,
 	'\t': Key.Tab,
+	'\b': Key.Backspace,
+	127: Key.Backspace,
 	'a': Key.A,
 	'b': Key.B,
 	'c': Key.C,
