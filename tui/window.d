@@ -42,7 +42,7 @@ class TuiWindow : Responder {
 
 		}
 
-		drawMenu();
+		_drawMenu();
 
 		if (c !is null) {
 			_focused_control = c;
@@ -75,43 +75,131 @@ class TuiWindow : Responder {
 			} while (c !is _firstControl)
 		}
 
-		drawMenu();
+		_drawMenu();
 	}
 
 	void onKeyDown(Key key) {
 		if (_focusedMenu !is null) {
-			if (key.code == Key.Down) {
-				_selectedMenuIndex++;
-				if (_selectedMenuIndex < _focusedMenu.length) {
-					_selectedMenu = _focusedMenu[_selectedMenuIndex];
-					drawSubmenu(_focusedMenu, _focusedMenuPos);
-				}
-				else {
-					_selectedMenuIndex = _focusedMenu.length - 1;
-				}
-			}
-			else if (key.code == Key.Up) {
-				if (_selectedMenuIndex > 0) {
-					_selectedMenuIndex--;
-					_selectedMenu = _focusedMenu[_selectedMenuIndex];
-					drawSubmenu(_focusedMenu, _focusedMenuPos);
-				}
-			}
-			else if (key.code >= Key.A && key.code <= Key.Z) {
-				uint chr = key.code - Key.A;
-				// Look for a hint
-				foreach(mnuItem; _focusedMenu) {
-					// Does the menu item have a hint?
-					if (mnuItem.hintPosition == -1) {
-						continue;
+			if (_focusedMenu == _selectedMenu) {
+				// on the menu bar
+
+				if (key.code == Key.Down) {
+					// expand menu
+					if (_focusedMenu.length > 0) {
+						_selectMenu(_focusedMenu);
 					}
+				}
+				else if (key.code == Key.Up) {
+					// leave menu
+					_focusedMenu = null;
+					_selectedMenu = null;
+					_drawMenu();
+				}
+				else if (key.code == Key.Left) {
+					if (_focusedMenuIndex != 0) {
+						_focusedMenuIndex--;
+						_selectedMenu = _menu[_focusedMenuIndex];
+						_focusedMenu = _selectedMenu;
+						_drawMenu();
+					}
+					else {
+						// leave menu
+						_focusedMenu = null;
+						_selectedMenu = null;
+						_drawMenu();
+					}
+				}
+				else if (key.code == Key.Right) {
+					if ((_focusedMenuIndex + 1) < _menu.length) {
+						_focusedMenuIndex++;
+						_selectedMenu = _menu[_focusedMenuIndex];
+						_focusedMenu = _selectedMenu;
+						_drawMenu();
+					}
+				}
+				else if (key.code == Key.Return || key.code == Key.Space) {
+					// apply
+					if (_selectedMenu.length > 0) {
+						// it is a submenu
+						_selectMenu(_selectedMenu);
+					}
+					else {
+						// select the item
+						_cancelNextChar = true;
+						_focusedMenu = null;
+						_selectedMenu = null;
+						_drawMenu();
+						onMenu(_selectedMenu);
+					}
+				}
+			}
+			else {
+				// within a submenu
 
-					auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
-					uint chr2 = cast(uint)(hint - 'a');
+				if (key.code == Key.Down) {
+					_selectedMenuIndex++;
+					if (_selectedMenuIndex < _focusedMenu.length) {
+						_selectedMenu = _focusedMenu[_selectedMenuIndex];
+						_drawSubmenu();
+					}
+					else {
+						_selectedMenuIndex = _focusedMenu.length - 1;
+					}
+				}
+				else if (key.code == Key.Up) {
+					if (_selectedMenuIndex > 0) {
+						_selectedMenuIndex--;
+						_selectedMenu = _focusedMenu[_selectedMenuIndex];
+						_drawSubmenu();
+					}
+				}
+				else if (key.code == Key.Left) {
+					// remove submenu
+					if (_selectedMenu is null) {
+					}
+					else {
+						_removeMenuContext();
+					}
+				}
+				else if (key.code == Key.Right) {
+					// add submenu
+					if (_selectedMenu.length > 0) {
+						_addSubmenu();
+						_drawSubmenu();
+					}
+				}
+				else if (key.code == Key.Return || key.code == Key.Space) {
+					// apply
+					if (_selectedMenu.length > 0) {
+						// it is a submenu
+						_addSubmenu();
+						_drawSubmenu();
+					}
+					else {
+						// select the item
+						_cancelNextChar = true;
+						_focusedMenu = null;
+						_selectedMenu = null;
+						redraw();
+						onMenu(_selectedMenu);
+					}
+				}
+				else if (key.code >= Key.A && key.code <= Key.Z) {
+					uint chr = key.code - Key.A;
+					// Look for a hint
+					foreach(mnuItem; _focusedMenu) {
+						// Does the menu item have a hint?
+						if (mnuItem.hintPosition == -1) {
+							continue;
+						}
 
-					if (chr == chr2) {
-						// This menu item is selected
-						_selectMenu(mnuItem);
+						auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
+						uint chr2 = cast(uint)(hint - 'a');
+
+						if (chr == chr2) {
+							// This menu item is selected
+							_selectMenu(mnuItem);
+						}
 					}
 				}
 			}
@@ -120,10 +208,7 @@ class TuiWindow : Responder {
 			return;
 		}
 		else if (_menu !is null) {
-			if ((key.code == Key.LeftAlt) || (key.code == Key.RightAlt)) {
-				drawMenu(true);
-			}
-			else if (key.alt) {
+			if (key.alt) {
 				uint chr = key.code - Key.A;
 				if (chr <= Key.Z) {
 					// compare to menu hints
@@ -157,25 +242,12 @@ class TuiWindow : Responder {
 	}
 
 	void onKeyChar(dchar keyChar) {
-		if (_focusedMenu !is null) {
+		if (_focusedMenu !is null || _cancelNextChar) {
+			_cancelNextChar = false;
 			return;
 		}
 		if (_focused_control !is null) {
 			_focused_control.onKeyChar(keyChar);
-		}
-	}
-
-	void onKeyUp(Key key) {
-		if (_focusedMenu !is null) {
-			return;
-		}
-		if (_menu !is null) {
-			if (key.code == Key.LeftAlt || key.code == Key.RightAlt) {
-				drawMenu();
-			}
-		}
-		if (_focused_control !is null) {
-			_focused_control.onKeyUp(key);
 		}
 	}
 
@@ -351,7 +423,7 @@ class TuiWindow : Responder {
 	void menu(Menu mnu) {
 		_menu = mnu;
 		if (isActive) {
-			drawMenu();
+			_drawMenu();
 		}
 	}
 
@@ -359,16 +431,14 @@ class TuiWindow : Responder {
 
 private:
 
-	void drawSubmenu(Menu mnu, uint x) {
-		uint y = 1;
+	void _drawSubmenu() {
+		MenuContext context = _menus[$-1];
 
-		uint maxLength = 0;
+		Menu mnu = context.submenu;
+		uint x = context.region.left;
+		uint y = context.region.top;
 
-		foreach(subItem; mnu) {
-			if (subItem.displayText.length > maxLength) {
-				maxLength = subItem.displayText.length;
-			}
-		}
+		uint maxLength = context.region.right - context.region.left;
 
 		foreach(subItem; mnu) {
 			Console.setPosition(x, y);
@@ -379,7 +449,12 @@ private:
 				Console.setColor(fgColor.Black, bgColor.White);
 			}
 			Console.put(" ");
-			drawMenuItem(subItem, false, subItem.displayText.length - maxLength + 1);
+			int padding = maxLength - subItem.displayText.length;
+			if (padding < 0) {
+				Console.putln("AFSDF", maxLength, " : ", subItem.displayText.length, " : ", subItem.displayText);
+				for (;;) {}
+			}
+			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
 			if (subItem is _selectedMenu) {
 				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
 			}
@@ -391,7 +466,7 @@ private:
 		}
 	}
 
-	void drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 1) {
+	void _drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 0) {
 		if (mnuItem is _selectedMenu) {
 			Console.setColor(fgColor.BrightWhite, bgColor.Blue);
 		}
@@ -426,12 +501,17 @@ private:
 			Console.put(mnuItem.displayText);
 		}
 
+		// Padding
+		for (uint i; i < padding; i++) {
+			Console.put(" ");
+		}
+
 		if (mnuItem is _selectedMenu) {
 			Console.setColor(fgColor.Black, bgColor.White);
 		}
 	}
 
-	void drawMenu(bool drawHints = false) {
+	void _drawMenu(bool drawHints = false) {
 		if (_menu is null) {
 			return;
 		}
@@ -452,7 +532,7 @@ private:
 
 		foreach(i, mnuItem; _menu) {
 			if (curWidth > mnuItem.displayText.length) {
-				drawMenuItem(mnuItem, drawHints, 1);
+				_drawMenuItem(mnuItem, drawHints, 0);
 				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
 					Console.setColor(fgColor.BrightWhite, bgColor.Blue);
 					Console.put(" ");
@@ -491,29 +571,117 @@ private:
 		if (mnu.isChildOf(_menu)) {
 			// Find this menu is the root menu
 			_selectedMenu = mnu;
-			drawMenu();
-			uint curPos = 1;
-			if (mnu.length > 0) {
-				_selectedMenu = mnu[0];
+			_selectedMenuIndex = 0;
+			_drawMenu();
+
+			if (mnu.length == 0) {
+				onMenu(mnu);
+				_selectedMenu = null;
+				_selectedMenuIndex = 0;
+				_drawMenu();
+				return;
 			}
 			else {
-				_selectedMenu = null;
-			}
-			foreach(mnuItem; _menu) {
-				if (mnuItem is mnu) {
-					break;
+				uint curPos = 1;
+
+				uint focusedIdx;
+
+				foreach(uint idx, mnuItem; _menu) {
+					if (mnuItem is mnu) {
+						focusedIdx = idx;
+						break;
+					}
+
+					curPos += mnuItem.displayText.length;
+					curPos ++;
 				}
 
-				curPos += mnuItem.displayText.length;
-				curPos ++;
-			}
+				_focusedMenuIndex = focusedIdx;
+				_focusedMenu = mnu;
+				_addSubmenuContext(curPos, 1, mnu);
 
-			_focusedMenu = mnu;
-			_focusedMenuPos = curPos;
-			drawSubmenu(_focusedMenu, _focusedMenuPos);
+				if (mnu.length >  0) {
+					_selectedMenu = mnu[0];
+					_selectedMenuIndex = 0;
+				}
+				else {
+					_selectedMenu = null;
+				}
+
+				_drawSubmenu();
+			}
+		}
+	}
+	
+	void _addSubmenu() {
+		uint x;
+		uint y;
+
+		if (_menus.length == 0) {
+			return;
 		}
 
-		onMenu(mnu);
+		// This menu starts at the right of the current one + 2 (for the padding to either side)
+		x = _menus[$-1].region.right + 2;
+		y = _menus[$-1].region.top + _selectedMenuIndex;
+
+		_addSubmenuContext(x, y, _selectedMenu);
+		_focusedMenuIndex = _selectedMenuIndex;
+		_focusedMenu = _selectedMenu;
+
+		if (_focusedMenu.length >  0) {
+			_selectedMenu = _focusedMenu[0];
+			_selectedMenuIndex = 0;
+		}
+		else {
+			_selectedMenu = null;
+		}
+	}
+	
+	void _addSubmenuContext(uint x, uint y, Menu mnu) {
+		// get width of submenu
+		uint maxLength;
+		foreach(subItem; mnu) {
+			if (subItem.displayText.length > maxLength) {
+				maxLength = subItem.displayText.length;
+			}
+		}
+
+		MenuContext mnuContext;
+
+		mnuContext.submenu = mnu;
+
+		mnuContext.region.left = x;
+		mnuContext.region.right = x + maxLength;
+		mnuContext.region.top = y;
+		mnuContext.region.bottom = y + mnu.length;
+
+		mnuContext.oldSelectedMenu = _selectedMenu;
+		mnuContext.oldSelectedIndex = _selectedMenuIndex;
+		mnuContext.oldFocusedMenu = _focusedMenu;
+		mnuContext.oldFocusedIndex = _focusedMenuIndex;
+		
+		_menus ~= mnuContext;
+	}
+
+	void _removeMenuContext() {
+		if (_menus.length == 0) {
+			return;
+		}
+
+		MenuContext removed = _menus[$-1];
+		removed.region.right += 2;
+		_menus = _menus[0..$-1];
+
+		_selectedMenu = removed.oldSelectedMenu;
+		_selectedMenuIndex = removed.oldSelectedIndex;
+		_focusedMenu = removed.oldFocusedMenu;
+		_focusedMenuIndex = removed.oldFocusedIndex;
+
+		Console.clipClear();
+		Console.clipRect(removed.region);
+		redraw();
+		Console.clipClear();
 	}
 
 	bgColor _bgClr = bgColor.Black;
@@ -533,11 +701,23 @@ private:
 
 	// In a menu?
 	Menu _focusedMenu;
-	uint _focusedMenuPos;
+	uint _focusedMenuIndex;
 
-	uint _selectedMenuIndex;
+	struct MenuContext {
+		Menu submenu;
+		Menu oldSelectedMenu;
+		uint oldSelectedIndex;
+		Menu oldFocusedMenu;
+		uint oldFocusedIndex;
+		Rect region;
+	}
+	
 	Menu _selectedMenu;
-	uint _selectedMenuPos;
+	uint _selectedMenuIndex;
+
+	MenuContext[] _menus;
+	
+	bool _cancelNextChar;
 
 	String _value;
 }

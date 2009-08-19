@@ -133,7 +133,7 @@ class Menu {
 	
 	int opApply(int delegate(inout Menu) loopFunc) {
 		int ret;
-		
+
 		for (int i = 0; i < length; i++) {
 			ret = loopFunc(_subitems[i]);
 			if (ret) { break; }
@@ -206,7 +206,7 @@ protected:
 		int ampPos = int.max;
 
 		String itemText = new String("");
-		
+
 		_hintPosition = -1;
 
 		while(ampPos != -1) {
@@ -231,7 +231,7 @@ protected:
 			}
 			curPos = ampPos + 1;
 		}
-		
+
 		_displayValue = itemText;
 	}
 

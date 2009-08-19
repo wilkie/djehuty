@@ -153,7 +153,7 @@ void ConsoleClear() {
 
 
 
-void _ConsoleGetPosition(ref uint x, ref uint y)
+void ConsoleGetPosition(ref uint x, ref uint y)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -164,14 +164,13 @@ void _ConsoleGetPosition(ref uint x, ref uint y)
 
 	x = csbi.dwCursorPosition.X - csbi.srWindow.Left;
 	y = csbi.dwCursorPosition.Y - csbi.srWindow.Top;
-
 }
 
 uint cur_x, cur_y;
 
 void ConsoleSavePosition()
 {
-	_ConsoleGetPosition(cur_x,cur_y);
+	ConsoleGetPosition(cur_x,cur_y);
 }
 
 void ConsoleRestorePosition()
@@ -307,7 +306,7 @@ void ConsolePutString(dchar[] chrs)
 	uint numCharsWritten;
 
 	uint x, y, w, h;
-	_ConsoleGetPosition(x,y);
+	ConsoleGetPosition(x,y);
 	ConsoleGetSize(w,h);
 
 	// print line by line
