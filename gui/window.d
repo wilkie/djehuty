@@ -12,7 +12,8 @@ module gui.window;
 
 import gui.widget;
 import gui.application;
-import gui.menu;
+
+import resource.menu;
 
 import platform.vars.view;
 import platform.vars.menu;
@@ -451,19 +452,19 @@ public:
 		}
 	}
 
-	void onKeyDown(uint keyCode) {
+	void onKeyDown(Key key) {
 		// dispatch to focused control
 		if (_focused_control !is null) {
-			if (_focused_control.onKeyDown(keyCode)) {
+			if (_focused_control.onKeyDown(key)) {
 				onDraw();
 			}
 		}
 	}
 
-	void onKeyUp(uint keyCode) {
+	void onKeyUp(Key key) {
 		// dispatch to focused control
 		if (_focused_control !is null) {
-			if (_focused_control.onKeyUp(keyCode)) {
+			if (_focused_control.onKeyUp(key)) {
 				onDraw();
 			}
 		}
@@ -847,8 +848,8 @@ public:
 			// Switch out and apply the menu
 
 			// platform specific
-			MenuPlatformVars mnuVars = MenuGetPlatformVars(mnuMain);
-			WindowSetMenu(mnuMain, mnuVars, this, &_pfvars);
+			MenuPlatformVars* mnuVars = MenuGetPlatformVars(mnuMain);
+			WindowSetMenu(mnuVars, this, &_pfvars);
 		}
 	}
 

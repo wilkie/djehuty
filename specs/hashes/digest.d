@@ -4,36 +4,30 @@ import testing.support;
 
 import hashes.digest;
 
-describe digest()
-{
-	describe creation()
-	{
-		it should_allow_for_64_bits()
-		{
+describe digest() {
+	describe creation() {
+		it should_allow_for_64_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567);
 			String s = d.getString();
 
 			should(s == "deadbeef01234567");
 		}
 
-		it should_allow_for_128_bits()
-		{
+		it should_allow_for_128_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
 			String s = d.getString();
 
 			should(s == "deadbeef01234567deadbeef01234567");
 		}
 
-		it should_allow_for_160_bits()
-		{
+		it should_allow_for_160_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
 			String s = d.getString();
 
 			should(s == "deadbeef01234567deadbeef01234567deadbeef");
 		}
 
-		it should_allow_for_192_bits()
-		{
+		it should_allow_for_192_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
 			String s = d.getString();
 
@@ -41,10 +35,8 @@ describe digest()
 		}
 	}
 
-	describe comparison()
-	{
-		it should_work_for_equals_overload()
-		{
+	describe comparison() {
+		it should_work_for_equals_overload() {
 			Digest d1 = new Digest(0xDEADBEEF);
 			Digest d2 = new Digest(0x01234567);
 			Digest d3 = new Digest(0xDEADBEEF);
@@ -53,8 +45,7 @@ describe digest()
 			shouldNot(d1 == d2);
 		}
 
-		it should_work_for_equals_function()
-		{
+		it should_work_for_equals_function() {
 			Digest d1 = new Digest(0xDEADBEEF);
 			Digest d2 = new Digest(0x01234567);
 			Digest d3 = new Digest(0xDEADBEEF);

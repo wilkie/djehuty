@@ -121,10 +121,6 @@ class Button : Widget {
 		return true;
 	}
 
-	override bool onKeyDown(uint keyCode) {
-		return false;
-	}
-
 	void text(String newTitle) {
 		_value = new String(newTitle);
 	}

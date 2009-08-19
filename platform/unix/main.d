@@ -53,7 +53,7 @@ struct DjehutyPlatformVars {
 
 	//for keys
 	static const int numSysKeys = 6;
-	static const X.KeySym[6] sysKey = [KeyBackspace, KeyDelete, KeyArrowLeft, KeyArrowRight, KeyArrowDown, KeyArrowUp];
+	static const X.KeySym[6] sysKey = [Key.Backspace, Key.Delete, Key.Left, Key.Right, Key.Down, Key.Up];
 
 	//GTK IMPLEMENTATION:
 

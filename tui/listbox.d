@@ -28,8 +28,8 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 
 	override void onAdd() {
 	}
-
-	override void onInit() {
+	
+	override void onDraw() {
 		Console.setPosition(this.left, this.top);
 		Console.setColor(fgColor.White, bgColor.Black);
 
@@ -61,11 +61,11 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		}
 	}
 
-	override void onKeyDown(uint keyCode) {
-		if (keyCode == KeyTab) {
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Tab) {
 			window.tabForward();
 		}
-		else if (keyCode == KeyArrowUp) {
+		else if (key.code == Key.Up) {
 			String data;
 
 			if (_pos > 0) {
@@ -83,7 +83,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 				Console.put(data.array);
 			}
 		}
-		else if (keyCode == KeyArrowDown) {
+		else if (key.code == Key.Down) {
 			String data;
 
 			if (_pos < _list.length() - 1)

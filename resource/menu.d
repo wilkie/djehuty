@@ -1,4 +1,4 @@
-module gui.menu;
+module resource.menu;
 
 import core.string;
 import core.definitions;
@@ -20,6 +20,9 @@ class Menu {
 	this(string text, Menu[] submenus = null) {
 		_value = new String(text);
 
+		// Get the working text
+		_updateDisplay();
+
 		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
 		}
@@ -28,17 +31,20 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		MenuCreate(this, _pfvars);
+		MenuCreate(&_pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(cast(void*)this, &_pfvars, &mnu._pfvars, mnu.text, (mnu.length > 0));
 		}
 	}
 
 	this(String text, Menu[] submenus = null) {
 		_value = new String(text);
 
+		// Get the working text
+		_updateDisplay();
+
 		if (submenus is null || submenus.length == 0) {
 			_subitems = null;
 		}
@@ -47,11 +53,11 @@ class Menu {
 			_subitems[0..$] = submenus[0..$];
 		}
 
-		MenuCreate(this, _pfvars);
+		MenuCreate(&_pfvars);
 
 		foreach(mnu ; _subitems) {
 			mnu._addParent(this);
-			MenuAppend(this, mnu, _pfvars, mnu._pfvars);
+			MenuAppend(cast(void*)this, &_pfvars, &mnu._pfvars, mnu.text, (mnu.length > 0));
 		}
 	}
 
@@ -62,10 +68,19 @@ class Menu {
 		_subitems = null;
 
 		// platform specific destroy
-		MenuDestroy(this, _pfvars);
+		MenuDestroy(&_pfvars);
+	}
+	
+	bool isChildOf(Menu mnu) {
+		foreach (parent; _parents) {
+			if (mnu is parent) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	// -- Methods -- //
+	// -- Properties -- //
 
 	void text(String newValue) {
 		_value = new String(newValue);
@@ -81,6 +96,14 @@ class Menu {
 
 	String text() {
 		return _value;
+	}
+	
+	String displayText() {
+		return _displayValue;
+	}
+	
+	int hintPosition() {
+		return _hintPosition;
 	}
 
 	uint length() {
@@ -101,13 +124,40 @@ class Menu {
 
 		_updateItem();
 
-		MenuAppend(this, inMenu, _pfvars, inMenu._pfvars);
+		MenuAppend(cast(void*)this, &_pfvars, &inMenu._pfvars, inMenu.text, (inMenu.length > 0));
 	}
+	
+	Menu opIndex(size_t idx) {
+		return _subitems[idx];
+	}
+	
+	int opApply(int delegate(inout Menu) loopFunc) {
+		int ret;
 
+		for (int i = 0; i < length; i++) {
+			ret = loopFunc(_subitems[i]);
+			if (ret) { break; }
+		}
+		
+		return ret;
+	}
+	
+	int opApply(int delegate(ref uint, ref Menu) loopFunc) {
+		int ret;
+
+		for (uint i = 0; i < length; i++) {
+			ret = loopFunc(i, _subitems[i]);
+			if (ret) { break; }
+		}
+		
+		return ret;
+	}
 
 protected:
 
 	String _value;
+	String _displayValue;
+	int _hintPosition;
 	Menu[] _subitems;
 	Menu[] _parents;
 
@@ -129,7 +179,7 @@ protected:
 		uint pos = 0;
 		foreach(sitm; _subitems) {
 			if (sitm is child) {
-				MenuUpdate(pos, this, child, _pfvars, child._pfvars);
+				MenuUpdate(cast(void*)this, &_pfvars, &child._pfvars, child.text, pos, (child.length > 0));
 			}
 			pos++;
 		}
@@ -150,15 +200,52 @@ protected:
 		return false;
 	}
 
-	void _updateItem() {
-		// for each parent, update their lists as well
+	void _updateDisplay() {
+		// get the value
+		int curPos = 0;
+		int ampPos = int.max;
 
+		String itemText = new String("");
+
+		_hintPosition = -1;
+
+		while(ampPos != -1) {
+			ampPos = _value.find("&", curPos);
+
+			if (ampPos == -1) {
+				itemText ~= _value.subString(curPos);
+			}
+			else {
+				itemText ~= _value.subString(curPos, ampPos - curPos);
+				if ((ampPos < _value.length) && (_value[ampPos+1] == '&')) {
+					// This is an actual amp
+					itemText ~= "&";
+					ampPos++;
+				}
+				else {
+					// The next letter is the hint
+					if (ampPos < _value.length) {
+						_hintPosition = itemText.length;
+					}
+				}
+			}
+			curPos = ampPos + 1;
+		}
+
+		_displayValue = itemText;
+	}
+
+	void _updateItem() {
+		// Get the working text
+		_updateDisplay();
+
+		// for each parent, update their lists as well
 		foreach(ent; _parents) {
 			ent._updateChild(this);
 		}
 	}
 }
 
-MenuPlatformVars MenuGetPlatformVars(ref Menu mnu) {
-	return mnu._pfvars;
+MenuPlatformVars* MenuGetPlatformVars(ref Menu mnu) {
+	return &mnu._pfvars;
 }

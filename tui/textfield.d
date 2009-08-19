@@ -39,14 +39,14 @@ class TuiTextField : TuiWidget {
 	}
 
 	override void onInit() {
-		draw();
+		onDraw();
 	}
 
 
-	override void onKeyDown(uint keyCode) {
+	override void onKeyDown(Key key) {
 
 		Console.setColor(_forecolor, _backcolor);
-		if (keyCode == KeyBackspace) {
+		if (key.code == Key.Backspace) {
 			if (_pos > 0) {
 				if (_pos == _max) {
 					Console.put(' ');
@@ -63,7 +63,7 @@ class TuiTextField : TuiWidget {
 				_pos--;
 			}
 		}
-		else if (keyCode == KeyTab || keyCode == KeyReturn || keyCode == 10) {
+		else if (key.code == Key.Tab || key.code == Key.Return) {
 			window.tabForward();
 		}
 	}
@@ -109,7 +109,7 @@ class TuiTextField : TuiWidget {
 	// text: The new value for the field.
 	void text(string text) {
 		_value = new String(text);
-		draw();
+		onDraw();
 	}
 
 	fgColor forecolor() {
@@ -118,7 +118,7 @@ class TuiTextField : TuiWidget {
 
 	void forecolor(fgColor value) {
 		_forecolor = value;
-		draw();
+		onDraw();
 	}
 
 	bgColor backcolor() {
@@ -127,7 +127,7 @@ class TuiTextField : TuiWidget {
 
 	void backcolor(bgColor value) {
 		_backcolor = value;
-		draw();
+		onDraw();
 	}
 
 	fgColor basecolor() {
@@ -144,18 +144,7 @@ class TuiTextField : TuiWidget {
 		return true;
 	}
 
-protected:
-
-	fgColor _color = fgColor.BrightBlue;
-	fgColor _forecolor = fgColor.BrightWhite;
-	bgColor _backcolor = bgColor.Black;
-
-	uint _pos = 0;
-	uint _max = 0;
-
-	String _value;
-
-	void draw() {
+	override void onDraw() {
 		if (canDraw) {
 			Console.setPosition(this.left, this.top);
 			Console.setColor(_color, bgColor.Black);
@@ -183,6 +172,17 @@ protected:
 			positionCursor();
 		}
 	}
+
+protected:
+
+	fgColor _color = fgColor.BrightBlue;
+	fgColor _forecolor = fgColor.BrightWhite;
+	bgColor _backcolor = bgColor.Black;
+
+	uint _pos = 0;
+	uint _max = 0;
+
+	String _value;
 
 	void positionCursor() {
 		if (_pos == _max) {

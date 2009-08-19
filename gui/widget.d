@@ -11,7 +11,6 @@ module gui.widget;
 
 import gui.application;
 import gui.window;
-import gui.menu;
 
 import core.definitions;
 
@@ -24,7 +23,6 @@ import core.main;
 import core.string;
 import core.color;
 import core.event;
-import core.literals;
 
 // Description: This class implements and abstracts a control, which is a special container that can be drawn and added to a Window.  The control receives many events for different tasks, and allows reusable components within the static version of an application.
 class Widget : Responder {
@@ -162,16 +160,16 @@ class Widget : Responder {
 	}
 
 	// Description: Called when the control is focused during a key press.
-	// keyCode: The ID of the code.
+	// key: The description of the key.
 	// Returns: The user should return true when the control should be redrawn.
-	bool onKeyDown(uint keyCode) {
+	bool onKeyDown(Key key) {
 		return false;
 	}
 
 	// Description: Called when the control is focused during a key release.
-	// keyCode: The ID of the code.
+	// keyCode: The description of the key.
 	// Returns: The user should return true when the control should be redrawn.
-	bool onKeyUp(uint keyCode) {
+	bool onKeyUp(Key key) {
 		return false;
 	}
 

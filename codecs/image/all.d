@@ -2,7 +2,6 @@ module codecs.image.all;
 
 import graphics.bitmap;
 
-import core.literals;
 import core.string;
 import core.stream;
 

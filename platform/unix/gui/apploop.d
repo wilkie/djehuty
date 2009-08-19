@@ -25,6 +25,7 @@ import gui.application;
 import graphics.view;
 
 import core.main;
+import core.definitions;
 
 import io.console;
 
@@ -351,7 +352,9 @@ private:
 					X.KeySym ksym2;
 					ksym2 = X.XLookupKeysym(&event.xkey, 0);
 
-					window.onKeyUp(ksym2);
+					Key key;
+					key.code = ksym2;
+					window.onKeyUp(key);
 					break;
 
 				default:

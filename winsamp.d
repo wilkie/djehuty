@@ -7,6 +7,8 @@ import gui.window;
 import gui.button;
 import gui.widget;
 
+import resource.menu;
+
 import graphics.graphics;
 
 import core.regex;
@@ -17,6 +19,7 @@ import resource.sound;
 
 import tui.application;
 import tui.window;
+import tui.label;
 import tui.textfield;
 
 import networking.irc;
@@ -95,36 +98,21 @@ import core.application;
 import tui.textbox;
 import tui.codebox;
 
-class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+class MyConsoleApp : Application {
+	//static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
-		tuiwnd = new MyTWindow();
-		push(tuiwnd);
-
-		//snd = new Sound("tests/begin.mp2");
-		//snd.play();
+		String str = Regex.eval("alias d ", `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`);
+		Console.putln(str);
 	}
-
-	override void onApplicationEnd() {
-		Console.setColor(fgColor.BrightWhite, bgColor.Black);
-		Console.clear();
-		Console.putln("Your app has been ended.");
-		//Console.putln("Go away");
-	}
-
-private:
-	MyTWindow tuiwnd;
-
-	Sound snd;
 }
 
 class MyTWindow : TuiWindow {
 
 	this() {
 		super();
-
-/*		push(tuitext = new TuiTextField(0,Console.height,Console.width, "boo"));
+/*
+		push(tuitext = new TuiTextField(0,Console.height,Console.width, "boo"));
 
 		tuitext.basecolor = fgColor.White;
 		tuitext.forecolor = fgColor.BrightYellow;
@@ -132,12 +120,36 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-		push(tuibox = new TuiCodeBox(0,0,this.width,this.height));
+		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		push(tuibox = new TuiTextBox(0,1,this.width,this.height-2));
+		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
+
+		menu = foo;
+		text = "unsaved";
+		tuibox.lineNumbers = true;
+		//push(new TuiLabel(0, 5, 10, "foobarfoo!"));
+	}
+
+	override void onResize() {
+		tuibox.resize(this.width, this.height-2);
+		status.move(0, this.height-1);
+		status.resize(this.width, 1);
+		redraw();
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Q && key.ctrl) {
+			// Exit
+			application.exit(0);
+			return;
+		}
+		super.onKeyDown(key);
 	}
 
 private:
 	TuiTextField tuitext;
 	TuiTextBox tuibox;
+	TuiLabel status;
 }
 
 class MyControl : Widget {
@@ -176,9 +188,35 @@ class MyWindow : Window {
 	}
 
 	override void onAdd() {
+		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
+		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
 		push(new MyControl());
 	}
+}
+
+class MyTApp :TuiApplication {
+	static this() { new MyTApp(); }
+
+	override void onApplicationStart() {
+		tuiwnd = new MyTWindow();
+		push(tuiwnd);
+
+		//snd = new Sound("tests/begin.mp2");
+		//snd.play();
+	}
+
+	override void onApplicationEnd() {
+		Console.setColor(fgColor.BrightWhite, bgColor.Black);
+		Console.clear();
+		Console.putln("Your app has been ended.");
+		//Console.putln("Go away");
+	}
+
+private:
+	MyTWindow tuiwnd;
+
+	Sound snd;
 }
 
 class MyApp : GuiApplication {

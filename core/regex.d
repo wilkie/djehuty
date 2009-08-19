@@ -22,6 +22,14 @@ import utils.stack;
 // This provides thread-local access to regex variables set via
 // Regex groups.
 
+uint _position() {
+	if (Thread.getCurrent() in Regex.regexPos) {
+		return Regex.regexPos[Thread.getCurrent()];
+	}
+
+	return uint.max;
+}
+
 String _1() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][0];
@@ -204,30 +212,25 @@ class Regex {
 		int noMatchUntilUnionForPos = -1;
 
 		// This function will set a backtracking point in the regex.
-		void setBacktrack(int newRegexPos, int newStrPos)
-		{
+		void setBacktrack(int newRegexPos, int newStrPos) {
 			stack.push(newRegexPos);
 			stack.push(newStrPos);
 			stack.push(regexGroupStart);
+			stack.push(currentGroupIdx);
 			stack.push(regexFlagPotential);
 		}
 
 		// This function finds the regex position that will undo the last move.
-		int findBackupRegexPosition()
-		{
+		int findBackupRegexPosition() {
 			int ret = regexPos - 1;
-			if (ret in groupInfo)
-			{
+			if (ret in groupInfo) {
 				ret = groupInfo[ret].startPos;
 			}
-			else if (ret < regex.length && regex[ret] == ']' && ret in operatorFlag)
-			{
+			else if (ret < regex.length && regex[ret] == ']' && ret in operatorFlag) {
 				ret = operatorFlag[ret];
 			}
-			else
-			{
-				if (ret > 0 && regex[ret-1] == '\\')
-				{
+			else {
+				if (ret > 0 && regex[ret-1] == '\\') {
 					ret--;
 				}
 			}
@@ -235,14 +238,11 @@ class Regex {
 		}
 
 		// Like above, but for the working position.
-		int findBackupPosition()
-		{
-			if (regexPos-1 in groupInfo)
-			{
+		int findBackupPosition() {
+			if (regexPos-1 in groupInfo) {
 				return groupInfo[groupInfo[regexPos-1].startPos].strStartPos;
 			}
-			else
-			{
+			else {
 				return strPos-1;
 			}
 		}
@@ -282,6 +282,7 @@ class Regex {
 				int oldRegexPos = regexPos;
 
 				regexFlagPotential = stack.pop();
+				currentGroupIdx = stack.pop();
 				regexGroupStart = stack.pop();
 				strPos = stack.pop();
 				regexPos = stack.pop();
@@ -389,7 +390,7 @@ class Regex {
 						groupInfo[currentGroupIdx].unionPos = regexPos;
 					}
 
-					if (noMatch && noMatchUntilUnionForPos != -1 && groupInfo[currentGroupIdx].startPos == noMatchUntilClosedAtPos) {
+					if (noMatch && noMatchUntilUnionForPos != -1 && currentGroupIdx == noMatchUntilClosedAtPos) {
 						// turn off find mode
 						noMatch = false;
 
@@ -416,7 +417,7 @@ class Regex {
 					}
 					else if (!noMatch) {
 						// undo actions
-						strPos = groupInfo[currentGroupIdx].strPos;
+						strPos = groupInfo[currentGroupIdx].strStartPos;
 
 						noMatch = false;
 
@@ -562,7 +563,7 @@ class Regex {
 					}
 				}
 
-				if (noMatch && noMatchUntilClosedAtPos == groupInfo[regexPos].startPos) {
+				if (noMatch && noMatchUntilClosedAtPos == currentGroupIdx) {
 					noMatch = false;
 				}
 
@@ -830,6 +831,8 @@ class Regex {
 							curUnionPos = -1;
 						}
 					}
+					
+					strPos = groupInfo[currentGroupIdx].strStartPos;
 
 					if (curUnionPos >= 0) {
 						regexPos = curUnionPos;
@@ -1216,6 +1219,11 @@ class Regex {
 			if (strPos-strPosStart == 0) {
 				return new String("");
 			}
+
+			// Save the position where the string was consumed
+			this.regexPos[Thread.getCurrent()] = strPosStart;
+
+			// Slice and return the consumed string
 			return str.subString(strPosStart, strPos-strPosStart);
 		}
 
@@ -1248,5 +1256,6 @@ protected:
 private:
 
 	static String[][Thread] regexRefs;
+	static uint[Thread] regexPos;
 
 }

@@ -4,9 +4,9 @@ import io.audio;
 import io.wavelet;
 
 import core.time;
-import core.literals;
 import core.string;
 import core.stream;
+import core.definitions;
 
 import codecs.codec;
 import codecs.audio.codec;
@@ -40,10 +40,10 @@ else {
 // WMA
 // OGG
 
-template RunCodec(StringLiteral8 codec) {
+template RunCodec(string codec) {
 	const char[] RunCodec = `
 		audioCodec = new ` ~ codec ~ `Codec();
-		
+
 		pos = stream.position;
 
 		if ((ret = audioCodec.decode(stream, buffer, wf)) != StreamData.Invalid) {
@@ -57,7 +57,7 @@ template RunCodec(StringLiteral8 codec) {
 StreamData runAllCodecs(ref AudioCodec audioCodec, Stream stream, Wavelet buffer, ref AudioInfo wf) {
 	StreamData ret;
 	ulong pos;
-	
+
 	version(NoWaveAudio) {
 	}
 	else {

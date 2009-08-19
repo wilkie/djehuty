@@ -25,7 +25,7 @@ class TuiTextBox : TuiWidget {
 
 		_lines = new ArrayList!(LineInfo);
 		LineInfo newItem;
-		newItem.value = new String("asdfasf asdf import");
+		newItem.value = new String("if (something) { /* in comment block */ init(); }");
 
 		_lines.addItem(newItem);
 		onLineChanged(_lines.length - 1);
@@ -37,17 +37,13 @@ class TuiTextBox : TuiWidget {
 		}
 	}
 
-	override void onInit() {
-		draw();
-		positionCaret();
-	}
-
-	override void onKeyDown(uint keyCode) {
-		switch (keyCode) {
-			case KeyBackspace:
+	override void onKeyDown(Key key) {
+		switch (key.code) {
+			case Key.Backspace:
 				if (_column == 0) {
 					_row--;
 					if (_row < 0) {
+						_row = 0;
 						break;
 					}
 
@@ -63,7 +59,7 @@ class TuiTextBox : TuiWidget {
 
 					onLineChanged(_row);
 
-					draw();
+					onDraw();
 					positionCaret();
 					break;
 				}
@@ -129,7 +125,7 @@ class TuiTextBox : TuiWidget {
 				drawLine(_row);
 				positionCaret();
 				break;
-			case KeyArrowLeft:
+			case Key.Left:
 				_column--;
 				if (_column < 0) {
 					_row--;
@@ -144,7 +140,7 @@ class TuiTextBox : TuiWidget {
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyArrowRight:
+			case Key.Right:
 				_column++;
 				if (_column > _lines[_row].value.length) {
 					_row++;
@@ -160,7 +156,7 @@ class TuiTextBox : TuiWidget {
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyArrowUp:
+			case Key.Up:
 				_row--;
 				_column = _lineColumn;
 
@@ -175,7 +171,7 @@ class TuiTextBox : TuiWidget {
 				}
 				positionCaret();
 				break;
-			case KeyArrowDown:
+			case Key.Down:
 				_row++;
 				_column = _lineColumn;
 
@@ -189,7 +185,7 @@ class TuiTextBox : TuiWidget {
 				}
 				positionCaret();
 				break;
-			case KeyPageUp:
+			case Key.PageUp:
 				_row -= this.height;
 				_firstVisible -= this.height;
 
@@ -206,10 +202,10 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				draw();
+				onDraw();
 				positionCaret();
 				break;
-			case KeyPageDown:
+			case Key.PageDown:
 				_row += this.height;
 				_firstVisible += this.height;
 
@@ -225,15 +221,15 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				draw();
+				onDraw();
 				positionCaret();
 				break;
-			case KeyEnd:
+			case Key.End:
 				_column = _lines[_row].value.length;
 				_lineColumn = _column;
 				positionCaret();
 				break;
-			case KeyHome:
+			case Key.Home:
 				_column = 0;
 				_lineColumn = 0;
 				positionCaret();
@@ -320,7 +316,7 @@ class TuiTextBox : TuiWidget {
 
 			onLineChanged(_row);
 
-			draw();
+			onDraw();
 			//positionCaret();
 			return;
 		}
@@ -345,73 +341,6 @@ class TuiTextBox : TuiWidget {
 		positionCaret();
 	}
 
-	void positionCaret() {
-		bool shouldDraw;
-
-		if (_column < _firstColumn) {
-			// scroll horizontally
-			_firstColumn = _column;
-			if (_firstColumn < 0) {
-				_firstColumn = 0;
-			}
-			shouldDraw = true;
-		}
-
-		if (this.left + (_column - _firstColumn) >= this.right) {
-			// scroll horizontally
-			_firstColumn = _column - this.width + 1;
-			shouldDraw = true;
-		}
-
-		if (_row < _firstVisible) {
-			// scroll vertically
-			_firstVisible = _row;
-			if (_firstVisible < 0) {
-				_firstVisible = 0;
-			}
-			shouldDraw = true;
-		}
-
-		if (this.top + (_row - _firstVisible) >= this.bottom) {
-			// scroll vertically
-			_firstVisible = _row - this.height + 1;
-			if (_firstVisible >= _lines.length) {
-				_firstVisible = _lines.length - 1;
-			}
-			shouldDraw = true;
-		}
-
-		if (shouldDraw) {
-			draw();
-		}
-
-		// Calculate Format Index
-		_formatIndex = 2;
-		if (_lines[_row].format !is null) {
-			uint pos;
-			for (uint i = 2; i < _lines[_row].format.length; i += 3) {
-				pos += _lines[_row].format[i];
-				if (pos >= _column) {
-					_formatIndex = i;
-					break;
-				}
-			}
-		}
-
-		// Is the caret on the screen?
-		if ((this.left + (_column - _firstColumn) >= this.right) || (this.top + (_row - _firstVisible) >= this.bottom)) {
-			// The caret is outside of the bounds of the widget
-			Console.hideCaret();
-		}
-		else {
-			// The caret is within the bounds of the widget
-			Console.showCaret();
-
-			// Move cursor to where the edit caret is
-			Console.setPosition(this.left + (_column - _firstColumn), this.top + (_row - _firstVisible));
-		}
-	}
-
 	// Events
 
 	void onLineChanged(uint lineNumber) {
@@ -427,10 +356,6 @@ class TuiTextBox : TuiWidget {
 		return _column;
 	}
 
-	fgColor forecolor() {
-		return _forecolor;
-	}
-
 	bgColor backcolor() {
 		return _backcolor;
 	}
@@ -439,13 +364,23 @@ class TuiTextBox : TuiWidget {
 		_backcolor = value;
 	}
 
+	fgColor forecolor() {
+		return _forecolor;
+	}
+
 	void forecolor(fgColor value) {
 		return _forecolor;
 	}
 
-protected:
+	bool lineNumbers() {
+		return _lineNumbers;
+	}
 
-	void draw() {
+	void lineNumbers(bool value) {
+		_lineNumbers = value;
+	}
+
+	override void onDraw() {
 		// Draw each line and pad any remaining spaces
 
 		uint i;
@@ -460,8 +395,21 @@ protected:
 		}
 	}
 
+protected:
+
 	void drawLine(uint lineNumber) {
 		Console.setPosition(this.left, this.top + (lineNumber - _firstVisible));
+
+		if (_lineNumbers) {
+			if (_lineNumbersWidth == 0) {
+				calculateLineNumbersWidth();
+			}
+			String strLineNumber = new String(lineNumber);
+			Console.setColor(fgColor.Yellow, bgColor.Black);
+			Console.put(spaces[0.._lineNumbersWidth - 2 - strLineNumber.length]);
+			Console.put(strLineNumber);
+			Console.put(": ");
+		}
 
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
@@ -480,10 +428,10 @@ protected:
 		}
 
 		// Pad with spaces
-		uint num = this.right - _lines[lineNumber].value.length;
+		uint num = this.right - (_lines[lineNumber].value.length + _lineNumbersWidth + 2);
 		uint pad;
 
-		for (uint k = this.left + _lines[lineNumber].value.length; k < this.right; k += pad) {
+		for (uint k = this.left + _lines[lineNumber].value.length + 2 + _lineNumbersWidth; k < this.right; k += pad) {
 			pad = num;
 
 			if (pad > spaces.length) {
@@ -517,6 +465,84 @@ protected:
 		}
 	}
 
+	void positionCaret() {
+		bool shouldDraw;
+
+		if (_column < _firstColumn) {
+			// scroll horizontally
+			_firstColumn = _column;
+			if (_firstColumn < 0) {
+				_firstColumn = 0;
+			}
+			shouldDraw = true;
+		}
+
+		if (this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) {
+			// scroll horizontally
+			_firstColumn = _column - this.width + 1;
+			shouldDraw = true;
+		}
+
+		if (_row < _firstVisible) {
+			// scroll vertically
+			_firstVisible = _row;
+			if (_firstVisible < 0) {
+				_firstVisible = 0;
+			}
+			shouldDraw = true;
+		}
+
+		if (this.top + (_row - _firstVisible) >= this.bottom) {
+			// scroll vertically
+			_firstVisible = _row - this.height + 1;
+			if (_firstVisible >= _lines.length) {
+				_firstVisible = _lines.length - 1;
+			}
+			shouldDraw = true;
+		}
+
+		if (shouldDraw) {
+			onDraw();
+		}
+
+		// Calculate Format Index
+		_formatIndex = 2;
+		if (_lines[_row].format !is null) {
+			uint pos;
+			for (uint i = 2; i < _lines[_row].format.length; i += 3) {
+				pos += _lines[_row].format[i];
+				if (pos >= _column) {
+					_formatIndex = i;
+					break;
+				}
+			}
+		}
+
+		// Is the caret on the screen?
+		if ((this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) || (this.top + (_row - _firstVisible) >= this.bottom)) {
+			// The caret is outside of the bounds of the widget
+			Console.hideCaret();
+		}
+		else {
+			// The caret is within the bounds of the widget
+			Console.showCaret();
+
+			// Move cursor to where the edit caret is
+			Console.setPosition(this.left + _lineNumbersWidth + (_column - _firstColumn), this.top + (_row - _firstVisible));
+		}
+	}
+
+	void calculateLineNumbersWidth() {
+		if (_lineNumbers) {
+			// The width of the maximum line (in decimal as a string)
+			// summed with two for the ': '
+			_lineNumbersWidth = (new String(_lines.length)).length + 2;
+		}
+		else {
+			_lineNumbers = 0;
+		}
+	}
+
 	// Just some spaces
 	char[] spaces = "                                                           ";
 
@@ -542,6 +568,12 @@ protected:
 
 	// The column that the caret is in while pressing up and down or scrolling.
 	int _lineColumn;
+
+	// Whether or not line numbers are rendered
+	bool _lineNumbers;
+
+	// The width of the line numbers column
+	uint _lineNumbersWidth;
 
 	// The default text colors
  	fgColor _forecolor = fgColor.White;

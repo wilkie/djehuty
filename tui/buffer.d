@@ -126,9 +126,8 @@ class TuiBuffer : TuiWidget
 			redraw();
 		}
 	}
-
-	void redraw()
-	{
+	
+	override void onDraw() {
 		_drawLock.down();
 
 		Console.setPosition(0,30);
@@ -150,9 +149,8 @@ class TuiBuffer : TuiWidget
 
 		for (uint y = _y; y < _b; y++, cury++)
 		{
-
-		Console.setPosition(0,30);
-		Console.put("y ", _curx, " ", _cury);
+			Console.setPosition(0,30);
+			Console.put("y ", _curx, " ", _cury);
 			Console.setPosition(_x, y);
 
 			bf = _buffer[cury];
@@ -171,6 +169,10 @@ class TuiBuffer : TuiWidget
 		}
 
 		_drawLock.up();
+	}
+
+	void redraw() {
+		onDraw();
 	}
 
 	// Methods

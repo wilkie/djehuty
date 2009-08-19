@@ -1035,6 +1035,19 @@ alias MEMORYSTATUSEX* LPMEMORYSTATUSEX;
 const auto DUPLICATE_CLOSE_SOURCE  = 1;
 const auto DUPLICATE_SAME_ACCESS   = 2;
 
+const auto VK_OEM_1 = 0xBA;
+const auto VK_OEM_2 = 0xBF;
+const auto VK_OEM_3 = 0xC0;
+const auto VK_OEM_4 = 0xDB;
+const auto VK_OEM_5 = 0xDC;
+const auto VK_OEM_6 = 0xDD;
+const auto VK_OEM_7 = 0xDE;
+
+const auto VK_OEM_COMMA = 0xBC;
+const auto VK_OEM_PERIOD = 0xBE;
+const auto VK_OEM_MINUS = 0xBD;
+const auto VK_OEM_PLUS = 0xBB;
+
 extern(Windows)
 {
 	DWORD timeGetTime();
@@ -1106,8 +1119,10 @@ extern(Windows)
 	BOOL FindNextFileW(HANDLE hFindFile, WIN32_FIND_DATAW*);
 
 	BOOL ReadConsoleInputW(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
-	BOOL PeekConsoleInput(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
+	BOOL PeekConsoleInputW(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
 	BOOL WriteConsoleInput(HANDLE, INPUT_RECORD*, DWORD, DWORD*);
+	
+	BOOL GetNumberOfConsoleInputEvents(HANDLE, DWORD*);
 
 	BOOL WriteConsoleOutputCharacterW(HANDLE, LPCWSTR, DWORD, COORD, DWORD*);
 	BOOL WriteConsoleOutputCharacterA(HANDLE, LPCTSTR, DWORD, COORD, DWORD*);

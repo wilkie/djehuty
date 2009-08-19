@@ -5,6 +5,7 @@ import scaffold.console;
 import core.string;
 import core.format;
 import core.unicode;
+import core.definitions;
 
 // Section: Enums
 
@@ -68,9 +69,6 @@ enum fgColor : uint {
 	BrightWhite,
 }
 
-
-
-
 // Description: This enum gives all possible background colors for the console.
 enum bgColor : uint {
 	// Description: The color black.
@@ -98,15 +96,15 @@ enum bgColor : uint {
 	White,
 }
 
-
 // Section: Core
 
 // Description: This class abstracts simple console operations.
 class Console {
+static:
 
 	//Description: Sets the foreground color for the console.
 	//fgclr: The foreground color to set.
-	static void setColor(fgColor fclr) {
+	void setColor(fgColor fclr) {
 		int bright = 0;
 		if (fclr > fgColor.White)
 		{
@@ -122,7 +120,7 @@ class Console {
 	//Description: Sets the foreground and background colors for the console.
 	//fgclr: The foreground color to set.
 	//bgclr: The background color to set.
-	static void setColor(fgColor fclr, bgColor bclr) {
+	void setColor(fgColor fclr, bgColor bclr) {
 		int bright = 0;
 		if (fclr > fgColor.White)
 		{
@@ -139,7 +137,7 @@ class Console {
 	//Description: Sets the foreground and background colors for the console.
 	//bgclr: The background color to set.
 	//fgclr: The foreground color to set.
-	static void setColor(bgColor bclr, fgColor fclr) {
+	void setColor(bgColor bclr, fgColor fclr) {
 		int bright = 0;
 		if (fclr > fgColor.White)
 		{
@@ -155,44 +153,50 @@ class Console {
 
 	//Description: Sets the background color for the console.
 	//bgclr: The background color to set.
-	static void setColor(bgColor bclr) {
+	void setColor(bgColor bclr) {
 	    cur_bg_color = bclr;
 
 	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
 	}
 
 	// Description: Clears the console screen.
-	static void clear() {
+	void clear() {
 		ConsoleClear();
 	}
 
 	// Description: Sets the position of the caret to the point (x,y).
 	// x: The column for the caret.
 	// y: The row for the caret.
-	static void setPosition(uint x, uint y) {
+	void setPosition(uint x, uint y) {
 		ConsoleSetPosition(x,y);
 	}
 
+	uint[] position() {
+		uint x;
+		uint y;
+		ConsoleGetPosition(x,y);
+		return [x,y];
+	}
 
 	// Description: Moves the position of the caret relative to its current location.
 	// x: The number of columns for the caret to move.  Negative values move down.
 	// y: The number of rows for the caret.  Negative values move up.
-	static void setRelative(int x, int y) {
+	void setRelative(int x, int y) {
 		ConsoleSetRelative(x,y);
 	}
 
 	// Description: Will show the caret.
-	static void showCaret() {
+	void showCaret() {
 		ConsoleShowCaret();
 	}
 
 	// Description: Will hide the caret.
-	static void hideCaret() {
+	void hideCaret() {
 		ConsoleHideCaret();
 	}
 
 	// Description: Will return the height
-	static uint height() {
+	uint height() {
 		uint width;
 		uint height;
 
@@ -202,7 +206,7 @@ class Console {
 	}
 
 	// Description: Will return the width
-	static uint width() {
+	uint width() {
 		uint width;
 		uint height;
 
@@ -214,11 +218,22 @@ class Console {
 	// Description: Will wait for input and return the key pressed and also the translated Unicode UTF-32 character that this keypress represents, if applicable.
 	// chr: Will be set to the UTF-32 character.
 	// code: Will be set to the character code for the key pressed.
-	static void getChar(out dchar chr, out uint code) {
+	void getChar(out dchar chr, out uint code) {
 		ConsoleGetChar(chr, code);
 	}
 
-	static void putln(...) {
+	// Description: This function will clear the clipping context.
+	void clipClear() {
+		clippingRegions = null;
+	}
+
+	// Description: This function will add a rectangular region defined as screen coordinates that will clip the drawing surface. When a clipping context is not clear, only regions within rectangles will be drawn to the screen.
+	// region: The rectangular region to add as a clipping region.
+	void clipRect(Rect region) {
+		clippingRegions ~= region;
+	}
+
+	void putln(...) {
 		synchronized {
 			String toParse;
 
@@ -226,6 +241,15 @@ class Console {
 				if (_arguments[curArg] is typeid(String)) {
 					toParse = va_arg!(String)(_argptr);
 				}
+				else if (_arguments[curArg] is typeid(bool)) {
+					bool argval = cast(bool)va_arg!(bool)(_argptr);
+					if (argval) {
+						toParse = new String("true");
+					}
+					else {
+						toParse = new String("false");
+					}
+				}
 				else if (_arguments[curArg] is typeid(long)) {
 					long argval = cast(long)va_arg!(long)(_argptr);
 					toParse = new String(argval);
@@ -291,7 +315,7 @@ class Console {
 				}
 
 				if (toParse !is null) {
-					ConsolePutString(toParse.toUtf32());
+					_putString(toParse);
 				}
 			}
 
@@ -299,13 +323,22 @@ class Console {
 		}
 	}
 
-	static void put(...) {
+	void put(...) {
         synchronized {
 			String toParse;
 
 			for(int curArg = 0; curArg < _arguments.length; curArg++) {
 				if (_arguments[curArg] is typeid(String)) {
 					toParse = va_arg!(String)(_argptr);
+				}
+				else if (_arguments[curArg] is typeid(bool)) {
+					bool argval = cast(bool)va_arg!(bool)(_argptr);
+					if (argval) {
+						toParse = new String("true");
+					}
+					else {
+						toParse = new String("false");
+					}
 				}
 				else if (_arguments[curArg] is typeid(long)) {
 					long argval = cast(long)va_arg!(long)(_argptr);
@@ -372,7 +405,7 @@ class Console {
 				}
 
 				if (toParse !is null) {
-					ConsolePutString(toParse.toUtf32());
+					_putString(toParse);
 				}
 			}
 		}
@@ -380,7 +413,7 @@ class Console {
 
 	// Description: Will print out this character to the screen and the current location.
 	// chr: The UTF-32 character to print.
-	static void putChar(dchar chr) {
+	void putChar(dchar chr) {
 		if (_vt100_inescape2) {
 			if (chr >= '0' && chr <= '9') {
 				// another number,
@@ -416,11 +449,11 @@ class Console {
 				}
 				else if (chr == 's') {
 					// save position
-					ConsoleSavePosition();
+					//ConsoleSavePosition();
 				}
 				else if (chr == 'u') {
 					// restore position
-					ConsoleRestorePosition();
+					//ConsoleRestorePosition();
 				}
 				else if (chr == 'A') {
 					if (_vt100_params[0] == 0) {
@@ -542,25 +575,226 @@ class Console {
 			ConsoleSetHome();
 		}
 		else {
-			ConsolePutChar(chr);
+			_putChar(chr);
 		}
 	}
 
 
 private:
 
-	static uint cur_fg_color = fgColor.White;
-	static uint cur_bg_color = bgColor.Black;
-	static uint cur_bright_color = 0;
+	uint cur_fg_color = fgColor.White;
+	uint cur_bg_color = bgColor.Black;
+	uint cur_bright_color = 0;
 
-	static bool _vt100_emulation = false;
-	static bool _vt100_inescape = false;
-	static bool _vt100_inescape2 = false;
+	bool _vt100_emulation = false;
+	bool _vt100_inescape = false;
+	bool _vt100_inescape2 = false;
 
-	static uint _vt100_saved_x = 0;
-	static uint _vt100_saved_y = 0;
+	uint _vt100_saved_x = 0;
+	uint _vt100_saved_y = 0;
 
-	static int _vt100_params[5] = [0];
-	static int _vt100_curparam = 0;
-	static int _vt100_paramFilled = 0;
+	int _vt100_params[5] = [0];
+	int _vt100_curparam = 0;
+	int _vt100_paramFilled = 0;
+
+	Rect[] clippingRegions;
+
+	void _putChar(dchar chr) {
+		ConsolePutChar(chr);
+	}
+
+	void _putInt(uint value) {
+		dstring foo = "";
+		do {
+			foo = cast(dchar)((value % 10) + '0') ~ foo;
+		} while(value /= 10);
+		ConsolePutString(foo);
+	}
+
+	void _putString(String str) {
+		uint x;
+		uint y;
+		uint r;
+		uint b;
+
+		ConsoleGetPosition(x,y);
+
+		if (clippingRegions.length == 0) {
+			ConsolePutString(str.toUtf32());
+			return;
+		}
+
+		r = x + str.length;
+		b = y + 1;
+
+		// This will contain lengths of substrings
+		// It will alternate, OUT IN OUT IN OUT etc
+		// Where OUT means it is not drawn, and IN is
+
+		// We start with everything not drawn
+		uint[] formatArray = [str.length, 0];
+
+		foreach(region; clippingRegions) {
+			/*ConsolePutString("cr[");
+			foreach (item; formatArray) {
+				_putInt(item);
+				ConsolePutString(", ");
+			}
+			ConsolePutString("]");*/
+			if (!(x > region.right || r < region.left || y > region.bottom || b < region.top)) {
+				// This string clips this clipping rectangle
+				// Grab the substring within the clipping region
+				int start;
+				start = region.left - x;
+
+				if (start < 0) {
+					start = 0;
+				}
+
+				int end;
+				end = region.right - x;
+
+				if (end > str.length) {
+					end = str.length;
+				}
+
+				uint strLength = end - start;
+
+				// Find and inject into formatArray
+				uint startPos = 0;
+				uint endPos = 0;
+				uint startIdx = uint.max;
+				uint endIdx = uint.max;
+
+				uint pos;
+
+				foreach(uint idx, item; formatArray) {
+					if (pos + item > start && startIdx == uint.max) {
+						// Found starting point
+						startPos = pos;
+						startIdx = idx;
+					}
+
+					if (pos + item > end) {
+						endIdx = idx;
+						endPos = pos;
+						break;
+					}
+
+					pos += item;
+				}
+
+				if (startIdx == uint.max) {
+					startIdx = 0;
+					startPos = 0;
+				}
+
+				if (endIdx == uint.max) {
+					endIdx = formatArray.length - 1;
+					endPos = pos;
+				}
+			/*ConsolePutString("se[");
+					_putInt(startIdx);
+					ConsolePutString(", ");
+					_putInt(endIdx);
+					ConsolePutString(", ");
+				ConsolePutString("]");*/
+
+				// Add to formatArray
+				uint oldLength = 0;
+				uint newLength = 0;
+
+				if ((startIdx & 1) == 1) {
+					// startIdx represents something that will be outputted
+					if (startIdx == endIdx) {
+						// Already added
+						continue;
+					}
+
+					// Expand this set, because we are adding text to be written
+					oldLength = formatArray[startIdx];
+					newLength = end - startPos;
+				}
+				else {
+					// startIdx represents something that will not be outputted
+					if (startIdx == endIdx) {
+						// Substring
+						oldLength = formatArray[startIdx];
+						newLength = start - startPos;
+						uint restLength = oldLength - strLength - newLength;
+
+						// Expand current item to represent the substring
+						if (startIdx + 1 < formatArray.length) {
+							formatArray = formatArray[0..startIdx] ~
+							  [newLength, strLength, restLength] ~
+							  formatArray[startIdx+1..$];
+						}
+						else {
+							formatArray = formatArray[0..startIdx] ~
+							  [newLength, strLength, restLength];
+						}
+						continue;
+					}
+
+					// Shrink this set, because we are adding text to be written
+					oldLength = formatArray[startIdx];
+					newLength = start + startPos;
+				}
+				//ConsolePutString("ln[");
+				//	_putInt(oldLength);
+				//	ConsolePutString(", ");
+				//	_putInt(newLength);
+				//	ConsolePutString(", ");
+				//ConsolePutString("]");
+
+				if ((endIdx & 1) == 1) {
+					// endIdx represents something that will be outputted
+					uint finalPos = endPos + formatArray[endIdx];
+					uint outLength = finalPos - start;
+				/*ConsolePutString("fo[");
+					_putInt(endPos);
+					ConsolePutString(", ");
+					_putInt(outLength);
+					ConsolePutString(", ");
+				ConsolePutString("]");*/
+					if (endIdx + 1 < formatArray.length) {
+						formatArray = formatArray[0..startIdx] ~ [newLength, outLength] ~ formatArray[endIdx+1..$];
+					}
+					else {
+						formatArray = formatArray[0..startIdx] ~ [newLength, outLength];
+					}
+				}
+				else {
+					// endIdx represents something that will not be outputted
+
+					// shrink endIdx
+					uint oldEndLength = formatArray[endIdx];
+					uint newEndLength = (endPos + oldEndLength) - end;
+					if (endIdx + 1 < formatArray.length) {
+						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, newEndLength] ~ formatArray[endIdx+1..$];
+					}
+					else {
+						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, newEndLength];
+					}
+				}
+			}
+		}
+
+		bool isOut = true;
+		uint pos = 0;
+		//ConsolePutString("[");
+		for (uint i; i < formatArray.length; i++, isOut = !isOut) {
+			//_putInt(formatArray[i]);
+			//ConsolePutString(", ");
+			if (isOut) {
+				ConsoleSetRelative(formatArray[i], 0);
+//				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
+			}
+			else {
+				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
+			}
+			pos += formatArray[i];
+		}
+		//ConsolePutString("]");
+	}
 }

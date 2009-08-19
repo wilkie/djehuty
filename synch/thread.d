@@ -160,20 +160,18 @@ public:
 	static Thread getCurrent() {
 		Thread ret;
 
-		version(GDC) {
+		version(LDC) {
+			if (Tango.Thread.getThis() in threadById) {
+				ret = threadById[Tango.Thread.getThis()];
+			}
 		}
 		else {
-			version(LDC) {
-			}
-			else {
-				if (Phobos.Thread.getThis() in threadById) {
-					ret = threadById[Phobos.Thread.getThis()];
-				}
+			if (Phobos.Thread.getThis() in threadById) {
+				ret = threadById[Phobos.Thread.getThis()];
 			}
 		}
 
 		if (ret is null) {
-			Console.putln("boo");
 		}
 
 		return ret;

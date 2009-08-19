@@ -17,11 +17,10 @@ import core.unicode;
 import core.definitions;
 
 import resource.image;
+import resource.menu;
 
 import io.file;
 import io.console;
-
-import gui.menu;
 
 static const bool flagCheckForMenuRecursion = true;
 
