@@ -340,6 +340,10 @@ class TuiTextBox : TuiWidget {
 
 		positionCaret();
 	}
+	
+	override void onGotFocus() {
+		positionCaret();
+	}
 
 	// Events
 
