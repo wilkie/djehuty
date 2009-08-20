@@ -187,14 +187,18 @@ static:
 
 	// Description: Will show the caret.
 	void showCaret() {
-		ConsoleShowCaret();
-		_caretVisible = true;
+		if (!_caretVisible) {
+			ConsoleShowCaret();
+			_caretVisible = true;
+		}
 	}
 
 	// Description: Will hide the caret.
 	void hideCaret() {
-		ConsoleHideCaret();
-		_caretVisible = false;
+		if (_caretVisible) {
+			ConsoleHideCaret();
+			_caretVisible = false;
+		}
 	}
 
 	bool caretVisible() {
