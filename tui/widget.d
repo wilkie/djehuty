@@ -76,6 +76,16 @@ class TuiWidget : Responder {
 	void onMouseMove() {
 	}
 
+	override void push(Dispatcher dsp) {
+		if (cast(TuiWidget)dsp) {
+			// Adding a child widget to this widget
+			_window.push(dsp);
+		}
+		else {
+			super.push(dsp);
+		}
+	}
+
 	override void onPush(Responder rsp) {
 		// Did we get pushed to a TuiWindow?
 		if (cast(TuiWindow)rsp !is null) {
