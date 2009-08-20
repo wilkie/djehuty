@@ -386,6 +386,7 @@ class TuiTextBox : TuiWidget {
 
 	override void onDraw() {
 		// Draw each line and pad any remaining spaces
+		Console.hideCaret();
 
 		uint i;
 
