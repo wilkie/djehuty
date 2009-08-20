@@ -370,7 +370,7 @@ private:
 	package Widget _prevControl;
 }
 
-// Description: This control will provide a simple push button.
+// Description: This control will provide a simple control container.
 class Container : Widget, AbstractContainer
 {
 	// Description: This will create a button with the specified dimensions and text.

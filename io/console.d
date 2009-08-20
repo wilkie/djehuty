@@ -232,101 +232,46 @@ static:
 		ConsoleGetChar(chr, code);
 	}
 
+	// Description: This function will save the current clipping context.
+	void clipSave() {
+		_clippingStack ~= _clippingRegions;
+	}
+
+	// Description: This function will restore a former clipping context.
+	void clipRestore() {
+		if (_clippingStack.length > 0) {
+			_clippingRegions = _clippingStack[$-1];
+			_clippingStack.length = _clippingStack.length - 1;
+		}
+	}
+
 	// Description: This function will clear the clipping context.
 	void clipClear() {
-		clippingRegions = null;
+		_clippingRegions = null;
 	}
 
 	// Description: This function will add a rectangular region defined as screen coordinates that will clip the drawing surface. When a clipping context is not clear, only regions within rectangles will be drawn to the screen.
 	// region: The rectangular region to add as a clipping region.
 	void clipRect(Rect region) {
-		clippingRegions ~= region;
+		_clippingRegions ~= region;
+	}
+
+	// Description: This function will add a rectangular region defined as screen coordinates that will clip the drawing surface. When a clipping context is not clear, only regions within rectangles will be drawn to the screen.
+	// left: The left coordinate of the rectangle.
+	// top: The top coordinate of the rectangle.
+	// right: The right coordinate of the rectangle.
+	// bottom: The bottom coordinate of the rectangle.
+	void clipRect(uint left, uint top, uint right, uint bottom) {
+		Rect rt = {left, top, bottom, right};
+		clipRect(rt);
 	}
 
 	void putln(...) {
 		synchronized {
-			String toParse;
+			mixin(formatToString!());
 
-			for(int curArg = 0; curArg < _arguments.length; curArg++) {
-				if (_arguments[curArg] is typeid(String)) {
-					toParse = va_arg!(String)(_argptr);
-				}
-				else if (_arguments[curArg] is typeid(bool)) {
-					bool argval = cast(bool)va_arg!(bool)(_argptr);
-					if (argval) {
-						toParse = new String("true");
-					}
-					else {
-						toParse = new String("false");
-					}
-				}
-				else if (_arguments[curArg] is typeid(long)) {
-					long argval = cast(long)va_arg!(long)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ulong)) {
-					ulong argval = va_arg!(ulong)(_argptr);
-					toParse = new String("%d", argval);
-				}
-				else if (_arguments[curArg] is typeid(int)) {
-					int argval = cast(int)va_arg!(int)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(uint)) {
-					uint argval = cast(uint)va_arg!(uint)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(short)) {
-					short argval = cast(short)va_arg!(short)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ushort)) {
-					ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(byte)) {
-					byte argval = cast(byte)va_arg!(byte)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ubyte)) {
-					ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(char[])) {
-					char[] chrs = va_arg!(char[])(_argptr);
-					toParse = new String(chrs);
-				}
-				else if (_arguments[curArg] is typeid(wchar[])) {
-					wchar[] chrs = va_arg!(wchar[])(_argptr);
-					toParse = new String(Unicode.toUtf8(chrs));
-				}
-				else if (_arguments[curArg] is typeid(dchar[])) {
-					dchar[] chrs = va_arg!(dchar[])(_argptr);
-					toParse = new String(Unicode.toUtf8(chrs));
-				}
-				else if (_arguments[curArg] is typeid(dchar)) {
-					dchar chr = va_arg!(dchar)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else if (_arguments[curArg] is typeid(wchar)) {
-					dchar chr = cast(dchar)va_arg!(wchar)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else if (_arguments[curArg] is typeid(char)) {
-					dchar chr = cast(dchar)va_arg!(char)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else {
-					Object obj = va_arg!(Object)(_argptr);
-					toParse = new String(obj.toString());
-				}
-
-				if (toParse !is null) {
-					_putString(toParse);
-				}
+			if (toParse !is null) {
+				_putString(toParse);
 			}
 
 			putChar('\n');
@@ -335,88 +280,10 @@ static:
 
 	void put(...) {
         synchronized {
-			String toParse;
+			mixin(formatToString!());
 
-			for(int curArg = 0; curArg < _arguments.length; curArg++) {
-				if (_arguments[curArg] is typeid(String)) {
-					toParse = va_arg!(String)(_argptr);
-				}
-				else if (_arguments[curArg] is typeid(bool)) {
-					bool argval = cast(bool)va_arg!(bool)(_argptr);
-					if (argval) {
-						toParse = new String("true");
-					}
-					else {
-						toParse = new String("false");
-					}
-				}
-				else if (_arguments[curArg] is typeid(long)) {
-					long argval = cast(long)va_arg!(long)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ulong)) {
-					ulong argval = va_arg!(ulong)(_argptr);
-					toParse = new String("%d", argval);
-				}
-				else if (_arguments[curArg] is typeid(int)) {
-					int argval = cast(int)va_arg!(int)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(uint)) {
-					uint argval = cast(uint)va_arg!(uint)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(short)) {
-					short argval = cast(short)va_arg!(short)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ushort)) {
-					ushort argval = cast(ushort)va_arg!(ushort)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(byte)) {
-					byte argval = cast(byte)va_arg!(byte)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(ubyte)) {
-					ubyte argval = cast(ubyte)va_arg!(ubyte)(_argptr);
-					toParse = new String(argval);
-				}
-				else if (_arguments[curArg] is typeid(char[])) {
-					char[] chrs = va_arg!(char[])(_argptr);
-					toParse = new String(chrs);
-				}
-				else if (_arguments[curArg] is typeid(wchar[])) {
-					wchar[] chrs = va_arg!(wchar[])(_argptr);
-					toParse = new String(Unicode.toUtf8(chrs));
-				}
-				else if (_arguments[curArg] is typeid(dchar[])) {
-					dchar[] chrs = va_arg!(dchar[])(_argptr);
-					toParse = new String(Unicode.toUtf8(chrs));
-				}
-				else if (_arguments[curArg] is typeid(dchar)) {
-					dchar chr = va_arg!(dchar)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else if (_arguments[curArg] is typeid(wchar)) {
-					dchar chr = cast(dchar)va_arg!(wchar)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else if (_arguments[curArg] is typeid(char)) {
-					dchar chr = cast(dchar)va_arg!(char)(_argptr);
-					toParse = new String("");
-					toParse.appendChar(chr);
-				}
-				else {
-					Object obj = va_arg!(Object)(_argptr);
-					toParse = new String(obj.toString());
-				}
-
-				if (toParse !is null) {
-					_putString(toParse);
-				}
+			if (toParse !is null) {
+				_putString(toParse);
 			}
 		}
 	}
@@ -609,7 +476,8 @@ private:
 
 	bool _caretVisible = true;
 
-	Rect[] clippingRegions;
+	Rect[] _clippingRegions;
+	Rect[][] _clippingStack;
 
 	void _putChar(dchar chr) {
 		ConsolePutChar(chr);
@@ -631,7 +499,7 @@ private:
 
 		ConsoleGetPosition(x,y);
 
-		if (clippingRegions.length == 0) {
+		if (_clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
 		}
@@ -646,7 +514,7 @@ private:
 		// We start with everything not drawn
 		uint[] formatArray = [str.length, 0];
 
-		foreach(region; clippingRegions) {
+		foreach(region; _clippingRegions) {
 			/*ConsolePutString("cr[");
 			foreach (item; formatArray) {
 				_putInt(item);
