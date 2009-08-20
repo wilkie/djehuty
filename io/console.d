@@ -188,11 +188,17 @@ static:
 	// Description: Will show the caret.
 	void showCaret() {
 		ConsoleShowCaret();
+		_caretVisible = true;
 	}
 
 	// Description: Will hide the caret.
 	void hideCaret() {
 		ConsoleHideCaret();
+		_caretVisible = false;
+	}
+
+	bool caretVisible() {
+		return _caretVisible;
 	}
 
 	// Description: Will return the height
@@ -596,6 +602,8 @@ private:
 	int _vt100_params[5] = [0];
 	int _vt100_curparam = 0;
 	int _vt100_paramFilled = 0;
+
+	bool _caretVisible = true;
 
 	Rect[] clippingRegions;
 
