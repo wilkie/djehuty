@@ -49,9 +49,6 @@ class TuiWidget : Responder {
 	void onKeyChar(dchar keyChar) {
 	}
 
-	void onKeyUp(Key key) {
-	}
-
 	void onPrimaryMouseDown() {
 	}
 
