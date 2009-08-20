@@ -64,6 +64,11 @@ class TuiWindow : Responder {
 	}
 
 	void redraw() {
+		bool showCaret;
+		if (Console.caretVisible) {
+			Console.hideCaret();
+			showCaret = true;
+		}
 
 		TuiWidget c = _firstControl;
 
@@ -76,6 +81,10 @@ class TuiWindow : Responder {
 		}
 
 		_drawMenu();
+		
+		if (showCaret) {
+			Console.showCaret();
+		}
 	}
 
 	void onKeyDown(Key key) {
