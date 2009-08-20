@@ -103,6 +103,9 @@ class TuiWindow : Responder {
 					_focusedMenu = null;
 					_selectedMenu = null;
 					_drawMenu();
+
+					// Focus on the current widget
+					_focused_control.onGotFocus();
 				}
 				else if (key.code == Key.Left) {
 					if (_focusedMenuIndex != 0) {
@@ -116,6 +119,9 @@ class TuiWindow : Responder {
 						_focusedMenu = null;
 						_selectedMenu = null;
 						_drawMenu();
+
+						// Focus on the current widget
+						_focused_control.onGotFocus();
 					}
 				}
 				else if (key.code == Key.Right) {
@@ -138,7 +144,11 @@ class TuiWindow : Responder {
 						_focusedMenu = null;
 						_selectedMenu = null;
 						_drawMenu();
+
 						onMenu(_selectedMenu);
+
+						// Focus on the current widget
+						_focused_control.onGotFocus();
 					}
 				}
 			}
@@ -190,7 +200,11 @@ class TuiWindow : Responder {
 						_focusedMenu = null;
 						_selectedMenu = null;
 						redraw();
+
 						onMenu(_selectedMenu);
+
+						// Focus on the current widget
+						_focused_control.onGotFocus();
 					}
 				}
 				else if (key.code >= Key.A && key.code <= Key.Z) {
@@ -572,6 +586,13 @@ private:
 	}
 
 	void _selectMenu(Menu mnu) {
+	
+		// Switching focus to window
+		_focused_control.onLostFocus();
+
+		// Do not show the cursor within a menu
+		Console.hideCaret();
+
 		// draw menu
 		if (_menu is null) {
 			return;
