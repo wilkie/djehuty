@@ -377,10 +377,7 @@ private:
 			}
 			Console.put(" ");
 			int padding = maxLength - subItem.displayText.length;
-			if (padding < 0) {
-				Console.putln("AFSDF", maxLength, " : ", subItem.displayText.length, " : ", subItem.displayText);
-				for (;;) {}
-			}
+
 			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
 			if (subItem is _selectedMenu) {
 				Console.setColor(fgColor.BrightWhite, bgColor.Blue);

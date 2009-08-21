@@ -1457,7 +1457,9 @@ enum : uint
 	OsVersionWindowsServer2003	= 7,
 	OsVersionWindowsVista		= 8,
 	OsVersionWindowsLonghorn	= 9,
-	OsVersionWindowsMax			= 10,
+	OsVersionWindows7			= 10,
+	OsVersionWindowsServer2008	= 11,
+	OsVersionWindowsMax			= uint.max,
 }
 
 const int S_OK                                  = (cast(HRESULT)0x00000000);
