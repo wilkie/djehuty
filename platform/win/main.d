@@ -17,6 +17,8 @@ import core.string;
 import core.unicode;
 import core.main;
 
+import io.console;
+
 import binding.c;
 
 import analyzing.debugger;
@@ -29,33 +31,38 @@ extern (C) void _moduleUnitTests();
 
 // The windows entry point
 extern (Windows)
-int WinMain(HINSTANCE hInstance,
-  HINSTANCE hPrevInstance,
-  LPSTR lpCmdLine,
-  int nCmdShow) {
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
-    int result;
+	int result;
 
-    gc_init();			// initialize garbage collector
-    _minit();			// initialize module constructor table
+	gc_init();			// initialize garbage collector
+	_minit();			// initialize module constructor table
 
-    try {
+	int windowsVersion;
+
+	try {
 
 		ApplicationController app = ApplicationController.instance;
+		
+		windowsVersion = app.windowsVersion;
 
 		_moduleCtor();		// call module constructors
 		_moduleUnitTests();	// run unit tests (optional)
-		
+
 		Djehuty.start();
-    }
-    catch (Object o) {
+		
+		app = null;
+	}
+	catch (Object o) {
 		// Catch any unhandled exceptions
 		Debugger.raiseException(cast(Exception)o);
 
 		result = 0;		// failed
-    }
+	}
 
-    gc_term();			// run finalizers; terminate garbage collector
+	if (windowsVersion != OsVersionWindows7) {
+		gc_term();			// run finalizers; terminate garbage collector
+	}
 
     return result;
 }
@@ -91,6 +98,10 @@ class ApplicationController {
 
 private:
 
+	int windowsVersion() {
+		return win_osVersion;
+	}
+
 	uint _exitCode;
 
 	int win_osVersion = -1;
@@ -103,16 +114,16 @@ private:
 
 		OSVERSIONINFOEXW osvi = { 0 };
 		BOOL bOsVersionInfoEx;
-	
+
 		// Try calling GetVersionEx using the OSVERSIONINFOEX structure.
 		// If that fails, try using the OSVERSIONINFO structure.
 
 		osvi.dwOSVersionInfoSize = OSVERSIONINFOEXW.sizeof;
-	
+
 		win_osVersion = -1;
-	
+
 		bOsVersionInfoEx = GetVersionExW (cast(OSVERSIONINFOW*)&osvi);
-	
+
 		if( !bOsVersionInfoEx ) {
 			osvi.dwOSVersionInfoSize = OSVERSIONINFOW.sizeof;
 			if (! GetVersionExW ( cast(OSVERSIONINFOW*)&osvi) ) {
@@ -122,16 +133,25 @@ private:
 				win_osVersion = OsVersionWindows95;
 			}
 		}
-	
+
 		if (win_osVersion == -1) {
 			switch (osvi.dwPlatformId) {
 				// Test for the Windows NT product family.
-	
+
 				case VER_PLATFORM_WIN32_NT:
-	
+
 				// Test for the specific product.
-	
-				if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 ) {
+
+				if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1) {
+					if( osvi.wProductType == VER_NT_WORKSTATION ) {
+						win_osVersion = OsVersionWindows7;
+					}
+					else {
+						//will be Longhorn Server
+						win_osVersion = OsVersionWindowsServer2008;
+					}
+				}
+				else if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 ) {
 					if( osvi.wProductType == VER_NT_WORKSTATION ) {
 						win_osVersion = OsVersionWindowsVista;
 					}
@@ -170,7 +190,7 @@ private:
 			if (osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 0) {
 				win_osVersion = OsVersionWindows95;
 			}
-	
+
 			if (osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 10) {
 				if ( osvi.szCSDVersion[1]=='A' || osvi.szCSDVersion[1]=='B') {
 					win_osVersion = OsVersionWindows98Se;
@@ -189,7 +209,7 @@ private:
 				win_osVersion = OsVersionWindows95;
 	
 			break;
-	
+
 			default:
 				win_osVersion = OsVersionWindowsMax;
 			break;
@@ -211,7 +231,7 @@ private:
 	
 		for(int i = 0; ; i++) {
 			auto chr = cmdlne[i];
-	
+
 			if (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\0') {
 				if (last != i) {
 					String token = new String(Unicode.toUtf8(cmdlne[last..i]));
