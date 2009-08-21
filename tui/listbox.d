@@ -22,16 +22,12 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		_list = new ArrayList!(String)();
 	}
 
-	override bool isTabStop() {
-		return true;
-	}
-
 	override void onAdd() {
 	}
 	
 	override void onDraw() {
-		Console.setPosition(this.left, this.top);
-		Console.setColor(fgColor.White, bgColor.Black);
+		moveCaret(0, 0);
+		changeColor(fgColor.White, bgColor.Black);
 
 		// draw all strings
 		Iterator irate;
@@ -44,62 +40,59 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		_spacestr[0..width] = ' ';
 
 		while(_list.getItem(data, irate)) {
-			Console.put(data.array);
-			Console.put(_spacestr[0..width-data.length]);
+			put(data.array);
+			put(_spacestr[0..width-data.length]);
 			if (i == 1){
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
+				changeColor(fgColor.BrightWhite, bgColor.Black);
 			}
-			Console.setPosition(this.left, this.top+i);
+			moveCaret(0, i);
 			i++;
 		}
 
 		for ( ; i<=height; i++) {
-			Console.put(_spacestr);
+			put(_spacestr);
 			if (i != height) {
-				Console.setPosition(this.left, this.top+i);
+				moveCaret(0, i);
 			}
 		}
 	}
 
 	override void onKeyDown(Key key) {
-		if (key.code == Key.Tab) {
-			window.tabForward();
-		}
-		else if (key.code == Key.Up) {
+		if (key.code == Key.Up) {
 			String data;
 
 			if (_pos > 0) {
 				// draw over current
 				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.setPosition(this.left, this.top+_pos);
-				Console.put(data.array);
+				changeColor(fgColor.BrightWhite, bgColor.Black);
+				moveCaret(0, _pos);
+				put(data.array);
 				// decrement
 				_pos--;
 				// draw new
 				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.setPosition(this.left, this.top+_pos);
-				Console.put(data.array);
+				changeColor(fgColor.BrightYellow, bgColor.Black);
+				moveCaret(0, _pos);
+				put(data.array);
 			}
 		}
 		else if (key.code == Key.Down) {
 			String data;
 
-			if (_pos < _list.length() - 1)
+			if (_list.length > 0 && _pos < _list.length() - 1)
 			{
 				// draw over current
 				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.setPosition(this.left, this.top+_pos);
-				Console.put(data.array);
+				changeColor(fgColor.BrightWhite, bgColor.Black);
+				moveCaret(0,_pos);
+				put(data.array);
 				// increment
 				_pos++;
 				// draw new
 				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.setPosition(this.left, this.top+_pos);
-				Console.put(data.array);
+				changeColor(fgColor.BrightYellow, bgColor.Black);
+				moveCaret(0, _pos);
+				put(data.array);
 			}
 		}
 	}
@@ -107,26 +100,32 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	override void onLostFocus() {
 		String data;
 
-		_list.getItem(data, _pos);
-		Console.setColor(fgColor.White, bgColor.Black);
-		Console.setPosition(this.left, this.top+_pos);
-		Console.put(data.array);
+		if (_list.length > 0) {
+			_list.getItem(data, _pos);
+			changeColor(fgColor.White, bgColor.Black);
+			moveCaret(0, _pos);
+			put(data.array);
+		}
 	}
 
 	override void onGotFocus() {
-		Console.hideCaret();
+		hideCaret();
 
 		String data;
 
-		_list.getItem(data, _pos);
-		Console.setColor(fgColor.BrightYellow, bgColor.Black);
-		Console.setPosition(this.left, this.top+_pos);
-		Console.put(data.array);
+		if (_list.length > 0) {
+			_list.getItem(data, _pos);
+			changeColor(fgColor.BrightYellow, bgColor.Black);
+			moveCaret(0, _pos);
+			put(data.array);
+		}
 	}
 
 	// methods
 
-	// IList Methods:
+	override bool isTabStop() {
+		return true;
+	}
 
 	void addItem(String data) {
 		_list.addItem(data);
@@ -163,7 +162,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	bool remove(out String item) {
 		return _list.remove(item);
     }
-
 
 protected:
 

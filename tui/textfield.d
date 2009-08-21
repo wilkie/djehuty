@@ -63,8 +63,8 @@ class TuiTextField : TuiWidget {
 				_pos--;
 			}
 		}
-		else if (key.code == Key.Tab || key.code == Key.Return) {
-			window.tabForward();
+		else if (key.code == Key.Return) {
+			tabForward();
 		}
 	}
 

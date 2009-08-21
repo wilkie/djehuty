@@ -42,18 +42,21 @@ public:
 			}
 		}
 
+		Console.putln("");
 		Console.setColor(fgColor.BrightRed);
 
 		if (t is null) {
-			Console.put("Unhandled Main Exception: ", e.toString());
+			Console.putln("Unhandled Main Exception: ");
+			Console.putln("    cause: ", e.toString());
 		}
 		else {
-			Console.put("Unhandled Thread Exception: ", e.toString());
+			Console.putln("Unhandled Thread Exception: ");
+			Console.putln("    cause: ", e.toString());
 		}
 
 		version(LDC) {
 			// Tango provides a traceback for us
-			Console.put("    from file: ", e.file);
+			Console.putln("    file: ", e.file);
 		}
 		else {
 		}
@@ -63,14 +66,14 @@ public:
 			ClassInfo ci = w.classinfo;
 			String className = new String(ci.name);
 
-			Console.put("    from window: ", className.array, " [", w.text.array, "]");
+			Console.put("    window: ", className.array, " [", w.text.array, "]");
 		}
 		if (t !is null) {
 			// get class name
 			ClassInfo ci = t.classinfo;
 			String className = new String(ci.name);
 
-			Console.put("    from thread: ", className.array);
+			Console.put("    thread: ", className.array);
 		}
 
 		Console.setColor(fgColor.White);

@@ -159,10 +159,10 @@ String DirectoryGetCWD()
 
 bool DirectoryFileIsDir(String path)
 {
-	String newPath = new String(path);
-	newPath.appendChar('\0');
+	wchar[] strArr = _ConvertFrameworkPath(path.array);
+	strArr ~= '\0';
 
-	DWORD ret = GetFileAttributesW(newPath.ptr);
+	DWORD ret = GetFileAttributesW(strArr.ptr);
 
 	return (ret & FILE_ATTRIBUTE_DIRECTORY) > 0;
 }
@@ -308,11 +308,12 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp)
 
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 {
-	path = new String(Unicode.toUtf8(_ConvertFrameworkPath(path.array)));
+	String newpath = new String(path);
+	newpath = new String(Unicode.toUtf8(_ConvertFrameworkPath(newpath.array)));
 
 	String[] list;
 
-	if (path == "")
+	if (newpath == "")
 	{
 		// root directory listing
 		// that is, list the network folder and all drives
@@ -340,11 +341,11 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 	{
 		// regular directory listing
 
-		DirectoryOpen(dirVars, path);
+		DirectoryOpen(dirVars, newpath);
 
 		WIN32_FIND_DATAW ffd;
 
-		String pn = new String(path);
+		String pn = new String(newpath);
 		pn.append("/*");
 		pn.appendChar('\0');
 
