@@ -262,6 +262,19 @@ protected:
 			putString(new String(str));
 		}
 
+		final void putSpaces(uint numSpaces) {
+			static char[128] spaces = ' ';
+
+			do {
+				uint pad = 128;
+				if (numSpaces < pad) {
+					pad = numSpaces;
+				}
+				put(spaces[0..pad]);
+				numSpaces -= pad;
+			} while (numSpaces > 0)
+		}
+
 	private:
 		TuiWidget widget;
 	}
