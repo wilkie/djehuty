@@ -27,66 +27,57 @@ class TuiFileBox : TuiWidget {
 		_path = new Directory();
 		_list = _path.list;
 	}
-	
+
 	override void onDraw() {
-		Console.setColor(fgColor.White, bgColor.Black);
+		uint i;
 
-		char[] _spacestr = new char[this.width];
-		_spacestr[0..this.width] = ' ';
-
-		foreach(uint i, item; _list) {
-			Console.position(0, i);
-			Console.put(item);
-			if (((this.width - item.length) > 0) && ((this.width - item.length) < this.width)) {
-				Console.put(_spacestr[0..this.width-item.length]);
-			}
-			if (i == 0){
-				Console.setColor(fgColor.White, bgColor.Black);
-			}
+		for (i = _firstVisible; (i < this.height + _firstVisible) && (i < _list.length); i++) {
+			drawLine(i);
 		}
 
-		for (uint i = _list.length ; i<=height; i++) {
-			Console.position(0, i);
-			Console.put(_spacestr);
+		for (; i < this.height + _firstVisible; i++) {
+			Console.position(0, i-_firstVisible);
+			Console.putSpaces(this.width);
 		}
 	}
 
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Up) {
-			String data;
+			if (_pos == 0) {
+				return;
+			}
+
+			if (_pos == _firstVisible) {
+				_firstVisible--;
+				_pos--;
+				onDraw();
+
+				return;
+			}
 
 			if (_pos > 0) {
-				// draw over current
-				data = _list[_pos];
-				Console.setColor(fgColor.White, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data);
-				// decrement
 				_pos--;
-				// draw new
-				data = _list[_pos];
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data);
+				drawLine(_pos+1);
+				drawLine(_pos);
 			}
 		}
 		else if (key.code == Key.Down) {
-			String data;
+			if (_pos == _list.length - 1) {
+				return;
+			}
 
-			if (_list.length > 0 && _pos < _list.length - 1)
-			{
-				// draw over current
-				data = _list[_pos];
-				Console.setColor(fgColor.White, bgColor.Black);
-				Console.position(0,_pos);
-				Console.put(data.array);
-				// increment
+			if (_pos == (_firstVisible + this.height - 1)) {
+				_firstVisible++;
 				_pos++;
-				// draw new
-				data = _list[_pos];
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data.array);
+				onDraw();
+
+				return;
+			}
+
+			if (_list.length > 0 && _pos < _list.length - 1) {
+				_pos++;
+				drawLine(_pos-1);
+				drawLine(_pos);
 			}
 		}
 		else if (key.code == Key.Return) {
@@ -144,34 +135,24 @@ class TuiFileBox : TuiWidget {
 	}
 
 	override void onLostFocus() {
-		String data;
-
 		if (_list.length > 0) {
-			data = _list[_pos];
-			Console.setColor(fgColor.Yellow, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
+			drawLine(_pos);
 		}
 	}
 
 	override void onGotFocus() {
 		Console.hideCaret();
 
-		String data;
-
 		if (_list.length > 0) {
-			data = _list[_pos];
-			Console.setColor(fgColor.BrightYellow, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
+			drawLine(_pos);
 		}
 	}
-	
+
 	// Events
-	
+
 	void onFileSelect(String file) {
 	}
-	
+
 	void onDirectorySelect(String dir) {
 	}
 
@@ -183,7 +164,25 @@ class TuiFileBox : TuiWidget {
 
 protected:
 
+	void drawLine(uint pos) {
+		Console.position(0, pos - _firstVisible);
+
+		if(pos == _pos) {
+			Console.setColor(fgColor.BrightYellow, bgColor.Black);
+		}
+		else {
+			Console.setColor(fgColor.White, bgColor.Black);
+		}
+
+		Console.put(_list[pos]);
+		
+		if(_list[pos].length < this.width) {
+			Console.putSpaces(this.width - _list[pos].length);
+		}
+	}
+
 	uint _pos = 0;
+	uint _firstVisible = 0;
 
 	Directory _path;
 	String[] _list;
