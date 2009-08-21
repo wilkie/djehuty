@@ -63,7 +63,7 @@ class TuiContainer : TuiWidget {
 
 	override void onDraw() {
 		// Go through child widget list and draw each one
-		moveCaret(0,0);
+		Console.position(0,0);
 
 		TuiWidget c = _firstControl;
 

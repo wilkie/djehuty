@@ -56,7 +56,7 @@ class TuiVT100 : TuiBuffer {
 				}
 				else if (chr == 'u') {
 					// restore position
-					setPosition(_vt100_saved_x,_vt100_saved_y);
+					position(_vt100_saved_x,_vt100_saved_y);
 				}
 				else if (chr == 'A') {
 					if (_vt100_params[0] == 0) {
@@ -91,7 +91,7 @@ class TuiVT100 : TuiBuffer {
 						_vt100_params[0] = 1;
 					}
 
-					setPosition(_vt100_params[1]-1, _vt100_params[0]-1);
+					position(_vt100_params[1]-1, _vt100_params[0]-1);
 				}
 				else if (chr == 'm') {
 					// color
@@ -172,7 +172,7 @@ class TuiVT100 : TuiBuffer {
 			_vt100_paramFilled = 0;
 		}
 		else {
-			//Console.setPosition(0, this.bottom+2);
+			//Console.position(0, this.bottom+2);
 			//Console.setColor(fgColor.White);
 			//Console.put(_curx, ", ", _cury, " : ", _buffer.length());
 			super.writeChar(chr);

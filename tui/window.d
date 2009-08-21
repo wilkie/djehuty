@@ -368,7 +368,7 @@ private:
 		uint maxLength = context.region.right - context.region.left;
 
 		foreach(subItem; mnu) {
-			Console.setPosition(x, y);
+			Console.position(x, y);
 			if (subItem is _selectedMenu) {
 				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
 			}
@@ -445,7 +445,7 @@ private:
 
 		uint curWidth = this.width;
 
-		Console.setPosition(0,0);
+		Console.position(0,0);
 		Console.setColor(fgColor.Black, bgColor.White);
 
 		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {

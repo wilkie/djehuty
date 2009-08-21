@@ -10,7 +10,7 @@ module tui.dialog;
 import tui.widget;
 import tui.container;
 
-import io.console;
+private import io.console;
 
 import core.unicode;
 import core.event;
@@ -20,15 +20,15 @@ class TuiDialog : TuiContainer {
 		_title = Unicode.toUtf32(title);
 		super(x,y,width,height);
 	}
-	
+
 	override void onAdd() {
 		_base_y++;
 	}
 
 	override void onDraw() {
-		Console.setPosition(_base_x + this.left, _base_y + this.top - 1);
+		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
 
-		changeColor(_forecolor, _backcolor);
+		Console.setColor(_forecolor, _backcolor);
 
 		uint x;
 		if (_title.length + 2 > this.width) {
@@ -38,23 +38,23 @@ class TuiDialog : TuiContainer {
 			x = (this.width - _title.length) / 2;
 		}
 
-		put(" ");
+		Console.put(" ");
 		for (uint i = 1; i < x-1; i++) {
-			put("-");
+			Console.put("-");
 		}
 		if (x > 1) {
-			put(" ");
+			Console.put(" ");
 		}
 
-		put(_title);
+		Console.put(_title);
 
 		if (x > 1) {
-			put(" ");
+			Console.put(" ");
 		}
 		for (uint i = x + _title.length + 2; i < this.width; i++) {
-			put("-");
+			Console.put("-");
 		}
-		put(" ");
+		Console.put(" ");
 
 		super.onDraw();
 	}

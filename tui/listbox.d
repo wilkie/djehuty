@@ -26,8 +26,8 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	}
 	
 	override void onDraw() {
-		moveCaret(0, 0);
-		changeColor(fgColor.White, bgColor.Black);
+		Console.position(0, 0);
+		Console.setColor(fgColor.White, bgColor.Black);
 
 		// draw all strings
 		Iterator irate;
@@ -40,19 +40,19 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		_spacestr[0..width] = ' ';
 
 		while(_list.getItem(data, irate)) {
-			put(data.array);
-			put(_spacestr[0..width-data.length]);
+			Console.put(data.array);
+			Console.put(_spacestr[0..width-data.length]);
 			if (i == 1){
-				changeColor(fgColor.BrightWhite, bgColor.Black);
+				Console.setColor(fgColor.BrightWhite, bgColor.Black);
 			}
-			moveCaret(0, i);
+			Console.position(0, i);
 			i++;
 		}
 
 		for ( ; i<=height; i++) {
-			put(_spacestr);
+			Console.put(_spacestr);
 			if (i != height) {
-				moveCaret(0, i);
+				Console.position(0, i);
 			}
 		}
 	}
@@ -64,16 +64,16 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 			if (_pos > 0) {
 				// draw over current
 				_list.getItem(data, _pos);
-				changeColor(fgColor.BrightWhite, bgColor.Black);
-				moveCaret(0, _pos);
-				put(data.array);
+				Console.setColor(fgColor.BrightWhite, bgColor.Black);
+				Console.position(0, _pos);
+				Console.put(data.array);
 				// decrement
 				_pos--;
 				// draw new
 				_list.getItem(data, _pos);
-				changeColor(fgColor.BrightYellow, bgColor.Black);
-				moveCaret(0, _pos);
-				put(data.array);
+				Console.setColor(fgColor.BrightYellow, bgColor.Black);
+				Console.position(0, _pos);
+				Console.put(data.array);
 			}
 		}
 		else if (key.code == Key.Down) {
@@ -83,16 +83,16 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 			{
 				// draw over current
 				_list.getItem(data, _pos);
-				changeColor(fgColor.BrightWhite, bgColor.Black);
-				moveCaret(0,_pos);
-				put(data.array);
+				Console.setColor(fgColor.BrightWhite, bgColor.Black);
+				Console.position(0,_pos);
+				Console.put(data.array);
 				// increment
 				_pos++;
 				// draw new
 				_list.getItem(data, _pos);
-				changeColor(fgColor.BrightYellow, bgColor.Black);
-				moveCaret(0, _pos);
-				put(data.array);
+				Console.setColor(fgColor.BrightYellow, bgColor.Black);
+				Console.position(0, _pos);
+				Console.put(data.array);
 			}
 		}
 	}
@@ -102,22 +102,22 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 
 		if (_list.length > 0) {
 			_list.getItem(data, _pos);
-			changeColor(fgColor.White, bgColor.Black);
-			moveCaret(0, _pos);
-			put(data.array);
+			Console.setColor(fgColor.White, bgColor.Black);
+			Console.position(0, _pos);
+			Console.put(data.array);
 		}
 	}
 
 	override void onGotFocus() {
-		hideCaret();
+		Console.hideCaret();
 
 		String data;
 
 		if (_list.length > 0) {
 			_list.getItem(data, _pos);
-			changeColor(fgColor.BrightYellow, bgColor.Black);
-			moveCaret(0, _pos);
-			put(data.array);
+			Console.setColor(fgColor.BrightYellow, bgColor.Black);
+			Console.position(0, _pos);
+			Console.put(data.array);
 		}
 	}
 

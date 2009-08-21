@@ -75,18 +75,18 @@ class TuiLabel : TuiWidget {
 
 	override void onDraw() {
 		if (canDraw) {
-			moveCaret(0, 0);
-			changeColor(_forecolor, _backcolor);
+			Console.position(0, 0);
+			Console.setColor(_forecolor, _backcolor);
 
 			// draw as much as we can
 
 			if (_value.length > this.width) {
-				put((new String(_value[0..width])));
+				Console.put((new String(_value[0..width])));
 			}
 			else {
-				put(_value);
+				Console.put(_value);
 				for (uint i; i < this.width - _value.length; i++) {
-					put(" ");
+					Console.put(" ");
 				}
 			}
 		}

@@ -146,7 +146,7 @@ class TuiTextField : TuiWidget {
 
 	override void onDraw() {
 		if (canDraw) {
-			Console.setPosition(this.left, this.top);
+			Console.position(this.left, this.top);
 			Console.setColor(_color, bgColor.Black);
 			Console.put("[");
 
@@ -186,10 +186,10 @@ protected:
 
 	void positionCursor() {
 		if (_pos == _max) {
-			Console.setPosition(this.left+_max, this.top);
+			Console.position(this.left+_max, this.top);
 		}
 		else {
-			Console.setPosition(this.left+1+_pos, this.top);
+			Console.position(this.left+1+_pos, this.top);
 		}
 	}
 }
