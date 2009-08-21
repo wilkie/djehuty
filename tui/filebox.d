@@ -102,6 +102,45 @@ class TuiFileBox : TuiWidget {
 				onFileSelect(_path.path ~ "/" ~ _list[_pos]);
 			}
 		}
+		else if (key.code == Key.PageUp) {
+			if (_pos == 0) {
+				return;
+			}
+			
+			if (_firstVisible > this.height - 1) {
+				_firstVisible -= this.height - 1;			
+			}
+			else {
+				_firstVisible = 0;
+			}
+
+			if (_pos > this.height - 1) {
+				_pos -= this.height - 1;
+			}
+			else {
+				_pos = 0;
+			}
+
+			onDraw();
+		}
+		else if (key.code == Key.PageDown) {
+			if (_pos == _list.length - 1) {
+				return;
+			}
+
+			_firstVisible += this.height - 1;
+			_pos += this.height - 1;
+
+			if (_firstVisible > _list.length - this.height) {
+				_firstVisible = _list.length - this.height;
+			}
+
+			if ( _pos >= _list.length) {
+				_pos = _list.length - 1;
+			}
+
+			onDraw();
+		}
 	}
 
 	override void onLostFocus() {
