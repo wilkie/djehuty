@@ -386,7 +386,7 @@ class TuiTextBox : TuiWidget {
 
 	override void onDraw() {
 		// Draw each line and pad any remaining spaces
-		Console.hideCaret();
+		hideCaret();
 
 		uint i;
 
@@ -400,34 +400,38 @@ class TuiTextBox : TuiWidget {
 		}
 	}
 
+	override bool isTabStop() {
+		return true;
+	}
+
 protected:
 
 	void drawLine(uint lineNumber) {
-		Console.setPosition(this.left, this.top + (lineNumber - _firstVisible));
+		moveCaret(0, lineNumber - _firstVisible);
 
 		if (_lineNumbers) {
 			if (_lineNumbersWidth == 0) {
 				calculateLineNumbersWidth();
 			}
 			String strLineNumber = new String(lineNumber);
-			Console.setColor(fgColor.Yellow, bgColor.Black);
-			Console.put(spaces[0.._lineNumbersWidth - 2 - strLineNumber.length]);
-			Console.put(strLineNumber);
-			Console.put(": ");
+			changeColor(fgColor.Yellow, bgColor.Black);
+			put(spaces[0.._lineNumbersWidth - 2 - strLineNumber.length]);
+			put(strLineNumber);
+			put(": ");
 		}
 
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
-			Console.setColor(_forecolor, _backcolor);
-			Console.put(_lines[lineNumber].value);
+			changeColor(_forecolor, _backcolor);
+			put(_lines[lineNumber].value);
 		}
 		else {
 			// Splitting up the line due to formatting
 			uint pos = 0;
 			for(uint i; i < _lines[lineNumber].format.length; i += 3) {
-				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
+				changeColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
 				//Console.put("[", _lines[lineNumber].format[i+2], "]");
-				Console.put(_lines[lineNumber].value[pos..pos + _lines[lineNumber].format[i+2]]);
+				put(_lines[lineNumber].value[pos..pos + _lines[lineNumber].format[i+2]]);
 				pos += _lines[lineNumber].format[i+2];
 			}
 		}
@@ -440,18 +444,18 @@ protected:
 			pad = num;
 
 			if (pad > spaces.length) {
-				Console.put(spaces);
+				put(spaces);
 				pad = spaces.length;
 			}
 			else {
-				Console.put(spaces[0..pad]);
+				put(spaces[0..pad]);
 			}
 			num -= pad;
 		}
 	}
 
 	void drawEmptyLine(uint lineNumber) {
-		Console.setPosition(this.left, this.top + (lineNumber - _firstVisible));
+		moveCaret(0, lineNumber - _firstVisible);
 
 		// Pad with spaces
 		uint num = this.width;
@@ -461,10 +465,10 @@ protected:
 			pad = num;
 
 			if (pad > spaces.length) {
-				Console.put(spaces);
+				put(spaces);
 			}
 			else {
-				Console.put(spaces[0..pad]);
+				put(spaces[0..pad]);
 			}
 			num -= pad;
 		}
@@ -526,14 +530,14 @@ protected:
 		// Is the caret on the screen?
 		if ((this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) || (this.top + (_row - _firstVisible) >= this.bottom)) {
 			// The caret is outside of the bounds of the widget
-			Console.hideCaret();
+			hideCaret();
 		}
 		else {
 			// The caret is within the bounds of the widget
-			Console.showCaret();
+			showCaret();
 
 			// Move cursor to where the edit caret is
-			Console.setPosition(this.left + _lineNumbersWidth + (_column - _firstColumn), this.top + (_row - _firstVisible));
+			moveCaret(_lineNumbersWidth + (_column - _firstColumn), _row - _firstVisible);
 		}
 	}
 

@@ -31,6 +31,10 @@ template formatToString() {
 		if (_arguments[curArg] is typeid(String)) {
 			toParse ~= va_arg!(String)(_argptr);
 		}
+		else if (_arguments[curArg] is typeid(char*)) {
+			char* argval = cast(char*)va_arg!(char*)(_argptr);
+			char[] dstr = argval[0..strlen(argval)-1];
+		}
 		else if (_arguments[curArg] is typeid(bool)) {
 			bool argval = cast(bool)va_arg!(bool)(_argptr);
 			if (argval) {
@@ -78,11 +82,11 @@ template formatToString() {
 		}
 		else if (_arguments[curArg] is typeid(wchar[])) {
 			wchar[] chrs = va_arg!(wchar[])(_argptr);
-			toParse ~= cast(char[])chrs;
+			toParse ~= Unicode.toUtf8(chrs);
 		}
 		else if (_arguments[curArg] is typeid(dchar[])) {
 			dchar[] chrs = va_arg!(dchar[])(_argptr);
-			toParse ~= cast(char[])chrs;
+			toParse ~= Unicode.toUtf8(chrs);
 		}
 		else if (_arguments[curArg] is typeid(dchar)) {
 			dchar chr = va_arg!(dchar)(_argptr);

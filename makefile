@@ -26,7 +26,7 @@ DFILES_PLATFORM_WIN = platform/win/platform/vars/tui.d platform/win/scaffold/tui
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
 DFILES_ANALYZING = analyzing/debugger.d
-DFILES_CORE = core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/definitions.d core/application.d core/format.d core/time.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d
+DFILES_CORE = core/exception.d core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/definitions.d core/application.d core/format.d core/time.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d
 DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
 DFILES_UTILS = utils/stack.d utils/arraylist.d utils/linkedlist.d
 DFILES_PARSING = parsing/lexer.d parsing/cfg.d
@@ -41,7 +41,7 @@ DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d resource
 DFILES_CODEC = codecs/codec.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d
-DFILES_TUI = tui/container.d tui/dialog.d tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d tui/textbox.d tui/codebox.d
+DFILES_TUI = tui/filebox.d tui/container.d tui/dialog.d tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d tui/textbox.d tui/codebox.d
 DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d interfaces/list.d

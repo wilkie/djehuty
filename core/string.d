@@ -1007,3 +1007,61 @@ private:
 	uint _capacity;
 	Char _data[];
 }
+
+// Standard string functions (for C)
+
+// strlen
+size_t strlen(char* chr) {
+	uint ret = 0;
+	while(*chr++) {
+		ret++;
+	}
+	return ret;
+}
+
+void strncpy(char* dest, char* src, int length) {
+	while(((*dest++ = *src++) != 0) && --length){}
+	*(--dest) = '\0';
+}
+
+void strncat(char* dest, char* src, int length) {
+	while(*dest++){}
+	strncpy(--dest,src,length);
+}
+
+int strcmp(char* a, char* b) {
+	while((*a == *b) && *a++ && *b++){}
+	return *a - *b;
+}
+
+int strncmp(char* a, char* b, int length) {
+	while(--length && (*a == *b) && *a++ && *b++){}
+	return *a - *b;
+}
+
+void strcpy(char* dest, char* src) {
+	while((*dest++ = *src++) != 0){}
+}
+
+void strcat(char* dest, char* src) {
+	while(*dest++){}
+	strcpy(--dest,src);
+}
+
+void strupr(char* str) {
+	while(*str) {
+		if (*str >= 'a' || *str <= 'z') {
+			*str -= 32;
+		}
+		str++;
+	}
+}
+
+void strlwr(char* str) {
+    while(*str) {
+		if (*str >= 'A' || *str <= 'Z') {
+			*str += 32;
+		}
+		str++;
+	}
+}

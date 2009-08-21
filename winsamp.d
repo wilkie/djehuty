@@ -98,6 +98,8 @@ import core.application;
 import tui.textbox;
 import tui.codebox;
 
+import tui.dialog;
+
 class MyConsoleApp : Application {
 	//static this() { new MyConsoleApp(); }
 
@@ -121,17 +123,19 @@ class MyTWindow : TuiWindow {
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
 		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
-		push(tuibox = new TuiTextBox(0,1,this.width,this.height-2));
+		//push(tuibox = new TuiTextBox(0,1,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
+
+		push(new TuiOpenDialog(5,5));
 
 		menu = foo;
 		text = "unsaved";
-		tuibox.lineNumbers = true;
+//		tuibox.lineNumbers = true;
 		//push(new TuiLabel(0, 5, 10, "foobarfoo!"));
 	}
 
 	override void onResize() {
-		tuibox.resize(this.width, this.height-2);
+//		tuibox.resize(this.width, this.height-2);
 		status.move(0, this.height-1);
 		status.resize(this.width, 1);
 		redraw();

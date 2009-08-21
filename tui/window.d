@@ -2,6 +2,8 @@ module tui.window;
 
 import tui.application;
 import tui.widget;
+import tui.container;
+import tui.dialog;
 
 import core.event;
 import core.string;
@@ -16,10 +18,16 @@ class TuiWindow : Responder {
 	// Constructor
 
 	this() {
+		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer._window = this;
+		push(_controlContainer);
 	}
 
 	this(bgColor bgClr) {
 		_bgClr = bgClr;
+		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer._window = this;
+		push(_controlContainer);
 	}
 
 	// Events
@@ -30,31 +38,11 @@ class TuiWindow : Responder {
 		Console.setColor(_bgClr);
 		Console.clear();
 
-		TuiWidget c = _firstControl;
-
-		if (c !is null) {
-			do {
-				c =	c._prevControl;
-
-				c.onInit();
-				c.onDraw();
-			} while (c !is _firstControl)
-
-		}
+		_controlContainer.onInit();
 
 		_drawMenu();
 
-		if (c !is null) {
-			_focused_control = c;
-
-			do {
-				_focused_control = _focused_control._prevControl;
-				if (_focused_control.isTabStop()) {
-					_focused_control.onGotFocus();
-					break;
-				}
-			} while (_focused_control !is c);
-		}
+		_controlContainer.onGotFocus();
 	}
 
 	void onUninitialize() {
@@ -70,18 +58,10 @@ class TuiWindow : Responder {
 			showCaret = true;
 		}
 
-		TuiWidget c = _firstControl;
-
-		if (c !is null) {
-			do {
-				c =	c._prevControl;
-
-				c.onDraw();
-			} while (c !is _firstControl)
-		}
+		_controlContainer.onDraw();
 
 		_drawMenu();
-		
+
 		if (showCaret) {
 			Console.showCaret();
 		}
@@ -105,7 +85,7 @@ class TuiWindow : Responder {
 					_drawMenu();
 
 					// Focus on the current widget
-					_focused_control.onGotFocus();
+					_controlContainer.onGotFocus();
 				}
 				else if (key.code == Key.Left) {
 					if (_focusedMenuIndex != 0) {
@@ -121,7 +101,7 @@ class TuiWindow : Responder {
 						_drawMenu();
 
 						// Focus on the current widget
-						_focused_control.onGotFocus();
+						_controlContainer.onGotFocus();
 					}
 				}
 				else if (key.code == Key.Right) {
@@ -148,7 +128,7 @@ class TuiWindow : Responder {
 						onMenu(_selectedMenu);
 
 						// Focus on the current widget
-						_focused_control.onGotFocus();
+						_controlContainer.onGotFocus();
 					}
 				}
 			}
@@ -204,7 +184,7 @@ class TuiWindow : Responder {
 						onMenu(_selectedMenu);
 
 						// Focus on the current widget
-						_focused_control.onGotFocus();
+						_controlContainer.onGotFocus();
 					}
 				}
 				else if (key.code >= Key.A && key.code <= Key.Z) {
@@ -255,10 +235,8 @@ class TuiWindow : Responder {
 				}
 			}
 		}
-
-		if (_focused_control !is null) {
-			_focused_control.onKeyDown(key);
-		}
+		
+		_controlContainer.onKeyDown(key);
 	}
 
 	void onMenu(Menu mnu) {
@@ -269,73 +247,53 @@ class TuiWindow : Responder {
 			_cancelNextChar = false;
 			return;
 		}
-		if (_focused_control !is null) {
-			_focused_control.onKeyChar(keyChar);
-		}
+		_controlContainer.onKeyChar(keyChar);
 	}
 
 	void onPrimaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onPrimaryMouseDown();
-		}
+		_controlContainer.onPrimaryMouseDown();
 	}
 
 	void onPrimaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onPrimaryMouseUp();
-		}
+		_controlContainer.onPrimaryMouseUp();
 	}
 
 	void onSecondaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onSecondaryMouseDown();
-		}
+		_controlContainer.onSecondaryMouseDown();
 	}
 
 	void onSecondaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onSecondaryMouseUp();
-		}
+		_controlContainer.onSecondaryMouseUp();
 	}
 
 	void onTertiaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onTertiaryMouseDown();
-		}
+		_controlContainer.onTertiaryMouseDown();
 	}
 
 	void onTertiaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onTertiaryMouseUp();
-		}
+		_controlContainer.onTertiaryMouseUp();
 	}
 
 	void onOtherMouseDown(uint button) {
-		if (_focused_control !is null) {
-		}
+//		if (_focused_control !is null) {
+//		}
 	}
 
 	void onOtherMouseUp(uint button) {
-		if (_focused_control !is null) {
-		}
+//		if (_focused_control !is null) {
+//		}
 	}
 
 	void onMouseWheelY(uint amount) {
-		if (_focused_control !is null) {
-			_focused_control.onMouseWheelY(amount);
-		}
+		_controlContainer.onMouseWheelY(amount);
 	}
 
 	void onMouseWheelX(uint amount) {
-		if (_focused_control !is null) {
-			_focused_control.onMouseWheelX(amount);
-		}
+		_controlContainer.onMouseWheelX(amount);
 	}
 
 	void onMouseMove() {
-		if (_focused_control !is null) {
-			_focused_control.onMouseMove();
-		}
+		_controlContainer.onMouseMove();
 	}
 
 	void text(string value) {
@@ -361,40 +319,11 @@ class TuiWindow : Responder {
 	// Methods
 
 	override void push(Dispatcher dsp) {
-		if (cast(TuiWidget)dsp !is null) {
-			// do not add a control that is already part of another window
-			TuiWidget control = cast(TuiWidget)dsp;
-
-			if (control._nextControl !is null) { return; }
-
-			// add to the control linked list
-			if (_firstControl is null && _lastControl is null)
-			{
-				// first control
-
-				_firstControl = control;
-				_lastControl = control;
-
-				control._nextControl = control;
-				control._prevControl = control;
-			}
-			else
-			{
-				// next control
-
-				control._nextControl = _firstControl;
-				control._prevControl = _lastControl;
-
-				_firstControl._prevControl = control;
-				_lastControl._nextControl = control;
-
-				_firstControl = control;
-			}
-
-			// increase the number of controls
-			_numControls++;
-
-			super.push(control);
+		if (dsp is _controlContainer) {
+			super.push(dsp);
+		}
+		else if (cast(TuiWidget)dsp) {
+			_controlContainer.push(cast(TuiWidget)dsp);
 		}
 		else {
 			super.push(dsp);
@@ -403,36 +332,6 @@ class TuiWindow : Responder {
 
 	bgColor backcolor() {
 		return _bgClr;
-	}
-
-	void tabForward() {
-		// activate the next control
-		TuiWidget curFocus = _focused_control;
-
-		_focused_control.onLostFocus();
-
-		do {
-			_focused_control = _focused_control._prevControl;
-			if (_focused_control.isTabStop()) {
-				_focused_control.onGotFocus();
-				break;
-			}
-		} while (_focused_control !is curFocus);
-	}
-
-	void tabBackward() {
-		// activate the previous control
-		TuiWidget curFocus = _focused_control;
-
-		_focused_control.onLostFocus();
-
-		do {
-			_focused_control = _focused_control._nextControl;
-			if (_focused_control.isTabStop()) {
-				_focused_control.onGotFocus();
-				break;
-			}
-		} while (_focused_control !is curFocus);
 	}
 
 	TuiApplication application() {
@@ -453,6 +352,11 @@ class TuiWindow : Responder {
 	Mouse mouseProps;
 
 private:
+
+	final void _onResize() {
+		_controlContainer.resize(this.width, this.height);
+		onResize();
+	}
 
 	void _drawSubmenu() {
 		MenuContext context = _menus[$-1];
@@ -588,7 +492,7 @@ private:
 	void _selectMenu(Menu mnu) {
 	
 		// Switching focus to window
-		_focused_control.onLostFocus();
+		_controlContainer.onLostFocus();
 
 		// Do not show the cursor within a menu
 		Console.hideCaret();
@@ -722,10 +626,6 @@ private:
 
 	int _numControls = 0;
 
-	TuiWidget _captured_control;
-	TuiWidget _last_control;
-	TuiWidget _focused_control;
-
 	// Current Menu
 	Menu _menu;
 
@@ -745,8 +645,10 @@ private:
 	Menu _selectedMenu;
 	uint _selectedMenuIndex;
 
+	TuiContainer _controlContainer;
+
 	MenuContext[] _menus;
-	
+
 	bool _cancelNextChar;
 
 	String _value;

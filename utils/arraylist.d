@@ -14,6 +14,12 @@ class ArrayList(T) : AbstractList!(T) {
 		_capacity = size;
 		this();
 	}
+	
+	this(T[] withList) {
+		_list = withList.dup;
+		_capacity = _list.length;
+		_count = _list.length;
+	}
 
 	// Description: Adds a new node to the end of the list.
 	// data: The data to store in the node.

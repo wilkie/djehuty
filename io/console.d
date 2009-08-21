@@ -171,11 +171,22 @@ static:
 		ConsoleSetPosition(x,y);
 	}
 
-	uint[] position() {
-		uint x;
-		uint y;
-		ConsoleGetPosition(x,y);
-		return [x,y];
+	void position(Coord coord) {
+		ConsoleSetPosition(coord.x, coord.y);
+	}
+
+	void position(uint[] coord) {
+		ConsoleSetPosition(coord[0], coord[1]);
+	}
+
+	void position(uint x, uint y) {
+		ConsoleSetPosition(x,y);
+	}
+
+	Coord position() {
+		Coord ret;
+		ConsoleGetPosition(cast(uint*)&ret.x,cast(uint*)&ret.y);
+		return ret;
 	}
 
 	// Description: Moves the position of the caret relative to its current location.
@@ -286,6 +297,10 @@ static:
 				_putString(toParse);
 			}
 		}
+	}
+
+	void putString(String str) {
+		_putString(str);
 	}
 
 	// Description: Will print out this character to the screen and the current location.
@@ -490,22 +505,35 @@ private:
 		} while(value /= 10);
 		ConsolePutString(foo);
 	}
-
+	
 	void _putString(String str) {
 		uint x;
 		uint y;
 		uint r;
 		uint b;
 
-		ConsoleGetPosition(x,y);
+		// Clip to the bounds of the screen first
+		ConsoleGetPosition(&x,&y);
+
+		r = x + str.length;
+		b = y + 1;
+
+		/*if ((x >= this.width) || (y >= this.height)) {
+			// Outside bounds of screen completely
+			return;
+		}
+
+		// Do we need to clip the string? (right edge)
+		if (r > this.width) {
+			uint rightPos = r - (this.width);
+			str = str.subString(0, str.length - rightPos);
+			r = x + str.length;
+		}*/
 
 		if (_clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
 		}
-
-		r = x + str.length;
-		b = y + 1;
 
 		// This will contain lengths of substrings
 		// It will alternate, OUT IN OUT IN OUT etc
@@ -515,12 +543,6 @@ private:
 		uint[] formatArray = [str.length, 0];
 
 		foreach(region; _clippingRegions) {
-			/*ConsolePutString("cr[");
-			foreach (item; formatArray) {
-				_putInt(item);
-				ConsolePutString(", ");
-			}
-			ConsolePutString("]");*/
 			if (!(x > region.right || r < region.left || y > region.bottom || b < region.top)) {
 				// This string clips this clipping rectangle
 				// Grab the substring within the clipping region
@@ -573,12 +595,6 @@ private:
 					endIdx = formatArray.length - 1;
 					endPos = pos;
 				}
-			/*ConsolePutString("se[");
-					_putInt(startIdx);
-					ConsolePutString(", ");
-					_putInt(endIdx);
-					ConsolePutString(", ");
-				ConsolePutString("]");*/
 
 				// Add to formatArray
 				uint oldLength = 0;
@@ -620,23 +636,11 @@ private:
 					oldLength = formatArray[startIdx];
 					newLength = start + startPos;
 				}
-				//ConsolePutString("ln[");
-				//	_putInt(oldLength);
-				//	ConsolePutString(", ");
-				//	_putInt(newLength);
-				//	ConsolePutString(", ");
-				//ConsolePutString("]");
 
 				if ((endIdx & 1) == 1) {
 					// endIdx represents something that will be outputted
 					uint finalPos = endPos + formatArray[endIdx];
 					uint outLength = finalPos - start;
-				/*ConsolePutString("fo[");
-					_putInt(endPos);
-					ConsolePutString(", ");
-					_putInt(outLength);
-					ConsolePutString(", ");
-				ConsolePutString("]");*/
 					if (endIdx + 1 < formatArray.length) {
 						formatArray = formatArray[0..startIdx] ~ [newLength, outLength] ~ formatArray[endIdx+1..$];
 					}
@@ -662,19 +666,15 @@ private:
 
 		bool isOut = true;
 		uint pos = 0;
-		//ConsolePutString("[");
+
 		for (uint i; i < formatArray.length; i++, isOut = !isOut) {
-			//_putInt(formatArray[i]);
-			//ConsolePutString(", ");
 			if (isOut) {
 				ConsoleSetRelative(formatArray[i], 0);
-//				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
 			}
 			else {
 				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
 			}
 			pos += formatArray[i];
 		}
-		//ConsolePutString("]");
 	}
 }

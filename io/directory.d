@@ -13,6 +13,7 @@ module io.directory;
 import core.string;
 import core.system;
 import core.definitions;
+import core.exception;
 
 import io.file;
 import io.console;
@@ -198,11 +199,14 @@ class Directory
 	// directoryName: The _name of the directory.
 	// Returns: The child directory specified.
 	Directory traverse(String directoryName) {
-		Directory ret = new Directory(_path ~ "/" ~ directoryName);
+		if (isDir(directoryName)) {
+			Directory ret = new Directory(_path ~ "/" ~ directoryName);
 
-		ret._parent = this;
+			ret._parent = this;
 
-		return ret;
+			return ret;
+		}
+		throw new DirectoryNotFound(_path ~ "/" ~ directoryName);
 	}
 
 	// Description: This function will return the Directory representing the directory specified within the current path.
