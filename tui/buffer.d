@@ -39,7 +39,7 @@ class TuiBuffer : TuiWidget
 			_buffer.addItem(bf);
 		}
 
-		setPosition(0,0);
+		position(0,0);
 	}
 
 	override void onKeyChar(dchar chr)
@@ -58,15 +58,15 @@ class TuiBuffer : TuiWidget
 		{
 			if (_curx != _x)
 			{
-				setPosition((_curx-_x)-1, (_cury-_y));
+				position((_curx-_x)-1, (_cury-_y));
 				writeChar(' ');
-				setPosition((_curx-_x)-1, (_cury-_y));
+				position((_curx-_x)-1, (_cury-_y));
 			}
 			else
 			{
-				setPosition(_w-1, (_cury-_y)-1);
+				position(_w-1, (_cury-_y)-1);
 				writeChar(' ');
-				setPosition(_w-1, (_cury-_y)-1);
+				position(_w-1, (_cury-_y)-1);
 			}
 		}
 		else if (chr == 13)
@@ -74,11 +74,11 @@ class TuiBuffer : TuiWidget
 			if (_cury + 1 == _b)
 			{
 				_linefeed();
-				setPosition(0, (_cury-_y));
+				position(0, (_cury-_y));
 			}
 			else
 			{
-				setPosition(0, (_cury-_y)+1);
+				position(0, (_cury-_y)+1);
 			}
 		}
 		else
@@ -130,7 +130,7 @@ class TuiBuffer : TuiWidget
 	override void onDraw() {
 		_drawLock.down();
 
-		Console.setPosition(0,30);
+		Console.position(0,30);
 		Console.put("a ", _curx, " ", _cury);
 
 		// Blank out the space of the buffer
@@ -149,9 +149,9 @@ class TuiBuffer : TuiWidget
 
 		for (uint y = _y; y < _b; y++, cury++)
 		{
-			Console.setPosition(0,30);
+			Console.position(0,30);
 			Console.put("y ", _curx, " ", _cury);
-			Console.setPosition(_x, y);
+			Console.position(_x, y);
 
 			bf = _buffer[cury];
 
@@ -164,7 +164,7 @@ class TuiBuffer : TuiWidget
 					fgclr = bf.fgclr[curx];
 					bgclr = bf.bgclr[curx];
 				}
-				Console.putChar(bf.line[curx]);
+				Console.put(bf.line[curx]);
 			}
 		}
 
@@ -190,14 +190,14 @@ class TuiBuffer : TuiWidget
 	void writeChar(dchar chr)
 	{
 		static int a = 0;
-		Console.setPosition((a * 10),29);
+		Console.position((a * 10),29);
 		Console.put(_curx, " ", _cury);
 
 		if (_cury >= _b)
 		{
 			_linefeed();
 
-		Console.setPosition((a * 10),29);
+		Console.position((a * 10),29);
 			Console.put("lf: ", _curx, " ", _cury);
 		}
 		a++;
@@ -205,10 +205,10 @@ class TuiBuffer : TuiWidget
 
 		_drawLock.down();
 
-		Console.setPosition(_curx, _cury);
+		Console.position(_curx, _cury);
 		Console.setColor(_curfg, _curbg);
 
-		Console.putChar(chr);
+		Console.put(chr);
 
 		uint idx_y = (_cury-_y)+_firstVisible;
 		uint idx_x = (_curx-_x);
@@ -225,11 +225,11 @@ class TuiBuffer : TuiWidget
 		if (_curx == _r)
 		{
 
-		Console.setPosition((a * 10),29);
+		Console.position((a * 10),29);
 			Console.put("lf: ", _curx, " ", _cury);
 			_linefeed();
 
-		Console.setPosition((a * 10),29);
+		Console.position((a * 10),29);
 			Console.put("af: ", _curx, " ", _cury);
 		}
 	}
@@ -242,15 +242,15 @@ class TuiBuffer : TuiWidget
 		_buffer[y].bgclr[x] = _curbg;
 		_buffer[y].fgclr[x] = _curfg;
 
-		Console.setPosition(x+_x, y+_y);
+		Console.position(x+_x, y+_y);
 		Console.setColor(_curfg, _curbg);
 
-		Console.putChar(chr);
+		Console.put(chr);
 
 		_drawLock.up();
 	}
 
-	void setPosition(uint x, uint y)
+	void position(uint x, uint y)
 	{
 		_drawLock.down();
 
@@ -267,7 +267,7 @@ class TuiBuffer : TuiWidget
 			_cury = _b-1;
 		}
 
-		Console.setPosition(_curx, _cury);
+		Console.position(_curx, _cury);
 
 		_drawLock.up();
 	}
@@ -277,7 +277,7 @@ class TuiBuffer : TuiWidget
 		uint new_x = (_curx-_x) + x;
 		uint new_y = (_cury-_y) + y;
 
-		setPosition(new_x, new_y);
+		position(new_x, new_y);
 	}
 
 	void getPosition(out uint x, out uint y)
@@ -291,7 +291,7 @@ protected:
 	void _linefeed()
 	{
 
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("af: ", _curx, " ", _cury);
 		_drawLock.down();
 
@@ -304,7 +304,7 @@ protected:
 
 		while (_cury >= _b)
 		{
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("bf: ", _curx, " ", _cury);
 			// we have reached the bottom
 			// we have to move the first line
@@ -319,22 +319,22 @@ protected:
 				{
 					bl = new BufferLine();
 				}
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("ef: ", _curx, " ", _cury);
 				bl.fgclr = new fgColor[_w];
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("ff: ", _curx, " ", _cury);
 				bl.bgclr = new bgColor[_w];
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("df: ", _curx, " ", _cury);
 				bl.line = new emptyChar[_w];
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("gf: ", _curx, " ", _cury);
 				_buffer.addItem(bl);
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("hf: ", _curx, " ", _cury);
 			}
-		Console.setPosition((4 * 10),29);
+		Console.position((4 * 10),29);
 			Console.put("cf: ", _curx, " ", _cury);
 
 			_firstVisible += _linesToScroll;

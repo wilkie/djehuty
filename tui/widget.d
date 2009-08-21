@@ -11,12 +11,13 @@ import core.format;
 import core.string;
 import core.unicode;
 
-import io.console;
+private import io.console;
 
 // Description: This class abstracts part of the console's screen.  When attached to a window, this class will receive input through the events.  Keyboard events will be passed only when the control is activated.  A control can decide not to be activatable by setting it's _isTabStop to false.
 class TuiWidget : Responder {
 
 	this() {
+		Console.widget = this;
 	}
 
 	this(int x, int y, int width, int height) {
@@ -26,6 +27,7 @@ class TuiWidget : Responder {
 		_base_y = y;
 		_width = width;
 		_height = height;
+		Console.widget = this;
 	}
 
 	// Events
@@ -148,116 +150,123 @@ protected:
 		return _window !is null && _window.isActive;
 	}
 
-	// Description: This will move the terminal caret to the relative position indicated by the parameters.
-	// x: The x position within the widget bounds to move the caret.
-	// y: The y position within the widget bounds to move the caret.
-	final void moveCaret(uint x, uint y) {
-		if (x >= _width) {
-			x = _width - 1;
+	struct _Console {
+		// Description: This will move the terminal caret to the relative position indicated by the parameters.
+		// x: The x position within the widget bounds to move the caret.
+		// y: The y position within the widget bounds to move the caret.
+		final void position(uint x, uint y) {
+			if (x >= widget._width) {
+				x = widget._width - 1;
+			}
+
+			if (y >= widget._height) {
+				y = widget._height - 1;
+			}
+
+			io.console.Console.position = [widget._base_x + widget._x + x, widget._base_y + widget._y + y];
 		}
 
-		if (y >= _height) {
-			y = _height - 1;
+		// Description: This function will hide the caret.
+		final void hideCaret() {
+			io.console.Console.hideCaret();
 		}
 
-		Console.position = [_base_x + _x + x, _base_y + _y + y];
-	}
-
-	// Description: This function will hide the caret.
-	final void hideCaret() {
-		Console.hideCaret();
-	}
-
-	// Description: This function will show the caret.
-	final void showCaret() {
-		Console.showCaret();
-	}
-
-	final void changeColor(fgColor forecolor) {
-		Console.setColor(forecolor);
-	}
-
-	final void changeColor(bgColor backcolor) {
-		Console.setColor(backcolor);
-	}
-
-	final void changeColor(fgColor forecolor, bgColor backcolor) {
-		Console.setColor(forecolor, backcolor);
-	}
-
-	// Description: This function will print to the widget.
-	final void put(...) {
-		mixin(formatToString!());
-
-		putString(toParse);
-	}
-
-	// Description: This function will print to the widget and then go to the next line.
-	final void putln(...) {
-		mixin(formatToString!());
-
-		putString(toParse);
-
-		Console.putChar('\n');
-	}
-
-	// Description: This function is for printing strings within widget bounds.
-	// str: The String to print.string idget bounds
-	final void putString(String str) {
-		// Clip to the bounds of the control and the owner container
-		Coord pos = Console.position;
-
-		int x;
-		int y;
-		int r;
-		int b;
-
-		uint leftPos = 0;
-		uint rightPos = 0;
-
-		x = pos.x;
-		y = pos.y;
-		r = pos.x + str.length;
-		b = pos.y + 1;
-		
-		uint _r = _x + _width;
-		uint _b = _y + _height;
-		
-		if (_r > _base_x + _owner.width) {
-			_r = _base_x + _owner.width;
-		}
-		
-		if (_b > _base_y + _owner.height) {
-			_b = _base_y + _owner.height;
+		// Description: This function will show the caret.
+		final void showCaret() {
+			io.console.Console.showCaret();
 		}
 
-		if ((r < _x) || (b < _y) || (x > _r) || (y > _b)) {
-			// Outside bounds of widget completely
-			return;
+		final void setColor(fgColor forecolor) {
+			io.console.Console.setColor(forecolor);
 		}
 
-		// Clip string (left edge)
-		if (x < _x) {
-			leftPos = _x - x;
-			pos.x = 0;
-			Console.position = pos;
+		final void setColor(bgColor backcolor) {
+			io.console.Console.setColor(backcolor);
 		}
 
-		// Clip string (right edge)
-		if (r > _r) {
-			rightPos = r - _r;
+		final void setColor(fgColor forecolor, bgColor backcolor) {
+			io.console.Console.setColor(forecolor, backcolor);
 		}
 
-		str = str.subString(leftPos, str.length - rightPos - leftPos);
+		// Description: This function will print to the widget.
+		final void put(...) {
+			mixin(formatToString!());
 
-		Console.putString(str);
+			putString(toParse);
+		}
+
+		// Description: This function will print to the widget and then go to the next line.
+		final void putln(...) {
+			mixin(formatToString!());
+
+			putString(toParse);
+
+			io.console.Console.putChar('\n');
+		}
+
+		// Description: This function is for printing strings within widget bounds.
+		// str: The String to print.string idget bounds
+		final void putString(String str) {
+			// Clip to the bounds of the control and the owner container
+			Coord pos = io.console.Console.position;
+
+			int x;
+			int y;
+			int r;
+			int b;
+
+			uint leftPos = 0;
+			uint rightPos = 0;
+
+			x = pos.x;
+			y = pos.y;
+			r = pos.x + str.length;
+			b = pos.y + 1;
+
+			uint _r = widget._x + widget._width;
+			uint _b = widget._y + widget._height;
+
+			if (_r > widget._base_x + widget._owner.width) {
+				_r = widget._base_x + widget._owner.width;
+			}
+
+			if (_b > widget._base_y + widget._owner.height) {
+				_b = widget._base_y + widget._owner.height;
+			}
+
+			if ((r < widget._x) || (b < widget._y) || (x > _r) || (y > _b)) {
+				// Outside bounds of widget completely
+				return;
+			}
+
+			// Clip string (left edge)
+			if (x < widget._x) {
+				leftPos = widget._x - x;
+				pos.x = 0;
+				io.console.Console.position = pos;
+			}
+
+			// Clip string (right edge)
+			if (r > _r) {
+				rightPos = r - _r;
+			}
+
+			str = str.subString(leftPos, str.length - rightPos - leftPos);
+
+			io.console.Console.putString(str);
+		}
+
+		// Description: This function is for printing strings within widget bounds.
+		// str: The String to print.
+		final void putString(string str) {
+			putString(new String(str));
+		}
+
+	private:
+		TuiWidget widget;
 	}
 
-	// Description: This function is for printing strings within widget bounds.
-	// str: The String to print.
-	final void putString(string str) {
-		putString(new String(str));
-	}
+	_Console Console;
 
 	final void tabForward() {
 		_owner._tabForward();

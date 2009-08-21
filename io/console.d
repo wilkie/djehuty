@@ -134,23 +134,6 @@ static:
 	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
 	}
 
-	//Description: Sets the foreground and background colors for the console.
-	//bgclr: The background color to set.
-	//fgclr: The foreground color to set.
-	void setColor(bgColor bclr, fgColor fclr) {
-		int bright = 0;
-		if (fclr > fgColor.White)
-		{
-			bright = 1;
-		}
-
-	    cur_fg_color = fclr % 8;
-	    cur_bg_color = bclr;
-	    cur_bright_color = bright;
-
-	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
-	}
-
 	//Description: Sets the background color for the console.
 	//bgclr: The background color to set.
 	void setColor(bgColor bclr) {
@@ -162,13 +145,6 @@ static:
 	// Description: Clears the console screen.
 	void clear() {
 		ConsoleClear();
-	}
-
-	// Description: Sets the position of the caret to the point (x,y).
-	// x: The column for the caret.
-	// y: The row for the caret.
-	void setPosition(uint x, uint y) {
-		ConsoleSetPosition(x,y);
 	}
 
 	void position(Coord coord) {
