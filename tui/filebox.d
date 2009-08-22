@@ -25,7 +25,10 @@ class TuiFileBox : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_path = new Directory();
-		_list = _path.list;
+		_list = _path.list.sort;
+		if (!_path.isRoot) {
+			_list = [new String("..")] ~ _list;
+		}
 	}
 
 	override void onDraw() {
@@ -82,9 +85,23 @@ class TuiFileBox : TuiWidget {
 		}
 		else if (key.code == Key.Return) {
 			// Traverse Directory
-			if (_path.isDir(_list[_pos])) {
+			if (_list[_pos] == "..") {
+				_path = _path.parent;
+				_list = _path.list.sort;
+				if (!_path.isRoot) {
+					_list = [new String("..")] ~ _list;
+				}
+				_pos = 0;
+				_firstVisible = 0;
+				onDraw();
+				onDirectorySelect(_path.path);
+			}
+			else if (_path.isDir(_list[_pos])) {
 				_path = _path.traverse(_list[_pos]);
-				_list = _path.list;
+				_list = _path.list.sort;
+				if (!_path.isRoot) {
+					_list = [new String("..")] ~ _list;
+				}
 				_pos = 0;
 				_firstVisible = 0;
 				onDraw();
