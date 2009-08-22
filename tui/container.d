@@ -15,7 +15,7 @@ import tui.widget;
 import core.event;
 import core.definitions;
 
-import io.console;
+private import io.console;
 
 class TuiContainer : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
@@ -72,11 +72,31 @@ class TuiContainer : TuiWidget {
 		do {
 			c =	c._prevControl;
 
+			io.console.Console.clipSave();
 			c.onDraw();
+			io.console.Console.clipRestore();
+			io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
 		} while(c !is _firstControl);
 
 		// Should clear the rest of the space not used by a widget
 
+		static const char[128] spaces = ' ';
+
+		Console.setColor(bgColor.White);
+		for (uint i; i < this.height; i++) {
+			Console.position(0,i);
+			io.console.Console.setColor(bgColor.White);
+			uint numSpaces = this.width;
+
+			do {
+				uint pad = 128;
+				if (numSpaces < pad) {
+					pad = numSpaces;
+				}
+				io.console.Console.put(spaces[0..pad]);
+				numSpaces -= pad;
+			} while (numSpaces > 0)
+		}
 	}
 
 	override void onKeyDown(Key key) {
@@ -198,9 +218,16 @@ class TuiContainer : TuiWidget {
 		}
 		super.push(dsp);
 	}
-	
+
 	override bool isTabStop() {
 		return _isTabStop;
+	}
+	
+	override void move(uint x, uint y) {
+		// Must report to each control
+		_reportMove(x, y);
+
+		super.move(x,y);
 	}
 
 protected:
@@ -216,6 +243,25 @@ protected:
 
 	bool _inited;
 	bool _isTabStop;
+
+	void _reportMove(uint x, uint y) {
+		TuiWidget c = _firstControl;
+
+		if (c is null) {
+			super.move(x,y);
+			return;
+		}
+
+		do {
+			c = c._prevControl;
+			c._base_x = _base_x + x;
+			c._base_y = _base_y + y;
+			if (cast(TuiContainer)c) {
+				TuiContainer container = cast(TuiContainer)c;
+				container._reportMove(c.left, c.top);
+			}
+		} while (c !is _firstControl);
+	}
 
 	package void _tabForward() {
 		// activate the next control

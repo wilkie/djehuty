@@ -61,6 +61,7 @@ class TuiWindow : Responder {
 		_controlContainer.onDraw();
 
 		_drawMenu();
+		Console.clipClear();
 
 		if (showCaret) {
 			Console.showCaret();
@@ -347,6 +348,19 @@ class TuiWindow : Responder {
 		if (isActive) {
 			_drawMenu();
 		}
+		
+		// Turn off all rendering
+		Console.clipRect(0,0,this.width,this.height);
+
+		// Resize control container to take into account menubar
+		_controlContainer.resize(this.width, this.height-1);
+
+		// Move control container below the menu bar
+		_controlContainer.move(0,1);
+
+		// clear clipping region
+		Console.clipClear();
+		redraw();
 	}
 
 	Mouse mouseProps;
@@ -354,7 +368,12 @@ class TuiWindow : Responder {
 private:
 
 	final void _onResize() {
-		_controlContainer.resize(this.width, this.height);
+		if (_menu) {
+			_controlContainer.resize(this.width, this.height - 1);
+		}
+		else {
+			_controlContainer.resize(this.width, this.height);
+		}
 		onResize();
 	}
 
@@ -487,7 +506,7 @@ private:
 	}
 
 	void _selectMenu(Menu mnu) {
-	
+
 		// Switching focus to window
 		_controlContainer.onLostFocus();
 
@@ -610,7 +629,10 @@ private:
 		_focusedMenuIndex = removed.oldFocusedIndex;
 
 		Console.clipClear();
-		Console.clipRect(removed.region);
+		Console.clipRect(0, 0, removed.region.left, this.height);
+		Console.clipRect(removed.region.left, 0, removed.region.right, removed.region.top);
+		Console.clipRect(removed.region.left, removed.region.bottom, removed.region.right, this.height);
+		Console.clipRect(removed.region.right, 0, this.width, this.height);
 		redraw();
 		Console.clipClear();
 	}
