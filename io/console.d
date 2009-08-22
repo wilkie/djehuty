@@ -509,17 +509,42 @@ private:
 		if (_clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
+/*			Rect context;
+			Rect rt;
+			rt.left = 1;
+			rt.right = 3;
+			rt.top = 1;
+			rt.bottom = 3;
+			_clippingRegions ~= rt;
+
+			rt.left = 1;
+			rt.right = 3;
+			rt.top = 1;
+			rt.bottom = 3;
+			_clippingRegions ~= rt;
+
+			rt.left = 1;
+			rt.right = 3;
+			rt.top = 1;
+			rt.bottom = 3;
+			_clippingRegions ~= rt;
+
+			rt.left = 1;
+			rt.right = 3;
+			rt.top = 1;
+			rt.bottom = 3;
+			_clippingRegions ~= rt;*/
 		}
 
 		// This will contain lengths of substrings
-		// It will alternate, OUT IN OUT IN OUT etc
+		// It will alternate, IN OUT IN OUT IN OUT etc
 		// Where OUT means it is not drawn, and IN is
 
-		// We start with everything not drawn
+		// We start with everything drawn
 		uint[] formatArray = [str.length, 0];
 
 		foreach(region; _clippingRegions) {
-			if (!(x > region.right || r < region.left || y > region.bottom || b < region.top)) {
+			if (!(x > region.right || r < region.left || y >= region.bottom || b <= region.top)) {
 				// This string clips this clipping rectangle
 				// Grab the substring within the clipping region
 				int start;
@@ -545,6 +570,12 @@ private:
 				uint endIdx = uint.max;
 
 				uint pos;
+				
+				/*ConsolePutString("or[");
+				_putInt(start);
+				ConsolePutString(",");
+				_putInt(end);
+				ConsolePutString("]");*/
 
 				foreach(uint idx, item; formatArray) {
 					if (pos + item > start && startIdx == uint.max) {
@@ -561,6 +592,13 @@ private:
 
 					pos += item;
 				}
+				
+				/*ConsolePutString("fa[");
+				foreach(item; formatArray) {
+					_putInt(item);
+					ConsolePutString(",");
+				}
+				ConsolePutString("]");*/
 
 				if (startIdx == uint.max) {
 					startIdx = 0;
@@ -571,6 +609,16 @@ private:
 					endIdx = formatArray.length - 1;
 					endPos = pos;
 				}
+
+				/*ConsolePutString("se[");
+				_putInt(startIdx);
+				ConsolePutString(",");
+				_putInt(startPos);
+				ConsolePutString(",");
+				_putInt(endIdx);
+				ConsolePutString(",");
+				_putInt(endPos);
+				ConsolePutString("]");*/
 
 				// Add to formatArray
 				uint oldLength = 0;
@@ -618,10 +666,10 @@ private:
 					uint finalPos = endPos + formatArray[endIdx];
 					uint outLength = finalPos - start;
 					if (endIdx + 1 < formatArray.length) {
-						formatArray = formatArray[0..startIdx] ~ [newLength, outLength] ~ formatArray[endIdx+1..$];
+						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, outLength] ~ formatArray[endIdx+1..$];
 					}
 					else {
-						formatArray = formatArray[0..startIdx] ~ [newLength, outLength];
+						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, outLength];
 					}
 				}
 				else {
@@ -631,10 +679,10 @@ private:
 					uint oldEndLength = formatArray[endIdx];
 					uint newEndLength = (endPos + oldEndLength) - end;
 					if (endIdx + 1 < formatArray.length) {
-						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, newEndLength] ~ formatArray[endIdx+1..$];
+						formatArray = formatArray[0..startIdx] ~ [newLength, newEndLength] ~ formatArray[endIdx+1..$];
 					}
 					else {
-						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, newEndLength];
+						formatArray = formatArray[0..startIdx] ~ [newLength, newEndLength];
 					}
 				}
 			}
@@ -645,10 +693,10 @@ private:
 
 		for (uint i; i < formatArray.length; i++, isOut = !isOut) {
 			if (isOut) {
-				ConsoleSetRelative(formatArray[i], 0);
+				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
 			}
 			else {
-				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
+				ConsoleSetRelative(formatArray[i], 0);
 			}
 			pos += formatArray[i];
 		}

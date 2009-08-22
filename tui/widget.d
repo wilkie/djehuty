@@ -223,8 +223,8 @@ protected:
 			r = pos.x + str.length;
 			b = pos.y + 1;
 
-			uint _r = widget._x + widget._width;
-			uint _b = widget._y + widget._height;
+			uint _r = widget._base_x + widget.width;
+			uint _b = widget._base_y + widget.height;
 
 			if (_r > widget._base_x + widget._owner.width) {
 				_r = widget._base_x + widget._owner.width;
@@ -263,7 +263,7 @@ protected:
 		}
 
 		final void putSpaces(uint numSpaces) {
-			static char[128] spaces = ' ';
+			static const char[128] spaces = ' ';
 
 			do {
 				uint pad = 128;

@@ -22,6 +22,7 @@ class TuiDialog : TuiContainer {
 	}
 
 	override void onAdd() {
+		_old_base_y = _base_y;
 		_base_y++;
 	}
 
@@ -60,10 +61,18 @@ class TuiDialog : TuiContainer {
 	}
 
 protected:
+
+	override void _reportMove(uint x, uint y) {
+		_base_y++;
+		super._reportMove(x,y);
+	}
+
 	dstring _title;
 
 	fgColor _forecolor = fgColor.Black;
 	bgColor _backcolor = bgColor.White;
+
+	uint _old_base_y;
 }
 
 import tui.filebox;

@@ -86,6 +86,7 @@ class TuiFileBox : TuiWidget {
 				_path = _path.traverse(_list[_pos]);
 				_list = _path.list;
 				_pos = 0;
+				_firstVisible = 0;
 				onDraw();
 				onDirectorySelect(_path.path);
 			}
@@ -98,18 +99,23 @@ class TuiFileBox : TuiWidget {
 				return;
 			}
 			
-			if (_firstVisible > this.height - 1) {
-				_firstVisible -= this.height - 1;			
+			if (_pos != _firstVisible) {
+				_pos = _firstVisible;
 			}
 			else {
-				_firstVisible = 0;
-			}
-
-			if (_pos > this.height - 1) {
-				_pos -= this.height - 1;
-			}
-			else {
-				_pos = 0;
+				if (_firstVisible > this.height - 1) {
+					_firstVisible -= this.height - 1;
+				}
+				else {
+					_firstVisible = 0;
+				}
+	
+				if (_pos > this.height - 1) {
+					_pos -= this.height - 1;
+				}
+				else {
+					_pos = 0;
+				}
 			}
 
 			onDraw();
@@ -118,12 +124,17 @@ class TuiFileBox : TuiWidget {
 			if (_pos == _list.length - 1) {
 				return;
 			}
+			
+			if (_pos != _firstVisible + this.height - 1) {
+				_pos = _firstVisible + this.height - 1;
+			}
+			else {
+				_firstVisible += this.height - 1;
+				_pos += this.height - 1;
 
-			_firstVisible += this.height - 1;
-			_pos += this.height - 1;
-
-			if (_firstVisible > _list.length - this.height) {
-				_firstVisible = _list.length - this.height;
+				if (_firstVisible > _list.length - this.height) {
+					_firstVisible = _list.length - this.height;
+				}
 			}
 
 			if ( _pos >= _list.length) {
