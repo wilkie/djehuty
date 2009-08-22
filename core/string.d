@@ -990,6 +990,24 @@ class String {
 
 		return ret;
 	}
+	
+	int opCmp(Object o) {
+		if (cast(String)o) {
+			String str = cast(String)o;
+			if (_data < str._data) {
+				return -1;
+			}
+			else if (_data == str._data) {
+				return 0;
+			}
+			return 1;
+		}
+		return 0;
+	}
+
+	int opCmp(string str) {
+		return opCmp(new String(str));
+	}
 
 	override char[] toString() {
 		return Unicode.toUtf8(_data);
