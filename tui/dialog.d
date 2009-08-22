@@ -29,7 +29,7 @@ class TuiDialog : TuiContainer {
 	override void onDraw() {
 		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
 
-		Console.setColor(_forecolor, _backcolor);
+		io.console.Console.setColor(_forecolor, _backcolor);
 
 		uint x;
 		if (_title.length + 2 > this.width) {
@@ -39,23 +39,23 @@ class TuiDialog : TuiContainer {
 			x = (this.width - _title.length) / 2;
 		}
 
-		Console.put(" ");
+		io.console.Console.put(" ");
 		for (uint i = 1; i < x-1; i++) {
-			Console.put("-");
+			io.console.Console.put("-");
 		}
 		if (x > 1) {
-			Console.put(" ");
+			io.console.Console.put(" ");
 		}
 
-		Console.put(_title);
+		io.console.Console.put(_title);
 
 		if (x > 1) {
-			Console.put(" ");
+			io.console.Console.put(" ");
 		}
 		for (uint i = x + _title.length + 2; i < this.width; i++) {
-			Console.put("-");
+			io.console.Console.put("-");
 		}
-		Console.put(" ");
+		io.console.Console.put(" ");
 
 		super.onDraw();
 	}

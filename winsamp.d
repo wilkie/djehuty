@@ -126,7 +126,7 @@ class MyTWindow : TuiWindow {
 		//push(tuibox = new TuiTextBox(0,1,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
-		push(new TuiOpenDialog(0,1));
+		push(new TuiOpenDialog(5,5));
 		menu = foo;
 		text = "unsaved";
 //		tuibox.lineNumbers = true;
