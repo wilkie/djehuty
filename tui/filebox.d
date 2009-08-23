@@ -37,6 +37,8 @@ class TuiFileBox : TuiWidget {
 		for (i = _firstVisible; (i < this.height + _firstVisible) && (i < _list.length); i++) {
 			drawLine(i);
 		}
+		
+		Console.setColor(_forecolor, _backcolor);
 
 		for (; i < this.height + _firstVisible; i++) {
 			Console.position(0, i-_firstVisible);
@@ -237,7 +239,7 @@ protected:
 		}
 
 		Console.put(_list[pos]);
-		
+
 		if(_list[pos].length < this.width) {
 			Console.putSpaces(this.width - _list[pos].length);
 		}
@@ -248,7 +250,7 @@ protected:
 
 	Directory _path;
 	String[] _list;
-	
+
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;
 
