@@ -373,7 +373,7 @@ class TuiTextBox : TuiWidget {
 	}
 
 	void forecolor(fgColor value) {
-		return _forecolor;
+		_forecolor = value;
 	}
 
 	bool lineNumbers() {

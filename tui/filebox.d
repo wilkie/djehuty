@@ -189,6 +189,40 @@ class TuiFileBox : TuiWidget {
 	override bool isTabStop() {
 		return true;
 	}
+	
+	// Propeties
+
+	bgColor backcolor() {
+		return _backcolor;
+	}
+
+	void backcolor(bgColor value) {
+		_backcolor = value;
+	}
+
+	fgColor forecolor() {
+		return _forecolor;
+	}
+
+	void forecolor(fgColor value) {
+		_forecolor = value;
+	}
+	
+	fgColor selectedForecolor() {
+		return _selectedForecolor;
+	}
+
+	void selectedForecolor(fgColor value) {
+		_selectedForecolor = value;
+	}
+
+	bgColor selectedBackcolor() {
+		return _selectedBackcolor;
+	}
+
+	void selectedBackcolor(bgColor value) {
+		_selectedBackcolor = value;
+	}
 
 protected:
 
@@ -196,10 +230,10 @@ protected:
 		Console.position(0, pos - _firstVisible);
 
 		if(pos == _pos) {
-			Console.setColor(fgColor.BrightYellow, bgColor.Black);
+			Console.setColor(_selectedForecolor, _selectedBackcolor);
 		}
 		else {
-			Console.setColor(fgColor.White, bgColor.Black);
+			Console.setColor(_forecolor, _backcolor);
 		}
 
 		Console.put(_list[pos]);
@@ -214,4 +248,11 @@ protected:
 
 	Directory _path;
 	String[] _list;
+	
+	fgColor _forecolor = fgColor.White;
+	bgColor _backcolor = bgColor.Black;
+
+	fgColor _selectedForecolor = fgColor.BrightYellow;
+	bgColor _selectedBackcolor = bgColor.Black;
+
 }

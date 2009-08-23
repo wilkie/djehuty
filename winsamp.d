@@ -99,6 +99,7 @@ import tui.textbox;
 import tui.codebox;
 
 import tui.dialog;
+import tui.filebox;
 
 class MyConsoleApp : Application {
 	//static this() { new MyConsoleApp(); }
@@ -124,7 +125,12 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;*/
 	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
-		push(new TuiOpenDialog(5,5));
+		//push(new TuiOpenDialog(5,5));
+		push(filebox = new TuiFileBox(5,5,60,20));
+		filebox.forecolor = fgColor.Red;
+		filebox.backcolor = bgColor.Black;
+		filebox.selectedBackcolor = bgColor.Green;
+		filebox.selectedForecolor = fgColor.White;
 		push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
@@ -155,6 +161,7 @@ private:
 	TuiTextField tuitext;
 	TuiTextBox tuibox;
 	TuiLabel status;
+	TuiFileBox filebox;
 }
 
 class MyControl : Widget {
