@@ -222,9 +222,12 @@ protected:
 			y = pos.y;
 			r = pos.x + str.length;
 			b = pos.y + 1;
+			
+			uint global_x = widget._base_x + widget._x;
+			uint global_y = widget._base_y + widget._y;
 
-			uint _r = widget._base_x + widget.width;
-			uint _b = widget._base_y + widget.height;
+			uint _r = global_x + widget.width;
+			uint _b = global_y + widget.height;
 
 			if (_r > widget._base_x + widget._owner.width) {
 				_r = widget._base_x + widget._owner.width;
@@ -234,14 +237,15 @@ protected:
 				_b = widget._base_y + widget._owner.height;
 			}
 
-			if ((r < widget._x) || (b < widget._y) || (x > _r) || (y > _b)) {
+			// Test rectangular intersection
+			if ((r < global_x) || (b < global_y) || (x > _r) || (y > _b)) {
 				// Outside bounds of widget completely
 				return;
 			}
 
 			// Clip string (left edge)
-			if (x < widget._x) {
-				leftPos = widget._x - x;
+			if (x < global_x) {
+				leftPos = global_x - x;
 				pos.x = 0;
 				io.console.Console.position = pos;
 			}
