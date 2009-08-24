@@ -229,6 +229,89 @@ bool DirectoryCopy(ref String path, String newPath)
 	return true;
 }
 
+String[] _ReturnNetworkComputers() {
+	String[] ret;
+
+	HANDLE enumWorkgroupHandle;
+
+	DWORD bufferSize = 16284;
+
+	NETRESOURCEW[16284 / NETRESOURCEW.sizeof] networkResource;
+	WNetOpenEnumW(RESOURCE_GLOBALNET, RESOURCETYPE_ANY, 0, null, &enumWorkgroupHandle);
+
+	DWORD numEntries = -1;
+	WNetEnumResourceW(enumWorkgroupHandle, &numEntries, cast(void*)networkResource.ptr, &bufferSize);
+
+	foreach(item; networkResource[0..numEntries]) {
+		HANDLE subWorkgroupHandle;
+		WNetOpenEnumW(RESOURCE_GLOBALNET, RESOURCETYPE_ANY, 0, &item, &subWorkgroupHandle);
+		DWORD subEntries = -1;
+		NETRESOURCEW[16284 / NETRESOURCEW.sizeof] subResource;
+		DWORD subSize = 16284;
+		WNetEnumResourceW(subWorkgroupHandle, &subEntries, cast(void*)subResource.ptr, &subSize);
+
+		foreach(subitem; subResource[0..subEntries]) {
+			if (subitem.lpRemoteName !is null && subitem.dwDisplayType & RESOURCEDISPLAYTYPE_GROUP) {
+
+				// Read all computers on this workgroup
+
+				SERVER_INFO_101* bufptr;
+
+				DWORD dwEntriesRead;
+				DWORD dwTotalEntries;
+				DWORD dwResumeHandle;
+
+				uint MAX_PREFERRED_LENGTH = short.max;
+				NetServerEnum(null, 101, cast(void**)&bufptr, MAX_PREFERRED_LENGTH,
+					&dwEntriesRead, &dwTotalEntries, SV_TYPE_ALL, subitem.lpRemoteName, &dwResumeHandle);
+
+				SERVER_INFO_101* tmpptr = bufptr;
+				foreach(pcitem; tmpptr[0..dwEntriesRead]) {
+					wchar[] pcchrs = pcitem.sv101_name[0..strlen(pcitem.sv101_name)];
+					ret ~= new String(Unicode.toUtf8(pcchrs));
+				}
+
+				NetApiBufferFree(cast(void*)bufptr);
+			}
+		}
+
+		WNetCloseEnum(subWorkgroupHandle);
+	}
+
+	WNetCloseEnum(enumWorkgroupHandle);
+
+	SERVER_INFO_101* bufptr;
+
+	DWORD dwEntriesRead;
+	DWORD dwTotalEntries;
+	DWORD dwResumeHandle;
+
+	uint MAX_PREFERRED_LENGTH = short.max;
+	NetServerEnum(null, 101, cast(void**)&bufptr, MAX_PREFERRED_LENGTH,
+		&dwEntriesRead, &dwTotalEntries, SV_TYPE_ALL, null, &dwResumeHandle);
+
+	SERVER_INFO_101* tmpptr = bufptr;
+	foreach(pcitem; tmpptr[0..dwEntriesRead]) {
+		wchar[] pcchrs = pcitem.sv101_name[0..strlen(pcitem.sv101_name)];
+		// do not let in a duplicate
+		String thisPC = new String(Unicode.toUtf8(pcchrs));
+		bool isThere = false;
+		foreach(strFound; ret) {
+			if (strFound == thisPC) {
+				isThere = true;
+				break;
+			}
+		}
+		if (!isThere) {
+			ret ~= thisPC;
+		}
+	}
+
+	NetApiBufferFree(cast(void*)bufptr);
+
+	return ret;
+}
+
 wchar[] _SanitizeWindowsPath(wchar[] tmp)
 {
 	if (tmp.length == 0) { return tmp; }
@@ -313,8 +396,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 
 	String[] list;
 
-	if (newpath == "")
-	{
+	if (newpath == "") {
 		// root directory listing
 		// that is, list the network folder and all drives
 
@@ -322,10 +404,8 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 
 		string curDrive = ['a'];
 
-		while(logicaldrives != 0)
-		{
-			if ((logicaldrives & 1) == 1)
-			{
+		while(logicaldrives != 0) {
+			if ((logicaldrives & 1) == 1) {
 				list ~= new String(curDrive);
 			}
 
@@ -337,8 +417,10 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 
 		list ~= new String("network");
 	}
-	else
-	{
+	else if (path == "/network") {
+		return _ReturnNetworkComputers;
+	}
+	else {
 		// regular directory listing
 
 		DirectoryOpen(dirVars, newpath);

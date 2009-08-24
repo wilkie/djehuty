@@ -223,7 +223,7 @@ private:
 		if (cmdlne is null) {
 			return;
 		}
-	
+
 		Arguments args = Arguments.instance;
 	
 		// tokenize
@@ -247,13 +247,12 @@ private:
 			}
 		}
 	}
-	
+
 	void initCommon() {
 		// set buffer to print without newline
 		setvbuf (stdout, null, _IONBF, 0);
-	
 		//SetConsoleOutputCP(65001);
-	
+
 		getWindowsVersion();
 		InitCommonControls();
 	}
