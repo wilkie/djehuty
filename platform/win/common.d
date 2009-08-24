@@ -1265,6 +1265,57 @@ extern(Windows)
 	BOOL SetMenu(HWND, HMENU);
 	BOOL AppendMenuW(HMENU, uint, uint*,LPCWSTR);
 	BOOL ModifyMenuW(HMENU, uint, uint, uint*, LPCWSTR);
+
+	// Network
+	DWORD NetServerEnum(LPCWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD, LPCWSTR, DWORD*);
+	DWORD NetApiBufferFree(void*);
+	DWORD WNetOpenEnumW(DWORD, DWORD, DWORD, NETRESOURCEW*, HANDLE*);
+	DWORD WNetEnumResourceW(HANDLE, DWORD*, VOID*, DWORD*);
+	DWORD WNetCloseEnum(HANDLE);
+}
+const auto RESOURCE_CONNECTED= 1;
+const auto RESOURCE_GLOBALNET =2;
+const auto RESOURCE_REMEMBERED =3;
+const auto RESOURCE_RECENT =4;
+const auto RESOURCE_CONTEXT =5;
+const auto RESOURCETYPE_ANY =0;
+const auto RESOURCETYPE_DISK =1;
+const auto RESOURCETYPE_PRINT =2;
+const auto RESOURCETYPE_RESERVED =8;
+const auto RESOURCETYPE_UNKNOWN   =     0xFFFFFFFF;
+const auto RESOURCEDISPLAYTYPE_GENERIC        =0x00000000;
+const auto RESOURCEDISPLAYTYPE_DOMAIN         =0x00000001;
+const auto RESOURCEDISPLAYTYPE_SERVER         =0x00000002;
+const auto RESOURCEDISPLAYTYPE_SHARE          =0x00000003;
+const auto RESOURCEDISPLAYTYPE_FILE           =0x00000004;
+const auto RESOURCEDISPLAYTYPE_GROUP          =0x00000005;
+const auto RESOURCEDISPLAYTYPE_NETWORK        =0x00000006;
+const auto RESOURCEDISPLAYTYPE_ROOT           =0x00000007;
+const auto RESOURCEDISPLAYTYPE_SHAREADMIN     =0x00000008;
+const auto RESOURCEDISPLAYTYPE_DIRECTORY      =0x00000009;
+const auto RESOURCEDISPLAYTYPE_TREE           =0x0000000A;
+const auto RESOURCEDISPLAYTYPE_NDSCONTAINER   =0x0000000B;
+
+const auto SV_TYPE_ALL = 0xFFFFFFFF;
+
+struct NETRESOURCEW {
+	DWORD	dwScope;
+	DWORD	dwType;
+	DWORD	dwDisplayType;
+	DWORD	dwUsage;
+	LPWSTR	lpLocalName;
+	LPWSTR	lpRemoteName;
+	LPWSTR	lpComment;
+	LPWSTR	lpProvider;
+}
+
+struct SERVER_INFO_101 {
+	DWORD	sv101_platform_id;
+	LPWSTR	sv101_name;
+	DWORD	sv101_version_major;
+	DWORD	sv101_version_minor;
+	DWORD	sv101_type;
+	LPWSTR	sv101_comment;
 }
 
 // FLAGS
