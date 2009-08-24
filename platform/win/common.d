@@ -1272,7 +1272,14 @@ extern(Windows)
 	DWORD WNetOpenEnumW(DWORD, DWORD, DWORD, NETRESOURCEW*, HANDLE*);
 	DWORD WNetEnumResourceW(HANDLE, DWORD*, VOID*, DWORD*);
 	DWORD WNetCloseEnum(HANDLE);
+	DWORD NetServerDiskEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
+	DWORD NetShareEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
 }
+
+struct SHARE_INFO_0 {
+	LPWSTR shi0_netname;
+}
+
 const auto RESOURCE_CONNECTED= 1;
 const auto RESOURCE_GLOBALNET =2;
 const auto RESOURCE_REMEMBERED =3;

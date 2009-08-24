@@ -229,6 +229,33 @@ bool DirectoryCopy(ref String path, String newPath)
 	return true;
 }
 
+String[] _ReturnSharedFolders(wchar[] serverName) {
+	// Read all drives on this server
+	String[] ret;
+
+	SHARE_INFO_0* bufptr;
+
+	DWORD dwEntriesRead;
+	DWORD dwTotalEntries;
+	DWORD dwResumeHandle;
+
+	uint MAX_PREFERRED_LENGTH = short.max;
+
+	NetShareEnum(serverName.ptr, 0, cast(void**)&bufptr, -1,
+		&dwEntriesRead, &dwTotalEntries, &dwResumeHandle);
+
+	NetApiBufferFree(cast(void*)bufptr);
+
+	foreach(shareItem; bufptr[0..dwEntriesRead]) {
+		wchar[] pcchrs = shareItem.shi0_netname[0..strlen(shareItem.shi0_netname)];
+		if (pcchrs.length > 0 && pcchrs[$-1] != '$') {
+			ret ~= new String(Unicode.toUtf8(pcchrs));
+		}
+	}
+
+	return ret;
+}
+
 String[] _ReturnNetworkComputers() {
 	String[] ret;
 
@@ -389,8 +416,13 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp)
 	return tmp;
 }
 
-String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
-{
+String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
+
+	// trim trailing slash
+	if (path.length > 0 && path[path.length - 1] == '/' || path[path.length - 1] == '\\') {
+		path = path.subString(0, path.length-1);
+	}
+
 	String newpath = new String(path);
 	newpath = new String(Unicode.toUtf8(_ConvertFrameworkPath(newpath.array)));
 
@@ -416,50 +448,64 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 		}
 
 		list ~= new String("network");
+		return list;
 	}
-	else if (path == "/network") {
-		return _ReturnNetworkComputers;
+	else if (path.length >= 8 && path[0..8] == "/network") {
+		// Get relative path to /network
+		if (path.length == 8) {
+			return _ReturnNetworkComputers;
+		}
+		else {
+			String newPath = path.subString(9);
+			// find next slash (if there is one)
+			int pos = newPath.find("/");
+			if (pos == -1) {
+				// Just a pcname
+				return _ReturnSharedFolders(newPath.toUtf16 ~ "\0"w);
+			}
+			else {
+				// Fall through to normal directory listing
+			}
+		}
 	}
-	else {
-		// regular directory listing
+	// regular directory listing
 
-		DirectoryOpen(dirVars, newpath);
+	DirectoryOpen(dirVars, newpath);
 
-		WIN32_FIND_DATAW ffd;
+	WIN32_FIND_DATAW ffd;
 
-		String pn = new String(newpath);
-		pn.append("/*");
-		pn.appendChar('\0');
+	String pn = new String(newpath);
+	pn.append("/*");
+	pn.appendChar('\0');
 
-		HANDLE h = FindFirstFileW(pn.ptr, &ffd);
-		bool cont = true;
+	HANDLE h = FindFirstFileW(pn.ptr, &ffd);
+	bool cont = true;
 
-		while(cont)
+	while(cont)
+	{
+		// Caculate Length of d_name
+		int len;
+
+		foreach(chr; ffd.cFileName)
 		{
-			// Caculate Length of d_name
-			int len;
-
-			foreach(chr; ffd.cFileName)
+			if (chr == '\0')
 			{
-				if (chr == '\0')
-				{
-					break;
-				}
-				len++;
+				break;
 			}
-
-			// Add to list
-			if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..")
-			{
-				list ~= new String(Unicode.toUtf8(ffd.cFileName[0..len]));
-			}
-
-			// Retrieve next item in the directory
-			cont = FindNextFileW(h, &ffd) > 0;
+			len++;
 		}
 
-		DirectoryClose(dirVars);
+		// Add to list
+		if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..")
+		{
+			list ~= new String(Unicode.toUtf8(ffd.cFileName[0..len]));
+		}
+
+		// Retrieve next item in the directory
+		cont = FindNextFileW(h, &ffd) > 0;
 	}
+
+	DirectoryClose(dirVars);
 
 	return list;
 }
