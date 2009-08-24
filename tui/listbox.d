@@ -82,26 +82,16 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	}
 
 	override void onLostFocus() {
-		String data;
-
 		if (_list.length > 0) {
-			_list.getItem(data, _pos);
-			Console.setColor(fgColor.White, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
+			drawLine(_pos);
 		}
 	}
 
 	override void onGotFocus() {
 		Console.hideCaret();
 
-		String data;
-
 		if (_list.length > 0) {
-			_list.getItem(data, _pos);
-			Console.setColor(fgColor.BrightYellow, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
+			drawLine(_pos);
 		}
 	}
 
