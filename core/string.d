@@ -1030,7 +1030,15 @@ private:
 
 // strlen
 size_t strlen(char* chr) {
-	uint ret = 0;
+	size_t ret = 0;
+	while(*chr++) {
+		ret++;
+	}
+	return ret;
+}
+
+size_t strlen(wchar* chr) {
+	size_t ret = 0;
 	while(*chr++) {
 		ret++;
 	}
@@ -1083,3 +1091,46 @@ void strlwr(char* str) {
 		str++;
 	}
 }
+
+string toStr(...) {
+	mixin(formatToString!());
+
+	if (toParse !is null) {
+		return toParse.toString();
+	}
+	return "";
+}
+
+/*
+
+template ToString(T) {
+	string toStr(T array) {
+		string ret = "[";
+		foreach(item; array[0..$-1]) {
+			// Note: usage of scope operator
+			static if (is(T == ulong[])) {
+				ret ~= .toStr(item) ~ ", ";
+			}
+			else {
+				ret ~= .toStr(cast(long)item) ~ ", ";
+			}
+		}
+		if (array.length > 0) {
+			ret ~= array[$-1];
+		}
+		ret ~= "]";
+		return ret;
+	}
+}
+
+mixin ToString!(bool[]);
+mixin ToString!(byte[]);
+mixin ToString!(ubyte[]);
+mixin ToString!(short[]);
+mixin ToString!(ushort[]);
+mixin ToString!(int[]);
+mixin ToString!(uint[]);
+mixin ToString!(long[]);
+mixin ToString!(ulong[]); 
+
+*/

@@ -24,7 +24,7 @@ import utils.arraylist;
 class TuiFileBox : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
-		_path = new Directory();
+		_path = new Directory("/network/DAVE-PC/public");
 		_list = _path.list.sort;
 		if (!_path.isRoot) {
 			_list = [new String("..")] ~ _list;
