@@ -126,13 +126,13 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;*/
 	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
-		//push(new TuiOpenDialog(5,5));
-		push(listbox = new TuiListBox(5,5,60,10));
-		
+		push(new TuiOpenDialog(5,5));
+		//push(listbox = new TuiListBox(5,5,60,10));
+
 		// add 20 things to the listbox
-		for(int i; i<20; i++) {
-			listbox.addItem("list item " ~ toStr(i));
-		}
+//		for(int i; i<20; i++) {
+	//		listbox.addItem("list item " ~ toStr(i));
+		//}
 
 
 		//push(filebox = new TuiFileBox(5,5,60,20));
