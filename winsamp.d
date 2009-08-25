@@ -126,7 +126,7 @@ class MyTWindow : TuiWindow {
 		tuitext.text = "hahaha" ~ foo;*/
 	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
-		push(new TuiOpenDialog(5,5));
+		//push(new TuiOpenDialog(5,5));
 		//push(listbox = new TuiListBox(5,5,60,10));
 
 		// add 20 things to the listbox
