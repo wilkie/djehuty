@@ -100,6 +100,7 @@ import tui.codebox;
 
 import tui.dialog;
 import tui.filebox;
+import tui.listbox;
 
 class MyConsoleApp : Application {
 	//static this() { new MyConsoleApp(); }
@@ -131,6 +132,19 @@ class MyTWindow : TuiWindow {
 		filebox.backcolor = bgColor.Black;
 		filebox.selectedBackcolor = bgColor.Green;
 		filebox.selectedForecolor = fgColor.White;
+		//push(listbox = new TuiListBox(5,5,60,10));
+
+		// add 20 things to the listbox
+//		for(int i; i<20; i++) {
+	//		listbox.addItem("list item " ~ toStr(i));
+		//}
+
+
+		//push(filebox = new TuiFileBox(5,5,60,20));
+		//filebox.forecolor = fgColor.Red;
+		//filebox.backcolor = bgColor.Black;
+		//filebox.selectedBackcolor = bgColor.Green;
+		//filebox.selectedForecolor = fgColor.White;
 		push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
@@ -162,6 +176,7 @@ private:
 	TuiTextBox tuibox;
 	TuiLabel status;
 	TuiFileBox filebox;
+	TuiListBox listbox;
 }
 
 class MyControl : Widget {

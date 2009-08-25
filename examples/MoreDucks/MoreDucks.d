@@ -19,14 +19,13 @@ class MyControl : Widget {
 		images[1] = new Image("examples/MoreDucks/duckling.png");
 		images[2] = new Image("examples/MoreDucks/ducks-cute.png");
 	}
-	
+
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,images[curImage]);
 	}
 
 	void nextImage() {
-		if(curImage == images.length-1)
-		{
+		if(curImage == images.length-1) {
 			curImage = 0;
 			return;
 		}
@@ -48,7 +47,7 @@ class MyWindow : Window {
 		push(button = new OSButton(0,0,360,50,"MORE DUCKS!"));
 		push(imageBox = new MyControl());
 	}
-	
+
 	override bool onSignal(Dispatcher d, uint signal) {
 		if(d is button) {
 			if(signal == Button.Signal.Selected) {
@@ -61,7 +60,7 @@ class MyWindow : Window {
 		return false;
 	}
 
-	
+
 private:
 	OSButton button;
 	MyControl imageBox;

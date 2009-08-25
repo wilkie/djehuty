@@ -317,7 +317,7 @@ class TuiTextBox : TuiWidget {
 			onLineChanged(_row);
 
 			onDraw();
-			//positionCaret();
+			positionCaret();
 			return;
 		}
 
@@ -423,24 +423,60 @@ protected:
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
 			Console.setColor(_forecolor, _backcolor);
-			Console.put(_lines[lineNumber].value);
+			if (_firstColumn >= _lines[lineNumber].value.length) {
+			}
+			else {
+				Console.put(_lines[lineNumber].value.subString(_firstColumn));
+			}
 		}
 		else {
 			// Splitting up the line due to formatting
 			uint pos = 0;
-			for(uint i; i < _lines[lineNumber].format.length; i += 3) {
+			for (uint i; i < _lines[lineNumber].format.length; i += 3) {
 				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
 				//Console.Console.put("[", _lines[lineNumber].format[i+2], "]");
+<<<<<<< HEAD:tui/textbox.d
 				Console.put(_lines[lineNumber].value[pos..pos + _lines[lineNumber].format[i+2]]);
+=======
+				uint formatLength = _lines[lineNumber].format[i+2];
+				
+				if (formatLength + pos < _firstColumn) {
+					// draw nothing
+				}
+				else if (pos >= _firstColumn) {
+					Console.put(_lines[lineNumber].value[pos..pos + formatLength]);
+				}
+				else {
+					Console.put(_lines[lineNumber].value[_firstColumn..pos + formatLength]);
+				}
+
+>>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/textbox.d
 				pos += _lines[lineNumber].format[i+2];
 			}
 		}
 
 		// Pad with spaces
+<<<<<<< HEAD:tui/textbox.d
 		uint num = this.right - (this.left + _lines[lineNumber].value.length + _lineNumbersWidth);
 		uint pad;
 
 		for (uint k = this.left + _lines[lineNumber].value.length + _lineNumbersWidth; k < this.right; k += pad) {
+=======
+		uint num = (_lines[lineNumber].value.length - _firstColumn);
+		if (_firstColumn >= _lines[lineNumber].value.length) {
+			num = this.width - _lineNumbersWidth;
+		}
+		else if (num > this.width - _lineNumbersWidth) {
+			num = 0;
+		}
+		else {
+			num = (this.width - _lineNumbersWidth) - num;
+		}
+
+		uint pad;
+
+		for (; num > 0;) {
+>>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/textbox.d
 			pad = num;
 
 			if (pad > spaces.length) {
@@ -486,9 +522,9 @@ protected:
 			shouldDraw = true;
 		}
 
-		if (this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) {
+		if (_lineNumbersWidth + (_column - _firstColumn) >= this.width) {
 			// scroll horizontally
-			_firstColumn = _column - this.width + 1;
+			_firstColumn = _column - this.width + _lineNumbersWidth + 1;
 			shouldDraw = true;
 		}
 

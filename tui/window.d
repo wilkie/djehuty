@@ -367,7 +367,11 @@ class TuiWindow : Responder {
 
 private:
 
+<<<<<<< HEAD:tui/window.d
 	final void _onResize() {
+=======
+	package final void _onResize() {
+>>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/window.d
 		if (_menu) {
 			_controlContainer.resize(this.width, this.height - 1);
 		}

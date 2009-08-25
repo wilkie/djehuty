@@ -73,6 +73,10 @@ class TuiContainer : TuiWidget {
 			c =	c._prevControl;
 
 			io.console.Console.clipSave();
+<<<<<<< HEAD:tui/container.d
+=======
+			this.widgetClippingContext = c;
+>>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/container.d
 			c.onDraw();
 			io.console.Console.clipRestore();
 			io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
