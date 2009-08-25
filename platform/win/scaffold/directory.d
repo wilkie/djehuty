@@ -229,7 +229,6 @@ bool DirectoryCopy(ref String path, String newPath)
 	return true;
 }
 
-<<<<<<< HEAD:platform/win/scaffold/directory.d
 String[] _ReturnSharedFolders(wchar[] serverName) {
 	// Read all drives on this server
 	String[] ret;
@@ -257,8 +256,6 @@ String[] _ReturnSharedFolders(wchar[] serverName) {
 	return ret;
 }
 
-=======
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:platform/win/scaffold/directory.d
 String[] _ReturnNetworkComputers() {
 	String[] ret;
 
@@ -419,7 +416,6 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp)
 	return tmp;
 }
 
-<<<<<<< HEAD:platform/win/scaffold/directory.d
 String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 
 	// trim trailing slash
@@ -427,10 +423,6 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 		path = path.subString(0, path.length-1);
 	}
 
-=======
-String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
-{
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:platform/win/scaffold/directory.d
 	String newpath = new String(path);
 	newpath = new String(Unicode.toUtf8(_ConvertFrameworkPath(newpath.array)));
 
@@ -458,7 +450,6 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 		list ~= new String("network");
 		return list;
 	}
-<<<<<<< HEAD:platform/win/scaffold/directory.d
 	else if (path.length >= 8 && path[0..8] == "/network") {
 		// Get relative path to /network
 		if (path.length == 8) {
@@ -478,25 +469,9 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 		}
 	}
 	// regular directory listing
-=======
-	else if (path == "/network") {
-		return _ReturnNetworkComputers;
-	}
-	else {
-		// regular directory listing
-
-		DirectoryOpen(dirVars, newpath);
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:platform/win/scaffold/directory.d
-
 	DirectoryOpen(dirVars, newpath);
 
-<<<<<<< HEAD:platform/win/scaffold/directory.d
 	WIN32_FIND_DATAW ffd;
-=======
-		String pn = new String(newpath);
-		pn.append("/*");
-		pn.appendChar('\0');
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:platform/win/scaffold/directory.d
 
 	String pn = new String(newpath);
 	pn.append("/*");

@@ -180,11 +180,6 @@ class TuiFileBox : TuiWidget {
 
 	// Events
 
-<<<<<<< HEAD:tui/filebox.d
-	void onFileSelect(String file) {
-	}
-
-=======
 	// Description: This event will be fired upon selection of a file within the widget.
 	// file: The complete path to the file.
 	void onFileSelect(String file) {
@@ -192,7 +187,6 @@ class TuiFileBox : TuiWidget {
 
 	// Description: This event will be fired upon selection of a directory within the widget.
 	// dir: The complete path to the directory.
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/filebox.d
 	void onDirectorySelect(String dir) {
 	}
 
@@ -201,16 +195,10 @@ class TuiFileBox : TuiWidget {
 	override bool isTabStop() {
 		return true;
 	}
-<<<<<<< HEAD:tui/filebox.d
-	
-	// Propeties
-
-=======
 
 	// Propeties
 
 	// Description: This property is for setting the backcolor for normal items.
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/filebox.d
 	bgColor backcolor() {
 		return _backcolor;
 	}
@@ -219,10 +207,7 @@ class TuiFileBox : TuiWidget {
 		_backcolor = value;
 	}
 
-<<<<<<< HEAD:tui/filebox.d
-=======
 	// Description: This property is for setting the forecolor for normal items.
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/filebox.d
 	fgColor forecolor() {
 		return _forecolor;
 	}
@@ -230,12 +215,8 @@ class TuiFileBox : TuiWidget {
 	void forecolor(fgColor value) {
 		_forecolor = value;
 	}
-<<<<<<< HEAD:tui/filebox.d
-	
-=======
 
 	// Description: This property is for setting the forecolor for selected items.
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/filebox.d
 	fgColor selectedForecolor() {
 		return _selectedForecolor;
 	}
@@ -244,10 +225,7 @@ class TuiFileBox : TuiWidget {
 		_selectedForecolor = value;
 	}
 
-<<<<<<< HEAD:tui/filebox.d
-=======
 	// Description: This property is for setting the backcolor for selected items.
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/filebox.d
 	bgColor selectedBackcolor() {
 		return _selectedBackcolor;
 	}

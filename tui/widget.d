@@ -150,14 +150,11 @@ protected:
 		return _window !is null && _window.isActive;
 	}
 
-<<<<<<< HEAD:tui/widget.d
-=======
 	// This stores the widget currently clipped by the Console's clipping region
 	// That is, the one with focus, that can safely draw and not interfere with
 	// another widget.
 	static TuiWidget widgetClippingContext;
 
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/widget.d
 	struct _Console {
 		// Description: This will move the terminal caret to the relative position indicated by the parameters.
 		// x: The x position within the widget bounds to move the caret.
@@ -215,14 +212,11 @@ protected:
 		// Description: This function is for printing strings within widget bounds.
 		// str: The String to print.string idget bounds
 		final void putString(String str) {
-<<<<<<< HEAD:tui/widget.d
-=======
 			if (widget !is TuiWidget.widgetClippingContext) {
 				// We need to set up the current widget that wants to draw so that widgets
 				// above this one are clipped.
 			}
 
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/widget.d
 			// Clip to the bounds of the control and the owner container
 			Coord pos = io.console.Console.position;
 
@@ -238,11 +232,7 @@ protected:
 			y = pos.y;
 			r = pos.x + str.length;
 			b = pos.y + 1;
-<<<<<<< HEAD:tui/widget.d
-			
-=======
 
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/widget.d
 			uint global_x = widget._base_x + widget._x;
 			uint global_y = widget._base_y + widget._y;
 

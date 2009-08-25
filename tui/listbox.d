@@ -26,36 +26,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	}
 	
 	override void onDraw() {
-<<<<<<< HEAD:tui/listbox.d
-		Console.position(0, 0);
-		Console.setColor(fgColor.White, bgColor.Black);
-
-		// draw all strings
-		Iterator irate;
-		irate = _list.getIterator();
-
-		String data;
-		uint i = 1;
-
-		_spacestr = new char[width];
-		_spacestr[0..width] = ' ';
-
-		while(_list.getItem(data, irate)) {
-			Console.put(data.array);
-			Console.put(_spacestr[0..width-data.length]);
-			if (i == 1){
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-			}
-			Console.position(0, i);
-			i++;
-		}
-
-		for ( ; i<=height; i++) {
-			Console.put(_spacestr);
-			if (i != height) {
-				Console.position(0, i);
-			}
-=======
 		uint i;
 
 		for (i = _firstVisible; (i < this.height + _firstVisible) && (i < _list.length); i++) {
@@ -67,48 +37,11 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		for (; i < this.height + _firstVisible; i++) {
 			Console.position(0, i-_firstVisible);
 			Console.putSpaces(this.width);
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/listbox.d
 		}
 	}
 
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Up) {
-<<<<<<< HEAD:tui/listbox.d
-			String data;
-
-			if (_pos > 0) {
-				// draw over current
-				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data.array);
-				// decrement
-				_pos--;
-				// draw new
-				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data.array);
-			}
-		}
-		else if (key.code == Key.Down) {
-			String data;
-
-			if (_list.length > 0 && _pos < _list.length() - 1)
-			{
-				// draw over current
-				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightWhite, bgColor.Black);
-				Console.position(0,_pos);
-				Console.put(data.array);
-				// increment
-				_pos++;
-				// draw new
-				_list.getItem(data, _pos);
-				Console.setColor(fgColor.BrightYellow, bgColor.Black);
-				Console.position(0, _pos);
-				Console.put(data.array);
-=======
 			if (_pos == 0) {
 				return;
 			}
@@ -144,7 +77,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 				_pos++;
 				drawLine(_pos-1);
 				drawLine(_pos);
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/listbox.d
 			}
 		}
 		else if (key.code == Key.PageUp) {
@@ -199,36 +131,16 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	}
 
 	override void onLostFocus() {
-<<<<<<< HEAD:tui/listbox.d
-		String data;
-
-		if (_list.length > 0) {
-			_list.getItem(data, _pos);
-			Console.setColor(fgColor.White, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
-=======
 		if (_list.length > 0) {
 			drawLine(_pos);
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/listbox.d
 		}
 	}
 
 	override void onGotFocus() {
 		Console.hideCaret();
 
-<<<<<<< HEAD:tui/listbox.d
-		String data;
-
-		if (_list.length > 0) {
-			_list.getItem(data, _pos);
-			Console.setColor(fgColor.BrightYellow, bgColor.Black);
-			Console.position(0, _pos);
-			Console.put(data.array);
-=======
 		if (_list.length > 0) {
 			drawLine(_pos);
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/listbox.d
 		}
 	}
 
@@ -294,8 +206,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		_forecolor = value;
 	}
 
-<<<<<<< HEAD:tui/listbox.d
-=======
 	// Description: This property is for setting the forecolor for selected items.
 	fgColor selectedForecolor() {
 		return _selectedForecolor;
@@ -314,7 +224,6 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		_selectedBackcolor = value;
 	}
 
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/listbox.d
 protected:
 
 	void drawLine(uint pos) {

@@ -435,11 +435,8 @@ protected:
 			for (uint i; i < _lines[lineNumber].format.length; i += 3) {
 				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
 				//Console.Console.put("[", _lines[lineNumber].format[i+2], "]");
-<<<<<<< HEAD:tui/textbox.d
-				Console.put(_lines[lineNumber].value[pos..pos + _lines[lineNumber].format[i+2]]);
-=======
 				uint formatLength = _lines[lineNumber].format[i+2];
-				
+
 				if (formatLength + pos < _firstColumn) {
 					// draw nothing
 				}
@@ -450,18 +447,11 @@ protected:
 					Console.put(_lines[lineNumber].value[_firstColumn..pos + formatLength]);
 				}
 
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/textbox.d
 				pos += _lines[lineNumber].format[i+2];
 			}
 		}
 
 		// Pad with spaces
-<<<<<<< HEAD:tui/textbox.d
-		uint num = this.right - (this.left + _lines[lineNumber].value.length + _lineNumbersWidth);
-		uint pad;
-
-		for (uint k = this.left + _lines[lineNumber].value.length + _lineNumbersWidth; k < this.right; k += pad) {
-=======
 		uint num = (_lines[lineNumber].value.length - _firstColumn);
 		if (_firstColumn >= _lines[lineNumber].value.length) {
 			num = this.width - _lineNumbersWidth;
@@ -476,7 +466,6 @@ protected:
 		uint pad;
 
 		for (; num > 0;) {
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:tui/textbox.d
 			pad = num;
 
 			if (pad > spaces.length) {

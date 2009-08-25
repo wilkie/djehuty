@@ -1272,7 +1272,6 @@ extern(Windows)
 	DWORD WNetOpenEnumW(DWORD, DWORD, DWORD, NETRESOURCEW*, HANDLE*);
 	DWORD WNetEnumResourceW(HANDLE, DWORD*, VOID*, DWORD*);
 	DWORD WNetCloseEnum(HANDLE);
-<<<<<<< HEAD:platform/win/common.d
 	DWORD NetServerDiskEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
 	DWORD NetShareEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
 }
@@ -1281,9 +1280,6 @@ struct SHARE_INFO_0 {
 	LPWSTR shi0_netname;
 }
 
-=======
-}
->>>>>>> 55c858782d15c3bd5600c9cd22c01370d2262fab:platform/win/common.d
 const auto RESOURCE_CONNECTED= 1;
 const auto RESOURCE_GLOBALNET =2;
 const auto RESOURCE_REMEMBERED =3;
