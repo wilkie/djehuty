@@ -423,7 +423,11 @@ protected:
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
 			Console.setColor(_forecolor, _backcolor);
-			Console.put(_lines[lineNumber].value.subString(_firstColumn));
+			if (_firstColumn >= _lines[lineNumber].value.length) {
+			}
+			else {
+				Console.put(_lines[lineNumber].value.subString(_firstColumn));
+			}
 		}
 		else {
 			// Splitting up the line due to formatting
@@ -448,10 +452,20 @@ protected:
 		}
 
 		// Pad with spaces
-		uint num = this.right - (this.left + _lines[lineNumber].value.length - _firstColumn + _lineNumbersWidth);
+		uint num = (_lines[lineNumber].value.length - _firstColumn);
+		if (_firstColumn >= _lines[lineNumber].value.length) {
+			num = this.width - _lineNumbersWidth;
+		}
+		else if (num > this.width - _lineNumbersWidth) {
+			num = 0;
+		}
+		else {
+			num = (this.width - _lineNumbersWidth) - num;
+		}
+
 		uint pad;
 
-		for (uint k = this.left + _lines[lineNumber].value.length - _firstColumn + _lineNumbersWidth; k < this.right; k += pad) {
+		for (; num > 0;) {
 			pad = num;
 
 			if (pad > spaces.length) {
