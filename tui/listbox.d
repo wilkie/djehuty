@@ -31,7 +31,7 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 		for (i = _firstVisible; (i < this.height + _firstVisible) && (i < _list.length); i++) {
 			drawLine(i);
 		}
-		
+
 		Console.setColor(_forecolor, _backcolor);
 
 		for (; i < this.height + _firstVisible; i++) {
@@ -78,6 +78,55 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 				drawLine(_pos-1);
 				drawLine(_pos);
 			}
+		}
+		else if (key.code == Key.PageUp) {
+			if (_pos == 0) {
+				return;
+			}
+
+			if (_pos != _firstVisible) {
+				_pos = _firstVisible;
+			}
+			else {
+				if (_firstVisible > this.height - 1) {
+					_firstVisible -= this.height - 1;
+				}
+				else {
+					_firstVisible = 0;
+				}
+
+				if (_pos > this.height - 1) {
+					_pos -= this.height - 1;
+				}
+				else {
+					_pos = 0;
+				}
+			}
+
+			onDraw();
+		}
+		else if (key.code == Key.PageDown) {
+			if (_pos == _list.length - 1) {
+				return;
+			}
+
+			if (_pos != _firstVisible + this.height - 1) {
+				_pos = _firstVisible + this.height - 1;
+			}
+			else {
+				_firstVisible += this.height - 1;
+				_pos += this.height - 1;
+
+				if (_firstVisible > _list.length - this.height) {
+					_firstVisible = _list.length - this.height;
+				}
+			}
+
+			if ( _pos >= _list.length) {
+				_pos = _list.length - 1;
+			}
+
+			onDraw();
 		}
 	}
 
