@@ -317,7 +317,7 @@ class TuiTextBox : TuiWidget {
 			onLineChanged(_row);
 
 			onDraw();
-			//positionCaret();
+			positionCaret();
 			return;
 		}
 
