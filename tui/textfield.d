@@ -111,29 +111,41 @@ class TuiTextField : TuiWidget {
 		_value = new String(text);
 		onDraw();
 	}
-
+	
+	// Description: This property returns the current forecolor of the text in the field
+	// Returns: forecolor of text
 	fgColor forecolor() {
 		return _forecolor;
 	}
-
+	
+	// Description: This property sets the current forecolor of the text in the field
+	// value: The new forecolor
 	void forecolor(fgColor value) {
 		_forecolor = value;
 		onDraw();
 	}
-
+	
+	// Description: This property returns the current backcolor of the text in the field
+	// Returns: backcolor of text
 	bgColor backcolor() {
 		return _backcolor;
 	}
-
+	
+	// Description: This property sets the current backcolor of the text in the field
+	// value: The new backcolor
 	void backcolor(bgColor value) {
 		_backcolor = value;
 		onDraw();
 	}
-
+	
+	// Description: This property returns the current forecolor of the borders of the field
+	// Returns: forecolor of borders
 	fgColor basecolor() {
 		return _color;
 	}
-
+	
+	// Description: This property sets the current forecolor of the borders of the field
+	// value: The new forecolor of the borders
 	void basecolor(fgColor value) {
 		_color = value;
 	}
