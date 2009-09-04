@@ -11,6 +11,7 @@
 module core.exception;
 
 import core.string;
+import core.definitions;
 
 class FileNotFound : Exception {
 	this() {

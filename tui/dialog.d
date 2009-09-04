@@ -14,6 +14,7 @@ private import io.console;
 
 import core.unicode;
 import core.event;
+import core.definitions;
 
 class TuiDialog : TuiContainer {
 	this(string title, uint x, uint y, uint width, uint height) {

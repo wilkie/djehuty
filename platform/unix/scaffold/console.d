@@ -592,10 +592,10 @@ void ConsoleSetRelative(int x, int y) {
 	Curses.move(newy, newx);
 }
 
-void ConsoleGetPosition(out uint x, out uint y) {
+void ConsoleGetPosition(uint* x, uint* y) {
 	Curses.getyx(Curses.stdscr, m_y, m_x);
-	x = m_x;
-	y = m_y;
+	*x = m_x;
+	*y = m_y;
 }
 
 void ConsoleSetPosition(uint x, uint y) {
