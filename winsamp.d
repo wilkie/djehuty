@@ -124,14 +124,14 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
 		//push(new TuiOpenDialog(5,5));
-		push(filebox = new TuiFileBox(5,5,60,20));
+/*		push(filebox = new TuiFileBox(5,5,60,20));
 		filebox.forecolor = fgColor.Red;
 		filebox.backcolor = bgColor.Black;
 		filebox.selectedBackcolor = bgColor.Green;
-		filebox.selectedForecolor = fgColor.White;
+		filebox.selectedForecolor = fgColor.White;*/
 		//push(listbox = new TuiListBox(5,5,60,10));
 
 		// add 20 things to the listbox
@@ -157,8 +157,8 @@ class MyTWindow : TuiWindow {
 
 	override void onResize() {
 		tuibox.resize(this.width, this.height-2);
-		//status.move(0, this.height-1);
-//		status.resize(this.width, 1);
+		status.move(0, this.height-2);
+		status.resize(this.width, 1);
 		redraw();
 	}
 
