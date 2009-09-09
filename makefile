@@ -121,7 +121,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),WINDOWS)
-	dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -I. -Iplatform/win -unittest $<
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -I. -Iplatform/win -unittest $<
 else
 endif
 endif
@@ -187,14 +187,10 @@ endif
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
+ifeq ($(PLATFORM),WINDOWS)
 	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
-endif
 endif
 endif
 
