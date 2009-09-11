@@ -258,11 +258,11 @@ class MyConsoleApp : Application {
 
 		foo(asdf, GOOOD, 2,aaaa, 3,4, meh, 3, "dave"d);
 
-		Regex r = new Regex("((ab)*)*c");
+	/*	Regex r = new Regex("((ab)*)*c");
 		String work = r.eval("ababababab");
 		if (work) {
 			Console.putln(work);
-		}
+		}*/
 		List!(int) lst = new List!(int);
 		lst.add(2);
 		lst.add(1);

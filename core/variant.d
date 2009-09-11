@@ -62,42 +62,6 @@ enum Type {
 	Class,
 }
 
-union VariantData {
-	byte b;
-	ubyte ub;
-	int i;
-	uint ui;
-	short s;
-	ushort us;
-	long l;
-	ulong ul;
-
-	float f;
-	double d;
-	real r;
-
-	ifloat fi;
-	idouble di;
-	ireal ri;
-
-	cfloat fc;
-	cdouble dc;
-	creal rc;
-
-	char cc;
-	wchar cw;
-	dchar cd;
-
-	string cs;
-	wstring ws;
-	dstring ds;
-
-	Object reference;
-	ubyte[] blob;
-
-	List!(Variant) array;
-}
-
 struct Variant {
 	Type type;
 
@@ -157,7 +121,12 @@ struct Variant {
 				else {
 					TypeInfo_Struct tis = cast(TypeInfo_Struct)ti;
 					if (tis.xtoString !is null) {
-						return tis.xtoString(data.blob.ptr);
+						version(Tango) {
+							return tis.xtoString();
+						}
+						else {
+							return tis.xtoString(data.blob.ptr);
+						}
 					}
 				}
 				break;
@@ -189,6 +158,42 @@ struct Variant {
 		return "foo";
 	}
 
+}
+
+union VariantData {
+	byte b;
+	ubyte ub;
+	int i;
+	uint ui;
+	short s;
+	ushort us;
+	long l;
+	ulong ul;
+
+	float f;
+	double d;
+	real r;
+
+	ifloat fi;
+	idouble di;
+	ireal ri;
+
+	cfloat fc;
+	cdouble dc;
+	creal rc;
+
+	char cc;
+	wchar cw;
+	dchar cd;
+
+	string cs;
+	wstring ws;
+	dstring ds;
+
+	Object reference;
+	ubyte[] blob;
+
+	Variant[] array;
 }
 
 class Variadic {
@@ -338,9 +343,9 @@ protected:
 		if (cmp[0] == 'A' && cmp != "Array") {
 			ret.depth++;
 			ret.isArray = true;
-			ret.data.array = new List!(Variant)();
 
 			arr = va_arg!(void[])(ptr);
+			ret.data.array = new Variant[arr.length];
 
 			cmp = cmp[1..$];
 		}
@@ -353,7 +358,7 @@ protected:
 				ret.isArray = true;
 				ret.depth = 1;
 
-				ret.data.array = new List!(Variant)();
+				ret.data.array = new Variant[arr.length];
 
 				TypeInfo_Array tia = cast(TypeInfo_Array)ti;
 
@@ -362,7 +367,7 @@ protected:
 				for (uint i; i < arr.length; i++) {
 					sub = _variantForTypeInfo(tia.value, arrPtr);
 					va_arg!(void[])(arrPtr);
-					ret.data.array.add(sub);
+					ret.data.array[i] = sub;
 				}
 
 				if (sub.isArray) {
@@ -393,7 +398,7 @@ protected:
 						val.type = Type.Byte;
 						val.data.b = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -410,7 +415,7 @@ protected:
 						val.type = Type.Ubyte;
 						val.data.ub = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -427,7 +432,7 @@ protected:
 						val.type = Type.Short;
 						val.data.s = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -444,7 +449,7 @@ protected:
 						val.type = Type.Ushort;
 						val.data.us = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -461,7 +466,7 @@ protected:
 						val.type = Type.Int;
 						val.data.i = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -478,7 +483,7 @@ protected:
 						val.type = Type.Uint;
 						val.data.ui = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -495,7 +500,7 @@ protected:
 						val.type = Type.Long;
 						val.data.l = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -512,7 +517,7 @@ protected:
 						val.type = Type.Ulong;
 						val.data.ul = *arrPtr;
 						arrPtr++;
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -528,7 +533,7 @@ protected:
 						Variant val;
 						val.type = Type.Float;
 						val.data.f = va_arg!(float)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -544,7 +549,7 @@ protected:
 						Variant val;
 						val.type = Type.Double;
 						val.data.d = va_arg!(double)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -560,7 +565,7 @@ protected:
 						Variant val;
 						val.type = Type.Real;
 						val.data.r = va_arg!(real)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -576,7 +581,7 @@ protected:
 						Variant val;
 						val.type = Type.Ifloat;
 						val.data.fi = va_arg!(ifloat)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -592,7 +597,7 @@ protected:
 						Variant val;
 						val.type = Type.Idouble;
 						val.data.di = va_arg!(idouble)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;
@@ -608,7 +613,7 @@ protected:
 						Variant val;
 						val.type = Type.Ireal;
 						val.data.ri = va_arg!(ireal)(arrPtr);
-						ret.data.array.add(val);
+						ret.data.array[i] = val;
 					}
 				}
 				break;

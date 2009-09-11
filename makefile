@@ -8,7 +8,7 @@ DFLAGS =
 # can be changed
 PLATFORM = WINDOWS
 
-LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -L-lncurses -J./tests
+LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua -L-lncurses -J./tests
 LFLAGS_MAC = -Iplatform/osx -lobjc -framework Cocoa -framework Foundation
 LFLAGS_WIN = -Iplatform/win platform/win/lib/gdi32.lib platform/win/lib/mpr.lib platform/win/lib/netapi32.lib platform/win/lib/user32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
 
@@ -100,10 +100,10 @@ libdeps_xomb: $(OBJS_XOMB)
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) $(DFLAGS) -fversion=PlatformOSX -c $< -o $@ -O3 -J./tests
 else
-	ifeq ($(PLATFORM),"WINDOWS")
-	else
+ifeq ($(PLATFORM),"WINDOWS")
+else
 		@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
-	endif
+endif
 endif
 
 %_xomb.obj: %.d
