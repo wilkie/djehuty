@@ -110,7 +110,7 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
 		//push(new TuiOpenDialog(5,5));
 		/*push(filebox = new TuiFileBox(5,5,60,20));
@@ -143,8 +143,8 @@ class MyTWindow : TuiWindow {
 
 	override void onResize() {
 		tuibox.resize(this.width, this.height-2);
-		//status.move(0, this.height-1);
-//		status.resize(this.width, 1);
+		status.move(0, this.height-2);
+		status.resize(this.width, 1);
 		redraw();
 	}
 

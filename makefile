@@ -6,19 +6,27 @@ OBJCC = gcc
 DFLAGS =
 
 # can be changed
-PLATFORM = PlatformWindows
+PLATFORM = WINDOWS
 
 LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -L-lncurses -J./tests
 LFLAGS_MAC = -Iplatform/osx -lobjc -framework Cocoa -framework Foundation
 LFLAGS_WIN = -Iplatform/win platform/win/lib/gdi32.lib platform/win/lib/mpr.lib platform/win/lib/netapi32.lib platform/win/lib/user32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
 
+ifeq (${MY_ARCH},MINGW32_NT-5.1)
+	OBJEXT = .obj
+	PLATFORM = WINDOWS
+else
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
 	OBJEXT = .obj
+	PLATFORM = WINDOWS
 else
 ifeq (${MY_ARCH},MINGW32_NT-6.1)
 	OBJEXT = .obj
+	PLATFORM = WINDOWS
 else
 	OBJEXT = .o
+	PLATFORM = NIX
+endif
 endif
 endif
 
@@ -92,26 +100,19 @@ libdeps_xomb: $(OBJS_XOMB)
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) $(DFLAGS) -fversion=PlatformOSX -c $< -o $@ -O3 -J./tests
 else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
-else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
-else
-	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
-endif
-endif
+	ifeq ($(PLATFORM),"WINDOWS")
+	else
+		@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
+	endif
 endif
 
 %_xomb.obj: %.d
 	@echo \-\-\-\> $<
 ifeq (${MY_ARCH},Darwin)
 else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
+ifeq ($(PLATFORM),WINDOWS)
 	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
 else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
-	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
-else
-endif
 endif
 endif
 
@@ -119,13 +120,9 @@ endif
 	@echo \-\-\-\> $<
 ifeq (${MY_ARCH},Darwin)
 else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.0")
-	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -I. -Iplatform/win -unittest $<
 else
-ifeq ("${MY_ARCH}","MINGW32_NT-6.1")
-	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -Iplatform/win -unittest $<
-else
-endif
 endif
 endif
 
@@ -144,17 +141,12 @@ ifeq (${MY_ARCH},Darwin)
 	@echo OS X detected...
 	@make libdeps_mac
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@echo Windows detected...
-	@make libdeps_win
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
+ifeq ($(PLATFORM),WINDOWS)
 	@echo Windows detected...
 	@make libdeps_win
 else
 	@echo UNIX detected...
 	@make libdeps_linux
-endif
 endif
 endif
 
@@ -195,14 +187,10 @@ endif
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	dmd.exe -w -version=$(PLATFORM) winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
+ifeq ($(PLATFORM),WINDOWS)
+	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
-endif
 endif
 endif
 
@@ -212,14 +200,10 @@ dspec: lib
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	@dmd.exe -w -version=$(PLATFORM) -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux $(TOOLS_DSPEC) $(OBJS_LINUX)
-endif
 endif
 endif
 
@@ -229,14 +213,10 @@ dscribe: lib
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	@dmd.exe -w -version=$(PLATFORM) -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
-endif
 endif
 endif
 
@@ -246,14 +226,10 @@ tuitetris: lib
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o tuitetris winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	@dmd.exe -w -version=$(PLATFORM) -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -oftuitetris.exe $(EXAMPLES_TUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -oftuitetris -d-version=PlatformLinux $(EXAMPLES_TUITETRIS) $(OBJS_LINUX)
-endif
 endif
 endif
 
@@ -263,14 +239,10 @@ moreducks: lib
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o tuitetris winsamp.o $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=$(PLATFORM) -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	@dmd.exe -w -version=$(PLATFORM) -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
-endif
 endif
 endif
 
@@ -279,13 +251,9 @@ clean:
 ifeq (${MY_ARCH},Darwin)
 	rm -f $(OBJS_MAC)
 else
-ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	rm -f $(OBJS_WIN)
-else
-ifeq (${MY_ARCH},MINGW32_NT-6.1)
+ifeq ($(PLATFORM),WINDOWS)
 	rm -f $(OBJS_WIN)
 else
 	rm -f $(OBJS_LINUX)
-endif
 endif
 endif
