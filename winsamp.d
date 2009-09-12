@@ -1,6 +1,4 @@
-import core.definitions;
-import core.color;
-import core.event;
+import djehuty;
 
 import gui.application;
 import gui.window;
@@ -10,9 +8,6 @@ import gui.widget;
 import resource.menu;
 
 import graphics.graphics;
-
-import core.regex;
-import core.string;
 
 import resource.image;
 import resource.sound;
@@ -102,15 +97,6 @@ import tui.dialog;
 import tui.filebox;
 import tui.listbox;
 
-class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
-
-	override void onApplicationStart() {
-		String str = Regex.eval("alias d ", `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`);
-		Console.putln(str);
-	}
-}
-
 class MyTWindow : TuiWindow {
 
 	this() {
@@ -127,11 +113,11 @@ class MyTWindow : TuiWindow {
 	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
 		//push(new TuiOpenDialog(5,5));
-		push(filebox = new TuiFileBox(5,5,60,20));
+		/*push(filebox = new TuiFileBox(5,5,60,20));
 		filebox.forecolor = fgColor.Red;
 		filebox.backcolor = bgColor.Black;
 		filebox.selectedBackcolor = bgColor.Green;
-		filebox.selectedForecolor = fgColor.White;
+		filebox.selectedForecolor = fgColor.White;*/
 		//push(listbox = new TuiListBox(5,5,60,10));
 
 		// add 20 things to the listbox
@@ -145,7 +131,7 @@ class MyTWindow : TuiWindow {
 		//filebox.backcolor = bgColor.Black;
 		//filebox.selectedBackcolor = bgColor.Green;
 		//filebox.selectedForecolor = fgColor.White;
-		push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
+		push(tuibox = new TuiCodeBox(0,0,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
 		menu = foo;
@@ -223,7 +209,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -244,6 +230,53 @@ private:
 	MyTWindow tuiwnd;
 
 	Sound snd;
+}
+
+class MyConsoleApp : Application {
+	static this() { new MyConsoleApp(); }
+
+	override void onApplicationStart() {
+
+
+		real[] bleh = [0,1,1,2,3,4,56];
+		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
+		
+		struct asdfasdf {
+			ulong dd;
+			ulong dd2;
+			ulong dd3;
+			ulong dd4;
+			ulong dd5;
+			string toString() {
+				return "ADSFS";
+			}
+		}
+		asdfasdf aaaa;
+		String asdf = new String("sfadf");
+		real asd;
+		Object meh = new Object();
+
+		foo(asdf, GOOOD, 2,aaaa, 3,4, meh, 3, "dave"d);
+
+		Regex r = new Regex("((ab)*)*c");
+		String work = r.eval("ababababab");
+		if (work) {
+			Console.putln(work);
+		}
+		List!(int) lst = new List!(int);
+		lst.add(2);
+		lst.add(1);
+		lst.add(3);
+		lst.add(4);
+		lst.apply((int a){ return a*a; });
+
+		filter( (int a){ return a > 2; } , range(1,11) );
+
+		Console.putln(lst);
+
+		Console.putln("asdf", GOOOD, 2, 5, 2, 6, 6);
+		foov(foobar);
+	}
 }
 
 class MyApp : GuiApplication {

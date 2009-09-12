@@ -415,7 +415,7 @@ protected:
 			}
 			String strLineNumber = new String(lineNumber);
 			Console.setColor(fgColor.Yellow, bgColor.Black);
-			Console.put(spaces[0.._lineNumbersWidth - 2 - strLineNumber.length]);
+			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
 			Console.put(strLineNumber);
 			Console.put(": ");
 		}
@@ -462,41 +462,15 @@ protected:
 		else {
 			num = (this.width - _lineNumbersWidth) - num;
 		}
-
-		uint pad;
-
-		for (; num > 0;) {
-			pad = num;
-
-			if (pad > spaces.length) {
-				Console.put(spaces);
-				pad = spaces.length;
-			}
-			else {
-				Console.put(spaces[0..pad]);
-			}
-			num -= pad;
-		}
+		
+		Console.putSpaces(num);
 	}
 
 	void drawEmptyLine(uint lineNumber) {
 		Console.position(0, lineNumber - _firstVisible);
 
 		// Pad with spaces
-		uint num = this.width;
-		uint pad;
-
-		for (uint k; k < this.width; k += pad) {
-			pad = num;
-
-			if (pad > spaces.length) {
-				Console.put(spaces);
-			}
-			else {
-				Console.put(spaces[0..pad]);
-			}
-			num -= pad;
-		}
+		Console.putSpaces(this.width);
 	}
 
 	void positionCaret() {
@@ -576,9 +550,6 @@ protected:
 			_lineNumbers = 0;
 		}
 	}
-
-	// Just some spaces
-	char[] spaces = "                                                           ";
 
 	// The information about each line
 	struct LineInfo {

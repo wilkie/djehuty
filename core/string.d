@@ -16,6 +16,7 @@ module core.string;
 import core.definitions;
 import core.unicode;
 import core.format;
+import core.variant;
 
 public import core.string;
 
@@ -1092,45 +1093,126 @@ void strlwr(char* str) {
 	}
 }
 
+string toStrv(Variadic vars) {
+	string ret = "";
+	foreach(var; vars) {
+		if (!var.isArray) {
+			if (var.type < Type.Real) {
+				long val;
+				switch(var.type) {
+					case Type.Byte:
+						val = var.data.b;
+						break;
+					case Type.Ubyte:
+						val = var.data.ub;
+						break;
+					case Type.Short:
+						val = var.data.s;
+						break;
+					case Type.Ushort:
+						val = var.data.us;
+						break;
+					case Type.Int:
+						val = var.data.i;
+						break;
+					case Type.Uint:
+						val = var.data.ui;
+						break;
+					case Type.Long:
+						val = var.data.l;
+						break;
+					default:
+						break;
+				}
+				if (var.type == Type.Ulong) {
+					ret ~= itoa(val);
+				}
+				else {
+					ret ~= itoa(cast(long)var.data.l);
+				}
+				continue;
+			}
+		}
+		ret ~= var.toString();
+	}
+	return ret;
+}
+
 string toStr(...) {
-	mixin(formatToString!());
+	Variadic vars = new Variadic(_arguments, _argptr);
 
-	if (toParse !is null) {
-		return toParse.toString();
-	}
-	return "";
+	return toStrv(vars);
 }
 
-/*
+string itoa(long val, uint base = 10) {
+	int intlen;
+	long tmp = val;
 
-template ToString(T) {
-	string toStr(T array) {
-		string ret = "[";
-		foreach(item; array[0..$-1]) {
-			// Note: usage of scope operator
-			static if (is(T == ulong[])) {
-				ret ~= .toStr(item) ~ ", ";
-			}
-			else {
-				ret ~= .toStr(cast(long)item) ~ ", ";
-			}
-		}
-		if (array.length > 0) {
-			ret ~= array[$-1];
-		}
-		ret ~= "]";
-		return ret;
-	}
+    bool negative;
+
+    if (tmp < 0) {
+        negative = true;
+        tmp = -tmp;
+        intlen = 2;
+    }
+    else {
+        negative = false;
+        intlen = 1;
+    }
+
+    while (tmp > 9) {
+        tmp /= 10;
+        intlen++;
+    }
+
+    //allocate
+
+    string ret = new char[intlen];
+
+    intlen--;
+
+    if (negative) {
+        tmp = -val;
+    } else {
+        tmp = val;
+    }
+
+    do {
+        ret[intlen] = cast(char)('0' + (tmp % 10));
+        tmp /= 10;
+        intlen--;
+    } while (tmp != 0);
+
+
+    if (negative) {
+        ret[intlen] = '-';
+    }
+
+    return ret;
 }
 
-mixin ToString!(bool[]);
-mixin ToString!(byte[]);
-mixin ToString!(ubyte[]);
-mixin ToString!(short[]);
-mixin ToString!(ushort[]);
-mixin ToString!(int[]);
-mixin ToString!(uint[]);
-mixin ToString!(long[]);
-mixin ToString!(ulong[]); 
+string itoa(ulong val, uint base = 10) {
+	int intlen;
+	ulong tmp = val;
 
-*/
+    intlen = 1;
+
+    while (tmp > 9) {
+        tmp /= 10;
+        intlen++;
+    }
+
+    //allocate
+
+    string ret = new char[intlen];
+
+    intlen--;
+
+    do {
+        ret[intlen] = cast(char)('0' + (tmp % 10));
+        tmp /= 10;
+        intlen--;
+    } while (tmp != 0);
+
+    return ret;
+}

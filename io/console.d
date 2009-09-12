@@ -6,6 +6,7 @@ import core.string;
 import core.format;
 import core.unicode;
 import core.definitions;
+import core.variant;
 
 // Section: Enums
 
@@ -255,24 +256,25 @@ static:
 
 	void putln(...) {
 		synchronized {
-			mixin(formatToString!());
-
-			if (toParse !is null) {
-				_putString(toParse);
-			}
-
-			putChar('\n');
+			Variadic vars = new Variadic(_arguments, _argptr);
+			putlnv(vars);
 		}
 	}
 
 	void put(...) {
         synchronized {
-			mixin(formatToString!());
-
-			if (toParse !is null) {
-				_putString(toParse);
-			}
+			Variadic vars = new Variadic(_arguments, _argptr);
+			putv(vars);
 		}
+	}
+
+	void putv(Variadic vars) {
+		_putString(new String(toStrv(vars)));
+	}
+
+	void putlnv(Variadic vars) {
+		putv(vars);
+		putChar('\n');
 	}
 
 	void putString(String str) {
