@@ -131,7 +131,7 @@ class MyTWindow : TuiWindow {
 		//filebox.backcolor = bgColor.Black;
 		//filebox.selectedBackcolor = bgColor.Green;
 		//filebox.selectedForecolor = fgColor.White;
-		push(tuibox = new TuiCodeBox(0,0,this.width,this.height-2));
+		push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
 		menu = foo;
@@ -209,7 +209,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -233,14 +233,14 @@ private:
 }
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 
 
 		real[] bleh = [0,1,1,2,3,4,56];
 		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
-		
+
 		struct asdfasdf {
 			ulong dd;
 			ulong dd2;
@@ -274,8 +274,14 @@ class MyConsoleApp : Application {
 
 		Console.putln(lst);
 
-		Console.putln("asdf", GOOOD, 2, 5, 2, 6, 6);
+		Console.putln("asdf", aaaa, GOOOD, 2, 5, 2, 6, 6);
 		foov(foobar);
+		
+		String str = new String("dave wilkinson");
+		string fff = str[0..4];
+		String ffff = str.subString(5);
+		Console.putln(fff);
+		Console.putln(ffff);
 	}
 }
 

@@ -24,13 +24,13 @@ class TuiTextBox : TuiWidget {
 		super(x,y,width,height);
 
 		_lines = new ArrayList!(LineInfo);
-		LineInfo newItem;
+		LineInfo newItem = new LineInfo();
 		newItem.value = new String("if (something) { /* in comment block */ init(); }");
 
 		_lines.addItem(newItem);
 		onLineChanged(_lines.length - 1);
 		for (int o; o < 500; o++) {
-			LineInfo subItem;
+			LineInfo subItem = new LineInfo();
 			subItem.value = new String(o);
 			_lines.addItem(subItem);
 			onLineChanged(_lines.length - 1);
@@ -256,7 +256,7 @@ class TuiTextBox : TuiWidget {
 
 			// Pressing enter
 
-			LineInfo newLine;
+			LineInfo newLine = new LineInfo();
 			newLine.value = _lines[_row].value.subString(_column);
 
 			// Splitting format field
@@ -552,7 +552,7 @@ protected:
 	}
 
 	// The information about each line
-	struct LineInfo {
+	class LineInfo {
 		String value;
 		uint[] format;
 	}
