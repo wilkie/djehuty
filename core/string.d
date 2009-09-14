@@ -637,7 +637,7 @@ class String {
 
 		start = _indices[start];
 
-		String ret = new String("");
+		String ret = new String();
 		ret._data = _data[start..len];
 		return ret;
 	}
