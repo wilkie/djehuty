@@ -209,7 +209,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -232,8 +232,14 @@ private:
 	Sound snd;
 }
 
+version(Tango) {
+}
+else {
+	import std.stdio;
+}
+
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 
@@ -276,12 +282,33 @@ class MyConsoleApp : Application {
 
 		Console.putln("asdf", aaaa, GOOOD, 2, 5, 2, 6, 6);
 		foov(foobar);
-		
+
 		String str = new String("dave wilkinson");
 		string fff = str[0..4];
 		String ffff = str.subString(5);
 		Console.putln(fff);
 		Console.putln(ffff);
+
+		Date date = new Date();
+		Console.putln(date);
+
+		Date testDate = new Date(Month.August, 20, 1987);
+		Time testTime = new Time(14, 45, 35);
+
+		Console.putln(Locale.formatDate(testDate));
+		Console.putln(Locale.formatTime(testTime));
+		Console.putln(Locale.formatNumber(1123431241324));
+		Console.putln(Locale.formatCurrency(1123431241324));
+		Locale.id = LocaleId.French_FR;
+		Console.putln(Locale.formatDate(testDate));
+		Console.putln(Locale.formatTime(testTime));
+		Console.putln(Locale.formatNumber(1123431241324));
+		Console.putln(Locale.formatCurrency(1123431241324));
+
+		real f = -3.4123999999;
+		Console.putln(ftoa(f));
+		printf("%f\n", f);
+		writefln(f);
 	}
 }
 

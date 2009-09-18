@@ -13,6 +13,8 @@ module core.main;
 import core.string;
 import core.arguments;
 import core.application;
+import core.locale;
+import core.system;
 
 import io.console;
 
@@ -37,6 +39,9 @@ public:
 	}
 
 	void start() {
+		// Get default locale
+		Locale.id = System.Locale.id;
+
 		// Can only start the framework once
 		if (!_hasStarted) {
 			_hasStarted = true;

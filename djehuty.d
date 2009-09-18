@@ -19,3 +19,5 @@ public import core.color;
 public import core.endian;
 public import core.list;
 public import core.variant;
+public import core.date;
+public import core.locale;
