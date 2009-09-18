@@ -7,10 +7,74 @@ import io.console;
 // Section: Types
 
 // Description: This struct stores a description of time.
-struct Time {
+class Time {
+
+	this() {
+	}
+
+	this(long ms) {
+		fromMilliseconds(ms);
+	}
+	
+	this(uint hour, uint minute, uint second, uint millisecond = 0) {
+		micros = hour;
+		micros *= 60;
+		micros += minute;
+		micros *= 60;
+		micros += second;
+		micros *= 1000;
+		micros += millisecond;
+		micros *= 1000;
+	}
 
 	// Description: The microsecond.
 	long micros;
+	
+	uint hour() {
+		ulong h,ms,s,m;
+		long tmp = micros;
+
+		ms = (cast(uint)tmp % 1000000) / 1000;
+		tmp /= 1000000;
+
+		s = cast(uint)tmp % 60;
+		tmp /= 60;
+
+		m = cast(uint)tmp % 60;
+		tmp /= 60;
+
+		return cast(uint)tmp;
+	}
+	
+	uint second() {
+		ulong h,ms,s,m;
+		long tmp = micros;
+
+		ms = (cast(uint)tmp % 1000000) / 1000;
+		tmp /= 1000000;
+
+		return cast(uint)tmp % 60;
+	}
+	
+	uint minute() {
+		ulong h,ms,s,m;
+		long tmp = micros;
+
+		ms = (cast(uint)tmp % 1000000) / 1000;
+		tmp /= 1000000;
+
+		s = cast(uint)tmp % 60;
+		tmp /= 60;
+
+		return cast(uint)tmp % 60;
+	}
+	
+	uint millsecond() {
+		ulong h,ms,s,m;
+		long tmp = micros;
+
+		return (cast(uint)tmp % 1000000) / 1000;
+	}
 
 	// Description: Will set the time value for all fields with the given milliseconds.
 	void fromMilliseconds(long ms) {
@@ -33,7 +97,7 @@ struct Time {
 
 	// string functions
 
-	String toString() {
+	string toString() {
 		ulong h,ms,s,m;
 		long tmp = micros;
 
@@ -77,7 +141,7 @@ struct Time {
 
 		Console.put("");
 
-		String str = new String("");
+		string str = "";
 
 		return str;
 	}
