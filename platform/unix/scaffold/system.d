@@ -16,6 +16,8 @@ import core.definitions;
 import core.string;
 import core.locale;
 
+import platform.unix.common;
+
 // Querying displays:
 
 // Xinerama Extension:
@@ -71,6 +73,26 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
 	return null;
 }
 
+import io.console;
 LocaleId SystemGetLocaleId() {
-	return LocaleId.English_US;
+	char* res = getenv("LANG\0"c.ptr);
+	string locale = cast(char[])res[0..strlen(res)];
+
+	if (locale.length > 5) {
+		locale = locale[0..5];
+	}
+
+	LocaleId ret;
+
+	switch(locale) {
+		default:
+		case "en_US":
+			ret = LocaleId.English_US;
+			break;
+		case "fr_FR":
+			ret = LocaleId.French_FR;
+			break;
+	}
+
+	return ret;
 }
