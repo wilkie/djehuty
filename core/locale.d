@@ -13,6 +13,7 @@ module core.locale;
 import core.time;
 import core.date;
 import core.string;
+import core.definitions;
 
 // Supported Locales
 import core.locales.en_us;

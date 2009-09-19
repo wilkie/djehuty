@@ -14,6 +14,7 @@ import platform.vars.library;
 
 import core.definitions;
 import core.string;
+import core.locale;
 
 // Querying displays:
 
@@ -68,4 +69,8 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
 	char[] proc = procName.array ~ "\0";
 	//return cast(void*)dlsym(vars.handle, proc.ptr);
 	return null;
+}
+
+LocaleId SystemGetLocaleId() {
+	return LocaleId.English_US;
 }
