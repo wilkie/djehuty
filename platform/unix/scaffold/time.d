@@ -13,6 +13,7 @@ module scaffold.time;
 import platform.unix.common;
 
 import core.definitions;
+import core.date;
 
 // Timing
 
@@ -40,4 +41,10 @@ float gettimeofday_difference(timeval *b, timeval *a) {
 	}
 
 	return cast(float)diff_tv.tv_sec + (cast(float)diff_tv.tv_usec / 1000000.0);
+}
+
+void DateGet(out Month month, out uint day, out uint year) {
+	month = cast(Month)0;
+	day = 0;
+	year = 0;
 }

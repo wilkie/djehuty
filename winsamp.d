@@ -307,8 +307,8 @@ class MyConsoleApp : Application {
 
 		real f = -3.4123999999;
 		Console.putln(ftoa(f));
-		printf("%f\n", f);
-		writefln(f);
+		//printf("%f\n", f);
+		//writefln(f);
 	}
 }
 
