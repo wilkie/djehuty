@@ -34,73 +34,48 @@ static:
 
 	void id(LocaleId value) {
 		_localeId = value;
+		switch(_localeId) {
+			default:
+			case LocaleId.English_US:
+				_localeEngine = new LocaleEnglish_US();
+				break;
+			case LocaleId.French_FR:
+				_localeEngine = new LocaleFrench_FR();
+				break;
+		}
 	}
 
 	string formatNumber(double value) {
-		string ret;
-		switch(_localeId) {
-			default:
-			case LocaleId.English_US:
-				ret = LocaleEnglish_US.formatNumber(value);
-				break;
-			case LocaleId.French_FR:
-				ret = LocaleFrench_FR.formatNumber(value);
-				break;
-		}
-		return ret;
+		return _localeEngine.formatNumber(value);
+	}
+
+	string formatCurrency(long fixed, long scale) {
+		return _localeEngine.formatCurrency(fixed, scale);
 	}
 
 	string formatCurrency(double amount) {
-		string ret;
-		switch(_localeId) {
-			default:
-			case LocaleId.English_US:
-				ret = LocaleEnglish_US.formatCurrency(amount);
-				break;
-			case LocaleId.French_FR:
-				ret = LocaleFrench_FR.formatCurrency(amount);
-				break;
-		}
-		return ret;
+		return _localeEngine.formatCurrency(amount);
 	}
 
 	string formatTime(Time time) {
-		string ret;
-		switch(_localeId) {
-			default:
-			case LocaleId.English_US:
-				ret = LocaleEnglish_US.formatTime(time);
-				break;
-			case LocaleId.French_FR:
-				ret = LocaleFrench_FR.formatTime(time);
-				break;
-		}
-		return ret;
+		return _localeEngine.formatTime(time);
 	}
 
 	string formatDate(Date date) {
-		string ret;
-		switch(_localeId) {
-			default:
-			case LocaleId.English_US:
-				ret = LocaleEnglish_US.formatDate(date);
-				break;
-			case LocaleId.French_FR:
-				ret = LocaleFrench_FR.formatDate(date);
-				break;
-		}
-		return ret;
+		return _localeEngine.formatDate(date);
 	}
 
 private:
 
 	LocaleId _localeId = LocaleId.English_US;
+	LocaleInterface _localeEngine;
 }
 
 interface LocaleInterface {
-static:
 	string formatTime(Time time);
 	string formatDate(Date date);
 	string formatNumber(double value);
+	string formatNumber(long fixed, long scale, long round);
 	string formatCurrency(double amount);
+	string formatCurrency(long fixed, long scale);
 }

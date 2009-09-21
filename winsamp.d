@@ -238,6 +238,9 @@ else {
 	import std.stdio;
 }
 
+import math.fixed;
+import math.currency;
+
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 
@@ -309,6 +312,29 @@ class MyConsoleApp : Application {
 		Console.putln(ftoa(f));
 		//printf("%f\n", f);
 		//writefln(f);
+		Fixed f1 = new Fixed(132, 2);
+		Fixed f2 = new Fixed(121, 1);
+		f1 -= f2;
+
+		Console.putln(f1);
+		
+		f1 = new Fixed(1456, 3);
+		f2 = new Fixed(327, 1);
+		f1 *= f2;
+
+		Console.putln(f1);
+		
+		f1 = new Fixed(11, 1);
+		f2 = new Fixed(112, 2);
+		f1 /= f2;
+		
+		Console.putln(f1);
+		
+		Currency c1 = new Currency(11, 1);
+		Currency c2 = new Currency(112, 2);
+		c1 /= c2;
+		
+		Console.putln(c1);
 	}
 }
 
