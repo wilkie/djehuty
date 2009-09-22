@@ -1,6 +1,7 @@
 module core.time;
 
 import core.string;
+import core.definitions;
 
 import io.console;
 

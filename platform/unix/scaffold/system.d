@@ -14,6 +14,9 @@ import platform.vars.library;
 
 import core.definitions;
 import core.string;
+import core.locale;
+
+import platform.unix.common;
 
 // Querying displays:
 
@@ -68,4 +71,28 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
 	char[] proc = procName.array ~ "\0";
 	//return cast(void*)dlsym(vars.handle, proc.ptr);
 	return null;
+}
+
+import io.console;
+LocaleId SystemGetLocaleId() {
+	char* res = getenv("LANG\0"c.ptr);
+	string locale = cast(char[])res[0..strlen(res)];
+
+	if (locale.length > 5) {
+		locale = locale[0..5];
+	}
+
+	LocaleId ret;
+
+	switch(locale) {
+		default:
+		case "en_US":
+			ret = LocaleId.English_US;
+			break;
+		case "fr_FR":
+			ret = LocaleId.French_FR;
+			break;
+	}
+
+	return ret;
 }

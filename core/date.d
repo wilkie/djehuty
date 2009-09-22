@@ -35,6 +35,7 @@ enum Day {
 import scaffold.time;
 
 import core.string;
+import core.definitions;
 import core.locale;
 
 class Date {
@@ -97,4 +98,8 @@ private:
 	}
 
 	static _Now _now;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 009872616a8e092bc452613597a78ee01a955d68

@@ -5,6 +5,8 @@ import core.locale;
 import core.time;
 import core.date;
 import core.string;
+import core.definitions;
+
 
 class LocaleEnglish_US : LocaleInterface {
 static:
@@ -143,4 +145,8 @@ static:
 
 		return ret;
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 009872616a8e092bc452613597a78ee01a955d68
