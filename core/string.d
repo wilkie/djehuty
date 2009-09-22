@@ -1125,10 +1125,10 @@ string toStrv(Variadic vars) {
 						break;
 				}
 				if (var.type == Type.Ulong) {
-					ret ~= itoa(val);
+					ret ~= utoa(var.data.ul);
 				}
 				else {
-					ret ~= itoa(cast(long)var.data.l);
+					ret ~= itoa(val);
 				}
 				continue;
 			}
@@ -1160,8 +1160,8 @@ string itoa(long val, uint base = 10) {
         intlen = 1;
     }
 
-    while (tmp > 9) {
-        tmp /= 10;
+    while (tmp >= base) {
+        tmp /= base;
         intlen++;
     }
 
@@ -1178,8 +1178,17 @@ string itoa(long val, uint base = 10) {
     }
 
     do {
-        ret[intlen] = cast(char)('0' + (tmp % 10));
-        tmp /= 10;
+    	uint off = cast(uint)(tmp % base);
+    	char replace;
+    	if (off < 10) {
+    		replace = cast(char)('0' + off);
+    	}
+    	else if (off < 36) {
+    		off -= 10;
+    		replace = cast(char)('a' + off);
+    	}
+        ret[intlen] = replace;
+        tmp /= base;
         intlen--;
     } while (tmp != 0);
 
@@ -1191,26 +1200,36 @@ string itoa(long val, uint base = 10) {
     return ret;
 }
 
-string itoa(ulong val, uint base = 10) {
+string utoa(ulong val, uint base = 10) {
 	int intlen;
 	ulong tmp = val;
 
     intlen = 1;
 
-    while (tmp > 9) {
-        tmp /= 10;
+    while (tmp >= base) {
+        tmp /= base;
         intlen++;
     }
 
     //allocate
+    tmp = val;
 
     string ret = new char[intlen];
 
     intlen--;
 
     do {
-        ret[intlen] = cast(char)('0' + (tmp % 10));
-        tmp /= 10;
+    	uint off = cast(uint)(tmp % base);
+    	char replace;
+    	if (off < 10) {
+    		replace = cast(char)('0' + off);
+    	}
+    	else if (off < 36) {
+    		off -= 10;
+    		replace = cast(char)('a' + off);
+    	}
+        ret[intlen] = replace;
+        tmp /= base;
         intlen--;
     } while (tmp != 0);
 

@@ -240,6 +240,7 @@ else {
 
 import math.fixed;
 import math.currency;
+import math.integer;
 
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
@@ -333,8 +334,16 @@ class MyConsoleApp : Application {
 		Currency c1 = new Currency(11, 1);
 		Currency c2 = new Currency(112, 2);
 		c1 /= c2;
-		
+
 		Console.putln(c1);
+		
+		Integer i1 = new Integer(0xffffffffffffffff);
+		Integer i2 = new Integer(0x1);
+		Console.putln(i1, " - ", i2);
+		i1 -= i2;
+		Console.putln(i1);
+		i2 = -i2;
+		Console.putln(i2);
 	}
 }
 
