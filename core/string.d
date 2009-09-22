@@ -1292,7 +1292,7 @@ string ftoa(float val, uint base = 10) {
 		ret ~= cast(char)((fracPart >> 24) + '0');
 		fracPart &= 0xffffff;
 	}
-	
+
 	// round last digit
 	bool roundUp = (ret[$-1] >= '5');
 	ret = ret[0..$-1];
@@ -1424,11 +1424,11 @@ string ftoa(real val, uint base = 10) {
 		else if (val == 0.0) {
 			return "0.0";
 		}
-	
+
 		long mantissa;
 		long intPart;
 		long fracPart;
-	
+
 		long exp;
 
 		longReal iF;
@@ -1442,12 +1442,12 @@ string ftoa(real val, uint base = 10) {
 		else if (exp == 32767) {
 			return "inf";
 		}
-		exp -= 16383;
+		exp += 16383;
 
 		mantissa = iF.l.frac;
 		fracPart = 0;
 		intPart = 0;
-	
+
 		if (exp >= 31) {
 			return "0.0";
 		}
@@ -1469,18 +1469,18 @@ string ftoa(real val, uint base = 10) {
 		if (iF.l.exp < 0) {
 			ret = "-";
 		}
-	
+
 		ret ~= itoa(intPart, base);
 		ret ~= ".";
 		for (uint k; k < 7; k++) {
 			fracPart *= 10;
 			ret ~= cast(char)((fracPart >> 64) + '0');
 		}
-		
+
 		// round last digit
 		bool roundUp = (ret[$-1] >= '5');
 		ret = ret[0..$-1];
-	
+
 		while (roundUp) {
 			if (ret.length == 0) {
 				return "0";
@@ -1492,7 +1492,7 @@ string ftoa(real val, uint base = 10) {
 			ret[$-1]++;
 			break;
 		}
-	
+
 		// get rid of useless zeroes (and point if necessary)
 		foreach_reverse(uint i, chr; ret) {
 			if (chr != '0' && chr != '.') {
