@@ -133,6 +133,36 @@ class TuiWindow : Responder {
 						_controlContainer.onGotFocus();
 					}
 				}
+				else if (key.code >= Key.A || key.code <= Key.Z) {
+					// check for hint
+					char keychr = cast(char)(key.code - Key.A) + 'a';
+					foreach(mnu; _menu) {
+						if (mnu.hint == keychr) {
+							// Select this menu
+							_selectedMenu = mnu;
+
+							if (_selectedMenu.length > 0) {
+								// it is a submenu
+								_selectMenu(_selectedMenu);
+							}
+							else {
+								// select the item
+								_cancelNextChar = true;
+								_focusedMenu = null;
+								Menu selected = _selectedMenu;
+								_selectedMenu = null;
+								_drawMenu();
+		
+								onMenu(selected);
+		
+								// Focus on the current widget
+								_controlContainer.onGotFocus();
+							}
+
+							break;
+						}
+					}
+				}
 			}
 			else {
 				// within a submenu
@@ -191,20 +221,39 @@ class TuiWindow : Responder {
 					}
 				}
 				else if (key.code >= Key.A && key.code <= Key.Z) {
-					uint chr = key.code - Key.A;
+					char chr = cast(char)(key.code - Key.A) + 'a';
 					// Look for a hint
-					foreach(mnuItem; _focusedMenu) {
+					foreach(uint i, mnuItem; _focusedMenu) {
 						// Does the menu item have a hint?
 						if (mnuItem.hintPosition == -1) {
 							continue;
 						}
 
-						auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
-						uint chr2 = cast(uint)(hint - 'a');
+						char hint = mnuItem.hint;
 
-						if (chr == chr2) {
+						if (chr == hint) {
 							// This menu item is selected
-							_selectMenu(mnuItem);
+							_selectedMenuIndex = i;
+							_selectedMenu = mnuItem;
+							_drawSubmenu();
+							if (_selectedMenu.length > 0) {
+								// it is a submenu
+								_addSubmenu();
+								_drawSubmenu();
+							}
+							else {
+								// select the item
+								_cancelNextChar = true;
+								_focusedMenu = null;
+								Menu selected = _selectedMenu;
+								_selectedMenu = null;
+								redraw();
+		
+								onMenu(selected);
+		
+								// Focus on the current widget
+								_controlContainer.onGotFocus();
+							}
 						}
 					}
 				}

@@ -106,6 +106,13 @@ class Menu {
 		return _hintPosition;
 	}
 
+	char hint() {
+		if (_hintPosition < 0) {
+			return '\0';
+		}
+		return _displayValue.toLowercase[_hintPosition];
+	}
+
 	uint length() {
 		if (_subitems is null) { return 0; }
 
