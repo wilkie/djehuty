@@ -123,10 +123,11 @@ class TuiWindow : Responder {
 						// select the item
 						_cancelNextChar = true;
 						_focusedMenu = null;
+						Menu selected = _selectedMenu;
 						_selectedMenu = null;
 						_drawMenu();
 
-						onMenu(_selectedMenu);
+						onMenu(selected);
 
 						// Focus on the current widget
 						_controlContainer.onGotFocus();
@@ -179,10 +180,11 @@ class TuiWindow : Responder {
 						// select the item
 						_cancelNextChar = true;
 						_focusedMenu = null;
+						Menu selected = _selectedMenu;
 						_selectedMenu = null;
 						redraw();
 
-						onMenu(_selectedMenu);
+						onMenu(selected);
 
 						// Focus on the current widget
 						_controlContainer.onGotFocus();

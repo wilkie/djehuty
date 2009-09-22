@@ -140,6 +140,12 @@ class MyTWindow : TuiWindow {
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
 
 	}
+	
+	override void onMenu(Menu mnu) {
+		if (mnu.displayText == "Exit") {
+			application.exit(0);
+		}
+	}
 
 	override void onResize() {
 		tuibox.resize(this.width, this.height-2);
@@ -209,7 +215,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -243,7 +249,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+//	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 
