@@ -7,9 +7,7 @@ import core.date;
 import core.string;
 import core.definitions;
 
-
 class LocaleEnglish_US : LocaleInterface {
-static:
 	string formatTime(Time time) {
 		uint hour = time.hour;
 
@@ -98,8 +96,57 @@ static:
 		return ret;
 	}
 
+	string formatCurrency(long whole, long scale) {
+		return "$" ~ formatNumber(whole, scale, 2);
+	}
+
 	string formatCurrency(double amount) {
 		return "$" ~ formatNumber(amount);
+	}
+
+	string formatNumber(long whole, long scale, long round = -1) {
+		long intPart;
+		long baseScale;
+		long fracPart;
+
+		// Get integer part of decimal
+		intPart = whole;
+		baseScale = 1;
+		for (long i; i < scale; i++) {
+			intPart /= 10;
+			baseScale *= 10;
+		}
+		baseScale /= 10;
+
+		// Get fraction as an integer
+		fracPart = whole % baseScale;
+
+		// Round down 
+		for ( ; round > 0 ; round-- ) {
+			baseScale /= 10;
+		}
+		fracPart /= baseScale;
+		
+		return formatNumber(intPart) ~ "." ~ formatNumber(fracPart);
+	}
+
+	string formatNumber(long value) {
+		if (value == 0) {
+			return "0";
+		}
+
+		string ret;
+		while (value > 0) {
+			long part = value % 1000;
+			value /= 1000;
+			if (ret !is null) {
+				ret = toStr(part) ~ "," ~ ret;
+			}
+			else {
+				ret = toStr(part);
+			}
+		}
+		return ret;
 	}
 
 	string formatNumber(double value) {
@@ -146,4 +193,3 @@ static:
 		return ret;
 	}
 }
-
