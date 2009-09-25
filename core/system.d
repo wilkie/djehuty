@@ -11,6 +11,8 @@ module core.system;
 import scaffold.system;
 import scaffold.directory;
 
+import core.locale : LocaleId;
+
 import io.directory;
 
 // Description: This class gives the developer a means to query common parameters about devices and configurations of the system.
@@ -104,5 +106,14 @@ class System {
 		Directory binaryDir() {
 			return new Directory(DirectoryGetBinary());
 		}
+	}
+	
+	class Locale {
+		static:
+		public:
+
+			LocaleId id() {
+				return SystemGetLocaleId();
+			}
 	}
 }

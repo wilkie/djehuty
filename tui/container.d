@@ -117,7 +117,7 @@ class TuiContainer : TuiWidget {
 			_focused_control.onPrimaryMouseDown();
 		}
 	}
-	
+
 	override void onSecondaryMouseDown() {
 		if (_focused_control !is null) {
 			_focused_control.onSecondaryMouseDown();

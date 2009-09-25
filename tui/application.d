@@ -251,7 +251,7 @@ private:
 		else if (key.code == Key.Tab && !key.shift) {
 			chr = '\t';
 		}
-		else if (key.code == Key.Space && !key.shift) {
+		else if (key.code == Key.Space) {
 			chr = ' ';
 		}
 		else if (key.code == Key.Return && !key.shift) {

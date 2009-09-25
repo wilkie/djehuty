@@ -1028,6 +1028,17 @@ struct MEMORYSTATUSEX {
   DWORDLONG ullAvailExtendedVirtual;
 }
 
+struct SYSTEMTIME {
+  WORD wYear;
+  WORD wMonth;
+  WORD wDayOfWeek;
+  WORD wDay;
+  WORD wHour;
+  WORD wMinute;
+  WORD wSecond;
+  WORD wMilliseconds;
+}
+
 alias MEMORYSTATUSEX* LPMEMORYSTATUSEX;
 
 
@@ -1048,9 +1059,12 @@ const auto VK_OEM_PERIOD = 0xBE;
 const auto VK_OEM_MINUS = 0xBD;
 const auto VK_OEM_PLUS = 0xBB;
 
+typedef DWORD LCID;
+
 extern(Windows)
 {
 	DWORD timeGetTime();
+	void GetSystemTime(SYSTEMTIME*);
 
 	int MessageBoxW(HWND hWnd, LPCWSTR lpText, LPCWSTR lpCaption, UINT uType);
 
@@ -1272,7 +1286,18 @@ extern(Windows)
 	DWORD WNetOpenEnumW(DWORD, DWORD, DWORD, NETRESOURCEW*, HANDLE*);
 	DWORD WNetEnumResourceW(HANDLE, DWORD*, VOID*, DWORD*);
 	DWORD WNetCloseEnum(HANDLE);
+	DWORD NetServerDiskEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
+	DWORD NetShareEnum(LPWSTR, DWORD, void**, DWORD, DWORD*, DWORD*, DWORD*);
+	
+	// LOCALE
+	LCID GetUserDefaultLCID();
+
 }
+
+struct SHARE_INFO_0 {
+	LPWSTR shi0_netname;
+}
+
 const auto RESOURCE_CONNECTED= 1;
 const auto RESOURCE_GLOBALNET =2;
 const auto RESOURCE_REMEMBERED =3;

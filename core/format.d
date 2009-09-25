@@ -100,9 +100,11 @@ template formatToString() {
 			dchar chr = cast(dchar)va_arg!(char)(_argptr);
 			toParse.appendChar(chr);
 		}
-		else {
+		else if (_arguments[curArg] is typeid(Object)) {
 			Object obj = va_arg!(Object)(_argptr);
 			toParse ~= obj.toString();
+		}
+		else {
 		}
 	}
 	`;

@@ -24,13 +24,13 @@ class TuiTextBox : TuiWidget {
 		super(x,y,width,height);
 
 		_lines = new ArrayList!(LineInfo);
-		LineInfo newItem;
+		LineInfo newItem = new LineInfo();
 		newItem.value = new String("if (something) { /* in comment block */ init(); }");
 
 		_lines.addItem(newItem);
 		onLineChanged(_lines.length - 1);
 		for (int o; o < 500; o++) {
-			LineInfo subItem;
+			LineInfo subItem = new LineInfo();
 			subItem.value = new String(o);
 			_lines.addItem(subItem);
 			onLineChanged(_lines.length - 1);
@@ -256,7 +256,7 @@ class TuiTextBox : TuiWidget {
 
 			// Pressing enter
 
-			LineInfo newLine;
+			LineInfo newLine = new LineInfo();
 			newLine.value = _lines[_row].value.subString(_column);
 
 			// Splitting format field
@@ -446,7 +446,7 @@ protected:
 			}
 			String strLineNumber = new String(lineNumber);
 			Console.setColor(_forecolorNum, _backcolorNum);
-			Console.put(spaces[0.._lineNumbersWidth - 2 - strLineNumber.length]);
+			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
 			Console.put(strLineNumber);
 			Console.put(": ");
 		}
@@ -493,41 +493,15 @@ protected:
 		else {
 			num = (this.width - _lineNumbersWidth) - num;
 		}
-
-		uint pad;
-
-		for (; num > 0;) {
-			pad = num;
-
-			if (pad > spaces.length) {
-				Console.put(spaces);
-				pad = spaces.length;
-			}
-			else {
-				Console.put(spaces[0..pad]);
-			}
-			num -= pad;
-		}
+		
+		Console.putSpaces(num);
 	}
 
 	void drawEmptyLine(uint lineNumber) {
 		Console.position(0, lineNumber - _firstVisible);
 
 		// Pad with spaces
-		uint num = this.width;
-		uint pad;
-
-		for (uint k; k < this.width; k += pad) {
-			pad = num;
-
-			if (pad > spaces.length) {
-				Console.put(spaces);
-			}
-			else {
-				Console.put(spaces[0..pad]);
-			}
-			num -= pad;
-		}
+		Console.putSpaces(this.width);
 	}
 
 	void positionCaret() {
@@ -608,11 +582,8 @@ protected:
 		}
 	}
 
-	// Just some spaces
-	char[] spaces = "                                                           ";
-
 	// The information about each line
-	struct LineInfo {
+	class LineInfo {
 		String value;
 		uint[] format;
 	}

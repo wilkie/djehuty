@@ -11,11 +11,13 @@
 module scaffold.system;
 
 import platform.win.common;
+import platform.win.main;
 
 import scaffold.directory;
 
 import core.definitions;
 import core.string;
+import core.locale;
 
 import platform.vars.library;
 
@@ -110,7 +112,7 @@ uint SystemGetDisplayCount() {
 ulong SystemGetTotalMemory() {
 	MEMORYSTATUSEX stats;
 	GlobalMemoryStatusEx(&stats);
-	
+
 	return stats.ullTotalPhys;
 }
 
@@ -143,4 +145,33 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
 	String pn = new String(procName);
 	pn.appendChar('\0');
 	return cast(void*)GetProcAddressW(vars.hmodule, pn.ptr);
+}
+
+LocaleId SystemGetLocaleId() {
+	ApplicationController app = ApplicationController.instance();
+	
+	LCID lcid = GetUserDefaultLCID();
+	if (lcid == 0x1000) {
+		// LOCALE_CUSTOM_UNSPECIFIED
+		
+		// Must go to GetUserDefaultLocaleName()
+		// Which is Vista+ only
+	}
+
+	LocaleId ret;
+	switch (lcid) {
+		case 0x0409:
+			ret = LocaleId.English_US;
+			break;
+		case 0x0809:
+			ret = LocaleId.English_GB;
+			break;
+		case 0x040c:
+			ret = LocaleId.French_FR;
+			break;
+		default:
+			ret = LocaleId.English_US;
+			break;
+	}
+	return ret;
 }

@@ -21,6 +21,10 @@ class ArrayList(T) : AbstractList!(T) {
 		_count = _list.length;
 	}
 
+	ArrayList!(T) dup() {
+		return new ArrayList!(T)(_list[0.._count]);
+	}
+
 	// Description: Adds a new node to the end of the list.
 	// data: The data to store in the node.
 	void addItem(T data) {
@@ -116,6 +120,15 @@ class ArrayList(T) : AbstractList!(T) {
 		return false;
     }
 
+    bool contains(T data) {
+    	foreach(item; _list) {
+    		if (data == item) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
 	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a last-in-first-out ordering (FILO).
 	// Returns: This function will return false when there are no items to return and indicates the list is empty.
 	bool remove(out T data) {
@@ -129,7 +142,7 @@ class ArrayList(T) : AbstractList!(T) {
 		return true;
 	}
 
-	static if (is(T == class)) {
+	static if (is(T == class) || is(T[])) {
 		T opIndex(size_t i1) {
 			if (i1 < 0 || i1 > _count) {
 				return _list[0];
@@ -203,6 +216,29 @@ class ArrayList(T) : AbstractList!(T) {
 		}
 
 		return false;
+	}
+
+	// Description: Removes the last piece of data and stores it in the parameter passed to it. It does so in a first-in-last-out ordering (FILO).
+	// Returns: This function will return false when there are no items to return and indicates the list is empty.
+	bool removeAt(uint index) {
+		if (_count == 0) {
+			return false;
+		}
+
+		if (index < _count) {
+			_count--;
+
+			for (uint i=index; i<_count; i++) {
+				_list[i] = _list[i+1];
+			}
+			return true;
+		}
+
+		return false;
+	}
+	
+	bool empty() {
+		return _count == 0;
 	}
 
 	uint length() {

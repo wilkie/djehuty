@@ -1,6 +1,4 @@
-import core.definitions;
-import core.color;
-import core.event;
+import djehuty;
 
 import gui.application;
 import gui.window;
@@ -10,9 +8,6 @@ import gui.widget;
 import resource.menu;
 
 import graphics.graphics;
-
-import core.regex;
-import core.string;
 
 import resource.image;
 import resource.sound;
@@ -102,15 +97,6 @@ import tui.dialog;
 import tui.filebox;
 import tui.listbox;
 
-class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
-
-	override void onApplicationStart() {
-		String str = Regex.eval("alias d ", `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`);
-		Console.putln(str);
-	}
-}
-
 class MyTWindow : TuiWindow {
 
 	this() {
@@ -124,9 +110,14 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-	//	push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
 		//push(new TuiOpenDialog(5,5));
+		/*push(filebox = new TuiFileBox(5,5,60,20));
+		filebox.forecolor = fgColor.Red;
+		filebox.backcolor = bgColor.Black;
+		filebox.selectedBackcolor = bgColor.Green;
+		filebox.selectedForecolor = fgColor.White;*/
 		//push(listbox = new TuiListBox(5,5,60,10));
 
 		// add 20 things to the listbox
@@ -149,11 +140,17 @@ class MyTWindow : TuiWindow {
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
 
 	}
+	
+	override void onMenu(Menu mnu) {
+		if (mnu.displayText == "Exit") {
+			application.exit(0);
+		}
+	}
 
 	override void onResize() {
 		tuibox.resize(this.width, this.height-2);
-		//status.move(0, this.height-1);
-//		status.resize(this.width, 1);
+		status.move(0, this.height-2);
+		status.resize(this.width, 1);
 		redraw();
 	}
 
@@ -239,6 +236,121 @@ private:
 	MyTWindow tuiwnd;
 
 	Sound snd;
+}
+
+version(Tango) {
+}
+else {
+	import std.stdio;
+}
+
+import math.fixed;
+import math.currency;
+import math.integer;
+
+class MyConsoleApp : Application {
+//	static this() { new MyConsoleApp(); }
+
+	override void onApplicationStart() {
+
+
+		real[] bleh = [0,1,1,2,3,4,56];
+		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
+
+		struct asdfasdf {
+			ulong dd;
+			ulong dd2;
+			ulong dd3;
+			ulong dd4;
+			ulong dd5;
+			string toString() {
+				return "ADSFS";
+			}
+		}
+		asdfasdf aaaa;
+		String asdf = new String("sfadf");
+		real asd;
+		Object meh = new Object();
+
+		foo(asdf, GOOOD, 2,aaaa, 3,4, meh, 3, "dave"d);
+
+	/*	Regex r = new Regex("((ab)*)*c");
+		String work = r.eval("ababababab");
+		if (work) {
+			Console.putln(work);
+		}*/
+		List!(int) lst = new List!(int);
+		lst.add(2);
+		lst.add(1);
+		lst.add(3);
+		lst.add(4);
+		lst.apply((int a){ return a*a; });
+
+		filter( (int a){ return a > 2; } , range(1,11) );
+
+		Console.putln(lst);
+
+		Console.putln("asdf", aaaa, GOOOD, 2, 5, 2, 6, 6);
+		foov(foobar);
+
+		String str = new String("dave wilkinson");
+		string fff = str[0..4];
+		String ffff = str.subString(5);
+		Console.putln(fff);
+		Console.putln(ffff);
+
+		Date date = new Date();
+		Console.putln(date);
+
+		Date testDate = new Date(Month.August, 20, 1987);
+		Time testTime = new Time(14, 45, 35);
+
+		Console.putln(Locale.formatDate(testDate));
+		Console.putln(Locale.formatTime(testTime));
+		Console.putln(Locale.formatNumber(1123431241324));
+		Console.putln(Locale.formatCurrency(1123431241324));
+		Locale.id = LocaleId.French_FR;
+		Console.putln(Locale.formatDate(testDate));
+		Console.putln(Locale.formatTime(testTime));
+		Console.putln(Locale.formatNumber(1123431241324));
+		Console.putln(Locale.formatCurrency(1123431241324));
+
+		real f = -3.4123999999;
+		Console.putln(ftoa(f));
+		//printf("%f\n", f);
+		//writefln(f);
+		Fixed f1 = new Fixed(132, 2);
+		Fixed f2 = new Fixed(121, 1);
+		f1 -= f2;
+
+		Console.putln(f1);
+		
+		f1 = new Fixed(1456, 3);
+		f2 = new Fixed(327, 1);
+		f1 *= f2;
+
+		Console.putln(f1);
+		
+		f1 = new Fixed(11, 1);
+		f2 = new Fixed(112, 2);
+		f1 /= f2;
+		
+		Console.putln(f1);
+		
+		Currency c1 = new Currency(11, 1);
+		Currency c2 = new Currency(112, 2);
+		c1 /= c2;
+
+		Console.putln(c1);
+		
+		Integer i1 = new Integer(0xffffffffffffffff);
+		Integer i2 = new Integer(0x1);
+		Console.putln(i1, " - ", i2);
+		i1 -= i2;
+		Console.putln(i1);
+		i2 = -i2;
+		Console.putln(i2);
+	}
 }
 
 class MyApp : GuiApplication {

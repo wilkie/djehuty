@@ -304,7 +304,7 @@ void WavePause(ref Audio wave, ref WavePlatformVars waveVars)
 
 Time WaveGetPosition(ref Audio wave, ref WavePlatformVars waveVars)
 {
-	if (waveVars.isClosed) { Time myTime = {0}; return myTime; }
+	if (waveVars.isClosed) { Time myTime = new Time(0); return myTime; }
 
 	MMTIME mmTime;
 

@@ -5,6 +5,7 @@
  *
  * Author: Dave Wilkinson
  * Originated: May 9th, 2009
+ * Inspiration: "Albino 2" by Mark Knight
  *
  */
 
@@ -118,22 +119,23 @@ class Regex {
 		buildDFA();
 	}
 
-	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
-	// str: The String to run the regular expression upon.
-	// Returns: The matched substring or null when no match could be found.
-	String eval(String str) {
-		return null;
-	}
-
-	String eval(string str) {
-		return eval(new String(str));
-	}
-
 	// Description: This function will return a matched regular expression on the given String. Single use regular expression functions, such as this one, use a backtracking algorithm.
 	// str: The String to run the regular expression upon.
 	// regex: The regular expression to use.
 	// Returns: The matched substring or null when no match could be found.
 	static String eval(String str, String regex, string options = "") {
+		RegexInfo regexInfo;
+		
+		/*
+		static RegexInfo[string] oldRuns;
+
+		string oldRunIndex = (regex.toString() ~ "_" ~ options);
+		if (oldRunIndex in oldRuns) {
+			regexInfo = oldRuns[oldRunIndex];
+		}*/
+
+		regexInfo.memoizer = new int[][](str.length, regex.length);
+
 		int strPos;
 		int regexPos;
 
@@ -157,17 +159,6 @@ class Regex {
 		const int LAZY_KLEENE = 2;
 		const int KLEENE_MATCHED = 4;
 
-		struct GroupInfo
-		{
-			int startPos;
-			int endPos;
-			int strStartPos;
-			int strPos;
-			int parent;
-			int unionPos;
-			int groupId;
-		}
-
 		bool multiline;
 
 		foreach(chr; options) {
@@ -179,14 +170,6 @@ class Regex {
 					break;
 			}
 		}
-
-		// This hash table contains information about a grouping
-		// for a specific position in the regex.
-		GroupInfo[int] groupInfo;
-
-		// This hash table contains information that aids operators
-		// for a specific position in the regex.
-		int[int] operatorFlag;
 
 		// This is a stack of the groupings currently in context.
 		Stack!(int) groupStart = new Stack!(int)();
@@ -223,11 +206,11 @@ class Regex {
 		// This function finds the regex position that will undo the last move.
 		int findBackupRegexPosition() {
 			int ret = regexPos - 1;
-			if (ret in groupInfo) {
-				ret = groupInfo[ret].startPos;
+			if (ret in regexInfo.groupInfo) {
+				ret = regexInfo.groupInfo[ret].startPos;
 			}
-			else if (ret < regex.length && regex[ret] == ']' && ret in operatorFlag) {
-				ret = operatorFlag[ret];
+			else if (ret < regex.length && regex[ret] == ']' && ret in regexInfo.operatorFlag) {
+				ret = regexInfo.operatorFlag[ret];
 			}
 			else {
 				if (ret > 0 && regex[ret-1] == '\\') {
@@ -239,8 +222,8 @@ class Regex {
 
 		// Like above, but for the working position.
 		int findBackupPosition() {
-			if (regexPos-1 in groupInfo) {
-				return groupInfo[groupInfo[regexPos-1].startPos].strStartPos;
+			if (regexPos-1 in regexInfo.groupInfo) {
+				return regexInfo.groupInfo[regexInfo.groupInfo[regexPos-1].startPos].strStartPos;
 			}
 			else {
 				return strPos-1;
@@ -250,12 +233,6 @@ class Regex {
 		// Set a backtrack that will return to the front of both strings.
 		setBacktrack(0,0);
 
-		// This structure hopes to minimize work already done by merely setting
-		// a flag whenever a position in each string is reached. Since this
-		// denotes that the regex will be parsing from the same state, and the
-		// regex is pure, it will not have to repeat the work.
-		int[][] memoizer = new int[][](str.length, regex.length);
-
 		// Alright, main loop! This won't be broken until either a match is
 		// found or nothing can be found.
 		while(running) {
@@ -264,12 +241,12 @@ class Regex {
 			// been made and the regex positions are valid, set this position
 			// pair in the memoizer indicating we've done this work before.
 			if (strPos < str.length && regexPos < regex.length && matchMade && !noMatch) {
-				if (memoizer[strPos][regexPos] == 1) {
+				if (regexInfo.memoizer[strPos][regexPos] == 1) {
 					// we have been here before
 					backtrack = true;
 				}
 				else {
-					memoizer[strPos][regexPos] = 1;
+					regexInfo.memoizer[strPos][regexPos] = 1;
 				}
 			}
 
@@ -378,16 +355,16 @@ class Regex {
 				// A union operator.
 
 				if (currentGroupIdx >= 0) {
-					if (groupInfo[currentGroupIdx].unionPos >= 0) {
+					if (regexInfo.groupInfo[currentGroupIdx].unionPos >= 0) {
 						// the current group already has at least one union
 						// use the current unionPos to append to the list
-						if (!(currentUnionPos in operatorFlag) && regexPos > currentUnionPos) {
-							operatorFlag[currentUnionPos] = regexPos;
+						if (!(currentUnionPos in regexInfo.operatorFlag) && regexPos > currentUnionPos) {
+							regexInfo.operatorFlag[currentUnionPos] = regexPos;
 						}
 					}
 					else {
 						// this is the first union of the current group
-						groupInfo[currentGroupIdx].unionPos = regexPos;
+						regexInfo.groupInfo[currentGroupIdx].unionPos = regexPos;
 					}
 
 					if (noMatch && noMatchUntilUnionForPos != -1 && currentGroupIdx == noMatchUntilClosedAtPos) {
@@ -404,10 +381,10 @@ class Regex {
 						// but set a backtrack just in case
 						// this will start the regular expression search from the next regex
 						// point, but undoing the actions of the group thus far
-						setBacktrack(regexPos+1, groupInfo[currentGroupIdx].strStartPos);
+						setBacktrack(regexPos+1, regexInfo.groupInfo[currentGroupIdx].strStartPos);
 
-						if (groupInfo[currentGroupIdx].endPos >= 0) {
-							regexPos = groupInfo[currentGroupIdx].endPos-1;
+						if (regexInfo.groupInfo[currentGroupIdx].endPos >= 0) {
+							regexPos = regexInfo.groupInfo[currentGroupIdx].endPos-1;
 						}
 						else {
 							noMatch = true;
@@ -417,7 +394,7 @@ class Regex {
 					}
 					else if (!noMatch) {
 						// undo actions
-						strPos = groupInfo[currentGroupIdx].strStartPos;
+						strPos = regexInfo.groupInfo[currentGroupIdx].strStartPos;
 
 						noMatch = false;
 
@@ -468,7 +445,7 @@ class Regex {
 
 				bool isNew;
 
-				if (!(regexPos in groupInfo)) {
+				if (!(regexPos in regexInfo.groupInfo)) {
 					GroupInfo newGroup;
 					newGroup.startPos = regexPos;
 					newGroup.endPos = -1;
@@ -482,13 +459,13 @@ class Regex {
 					newGroup.groupId = groupCount;
 					groupCount++;
 
-					groupInfo[regexPos] = newGroup;
+					regexInfo.groupInfo[regexPos] = newGroup;
 
 					isNew = true;
 				}
 
-				groupInfo[regexPos].strStartPos = strPos;
-				groupInfo[regexPos].strPos = strPos;
+				regexInfo.groupInfo[regexPos].strStartPos = strPos;
+				regexInfo.groupInfo[regexPos].strPos = strPos;
 
 				currentGroupIdx = regexPos;
 				regexPos++;
@@ -497,8 +474,8 @@ class Regex {
 					switch(regex[regexPos+1]) {
 						case '#':
 							// comments
-							if (groupInfo[currentGroupIdx].endPos > 0) {
-								regexPos = groupInfo[currentGroupIdx].endPos;
+							if (regexInfo.groupInfo[currentGroupIdx].endPos > 0) {
+								regexPos = regexInfo.groupInfo[currentGroupIdx].endPos;
 							}
 							else {
 								// find the end of the group, ignoring everything
@@ -507,7 +484,7 @@ class Regex {
 								}
 
 								// save the result
-								groupInfo[currentGroupIdx].endPos = regexPos;
+								regexInfo.groupInfo[currentGroupIdx].endPos = regexPos;
 							}
 							break;
 
@@ -518,7 +495,7 @@ class Regex {
 						case ':':
 							// non-capturing
 							if (isNew) {
-								groupInfo[currentGroupIdx].groupId = int.max;
+								regexInfo.groupInfo[currentGroupIdx].groupId = int.max;
 								groupCount--;
 							}
 							regexPos+=2;
@@ -554,9 +531,9 @@ class Regex {
 
 				// A group is ending.
 
-				if (!(regexPos in groupInfo)) {
-					groupInfo[currentGroupIdx].endPos = regexPos;
-					groupInfo[regexPos] = groupInfo[currentGroupIdx];
+				if (!(regexPos in regexInfo.groupInfo)) {
+					regexInfo.groupInfo[currentGroupIdx].endPos = regexPos;
+					regexInfo.groupInfo[regexPos] = regexInfo.groupInfo[currentGroupIdx];
 
 					if (currentGroupIdx == noMatchUntilClosedAtPos) {
 						noMatch = false;
@@ -568,15 +545,15 @@ class Regex {
 				}
 
 				if (matchMade || noMatch) {
-					groupInfo[groupInfo[regexPos].startPos].strPos = strPos;
+					regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strPos = strPos;
 
-					regexGroupStart = groupInfo[groupInfo[regexPos].startPos].groupId;
+					regexGroupStart = regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].groupId;
 
 					// set consumption string
 
 					if (!noMatch) {
 						if (regexGroupStart < 9) {
-							String consumed = new String(str[groupInfo[groupInfo[regexPos].startPos].strStartPos..strPos]);
+							String consumed = new String(str[regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strStartPos..strPos]);
 							regexRefs[Thread.getCurrent()][regexGroupStart] = consumed;
 							regexGroupStart++;
 						}
@@ -585,11 +562,11 @@ class Regex {
 				else {
 					// if we can backtrack to make another decision in this group, do so
 					// that would effectively undo moves that this group had made
-					strPos = groupInfo[groupInfo[regexPos].startPos].strPos;
+					strPos = regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strPos;
 					//backtrack = true;
 				}
 
-				currentGroupIdx = groupInfo[regexPos].parent;
+				currentGroupIdx = regexInfo.groupInfo[regexPos].parent;
 				regexPos++;
 			}
 			else if (noMatch) {
@@ -609,14 +586,14 @@ class Regex {
 						// set backtrack to do another computation
 						setBacktrack(findBackupRegexPosition(), strPos);
 
-						//if (!(regexPos in operatorFlag)) {
+						//if (!(regexPos in regexInfo.operatorFlag)) {
 						if (regexFlagPotential < regexPos) {
 							// we have made a match, but have not attempted
 							// to try not matching anything first
 
 							// set the flag so that this operator knows that it has
 							// already found a match
-							operatorFlag[regexPos] = strPos;
+							regexInfo.operatorFlag[regexPos] = strPos;
 							regexFlagPotential = regexPos;
 
 							// set backtrack to start where this one would have
@@ -651,22 +628,22 @@ class Regex {
 					// something was just matched. It could be that what we matched belongs to
 					// another section of the regex.
 
-					if (!(regexPos in operatorFlag) || regexFlagPotential < regexPos) {
+					if (!(regexPos in regexInfo.operatorFlag) || regexFlagPotential < regexPos) {
 						// set a backtrack for having nothing found
 						setBacktrack(regexPos+1,findBackupPosition());
 					}
 
-					operatorFlag[regexPos] = 1;
+					regexInfo.operatorFlag[regexPos] = 1;
 
 					setBacktrack(regexPos+1, strPos);
 					regexPos--;
 
-					if (regexPos in groupInfo) {
-						regexPos = groupInfo[regexPos].startPos;
+					if (regexPos in regexInfo.groupInfo) {
+						regexPos = regexInfo.groupInfo[regexPos].startPos;
 						currentGroupIdx = regexPos;
 					}
-					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
-						regexPos = operatorFlag[regexPos];
+					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in regexInfo.operatorFlag) {
+						regexPos = regexInfo.operatorFlag[regexPos];
 					}
 					else {
 						if (regexPos > 0 && regex[regexPos-1] == '\\') {
@@ -693,19 +670,19 @@ class Regex {
 
 						// set the flag so that this operator knows that it has
 						// already found a match
-						operatorFlag[regexPos] = 1;
+						regexInfo.operatorFlag[regexPos] = 1;
 						regexFlagPotential = regexPos;
 
 						// set the backtrace
 						int newRegexPos = regexPos+2;
 
 						regexPos--;
-						if (regexPos in groupInfo) {
-							regexPos = groupInfo[regexPos].startPos;
+						if (regexPos in regexInfo.groupInfo) {
+							regexPos = regexInfo.groupInfo[regexPos].startPos;
 							currentGroupIdx = regexPos;
 						}
-						else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
-							regexPos = operatorFlag[regexPos];
+						else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in regexInfo.operatorFlag) {
+							regexPos = regexInfo.operatorFlag[regexPos];
 						}
 						else {
 							if (regexPos > 0 && regex[regexPos-1] == '\\') {
@@ -746,16 +723,16 @@ class Regex {
 
 					// set the flag so that this operator knows that it has
 					// already found a match
-					operatorFlag[regexPos] = 1;
+					regexInfo.operatorFlag[regexPos] = 1;
 					regexFlagPotential = regexPos;
 
 					regexPos--;
-					if (regexPos in groupInfo) {
-						regexPos = groupInfo[regexPos].startPos;
+					if (regexPos in regexInfo.groupInfo) {
+						regexPos = regexInfo.groupInfo[regexPos].startPos;
 						currentGroupIdx = regexPos;
 					}
-					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in operatorFlag) {
-						regexPos = operatorFlag[regexPos];
+					else if (regexPos < regex.length && regex[regexPos] == ']' && regexPos in regexInfo.operatorFlag) {
+						regexPos = regexInfo.operatorFlag[regexPos];
 					}
 					else {
 						if (regexPos > 0 && regex[regexPos-1] == '\\') {
@@ -765,7 +742,7 @@ class Regex {
 				}
 				else {
 					// it is ok
-					if (regexPos in operatorFlag && regexFlagPotential >= regexPos) {
+					if (regexPos in regexInfo.operatorFlag && regexFlagPotential >= regexPos) {
 						// good
 						matchMade = true;
 						regexPos++;
@@ -820,11 +797,11 @@ class Regex {
 				if (currentGroupIdx >= 0) {
 					int curUnionPos = -1;
 
-					if (groupInfo[currentGroupIdx].unionPos >= 0) {
-						curUnionPos = groupInfo[currentGroupIdx].unionPos;
+					if (regexInfo.groupInfo[currentGroupIdx].unionPos >= 0) {
+						curUnionPos = regexInfo.groupInfo[currentGroupIdx].unionPos;
 
-						while(curUnionPos < regexPos && curUnionPos in operatorFlag) {
-							curUnionPos = operatorFlag[curUnionPos];
+						while(curUnionPos < regexPos && curUnionPos in regexInfo.operatorFlag) {
+							curUnionPos = regexInfo.operatorFlag[curUnionPos];
 						}
 
 						if (curUnionPos < regexPos) {
@@ -832,13 +809,13 @@ class Regex {
 						}
 					}
 					
-					strPos = groupInfo[currentGroupIdx].strStartPos;
+					strPos = regexInfo.groupInfo[currentGroupIdx].strStartPos;
 
 					if (curUnionPos >= 0) {
 						regexPos = curUnionPos;
 					}
-					else if (groupInfo[currentGroupIdx].endPos >= 0) {
-						regexPos = groupInfo[currentGroupIdx].endPos;
+					else if (regexInfo.groupInfo[currentGroupIdx].endPos >= 0) {
+						regexPos = regexInfo.groupInfo[currentGroupIdx].endPos;
 					}
 					else {
 						// need to find either a union for this group
@@ -991,8 +968,8 @@ class Regex {
 
 				do {
 					if (matchClass && regex[regexPos] == ']') {
-						operatorFlag[currentClassStart] = regexPos;
-						operatorFlag[regexPos] = currentClassStart;
+						regexInfo.operatorFlag[currentClassStart] = regexPos;
+						regexInfo.operatorFlag[regexPos] = currentClassStart;
 						if (matchInverse && !matchMade) {
 							matchMade = true;
 							matchInverse = false;
@@ -1178,8 +1155,8 @@ class Regex {
 				if (matchClass) {
 					matchClass = false;
 
-					if (currentClassStart in operatorFlag) {
-						regexPos = operatorFlag[currentClassStart];
+					if (currentClassStart in regexInfo.operatorFlag) {
+						regexPos = regexInfo.operatorFlag[currentClassStart];
 					}
 					else {
 						// dang, need to search for it
@@ -1190,8 +1167,8 @@ class Regex {
 
 						if (regexPos >= regex.length) { continue; }
 
-						operatorFlag[currentClassStart] = regexPos;
-						operatorFlag[regexPos] = currentClassStart;
+						regexInfo.operatorFlag[currentClassStart] = regexPos;
+						regexInfo.operatorFlag[regexPos] = currentClassStart;
 					}
 				}
 
@@ -1213,6 +1190,11 @@ class Regex {
 				//	= null;
 			}
 		}
+
+		/*
+		if (!(oldRunIndex in oldRuns)) {
+			oldRuns[oldRunIndex] = regexInfo;
+		}*/
 
 		// Return the result
 		if (matchMade && strPosStart <= str.length) {
@@ -1242,6 +1224,65 @@ class Regex {
 		return eval(new String(str), new String(regex));
 	}
 
+	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
+	// str: The String to run the regular expression upon.
+	// Returns: The matched substring or null when no match could be found.
+	String eval(String str) {
+		State currentState = startingState;
+
+		uint strPos;
+		uint startingStrPos;
+
+		dchar chr;
+		for (strPos = startingStrPos; strPos < str.length; strPos++) {
+			Console.putln("starting ... ", startingStrPos);
+			chr = str[strPos];
+			Console.putln("chr ... ", str[strPos]);
+			if (chr in currentState.transitions) {
+				// Take transition
+				Console.putln("taking transition ", chr);
+				currentState = currentState.transitions[chr];
+			}
+			else {
+				// No transition
+
+				// Is this an accept state?
+				if (currentState.accept) {
+					break;
+				}
+
+				// Start over
+
+				if (startingStrPos >= str.length) {
+					// No more to search
+					return null;
+				}
+
+				// Next turn, strPos will be startingStrPos + 1
+				// (because of loop iteration)
+				strPos = startingStrPos;
+
+				// We are sliding down the string by one character
+				startingStrPos++;
+
+				// We go back to the beginning
+				currentState = startingState;
+			}
+		}
+
+		// Return consumed string
+		if (currentState.accept) {
+			return str.subString(startingStrPos, strPos - startingStrPos);
+		}
+
+		// No match
+		return null;
+	}
+
+	String eval(string str) {
+		return eval(new String(str));
+	}
+
 protected:
 
 	// These instance variables contain the data structures
@@ -1250,12 +1291,333 @@ protected:
 	// Holds the regular expression for the instance
 	String regularExpression;
 
+	// For DFA regex operations
+
+	class State {
+		State[dchar] transitions;
+
+		bool accept;
+		bool backState;
+	}
+
+	State startingState;
+
 	void buildDFA() {
+		// Go through the regular expression and build the DFAs
+
+		uint regexPos;
+
+		startingState = new State();
+
+		DFABuildState state;
+
+		state.currentStack = new Stack!(State)();
+		state.contextStack = new Stack!(State)();
+		state.groupStack = new Stack!(State)();
+		state.loopStack = new Stack!(	dchar[])();
+
+		state.currentStack.push(startingState);
+
+		// anchor the regular expression
+		if (regularExpression.length > 0) {
+			state.lastChar = regularExpression[regexPos];
+
+			while(state.lastChar == '(') {
+				// Group start
+				DFA_startGroup(state);
+				regexPos++;
+				state.lastChar = regularExpression[regexPos];
+			}
+			if (state.lastChar == '+' || state.lastChar == '*' || state.lastChar == '|') {
+				// malformed regular expression
+				startingState = null;
+				return;
+			}
+
+			state.isNormalChar = true;
+			regexPos++;
+		}
+		
+		Console.putln("anchored to ", state.lastChar);
+
+		for( ; regexPos < regularExpression.length; regexPos++) {
+			state.thisChar = regularExpression[regexPos];
+
+			// Note:
+			// (p) -- currentState
+			// (q) -- a new state
+			// (p) -> character -> (q) -- transition
+
+			if (state.thisChar == '+') {
+				DFA_kleeneplus(state);
+			}
+			else if (state.thisChar == '*') {
+				DFA_kleenestar(state);
+			}
+			else if (state.thisChar == '\\') {
+
+				// Handle escape sequences
+
+				// Suppress setting of lastChar with the slash
+
+				continue;
+			}
+			else if (state.thisChar == ')') {
+				// Mark the group end flag
+				state.isEndOfGroup = true;
+
+				// Suppress concatenation of right parentheses
+				continue;
+			}
+			else {
+				// Normal matching character
+				if (state.isNormalChar) {
+					DFA_concatenate(state);
+					state.contextStack.clear();
+				}
+
+				if (state.thisChar == '(') {
+
+					// Handle grouping
+
+					// Suppress setting of lastChar with parentheses
+					DFA_startGroup(state);
+					state.isNormalChar = false;
+					continue;
+				}
+				state.isNormalChar = true;
+			}
+
+			if (state.lastChar == ')') {
+				Console.putln("Group deleted");
+
+				// Pop group state
+				state.groupStack.pop();
+
+				state.isNormalChar = false;
+			}
+
+			state.lastChar = state.thisChar;
+		}
+
+		// Handle last character
+		if (regexPos == regularExpression.length && state.isNormalChar) {
+			DFA_concatenate(state);
+			state.contextStack.clear();
+		}
+		else {
+		}
+
+		foreach(i, item; state.currentStack) {
+			Console.putln("accept state found at currentStack[", i, "]");
+			item.accept = true;
+		}
 	}
 
 private:
 
+	void DFA_startGroup(ref DFABuildState state) {
+		Console.putln("Group found");
+		state.groupStack.push(state.currentStack.peek());
+		state.loopStack.push(null);
+	}
+
+	void DFA_endGroup(ref DFABuildState state) {
+		state.groupStack.pop();
+		state.loopStack.pop();
+	}
+
+	void DFA_concatenate(ref DFABuildState state) {
+		Console.putln("adding concat state for ", state.lastChar);
+		State newState = new State();
+		
+		bool doneNewState = false;
+
+		for(uint i; i < state.currentStack.length; i++) {
+			if (state.lastChar in state.currentStack[i].transitions) {
+				Console.putln("traveling");
+				state.currentStack[i] = state.currentStack[i].transitions[state.lastChar];
+			}
+			else if (state.currentStack[i] !is newState) {
+				Console.putln("adding to currentStack[", i, "]");
+				state.currentStack[i].transitions[state.lastChar] = newState;
+
+				if (!state.groupStack.empty && state.currentStack[i] is state.groupStack.peek()) {
+					// This transition is for this group
+					state.loopStack[state.loopStack.length-1] = state.loopStack[state.loopStack.length-1] ~ state.lastChar;
+				}
+
+				if (doneNewState) {
+					// We can remove this redundant link because it has merged
+					// with the newState.
+					state.currentStack.removeAt(i);
+					Console.putln("removing currentStack[", i, "]");
+					i--;
+				}
+				else {
+					state.currentStack[i] = newState;
+					doneNewState = true;
+				}
+			}
+		}
+	}
+
+	// Kleene Star
+	// (p) -> lastChar -> (p)
+
+	// Special cases:
+	// a*a* == a*
+	// a*b* == a*b+|a*
+	void DFA_kleenestar(ref DFABuildState state) {
+		// (p) -> a -> (p)
+		State loopState = state.currentStack.peek();
+		if (state.isEndOfGroup) {
+			state.isEndOfGroup = false;
+
+			State startingState = state.groupStack.peek();
+
+			if (!startingState.backState) {
+				Console.putln("adding normal grouped kleene state");
+
+				loopState.transitions[state.lastChar] = startingState;
+				state.contextStack.addItem(startingState);
+				startingState.backState = true;
+			}
+			else {
+				Console.putln("adding augmented grouped kleene state");
+				DFA_concatenate(state);
+
+				// Add loop
+				State thisState = state.currentStack.peek();
+				foreach(ts; state.loopStack.peek()) {
+					Console.putln("transition ", ts);
+					thisState.transitions[ts] = startingState.transitions[ts];
+				}
+				state.contextStack.addItem(loopState);
+				state.contextStack.addItem(thisState);
+				foreach(ts; thisState.transitions.keys) {
+					Console.putln("whoa - ", ts);
+				}
+				foreach(val; thisState.transitions.values) {
+					val.backState = true;
+				}
+			}
+		}
+		else if (!loopState.backState) {
+			loopState.transitions[state.lastChar] = loopState;
+			state.contextStack.addItem(loopState);
+			loopState.backState = true;
+			Console.putln("adding normal kleene state");
+		}
+		else {
+			Console.putln("adding augmented kleene state");
+			// add concatenation first
+			// (p) -> a -> (q) -> a -> (q)
+			DFA_concatenate(state);
+
+			// Add loop
+			State thisState = state.currentStack.peek();
+			thisState.transitions[state.lastChar] = thisState;
+			state.contextStack.addItem(loopState);
+			state.contextStack.addItem(thisState);
+			thisState.backState = true;
+		}
+		state.currentStack = state.contextStack.dup();
+
+		state.isNormalChar = false;
+	}
+
+	// Kleene Plus
+	// a+ == aa*
+	// (p) -> lastChar -> (q)
+	// (q) -> lastChar -> (q)
+	void DFA_kleeneplus(ref DFABuildState state) {
+		Console.putln("adding kleene plus state");
+		State loopState = state.currentStack.peek();
+		if (state.isEndOfGroup) {
+			state.isEndOfGroup = false;
+			Console.putln("adding normal grouped kleene plus");
+
+			State startingState = state.groupStack.peek();
+
+			DFA_concatenate(state);
+			state.contextStack.clear();
+			State thisState = state.currentStack.peek();
+			foreach(ts; startingState.transitions.keys) {
+				Console.putln("transition: ", ts);
+				thisState.transitions[ts] = startingState.transitions[ts];
+			}
+		}
+		else {
+			DFA_concatenate(state);
+			state.contextStack.clear();
+			State thisState = state.currentStack.peek();
+			thisState.transitions[state.lastChar] = thisState;
+			Console.putln("adding normal kleene plus");
+		}
+
+		state.isNormalChar = false;
+	}
+
+	void DFA_unroll(ref DFABuildState state, ref State startState) {
+		// (p) -> a -> (p) => (o) -> a -> (p) -> a -> (p)
+		// (p) -> a -> (q) -> b -> (p) => 
+		//		(n) -> a -> (o) -> b -> (p) -> a -> (q) -> b -> (p)
+
+
+	}
+
+	struct DFABuildState {
+
+		dchar lastChar;
+		dchar thisChar;
+
+		// Whether or not the current regularExpression character in lastChar was
+		// a matching character (and not a special character like '*' '+' etc)
+		bool isNormalChar;
+
+		// Whether or not the group has just ended.
+		bool isEndOfGroup;
+
+		State working;
+
+		Stack!(State) contextStack;
+		Stack!(State) currentStack;
+		Stack!(State) groupStack;
+		Stack!(dchar[]) loopStack;
+	}
+
+	// Common
+
 	static String[][Thread] regexRefs;
 	static uint[Thread] regexPos;
 
+	// For backtracking regex operations
+
+	struct GroupInfo {
+		int startPos;
+		int endPos;
+		int strStartPos;
+		int strPos;
+		int parent;
+		int unionPos;
+		int groupId;
+	}
+
+	struct RegexInfo {
+
+		// This hash table contains information about a grouping
+		// for a specific position in the regex.
+		GroupInfo[int] groupInfo;
+
+		// This hash table contains information that aids operators
+		// for a specific position in the regex.
+		int[int] operatorFlag;
+
+		// This structure hopes to minimize work already done by merely setting
+		// a flag whenever a position in each string is reached. Since this
+		// denotes that the regex will be parsing from the same state, and the
+		// regex is pure, it will not have to repeat the work.
+		int[][] memoizer;
+	}
 }

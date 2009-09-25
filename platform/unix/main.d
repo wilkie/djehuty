@@ -104,7 +104,6 @@ int main(char[][] args)
 {
 	try
 	{
-
 		AppInit();
 
 		ConsoleInit();

@@ -57,7 +57,7 @@ class Wavelet : Stream {
 	// Description: This function will shorten the wavelet to a specified region.
 	void crop(Time start) {
 		// is this necessary?
-		if (start > time() || start == Time.init) {
+		if (start > time() || start is null) {
 			// error
 			Console.put("error");
 			return;
@@ -116,7 +116,7 @@ class Wavelet : Stream {
 
 	// Description: This function will return the amount of time this block represents
 	Time time() {
-		Time tme;
+		Time tme = new Time();
 
 		// the amount of bytes / amount of bytes per second = seconds
 		if (_fmt.averageBytesPerSecond == 0) {
