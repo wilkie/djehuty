@@ -221,7 +221,7 @@ protected:
 		static if (IsArray!(T) || IsClass!(T)) {
 			return null;
 		}
-		static if (IsStruct!(T)) {
+		else static if (IsStruct!(T)) {
 			return *(new T);
 		}
 		else {

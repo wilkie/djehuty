@@ -66,3 +66,75 @@ template BaseType(T) {
 		alias T BaseType;
 	}
 }
+
+template Tuple(T...) {
+	alias T Tuple;
+}
+
+// String templates
+template Capitalize(char[] foo) {
+	static if (foo.length == 0) {
+		const char[] Capitalize = "";
+	}
+	else static if (foo[0] >= 'A' && foo[0] <= 'Z') {
+		const char[] Capitalize = foo;
+	}
+	else {
+		const char[] Capitalize = cast(char)(foo[0] - 32) ~ foo[1..$];
+	}
+}
+
+private template TrimLImpl(char[] foo, uint pos = 0) {
+	static if (pos >= foo.length) {
+		const char[] TrimLImpl = "";
+	}
+	else static if (foo[pos] == ' ' || foo[pos] == '\t' || foo[pos] == '\n' || foo[pos] == '\r') {
+		const char[] TrimLImpl = TrimLImpl!(foo, pos + 1);
+	}
+	else {
+		const char[] TrimLImpl = foo[pos..$];
+	}
+}
+
+template TrimL(char[] foo) {
+	const char[] TrimL = TrimLImpl!(foo);
+}
+
+private template TrimRImpl(char[] foo, int pos = foo.length-1) {
+	static if (pos <= -1) {
+		const char[] TrimRImpl = "";
+	}
+	else static if (foo[pos] == ' ' || foo[pos] == '\t' || foo[pos] == '\n' || foo[pos] == '\r') {
+		const char[] TrimRImpl = TrimRImpl!(foo, pos - 1);
+	}
+	else {
+		const char[] TrimRImpl = foo[0..pos+1];
+	}
+}
+
+template TrimR(char[] foo) {
+	const char[] TrimR = TrimRImpl!(foo);
+}
+
+private template TrimImpl(char[] foo, uint pos = 0) {
+}
+
+template Trim(char[] foo) {
+	const char[] Trim = TrimL!(TrimR!(foo));
+}
+
+private template RemoveSpacesImpl(char[] foo, uint pos = 0) {
+	static if (pos >= foo.length) {
+		const char[] RemoveSpacesImpl = foo[0..pos];
+	}
+	else static if (foo[pos] == ' ' || foo[pos] == '\t' || foo[pos] == '\n' || foo[pos] == '\r') {
+		const char[] RemoveSpacesImpl = foo[0..pos] ~ RemoveSpacesImpl!(foo[pos+1..$], 0);
+	}
+	else {
+		const char[] RemoveSpacesImpl = RemoveSpacesImpl!(foo, pos + 1);
+	}
+}
+
+template RemoveSpaces(char[] foo) {
+	const char[] RemoveSpaces = RemoveSpacesImpl!(foo);
+}

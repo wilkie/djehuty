@@ -27,6 +27,48 @@ import specs.test;
 
 import gui.osbutton;
 
+import parsing.options;
+class MyOptions : OptionParser {
+
+	mixin Options!(
+		"option", "will perform this option",
+		string, "gives the number of runs",
+		char, "gives the op to do",
+
+		"x", "foo",
+		int, "yeah",
+
+		"y", "asdf",
+
+		"-file, f", "The file to use",
+		string, "The filename",
+
+		"-help", "view help"
+	);
+
+	void opOption(string str, char foo) {
+		Console.putln("option flag ", str, foo);
+	}
+
+	void opX(int foo) {
+		Console.putln("x flag ", foo);
+	}
+
+	void opY() {
+		Console.putln("y flag");
+	}
+
+	void opFile(string filename) {
+		Console.putln("file flag ", filename);
+	}
+
+	void opHelp() {
+		showUsage();
+		Djehuty.end(0);
+	}
+
+}
+
 /*class MyControl : Widget {
 
 	this() {
@@ -215,7 +257,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -249,10 +291,11 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-//	static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 
+		new MyOptions();
 
 		real[] bleh = [0,1,1,2,3,4,56];
 		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
@@ -350,6 +393,7 @@ class MyConsoleApp : Application {
 		Console.putln(i1);
 		i2 = -i2;
 		Console.putln(i2);
+		Console.putln(atoi("5543"));
 	}
 }
 

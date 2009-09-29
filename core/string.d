@@ -702,9 +702,9 @@ class String {
 	}
 
 	// Description: Will cast the String object to a string for functions that require it.
-	string opCast() {
-		return toString();
-	}
+	//string opCast() {
+	//	return toString();
+	//}
 
 	// Unicode Conversions
 
@@ -1142,6 +1142,33 @@ string toStr(...) {
 	Variadic vars = new Variadic(_arguments, _argptr);
 
 	return toStrv(vars);
+}
+
+long atoi(string value, uint base = 10) {
+	bool negative;
+	uint i;
+	if (value is null || value.length == 0) {
+		return 0;
+	}
+	if (value[i] == '-') {
+		negative = true;
+		i++;
+	}
+
+	long ret;
+
+	for (; i < value.length; i++) {
+		if (value[i] >= '0' && value[i] <= '9') {
+			ret *= 10;
+			ret += cast(int)value[i] - cast(int)'0';
+		}
+	}
+
+	if (negative) {
+		ret = -ret;
+	}
+
+	return ret;
 }
 
 string itoa(long val, uint base = 10) {

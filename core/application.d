@@ -18,6 +18,8 @@ import core.arguments;
 import core.event;
 import core.definitions;
 
+import platform.application;
+
 import io.console;
 
 import analyzing.debugger;
@@ -116,15 +118,21 @@ protected:
 	}
 
 	void start() {
+		_platformAppController = ApplicationController.instance;
+		_platformAppController.start();
 	}
 
 	void end(uint exitCode) {
+		_platformAppController.exitCode = exitCode;
+		_platformAppController.end();
 	}
 
 private:
 
+	ApplicationController _platformAppController;
+
 	// Silly wrapper to call start() due to a compiler bug
-	package final void onPostApplicationStart() {
+	package final void onPreApplicationStart() {
 		start();
 	}
 
