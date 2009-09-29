@@ -15,6 +15,8 @@ import core.string;
 import core.definitions;
 import core.arguments;
 
+public import _ConsoleIO = io.console;
+
 template BuildArgumentRetrieval(T) {
 	//pragma(msg, T.stringof);
 	static if (is(T == char)) {
@@ -194,8 +196,8 @@ template BuildUsageDesc(uint idx, list...) {
 		const char[] BuildUsageDesc = ``;
 	}
 	else {
-		const char[] BuildUsageDesc = `Console.putln("-` ~ BuildUsageString!(list[idx]) ~ BuildUsageParameterList!(idx + 2, list) ~ `: ` ~ list[idx+1] ~ `");
-				Console.putln("` ~ BuildUsageParameterDescList!(idx + 2, list) ~ `");
+		const char[] BuildUsageDesc = `_ConsoleIO.Console.putln("-` ~ BuildUsageString!(list[idx]) ~ BuildUsageParameterList!(idx + 2, list) ~ `: ` ~ list[idx+1] ~ `");
+				_ConsoleIO.Console.putln("` ~ BuildUsageParameterDescList!(idx + 2, list) ~ `");
 			`;
 	}
 }
@@ -280,7 +282,7 @@ template BuildUsagePrinterAllDesc(uint idx, list...) {
 		const char[] BuildUsagePrinterAllDesc = ``;
 	}
 	else static if (list[idx].stringof[0] == '"') {
-		const char[] BuildUsagePrinterAllDesc = `Console.putln(" ` 
+		const char[] BuildUsagePrinterAllDesc = `_ConsoleIO.Console.putln(" ` 
 				~ BuildUsagePrinterAllDescPretty!(Trim!(list[idx] ~ BuildUsageParameterList!(idx+2, list)))
 				~ ` - `
 				~ list[idx + 1]
@@ -363,11 +365,11 @@ template Options(list...) {
 
 		// Traditional header
 
-		Console.putln("OVERVIEW: Application Name - Version - 0.0.0");
-		Console.putln();
-		Console.putln("USAGE: foo ");
-		Console.putln();
-		Console.putln("OPTIONS:");
+		_ConsoleIO.Console.putln("OVERVIEW: Application Name - Version - 0.0.0");
+		_ConsoleIO.Console.putln();
+		_ConsoleIO.Console.putln("USAGE: foo ");
+		_ConsoleIO.Console.putln();
+		_ConsoleIO.Console.putln("OPTIONS:");
 
 		// Followed by an alphabetical listing of options and their usage
 
