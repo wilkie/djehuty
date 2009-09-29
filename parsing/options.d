@@ -14,6 +14,7 @@ import core.util;
 import core.string;
 import core.definitions;
 import core.arguments;
+import core.main;
 
 public import _ConsoleIO = io.console;
 
@@ -346,11 +347,14 @@ class OptionParser {
 	void printUsage(string option) {
 	}
 
-	void opError(string token) {
+	void opError(string option) {
 		// Default handler will print out the correct usage of the
 		// option and exit
 
-
+		_ConsoleIO.Console.putln("Error in syntax for option: -", option);
+		_ConsoleIO.Console.putln();
+		printUsage(option);
+		Djehuty.end(0);
 	}
 }
 

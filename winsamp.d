@@ -64,11 +64,7 @@ class MyOptions : OptionParser {
 
 	void opHelp() {
 		showUsage();
-		printUsage("f");
-	}
-
-	override void opError(string option) {
-		Console.putln("option : ", option);
+		Djehuty.end(0);
 	}
 
 }

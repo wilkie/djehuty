@@ -16,6 +16,8 @@ import platform.win.main;
 
 import scaffold.console;
 
+import platform.application;
+
 import platform.vars.window;
 import platform.vars.font;
 import platform.vars.view;

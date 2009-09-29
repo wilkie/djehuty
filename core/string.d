@@ -1147,6 +1147,9 @@ string toStr(...) {
 long atoi(string value, uint base = 10) {
 	bool negative;
 	uint i;
+	if (value is null || value.length == 0) {
+		return 0;
+	}
 	if (value[i] == '-') {
 		negative = true;
 		i++;
@@ -1157,7 +1160,7 @@ long atoi(string value, uint base = 10) {
 	for (; i < value.length; i++) {
 		if (value[i] >= '0' && value[i] <= '9') {
 			ret *= 10;
-			ret |= cast(int)value[i] - cast(int)'0';
+			ret += cast(int)value[i] - cast(int)'0';
 		}
 	}
 
