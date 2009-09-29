@@ -236,7 +236,7 @@ private:
 				if (last != i) {
 					String token = new String(Unicode.toUtf8(cmdlne[last..i]));
 	
-					args.addItem(token);
+					args.add(token);
 				}
 	
 				last = i+1;
