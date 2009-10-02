@@ -46,23 +46,23 @@ class MyOptions : OptionParser {
 		"-help", "view help"
 	);
 
-	void opOption(string str, char foo) {
+	void onOption(string str, char foo) {
 		Console.putln("option flag ", str, foo);
 	}
 
-	void opX(int foo) {
+	void onX(int foo) {
 		Console.putln("x flag ", foo);
 	}
 
-	void opY() {
+	void onY() {
 		Console.putln("y flag");
 	}
 
-	void opFile(string filename) {
+	void onFile(string filename) {
 		Console.putln("file flag ", filename);
 	}
 
-	void opHelp() {
+	void onHelp() {
 		showUsage();
 		Djehuty.end(0);
 	}
@@ -290,6 +290,260 @@ import math.fixed;
 import math.currency;
 import math.integer;
 
+class State {
+	State[dchar] transitions;
+
+	bool accept;
+
+	bool loopStart;
+	bool loopEnd;
+
+	State loopDest;
+	State loopSource;
+	dchar loopOn;
+
+	// Debugging block
+	static int count = 0;
+	static List!(State) all;
+	int id;
+	static this() {
+		all = new List!(State);
+	}
+	this() {
+		id = count;
+		count++;
+		all.add(this);
+	}
+
+	string toString() {
+		string ret = "State " ~ toStr(id) ~ ": [";
+
+		if (loopStart) {
+			ret ~= "L";
+		}
+		else {
+			ret ~= " ";
+		}
+
+		if (accept) {
+			ret ~= "A] ";
+		}
+		else {
+			ret ~= " ] ";
+		}
+
+		if (loopStart) {
+			ret ~= "{" ~ toStr(loopDest.id) ~ "} ";
+		}
+
+		foreach(key; transitions.keys) {
+			ret ~= toStr(key) ~ "->" ~ toStr(transitions[key].id) ~ " ";
+		}
+		return ret;
+	}
+
+	static void printall() {
+		foreach(state; all) {
+			Console.putln(state);
+		}
+	}
+}
+
+State buildDFA(string regex) {
+	return buildDFA(new String(regex));
+}
+
+State buildDFA(String regex) {
+	State startState = new State();
+
+	uint regexPos = 0;
+
+	dchar lastChar = '\0';
+	dchar thisChar;
+	dchar lastConcatChar = '\0';
+
+	enum Operation {
+		None,
+		Kleene,
+		Concat
+	}
+
+	Operation lastOp = Operation.None;
+
+	List!(State) current = new List!(State);
+	current.add(startState);
+
+	if (regexPos < regex.length) {
+		lastChar = regex[regexPos];
+		if (lastChar == '*') {
+			// error
+		}
+		else if (lastChar == '(') {
+			// group
+		}
+		else {
+			lastConcatChar = lastChar;
+		}
+		regexPos++;
+	}
+
+	while (regexPos <= regex.length) {
+		if (regexPos == regex.length) {
+			thisChar = '\0';
+		}
+		else {
+			thisChar = regex[regexPos];
+		}
+
+		if (thisChar == '*') {
+			// Kleene Star
+			if (lastChar == ')') {
+				// Group End (Kleene)
+			}
+			else {
+				// Single Character Kleene
+				// ex. "a*" => [p] -> 'a' -> [p]
+				State loopState;
+
+				foreach(state; current) {
+					if (state.transitions.length != 0) {
+						if (loopState is null) {
+							loopState = new State();
+							loopState.transitions[lastConcatChar] = loopState;
+							loopState.loopStart = true;
+							loopState.loopEnd = true;
+							loopState.loopSource = loopState;
+							loopState.loopDest = loopState;
+							loopState.loopOn = lastConcatChar;
+						}
+
+						state.transitions[lastConcatChar] = loopState;
+					}
+					else {
+						state.transitions[lastConcatChar] = state;
+						state.loopStart = true;
+						state.loopEnd = true;
+						state.loopSource = state;
+						state.loopDest = state;
+						state.loopOn = lastConcatChar;
+					}
+				}
+
+				if (loopState !is null) {
+					current.add(loopState);
+				}
+
+				Console.putln("Single Character Kleene (", lastConcatChar, ")");
+				State.printall();
+			}
+			lastOp = Operation.Kleene;
+			lastConcatChar = '\0';
+		}
+		else {
+			// concatenation
+			if (lastConcatChar != '\0') {
+				State catState;
+				List!(State) newCurrent = new List!(State);
+				foreach(state; current) {
+					if (lastConcatChar in state.transitions) {
+						Console.putln("Concating Character ", state.id, " (", lastConcatChar, ")");
+						State destState = state.transitions[lastConcatChar];
+						Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
+						if (destState.loopStart && destState.loopDest is destState && destState !is state) {
+							State interState = new State();
+							state.transitions[lastConcatChar] = interState;
+							interState.transitions[lastConcatChar] = destState;
+							destState = interState;
+						}
+						else if (destState is state) {
+							unroll(destState);
+							if (lastConcatChar in destState.transitions) {
+								destState = destState.transitions[lastConcatChar];
+							}
+						}
+						else {
+							unroll(destState);
+							if (lastConcatChar in destState.transitions) {
+								destState = destState.transitions[lastConcatChar];
+							}
+						}
+						newCurrent.add(destState);
+					}
+					else {
+						if (catState is null) {
+							catState = new State();
+						}
+						state.transitions[lastConcatChar] = catState;
+					}
+				}
+				newCurrent.add(catState);
+				current = newCurrent;
+
+				Console.putln("Concat Character (", lastConcatChar, ")");
+				State.printall();
+			}
+			lastOp = Operation.Concat;
+			lastConcatChar = thisChar;
+		}
+
+		lastChar = thisChar;
+
+		regexPos++;
+	}
+
+	foreach(state; current) {
+		state.accept = true;
+	}
+
+	Console.putln("Done");
+	State.printall();
+
+	return startState;
+}
+
+void unroll(State state) {
+	if (state.loopStart) {
+		Console.putln("Unlooping state ", state.id);
+		State.printall();
+
+		// unroll
+		State loopDest = state.loopDest;
+		if (loopDest is null) { return; }
+		State newDest = new State();
+		Console.putln("loop destination: ", loopDest.id);
+
+		foreach(key; loopDest.transitions.keys) {
+			State toState = loopDest.transitions[key];
+			if (toState == loopDest) { toState = newDest; }
+			newDest.transitions[key] = toState;
+		}
+		Console.putln("b ", state.id);
+
+		loopDest.loopEnd = false;
+
+		state.loopDest = null;
+		state.loopStart = false;
+		state.transitions[state.loopOn] = newDest;
+
+		newDest.loopStart = true;
+		newDest.loopDest = loopDest.transitions[state.loopOn];
+		newDest.loopOn = state.loopOn;
+
+		newDest.loopDest.loopEnd = true;
+		newDest.loopDest.loopOn = state.loopOn;
+		newDest.loopDest.loopSource = newDest;
+
+		Console.putln("Unlooped state ", state.id, " on transition ", state.loopOn);
+		State.printall();
+	}
+	else {
+		Console.putln("Unlooping Not Necessary ", state.id);
+	}
+}
+
+void unroll_transition(State state, dchar transition) {
+}
+
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 
@@ -297,103 +551,7 @@ class MyConsoleApp : Application {
 
 		new MyOptions();
 
-		real[] bleh = [0,1,1,2,3,4,56];
-		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
-
-		struct asdfasdf {
-			ulong dd;
-			ulong dd2;
-			ulong dd3;
-			ulong dd4;
-			ulong dd5;
-			string toString() {
-				return "ADSFS";
-			}
-		}
-		asdfasdf aaaa;
-		String asdf = new String("sfadf");
-		real asd;
-		Object meh = new Object();
-
-		foo(asdf, GOOOD, 2,aaaa, 3,4, meh, 3, "dave"d);
-
-	/*	Regex r = new Regex("((ab)*)*c");
-		String work = r.eval("ababababab");
-		if (work) {
-			Console.putln(work);
-		}*/
-		List!(int) lst = new List!(int);
-		lst.add(2);
-		lst.add(1);
-		lst.add(3);
-		lst.add(4);
-		lst.apply((int a){ return a*a; });
-
-		filter( (int a){ return a > 2; } , range(1,11) );
-
-		Console.putln(lst);
-
-		Console.putln("asdf", aaaa, GOOOD, 2, 5, 2, 6, 6);
-		foov(foobar);
-
-		String str = new String("dave wilkinson");
-		string fff = str[0..4];
-		String ffff = str.subString(5);
-		Console.putln(fff);
-		Console.putln(ffff);
-
-		Date date = new Date();
-		Console.putln(date);
-
-		Date testDate = new Date(Month.August, 20, 1987);
-		Time testTime = new Time(14, 45, 35);
-
-		Console.putln(Locale.formatDate(testDate));
-		Console.putln(Locale.formatTime(testTime));
-		Console.putln(Locale.formatNumber(1123431241324));
-		Console.putln(Locale.formatCurrency(1123431241324));
-		Locale.id = LocaleId.French_FR;
-		Console.putln(Locale.formatDate(testDate));
-		Console.putln(Locale.formatTime(testTime));
-		Console.putln(Locale.formatNumber(1123431241324));
-		Console.putln(Locale.formatCurrency(1123431241324));
-
-		real f = -3.4123999999;
-		Console.putln(ftoa(f));
-		//printf("%f\n", f);
-		//writefln(f);
-		Fixed f1 = new Fixed(132, 2);
-		Fixed f2 = new Fixed(121, 1);
-		f1 -= f2;
-
-		Console.putln(f1);
-		
-		f1 = new Fixed(1456, 3);
-		f2 = new Fixed(327, 1);
-		f1 *= f2;
-
-		Console.putln(f1);
-		
-		f1 = new Fixed(11, 1);
-		f2 = new Fixed(112, 2);
-		f1 /= f2;
-		
-		Console.putln(f1);
-		
-		Currency c1 = new Currency(11, 1);
-		Currency c2 = new Currency(112, 2);
-		c1 /= c2;
-
-		Console.putln(c1);
-		
-		Integer i1 = new Integer(0xffffffffffffffff);
-		Integer i2 = new Integer(0x1);
-		Console.putln(i1, " - ", i2);
-		i1 -= i2;
-		Console.putln(i1);
-		i2 = -i2;
-		Console.putln(i2);
-		Console.putln(atoi("5543"));
+		buildDFA(`a*b*ab`);
 	}
 }
 

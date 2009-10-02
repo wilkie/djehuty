@@ -18,13 +18,11 @@ import core.unicode;
 import io.console;
 
 // Imposed variadic
-version(LDC)
-{
+version(LDC) {
 	public import ldc.vararg;
 	public import C = ldc.cstdarg;
 }
-else
-{
+else {
 	public import std.stdarg;
 	public import C = std.c.stdarg;
 }
