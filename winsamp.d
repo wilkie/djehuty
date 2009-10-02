@@ -290,260 +290,6 @@ import math.fixed;
 import math.currency;
 import math.integer;
 
-class State {
-	State[dchar] transitions;
-
-	bool accept;
-
-	bool loopStart;
-	bool loopEnd;
-
-	State loopDest;
-	State loopSource;
-	dchar loopOn;
-
-	// Debugging block
-	static int count = 0;
-	static List!(State) all;
-	int id;
-	static this() {
-		all = new List!(State);
-	}
-	this() {
-		id = count;
-		count++;
-		all.add(this);
-	}
-
-	string toString() {
-		string ret = "State " ~ toStr(id) ~ ": [";
-
-		if (loopStart) {
-			ret ~= "L";
-		}
-		else {
-			ret ~= " ";
-		}
-
-		if (accept) {
-			ret ~= "A] ";
-		}
-		else {
-			ret ~= " ] ";
-		}
-
-		if (loopStart) {
-			ret ~= "{" ~ toStr(loopDest.id) ~ "} ";
-		}
-
-		foreach(key; transitions.keys) {
-			ret ~= toStr(key) ~ "->" ~ toStr(transitions[key].id) ~ " ";
-		}
-		return ret;
-	}
-
-	static void printall() {
-		foreach(state; all) {
-			Console.putln(state);
-		}
-	}
-}
-
-State buildDFA(string regex) {
-	return buildDFA(new String(regex));
-}
-
-State buildDFA(String regex) {
-	State startState = new State();
-
-	uint regexPos = 0;
-
-	dchar lastChar = '\0';
-	dchar thisChar;
-	dchar lastConcatChar = '\0';
-
-	enum Operation {
-		None,
-		Kleene,
-		Concat
-	}
-
-	Operation lastOp = Operation.None;
-
-	List!(State) current = new List!(State);
-	current.add(startState);
-
-	if (regexPos < regex.length) {
-		lastChar = regex[regexPos];
-		if (lastChar == '*') {
-			// error
-		}
-		else if (lastChar == '(') {
-			// group
-		}
-		else {
-			lastConcatChar = lastChar;
-		}
-		regexPos++;
-	}
-
-	while (regexPos <= regex.length) {
-		if (regexPos == regex.length) {
-			thisChar = '\0';
-		}
-		else {
-			thisChar = regex[regexPos];
-		}
-
-		if (thisChar == '*') {
-			// Kleene Star
-			if (lastChar == ')') {
-				// Group End (Kleene)
-			}
-			else {
-				// Single Character Kleene
-				// ex. "a*" => [p] -> 'a' -> [p]
-				State loopState;
-
-				foreach(state; current) {
-					if (state.transitions.length != 0) {
-						if (loopState is null) {
-							loopState = new State();
-							loopState.transitions[lastConcatChar] = loopState;
-							loopState.loopStart = true;
-							loopState.loopEnd = true;
-							loopState.loopSource = loopState;
-							loopState.loopDest = loopState;
-							loopState.loopOn = lastConcatChar;
-						}
-
-						state.transitions[lastConcatChar] = loopState;
-					}
-					else {
-						state.transitions[lastConcatChar] = state;
-						state.loopStart = true;
-						state.loopEnd = true;
-						state.loopSource = state;
-						state.loopDest = state;
-						state.loopOn = lastConcatChar;
-					}
-				}
-
-				if (loopState !is null) {
-					current.add(loopState);
-				}
-
-				Console.putln("Single Character Kleene (", lastConcatChar, ")");
-				State.printall();
-			}
-			lastOp = Operation.Kleene;
-			lastConcatChar = '\0';
-		}
-		else {
-			// concatenation
-			if (lastConcatChar != '\0') {
-				State catState;
-				List!(State) newCurrent = new List!(State);
-				foreach(state; current) {
-					if (lastConcatChar in state.transitions) {
-						Console.putln("Concating Character ", state.id, " (", lastConcatChar, ")");
-						State destState = state.transitions[lastConcatChar];
-						Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
-						if (destState.loopStart && destState.loopDest is destState && destState !is state) {
-							State interState = new State();
-							state.transitions[lastConcatChar] = interState;
-							interState.transitions[lastConcatChar] = destState;
-							destState = interState;
-						}
-						else if (destState is state) {
-							unroll(destState);
-							if (lastConcatChar in destState.transitions) {
-								destState = destState.transitions[lastConcatChar];
-							}
-						}
-						else {
-							unroll(destState);
-							if (lastConcatChar in destState.transitions) {
-								destState = destState.transitions[lastConcatChar];
-							}
-						}
-						newCurrent.add(destState);
-					}
-					else {
-						if (catState is null) {
-							catState = new State();
-						}
-						state.transitions[lastConcatChar] = catState;
-					}
-				}
-				newCurrent.add(catState);
-				current = newCurrent;
-
-				Console.putln("Concat Character (", lastConcatChar, ")");
-				State.printall();
-			}
-			lastOp = Operation.Concat;
-			lastConcatChar = thisChar;
-		}
-
-		lastChar = thisChar;
-
-		regexPos++;
-	}
-
-	foreach(state; current) {
-		state.accept = true;
-	}
-
-	Console.putln("Done");
-	State.printall();
-
-	return startState;
-}
-
-void unroll(State state) {
-	if (state.loopStart) {
-		Console.putln("Unlooping state ", state.id);
-		State.printall();
-
-		// unroll
-		State loopDest = state.loopDest;
-		if (loopDest is null) { return; }
-		State newDest = new State();
-		Console.putln("loop destination: ", loopDest.id);
-
-		foreach(key; loopDest.transitions.keys) {
-			State toState = loopDest.transitions[key];
-			if (toState == loopDest) { toState = newDest; }
-			newDest.transitions[key] = toState;
-		}
-		Console.putln("b ", state.id);
-
-		loopDest.loopEnd = false;
-
-		state.loopDest = null;
-		state.loopStart = false;
-		state.transitions[state.loopOn] = newDest;
-
-		newDest.loopStart = true;
-		newDest.loopDest = loopDest.transitions[state.loopOn];
-		newDest.loopOn = state.loopOn;
-
-		newDest.loopDest.loopEnd = true;
-		newDest.loopDest.loopOn = state.loopOn;
-		newDest.loopDest.loopSource = newDest;
-
-		Console.putln("Unlooped state ", state.id, " on transition ", state.loopOn);
-		State.printall();
-	}
-	else {
-		Console.putln("Unlooping Not Necessary ", state.id);
-	}
-}
-
-void unroll_transition(State state, dchar transition) {
-}
-
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 
@@ -551,7 +297,26 @@ class MyConsoleApp : Application {
 
 		new MyOptions();
 
-		buildDFA(`a*b*ab`);
+		String exp = new String(`a*b*c*d*e*f*g*h*i`);
+		String find = new String("aaaaaaaaaabbbbbbggibbbbcccccccddddddddeeeeefgi");
+		Regex regex = new Regex(exp);
+		String work = regex.eval(find);
+
+		if (work !is null) {
+			Console.putln("DFA: ", work);
+		}
+		else {
+			Console.putln("DFA: {null}");
+		}
+
+		work = Regex.eval(find, exp);
+
+		if (work !is null) {
+			Console.putln("BT:  ", work);
+		}
+		else {
+			Console.putln("BT:  {null}");
+		}
 	}
 }
 
