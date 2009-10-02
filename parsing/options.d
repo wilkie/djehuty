@@ -12,6 +12,7 @@ module parsing.options;
 
 import core.util;
 import core.string;
+import core.tostring;
 import core.definitions;
 import core.arguments;
 import core.main;

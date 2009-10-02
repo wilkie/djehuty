@@ -3,6 +3,7 @@ module io.console;
 import scaffold.console;
 
 import core.string;
+import core.tostring;
 import core.format;
 import core.unicode;
 import core.definitions;
@@ -429,8 +430,9 @@ static:
 		}
 
 		if (chr == 13) {
-			ConsoleSetRelative(0,1);
-			ConsoleSetHome();
+			//ConsoleSetRelative(0,1);
+			//ConsoleSetHome();
+			_putChar(chr);
 		}
 		else if (chr == 27 && _vt100_emulation) {
 			_vt100_curparam = 0;
@@ -441,8 +443,9 @@ static:
 			_vt100_paramFilled = 0;
 		}
 		else if (chr == 10) {
-			ConsoleSetRelative(0,1);
-			ConsoleSetHome();
+			//ConsoleSetRelative(0,1);
+			//ConsoleSetHome();
+			_putChar(chr);
 		}
 		else {
 			_putChar(chr);

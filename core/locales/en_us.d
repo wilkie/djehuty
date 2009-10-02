@@ -4,7 +4,7 @@ import core.locale;
 
 import core.time;
 import core.date;
-import core.string;
+import core.tostring;
 import core.definitions;
 
 class LocaleEnglish_US : LocaleInterface {

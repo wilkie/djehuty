@@ -297,8 +297,8 @@ class MyConsoleApp : Application {
 
 		new MyOptions();
 
-		String exp = new String(`a*b*c*d*e*f*g*h*i`);
-		String find = new String("aaaaaaaaaabbbbbbggibbbbcccccccddddddddeeeeefgi");
+		String exp = new String(`a*b*f`);
+		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabf");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 

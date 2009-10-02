@@ -12,6 +12,7 @@
 module core.regex;
 
 import core.string;
+import core.tostring;
 import core.definitions;
 import core.list;
 

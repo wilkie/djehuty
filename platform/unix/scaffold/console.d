@@ -17,25 +17,31 @@ import core.string;
 import platform.unix.common;
 import platform.unix.main;
 
+import platform.application;
+
 import synch.thread;
 
 import tui.application;
 import tui.window;
 
 void ConsoleSetColors(uint fg, uint bg, int bright) {
-//	printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
-	int idx = fg << 3;
-	idx |= bg;
+	if (ApplicationController.instance.usingCurses) {
+		int idx= fg << 3;
+		idx |= bg;
 
-	if (bright) {
-		Curses.attron(Curses.A_BOLD);
+		if (bright) {
+			Curses.attron(Curses.A_BOLD);
+		}
+		else {
+			Curses.attroff(Curses.A_BOLD);
+		}
+
+		Curses.init_pair(idx, fg, bg);
+		Curses.attron(Curses.COLOR_PAIR(idx));
 	}
 	else {
-		Curses.attroff(Curses.A_BOLD);
+		printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
 	}
-
-	Curses.init_pair(idx, fg, bg);
-	Curses.attron(Curses.COLOR_PAIR(idx));
 }
 
 import io.console;
@@ -529,55 +535,30 @@ extern(C) void size_sig_handler(int signal) {
 	app.window.onResize();
 }
 
-void ConsoleInit()
-{
+void ConsoleInit() {
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
-    //direct the Size signal to the internal function
-//    signal(SIGWINCH, &size_sig_handler);
-//	signal(SIGINT, &close_sig_handler);
-	//sigset(SIGKILL, &close_sig_handler);
-	//sigset(SIGTERM, &close_sig_handler);
 
-	// set buffer to print without newline
 	setvbuf (stdout, null, _IONBF, 0);
-
-	Curses.initscr();
-	setlocale(LC_ALL, "");
-	setlocale(LC_CTYPE, "");
-	Curses.start_color();
-	Curses.keypad(Curses.stdscr, 1);
-
-	Curses.move(0,0);
-
-	Curses.nonl();
-	Curses.cbreak();
-	Curses.noecho();
-
-	Curses.raw();
-
-	Curses.mmask_t oldmask;
-	Curses.mousemask(Curses.ALL_MOUSE_EVENTS | Curses.REPORT_MOUSE_POSITION, &oldmask);
-	Curses.mouseinterval(0);
-
-	// Get current position
-	m_x = 0;
-	m_y = 0;
-
-	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
 
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
 }
 
 void ConsoleUninit() {
-	Curses.endwin();
+	if (ApplicationController.instance.usingCurses) {
+		Curses.endwin();
+	}
 }
 
 void ConsoleClear() {
-//	printf("\x1B[2J\x1B[0;0H");
-	Curses.clear();
-	Curses.refresh();
+	if (ApplicationController.instance.usingCurses) {
+		Curses.clear();
+		Curses.refresh();
+	}
+	else {
+		printf("\x1B[2J\x1B[0;0H");
+	}
 }
 
 void ConsoleSetRelative(int x, int y) {
@@ -621,27 +602,39 @@ void ConsoleShowCaret() {
 }
 
 void ConsoleSetHome() {
-//	printf("\x1B[0G");
-	Curses.getyx(Curses.stdscr, m_y, m_x);
-	m_x = 0;
-	Curses.move(m_y, m_x);
+	if (ApplicationController.instance.usingCurses) {
+		Curses.getyx(Curses.stdscr, m_y, m_x);
+		m_x = 0;
+		Curses.move(m_y, m_x);
+	}
+	else {
+		printf("\x1B[0G");
+	}
 }
 
 void ConsolePutString(dchar[] chrs) {
 	chrs ~= '\0';
 	char[] utf8 = Unicode.toUtf8(chrs);
-//	printf("%s", utf8.ptr);
-	Curses.wprintw(Curses.stdscr, "%s", utf8.ptr);
-	Curses.refresh();
+	if (ApplicationController.instance.usingCurses) {
+		Curses.wprintw(Curses.stdscr, "%s", utf8.ptr);
+		Curses.refresh();
+	}
+	else {
+		printf("%s", utf8.ptr);
+	}
 }
 
 void ConsolePutChar(dchar chr) {
 	dchar[] chrarray = [ chr, '\0' ];
 	char[] chrs = Unicode.toUtf8(chrarray);
 
-//	printf("%s", chrs.ptr);
-	Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
-	Curses.refresh();
+	if (ApplicationController.instance.usingCurses) {
+		Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
+		Curses.refresh();
+	}
+	else {
+		printf("%s", chrs.ptr);
+	}
 }
 
 void ConsoleGetSize(out uint width, out uint height) {

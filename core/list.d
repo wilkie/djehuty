@@ -11,9 +11,9 @@
 
 module core.list;
 
-import core.string;
 import core.definitions;
 import core.util;
+import core.tostring;
 
 class List(T) {
 	this() {

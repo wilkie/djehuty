@@ -10,12 +10,9 @@
 
 module core.variant;
 
-import core.string;
+import core.tostring;
 import core.definitions;
-import core.list;
 import core.unicode;
-
-import io.console;
 
 // Imposed variadic
 version(LDC) {
