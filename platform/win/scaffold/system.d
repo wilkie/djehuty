@@ -13,6 +13,8 @@ module scaffold.system;
 import platform.win.common;
 import platform.win.main;
 
+import platform.application;
+
 import scaffold.directory;
 
 import core.definitions;

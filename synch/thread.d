@@ -294,7 +294,6 @@ void ThreadModuleInit() {
 	}
 
 	Thread.threadById[mainThread.stdThread.runtimeThread] = mainThread;
-	Console.putln("module init");
 }
 
 void ThreadUninit(ref Thread t)

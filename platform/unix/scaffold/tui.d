@@ -18,7 +18,35 @@ import scaffold.console;
 
 import core.definitions;
 
+import platform.application;
+
 void TuiStart(TuiPlatformVars* vars) {
+	ApplicationController app = ApplicationController.instance();
+	app.usingCurses = true;
+
+	Curses.initscr();
+	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "");
+	Curses.start_color();
+	Curses.keypad(Curses.stdscr, 1);
+
+	Curses.move(0,0);
+
+	Curses.nonl();
+	Curses.cbreak();
+	Curses.noecho();
+
+	Curses.raw();
+
+	Curses.mmask_t oldmask;
+	Curses.mousemask(Curses.ALL_MOUSE_EVENTS | Curses.REPORT_MOUSE_POSITION, &oldmask);
+	Curses.mouseinterval(0);
+
+	// Get current position
+	m_x = 0;
+	m_y = 0;
+
+	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
 }
 
 void TuiEnd(TuiPlatformVars* vars) {

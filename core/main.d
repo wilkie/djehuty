@@ -59,15 +59,13 @@ public:
 		}
 		else {
 			app.arguments = Arguments.instance;
+			app.onPreApplicationStart();
 			app.onApplicationStart();
 		}
 
 		// If no event controllers are in play, then end
 		if (app.isZombie) {
 			end(0);
-		}
-		else {
-			app.onPostApplicationStart();
 		}
 	}
 
