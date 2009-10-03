@@ -61,6 +61,7 @@ public:
 			app.arguments = Arguments.instance;
 			app.onPreApplicationStart();
 			app.onApplicationStart();
+			app.onPostApplicationStart();
 		}
 
 		// If no event controllers are in play, then end

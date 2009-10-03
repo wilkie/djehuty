@@ -78,6 +78,10 @@ private:
 	void eventLoop() {
 		while(_running) {
 			TuiEvent evt;
+			if (_curConsoleWindow is null) {
+				continue;
+			}
+
 			TuiNextEvent(&evt, &_pfvars);
 
 			switch(evt.type) {

@@ -132,8 +132,11 @@ private:
 	ApplicationController _platformAppController;
 
 	// Silly wrapper to call start() due to a compiler bug
-	package final void onPreApplicationStart() {
+	package final void onPostApplicationStart() {
 		start();
+	}
+
+	package final void onPreApplicationStart() {
 	}
 
 	package final void onPostApplicationEnd(uint exitCode) {
