@@ -10,21 +10,16 @@
 
 module core.variant;
 
-import core.string;
+import core.tostring;
 import core.definitions;
-import core.list;
 import core.unicode;
 
-import io.console;
-
 // Imposed variadic
-version(LDC)
-{
+version(LDC) {
 	public import ldc.vararg;
 	public import C = ldc.cstdarg;
 }
-else
-{
+else {
 	public import std.stdarg;
 	public import C = std.c.stdarg;
 }

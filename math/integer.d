@@ -11,6 +11,7 @@
 module math.integer;
 
 import core.string;
+import core.tostring;
 import core.definitions;
 
 // Description: This class represents an integer value.

@@ -12,6 +12,7 @@ module parsing.options;
 
 import core.util;
 import core.string;
+import core.tostring;
 import core.definitions;
 import core.arguments;
 import core.main;
@@ -38,7 +39,7 @@ template BuildArgumentRetrieve(uint argidx, uint idx, list...) {
 	else static if (list[idx].stringof[0] != '"') {
 		const char[] BuildArgumentRetrieve = `param = getParameter();`
 			~ "\n\t\t\t\t"
-			~ `if (param is null) { opError(token); return; } `
+			~ `if (param is null) { onError(token); return; } `
 			~ "\n\t\t\t\t"
 			~ list[idx].stringof ~ ` arg` ~ argidx.stringof[0..$-1] ~ ` = `
 			~ BuildArgumentRetrieval!(list[idx])
@@ -86,7 +87,7 @@ template RebuildOpName(char[] name, uint idx = 0) {
 }
 
 template BuildOpName(uint idx, list...) {
-	const char[] BuildOpName = `op` ~ RebuildOpName!(list[idx]) ~ `(` ~ BuildOpParams!(0, idx+2, list) ~ `);`;
+	const char[] BuildOpName = `on` ~ RebuildOpName!(list[idx]) ~ `(` ~ BuildOpParams!(0, idx+2, list) ~ `);`;
 }
 
 template BuildCaseList(char[] optionString, uint pos = 0) {
@@ -347,7 +348,7 @@ class OptionParser {
 	void printUsage(string option) {
 	}
 
-	void opError(string option) {
+	void onError(string option) {
 		// Default handler will print out the correct usage of the
 		// option and exit
 
@@ -426,7 +427,7 @@ template Options(list...) {
 							while (!(ret[ret.length - 1] == lookingFor && (ret.length == 1 || ret[ret.length - 2] != '\\'))) {
 								pullArgument();
 								if (arg is null) {
-									opError(token);
+									onError(token);
 									return null;
 								}
 								ret ~= " ";
@@ -454,7 +455,7 @@ template Options(list...) {
 
 					if (token.length == 0 && chr == '-' && c != 1) {
 						// incorrect
-						opError(token);
+						onError(token);
 						return;
 					}
 					token ~= chr;

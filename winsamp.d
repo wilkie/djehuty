@@ -46,23 +46,23 @@ class MyOptions : OptionParser {
 		"-help", "view help"
 	);
 
-	void opOption(string str, char foo) {
+	void onOption(string str, char foo) {
 		Console.putln("option flag ", str, foo);
 	}
 
-	void opX(int foo) {
+	void onX(int foo) {
 		Console.putln("x flag ", foo);
 	}
 
-	void opY() {
+	void onY() {
 		Console.putln("y flag");
 	}
 
-	void opFile(string filename) {
+	void onFile(string filename) {
 		Console.putln("file flag ", filename);
 	}
 
-	void opHelp() {
+	void onHelp() {
 		showUsage();
 		Djehuty.end(0);
 	}
@@ -257,7 +257,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -291,109 +291,32 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+//	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 
 		new MyOptions();
 
-		real[] bleh = [0,1,1,2,3,4,56];
-		short[][] GOOOD = [[128,2,4],[2,4,1],[3,4,5,7]];
+		String exp = new String(`a*b*f`);
+		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabf");
+		Regex regex = new Regex(exp);
+		String work = regex.eval(find);
 
-		struct asdfasdf {
-			ulong dd;
-			ulong dd2;
-			ulong dd3;
-			ulong dd4;
-			ulong dd5;
-			string toString() {
-				return "ADSFS";
-			}
+		if (work !is null) {
+			Console.putln("DFA: ", work);
 		}
-		asdfasdf aaaa;
-		String asdf = new String("sfadf");
-		real asd;
-		Object meh = new Object();
+		else {
+			Console.putln("DFA: {null}");
+		}
 
-		foo(asdf, GOOOD, 2,aaaa, 3,4, meh, 3, "dave"d);
+		work = Regex.eval(find, exp);
 
-	/*	Regex r = new Regex("((ab)*)*c");
-		String work = r.eval("ababababab");
-		if (work) {
-			Console.putln(work);
-		}*/
-		List!(int) lst = new List!(int);
-		lst.add(2);
-		lst.add(1);
-		lst.add(3);
-		lst.add(4);
-		lst.apply((int a){ return a*a; });
-
-		filter( (int a){ return a > 2; } , range(1,11) );
-
-		Console.putln(lst);
-
-		Console.putln("asdf", aaaa, GOOOD, 2, 5, 2, 6, 6);
-		foov(foobar);
-
-		String str = new String("dave wilkinson");
-		string fff = str[0..4];
-		String ffff = str.subString(5);
-		Console.putln(fff);
-		Console.putln(ffff);
-
-		Date date = new Date();
-		Console.putln(date);
-
-		Date testDate = new Date(Month.August, 20, 1987);
-		Time testTime = new Time(14, 45, 35);
-
-		Console.putln(Locale.formatDate(testDate));
-		Console.putln(Locale.formatTime(testTime));
-		Console.putln(Locale.formatNumber(1123431241324));
-		Console.putln(Locale.formatCurrency(1123431241324));
-		Locale.id = LocaleId.French_FR;
-		Console.putln(Locale.formatDate(testDate));
-		Console.putln(Locale.formatTime(testTime));
-		Console.putln(Locale.formatNumber(1123431241324));
-		Console.putln(Locale.formatCurrency(1123431241324));
-
-		real f = -3.4123999999;
-		Console.putln(ftoa(f));
-		//printf("%f\n", f);
-		//writefln(f);
-		Fixed f1 = new Fixed(132, 2);
-		Fixed f2 = new Fixed(121, 1);
-		f1 -= f2;
-
-		Console.putln(f1);
-		
-		f1 = new Fixed(1456, 3);
-		f2 = new Fixed(327, 1);
-		f1 *= f2;
-
-		Console.putln(f1);
-		
-		f1 = new Fixed(11, 1);
-		f2 = new Fixed(112, 2);
-		f1 /= f2;
-		
-		Console.putln(f1);
-		
-		Currency c1 = new Currency(11, 1);
-		Currency c2 = new Currency(112, 2);
-		c1 /= c2;
-
-		Console.putln(c1);
-		
-		Integer i1 = new Integer(0xffffffffffffffff);
-		Integer i2 = new Integer(0x1);
-		Console.putln(i1, " - ", i2);
-		i1 -= i2;
-		Console.putln(i1);
-		i2 = -i2;
-		Console.putln(i2);
-		Console.putln(atoi("5543"));
+		if (work !is null) {
+			Console.putln("BT:  ", work);
+		}
+		else {
+			Console.putln("BT:  {null}");
+		}
 	}
 }
 

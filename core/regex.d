@@ -12,7 +12,9 @@
 module core.regex;
 
 import core.string;
+import core.tostring;
 import core.definitions;
+import core.list;
 
 import synch.thread;
 
@@ -1233,6 +1235,9 @@ class Regex {
 		uint strPos;
 		uint startingStrPos;
 
+		State acceptState;
+		uint acceptStrEnd;
+
 		dchar chr;
 		for (strPos = startingStrPos; strPos < str.length; strPos++) {
 			Console.putln("starting ... ", startingStrPos);
@@ -1240,11 +1245,22 @@ class Regex {
 			Console.putln("chr ... ", str[strPos]);
 			if (chr in currentState.transitions) {
 				// Take transition
-				Console.putln("taking transition ", chr);
+				Console.putln("taking transition ", chr, " from ", currentState.id, " to ", currentState.transitions[chr].id);
 				currentState = currentState.transitions[chr];
+				if (currentState.accept) {
+					Console.putln("found accept at ", strPos, " from ", startingStrPos);
+					acceptStrEnd = strPos + 1;
+					acceptState = currentState;
+				}
 			}
 			else {
 				// No transition
+				
+				if (acceptStrEnd > startingStrPos) {
+					Console.putln("Leaving Early");
+					strPos = acceptStrEnd;
+					currentState = acceptState;
+				}
 
 				// Is this an accept state?
 				if (currentState.accept) {
@@ -1268,6 +1284,12 @@ class Regex {
 				// We go back to the beginning
 				currentState = startingState;
 			}
+		}
+				
+		if (acceptStrEnd > startingStrPos) {
+			Console.putln("Leaving Early");
+			strPos = acceptStrEnd;
+			currentState = acceptState;
 		}
 
 		// Return consumed string
@@ -1295,296 +1317,266 @@ protected:
 
 	class State {
 		State[dchar] transitions;
-
+	
 		bool accept;
-		bool backState;
+	
+		bool loopStart;
+		bool loopEnd;
+	
+		State loopDest;
+		State loopSource;
+		dchar loopOn;
+	
+		// Debugging block
+		static int count = 0;
+		static List!(State) all;
+		int id;
+		static this() {
+			all = new List!(State);
+		}
+		this() {
+			id = count;
+			count++;
+			all.add(this);
+		}
+	
+		string toString() {
+			string ret = "State " ~ toStr(id) ~ ": [";
+	
+			if (loopStart) {
+				ret ~= "L";
+			}
+			else {
+				ret ~= " ";
+			}
+	
+			if (accept) {
+				ret ~= "A] ";
+			}
+			else {
+				ret ~= " ] ";
+			}
+	
+			if (loopStart) {
+				ret ~= "{" ~ toStr(loopDest.id) ~ "} ";
+			}
+	
+			foreach(key; transitions.keys) {
+				ret ~= toStr(key) ~ "->" ~ toStr(transitions[key].id) ~ " ";
+			}
+			return ret;
+		}
+	
+		static void printall() {
+			foreach(state; all) {
+				Console.putln(state);
+			}
+		}
 	}
 
 	State startingState;
 
 	void buildDFA() {
 		// Go through the regular expression and build the DFAs
-
-		uint regexPos;
-
-		startingState = new State();
-
-		DFABuildState state;
-
-		state.currentStack = new Stack!(State)();
-		state.contextStack = new Stack!(State)();
-		state.groupStack = new Stack!(State)();
-		state.loopStack = new Stack!(	dchar[])();
-
-		state.currentStack.push(startingState);
-
-		// anchor the regular expression
-		if (regularExpression.length > 0) {
-			state.lastChar = regularExpression[regexPos];
-
-			while(state.lastChar == '(') {
-				// Group start
-				DFA_startGroup(state);
-				regexPos++;
-				state.lastChar = regularExpression[regexPos];
-			}
-			if (state.lastChar == '+' || state.lastChar == '*' || state.lastChar == '|') {
-				// malformed regular expression
-				startingState = null;
-				return;
-			}
-
-			state.isNormalChar = true;
-			regexPos++;
-		}
-		
-		Console.putln("anchored to ", state.lastChar);
-
-		for( ; regexPos < regularExpression.length; regexPos++) {
-			state.thisChar = regularExpression[regexPos];
-
-			// Note:
-			// (p) -- currentState
-			// (q) -- a new state
-			// (p) -> character -> (q) -- transition
-
-			if (state.thisChar == '+') {
-				DFA_kleeneplus(state);
-			}
-			else if (state.thisChar == '*') {
-				DFA_kleenestar(state);
-			}
-			else if (state.thisChar == '\\') {
-
-				// Handle escape sequences
-
-				// Suppress setting of lastChar with the slash
-
-				continue;
-			}
-			else if (state.thisChar == ')') {
-				// Mark the group end flag
-				state.isEndOfGroup = true;
-
-				// Suppress concatenation of right parentheses
-				continue;
-			}
-			else {
-				// Normal matching character
-				if (state.isNormalChar) {
-					DFA_concatenate(state);
-					state.contextStack.clear();
-				}
-
-				if (state.thisChar == '(') {
-
-					// Handle grouping
-
-					// Suppress setting of lastChar with parentheses
-					DFA_startGroup(state);
-					state.isNormalChar = false;
-					continue;
-				}
-				state.isNormalChar = true;
-			}
-
-			if (state.lastChar == ')') {
-				Console.putln("Group deleted");
-
-				// Pop group state
-				state.groupStack.pop();
-
-				state.isNormalChar = false;
-			}
-
-			state.lastChar = state.thisChar;
-		}
-
-		// Handle last character
-		if (regexPos == regularExpression.length && state.isNormalChar) {
-			DFA_concatenate(state);
-			state.contextStack.clear();
-		}
-		else {
-		}
-
-		foreach(i, item; state.currentStack) {
-			Console.putln("accept state found at currentStack[", i, "]");
-			item.accept = true;
-		}
+		startingState = buildDFA(regularExpression);
 	}
 
 private:
 
-	void DFA_startGroup(ref DFABuildState state) {
-		Console.putln("Group found");
-		state.groupStack.push(state.currentStack.peek());
-		state.loopStack.push(null);
+	State buildDFA(string regex) {
+		return buildDFA(new String(regex));
 	}
-
-	void DFA_endGroup(ref DFABuildState state) {
-		state.groupStack.pop();
-		state.loopStack.pop();
-	}
-
-	void DFA_concatenate(ref DFABuildState state) {
-		Console.putln("adding concat state for ", state.lastChar);
-		State newState = new State();
-		
-		bool doneNewState = false;
-
-		for(uint i; i < state.currentStack.length; i++) {
-			if (state.lastChar in state.currentStack[i].transitions) {
-				Console.putln("traveling");
-				state.currentStack[i] = state.currentStack[i].transitions[state.lastChar];
-			}
-			else if (state.currentStack[i] !is newState) {
-				Console.putln("adding to currentStack[", i, "]");
-				state.currentStack[i].transitions[state.lastChar] = newState;
-
-				if (!state.groupStack.empty && state.currentStack[i] is state.groupStack.peek()) {
-					// This transition is for this group
-					state.loopStack[state.loopStack.length-1] = state.loopStack[state.loopStack.length-1] ~ state.lastChar;
-				}
-
-				if (doneNewState) {
-					// We can remove this redundant link because it has merged
-					// with the newState.
-					state.currentStack.removeAt(i);
-					Console.putln("removing currentStack[", i, "]");
-					i--;
-				}
-				else {
-					state.currentStack[i] = newState;
-					doneNewState = true;
-				}
-			}
+	
+	State buildDFA(String regex) {
+		State startState = new State();
+	
+		uint regexPos = 0;
+	
+		dchar lastChar = '\0';
+		dchar thisChar;
+		dchar lastConcatChar = '\0';
+	
+		enum Operation {
+			None,
+			Kleene,
+			Concat
 		}
-	}
-
-	// Kleene Star
-	// (p) -> lastChar -> (p)
-
-	// Special cases:
-	// a*a* == a*
-	// a*b* == a*b+|a*
-	void DFA_kleenestar(ref DFABuildState state) {
-		// (p) -> a -> (p)
-		State loopState = state.currentStack.peek();
-		if (state.isEndOfGroup) {
-			state.isEndOfGroup = false;
-
-			State startingState = state.groupStack.peek();
-
-			if (!startingState.backState) {
-				Console.putln("adding normal grouped kleene state");
-
-				loopState.transitions[state.lastChar] = startingState;
-				state.contextStack.addItem(startingState);
-				startingState.backState = true;
+	
+		Operation lastOp = Operation.None;
+	
+		List!(State) current = new List!(State);
+		current.add(startState);
+	
+		if (regexPos < regex.length) {
+			lastChar = regex[regexPos];
+			if (lastChar == '*') {
+				// error
+			}
+			else if (lastChar == '(') {
+				// group
 			}
 			else {
-				Console.putln("adding augmented grouped kleene state");
-				DFA_concatenate(state);
-
-				// Add loop
-				State thisState = state.currentStack.peek();
-				foreach(ts; state.loopStack.peek()) {
-					Console.putln("transition ", ts);
-					thisState.transitions[ts] = startingState.transitions[ts];
-				}
-				state.contextStack.addItem(loopState);
-				state.contextStack.addItem(thisState);
-				foreach(ts; thisState.transitions.keys) {
-					Console.putln("whoa - ", ts);
-				}
-				foreach(val; thisState.transitions.values) {
-					val.backState = true;
-				}
+				lastConcatChar = lastChar;
 			}
+			regexPos++;
 		}
-		else if (!loopState.backState) {
-			loopState.transitions[state.lastChar] = loopState;
-			state.contextStack.addItem(loopState);
-			loopState.backState = true;
-			Console.putln("adding normal kleene state");
+	
+		while (regexPos <= regex.length) {
+			if (regexPos == regex.length) {
+				thisChar = '\0';
+			}
+			else {
+				thisChar = regex[regexPos];
+			}
+	
+			if (thisChar == '*') {
+				// Kleene Star
+				if (lastChar == ')') {
+					// Group End (Kleene)
+				}
+				else {
+					// Single Character Kleene
+					// ex. "a*" => [p] -> 'a' -> [p]
+					State loopState;
+					Console.putln("Single Character Kleene (", lastConcatChar, ")");
+	
+					foreach(state; current) {
+					Console.putln("Single Character Kleene (", lastConcatChar, ")");
+						if (state.transitions.length != 0) {
+							if (loopState is null) {
+								loopState = new State();
+								loopState.transitions[lastConcatChar] = loopState;
+								loopState.loopStart = true;
+								loopState.loopEnd = true;
+								loopState.loopSource = loopState;
+								loopState.loopDest = loopState;
+								loopState.loopOn = lastConcatChar;
+							}
+	
+							state.transitions[lastConcatChar] = loopState;
+						}
+						else {
+							state.transitions[lastConcatChar] = state;
+							state.loopStart = true;
+							state.loopEnd = true;
+							state.loopSource = state;
+							state.loopDest = state;
+							state.loopOn = lastConcatChar;
+						}
+					}
+	
+					if (loopState !is null) {
+						current.add(loopState);
+					}
+	
+					Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
+					State.printall();
+				}
+				lastOp = Operation.Kleene;
+				lastConcatChar = '\0';
+			}
+			else {
+				// concatenation
+				if (lastConcatChar != '\0') {
+					State catState;
+					List!(State) newCurrent = new List!(State);
+					foreach(state; current) {
+						if (lastConcatChar in state.transitions) {
+							Console.putln("Concating Character ", state.id, " (", lastConcatChar, ")");
+							State destState = state.transitions[lastConcatChar];
+							Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
+							if (destState.loopStart && destState.loopDest is destState && destState !is state) {
+								State interState = new State();
+								state.transitions[lastConcatChar] = interState;
+								interState.transitions[lastConcatChar] = destState;
+								destState = interState;
+							}
+							else if (destState is state) {
+								unroll(destState);
+								if (lastConcatChar in destState.transitions) {
+									destState = destState.transitions[lastConcatChar];
+								}
+							}
+							else {
+								unroll(destState);
+								if (lastConcatChar in destState.transitions) {
+									destState = destState.transitions[lastConcatChar];
+								}
+							}
+							if (destState !is null) {
+								newCurrent.add(destState);
+							}
+						}
+						else {
+							if (catState is null) {
+								catState = new State();
+							}
+							newCurrent.add(catState);
+							state.transitions[lastConcatChar] = catState;
+						}
+					}
+					current = newCurrent;
+	
+					Console.putln("Concat Character (", lastConcatChar, ")");
+					State.printall();
+				}
+				lastOp = Operation.Concat;
+				lastConcatChar = thisChar;
+			}
+	
+			lastChar = thisChar;
+	
+			regexPos++;
+		}
+	
+		foreach(state; current) {
+			state.accept = true;
+		}
+	
+		Console.putln("Done");
+		State.printall();
+	
+		return startState;
+	}
+
+	void unroll(State state) {
+		if (state.loopStart) {
+			Console.putln("Unlooping state ", state.id);
+			State.printall();
+	
+			// unroll
+			State loopDest = state.loopDest;
+			if (loopDest is null) { return; }
+			State newDest = new State();
+			Console.putln("loop destination: ", loopDest.id);
+	
+			foreach(key; loopDest.transitions.keys) {
+				State toState = loopDest.transitions[key];
+				if (toState == loopDest) { toState = newDest; }
+				newDest.transitions[key] = toState;
+			}
+			Console.putln("b ", state.id);
+	
+			loopDest.loopEnd = false;
+	
+			state.loopDest = null;
+			state.loopStart = false;
+			state.transitions[state.loopOn] = newDest;
+	
+			newDest.loopStart = true;
+			newDest.loopDest = loopDest.transitions[state.loopOn];
+			newDest.loopOn = state.loopOn;
+	
+			newDest.loopDest.loopEnd = true;
+			newDest.loopDest.loopOn = state.loopOn;
+			newDest.loopDest.loopSource = newDest;
+	
+			Console.putln("Unlooped state ", state.id, " on transition ", state.loopOn);
+			State.printall();
 		}
 		else {
-			Console.putln("adding augmented kleene state");
-			// add concatenation first
-			// (p) -> a -> (q) -> a -> (q)
-			DFA_concatenate(state);
-
-			// Add loop
-			State thisState = state.currentStack.peek();
-			thisState.transitions[state.lastChar] = thisState;
-			state.contextStack.addItem(loopState);
-			state.contextStack.addItem(thisState);
-			thisState.backState = true;
+			Console.putln("Unlooping Not Necessary ", state.id);
 		}
-		state.currentStack = state.contextStack.dup();
-
-		state.isNormalChar = false;
-	}
-
-	// Kleene Plus
-	// a+ == aa*
-	// (p) -> lastChar -> (q)
-	// (q) -> lastChar -> (q)
-	void DFA_kleeneplus(ref DFABuildState state) {
-		Console.putln("adding kleene plus state");
-		State loopState = state.currentStack.peek();
-		if (state.isEndOfGroup) {
-			state.isEndOfGroup = false;
-			Console.putln("adding normal grouped kleene plus");
-
-			State startingState = state.groupStack.peek();
-
-			DFA_concatenate(state);
-			state.contextStack.clear();
-			State thisState = state.currentStack.peek();
-			foreach(ts; startingState.transitions.keys) {
-				Console.putln("transition: ", ts);
-				thisState.transitions[ts] = startingState.transitions[ts];
-			}
-		}
-		else {
-			DFA_concatenate(state);
-			state.contextStack.clear();
-			State thisState = state.currentStack.peek();
-			thisState.transitions[state.lastChar] = thisState;
-			Console.putln("adding normal kleene plus");
-		}
-
-		state.isNormalChar = false;
-	}
-
-	void DFA_unroll(ref DFABuildState state, ref State startState) {
-		// (p) -> a -> (p) => (o) -> a -> (p) -> a -> (p)
-		// (p) -> a -> (q) -> b -> (p) => 
-		//		(n) -> a -> (o) -> b -> (p) -> a -> (q) -> b -> (p)
-
-
-	}
-
-	struct DFABuildState {
-
-		dchar lastChar;
-		dchar thisChar;
-
-		// Whether or not the current regularExpression character in lastChar was
-		// a matching character (and not a special character like '*' '+' etc)
-		bool isNormalChar;
-
-		// Whether or not the group has just ended.
-		bool isEndOfGroup;
-
-		State working;
-
-		Stack!(State) contextStack;
-		Stack!(State) currentStack;
-		Stack!(State) groupStack;
-		Stack!(dchar[]) loopStack;
 	}
 
 	// Common

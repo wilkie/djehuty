@@ -19,15 +19,17 @@ class TuiApplication : Application {
 public:
 
 	this() {
-		super();
 		TuiStart(&_pfvars);
+		super();
 	}
 
 	this(String appName) {
+		TuiStart(&_pfvars);
 		super(appName);
 	}
 
 	this(string appName) {
+		TuiStart(&_pfvars);
 		super(appName);
 	}
 

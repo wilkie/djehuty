@@ -10,6 +10,8 @@ import core.definitions;
 import core.format;
 import core.string;
 import core.unicode;
+import core.variant;
+import core.tostring;
 
 private import io.console;
 
@@ -195,18 +197,26 @@ protected:
 
 		// Description: This function will print to the widget.
 		final void put(...) {
-			mixin(formatToString!());
+			Variadic vars = new Variadic(_arguments, _argptr);
 
-			putString(toParse);
+			putv(vars);
+		}
+
+		final void putv(Variadic vars) {
+			putString(new String(toStrv(vars)));
+		}
+
+		final void putlnv(Variadic vars) {
+			putv(vars);
+
+			io.console.Console.putChar('\n');
 		}
 
 		// Description: This function will print to the widget and then go to the next line.
 		final void putln(...) {
-			mixin(formatToString!());
+			Variadic vars = new Variadic(_arguments, _argptr);
 
-			putString(toParse);
-
-			io.console.Console.putChar('\n');
+			putlnv(vars);
 		}
 
 		// Description: This function is for printing strings within widget bounds.
