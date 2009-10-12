@@ -302,8 +302,8 @@ class MyConsoleApp : Application {
 
 		new MyOptions();
 
-		String exp = new String(`a*b*f`);
-		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabf");
+		String exp = new String(`a*b*c*f`);
+		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 
