@@ -262,7 +262,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -296,7 +296,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-//	static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
 

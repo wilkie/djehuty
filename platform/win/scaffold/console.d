@@ -331,6 +331,9 @@ void ConsolePutString(dchar[] chrs)
 
 void ConsolePutChar(dchar chr)
 {
+	ConsolePutString([ chr ]);
+
+/*
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -339,6 +342,7 @@ void ConsolePutChar(dchar chr)
 	   return;
 
 	DWORD ret;
+
 
 	WriteConsoleOutputAttribute(hStdout, &_curAttribs, 1, csbi.dwCursorPosition, &ret);
 
@@ -349,7 +353,7 @@ void ConsolePutChar(dchar chr)
 
 	COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
 
-	SetConsoleCursorPosition( hStdout, coordScreen );
+	SetConsoleCursorPosition( hStdout, coordScreen ); */
 }
 
 void ConsoleGetChar(out dchar chr, out uint code)
