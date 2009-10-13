@@ -56,7 +56,7 @@ public:
 
 		version(LDC) {
 			// Tango provides a traceback for us
-			Console.putln("    file: ", e.file);
+//			Console.putln("    file: ", e.file);
 		}
 		else {
 		}
@@ -66,14 +66,15 @@ public:
 			ClassInfo ci = w.classinfo;
 			String className = new String(ci.name);
 
-			Console.put("    window: ", className.array, " [", w.text.array, "]");
+			Console.putln("    window: ", className.array, " [", w.text.array, "]");
 		}
+
 		if (t !is null) {
 			// get class name
 			ClassInfo ci = t.classinfo;
 			String className = new String(ci.name);
 
-			Console.put("    thread: ", className.array);
+			Console.putln("    thread: ", className.array);
 		}
 
 		Console.setColor(fgColor.White);

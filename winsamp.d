@@ -190,10 +190,15 @@ class MyTWindow : TuiWindow {
 	}
 
 	override void onResize() {
-		tuibox.resize(this.width, this.height-2);
-		status.move(0, this.height-2);
-		status.resize(this.width, 1);
-		redraw();
+	/*	if (tuibox !is null) {
+			tuibox.resize(this.width, this.height-2);
+		}
+		if (status !is null) {
+			status.move(0, this.height-2);
+			status.resize(this.width, 1);
+		}
+
+		redraw();*/
 	}
 
 	override void onKeyDown(Key key) {
@@ -297,8 +302,8 @@ class MyConsoleApp : Application {
 
 		new MyOptions();
 
-		String exp = new String(`a*b*f`);
-		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabf");
+		String exp = new String(`a*b*c*f`);
+		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 

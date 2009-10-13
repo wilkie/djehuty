@@ -616,7 +616,20 @@ void ConsolePutString(dchar[] chrs) {
 	chrs ~= '\0';
 	char[] utf8 = Unicode.toUtf8(chrs);
 	if (ApplicationController.instance.usingCurses) {
-		Curses.wprintw(Curses.stdscr, "%s", utf8.ptr);
+		uint pos = 0;
+		uint i = 0;
+		for (; i < utf8.length; i++) {
+			if (utf8[i] == '\r' || utf8[i] == '\n') {
+				utf8[i] = '\0';
+				Curses.wprintw(Curses.stdscr, "%s", &utf8[pos]);
+				ConsoleSetRelative(0, 1);
+				ConsoleSetHome();
+				pos = i+1;
+			}
+		}
+		if (i > pos) {
+			Curses.wprintw(Curses.stdscr, "%s", &utf8[pos]);
+		}
 		Curses.refresh();
 	}
 	else {
@@ -629,8 +642,14 @@ void ConsolePutChar(dchar chr) {
 	char[] chrs = Unicode.toUtf8(chrarray);
 
 	if (ApplicationController.instance.usingCurses) {
-		Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
-		Curses.refresh();
+		if (chr == '\r' || chr == '\n') {
+			ConsoleSetRelative(0, 1);
+			ConsoleSetHome();
+		}
+		else {
+			Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
+			Curses.refresh();
+		}
 	}
 	else {
 		printf("%s", chrs.ptr);
@@ -642,6 +661,7 @@ void ConsoleGetSize(out uint width, out uint height) {
 
 	width = m_width;
 	height = m_height;
+
 }
 
 void ConsoleGetChar(out dchar chr, out uint code) {

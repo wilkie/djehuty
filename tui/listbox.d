@@ -185,41 +185,49 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 	bool remove(out String item) {
 		return _list.remove(item);
     }
-    
+
 	// Propeties
 
-	// Description: This property is for setting the backcolor for normal items.
+	// Description: This property returns the backcolor value for normal items.
 	bgColor backcolor() {
 		return _backcolor;
 	}
 
+	// Description: This property is for setting the backcolor for normal items.
+	// value: The color to set the backcolor to
 	void backcolor(bgColor value) {
 		_backcolor = value;
 	}
 
-	// Description: This property is for setting the forecolor for normal items.
+	// Description: This property returns the backcolor value for normal items.
 	fgColor forecolor() {
 		return _forecolor;
 	}
 
+	// Description: This property is for setting the forecolor for normal items.
+	// value: The color to set the forecolor to
 	void forecolor(fgColor value) {
 		_forecolor = value;
 	}
 
-	// Description: This property is for setting the forecolor for selected items.
+	// Description: This property returns the forecolor for selected items.
 	fgColor selectedForecolor() {
 		return _selectedForecolor;
 	}
 
+	// Description: This property is for setting the forecolor for selected items.
+	// value: The color to set the forecolor to
 	void selectedForecolor(fgColor value) {
 		_selectedForecolor = value;
 	}
 
-	// Description: This property is for setting the backcolor for selected items.
+	// Description: This property returns the backcolor for selected items.
 	bgColor selectedBackcolor() {
 		return _selectedBackcolor;
 	}
-
+	
+	// Description: This property is for setting the backcolor for selected items.
+	// value: The color to set the backcolor to
 	void selectedBackcolor(bgColor value) {
 		_selectedBackcolor = value;
 	}

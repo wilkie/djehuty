@@ -41,34 +41,47 @@ class TuiLabel : TuiWidget {
 	override void onInit() {
 	}
 
+	// Properties
+
+	// Description: this property sets the value of the field
+	// newValue: the new value of the field
 	void text(String newValue) {
 		_value = new String(newValue);
 		onDraw();
 	}
 
+	// Description: this peroperty sets the value of the field
+	// newValue: the new value of the field
 	void text(string newValue) {
 		_value = new String(newValue);
 		onDraw();
 	}
 
+	// Description: this property returns the value of the field
 	String text() {
 		return new String(_value);
 	}
 
+	// Description: this property sets the foreground color of the field
+	// fgclr: the color to set the foreground to
 	void forecolor(fgColor fgclr) {
 		_forecolor = fgclr;
 		onDraw();
 	}
 
+	// Description: this property returns the foreground color of the field
 	fgColor forecolor() {
 		return _forecolor;
 	}
 
+	// Description: this property sets the background color of the field
+	// bgclr: the color to set the background to
 	void backcolor(bgColor bgclr) {
 		_backcolor = bgclr;
 		onDraw();
 	}
 
+	// Description: this property returns the background color of the field
 	bgColor backcolor() {
 		return _backcolor;
 	}

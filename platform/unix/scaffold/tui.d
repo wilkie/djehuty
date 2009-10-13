@@ -23,6 +23,7 @@ import platform.application;
 void TuiStart(TuiPlatformVars* vars) {
 	ApplicationController app = ApplicationController.instance();
 	app.usingCurses = true;
+	setvbuf (stdout, null, _IONBF, 0);
 
 	Curses.initscr();
 	setlocale(LC_ALL, "");
@@ -47,6 +48,7 @@ void TuiStart(TuiPlatformVars* vars) {
 	m_y = 0;
 
 	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
+	setvbuf (stdout, null, _IONBF, 0);
 }
 
 void TuiEnd(TuiPlatformVars* vars) {

@@ -340,7 +340,7 @@ class TuiTextBox : TuiWidget {
 
 		positionCaret();
 	}
-	
+
 	override void onGotFocus() {
 		positionCaret();
 	}
@@ -360,26 +360,57 @@ class TuiTextBox : TuiWidget {
 		return _column;
 	}
 
+	// Description: This property returns the backcolor color of the text
 	bgColor backcolor() {
 		return _backcolor;
 	}
 
+	// Description: This property sets the backcolor of the text
+	// value: the color to set backcolor to
 	void backcolor(bgColor value) {
 		_backcolor = value;
 	}
 
+	// Description: This property returns the forecolor color of the text
 	fgColor forecolor() {
 		return _forecolor;
 	}
 
+	// Description: This property sets the forecolor of the text
+	// value: the color to set forecolor to
 	void forecolor(fgColor value) {
 		_forecolor = value;
 	}
 
+	// Description: This property returns the backcolor color of the line numbers
+	bgColor backcolorNum() {
+		return _backcolorNum;
+	}
+
+	// Description: This property sets the backcolor of the line numbers
+	// value: the color to set backcolor to
+	void backcolorNum(bgColor value) {
+		_backcolorNum = value;
+	}
+
+	// Description: returns the forecolor color of the line numbers
+	fgColor forecolorNum() {
+		return _forecolorNum;
+	}
+
+	// Description: This property sets the forecolor of the line numbers
+	// value: the color to set forecolor to
+	void forecolorNum(fgColor value) {
+		_forecolorNum = value;
+	}
+
+	// Description: This property returns the true if linenumbers are enabled, false if disabled
 	bool lineNumbers() {
 		return _lineNumbers;
 	}
 
+	// Description: This property enables or disables line numbers
+	// value: true to enable the line numbers, false to disable
 	void lineNumbers(bool value) {
 		_lineNumbers = value;
 	}
@@ -414,7 +445,7 @@ protected:
 				calculateLineNumbersWidth();
 			}
 			String strLineNumber = new String(lineNumber);
-			Console.setColor(fgColor.Yellow, bgColor.Black);
+			Console.setColor(_forecolorNum, _backcolorNum);
 			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
 			Console.put(strLineNumber);
 			Console.put(": ");
@@ -583,4 +614,6 @@ protected:
 	// The default text colors
  	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;
+	fgColor _forecolorNum = fgColor.Yellow;
+	bgColor _backcolorNum = bgColor.Black;
 }

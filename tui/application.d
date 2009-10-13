@@ -19,15 +19,17 @@ class TuiApplication : Application {
 public:
 
 	this() {
-		super();
 		TuiStart(&_pfvars);
+		super();
 	}
 
 	this(String appName) {
+		TuiStart(&_pfvars);
 		super(appName);
 	}
 
 	this(string appName) {
+		TuiStart(&_pfvars);
 		super(appName);
 	}
 
@@ -76,6 +78,10 @@ private:
 	void eventLoop() {
 		while(_running) {
 			TuiEvent evt;
+			if (_curConsoleWindow is null) {
+				continue;
+			}
+
 			TuiNextEvent(&evt, &_pfvars);
 
 			switch(evt.type) {
