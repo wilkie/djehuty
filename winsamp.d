@@ -28,6 +28,9 @@ import specs.test;
 import gui.osbutton;
 
 import parsing.options;
+
+import utils.arraylist;
+
 class MyOptions : OptionParser {
 
 	mixin Options!(
@@ -182,7 +185,7 @@ class MyTWindow : TuiWindow {
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
 
 	}
-	
+
 	override void onMenu(Menu mnu) {
 		if (mnu.displayText == "Exit") {
 			application.exit(0);
@@ -298,10 +301,11 @@ import math.integer;
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 
+
 	override void onApplicationStart() {
 
 		new MyOptions();
-
+	
 		String exp = new String(`a*b*c*f`);
 		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
 		Regex regex = new Regex(exp);
@@ -322,7 +326,11 @@ class MyConsoleApp : Application {
 		else {
 			Console.putln("BT:  {null}");
 		}
+
 	}
+protected:
+	ArrayList!(String) list;
+
 }
 
 class MyApp : GuiApplication {

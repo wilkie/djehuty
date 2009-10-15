@@ -14,7 +14,7 @@ class ArrayList(T) : AbstractList!(T) {
 		_capacity = size;
 		this();
 	}
-	
+
 	this(T[] withList) {
 		_list = withList.dup;
 		_capacity = _list.length;
@@ -119,6 +119,18 @@ class ArrayList(T) : AbstractList!(T) {
 		}
 		return false;
     }
+
+	// Description: Will find the index of an item stored in the list.
+	// Returns: This function will return the index of the item and returns -1 if the item is not in the list.
+	int indexOf(T data) {
+		for(int i=0; i < _count; i++) {
+			if (data == _list[i]) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
 
     bool contains(T data) {
     	foreach(item; _list) {
@@ -236,7 +248,7 @@ class ArrayList(T) : AbstractList!(T) {
 
 		return false;
 	}
-	
+
 	bool empty() {
 		return _count == 0;
 	}
