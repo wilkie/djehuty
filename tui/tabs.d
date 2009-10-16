@@ -15,15 +15,26 @@ import tui.window;
 
 import core.string;
 import core.definitions;
+import core.list;
 
 import io.console;
 
-import utils.arrylist;
+// Tabs should loop through TuiContainers that are sized to the size of the tab widget
 
-class TuiTabs : TuiWidget {
+// Some hints:
+// onDraw() { current_container.onDraw(); }
+// onKeyDown(Key foo) { current_container.onKeyDown(foo); }
+// etc. for all events
+
+// Redraw container when the tab is switched
+
+// Pass resize events down to current container and ALL containers 
+//   (eventually.. like check the size when containers are switched to reduce overhead)
+
+class TuiTabs : TuiWidget, ListInterface!(TuiContainer) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
-		_tabList = new ArrayList!(_tabItem);
+		_tabList = new List!(_tabItem);
 	}
 
 	override void onAdd() {
@@ -33,84 +44,85 @@ class TuiTabs : TuiWidget {
 		//draw the tabs
 
 	}
-
-	void addItem(String name, TuiWindow win) {
-		_tabItem t = {name, win};
-		_tabList.addItem(t);
-	}
-
-	void addItem(string name, TuiWindow win) {
-		_tabItem t = {new String(name), win};
-		_tabList.addItem(t);
-	}
-
-	bool removeItem(string name) {
-		String name = new String(name);
-		_tabItem item;
+	
+	void add(TuiContainer c) {
 		
-		for(int i=0; i<_tabList.length(); i++) {
-			_tabList.getItem(item, i);
-			if(item._name == name){
-				_tabList.removeAt(i);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	bool removeItem(String name) {
-		_tabItem item;
-		
-		for(int i=0; i<_tabList.length(); i++) {
-			_tabList.getItem(item, i);
-			if(item._name == name){
-				_tabList.removeAt(i);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	void setActive(int index) {
-		curTab = index;
-	}
-
-	void setActive(string name) {
-		String name = new String(name);
-		_tabItem item;
-		
-		for(int i=0; i<_tabList.length(); i++) {
-			_tabList.getItem(item, i);
-			if(item._name == name){
-				curTab = i;
-				return;
-			}
-		}
-	}
-
-	void setActive(String name) {
-		_tabItem item;
-		
-		for(int i=0; i<_tabList.length(); i++) {
-			_tabList.getItem(item, i);
-			if(item._name == name){
-				curTab = i;
-				return;
-			}
-		}
-	}
-
-protected:
-	struct _tabItem {
-		String _name;
-		TuiWindow _winList;
 	}
 	
+	TuiContainer remove() {
+		
+	}
+	
+	TuiContainer removeAt(size_t idx){
+		
+	}
+	
+	TuiContainer peek() {
+		
+	}
+	
+	TuiContainer peekAt(size_t idx) {
+		
+	}
+	
+	void set(TuiContainer c) {
+		
+	}
+	
+	void apply(TuiContainer delegate(TuiContainer) func) {
+		
+	}
+	
+	bool contains(TuiContainer c) {
+		
+	}
+	
+	bool empty() {
+		
+	}
+	
+	void clear() {
+		
+	}
+	
+	TuiContainer[] array() {
+		
+	}
+	
+	List!(TuiContainer) dup() {
+		
+	}
+	
+	List!(TuiContainer) slice(size_t start, size_t end) {
+		
+	}
+	
+	List!(TuiContainer) reverse(){
+		
+	}
+	
+	size_t length() {
+		
+	}
+	
+	TuiContainer opIndex(size_t i1) {
+		
+	}
+	
+	int opApply(int delegate(ref TuiContainer) loopFunc){
+		
+	}
+	
+	int opApply(int delegate(ref int, ref TuiContainer) loopFunc){
+		
+	}
+	
+	
+
+protected:
 	uint curTab = 0;
 
-	ArrayList!(_tabItem) _tabList;
+	List!(TuiContainer) _tabList;
 
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

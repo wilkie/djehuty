@@ -15,7 +15,53 @@ import core.definitions;
 import core.util;
 import core.tostring;
 
-class List(T) {
+interface ListInterface(T) {
+	template add(R) {
+		void add(R item);
+	}
+
+	T remove();
+	T removeAt(size_t idx);
+
+	T peek();
+	T peekAt(size_t idx);
+
+	template set(R) {
+		void set(R value);
+	}		
+
+	template setAt(R) {
+		void setAt(size_t idx, R value);
+	}
+
+	template apply(R, S) {
+		void apply(R delegate(S) func);
+	}
+
+	template contains(R) {
+		bool contains(R value);
+	}
+
+	bool empty();
+	void clear();
+	T[] array();
+	List!(T) dup();
+	List!(T) slice(size_t start, size_t end);
+	List!(T) reverse();
+	size_t length();
+	
+	T opIndex(size_t i1);
+	
+	template opIndexAssign(R) {
+		size_t opIndexAssign(R value, size_t i1);
+	}
+	
+	int opApply(int delegate(ref T) loopFunc);
+
+	int opApply(int delegate(ref int, ref T) loopFunc);
+}
+
+class List(T) : ListInterface!(T) {
 	this() {
 		_capacity = 10;
 		_data = new T[_capacity];
