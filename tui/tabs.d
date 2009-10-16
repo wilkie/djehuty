@@ -23,6 +23,7 @@ import utils.arrylist;
 class TuiTabs : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
+		_tabList = new ArrayList!(_tabItem);
 	}
 
 	override void onAdd() {
@@ -34,21 +35,42 @@ class TuiTabs : TuiWidget {
 	}
 
 	void addItem(String name, TuiWindow win) {
-		_nameList.addItem(name);
-		_winList.addItem(win);
+		_tabItem t = {name, win};
+		_tabList.addItem(t);
 	}
 
 	void addItem(string name, TuiWindow win) {
-		_nameList.addItem(new String(name));
-		_winList.addItem(win);
+		_tabItem t = {new String(name), win};
+		_tabList.addItem(t);
 	}
 
-	void removeItem(string name) {
-
+	bool removeItem(string name) {
+		String name = new String(name);
+		_tabItem item;
+		
+		for(int i=0; i<_tabList.length(); i++) {
+			_tabList.getItem(item, i);
+			if(item._name == name){
+				_tabList.removeAt(i);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
-	void removeItem(String name) {
-
+	bool removeItem(String name) {
+		_tabItem item;
+		
+		for(int i=0; i<_tabList.length(); i++) {
+			_tabList.getItem(item, i);
+			if(item._name == name){
+				_tabList.removeAt(i);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	void setActive(int index) {
@@ -56,19 +78,39 @@ class TuiTabs : TuiWidget {
 	}
 
 	void setActive(string name) {
-
+		String name = new String(name);
+		_tabItem item;
+		
+		for(int i=0; i<_tabList.length(); i++) {
+			_tabList.getItem(item, i);
+			if(item._name == name){
+				curTab = i;
+				return;
+			}
+		}
 	}
 
 	void setActive(String name) {
-
+		_tabItem item;
+		
+		for(int i=0; i<_tabList.length(); i++) {
+			_tabList.getItem(item, i);
+			if(item._name == name){
+				curTab = i;
+				return;
+			}
+		}
 	}
 
 protected:
-
+	struct _tabItem {
+		String _name;
+		TuiWindow _winList;
+	}
+	
 	uint curTab = 0;
 
-	ArrayList!(String) _nameList;
-	ArrayList!(TuiWindow) _winList;
+	ArrayList!(_tabItem) _tabList;
 
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;
