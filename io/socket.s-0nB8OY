@@ -1,0 +1,432 @@
+	.file	"io.socket"
+
+
+	.text
+	.align	16
+	.globl	_D2io6socket6Socket6appendMFPhkZb
+	.type	_D2io6socket6Socket6appendMFPhkZb,@function
+_D2io6socket6Socket6appendMFPhkZb:
+.Leh_func_begin1:
+	pushq	%r15
+.Llabel1:
+	pushq	%r14
+.Llabel2:
+	pushq	%rbx
+.Llabel3:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB1_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	testl	%r14d, %r14d
+	jne	.LBB1_4
+	xorb	%al, %al
+.LBB1_3:
+	popq	%rbx
+	popq	%r14
+	popq	%r15
+	ret
+.LBB1_4:
+	movq	%rbx, %rsi
+	movq	%r15, %rdi
+	addq	$88, %rdi
+	movl	%r14d, %edx
+	call	_D8scaffold6socket11SocketWriteFKS8platform4vars6socket18SocketPlatformVarsPhmZb
+	movb	$1, %al
+	jmp	.LBB1_3
+.LBB1_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$178, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket6appendMFPhkZb, .-_D2io6socket6Socket6appendMFPhkZb
+.Leh_func_end1:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket6appendMFC4core6stream6StreamkZb
+	.type	_D2io6socket6Socket6appendMFC4core6stream6StreamkZb,@function
+_D2io6socket6Socket6appendMFC4core6stream6StreamkZb:
+.Leh_func_begin2:
+	pushq	%r15
+.Llabel4:
+	pushq	%r14
+.Llabel5:
+	pushq	%r13
+.Llabel6:
+	pushq	%r12
+.Llabel7:
+	pushq	%rbx
+.Llabel8:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB2_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	testl	%r14d, %r14d
+	jne	.LBB2_4
+	xorb	%al, %al
+.LBB2_3:
+	popq	%rbx
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	ret
+.LBB2_4:
+	movl	%r14d, %r12d
+	movl	$_D11TypeInfo_Ah6__initZ, %edi
+	movq	%r12, %rsi
+	call	_d_newarrayT
+	movq	%rax, %r13
+	movq	(%rbx), %rax
+	movq	%rbx, %r10
+	movq	%r13, %rdi
+	movl	%r14d, %esi
+	call	*368(%rax)
+	movq	%r15, %rdi
+	addq	$88, %rdi
+	movq	%r13, %rsi
+	movq	%r12, %rdx
+	call	_D8scaffold6socket11SocketWriteFKS8platform4vars6socket18SocketPlatformVarsPhmZb
+	movb	$1, %al
+	jmp	.LBB2_3
+.LBB2_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$186, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket6appendMFC4core6stream6StreamkZb, .-_D2io6socket6Socket6appendMFC4core6stream6StreamkZb
+.Leh_func_end2:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket5writeMFPhkZb
+	.type	_D2io6socket6Socket5writeMFPhkZb,@function
+_D2io6socket6Socket5writeMFPhkZb:
+.Leh_func_begin3:
+	pushq	%r15
+.Llabel9:
+	pushq	%r14
+.Llabel10:
+	pushq	%rbx
+.Llabel11:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB3_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	testl	%r14d, %r14d
+	jne	.LBB3_4
+	xorb	%al, %al
+.LBB3_3:
+	popq	%rbx
+	popq	%r14
+	popq	%r15
+	ret
+.LBB3_4:
+	movq	%rbx, %rsi
+	movq	%r15, %rdi
+	addq	$88, %rdi
+	movl	%r14d, %edx
+	call	_D8scaffold6socket11SocketWriteFKS8platform4vars6socket18SocketPlatformVarsPhmZb
+	movb	$1, %al
+	jmp	.LBB3_3
+.LBB3_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$155, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket5writeMFPhkZb, .-_D2io6socket6Socket5writeMFPhkZb
+.Leh_func_end3:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket5writeMFC4core6stream6StreamkZb
+	.type	_D2io6socket6Socket5writeMFC4core6stream6StreamkZb,@function
+_D2io6socket6Socket5writeMFC4core6stream6StreamkZb:
+.Leh_func_begin4:
+	pushq	%r15
+.Llabel12:
+	pushq	%r14
+.Llabel13:
+	pushq	%r13
+.Llabel14:
+	pushq	%r12
+.Llabel15:
+	pushq	%rbx
+.Llabel16:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB4_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	testl	%r14d, %r14d
+	jne	.LBB4_4
+	xorb	%al, %al
+.LBB4_3:
+	popq	%rbx
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	ret
+.LBB4_4:
+	movl	%r14d, %r12d
+	movl	$_D11TypeInfo_Ah6__initZ, %edi
+	movq	%r12, %rsi
+	call	_d_newarrayT
+	movq	%rax, %r13
+	movq	(%rbx), %rax
+	movq	%rbx, %r10
+	movq	%r13, %rdi
+	movl	%r14d, %esi
+	call	*368(%rax)
+	movq	%r15, %rdi
+	addq	$88, %rdi
+	movq	%r13, %rsi
+	movq	%r12, %rdx
+	call	_D8scaffold6socket11SocketWriteFKS8platform4vars6socket18SocketPlatformVarsPhmZb
+	movb	$1, %al
+	jmp	.LBB4_3
+.LBB4_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$163, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket5writeMFC4core6stream6StreamkZb, .-_D2io6socket6Socket5writeMFC4core6stream6StreamkZb
+.Leh_func_end4:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket6rewindMFZv
+	.type	_D2io6socket6Socket6rewindMFZv,@function
+_D2io6socket6Socket6rewindMFZv:
+.Leh_func_begin5:
+	subq	$8, %rsp
+.Llabel17:
+	testq	%r10, %r10
+	je	.LBB5_2
+	movq	%r10, %rdi
+	call	_d_invariant
+	addq	$8, %rsp
+	ret
+.LBB5_2:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$199, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket6rewindMFZv, .-_D2io6socket6Socket6rewindMFZv
+.Leh_func_end5:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket6rewindMFmZb
+	.type	_D2io6socket6Socket6rewindMFmZb,@function
+_D2io6socket6Socket6rewindMFmZb:
+.Leh_func_begin6:
+	subq	$8, %rsp
+.Llabel18:
+	testq	%r10, %r10
+	je	.LBB6_2
+	movq	%r10, %rdi
+	call	_d_invariant
+	movb	$1, %al
+	addq	$8, %rsp
+	ret
+.LBB6_2:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$202, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket6rewindMFmZb, .-_D2io6socket6Socket6rewindMFmZb
+.Leh_func_end6:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket9rewindAnyMFmZm
+	.type	_D2io6socket6Socket9rewindAnyMFmZm,@function
+_D2io6socket6Socket9rewindAnyMFmZm:
+.Leh_func_begin7:
+	pushq	%rbx
+.Llabel19:
+	testq	%r10, %r10
+	je	.LBB7_2
+	movq	%rdi, %rbx
+	movq	%r10, %rdi
+	call	_d_invariant
+	movq	%rbx, %rax
+	popq	%rbx
+	ret
+.LBB7_2:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$206, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket9rewindAnyMFmZm, .-_D2io6socket6Socket9rewindAnyMFmZm
+.Leh_func_end7:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket4readMFPvkZb
+	.type	_D2io6socket6Socket4readMFPvkZb,@function
+_D2io6socket6Socket4readMFPvkZb:
+.Leh_func_begin8:
+	pushq	%r15
+.Llabel20:
+	pushq	%r14
+.Llabel21:
+	pushq	%rbx
+.Llabel22:
+	testq	%r10, %r10
+	je	.LBB8_2
+	movl	%esi, %ebx
+	movq	%rdi, %r14
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	movl	%ebx, %edx
+	movq	%r15, %rdi
+	addq	$88, %rdi
+	movq	%r14, %rsi
+	call	_D8scaffold6socket10SocketReadFKS8platform4vars6socket18SocketPlatformVarsPhmZb
+	popq	%rbx
+	popq	%r14
+	popq	%r15
+	ret
+.LBB8_2:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$115, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket4readMFPvkZb, .-_D2io6socket6Socket4readMFPvkZb
+.Leh_func_end8:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket4readMFC4core6stream6StreamkZb
+	.type	_D2io6socket6Socket4readMFC4core6stream6StreamkZb,@function
+_D2io6socket6Socket4readMFC4core6stream6StreamkZb:
+.Leh_func_begin9:
+	pushq	%r15
+.Llabel23:
+	pushq	%r14
+.Llabel24:
+	pushq	%r12
+.Llabel25:
+	pushq	%rbx
+.Llabel26:
+	subq	$8, %rsp
+.Llabel27:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB9_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	movl	%r14d, %r12d
+	movq	%r12, %rax
+	addq	56(%r15), %rax
+	cmpq	32(%r15), %rax
+	jbe	.LBB9_4
+	xorb	%al, %al
+.LBB9_3:
+	addq	$8, %rsp
+	popq	%rbx
+	popq	%r12
+	popq	%r14
+	popq	%r15
+	ret
+.LBB9_4:
+	movq	%rbx, %r10
+	movq	(%r10), %rax
+	movq	%r15, %rdi
+	movl	%r14d, %esi
+	call	*96(%rax)
+	addq	%r12, 56(%r15)
+	movb	$1, %al
+	jmp	.LBB9_3
+.LBB9_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$119, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket4readMFC4core6stream6StreamkZb, .-_D2io6socket6Socket4readMFC4core6stream6StreamkZb
+.Leh_func_end9:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket7readAnyMFPvkZm
+	.type	_D2io6socket6Socket7readAnyMFPvkZm,@function
+_D2io6socket6Socket7readAnyMFPvkZm:
+.Leh_func_begin10:
+	pushq	%r15
+.Llabel28:
+	pushq	%r14
+.Llabel29:
+	pushq	%rbx
+.Llabel30:
+	movq	%rdi, %rbx
+	testq	%r10, %r10
+	je	.LBB10_5
+	movl	%esi, %r14d
+	movq	%r10, %r15
+	movq	%r15, %rdi
+	call	_d_invariant
+	testl	%r14d, %r14d
+	jne	.LBB10_4
+	xorl	%eax, %eax
+.LBB10_3:
+	popq	%rbx
+	popq	%r14
+	popq	%r15
+	ret
+.LBB10_4:
+	movq	%rbx, %rsi
+	movq	%r14, %rdx
+	andq	$2147483647, %rdx
+	movl	88(%r15), %edi
+	xorl	%ecx, %ecx
+	call	recv
+	jmp	.LBB10_3
+.LBB10_5:
+	movl	$9, %edi
+	movl	$.str8, %esi
+	movl	$11, %edx
+	movl	$.str9, %ecx
+	movl	$131, %r8d
+	call	_d_assert_msg
+	.size	_D2io6socket6Socket7readAnyMFPvkZm, .-_D2io6socket6Socket7readAnyMFPvkZm
+.Leh_func_end10:
+
+
+	.align	16
+	.globl	_D2io6socket6Socket7readAnyMFC4core6stream6StreamkZm
+	.type	_D2io6socket6Socket7readAnyMFC4core

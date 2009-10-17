@@ -17,13 +17,15 @@ import io.console;
 class TuiWindow : Responder {
 	// Constructor
 
-	this() {
+	this() {		
+		Console.clipRect(0,0,this.width, this.height);
 		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
 		_controlContainer._window = this;
 		push(_controlContainer);
 	}
 
 	this(bgColor bgClr) {
+		Console.clipRect(0,0,this.width, this.height);
 		_bgClr = bgClr;
 		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
 		_controlContainer._window = this;
@@ -37,12 +39,13 @@ class TuiWindow : Responder {
 
 		Console.setColor(_bgClr);
 		Console.clear();
+		Console.clipRect(0,0,this.width, this.height);
 
 		_controlContainer.onInit();
-
-		_drawMenu();
-
 		_controlContainer.onGotFocus();
+
+		_inited = true;
+		redraw();
 	}
 
 	void onUninitialize() {
@@ -52,12 +55,15 @@ class TuiWindow : Responder {
 	}
 
 	void redraw() {
+		if (_inited == false) { return; }
+
 		bool showCaret;
 		if (Console.caretVisible) {
 			Console.hideCaret();
 			showCaret = true;
 		}
 
+		Console.clipClear();
 		_controlContainer.onDraw();
 
 		_drawMenu();
@@ -349,15 +355,15 @@ class TuiWindow : Responder {
 	}
 
 	void text(string value) {
-		_value = new String(value);
+		_controlContainer.text(value);
 	}
 
 	void text(String value) {
-		_value = new String(value);
+		_controlContainer.text(value);
 	}
 
 	String text() {
-		return _value;
+		return _controlContainer.text;
 	}
 
 	uint width() {
@@ -540,8 +546,8 @@ private:
 		}
 
 		bool drawCaption = false;
-		if (_value !is null && curWidth >= (_value.length + 1)) {
-			curWidth -= _value.length + 1;
+		if (this.text !is null && curWidth >= (this.text.length + 1)) {
+			curWidth -= this.text.length + 1;
 			drawCaption = true;
 		}
 
@@ -552,7 +558,7 @@ private:
 		}
 
 		if (drawCaption) {
-			Console.put(_value, " ");
+			Console.put(this.text, " ");
 		}
 	}
 
@@ -720,6 +726,6 @@ private:
 	MenuContext[] _menus;
 
 	bool _cancelNextChar;
-
-	String _value;
+	
+	bool _inited;
 }
