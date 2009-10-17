@@ -282,7 +282,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -330,7 +330,6 @@ class MyConsoleApp : Application {
 
 		/*new MyOptions();
 	
->>>>>>> e969b6763f14e15a33f2cdddfb18b32daee70b47:winsamp.d
 		String exp = new String(`a*b*c*f`);
 		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
 		Regex regex = new Regex(exp);

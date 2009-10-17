@@ -285,17 +285,16 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 			}
 			_tabList[_curTab].onLostFocus();
 			_curTab = cur;
+
+			if((_tabList[_curTab].width != this.width 
+			  || _tabList[_curTab].height != (this.height-1))) {
+				_tabList[_curTab].resize(width, height-1);
+			}
+
+			onDraw();
+
+			_tabList[_curTab].onGotFocus();
 		}
-		
-		if(!_tabList.empty() 
-		  && (_tabList[_curTab].width != this.width 
-		    || _tabList[_curTab].height != (this.height-1))) {
-			_tabList[_curTab].resize(width, height-1);
-		}
-		
-		_tabList[_curTab].onGotFocus();
-		
-		onDraw();
 	}	
 
 protected:
