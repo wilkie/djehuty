@@ -16,6 +16,8 @@ import tui.application;
 import tui.window;
 import tui.label;
 import tui.textfield;
+import tui.tabbox;
+import tui.container;
 
 import networking.irc;
 
@@ -155,7 +157,7 @@ class MyTWindow : TuiWindow {
 
 		string foo = tuitext.text;
 		tuitext.text = "hahaha" ~ foo;*/
-		push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
+		//push(status = new TuiLabel(0, this.height-1, this.width, " xQ - Quits", fgColor.Black, bgColor.White));
 
 		//push(new TuiOpenDialog(5,5));
 		/*push(filebox = new TuiFileBox(5,5,60,20));
@@ -170,18 +172,26 @@ class MyTWindow : TuiWindow {
 	//		listbox.addItem("list item " ~ toStr(i));
 		//}
 
-
+		push(tabbox = new TuiTabBox(0,0,this.width, this.height-1));
+		TuiContainer blah = new TuiContainer(0,0,0,0);
+		blah.text = "Poop";
+		TuiContainer bloh = new TuiContainer(0,0,0,0);
+		bloh.text = "Pee";
+		tabbox.add(bloh);
+		tabbox.add(blah);
 		//push(filebox = new TuiFileBox(5,5,60,20));
 		//filebox.forecolor = fgColor.Red;
 		//filebox.backcolor = bgColor.Black;
 		//filebox.selectedBackcolor = bgColor.Green;
 		//filebox.selectedForecolor = fgColor.White;
-		push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
+		//push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
+		
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
+
 
 		menu = foo;
 		text = "unsaved";
-		tuibox.lineNumbers = true;
+		//tuibox.lineNumbers = true;
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
 
 	}
@@ -219,6 +229,7 @@ private:
 	TuiLabel status;
 	TuiFileBox filebox;
 	TuiListBox listbox;
+	TuiTabBox tabbox;
 }
 
 class MyControl : Widget {
@@ -265,7 +276,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -299,7 +310,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 
 
 	override void onApplicationStart() {

@@ -37,52 +37,65 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	}
 
 	override void onAdd() {
+		_old_base_y = _base_y;
+		_base_y++;
 	}
 
 	override void onDraw() {
 		//draw the tabs
-		Console.setColor(_forecolor, _backcolor);
-		
+		io.console.Console.clipSave();
+		io.console.Console.clipClear();
+		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
+		io.console.Console.setColor(_forecolor, _backcolor);
+
+		io.console.Console.put(" ");		
 		foreach(int i, item; _tabList) {
 			if(i == _curTab) {
-				Console.setColor(_selectedForecolor, _selectedBackcolor);
-				Console.put(item.text);
-				Console.setColor(_forecolor, _backcolor);
+				io.console.Console.setColor(_selectedForecolor, _selectedBackcolor);
+				io.console.Console.put(item.text);
+				io.console.Console.setColor(_forecolor, _backcolor);
 			}
 			else {
-				Console.put(item.text);		
+				io.console.Console.put(item.text);		
 			}
 			
-			Console.put(" | ");
+			io.console.Console.put(" | ");
 		}
 		
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onDraw();
 		}
+		
+		io.console.Console.clipRestore();
 	}
 	
-	void onGotFocus() {
+	override void onGotFocus() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onGotFocus();
 		}	
 	}
 
-	void onLostFocus() {
+	override void onLostFocus() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onLostFocus();
 		}	
 	}
 
-	void onResize() {
+	override void onResize() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].resize(width, height-1);
 		}
 	}
 
-	void onKeyDown(Key key) {
+	override void onKeyDown(Key key) {
 		if(!_tabList.empty()) {
 			if(key.alt == true && key.code >= Key.Zero && key.code <= Key.Nine) {
-				current(key.code - Key.Zero);
+				if (key.code == Key.Zero) {
+					current(10);
+				}
+				else {
+					current(key.code - Key.One);
+				}
 			}
 			else {
 				_tabList[_curTab].onKeyDown(key);
@@ -90,61 +103,61 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		}	
 	}
 
-	void onKeyChar(dchar keyChar) {
+	override void onKeyChar(dchar keyChar) {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onKeyChar(keyChar);
 		}	
 	}
 
-	void onPrimaryMouseDown() {
+	override void onPrimaryMouseDown() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onPrimaryMouseDown();
 		}	
 	}
 
-	void onPrimaryMouseUp() {
+	override void onPrimaryMouseUp() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onPrimaryMouseUp();
 		}	
 	}
 
-	void onSecondaryMouseDown() {
+	override void onSecondaryMouseDown() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onSecondaryMouseDown();
 		}	
 	}
 
-	void onSecondaryMouseUp() {
+	override void onSecondaryMouseUp() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onSecondaryMouseUp();
 		}	
 	}
 
-	void onTertiaryMouseDown() {
+	override void onTertiaryMouseDown() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onTertiaryMouseDown();
 		}	
 	}
 
-	void onTertiaryMouseUp() {
+	override void onTertiaryMouseUp() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onTertiaryMouseUp();
 		}	
 	}
 
-	void onMouseWheelY(int amount) {
+	override void onMouseWheelY(int amount) {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onMouseWheelY(amount);
 		}	
 	}
 
-	void onMouseWheelX(int amount) {
+	override void onMouseWheelX(int amount) {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onMouseWheelX(amount);
 		}	
 	}
 
-	void onMouseMove() {
+	override void onMouseMove() {
 		if(!_tabList.empty()) {
 			_tabList[_curTab].onMouseMove();
 		}	
@@ -152,6 +165,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	
 	
 	void add(TuiContainer c) {
+		c.resize(width, height-1);
 		_tabList.add(c);
 	}
 	
@@ -241,6 +255,10 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		}
 	}
 	
+	bool isTabStop() {
+		return true;
+	}
+	
 // properties
 	
 	size_t current() {
@@ -252,7 +270,9 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 			_curTab = cur;
 		}
 		
-		if(!_tabList.empty() && (_tabList[_curTab].width != this.width || _tabList[_curTab].height != (this.height-1))) {
+		if(!_tabList.empty() 
+		  && (_tabList[_curTab].width != this.width 
+		    || _tabList[_curTab].height != (this.height-1))) {
 			_tabList[_curTab].resize(width, height-1);
 		}
 		
@@ -260,6 +280,13 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	}	
 
 protected:
+
+	override void _reportMove(uint x, uint y) {
+		_base_y++;
+		super._reportMove(x,y);
+	}
+	
+	uint _old_base_y;
 	size_t _curTab = 0;
 
 	List!(TuiContainer) _tabList;
