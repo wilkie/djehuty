@@ -174,9 +174,15 @@ class MyTWindow : TuiWindow {
 
 		push(tabbox = new TuiTabBox(0,0,this.width, this.height-1));
 		TuiContainer blah = new TuiContainer(0,0,0,0);
-		blah.text = "Poop";
+		blah.text = "Poop";		
+		blah.push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
 		TuiContainer bloh = new TuiContainer(0,0,0,0);
 		bloh.text = "Pee";
+		
+		TuiTextBox tuibox2 = new TuiTextBox(0,0,this.width,this.height-2);
+		tuibox2.lineNumbers = true;
+		bloh.push(tuibox2);
+		
 		tabbox.add(bloh);
 		tabbox.add(blah);
 		//push(filebox = new TuiFileBox(5,5,60,20));
@@ -191,7 +197,7 @@ class MyTWindow : TuiWindow {
 
 		menu = foo;
 		text = "unsaved";
-		//tuibox.lineNumbers = true;
+		tuibox.lineNumbers = true;
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
 
 	}

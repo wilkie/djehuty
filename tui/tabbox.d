@@ -15,6 +15,7 @@ import tui.container;
 import core.string;
 import core.definitions;
 import core.list;
+import core.event;
 
 import io.console;
 
@@ -63,9 +64,14 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		}
 		
 		if(!_tabList.empty()) {
-			_tabList[_curTab].onDraw();
+			TuiContainer c = _tabList[_curTab];
+			
+			io.console.Console.clipSave();
+			this.widgetClippingContext = c;
+			c.onDraw();
+			io.console.Console.clipRestore();
+			io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
 		}
-		
 		io.console.Console.clipRestore();
 	}
 	
@@ -163,10 +169,18 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		}	
 	}
 	
+	override void push(Dispatcher dsp) {
+		if (cast(TuiContainer)dsp) {
+			TuiContainer c = cast(TuiContainer)dsp;
+			c.resize(width, height-1);
+			c.move(0,0);
+			_tabList.add(c);
+		}
+		super.push(dsp);
+	}
 	
 	void add(TuiContainer c) {
-		c.resize(width, height-1);
-		_tabList.add(c);
+		push(c);
 	}
 	
 	TuiContainer remove() {
@@ -267,6 +281,10 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	
 	void current(size_t cur) {
 		if(cur < _tabList.length()) {
+			if (_curTab == cur) {
+				return;
+			}
+			_tabList[_curTab].onLostFocus();
 			_curTab = cur;
 		}
 		
@@ -275,6 +293,8 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		    || _tabList[_curTab].height != (this.height-1))) {
 			_tabList[_curTab].resize(width, height-1);
 		}
+		
+		_tabList[_curTab].onGotFocus();
 		
 		onDraw();
 	}	

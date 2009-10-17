@@ -514,7 +514,7 @@ private:
 		if (_clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
-/*			Rect context;
+			/*Rect context;
 			Rect rt;
 			rt.left = 1;
 			rt.right = 3;

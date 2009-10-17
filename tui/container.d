@@ -32,7 +32,8 @@ class TuiContainer : TuiWidget {
 			c =	c._prevControl;
 
 			c.onInit();
-			c.onDraw();
+			//if ()
+			//c.onDraw();
 		} while (c !is _firstControl)
 	}
 
@@ -67,31 +68,33 @@ class TuiContainer : TuiWidget {
 		Console.position(0,0);
 
 		TuiWidget c = _firstControl;
+		
+		io.console.Console.clipSave();
 
-		if (c is null) { return; }
-
-		do {
-			c =	c._prevControl;
-
-			io.console.Console.clipSave();
-			this.widgetClippingContext = c;
-			c.onDraw();
-			io.console.Console.clipRestore();
-			io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
-		} while(c !is _firstControl);
-
+		if (c !is null) {
+			do {
+				c =	c._prevControl;
+	
+				io.console.Console.clipSave();
+				this.widgetClippingContext = c;
+				c.onDraw();
+				io.console.Console.clipRestore();
+				io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
+			} while(c !is _firstControl);
+		}
+	
 		// Should clear the rest of the space not used by a widget
-
-		static const char[128] spaces = ' ';
+		
+		static string spaces = "                                                                                                                  ";
 
 		Console.setColor(bgColor.White);
 		for (uint i; i < this.height; i++) {
 			Console.position(0,i);
-			io.console.Console.setColor(bgColor.White);
+			io.console.Console.setColor(bgColor.Black);
 			uint numSpaces = this.width;
 
 			do {
-				uint pad = 128;
+				uint pad = spaces.length;
 				if (numSpaces < pad) {
 					pad = numSpaces;
 				}
@@ -99,6 +102,8 @@ class TuiContainer : TuiWidget {
 				numSpaces -= pad;
 			} while (numSpaces > 0)
 		}
+		
+		io.console.Console.clipRestore();
 	}
 
 	override void onKeyDown(Key key) {

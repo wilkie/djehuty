@@ -43,6 +43,8 @@ class TuiWindow : Responder {
 		_drawMenu();
 
 		_controlContainer.onGotFocus();
+		
+		Console.clipClear();
 	}
 
 	void onUninitialize() {
@@ -58,6 +60,7 @@ class TuiWindow : Responder {
 			showCaret = true;
 		}
 
+		Console.clipClear();
 		_controlContainer.onDraw();
 
 		_drawMenu();
