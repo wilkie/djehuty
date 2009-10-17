@@ -124,16 +124,12 @@ class List(T) : ListInterface!(T) {
 			if (_count > 0) {
 				_data[_count-1] = cast(T)value;
 			}
-
-			return index;
 		}
 	}
 
 	template setAt(R) {
 		void setAt(size_t index, R value) {
 			_data[index] = cast(T)value;
-
-			return index;
 		}
 	}
 

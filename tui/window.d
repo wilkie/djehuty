@@ -349,15 +349,15 @@ class TuiWindow : Responder {
 	}
 
 	void text(string value) {
-		_value = new String(value);
+		_controlContainer.text(value);
 	}
 
 	void text(String value) {
-		_value = new String(value);
+		_controlContainer.text(value);
 	}
 
 	String text() {
-		return _value;
+		return _controlContainer.text;
 	}
 
 	uint width() {
@@ -540,8 +540,8 @@ private:
 		}
 
 		bool drawCaption = false;
-		if (_value !is null && curWidth >= (_value.length + 1)) {
-			curWidth -= _value.length + 1;
+		if (this.text !is null && curWidth >= (this.text.length + 1)) {
+			curWidth -= this.text.length + 1;
 			drawCaption = true;
 		}
 
@@ -552,7 +552,7 @@ private:
 		}
 
 		if (drawCaption) {
-			Console.put(_value, " ");
+			Console.put(this.text, " ");
 		}
 	}
 
@@ -720,6 +720,4 @@ private:
 	MenuContext[] _menus;
 
 	bool _cancelNextChar;
-
-	String _value;
 }

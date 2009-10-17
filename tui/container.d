@@ -14,6 +14,7 @@ import tui.widget;
 
 import core.event;
 import core.definitions;
+import core.string;
 
 private import io.console;
 
@@ -230,6 +231,18 @@ class TuiContainer : TuiWidget {
 
 		super.move(x,y);
 	}
+	
+	void text(string name) {
+		_name = new String(name);
+	}
+
+	void text(String name) {
+		_name = new String(name);
+	}
+
+	String text() {
+		return _name;
+	}
 
 protected:
 
@@ -244,6 +257,8 @@ protected:
 
 	bool _inited;
 	bool _isTabStop;
+	
+	String _name;
 
 	void _reportMove(uint x, uint y) {
 		TuiWidget c = _firstControl;

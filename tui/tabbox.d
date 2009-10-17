@@ -8,10 +8,10 @@
  *
  */
 
-module tui.tabs;
+module tui.tabbox;
 
 import tui.widget;
-import tui.window;
+import tui.container;
 
 import core.string;
 import core.definitions;
@@ -31,10 +31,10 @@ import io.console;
 // Pass resize events down to current container and ALL containers 
 //   (eventually.. like check the size when containers are switched to reduce overhead)
 
-class TuiTabs : TuiWidget, ListInterface!(TuiContainer) {
+class TuiTabBox : TuiWidget, ListInterface!(TuiContainer) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
-		_tabList = new List!(_tabItem);
+		_tabList = new List!(TuiContainer);
 	}
 
 	override void onAdd() {
@@ -46,75 +46,75 @@ class TuiTabs : TuiWidget, ListInterface!(TuiContainer) {
 	}
 	
 	void add(TuiContainer c) {
-		
+		_tabList.add(c);
 	}
 	
 	TuiContainer remove() {
-		
+		return _tabList.remove();
 	}
 	
 	TuiContainer removeAt(size_t idx){
-		
+		return _tabList.removeAt(idx);
 	}
 	
 	TuiContainer peek() {
-		
+		return _tabList.peek();
 	}
 	
 	TuiContainer peekAt(size_t idx) {
-		
+		return _tabList.peekAt(idx);
 	}
 	
 	void set(TuiContainer c) {
-		
+		_tabList.set(c);
 	}
 	
 	void apply(TuiContainer delegate(TuiContainer) func) {
-		
+		_tabList.apply(func);
 	}
 	
 	bool contains(TuiContainer c) {
-		
+		return _tabList.contains(c);
 	}
 	
 	bool empty() {
-		
+		return _tabList.empty();
 	}
 	
 	void clear() {
-		
+		_tabList.clear();
 	}
 	
 	TuiContainer[] array() {
-		
+		return _tabList.array();
 	}
 	
 	List!(TuiContainer) dup() {
-		
+		return _tabList.dup();
 	}
 	
 	List!(TuiContainer) slice(size_t start, size_t end) {
-		
+		return _tabList.slice(start, end);
 	}
 	
 	List!(TuiContainer) reverse(){
-		
+		return _tabList.reverse();
 	}
 	
 	size_t length() {
-		
+		return _tabList.length();
 	}
 	
 	TuiContainer opIndex(size_t i1) {
-		
+		return _tabList.opIndex(i1);
 	}
 	
 	int opApply(int delegate(ref TuiContainer) loopFunc){
-		
+		return _tabList.opApply(loopFunc);
 	}
 	
 	int opApply(int delegate(ref int, ref TuiContainer) loopFunc){
-		
+		return _tabList.opApply(loopFunc);
 	}
 	
 	

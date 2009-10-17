@@ -303,8 +303,17 @@ class MyConsoleApp : Application {
 
 
 	override void onApplicationStart() {
+		
+		list = new ArrayList!(String);
+		
+		list.addItem(new String("blah"));
+		list.addItem(new String("bloo"));
+		
+		int index = list.indexOf(new String("blod"));
+		
+		Console.putln(index);
 
-		new MyOptions();
+		/*new MyOptions();
 	
 		String exp = new String(`a*b*c*f`);
 		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
@@ -325,7 +334,7 @@ class MyConsoleApp : Application {
 		}
 		else {
 			Console.putln("BT:  {null}");
-		}
+		}*/
 
 	}
 protected:
