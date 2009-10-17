@@ -76,60 +76,76 @@ class List(T) : ListInterface!(T) {
 
 	template add(R) {
 		void add(R item) {
-			if (_count >= _capacity) {
-				_resize();
+			synchronized(this) {
+				if (_count >= _capacity) {
+					_resize();
+				}
+				static if (IsArray!(R)) {
+					_data[_count] = item.dup;
+				}
+				else {
+					_data[_count] = cast(T)item;
+				}
+				_count++;
 			}
-			static if (IsArray!(R)) {
-				_data[_count] = item.dup;
-			}
-			else {
-				_data[_count] = cast(T)item;
-			}
-			_count++;
 		}
 	}
 
 	T remove() {
-		if (this.empty()) {
-			return _nullValue();
+		synchronized(this) {
+			if (this.empty()) {
+				return _nullValue();
+			}
+			_count--;
+			return _data[_count];
 		}
-		_count--;
-		return _data[_count];
 	}
 
 	T removeAt(size_t index) {
-		if (index >= _count) {
-			return _nullValue();
+		synchronized(this) {
+			if (index >= _count) {
+				return _nullValue();
+			}
+		
+			scope(exit) _data = _data[0..index] ~ _data[index+1..$];
+			return _data[index];
 		}
-		scope(exit) _data = _data[0..index] ~ _data[index+1..$];
-		return _data[index];
 	}
 
-	T peek() {
-		if (this.empty()) {
-			return _nullValue();
+	T peek() {			
+		synchronized(this) {
+			if (this.empty()) {
+				return _nullValue();
+			}
+			
+			return _data[_count-1];
 		}
-		return _data[_count-1];
 	}
 
-	T peekAt(size_t index) {
-		if (index >= _count) {
-			return _nullValue();
+	T peekAt(size_t index) {		
+		synchronized(this) {
+			if (index >= _count) {
+				return _nullValue();
+			}
+			return _data[index];
 		}
-		return _data[index];
 	}
 
 	template set(R) {
-		void set(R value) {
-			if (_count > 0) {
-				_data[_count-1] = cast(T)value;
+		void set(R value) {		
+			synchronized(this) {
+				if (_count > 0) {
+					_data[_count-1] = cast(T)value;
+				}
 			}
 		}
 	}
 
 	template setAt(R) {
 		void setAt(size_t index, R value) {
-			_data[index] = cast(T)value;
+			synchronized(this) {
+				_data[index] = cast(T)value;
+			}
 		}
 	}
 
@@ -143,9 +159,11 @@ class List(T) : ListInterface!(T) {
 
 	template contains(R) {
 		bool contains(R value) {
-			foreach(item; _data[0.._count]) {
-				if (value == item) {
-					return true;
+			synchronized(this) {
+				foreach(item; _data[0.._count]) {
+					if (value == item) {
+						return true;
+					}
 				}
 			}
 			return false;
@@ -157,8 +175,10 @@ class List(T) : ListInterface!(T) {
 	}
 
 	void clear() {
-		_data = new T[_capacity];
-		_count = 0;
+		synchronized(this) {
+			_data = new T[_capacity];
+			_count = 0;
+		}
 	}
 
 	// Properties
@@ -168,30 +188,36 @@ class List(T) : ListInterface!(T) {
 	}
 
 	List!(T) dup() {
-		List!(T) ret = new List!(T);
-		ret._data = _data[0.._count].dup;
-		ret._capacity = ret._data.length;
-		ret._count = ret._data.length;
-
+		synchronized(this) {
+			List!(T) ret = new List!(T);
+			ret._data = _data[0.._count].dup;
+			ret._capacity = ret._data.length;
+			ret._count = ret._data.length;
+		}
+	
 		return ret;
 	}
 
 	List!(T) slice(size_t start, size_t end) {
-		List!(T) ret = new List!(T);
-		ret._data = _data[start..end].dup;
-		ret._capacity = ret._data.length;
-		ret._count = ret._data.length;
-
+		synchronized(this) {
+			List!(T) ret = new List!(T);
+			ret._data = _data[start..end].dup;
+			ret._capacity = ret._data.length;
+			ret._count = ret._data.length;
+		}
+	
 		return ret;
 	}
 
 	List!(T) reverse() {
-		List!(T) ret = new List!(T);
-
-		ret._data = _data[0.._count].reverse;
-		ret._capacity = ret._data.length;
-		ret._count = ret._data.length;
-
+		synchronized(this) {
+			List!(T) ret = new List!(T);
+	
+			ret._data = _data[0.._count].reverse;
+			ret._capacity = ret._data.length;
+			ret._count = ret._data.length;
+		}
+		
 		return ret;
 	}
 
@@ -245,10 +271,12 @@ class List(T) : ListInterface!(T) {
 	override string toString() {
 		string ret = "[";
 
-		foreach(int i, item; this) {
-			ret ~= toStr(item);
-			if (i != this.length() - 1) {
-				ret ~= ",";
+		synchronized(this) {
+			foreach(int i, item; this) {
+				ret ~= toStr(item);
+				if (i != this.length() - 1) {
+					ret ~= ",";
+				}
 			}
 		}
 
