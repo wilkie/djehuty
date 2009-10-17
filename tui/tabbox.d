@@ -45,6 +45,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	override void onDraw() {
 		//draw the tabs
 		io.console.Console.clipSave();
+		io.console.Console.clipSave();
 		io.console.Console.clipClear();
 		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
 		io.console.Console.setColor(_forecolor, _backcolor);
@@ -62,6 +63,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 			
 			io.console.Console.put(" | ");
 		}
+		io.console.Console.clipRestore();
 		
 		if(!_tabList.empty()) {
 			TuiContainer c = _tabList[_curTab];
