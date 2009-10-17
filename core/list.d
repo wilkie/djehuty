@@ -193,9 +193,9 @@ class List(T) : ListInterface!(T) {
 			ret._data = _data[0.._count].dup;
 			ret._capacity = ret._data.length;
 			ret._count = ret._data.length;
-		}
 	
-		return ret;
+			return ret;
+		}
 	}
 
 	List!(T) slice(size_t start, size_t end) {
@@ -204,9 +204,9 @@ class List(T) : ListInterface!(T) {
 			ret._data = _data[start..end].dup;
 			ret._capacity = ret._data.length;
 			ret._count = ret._data.length;
-		}
 	
-		return ret;
+			return ret;
+		}
 	}
 
 	List!(T) reverse() {
@@ -216,9 +216,9 @@ class List(T) : ListInterface!(T) {
 			ret._data = _data[0.._count].reverse;
 			ret._capacity = ret._data.length;
 			ret._count = ret._data.length;
-		}
 		
-		return ret;
+			return ret;
+		}
 	}
 
 	size_t length() {
