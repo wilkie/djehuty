@@ -630,7 +630,7 @@ void ConsolePutString(dchar[] chrs) {
 		if (i > pos) {
 			Curses.wprintw(Curses.stdscr, "%s", &utf8[pos]);
 		}
-		Curses.refresh();
+		//Curses.refresh();
 	}
 	else {
 		printf("%s", utf8.ptr);
