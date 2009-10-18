@@ -1240,15 +1240,15 @@ class Regex {
 
 		dchar chr;
 		for (strPos = startingStrPos; strPos < str.length; strPos++) {
-			Console.putln("starting ... ", startingStrPos);
+		//	Console.putln("starting ... ", startingStrPos);
 			chr = str[strPos];
-			Console.putln("chr ... ", str[strPos]);
+		//	Console.putln("chr ... ", str[strPos]);
 			if (chr in currentState.transitions) {
 				// Take transition
-				Console.putln("taking transition ", chr, " from ", currentState.id, " to ", currentState.transitions[chr].id);
+				//Console.putln("taking transition ", chr, " from ", currentState.id, " to ", currentState.transitions[chr].id);
 				currentState = currentState.transitions[chr];
 				if (currentState.accept) {
-					Console.putln("found accept at ", strPos, " from ", startingStrPos);
+					//Console.putln("found accept at ", strPos, " from ", startingStrPos);
 					acceptStrEnd = strPos + 1;
 					acceptState = currentState;
 				}
@@ -1386,27 +1386,30 @@ private:
 	State buildDFA(string regex) {
 		return buildDFA(new String(regex));
 	}
-	
+
 	State buildDFA(String regex) {
-		State startState = new State();
-	
 		uint regexPos = 0;
-	
+		List!(State) current = new List!(State);
+		return buildDFA(regex, regexPos, current);
+	}
+
+	State buildDFA(String regex, ref uint regexPos, ref List!(State) current) {
+		State startState = new State();
+
 		dchar lastChar = '\0';
 		dchar thisChar;
 		dchar lastConcatChar = '\0';
-	
+
 		enum Operation {
 			None,
 			Kleene,
 			Concat
 		}
-	
+
 		Operation lastOp = Operation.None;
-	
-		List!(State) current = new List!(State);
+
 		current.add(startState);
-	
+
 		if (regexPos < regex.length) {
 			lastChar = regex[regexPos];
 			if (lastChar == '*') {
@@ -1414,6 +1417,8 @@ private:
 			}
 			else if (lastChar == '(') {
 				// group
+				regexPos++;
+				buildDFA(regex, regexPos, current);
 			}
 			else {
 				lastConcatChar = lastChar;
@@ -1428,7 +1433,7 @@ private:
 			else {
 				thisChar = regex[regexPos];
 			}
-	
+
 			if (thisChar == '*') {
 				// Kleene Star
 				if (lastChar == ')') {
@@ -1439,7 +1444,7 @@ private:
 					// ex. "a*" => [p] -> 'a' -> [p]
 					State loopState;
 					Console.putln("Single Character Kleene (", lastConcatChar, ")");
-	
+
 					foreach(state; current) {
 					Console.putln("Single Character Kleene (", lastConcatChar, ")");
 						if (state.transitions.length != 0) {
@@ -1452,7 +1457,7 @@ private:
 								loopState.loopDest = loopState;
 								loopState.loopOn = lastConcatChar;
 							}
-	
+
 							state.transitions[lastConcatChar] = loopState;
 						}
 						else {
@@ -1464,11 +1469,11 @@ private:
 							state.loopOn = lastConcatChar;
 						}
 					}
-	
+
 					if (loopState !is null) {
 						current.add(loopState);
 					}
-	
+
 					Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
 					State.printall();
 				}
@@ -1516,16 +1521,30 @@ private:
 						}
 					}
 					current = newCurrent;
-	
+
 					Console.putln("Concat Character (", lastConcatChar, ")");
 					State.printall();
 				}
+
+				if (thisChar == '(') {
+					// group start
+					regexPos++;
+					State innerGroup = buildDFA(regex, regexPos, current);
+					Console.putln("Inner Group Found");
+					lastConcatChar = '\0';
+					State.printall();
+				}
+				else if (thisChar == ')') {
+					return startingState;
+				}
+				else {
+					lastConcatChar = thisChar;
+				}
 				lastOp = Operation.Concat;
-				lastConcatChar = thisChar;
 			}
-	
+
 			lastChar = thisChar;
-	
+
 			regexPos++;
 		}
 	
