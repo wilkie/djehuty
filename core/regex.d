@@ -1427,6 +1427,9 @@ private:
 					}
 					break;
 				default:
+					if (groupStack.empty()) {
+						_groupInfo = null;
+					}
 					break;
 			}
 		}

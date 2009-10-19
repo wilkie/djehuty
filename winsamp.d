@@ -330,8 +330,8 @@ class MyConsoleApp : Application {
 */
 		new MyOptions();
 	
-		String exp = new String(`a*(bc)*(bcb)*`);
-		String find = new String("aaaaaaaaaaaaaaabcbcbcabcabcbbcbbcb");
+		String exp = new String(`a*(abc)*a`);
+		String find = new String("aaaaaaabca");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 
