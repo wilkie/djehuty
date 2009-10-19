@@ -282,7 +282,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+//	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -316,10 +316,10 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
-		list = new ArrayList!(String);
+/*		list = new ArrayList!(String);
 		
 		list.addItem(new String("blah"));
 		list.addItem(new String("bloo"));
@@ -327,11 +327,11 @@ class MyConsoleApp : Application {
 		int index = list.indexOf(new String("blod"));
 		
 		Console.putln(index);
-
-		/*new MyOptions();
+*/
+		new MyOptions();
 	
-		String exp = new String(`a*b*c*f`);
-		String find = new String("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbabcccccf");
+		String exp = new String(`a*(abc)*`);
+		String find = new String("aaaaaaaaaaaaaaabcdbcdbc");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 
@@ -349,7 +349,7 @@ class MyConsoleApp : Application {
 		}
 		else {
 			Console.putln("BT:  {null}");
-		}*/
+		}
 
 	}
 protected:
