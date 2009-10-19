@@ -12,7 +12,7 @@ module binding.ncurses.ncurses;
 
 import binding.c;
 
-extern(C):
+extern(System):
 
 // << ncurses.h>> //
 
