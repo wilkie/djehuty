@@ -1558,7 +1558,7 @@ private:
 					List!(State) newCurrent = new List!(State);
 					foreach(int i, state; current) {
 						if (lastConcatChar in state.transitions) {
-							if (isKleene) {
+							if (isKleene && state.loopEnd) {
 								State.printall();
 								Console.putln("Cancelling kleene group operation, ", lastConcatChar, " ", lastChar, " ", thisChar);
 								if (i == current.length - 1) {
