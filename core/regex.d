@@ -1411,7 +1411,6 @@ private:
 					i++;
 					continue;
 				case '(':
-					Console.putln("adding ", i);
 					groupStack.add(cast(int)i);
 					DFAGroupInfo dgi;
 					_groupInfo[i] = dgi;
@@ -1421,6 +1420,7 @@ private:
 					if (startPos in _groupInfo) {
 						_groupInfo[startPos].endPos = i;
 						if ((i + 1 < regularExpression.length) && regularExpression[i+1] == '*') {
+							Console.putln("HAS KLEENE");
 							_groupInfo[startPos].hasKleene = true;
 							i++;
 						}
@@ -1428,6 +1428,7 @@ private:
 					break;
 				default:
 					if (groupStack.empty()) {
+						Console.putln("NULLED");
 						_groupInfo = null;
 					}
 					break;
@@ -1492,7 +1493,7 @@ private:
 
 			if (thisChar == '*') {
 				// Kleene Star
-				Console.putln("Kleene (", lastChar, ")");
+				//Console.putln("Kleene (", lastChar, ")");
 				if (lastChar == ')') {
 					// Group End (Kleene)
 					foreach(state; current) {
@@ -1508,19 +1509,20 @@ private:
 						state.loopSource = startState;
 						state.loopDest = startState;
 					}
-					Console.putln("Whoo");
+					//Console.putln("Whoo");
 					current = old;
 					current.add(startState);
 					Console.putln("Kleene Group End");
+					State.printall();
 				}
 				else {
 					// Single Character Kleene
 					// ex. "a*" => [p] -> 'a' -> [p]
 					State loopState;
-					Console.putln("Single Character Kleene (", lastConcatChar, ")");
+					//Console.putln("Single Character Kleene (", lastConcatChar, ")");
 
 					foreach(state; current) {
-					Console.putln("Single Character Kleene (", lastConcatChar, ")");
+						Console.putln("Single Character Kleene (", lastConcatChar, ")");
 						if (state.transitions.length != 0) {
 							if (loopState is null) {
 								loopState = new State();
@@ -1530,6 +1532,14 @@ private:
 								loopState.loopSource = loopState;
 								loopState.loopDest = loopState;
 								loopState.loopOn = lastConcatChar;
+							}
+							State startState = state;
+
+							while (lastConcatChar in state.transitions) {
+								if (state.transitions[lastConcatChar] == state) { break; }
+								state = state.transitions[lastConcatChar];
+								if (state == startState) { break; }
+								current.add(state);
 							}
 
 							state.transitions[lastConcatChar] = loopState;
@@ -1548,7 +1558,7 @@ private:
 						current.add(loopState);
 					}
 
-					Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
+					//Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
 					State.printall();
 				}
 				lastOp = Operation.Kleene;
@@ -1573,9 +1583,13 @@ private:
 
 							Console.putln("Concating Character ", state.id, " (", lastConcatChar, ")");
 							State destState = state.transitions[lastConcatChar];
-							Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
+							//Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
 							if (destState.loopStart && destState.loopDest is destState && destState !is state) {
 								State interState = new State();
+								Console.putln("Single character loop unroll ", state.id, " (", lastConcatChar, ")");
+								foreach(transition; destState.transitions.keys) {
+									interState.transitions[transition] = destState.transitions[transition];
+								}
 								state.transitions[lastConcatChar] = interState;
 								interState.transitions[lastConcatChar] = destState;
 								destState = interState;
@@ -1600,6 +1614,7 @@ private:
 							if (catState is null) {
 								catState = new State();
 							}
+							Console.putln("adding state ", catState.id);
 							newCurrent.add(catState);
 							state.transitions[lastConcatChar] = catState;
 						}
@@ -1627,7 +1642,7 @@ private:
 
 					State innerGroup = buildDFA(regex, regexPos, current, hasKleene);
 
-					Console.putln("Inner Group Found");
+					//Console.putln("Inner Group Found");
 					lastConcatChar = '\0';
 					State.printall();
 				}
@@ -1637,7 +1652,7 @@ private:
 				lastOp = Operation.Concat;
 			}
 
-			Console.putln("lastChar = ", thisChar);
+			//Console.putln("lastChar = ", thisChar);
 			lastChar = thisChar;
 
 			regexPos++;
