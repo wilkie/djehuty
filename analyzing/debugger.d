@@ -15,6 +15,7 @@ import gui.window;
 
 import core.string;
 import core.unicode;
+import core.definitions;
 
 import synch.thread;
 
@@ -47,16 +48,21 @@ public:
 
 		if (t is null) {
 			Console.putln("Unhandled Main Exception: ");
-			Console.putln("    cause: ", e.toString());
 		}
 		else {
 			Console.putln("Unhandled Thread Exception: ");
-			Console.putln("    cause: ", e.toString());
 		}
+
+		string cause = e.toString();
+		if (cause == "null this") {
+			cause = "Null Pointer Exception";
+		}
+
+		Console.putln("    cause: ", cause);
 
 		version(LDC) {
 			// Tango provides a traceback for us
-//			Console.putln("    file: ", e.file);
+			Console.putln("    file: ", e.file, " : ", e.line);
 		}
 		else {
 		}
