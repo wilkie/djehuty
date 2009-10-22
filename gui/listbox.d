@@ -5,18 +5,15 @@ import gui.widget;
 import core.color;
 import core.definitions;
 import core.string;
+import core.list;
 
 import graphics.graphics;
-
-import utils.arraylist;
-
-import interfaces.list;
 
 import gui.vscrollbar;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
+	this(int x, int y, int width, int height, List!(String) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
@@ -30,11 +27,15 @@ class ListBox : Widget {
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
+	this(int x, int y, int width, int height, List!(String) list = null) {
 		super(x,y,width,height);
 
-		_list = new ArrayList!(String)();
-		if (list !is null) { _list.addList(list); }
+		_list = new List!(String)();
+		if (list !is null) {
+			foreach(item; list) {
+				_list.add(item);
+			}
+		}
 	}
 
 	// handle events
@@ -73,7 +74,7 @@ class ListBox : Widget {
 	}
 
 	override void onRemove() {
-		control_scroll.remove();
+		control_scroll.detach();
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -110,7 +111,7 @@ class ListBox : Widget {
 		String data;
 
 		for (i=m_first_visible; i<m_first_visible+m_total_visible && i<_list.length(); i++) {
-			_list.getItem(data, i);
+			data = _list.peekAt(i);
 
 			if (i==m_sel_start) {
 				// set text mode to opaque (selection!)
@@ -170,51 +171,121 @@ class ListBox : Widget {
 		return m_sel_start;
 	}
 
-	// AbstractList Methods
-
-	void addItem(String data) {
-		_list.addItem(data);
-
-		_checkScrollBarStatus();
-	}
-
-	void addItem(string data) {
-		_list.addItem(new String(data));
+	// List Methods
+	
+	void add(String c) {
+		_list.add(c);
 
 		_checkScrollBarStatus();
 	}
 
-	void addList(AbstractList!(String) list) {
-		_list.addList(list);
+	void add(string c) {
+		_list.add(new String(c));
 
 		_checkScrollBarStatus();
 	}
 
-	void addList(String[] list) {
-		_list.addList(list);
+	void add(String[] c) {
+		foreach(item; c) {
+			_list.add(item);
+		}
+	}
+
+	void add(string[] c) {
+		foreach(item; c) {
+			_list.add(new String(item));
+		}
+	}
+
+	void add(ListInterface!(String) list) {
+		foreach(item; list) {
+			_list.add(item);
+		}	
+	}
+
+	void addAt(String c, size_t idx) {
+		_list.addAt(c, idx);
 
 		_checkScrollBarStatus();
 	}
+	
+	String remove() {
+		String ret = _list.remove();
 
-    bool getItem(out String data, uint index) {
-		return _list.getItem(data, index);
-    }
+		_checkScrollBarStatus();
 
-	Iterator getIterator() {
-		return _list.getIterator();
+		return ret;
 	}
+	
+	String removeAt(size_t idx){
+		String ret = _list.removeAt(idx);
 
-	bool getItem(out String data, ref Iterator irate) {
-		return _list.getItem(data, irate);
-    }
+		_checkScrollBarStatus();
 
-    uint length() {
+		return ret;
+	}
+	
+	String peek() {
+		return _list.peek();
+	}
+	
+	String peekAt(size_t idx) {
+		return _list.peekAt(idx);
+	}
+	
+	void set(String c) {
+		_list.set(c);
+	}
+	
+	void apply(String delegate(String) func) {
+		_list.apply(func);
+	}
+	
+	bool contains(String c) {
+		return _list.contains(c);
+	}
+	
+	bool empty() {
+		return _list.empty();
+	}
+	
+	void clear() {
+		_list.clear();
+
+		_checkScrollBarStatus();
+	}
+	
+	String[] array() {
+		return _list.array();
+	}
+	
+	List!(String) dup() {
+		return _list.dup();
+	}
+	
+	List!(String) slice(size_t start, size_t end) {
+		return _list.slice(start, end);
+	}
+	
+	List!(String) reverse() {
+		return _list.reverse();
+	}
+	
+	size_t length() {
 		return _list.length();
-    }
-
-	bool remove(out String item) {
-		return _list.remove(item);
-    }
+	}
+	
+	String opIndex(size_t i1) {
+		return _list.opIndex(i1);
+	}
+	
+	int opApply(int delegate(ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+	
+	int opApply(int delegate(ref int, ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
 
 protected:
 
@@ -232,7 +303,7 @@ protected:
 	uint m_total_visible;
 	uint m_sel_start;
 
-	ArrayList!(String) _list;
+	List!(String) _list;
 
 	int m_hoverstate;
 

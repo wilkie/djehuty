@@ -1326,7 +1326,9 @@ protected:
 		State loopDest;
 		State loopSource;
 		dchar loopOn;
-	
+
+		State root;
+
 		// Debugging block
 		static int count = 0;
 		static List!(State) all;
@@ -1449,6 +1451,7 @@ private:
 
 	State buildDFA(String regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
 		State startState = new State();
+		startState.root = startState;
 
 		uint groupPos = regexPos - 1;
 
@@ -1497,17 +1500,26 @@ private:
 				if (lastChar == ')') {
 					// Group End (Kleene)
 					foreach(state; current) {
+						State loopDest = startState;
+						dchar loopOn = lastConcatChar;
+						//while (loopOn in state.transitions) {
+						//	state = state.transitions[lastConcatChar];
+						//}
+						
 						state.transitions[lastConcatChar] = startState;
 
-						startState.loopStart = true;
-						startState.loopDest = state;
-						startState.loopOn = lastConcatChar;
-						startState.loopSource = state;
+						if (state.root is startState) {
 
-						state.loopEnd = true;
-						state.loopOn = lastConcatChar;
-						state.loopSource = startState;
-						state.loopDest = startState;
+							startState.loopStart = true;
+							startState.loopDest = state;
+							startState.loopOn = lastConcatChar;
+							startState.loopSource = state;
+
+							state.loopEnd = true;
+							state.loopOn = lastConcatChar;
+							state.loopSource = startState;
+							state.loopDest = startState;
+						}
 					}
 					//Console.putln("Whoo");
 					current = old;
@@ -1592,6 +1604,7 @@ private:
 								}
 								state.transitions[lastConcatChar] = interState;
 								interState.transitions[lastConcatChar] = destState;
+								interState.root = state.root;
 								destState = interState;
 							}
 							else if (destState is state) {
@@ -1613,6 +1626,7 @@ private:
 						else {
 							if (catState is null) {
 								catState = new State();
+								catState.root = state.root;
 							}
 							Console.putln("adding state ", catState.id);
 							newCurrent.add(catState);
@@ -1677,7 +1691,7 @@ private:
 			State loopDest = state.loopDest;
 			if (loopDest is null) { return; }
 			State newDest = new State();
-			Console.putln("loop destination: ", loopDest.id);
+			Console.putln("loop destination: ", loopDest.id, " for ", state.loopOn);
 	
 			foreach(key; loopDest.transitions.keys) {
 				State toState = loopDest.transitions[key];

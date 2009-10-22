@@ -3,14 +3,13 @@ module tui.buffer;
 import core.string;
 import core.main;
 import core.definitions;
+import core.list;
 
 import synch.semaphore;
 
 import io.console;
 
 import tui.widget;
-
-import utils.arraylist;
 
 // Section: Console
 
@@ -28,7 +27,7 @@ class TuiBuffer : TuiWidget
 		_w = width;
 		_h = height;
 
-		_buffer = new ArrayList!(BufferLine)();
+		_buffer = new List!(BufferLine)();
 
 		for (uint i; i<_h; i++)
 		{
@@ -36,7 +35,7 @@ class TuiBuffer : TuiWidget
 			bf.line = new emptyChar[width];
 			bf.bgclr = new bgColor[width];
 			bf.fgclr = new fgColor[width];
-			_buffer.addItem(bf);
+			_buffer.add(bf);
 		}
 
 		position(0,0);
@@ -330,7 +329,7 @@ protected:
 				bl.line = new emptyChar[_w];
 		Console.position((4 * 10),29);
 			Console.put("gf: ", _curx, " ", _cury);
-				_buffer.addItem(bl);
+				_buffer.add(bl);
 		Console.position((4 * 10),29);
 			Console.put("hf: ", _curx, " ", _cury);
 			}
@@ -370,7 +369,7 @@ protected:
 			bl.line = new emptyChar[_w];
 			bl.fgclr = new fgColor[_w];
 			bl.bgclr = new bgColor[_w];
-			_buffer.addItem(bl);
+			_buffer.add(bl);
 		}
 
 		_firstVisible += _h;
@@ -401,7 +400,7 @@ protected:
 		fgColor[] fgclr = null;
 		bgColor[] bgclr = null;
 	}
-	ArrayList!(BufferLine) _buffer;
+	List!(BufferLine) _buffer;
 	uint _firstVisible;	// first line visible
 
 	fgColor _curfg = fgColor.White;

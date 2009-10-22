@@ -14,25 +14,24 @@ import tui.widget;
 
 import core.string;
 import core.definitions;
+import core.list;
 
 import io.console;
-
-import utils.arraylist;
 
 class TuiTextBox : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 
-		_lines = new ArrayList!(LineInfo);
+		_lines = new List!(LineInfo);
 		LineInfo newItem = new LineInfo();
 		newItem.value = new String("if (something) { /* in comment block */ init(); }");
 
-		_lines.addItem(newItem);
+		_lines.add(newItem);
 		onLineChanged(_lines.length - 1);
 		for (int o; o < 500; o++) {
 			LineInfo subItem = new LineInfo();
 			subItem.value = new String(o);
-			_lines.addItem(subItem);
+			_lines.add(subItem);
 			onLineChanged(_lines.length - 1);
 		}
 	}
@@ -53,7 +52,7 @@ class TuiTextBox : TuiWidget {
 					_lines[_row].format ~= _lines[_row+1].format;
 
 					LineInfo oldLine;
-					_lines.remove(oldLine, _row+1);
+					oldLine = _lines.removeAt(_row+1);
 
 					_lineColumn = _column;
 
@@ -307,7 +306,7 @@ class TuiTextBox : TuiWidget {
 				_formatIndex = 2;
 			}
 
-			_lines.addItem(newLine, _row+1);
+			_lines.addAt(newLine, _row+1);
 			_lines[_row].value = _lines[_row].value.subString(0, _column);
 
 			_column = 0;
@@ -589,7 +588,7 @@ protected:
 	}
 
 	// Stores the buffer of lines
-	ArrayList!(LineInfo) _lines;
+	List!(LineInfo) _lines;
 
 	// The top left corner
 	int _firstVisible;	// Row

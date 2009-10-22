@@ -3,6 +3,7 @@ module tui.listbox;
 import core.string;
 import core.main;
 import core.definitions;
+import core.list;
 
 import io.console;
 
@@ -10,16 +11,14 @@ import tui.widget;
 
 import interfaces.list;
 
-import utils.arraylist;
-
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
-class TuiListBox : TuiWidget, AbstractList!(String) {
+class TuiListBox : TuiWidget, ListInterface!(String) {
 	this( uint x, uint y, uint width, uint height ) {
 		super(x,y,width,height);
 
-		_list = new ArrayList!(String)();
+		_list = new List!(String)();
 	}
 
 	override void onAdd() {
@@ -143,50 +142,84 @@ class TuiListBox : TuiWidget, AbstractList!(String) {
 			drawLine(_pos);
 		}
 	}
-
+	
+	void add(String c) {
+		_list.add(c);
+	}
+	
+	String remove() {
+		return _list.remove();
+	}
+	
+	String removeAt(size_t idx){
+		return _list.removeAt(idx);
+	}
+	
+	String peek() {
+		return _list.peek();
+	}
+	
+	String peekAt(size_t idx) {
+		return _list.peekAt(idx);
+	}
+	
+	void set(String c) {
+		_list.set(c);
+	}
+	
+	void apply(String delegate(String) func) {
+		_list.apply(func);
+	}
+	
+	bool contains(String c) {
+		return _list.contains(c);
+	}
+	
+	bool empty() {
+		return _list.empty();
+	}
+	
+	void clear() {
+		_list.clear();
+	}
+	
+	String[] array() {
+		return _list.array();
+	}
+	
+	List!(String) dup() {
+		return _list.dup();
+	}
+	
+	List!(String) slice(size_t start, size_t end) {
+		return _list.slice(start, end);
+	}
+	
+	List!(String) reverse() {
+		return _list.reverse();
+	}
+	
+	size_t length() {
+		return _list.length();
+	}
+	
+	String opIndex(size_t i1) {
+		return _list.opIndex(i1);
+	}
+	
+	int opApply(int delegate(ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+	
+	int opApply(int delegate(ref int, ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+	
 	// methods
 
 	override bool isTabStop() {
 		return true;
 	}
-
-	void addItem(String data) {
-		_list.addItem(data);
-	}
-
-	void addItem(string data) {
-		_list.addItem(new String(data));
-	}
-
-	void addList(AbstractList!(String) list) {
-		_list.addList(list);
-	}
-
-	void addList(String[] list) {
-		_list.addList(list);
-	}
-
-    bool getItem(out String data, uint index) {
-		return _list.getItem(data, index);
-    }
-
-	Iterator getIterator() {
-		return _list.getIterator();
-	}
-
-	bool getItem(out String data, ref Iterator irate) {
-		return _list.getItem(data, irate);
-	}
-
-	uint length() {
-		return _list.length();
-	}
-
-	bool remove(out String item) {
-		return _list.remove(item);
-    }
-
-	// Propeties
 
 	// Description: This property returns the backcolor value for normal items.
 	bgColor backcolor() {
@@ -256,7 +289,7 @@ protected:
 
 	char[] _spacestr;
 
-	ArrayList!(String) _list;
+	List!(String) _list;
 	
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

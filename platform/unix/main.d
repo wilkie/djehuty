@@ -74,8 +74,7 @@ DjehutyPlatformVars* _pfvars() {
 	return &pfvars;
 }
 
-extern(C) void mousetimerproc(sigval val)
-{
+extern(C) void mousetimerproc(sigval val) {
 	Mouse* p_mouseProps;
 
 	p_mouseProps = cast(Mouse*)val.sival_ptr;
@@ -84,10 +83,10 @@ extern(C) void mousetimerproc(sigval val)
 }
 
 // segfault handler
-extern(C) void segfault_handler(int signum)
-{
+extern(C) void segfault_handler(int signum) {
 	throw new Exception("Access Violation");
 }
+
 void AppInit()
 {
 	// ------------- */

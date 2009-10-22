@@ -15,8 +15,7 @@ import core.string;
 import core.definitions;
 import core.regex;
 import core.event;
-
-import utils.arraylist;
+import core.list;
 
 import io.console;
 
@@ -62,7 +61,7 @@ protected:
 class Lexer : Responder
 {
 	this() {
-		rules ~= new ArrayList!(Rule)();
+		rules ~= new List!(Rule)();
 	}
 
 	void addRule(uint tokenId, String regex) {
@@ -71,7 +70,7 @@ class Lexer : Responder
 		newRule.regex = new String("^(?:") ~ regex ~ ")";
 		newRule.id = tokenId;
 
-		rules[stateId].addItem(newRule);
+		rules[stateId].add(newRule);
 	}
 
 	void addRule(uint tokenId, string regex) {
@@ -80,11 +79,11 @@ class Lexer : Responder
 		newRule.regex = new String("^(?:") ~ regex ~ ")";
 		newRule.id = tokenId;
 
-		rules[stateId].addItem(newRule);
+		rules[stateId].add(newRule);
 	}
 
 	uint newState() {
-		rules ~= new ArrayList!(Rule)();
+		rules ~= new List!(Rule)();
 		stateId = rules.length - 1;
 
 		return stateId;
@@ -168,5 +167,5 @@ protected:
 	Token token;
 
 	// rules (lexicon)
-	ArrayList!(Rule)[] rules;
+	List!(Rule)[] rules;
 }

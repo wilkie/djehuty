@@ -19,8 +19,7 @@ import io.file;
 
 import core.string;
 import core.main;
-
-import utils.arraylist;
+import core.list;
 
 bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref String path)
 {

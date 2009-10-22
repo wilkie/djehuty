@@ -50,7 +50,7 @@ class Widget : Responder {
 	// Deconstructor //
 
 	~this() {
-		remove();
+		detach();
 	}
 
 	// Events //
@@ -211,7 +211,7 @@ class Widget : Responder {
 	}
 
 	// Description: Will remove this control to whatever it has been added to.
-	void remove() {
+	void detach() {
 		if (_window is null) { return; }
 		if (_nextControl is null) { return; }
 
