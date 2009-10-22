@@ -20,6 +20,10 @@ interface ListInterface(T) {
 		void add(R item);
 	}
 
+	template addAt(R) {
+		void addAt(R item, size_t idx);
+	}
+
 	T remove();
 	T removeAt(size_t idx);
 
@@ -68,6 +72,12 @@ class List(T) : ListInterface!(T) {
 		_count = 0;
 	}
 
+	this(int size) {
+		_capacity = size;
+		_data = new T[_capacity];
+		_count = 0;
+	}
+
 	this(T[] list) {
 	}
 
@@ -85,6 +95,26 @@ class List(T) : ListInterface!(T) {
 				}
 				else {
 					_data[_count] = cast(T)item;
+				}
+				_count++;
+			}
+		}
+	}
+
+	template addAt(R) {
+		void addAt(R item, size_t idx) {
+			synchronized(this) {
+				if (_count >= _capacity) {
+					_resize();
+				}
+				for(size_t i = idx; i < _count - 1; i++) {
+					_data[i+1] = _data[i];
+				}
+				static if (IsArray!(R)) {
+					_data[idx] = item.dup;
+				}
+				else {
+					_data[idx] = cast(T)item;
 				}
 				_count++;
 			}

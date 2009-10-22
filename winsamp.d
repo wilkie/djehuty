@@ -31,8 +31,6 @@ import gui.osbutton;
 
 import parsing.options;
 
-import utils.arraylist;
-
 class MyOptions : OptionParser {
 
 	mixin Options!(
@@ -319,7 +317,7 @@ class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
-/*		list = new ArrayList!(String);
+/*		list = new List!(String);
 		
 		list.addItem(new String("blah"));
 		list.addItem(new String("bloo"));
@@ -330,8 +328,8 @@ class MyConsoleApp : Application {
 */
 		new MyOptions();
 	
-		String exp = new String(`a*(abc)*(abd)*ab*`);
-		String find = new String("eaaaaaaaaaaabcabcabdabdabbbbbbbbe");
+		String exp = new String(`a*(abc)*a(bc)*b`);
+		String find = new String("aaaaabcab");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
 
@@ -351,9 +349,11 @@ class MyConsoleApp : Application {
 			Console.putln("BT:  {null}");
 		}
 
+		List!(string) list;
+		list.add("he");
 	}
 protected:
-	ArrayList!(String) list;
+	List!(String) list;
 
 }
 

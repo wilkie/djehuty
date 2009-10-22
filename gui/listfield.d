@@ -12,21 +12,18 @@ module gui.listfield;
 import core.color;
 import core.definitions;
 import core.string;
+import core.list;
 
 import graphics.graphics;
-
-import utils.arraylist;
 
 import gui.widget;
 import gui.window;
 import gui.button;
 import gui.listbox;
 
-import interfaces.list;
-
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
+	this(int x, int y, int width, int height, ListInterface!(String) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
@@ -45,18 +42,22 @@ class ListFieldWindow : Window {
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : Widget, AbstractList!(String) {
+class ListField : Widget, ListInterface!(String) {
 
 	enum Signal : uint {
 		Selected,
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, AbstractList!(String) list = null) {
+	this(int x, int y, int width, int height, ListInterface!(String) list = null) {
 		super(x,y,width,height);
 
-		_list = new ArrayList!(String)();
-		if (list !is null) { _list.addList(list); }
+		_list = new List!(String)();
+		if (list !is null) {
+			foreach(item; list) {
+				_list.add(item);
+			}
+		}
 	}
 
 	// handle events
@@ -67,7 +68,9 @@ class ListField : Widget, AbstractList!(String) {
 			control_window = new ListFieldWindow(this.width);
 
 			if (_list !is null) {
-				control_listbox.addList(_list);
+				foreach(item; _list) {
+					control_listbox.add(item);
+				}
 			}
 			_list = null;
 		}
@@ -128,42 +131,89 @@ class ListField : Widget, AbstractList!(String) {
 
 	// List Methods
 
-	void addItem(String data) {
-		control_listbox.addItem(data);
+	void add(String data) {
+		control_listbox.add(data);
 	}
 
-	void addItem(string data) {
-		control_listbox.addItem(data);
+	void add(string data) {
+		control_listbox.add(data);
 	}
 
-	void addList(AbstractList!(String) list) {
-		control_listbox.addList(list);
+	void add(ListInterface!(String) list) {
+		control_listbox.add(list);
 	}
 
-	void addList(String[] list) {
-		control_listbox.addList(list);
+	void add(String[] list) {
+		control_listbox.add(list);
 	}
-
-    bool getItem(out String data, uint index) {
-		return control_listbox.getItem(data, index);
-    }
-
-	Iterator getIterator() {
-		return control_listbox.getIterator();
+	
+	String remove() {
+		return control_listbox.remove();
 	}
-
-    bool getItem(out String data, ref Iterator irate) {
-		return control_listbox.getItem(data, irate);
-    }
-
-    uint length() {
+	
+	String removeAt(size_t idx){
+		return control_listbox.removeAt(idx);
+	}
+	
+	String peek() {
+		return control_listbox.peek();
+	}
+	
+	String peekAt(size_t idx) {
+		return control_listbox.peekAt(idx);
+	}
+	
+	void set(String c) {
+		control_listbox.set(c);
+	}
+	
+	void apply(String delegate(String) func) {
+		control_listbox.apply(func);
+	}
+	
+	bool contains(String c) {
+		return control_listbox.contains(c);
+	}
+	
+	bool empty() {
+		return control_listbox.empty();
+	}
+	
+	void clear() {
+		control_listbox.clear();
+	}
+	
+	String[] array() {
+		return control_listbox.array();
+	}
+	
+	List!(String) dup() {
+		return control_listbox.dup();
+	}
+	
+	List!(String) slice(size_t start, size_t end) {
+		return control_listbox.slice(start, end);
+	}
+	
+	List!(String) reverse() {
+		return control_listbox.reverse();
+	}
+	
+	size_t length() {
 		return control_listbox.length();
-    }
-
-	bool remove(out String item) {
-		return control_listbox.remove(item);
 	}
-
+	
+	String opIndex(size_t i1) {
+		return control_listbox.opIndex(i1);
+	}
+	
+	int opApply(int delegate(ref String) loopFunc) {
+		return control_listbox.opApply(loopFunc);
+	}
+	
+	int opApply(int delegate(ref int, ref String) loopFunc) {
+		return control_listbox.opApply(loopFunc);
+	}
 protected:
 
 	Font _font;
@@ -186,5 +236,5 @@ protected:
 	ListBox control_listbox;
 	Window control_window;
 
-	ArrayList!(String) _list;
+	List!(String) _list;
 }

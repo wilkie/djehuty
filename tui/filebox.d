@@ -18,16 +18,19 @@ import io.console;
 
 import core.string;
 import core.definitions;
+import core.list;
 
-import utils.arraylist;
-
-class TuiFileBox : TuiWidget {
+class TuiFileBox : TuiWidget, ListInterface!(String) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_path = new Directory();
-		_list = _path.list.sort;
+		_list = new List!(String);
+		String[] list = _path.list.sort;
 		if (!_path.isRoot) {
-			_list = [new String("..")] ~ _list;
+			list = [new String("..")] ~ list;
+		}
+		foreach(item; list) {
+			_list.add(item);
 		}
 	}
 
@@ -89,9 +92,14 @@ class TuiFileBox : TuiWidget {
 			// Traverse Directory
 			if (_list[_pos] == "..") {
 				_path = _path.parent;
-				_list = _path.list.sort;
+				String[] list = _path.list.sort;
 				if (!_path.isRoot) {
-					_list = [new String("..")] ~ _list;
+					list = [new String("..")] ~ list;
+				}
+				_list.clear();
+				// XXX: Make this work for List!()
+				foreach(item; list) {
+					_list.add(item);
 				}
 				_pos = 0;
 				_firstVisible = 0;
@@ -100,12 +108,16 @@ class TuiFileBox : TuiWidget {
 			}
 			else if (_path.isDir(_list[_pos])) {
 				_path = _path.traverse(_list[_pos]);
-				_list = _path.list.sort;
+				String[] list = _path.list.sort;
 				if (!_path.isRoot) {
-					_list = [new String("..")] ~ _list;
+					list = [new String("..")] ~ list;
 				}
 				_pos = 0;
 				_firstVisible = 0;
+				_list.clear();
+				foreach(item; list) {
+					_list.add(item);
+				}
 				onDraw();
 				onDirectorySelect(_path.path);
 			}
@@ -195,6 +207,78 @@ class TuiFileBox : TuiWidget {
 	override bool isTabStop() {
 		return true;
 	}
+	
+	void add(String c) {
+		return;
+	}
+	
+	String remove() {
+		return _list.peek();
+	}
+	
+	String removeAt(size_t idx){
+		return _list.peekAt(idx);
+	}
+	
+	String peek() {
+		return _list.peek();
+	}
+	
+	String peekAt(size_t idx) {
+		return _list.peekAt(idx);
+	}
+	
+	void set(String c) {
+		return;
+	}
+	
+	void apply(String delegate(String) func) {
+		return;
+	}
+	
+	bool contains(String c) {
+		return _list.contains(c);
+	}
+	
+	bool empty() {
+		return _list.empty();
+	}
+	
+	void clear() {
+		return;
+	}
+	
+	String[] array() {
+		return _list.array();
+	}
+	
+	List!(String) dup() {
+		return _list.dup();
+	}
+	
+	List!(String) slice(size_t start, size_t end) {
+		return _list.slice(start, end);
+	}
+	
+	List!(String) reverse() {
+		return _list.reverse();
+	}
+	
+	size_t length() {
+		return _list.length();
+	}
+	
+	String opIndex(size_t i1) {
+		return _list.opIndex(i1);
+	}
+	
+	int opApply(int delegate(ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+	
+	int opApply(int delegate(ref int, ref String) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
 
 	// Propeties
 
@@ -257,7 +341,7 @@ protected:
 	uint _firstVisible = 0;
 
 	Directory _path;
-	String[] _list;
+	List!(String) _list;
 
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

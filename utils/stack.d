@@ -1,10 +1,10 @@
 module utils.stack;
 
-import utils.arraylist;
+import core.list;
 
 import io.console;
 
-class Stack(T) : ArrayList!(T) {
+class Stack(T) : List!(T) {
 	this() {
 		super();
 	}
@@ -14,29 +14,23 @@ class Stack(T) : ArrayList!(T) {
 	}
 
 	this(T[] withList) {
-		_list = withList.dup;
-		_capacity = _list.length;
-		_count = _list.length;
+		_data = withList.dup;
+		_capacity = _data.length;
+		_count = _data.length;
 	}
 
 	Stack!(T) dup() {
-		return new Stack!(T)(_list[0.._count]);
+		return new Stack!(T)(_data[0.._count]);
 	}
 
 	T pop() {
 		T ret;
-		remove(ret);
+		ret = remove();
 
 		return ret;
 	}
 
 	void push(T item) {
-		addItem(item);
-	}
-
-	T peek() {
-		T ret;
-		getItem(ret, length-1);
-		return ret;
+		add(item);
 	}
 }
