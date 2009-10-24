@@ -107,7 +107,7 @@ class List(T) : ListInterface!(T) {
 				if (_count >= _capacity) {
 					_resize();
 				}
-				for(size_t i = idx; i < _count - 1; i++) {
+				for(size_t i = _count - 1; i >= idx; i--) {
 					_data[i+1] = _data[i];
 				}
 				static if (IsArray!(R)) {
@@ -137,6 +137,7 @@ class List(T) : ListInterface!(T) {
 				return _nullValue();
 			}
 		
+			_count--;
 			scope(exit) _data = _data[0..index] ~ _data[index+1..$];
 			return _data[index];
 		}
