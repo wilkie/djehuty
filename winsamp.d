@@ -349,12 +349,18 @@ class MyConsoleApp : Application {
 			Console.putln("BT:  {null}");
 		}
 
-		List!(string) list;
-		list.add("he");
+		List!(int) foo = new List!(int);
+		foo.add(0);
+		foo.add(1);
+		foo.add(3);
+		foo.addAt(2,2);
+		foreach(item; foo) {
+			Console.putln(item);
+		}
 	}
+
 protected:
 	List!(String) list;
-
 }
 
 class MyApp : GuiApplication {
