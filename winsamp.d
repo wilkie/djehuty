@@ -354,6 +354,8 @@ class MyConsoleApp : Application {
 		foo.add(1);
 		foo.add(3);
 		foo.addAt(2,2);
+		foo.addAt(-1,0);
+		foo.addAt(4,9);
 		foreach(item; foo) {
 			Console.putln(item);
 		}
