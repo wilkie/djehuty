@@ -116,7 +116,7 @@ class List(T) : ListInterface!(T) {
 					idx = 0;
 				}
 				else if (_count != idx) {
-					_data = _data[0..idx] ~ _data[idx] ~ _data[idx.._capacity];
+					_data = _data[0..idx] ~ _data[idx] ~ _data[idx.._capacity-1];
 				}
 				
 				static if (IsArray!(R)) {
