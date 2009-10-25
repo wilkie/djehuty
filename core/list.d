@@ -107,9 +107,18 @@ class List(T) : ListInterface!(T) {
 				if (_count >= _capacity) {
 					_resize();
 				}
-				for(size_t i = _count - 1; i >= idx; i--) {
-					_data[i+1] = _data[i];
+				
+				if (idx > _count) {
+					idx = _count;
 				}
+				
+				if (_count == 0) {
+					idx = 0;
+				}
+				else if (_count != idx) {
+					_data = _data[0..idx] ~ _data[idx] ~ _data[idx.._capacity];
+				}
+				
 				static if (IsArray!(R)) {
 					_data[idx] = item.dup;
 				}
