@@ -316,6 +316,22 @@ class String {
 		}
 	}
 
+	// Description: Repeats a given string.
+	// Returns: s repeated n times.
+	static String repeat(String s, uint n) {
+		String ret = new String();
+
+		for (uint i = 0; i < n; i++) {
+			ret.append(s);
+		}
+
+		return ret;
+	}
+
+	static String repeat(string s, uint n) {
+		return repeat(new String(s), n);
+	}
+
 	String trim() {
 		// find the start and end
 		// slice the array

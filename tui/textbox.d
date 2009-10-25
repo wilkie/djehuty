@@ -34,6 +34,8 @@ class TuiTextBox : TuiWidget {
 			_lines.add(subItem);
 			onLineChanged(_lines.length - 1);
 		}
+
+		_tabWidth = 4;
 	}
 
 	override void onKeyDown(Key key) {
@@ -450,13 +452,46 @@ protected:
 			Console.put(": ");
 		}
 
+		uint[] formatTabExtension;
+		uint curFormat, untilNextFormat;
+
+		if (_lines[lineNumber].format !is null && 0 == _lines[lineNumber].format.length % 3) {
+			formatTabExtension.length = _lines[lineNumber].format.length / 3;
+			untilNextFormat = _lines[lineNumber].format[2];
+		}
+
+		String actualLine = _lines[lineNumber].value;
+		String visibleLine = new String();
+
+		if (_tabWidth > 0) {
+			for (uint i = 0; i < actualLine.length; i++) {
+				while (curFormat + 1 < formatTabExtension.length && untilNextFormat == 0) {
+					++curFormat;
+					untilNextFormat = _lines[lineNumber].format[curFormat * 3 + 2];
+				}
+				if (curFormat < formatTabExtension.length)
+					untilNextFormat--;
+				dchar c = actualLine.charAt(i);
+				if ('\t' == c) {
+					uint tabSpaces = _tabWidth - visibleLine.length % _tabWidth;
+					if (curFormat < formatTabExtension.length)
+						formatTabExtension[curFormat] += tabSpaces - 1;
+					visibleLine.append(String.repeat(" ", tabSpaces));
+				} else {
+					visibleLine.appendChar(c);
+				}
+			}
+		} else {
+			visibleLine = actualLine;
+		}
+
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
 			Console.setColor(_forecolor, _backcolor);
 			if (_firstColumn >= _lines[lineNumber].value.length) {
 			}
 			else {
-				Console.put(_lines[lineNumber].value.subString(_firstColumn));
+				Console.put(visibleLine.subString(_firstColumn));
 			}
 		}
 		else {
@@ -465,19 +500,19 @@ protected:
 			for (uint i; i < _lines[lineNumber].format.length; i += 3) {
 				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
 				//Console.Console.put("[", _lines[lineNumber].format[i+2], "]");
-				uint formatLength = _lines[lineNumber].format[i+2];
+				uint formatLength = _lines[lineNumber].format[i+2] + formatTabExtension[i / 3];
 
 				if (formatLength + pos < _firstColumn) {
 					// draw nothing
 				}
 				else if (pos >= _firstColumn) {
-					Console.put(_lines[lineNumber].value[pos..pos + formatLength]);
+					Console.put(visibleLine[pos..pos + formatLength]);
 				}
 				else {
-					Console.put(_lines[lineNumber].value[_firstColumn..pos + formatLength]);
+					Console.put(visibleLine[_firstColumn..pos + formatLength]);
 				}
 
-				pos += _lines[lineNumber].format[i+2];
+				pos += formatLength;
 			}
 		}
 
@@ -506,6 +541,16 @@ protected:
 	void positionCaret() {
 		bool shouldDraw;
 
+		// Count the tabs to the left of the caret.
+		uint leftTabSpaces = 0;
+		if (_tabWidth > 0) {
+			for (uint i = 0; i < _column; i++) {
+				if ('\t' == _lines[_row].value.charAt(i)) {
+					leftTabSpaces += _tabWidth - (i + leftTabSpaces) % _tabWidth - 1;
+				}
+			}
+		}
+
 		if (_column < _firstColumn) {
 			// scroll horizontally
 			_firstColumn = _column;
@@ -515,9 +560,9 @@ protected:
 			shouldDraw = true;
 		}
 
-		if (_lineNumbersWidth + (_column - _firstColumn) >= this.width) {
+		if (_lineNumbersWidth + (_column + leftTabSpaces - _firstColumn) >= this.width) {
 			// scroll horizontally
-			_firstColumn = _column - this.width + _lineNumbersWidth + 1;
+			_firstColumn = _column + leftTabSpaces - this.width + _lineNumbersWidth + 1;
 			shouldDraw = true;
 		}
 
@@ -566,7 +611,7 @@ protected:
 			Console.showCaret();
 
 			// Move cursor to where the edit caret is
-			Console.position(_lineNumbersWidth + (_column - _firstColumn), _row - _firstVisible);
+			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces, _row - _firstVisible);
 		}
 	}
 
@@ -609,6 +654,9 @@ protected:
 
 	// The width of the line numbers column
 	uint _lineNumbersWidth;
+
+	// The width of a single tab character expressed in spaces
+	uint _tabWidth;
 
 	// The default text colors
  	fgColor _forecolor = fgColor.White;
