@@ -323,7 +323,7 @@ void consoleTranslateKey(ref Key ky)
 				ky.shift = true;
 			}
 			else if (ky.code >= '0' && ky.code <= '9') {
-				ky.shift = true;
+				ky.shift = false;
 			}
 			break;
 	}
