@@ -120,12 +120,12 @@ class List(T) : ListInterface!(T) {
 					idx = 0;
 				}
 				else if (idx == 0) {
-					_data = _data[idx] ~ _data[idx..$];
+					_data = [_data[idx]] ~ _data[idx..$];
 				}
 				else if (_count != idx) {
-					_data = _data[0..idx] ~ _data[idx] ~ _data[idx..$];
+					_data = _data[0..idx] ~ [_data[idx]] ~ _data[idx..$];
 				}
-				
+
 				static if (IsArray!(R)) {
 					_data[idx] = item.dup;
 				}

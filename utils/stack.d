@@ -15,7 +15,6 @@ class Stack(T) : List!(T) {
 
 	this(T[] withList) {
 		_data = withList.dup;
-		_capacity = _data.length;
 		_count = _data.length;
 	}
 
