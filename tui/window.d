@@ -42,10 +42,11 @@ class TuiWindow : Responder {
 		Console.clipRect(0,0,this.width, this.height);
 
 		_controlContainer.onInit();
-		_controlContainer.onGotFocus();
 
 		_inited = true;
 		redraw();
+
+		_controlContainer.onGotFocus();
 	}
 
 	void onUninitialize() {
