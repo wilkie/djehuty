@@ -8,6 +8,8 @@
 
 module specs.test;
 
+import djehuty;
+
 import testing.logic;
 
 import core.string;
