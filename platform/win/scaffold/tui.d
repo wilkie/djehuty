@@ -63,7 +63,7 @@ void TuiNextEvent(TuiEvent* evt, TuiPlatformVars* vars) {
 		grabEvent(vars);
 	}
 
-	vars.events.remove(*evt);
+	*evt = vars.events.remove();
 }
 
 void TuiEnd(TuiPlatformVars* vars) {
@@ -102,7 +102,7 @@ private {
 					resizeEvent.type = TuiEvent.Type.Size;
 					resizeEvent.info.size.x = _console_x;
 					resizeEvent.info.size.y = _console_y;
-					vars.events.addItem(resizeEvent);
+					vars.events.add(resizeEvent);
 				}
 
 				sleep(100);
@@ -126,7 +126,7 @@ private {
 				evt.type = TuiEvent.Type.Close;
 				evt.aux = 0;
 
-				ResizeThread.vars.events.addItem(evt);
+				ResizeThread.vars.events.add(evt);
 
 				return( TRUE );
 
@@ -207,14 +207,14 @@ private {
 						// The Current Console View Receives the Event
 
 						evt.type = TuiEvent.Type.KeyDown;
-						vars.events.addItem(evt);
+						vars.events.add(evt);
 					}
 					else {
 						// KeyUp
 
 						// The Current Console View Receives the Event
 						evt.type = TuiEvent.Type.KeyUp;
-						vars.events.addItem(evt);
+						vars.events.add(evt);
 					}
                     break;
 
@@ -280,17 +280,17 @@ private {
 						if (curbutton == 1) {
 							_last_was_mousepress = true;
 							evt.aux = 0;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 						else if (curbutton == 2) {
 							_last_was_mousepress = true;
 							evt.aux = 2;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 						else if (curbutton == 5) {
 							_last_was_mousepress = true;
 							evt.aux = 1;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 					}
 					else if (curbutton > 0) {
@@ -298,17 +298,17 @@ private {
 						if (curbutton == 1) {
 							_last_was_mousepress = true;
 							evt.aux = 0;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 						else if (curbutton == 2) {
 							_last_was_mousepress = true;
 							evt.aux = 2;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 						else if (curbutton == 5) {
 							_last_was_mousepress = true;
 							evt.aux = 1;
-							vars.events.addItem(evt);
+							vars.events.add(evt);
 						}
 					}
 					else {
@@ -316,7 +316,7 @@ private {
 							case MOUSE_MOVED:
 								if (isMovement && !_last_was_mousepress) {
 									evt.type = TuiEvent.Type.MouseMove;
-									vars.events.addItem(evt);
+									vars.events.add(evt);
 								}
 								_last_was_mousepress = false;
 								break;
@@ -327,7 +327,7 @@ private {
 
 								evt.type = TuiEvent.Type.MouseWheelY;
 								evt.aux = delta;
-								vars.events.addItem(evt);
+								vars.events.add(evt);
 								break;
 							case MOUSE_HWHEELED:
 								short delta = cast(short)(vars.irInBuf[i].Event.MouseEvent.dwButtonState >> 16);
@@ -336,7 +336,7 @@ private {
 
 								evt.type = TuiEvent.Type.MouseWheelX;
 								evt.aux = delta;
-								vars.events.addItem(evt);
+								vars.events.add(evt);
 								break;
 							default:
 								break;
