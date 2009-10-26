@@ -1315,7 +1315,7 @@ protected:
 
 	// For DFA regex operations
 
-	class State {
+	static class State {
 		State[dchar] transitions;
 	
 		bool accept;
@@ -1326,6 +1326,8 @@ protected:
 		State loopDest;
 		State loopSource;
 		dchar loopOn;
+
+		List!(State) loopStack;
 
 		State root;
 
@@ -1680,6 +1682,52 @@ private:
 		State.printall();
 	
 		return startState;
+	}
+
+	public static void test() {
+		State p = new State();
+		State q = new State();
+		State s = new State();
+		p.transitions['a'] = q;
+		q.transitions['b'] = s;
+		s.transitions['c'] = p;
+
+		p.loopStack = new List!(State);
+		p.loopStack.add(q);
+		p.loopStack.add(s);
+
+		// Loop (p) -> a -> (q) -> b -> (s)
+		//       ^---------- c <--------/
+
+		my_unroll(s, 'c');
+		my_unroll(s.transitions['c'], 'a');
+		my_unroll(s.transitions['c'].transitions['a'], 'b');
+
+		State.printall();
+	}
+
+	static void my_unroll(State state, dchar chr) {
+		if (chr in state.transitions) {
+			State loopDest = state.transitions[chr];
+
+			if (loopDest.loopStack !is null) {
+				if (loopDest.loopStack.contains(state)) {
+					State newState = new State();
+					state.transitions[chr] = newState;
+					foreach(transition; loopDest.transitions.keys) {
+						State toState = loopDest.transitions[transition];
+						newState.transitions[transition] = toState;
+						if (loopDest.loopStack.contains(toState)) {
+							toState.loopStack = loopDest.loopStack;
+						}
+					}
+					loopDest.loopStack.remove(loopDest);
+					loopDest.loopStack.add(newState);
+					Console.putln("loop stack: ", loopDest.loopStack);
+					loopDest.loopStack = null;
+				}
+			}
+		}
 	}
 
 	void unroll(State state) {
