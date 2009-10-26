@@ -593,12 +593,12 @@ void ConsoleSetPosition(uint x, uint y) {
 }
 
 void ConsoleHideCaret() {
-//	printf("\x1B[?25l");
+	printf("\x1B[?25l");
 	Curses.curs_set(0);
 }
 
 void ConsoleShowCaret() {
-//	printf("\x1B[?25h");
+	printf("\x1B[?25h");
 	Curses.curs_set(1);
 }
 

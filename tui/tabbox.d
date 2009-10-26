@@ -43,6 +43,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 	}
 
 	override void onDraw() {
+		io.console.Console.hideCaret();
 		//draw the tabs
 		io.console.Console.clipSave();
 		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);

@@ -574,6 +574,7 @@ protected:
 	}
 
 	void drawEmptyLine(uint lineNumber) {
+		Console.hideCaret();
 		Console.position(0, lineNumber - _firstVisible);
 
 		// Pad with spaces
@@ -638,11 +639,11 @@ protected:
 			Console.hideCaret();
 		}
 		else {
-			// The caret is within the bounds of the widget
-			Console.showCaret();
-
 			// Move cursor to where the edit caret is
 			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces, _row - _firstVisible);
+
+			// The caret is within the bounds of the widget
+			Console.showCaret();
 		}
 	}
 
