@@ -239,7 +239,7 @@ class String {
 	// Description: Will append a String to the current String.  The internal character array is rebuilt.
 	// str: The String to append to the internal character array of this String class.
 	void append(String str) {
-		_data ~= str._data;
+		_data ~= str._data.dup;
 		if (str._calcLength) {
 			_length += str._length;
 		}
