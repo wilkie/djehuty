@@ -31,8 +31,8 @@ public:
 	// Constructors
 
 	this() {
-		super();
 		_appController = new GuiApplicationController();
+		super();
 	}
 
 	override void push(Dispatcher dsp) {

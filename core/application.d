@@ -86,6 +86,13 @@ class Application : Responder {
 	}
 
 	// Events //
+	void run() {
+		static bool _run = false;
+		if (!_run) {
+			_run = true;
+			start();
+		}
+	}
 
 	// Description: This event will be fired when the application has
 	//	finished loading.
@@ -118,15 +125,9 @@ protected:
 	}
 
 	void start() {
-		_platformAppController = ApplicationController.instance;
-		_platformAppController.start();
 	}
 
 	void end(uint exitCode) {
-		if (_platformAppController !is null) {
-			_platformAppController.exitCode = exitCode;
-			_platformAppController.end();
-		}
 	}
 
 private:
@@ -134,14 +135,16 @@ private:
 	ApplicationController _platformAppController;
 
 	// Silly wrapper to call start() due to a compiler bug
-	package final void onPostApplicationStart() {
-	}
-
 	package final void onPreApplicationStart() {
-		start();
+		_platformAppController = ApplicationController.instance;
+		_platformAppController.start();
 	}
 
 	package final void onPostApplicationEnd(uint exitCode) {
 		end(exitCode);
+		if (_platformAppController !is null) {
+			_platformAppController.exitCode = exitCode;
+			_platformAppController.end();
+		}
 	}
 }

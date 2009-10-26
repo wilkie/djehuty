@@ -58,10 +58,9 @@ public:
 			throw new Exception("No Application Class");
 		}
 		else {
-			app.arguments = Arguments.instance;
 			app.onPreApplicationStart();
 			app.onApplicationStart();
-			app.onPostApplicationStart();
+			app.run();
 		}
 
 		// If no event controllers are in play, then end
