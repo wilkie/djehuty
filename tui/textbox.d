@@ -125,6 +125,45 @@ class TuiTextBox : TuiWidget {
 				drawLine(_row);
 				positionCaret();
 				break;
+			case Key.Delete:
+				if (_column == _lines[_row].value.length) {
+					if (_row + 1 >= _lines.length) {
+						// Last column of last row. Do nothing.
+						break;
+					} else {
+						// Last column with more rows beneath, so suck next row up.
+						_lines[_row].value ~= _lines[_row+1].value;
+						_lines[_row].format ~= _lines[_row+1].format;
+
+						LineInfo oldLine;
+						oldLine = _lines.removeAt(_row+1);
+
+						onLineChanged(_row);
+
+						refresh();
+						break;
+					}
+				} else {
+					// Not the last column, so delete the character to the right.
+					_lines[_row].value = _lines[_row].value.subString(0, _column) ~ _lines[_row].value.subString(_column + 1);
+
+					if (_lines[_row].format !is null) {
+						_formatIndex = calculateFormatIndex(_lines[_row], _column + 1);
+						if (_lines[_row].format[_formatIndex] < 2) {
+							// This format section has been depleted
+							_lines[_row].format = _lines[_row].format[0.._formatIndex-2] ~ _lines[_row].format[_formatIndex+1..$];
+						}
+						else {
+							// One fewer character with this format
+							_lines[_row].format[_formatIndex]--;
+						}
+						_formatIndex = calculateFormatIndex(_lines[_row], _column);
+					}
+
+					refresh();
+					break;
+				}
+				break;
 			case Key.Left:
 				_column--;
 				if (_column < 0) {
@@ -590,18 +629,7 @@ protected:
 			onDraw();
 		}
 
-		// Calculate Format Index
-		_formatIndex = 2;
-		if (_lines[_row].format !is null) {
-			uint pos;
-			for (uint i = 2; i < _lines[_row].format.length; i += 3) {
-				pos += _lines[_row].format[i];
-				if (pos >= _column) {
-					_formatIndex = i;
-					break;
-				}
-			}
-		}
+		_formatIndex = calculateFormatIndex(_lines[_row], _column);
 
 		// Is the caret on the screen?
 		if ((this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) || (this.top + (_row - _firstVisible) >= this.bottom)) {
@@ -615,6 +643,24 @@ protected:
 			// Move cursor to where the edit caret is
 			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces, _row - _firstVisible);
 		}
+	}
+
+
+	// Description: Calculates the formatIndex given a LineInfo and column.
+	// Returns: The calculated formatIndex.
+	int calculateFormatIndex(LineInfo line, int column) {
+		int formatIndex = 2;
+		if (line.format !is null) {
+			uint pos;
+			for (uint i = 2; i < line.format.length; i += 3) {
+				pos += line.format[i];
+				if (pos >= column) {
+					formatIndex = i;
+					break;
+				}
+			}
+		}
+		return formatIndex;
 	}
 
 	void calculateLineNumbersWidth() {
