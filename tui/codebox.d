@@ -122,14 +122,14 @@ private:
 
 	SyntaxRule[] _rules = [
 		// Line Comments
-		{ `//([^\n\r]*)`, fgColor.Green, bgColor.Black},
+//		{ `//([^\n\r]*)`, fgColor.Green, bgColor.Black},
 		// Block Comments
-		{ `/\*([^\*](?:\*[^/])?)*(?:\*/)?`, fgColor.Green, bgColor.Black},
+//		{ `/\*([^\*](?:\*[^/])?)*(?:\*/)?`, fgColor.Green, bgColor.Black},
 		// Double Quote Strings
-		{ `"((?:[^\\"](?:\\.)?)*)"?`, fgColor.Magenta, bgColor.Black},
+//		{ `"((?:[^\\"](?:\\.)?)*)"?`, fgColor.Magenta, bgColor.Black},
 		// Keywords
 		{ `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`, fgColor.BrightBlue, bgColor.Black },
 		// Operators
-		{ `[\(\)]+`, fgColor.Red, bgColor.Black}
+//		{ `[\(\)]+`, fgColor.Red, bgColor.Black}
 	];
 }

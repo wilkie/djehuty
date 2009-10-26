@@ -183,13 +183,18 @@ class MyTWindow : TuiWindow {
 		
 		tabbox.add(bloh);
 		tabbox.add(blah);
+
+		
+
+//		push(new TuiCodeBox(0,0,this.width, this.height-1));
+
 		//push(filebox = new TuiFileBox(5,5,60,20));
 		//filebox.forecolor = fgColor.Red;
 		//filebox.backcolor = bgColor.Black;
 		//filebox.selectedBackcolor = bgColor.Green;
 		//filebox.selectedForecolor = fgColor.White;
 		//push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
-		
+	
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
 
@@ -280,7 +285,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-//	static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -314,7 +319,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
 /*		list = new List!(String);
