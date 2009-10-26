@@ -67,27 +67,31 @@ interface ListInterface(T) {
 
 class List(T) : ListInterface!(T) {
 	this() {
-		_capacity = 10;
-		_data = new T[_capacity];
+		_data.length = 10;
+		_data = new T[_data.length];
 		_count = 0;
 	}
 
 	this(int size) {
-		_capacity = size;
-		_data = new T[_capacity];
+		_data.length = size;
+		_data = new T[_data.length];
 		_count = 0;
 	}
 
 	this(T[] list) {
+		_data = list.dup;
+		_count = list.length;
 	}
 
-	this(List!(T) list) {
+	this(ListInterface!(T) list) {
+		_data = list.array();
+		_count = list.length();
 	}
 
 	template add(R) {
 		void add(R item) {
 			synchronized(this) {
-				if (_count >= _capacity) {
+				if (_count >= _data.length) {
 					_resize();
 				}
 				static if (IsArray!(R)) {
@@ -104,7 +108,7 @@ class List(T) : ListInterface!(T) {
 	template addAt(R) {
 		void addAt(R item, size_t idx) {
 			synchronized(this) {
-				if (_count >= _capacity) {
+				if (_count >= _data.length) {
 					_resize();
 				}
 				
@@ -115,8 +119,11 @@ class List(T) : ListInterface!(T) {
 				if (_count == 0) {
 					idx = 0;
 				}
+				else if (idx == 0) {
+					_data = _data[idx] ~ _data[idx..$];
+				}
 				else if (_count != idx) {
-					_data = _data[0..idx] ~ _data[idx] ~ _data[idx.._capacity-1];
+					_data = _data[0..idx] ~ _data[idx] ~ _data[idx..$];
 				}
 				
 				static if (IsArray!(R)) {
@@ -216,7 +223,7 @@ class List(T) : ListInterface!(T) {
 
 	void clear() {
 		synchronized(this) {
-			_data = new T[_capacity];
+			_data = new T[_data.length];
 			_count = 0;
 		}
 	}
@@ -231,7 +238,7 @@ class List(T) : ListInterface!(T) {
 		synchronized(this) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[0.._count].dup;
-			ret._capacity = ret._data.length;
+			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 	
 			return ret;
@@ -242,7 +249,7 @@ class List(T) : ListInterface!(T) {
 		synchronized(this) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[start..end].dup;
-			ret._capacity = ret._data.length;
+			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 	
 			return ret;
@@ -254,7 +261,7 @@ class List(T) : ListInterface!(T) {
 			List!(T) ret = new List!(T);
 	
 			ret._data = _data[0.._count].reverse;
-			ret._capacity = ret._data.length;
+			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 		
 			return ret;
@@ -340,14 +347,17 @@ protected:
 	}
 
 	void _resize() {
-		_capacity *= 2;
 		T[] temp = _data;
-		_data = new T[_capacity];
+		if (_data.length == 0) {
+			_data = new T[10];
+		}
+		else {
+			_data = new T[_data.length*2];
+		}
 		_data[0..temp.length] = temp[0..$];
 	}
 
 	T[] _data;
-	size_t _capacity;
 	size_t _count;
 }
 
