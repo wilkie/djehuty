@@ -82,12 +82,13 @@ public:
 			_threadRegisterSemaphore.up();
 		}
 
+		// Reset colors to something sane
+		// XXX: Should reset to the colors used before the application had been executed
+		Console.setColor(fgColor.White, bgColor.Black);
 		if (app !is null) {
 			app.onApplicationEnd();
 			app.onPostApplicationEnd(code);
 		}
-
-		Console.setColor(fgColor.White, bgColor.Black);
 	}
 
 private:

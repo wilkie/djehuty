@@ -7,10 +7,8 @@ import io.file;
 import io.directory;
 import io.console;
 
-class FileList
-{
-	bool fetch(inout String path)
-	{
+class FileList {
+	bool fetch(inout String path) {
 		sanitizePath(path);
 
 		if (path.length == 0) { return false; }
@@ -20,13 +18,11 @@ class FileList
 		return true;
 	}
 
-	String[] opApply()
-	{
+	String[] opApply() {
 		return files;
 	}
 
-	int opApply(int delegate(ref String) dg)
-    {
+	int opApply(int delegate(ref String) dg) {
     	int result = 0;
 
 		for (int i = 0; i < files.length; i++)
@@ -44,31 +40,25 @@ protected:
 	String[] files;
 	//char[][] files;
 
-	void sanitizePath(inout String path)
-	{
-		if (path.length == 0)
-		{
+	void sanitizePath(inout String path) {
+		if (path.length == 0) {
 			return;
 		}
 
-		if (path[path.length-1] == '.')
-		{
+		if (path[path.length-1] == '.') {
 			path = new String(path[0..path.length-1]);
 		}
 
-		if (path.length == 0)
-		{
+		if (path.length == 0) {
 			return;
 		}
 
-		if (path[path.length-1] != '/')
-		{
+		if (path[path.length-1] != '/') {
 			path ~= '/';
 		}
 	}
 
-	void lookForFiles(String path)
-	{
+	void lookForFiles(String path) {
 		Console.putln("filelist created");
 
 		sanitizePath(path);
@@ -80,26 +70,23 @@ protected:
 		string ext;
 		//char[] ext;
 
-		foreach (d; dirs)
-		{
+		foreach (d; dirs) {
+			Console.putln(d);
 			if (d == "test.d") { continue; }
 			int pos = d.find(new String("."));
 			//int pos = find(d, '.');
 
-			if (dir.isDir(d))
-			//if (isdir(path ~ d))
-			{
+			if (dir.isDir(d)) {
+				Console.putln("is dir1");
 				lookForFiles(path ~ d);
 			}
 
-			if (pos > 0)
-			{
+			if (pos > 0) {
 				ext = d[pos..d.length];
 			}
 			else ext = null;
 
-			switch (ext)
-			{
+			switch (ext) {
 				case ".d":
 					files ~= new String(path) ~ d;
 					//files ~= path ~ d;

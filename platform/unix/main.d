@@ -23,6 +23,7 @@ import gui.window;
 import core.definitions;
 import core.main;
 import core.string;
+import core.arguments;
 
 import graphics.view;
 
@@ -99,19 +100,21 @@ void AppInit()
 	signal(SIGSEGV, &segfault_handler);
 }
 
-int main(char[][] args)
-{
-	try
-	{
+int main(char[][] args){
+	try	{
 		AppInit();
+
+		Arguments argList = Arguments.instance();
+		foreach(arg; args) {
+			argList.add(new String(arg));
+		}
 
 		ConsoleInit();
 		Djehuty.start();
 
 		ConsoleUninit();
 	}
-	catch(Object o)
-	{
+	catch(Object o)	{
 		Debugger.raiseException(cast(Exception)o);
 	}
 

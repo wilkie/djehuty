@@ -139,7 +139,7 @@ void main() {
 
 		String s;
 
-		foreach(int i, rule; rules[stateId]) {
+		foreach(i, rule; rules[stateId]) {
 			s = Regex.eval(workString, rule.regex);
 			if (s !is null && s != "") {
 				workString = workString.subString(s.length);

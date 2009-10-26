@@ -49,9 +49,9 @@ interface ListInterface(T) {
 	bool empty();
 	void clear();
 	T[] array();
-	List!(T) dup();
-	List!(T) slice(size_t start, size_t end);
-	List!(T) reverse();
+	ListInterface!(T) dup();
+	ListInterface!(T) slice(size_t start, size_t end);
+	ListInterface!(T) reverse();
 	size_t length();
 	
 	T opIndex(size_t i1);
@@ -62,7 +62,7 @@ interface ListInterface(T) {
 	
 	int opApply(int delegate(ref T) loopFunc);
 
-	int opApply(int delegate(ref int, ref T) loopFunc);
+	int opApply(int delegate(ref size_t, ref T) loopFunc);
 }
 
 class List(T) : ListInterface!(T) {
@@ -316,10 +316,10 @@ class List(T) : ListInterface!(T) {
 		return ret;
 	}
 
-	int opApply(int delegate(ref int, ref T) loopFunc) {
+	int opApply(int delegate(ref size_t, ref T) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < _count; i++) {
+		for(size_t i = 0; i < _count; i++) {
 			ret = loopFunc(i,_data[i]);
 			if (ret) { break; }
 		}
@@ -331,7 +331,7 @@ class List(T) : ListInterface!(T) {
 		string ret = "[";
 
 		synchronized(this) {
-			foreach(int i, item; this) {
+			foreach(i, item; this) {
 				ret ~= toStr(item);
 				if (i != this.length() - 1) {
 					ret ~= ",";

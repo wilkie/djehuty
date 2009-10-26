@@ -1,349 +1,368 @@
 module utils.linkedlist;
 
-import interfaces.list;
-
-import synch.semaphore;
+import core.list;
 
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
-class LinkedList(T) : AbstractList!(T)
-{
+class LinkedList(T) : ListInterface!(T) {
 	this() {
-		lock = new Semaphore(1);
 	}
 
 	// add to the head
 
 	// Description: Will add the data to the head of the list.
 	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
-	void addItem(T data)
-	{
-		lock.down();
-		scope(exit) lock.up();
+	void add(T data) {
+		synchronized(this) {
+			LinkedListNode* newNode = new LinkedListNode;
+			newNode.data = data;
 
-		LinkedListNode* newNode = new LinkedListNode;
-		newNode.data = data;
+			if (head is null) {
+				head = newNode;
+				tail = newNode;
 
-		if (head is null)
-		{
-			head = newNode;
-			tail = newNode;
+				newNode.next = newNode;
+				newNode.prev = newNode;
+			}
+			else {
+				newNode.next = head;
+				newNode.prev = tail;
 
-			newNode.next = newNode;
-			newNode.prev = newNode;
+				head.prev = newNode;
+				tail.next = newNode;
+
+				head = newNode;
+			}
+
+			_count++;
 		}
-		else
-		{
-			newNode.next = head;
-			newNode.prev = tail;
-
-			head.prev = newNode;
-			tail.next = newNode;
-
-			head = newNode;
-		}
-
-		_count++;
 	}
 
 	// Description: Will add the list to the head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
-	void addList(AbstractList!(T) list)
-	{
-		Iterator irate = list.getIterator();
-
-		T data;
-
-		while(list.getItem(data, irate))
-		{
-			addItem(data);
+	void add(ListInterface!(T) list) {
+		foreach(item; list) {
+			add(item);
 		}
 	}
 
-	void addList(T[] list)
-	{
-		foreach(item; list)
-		{
-			addItem(item);
+	void add(T[] list) {
+		foreach(item; list) {
+			add(item);
 		}
 	}
 
-	bool getItem(out T data, uint index)
-	{
-		lock.down();
-		scope(exit) lock.up();
+	T peek() {
+		if (_count == 0) {
+			// XXX: Throw list exception
+			return _nullValue();
+		}
 
-		if (index < _count)
-		{
-			if (index == 0)
-			{
-				data = head.data;
-				return true;
-			}
+		return head.data;
+	}
 
-			LinkedListNode* curnode = null;
+	T peekAt(size_t index) {
+		synchronized(this) {
+			if (index < _count) {
+				if (index == 0) {
+					return head.data;
+				}
 
-			if (last !is null)
-			{
-				uint cacheDistance;
+				LinkedListNode* curnode = null;
 
-				if (lastIndex < index)
-				{
-					cacheDistance = index - lastIndex;
+				if (last !is null) {
+					uint cacheDistance;
 
-					if (cacheDistance < index)
-					{
-						curnode = last;
-						for ( ; cacheDistance >= 0; cacheDistance--)
-						{
-							curnode = curnode.next;
+					if (lastIndex < index) {
+						cacheDistance = index - lastIndex;
+
+						if (cacheDistance < index) {
+							curnode = last;
+							for ( ; cacheDistance >= 0; cacheDistance--) {
+								curnode = curnode.next;
+							}
+						}
+					}
+					else {
+						cacheDistance = lastIndex - index;
+
+						if (cacheDistance < index) {
+							curnode = last;
+
+							for ( ; cacheDistance >= 0; cacheDistance--) {
+								curnode = curnode.prev;
+							}
 						}
 					}
 				}
-				else
-				{
-					cacheDistance = lastIndex - index;
 
-					if (cacheDistance < index)
-					{
-						curnode = last;
+				if (curnode is null) {
+					curnode = head;
 
-						for ( ; cacheDistance >= 0; cacheDistance--)
-						{
-							curnode = curnode.prev;
-						}
+					for ( ; index > 0; index--) {
+						curnode = curnode.next;
 					}
 				}
+
+				// keep cache of last accessed item
+				last = curnode;
+				lastIndex = index;
+
+				return curnode.data;
 			}
 
-			if (curnode is null)
-			{
-				curnode = head;
-
-				for ( ; index > 0; index--)
-				{
-					curnode = curnode.next;
-				}
-	        }
-
-            data = curnode.data;
-
-            // keep cache of last accessed item
-            last = curnode;
-            lastIndex = index;
-
-            return true;
-        }
-
-        return false;
-    }
-
-	Iterator getIterator()
-	{
-		lock.down();
-		scope(exit) lock.up();
-
-		Iterator irate = new Iterator;
-		irate.irate_int = 0;
-		irate.irate_cnt = 0;
-		irate.irate_ptr = head;
-
-		return irate;
-	}
-
-	bool getItem(out T data, ref Iterator irate)
-	{
-		lock.down();
-		scope(exit) lock.up();
-
-		if (irate.irate_ptr !is null)
-		{
-			data = (cast(LinkedListNode*)irate.irate_ptr).data;
-			if ((cast(LinkedListNode*)irate.irate_ptr).next is head) {
-				irate.irate_ptr = null;
-			}
-			else {
-				irate.irate_ptr = cast(void*)(cast(LinkedListNode*)irate.irate_ptr).next;
-			}
-			return true;
+			return _nullValue();
 		}
-		return false;
     }
-
+		
 	// remove the tail
 
 	// Description: Will remove an item from the tail of the list, which would remove in a first-in-first-out ordering (FIFO).
 	// data: Will be set to the data retreived.
-	bool remove(out T data)
-	{
-		lock.down();
-		scope(exit) lock.up();
-
-		if (tail == null) {
-			return false;
-		}
-
-		data = tail.data;
-
-		//tail.next = null;
-		//tail.prev = null;
-
-		if (head is tail)
-		{
-			// unlink all
-			head = null;
-			tail = null;
-		}
-		else
-		{
-			tail.prev.next = tail.next;
-			tail.next.prev = tail.prev;
-			tail = tail.prev;
-		}
-
-		_count--;
-
-		return true;
-	}
-
-	bool removeItem(T item) {
-
-		lock.down();
-		scope(exit) lock.up();
-
-		if (head is null) { return false; }
-
-		LinkedListNode* curnode = null;
-
-		curnode = head;
-		do {
-			if (curnode.data == item) {
-				// remove this item
-
-				if (head is tail)
-				{
-					// unlink all
-					head = null;
-					tail = null;
-				}
-				else
-				{
-					curnode.prev.next = curnode.next;
-					curnode.next.prev = curnode.prev;
-				}
-
-				_count--;
-
-				return true;
+	T remove() {
+		synchronized(this) {
+			if (tail == null) {
+				// XXX: Throw list exception
+				return _nullValue();
 			}
 
-			curnode = curnode.next;
-		} while (curnode !is head);
+			T data = tail.data;
 
-        return false;
+			//tail.next = null;
+			//tail.prev = null;
+
+			if (head is tail) {
+				// unlink all
+				head = null;
+				tail = null;
+			}
+			else {
+				tail.prev.next = tail.next;
+				tail.next.prev = tail.prev;
+				tail = tail.prev;
+			}
+
+			_count--;
+
+			return data;
+		}
 	}
 
-	bool remove()
-	{
-		lock.down();
-		scope(exit) lock.up();
+	T remove(T item) {
+		synchronized(this) {
+			if (head is null) {
+				// XXX: throw list exception
+				return _nullValue();
+			}
 
-		if (tail == null) {
-			return false;
+			LinkedListNode* curnode = null;
+
+			curnode = head;
+			do {
+				if (curnode.data == item) {
+					// remove this item
+
+					if (head is tail) {
+						// unlink all
+						head = null;
+						tail = null;
+					}
+					else {
+						curnode.prev.next = curnode.next;
+						curnode.next.prev = curnode.prev;
+					}
+
+					_count--;
+
+					return item;
+				}
+
+				curnode = curnode.next;
+			} while (curnode !is head);
+
+			// XXX: Throw list exception
+			return _nullValue();
 		}
+	}
 
-		//tail.next = null;
-		//tail.prev = null;
+	T removeAt(size_t index) {
+		return _nullValue();
+	}
 
-		if (head is tail)
-		{
-			// unlink all
-			head = null;
+	void clear() {
+		synchronized(this) {
+			_count = 0;
 			tail = null;
+			head = null;
 		}
-		else
-		{
-			tail = tail.prev;
-		}
-
-		_count--;
-
-		return true;
 	}
 
-	T opIndex(size_t i1)
-	{
-		T ret;
-		getItem(ret, i1);
-
-		return ret;
+	bool empty() {
+		return _count == 0;
 	}
 
-	int opIndexAssign(T value, size_t i1)
-	{
+	T opIndex(size_t i1) {
+		return peekAt(i1);
+	}
+
+	int opIndexAssign(T value, size_t i1) {
 		return 0;
     }
 
-    T[] opSlice() {
+	T[] array() {
+		T[] items = new T[_count];
+		size_t idx = 0;
 
-		T[] ret;
-		T obj;
-
-		Iterator i = getIterator();
-
-		while(getItem(obj, i))
-		{
-			ret ~= obj;
+		foreach(item; this) {
+			items[idx] = item;
+			idx++;
 		}
+		return items;
+	}
 
+	LinkedList!(T) dup() {
+		LinkedList!(T) ret = new LinkedList!(T);
+		foreach(item; this) {
+			ret.add(item);
+		}
 		return ret;
+	}
+
+	LinkedList!(T) slice(size_t start, size_t end) {
+		synchronized (this) {
+			LinkedList!(T) ret = new LinkedList!(T);
+
+			LinkedListNode* curnode = head;
+
+			if (_count == 0) {
+				return ret;
+			}	
+
+			size_t idx = 0;
+			while(curnode !is null && idx < start) {
+				curnode = curnode.next;
+				idx++;
+			}
+
+			while(curnode !is null && idx < end) {
+				ret.add(curnode.data);
+				curnode = curnode.next;
+				idx++;
+			}
+
+			return ret;
+		}
+	}
+
+	LinkedList!(T) reverse() {
+		LinkedList!(T) ret = new LinkedList!(T);
+		foreach_reverse(item; this) {
+			ret.add(item);
+		}
+		return ret;
+	}
+
+    LinkedList!(T) opSlice() {
+		return dup();
     }
 
-	int opApply(int delegate(inout T) loopFunc)
-	{
-		int ret;
-		T obj;
+	int opApply(int delegate(ref T) loopFunc) {
+		synchronized(this) {
+			LinkedListNode* curnode = head;
 
-		Iterator i = getIterator();
+			int ret;
 
-		while(getItem(obj, i))
-		{
-			ret = loopFunc(obj);
-			if (ret) { break; }
+			if (_count == 0) {
+				return 0;
+			}	
+
+			while(curnode !is null) {
+				ret = loopFunc(curnode.data);
+				curnode = curnode.next;
+
+				if (ret) { break; }
+			}
+
+			return ret;
 		}
-
-		return ret;
 	}
 
-	int opApply(int delegate(inout int, inout T) loopFunc)
-	{
-		int ret;
-		T obj;
+	int opApply(int delegate(ref size_t, ref T) loopFunc) {
+		synchronized(this) {
+			LinkedListNode* curnode = head;
 
-		Iterator i = getIterator();
-		int idx = 0;
+			int ret;
+			size_t idx;
 
-		while(getItem(obj, i))
-		{
-			ret = loopFunc(idx, obj);
-			idx++;
-			if (ret) { break; }
+			if (_count == 0) {
+				return 0;
+			}	
+
+			while(curnode !is null) {
+				ret = loopFunc(idx, curnode.data);
+				curnode = curnode.next;
+				idx++;
+
+				if (ret) { break; }
+			}
+
+			return ret;
 		}
-
-		return ret;
 	}
 
-	uint length()
-	{
+	int opApplyReverse(int delegate(inout T) loopFunc) {
+		synchronized(this) {
+			LinkedListNode* curnode = tail;
+
+			int ret;
+
+			if (_count == 0) {
+				return 0;
+			}	
+
+			while(curnode !is null) {
+				ret = loopFunc(curnode.data);
+				curnode = curnode.prev;
+
+				if (ret) { break; }
+			}
+
+			return ret;
+		}
+	}
+
+	int opApplyReverse(int delegate(inout size_t, inout T) loopFunc) {
+		synchronized(this) {
+			LinkedListNode* curnode = tail;
+
+			int ret;
+			size_t idx = _count - 1;
+
+			if (_count == 0) {
+				return 0;
+			}	
+
+			while(curnode !is null) {
+				ret = loopFunc(idx, curnode.data);
+				curnode = curnode.prev;
+				idx--;
+
+				if (ret) { break; }
+			}
+
+			return ret;
+		}
+	}
+	
+	size_t length() {
 	   return _count;
 	}
 
 protected:
 
 	// the contents of a node
-	struct LinkedListNode
-	{
+	struct LinkedListNode {
 		LinkedListNode* next;
 		LinkedListNode* prev;
 		T data;
@@ -355,10 +374,14 @@ protected:
 
 	// the last accessed node is cached
 	LinkedListNode* last = null;
-	uint lastIndex = 0;
+	size_t lastIndex = 0;
 
 	// the number of items in the list
-	uint _count;
+	size_t _count;
 
-	Semaphore lock;
+	// Returns a null value for T
+	T _nullValue() {
+		T val;
+		return val;
+	}
 }

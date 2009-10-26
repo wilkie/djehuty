@@ -16,6 +16,7 @@ import platform.vars.directory;
 import platform.vars.file;
 
 import io.file;
+import io.console;
 
 import core.string;
 import core.main;
@@ -124,24 +125,20 @@ String DirectoryGetApp()
 	return cached;
 }
 
-String DirectoryGetCWD()
-{
+String DirectoryGetCWD() {
 	uint len = 512;
 	char[] chrs;
 
 	char* ptr;
 
-	do
-	{
+	do {
 		chrs = new char[len+1];
 		ptr = getcwd(chrs.ptr, len);
 		len <<= 1;
 	} while (ptr is null);
 
-	foreach (int i, chr; chrs)
-	{
-		if (chr == '\0')
-		{
+	foreach (int i, chr; chrs) {
+		if (chr == '\0') {
 			chrs = chrs[0..i];
 			break;
 		}
@@ -150,17 +147,14 @@ String DirectoryGetCWD()
 	return new String(chrs);
 }
 
-bool DirectoryFileIsDir(String path)
-{
+bool DirectoryFileIsDir(String path) {
 	String newPath = new String(path);
 	newPath.appendChar('\0');
 
 	struct_stat inode;
 
-	if (stat(newPath.ptr, &inode) != -1)
-	{
-		if (S_ISDIR(inode.st_mode))
-		{
+	if (stat(newPath.ptr, &inode) != -1) {
+		if (S_ISDIR(inode.st_mode)) {
 			return true;
 		}
 	}
@@ -168,33 +162,28 @@ bool DirectoryFileIsDir(String path)
 	return false;
 }
 
-bool DirectoryMove(ref String path, String newPath)
-{
+bool DirectoryMove(ref String path, String newPath) {
 	String exec = new String("mv ") ~ path ~ " " ~ newPath ~ "\0";
 
 	system(exec.ptr);
 	return true;
 }
 
-bool DirectoryCopy(ref String path, String newPath)
-{
+bool DirectoryCopy(ref String path, String newPath) {
 	String exec = new String("cp -r ") ~ path ~ " " ~ newPath ~ "\0";
 
 	system(exec.ptr);
 	return true;
 }
 
-bool DirectoryRename(ref String path, ref String newName)
-{
+bool DirectoryRename(ref String path, ref String newName) {
 	String npath = new String(path);
 	npath.appendChar('\0');
 
 	String str;
 
-	foreach_reverse(int i, chr; path)
-	{
-		if (chr == '/')
-		{
+	foreach_reverse(int i, chr; path) {
+		if (chr == '/') {
 			// truncate
 			str = new String(path[0..i]);
 			break;
@@ -210,9 +199,8 @@ bool DirectoryRename(ref String path, ref String newName)
 	return true;
 }
 
-String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
-{
-	if (!DirectoryOpen(dirVars, path)) { return null; }
+String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path) {
+	if (!DirectoryOpen(dirVars, path)) { return null; } 
 
 	dirent* dir;
 	String[] list;
@@ -220,23 +208,19 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path)
 	// Retrieve first directory
 	dir = readdir(dirVars.dir);
 
-	while(dir !is null)
-	{
+	while(dir !is null) {
 		// Caculate Length of d_name
 		int len;
 
-		foreach(chr; dir.d_name)
-		{
-			if (chr == '\0')
-			{
+		foreach(chr; dir.d_name) {
+			if (chr == '\0') {
 				break;
 			}
 			len++;
 		}
 
 		// Add to list
-		if (dir.d_name[0..len] != "." && dir.d_name[0..len] != "..")
-		{
+		if (dir.d_name[0..len] != "." && dir.d_name[0..len] != "..") {
 			list ~= new String(dir.d_name[0..len]);
 		}
 
