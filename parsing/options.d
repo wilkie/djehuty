@@ -334,7 +334,7 @@ template BuildUsagePrinterAll(list...) {
 	`;
 }
 
-class OptionParser {
+abstract class OptionParser {
 	this() {
 		parse();
 	}
@@ -390,6 +390,10 @@ template Options(list...) {
 
 	override void parse() {
 		Arguments args = Arguments.instance;
+		_ConsoleIO.Console.putln(args.length);
+		foreach(var; args) {
+			_ConsoleIO.Console.putln(var);
+		}
 		char[] token;
 		String param;
 

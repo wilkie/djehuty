@@ -123,8 +123,10 @@ protected:
 	}
 
 	void end(uint exitCode) {
-		_platformAppController.exitCode = exitCode;
-		_platformAppController.end();
+		if (_platformAppController !is null) {
+			_platformAppController.exitCode = exitCode;
+			_platformAppController.end();
+		}
 	}
 
 private:
@@ -133,10 +135,10 @@ private:
 
 	// Silly wrapper to call start() due to a compiler bug
 	package final void onPostApplicationStart() {
-		start();
 	}
 
 	package final void onPreApplicationStart() {
+		start();
 	}
 
 	package final void onPostApplicationEnd(uint exitCode) {

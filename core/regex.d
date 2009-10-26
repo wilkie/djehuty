@@ -1583,7 +1583,7 @@ private:
 				if (lastConcatChar != '\0' && thisChar != ')') {
 					State catState;
 					List!(State) newCurrent = new List!(State);
-					foreach(int i, state; current) {
+					foreach(i, state; current) {
 						if (lastConcatChar in state.transitions) {
 							if (isKleene && state.loopEnd) {
 								State.printall();

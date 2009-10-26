@@ -9,8 +9,6 @@ import io.console;
 
 import tui.widget;
 
-import interfaces.list;
-
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
@@ -211,7 +209,7 @@ class TuiListBox : TuiWidget, ListInterface!(String) {
 		return _list.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref int, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 	

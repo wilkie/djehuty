@@ -213,55 +213,47 @@ struct struct_stat
    ubyte[32] __pad4;
 }
 
-const auto S_IFMT	= 0x0170000;
-const auto S_IFSOCK	= 0x0140000;
-const auto S_IFLNK	= 0x0120000;
-const auto S_IFREG	= 0x0100000;
-const auto S_IFBLK	= 0x0060000;
-const auto S_IFDIR	= 0x0040000;
-const auto S_IFCHR	= 0x0020000;
-const auto S_IFIFO	= 0x0010000;
-const auto S_ISUID	= 0x0004000;
-const auto S_ISGID	= 0x0002000;
-const auto S_ISVTX	= 0x0001000;
+const auto S_IFMT	= 0170000;
+const auto S_IFSOCK	= 0140000;
+const auto S_IFLNK	= 0120000;
+const auto S_IFREG	= 0100000;
+const auto S_IFBLK	= 0060000;
+const auto S_IFDIR	= 0040000;
+const auto S_IFCHR	= 0020000;
+const auto S_IFIFO	= 0010000;
+const auto S_ISUID	= 0004000;
+const auto S_ISGID	= 0002000;
+const auto S_ISVTX	= 0001000;
 
-bool S_ISLNK(uint mode)
-{
+bool S_ISLNK(uint mode) {
 	return (mode & S_IFMT) == S_IFLNK;
 }
 
-bool S_ISREG(uint mode)
-{
+bool S_ISREG(uint mode) {
 	return (mode & S_IFMT) == S_IFREG;
 }
 
-bool S_ISDIR(uint mode)
-{
+bool S_ISDIR(uint mode) {
 	return (mode & S_IFMT) == S_IFDIR;
 }
 
-bool S_ISCHR(uint mode)
-{
+bool S_ISCHR(uint mode) {
 	return (mode & S_IFMT) == S_IFCHR;
 }
 
-bool S_ISBLK(uint mode)
-{
+bool S_ISBLK(uint mode) {
 	return (mode & S_IFMT) == S_IFBLK;
 }
 
-bool S_ISFIFO(uint mode)
-{
+bool S_ISFIFO(uint mode) {
 	return (mode & S_IFMT) == S_IFIFO;
 }
 
-bool S_ISSOCK(uint mode)
-{
+bool S_ISSOCK(uint mode) {
 	return (mode & S_IFMT) == S_IFSOCK;
 }
 
-struct sigaction_t
-{
+struct sigaction_t {
     union {
         extern(C) void function(int) sa_handler;
         extern(C) void function(int, siginfo_t *, void *) sa_sigaction;
@@ -272,13 +264,12 @@ struct sigaction_t
 }
 
 
-struct sockaddr
-{
+struct sockaddr {
     ushort sa_family;
     byte[14] sa_data;
 }
-struct fd_set
-{
+
+struct fd_set {
     byte[128] __opaque;
 }
 

@@ -276,7 +276,7 @@ class TuiFileBox : TuiWidget, ListInterface!(String) {
 		return _list.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref int, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 

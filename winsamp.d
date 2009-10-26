@@ -280,7 +280,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+//	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -316,7 +316,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
 /*		list = new List!(String);
@@ -329,8 +329,9 @@ class MyConsoleApp : Application {
 		Console.putln(index);
 */
 		new MyOptions();
+		Console.putln("foobar");
 	
-		String exp = new String(`a*(abc)*a(bc)*b`);
+/*		String exp = new String(`a*(abc)*a(bc)*b`);
 		String find = new String("aaaaabcab");
 		Regex regex = new Regex(exp);
 		String work = regex.eval(find);
@@ -360,7 +361,7 @@ class MyConsoleApp : Application {
 		foo.addAt(4,9);
 		foreach(item; foo) {
 			Console.putln(item);
-		}
+		}*/
 	}
 
 protected:

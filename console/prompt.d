@@ -160,7 +160,7 @@ class Prompt {
 						// grab the line from the line buffer
 
 						_bufferPos++;
-						_lineBuffer.getItem(line, _bufferPos);
+						line = _lineBuffer.peekAt(_bufferPos);
 
 						uint i;
 
@@ -195,7 +195,7 @@ class Prompt {
 						// grab the line from the line buffer
 
 						_bufferPos--;
-						_lineBuffer.getItem(line, _bufferPos);
+						line = _lineBuffer.peekAt(_bufferPos);
 					}
 					else {
 						// redisplay the working line
@@ -283,7 +283,7 @@ class Prompt {
 			if (_lineBuffer.length == _bufferSize) {
 				_lineBuffer.remove();
 			}
-			_lineBuffer.addItem(line);
+			_lineBuffer.add(line);
 
 			_bufferPos = -1;
 		}

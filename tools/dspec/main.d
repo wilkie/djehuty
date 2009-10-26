@@ -12,14 +12,45 @@ import core.string;
 import core.unicode;
 import core.arguments;
 import core.application;
+import core.definitions;
 
 import filelist;
 import parser;
+
+import parsing.options;
 
 char[] usage = `dspec rev1
 
 USAGE: dspec [-I<PATH>]
 EXAMPLE: dspec -Ispecs/.`;
+
+class Opts : OptionParser {
+
+	mixin Options!(
+		"I", "Specify the path for the specs to be found, recursively",
+		string, "the path",
+
+		"-help", "View help and usage"
+	);
+
+	void onI(string path) {
+
+		Console.putln("foo");
+		_path = path;
+	}
+
+	void onHelp() {
+		showUsage();
+		Djehuty.end(0);
+	}
+
+	string path() {
+		return _path;
+	}
+
+private:
+	string _path = ".";
+}
 
 class Dspec : Application {
 	static this() { new Dspec(); }
@@ -29,28 +60,19 @@ class Dspec : Application {
 	}
 
 	override void onApplicationStart() {
-		String[] argList = arguments.getList();
 
-		foreach(str; argList)
-		{
-			Console.putln(str.array);
-		}
+		// Parse Options
+		options = new Opts();
 
 		// Interpret arguments
-		if (argList.length != 2 || argList[1].length < 3 || argList[1][0..2] != "-I")
-		{
-			Console.putln(usage);
-			return;
-		}
 
-		String path = new String(argList[1][2..argList[1].length]);
+		String path = new String(options.path);
 
-		Console.putln("starting");
+		Console.putln("Starting on path ", path);
 
 		// Get the list of spec files
 		FileList files = new FileList();
-		if (!(files.fetch(path)))
-		{
+		if (!(files.fetch(path))) {
 			Console.putln("error");
 			return;
 		}
@@ -66,4 +88,8 @@ class Dspec : Application {
 
 		Console.putln("done");
 	}
+
+private:
+
+	Opts options;
 }

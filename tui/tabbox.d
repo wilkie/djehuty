@@ -49,7 +49,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		io.console.Console.setColor(_forecolor, _backcolor);
 
 		io.console.Console.put(" ");		
-		foreach(int i, item; _tabList) {
+		foreach(i, item; _tabList) {
 			if(i == _curTab) {
 				io.console.Console.setColor(_selectedForecolor, _selectedBackcolor);
 				io.console.Console.put(item.text);
@@ -246,7 +246,7 @@ class TuiTabBox : TuiContainer, ListInterface!(TuiContainer) {
 		return _tabList.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref int, ref TuiContainer) loopFunc) {
+	int opApply(int delegate(ref size_t, ref TuiContainer) loopFunc) {
 		return _tabList.opApply(loopFunc);
 	}
 	
