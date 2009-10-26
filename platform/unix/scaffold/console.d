@@ -437,6 +437,7 @@ uint keyTranslation[Curses.KEY_MAX] = [
 	Curses.KEY_RIGHT: Key.Right,
 	Curses.KEY_HOME: Key.Home,
 	Curses.KEY_BACKSPACE: Key.Backspace,
+	Curses.KEY_DC: Key.Delete,
 	Curses.KEY_F1: Key.F1,
 	Curses.KEY_F2: Key.F2,
 	Curses.KEY_F3: Key.F3,
