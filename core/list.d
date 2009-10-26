@@ -147,6 +147,18 @@ class List(T) : ListInterface!(T) {
 		}
 	}
 
+	T remove(T value) {
+		synchronized(this) {
+			foreach(size_t index, item; _data[0.._count]) {
+				if (value == item) {
+					scope(exit) _data = _data[0..index] ~ _data[index+1..$];
+					return _data[index];
+				}
+			}
+			return _nullValue();
+		}
+	}
+
 	T removeAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
@@ -335,7 +347,9 @@ class List(T) : ListInterface!(T) {
 protected:
 
 	T _nullValue() {
-		static if (IsArray!(T) || IsClass!(T)) {
+		T val;
+		return val;
+/*		static if (IsArray!(T) || IsClass!(T)) {
 			return null;
 		}
 		else static if (IsStruct!(T)) {
@@ -343,7 +357,7 @@ protected:
 		}
 		else {
 			return 0;
-		}
+		}*/
 	}
 
 	void _resize() {
