@@ -161,8 +161,8 @@ void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 
 void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
 {
-
 	// code to move a window
+	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
 }
 
 void WindowSetState(ref Window window, WindowPlatformVars* windowVars)

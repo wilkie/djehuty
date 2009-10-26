@@ -40,7 +40,7 @@ private:
 
 class MyWindow : Window {
 	this() {
-		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,0,0,360,347);
+		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,50,50,360,347);
 	}
 
 	override void onAdd() {
