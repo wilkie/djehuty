@@ -129,7 +129,6 @@ class TuiTextBox : TuiWidget {
 				if (_column == _lines[_row].value.length) {
 					if (_row + 1 >= _lines.length) {
 						// Last column of last row. Do nothing.
-						break;
 					} else {
 						// Last column with more rows beneath, so suck next row up.
 						_lines[_row].value ~= _lines[_row+1].value;
@@ -141,7 +140,6 @@ class TuiTextBox : TuiWidget {
 						onLineChanged(_row);
 
 						refresh();
-						break;
 					}
 				} else {
 					// Not the last column, so delete the character to the right.
@@ -161,7 +159,6 @@ class TuiTextBox : TuiWidget {
 					}
 
 					refresh();
-					break;
 				}
 				break;
 			case Key.Left:
