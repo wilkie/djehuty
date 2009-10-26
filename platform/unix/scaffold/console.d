@@ -617,15 +617,19 @@ void ConsolePutString(dchar[] chrs) {
 	chrs ~= '\0';
 	Curses.getyx(Curses.stdscr, m_y, m_x);
 	char[] utf8 = Unicode.toUtf8(chrs);
+	bool goBackOneLine = false;
 	if (ApplicationController.instance.usingCurses) {
-		uint i = 0;
-		for (; i < utf8.length; i++) {
+		for (uint i; i < utf8.length; i++) {
 			if (utf8[i] == '\r' || utf8[i] == '\n' || utf8[i] == '\0') {
-				if (i + m_x > m_width) {
+				if (i + m_x >= m_width) {
 					i = m_width - m_x;
+					goBackOneLine = true;
 				}
 				utf8[i] = '\0';								
 				Curses.wprintw(Curses.stdscr, "%s", &utf8[0]);
+				if (goBackOneLine) {
+					ConsoleSetPosition(m_width - 1, m_y);
+				}
 				return;
 			}
 		}

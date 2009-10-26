@@ -477,6 +477,7 @@ class TuiTextBox : TuiWidget {
 protected:
 
 	void drawLine(uint lineNumber) {
+		Console.hideCaret();
 		Console.position(0, lineNumber - _firstVisible);
 
 		if (_lineNumbers) {
@@ -555,7 +556,8 @@ protected:
 		}
 
 		// Pad with spaces
-		uint num = (_lines[lineNumber].value.length - _firstColumn);
+		uint num = (visibleLine.length - _firstColumn);
+		//uint num = (_lines[lineNumber].value.length - _firstColumn);
 		if (_firstColumn >= _lines[lineNumber].value.length) {
 			num = this.width - _lineNumbersWidth;
 		}
@@ -566,7 +568,9 @@ protected:
 			num = (this.width - _lineNumbersWidth) - num;
 		}
 		
-		Console.putSpaces(num);
+		if (num != 0) {
+			Console.putSpaces(num);
+		}
 	}
 
 	void drawEmptyLine(uint lineNumber) {
