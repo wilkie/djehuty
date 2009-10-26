@@ -60,8 +60,7 @@ class TuiTextBox : TuiWidget {
 
 					onLineChanged(_row);
 
-					onDraw();
-					positionCaret();
+					refresh();
 					break;
 				}
 				else if (_column == 1) {
@@ -203,8 +202,7 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				onDraw();
-				positionCaret();
+				refresh();
 				break;
 			case Key.PageDown:
 				_row += this.height;
@@ -222,8 +220,7 @@ class TuiTextBox : TuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				onDraw();
-				positionCaret();
+				refresh();
 				break;
 			case Key.End:
 				_column = _lines[_row].value.length;
@@ -317,8 +314,7 @@ class TuiTextBox : TuiWidget {
 
 			onLineChanged(_row);
 
-			onDraw();
-			positionCaret();
+			refresh();
 			return;
 		}
 
@@ -414,6 +410,12 @@ class TuiTextBox : TuiWidget {
 	// value: true to enable the line numbers, false to disable
 	void lineNumbers(bool value) {
 		_lineNumbers = value;
+		calculateLineNumbersWidth();
+	}
+
+	void refresh() {
+		onDraw();
+		positionCaret();
 	}
 
 	override void onDraw() {
