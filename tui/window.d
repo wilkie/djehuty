@@ -58,21 +58,13 @@ class TuiWindow : Responder {
 	void redraw() {
 		if (_inited == false) { return; }
 
-		bool showCaret;
-		if (Console.caretVisible) {
-			Console.hideCaret();
-			showCaret = true;
-		}
+		Console.hideCaret();
 
 		Console.clipClear();
 		_controlContainer.onDraw();
 
 		_drawMenu();
 		Console.clipClear();
-
-		if (showCaret) {
-			Console.showCaret();
-		}
 	}
 
 	void onKeyDown(Key key) {
