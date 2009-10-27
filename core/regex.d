@@ -1214,16 +1214,16 @@ class Regex {
 		return null;
 	}
 
-	static String eval(string str, String regex) {
-		return eval(new String(str), regex);
+	static String eval(string str, String regex, string options = "") {
+		return eval(new String(str), regex, options);
 	}
 
-	static String eval(String str, string regex) {
-		return eval(str, new String(regex));
+	static String eval(String str, string regex, string options = "") {
+		return eval(str, new String(regex), options);
 	}
 
-	static String eval(string str, string regex) {
-		return eval(new String(str), new String(regex));
+	static String eval(string str, string regex, string options = "") {
+		return eval(new String(str), new String(regex), options);
 	}
 
 	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
