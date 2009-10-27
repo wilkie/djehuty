@@ -202,7 +202,6 @@ class MyTWindow : TuiWindow {
 		text = "unsaved";
 		tuibox.lineNumbers = true;
 //		push(new TuiLabel(0, 2, 10, "foobarfoo!"));
-
 	}
 
 	override void onMenu(Menu mnu) {

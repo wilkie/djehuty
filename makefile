@@ -77,6 +77,7 @@ OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
+TOOLS_TESTS = runtests.d
 
 EXAMPLES_TUITETRIS = examples/tuitetris/app.d examples/tuitetris/gamewindow.d examples/tuitetris/tetris.d examples/tuitetris/gamecontrol.d
 
@@ -245,6 +246,18 @@ else
 	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
 endif
 endif
+
+tests: lib
+	@echo compiling Test Suite...
+ifeq (${MY_ARCH},Darwin)
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofruntests.exe $(TOOLS_TESTS) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofruntests -d-version=PlatformLinux $(TOOLS_TESTS) $(OBJS_LINUX)
+endif
+endif
+
 
 
 clean:
