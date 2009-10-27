@@ -615,23 +615,20 @@ void ConsoleSetHome() {
 
 void ConsolePutString(dchar[] chrs) {
 	chrs ~= '\0';
+	Curses.getyx(Curses.stdscr, m_y, m_x);
 	char[] utf8 = Unicode.toUtf8(chrs);
 	if (ApplicationController.instance.usingCurses) {
-		uint pos = 0;
 		uint i = 0;
 		for (; i < utf8.length; i++) {
-			if (utf8[i] == '\r' || utf8[i] == '\n') {
-				utf8[i] = '\0';
-				Curses.wprintw(Curses.stdscr, "%s", &utf8[pos]);
-				ConsoleSetRelative(0, 1);
-				ConsoleSetHome();
-				pos = i+1;
+			if (utf8[i] == '\r' || utf8[i] == '\n' || utf8[i] == '\0') {
+				if (i + m_x > m_width) {
+					i = m_width - m_x;
+				}
+				utf8[i] = '\0';								
+				Curses.wprintw(Curses.stdscr, "%s", &utf8[0]);
+				return;
 			}
 		}
-		if (i > pos) {
-			Curses.wprintw(Curses.stdscr, "%s", &utf8[pos]);
-		}
-		//Curses.refresh();
 	}
 	else {
 		printf("%s", utf8.ptr);
