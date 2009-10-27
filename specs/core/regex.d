@@ -118,7 +118,7 @@ describe regex()
 			String str = Regex.eval("root woot moot foot", `^.oot`);
 			should(str == "root");
 
-			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`);
+			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`, "m");
 			should(str == "woot");
 		}
 
