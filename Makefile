@@ -79,7 +79,7 @@ TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d too
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
 TOOLS_TESTS = runtests.d
 
-EXAMPLES_TUITETRIS = examples/tuitetris/app.d examples/tuitetris/gamewindow.d examples/tuitetris/tetris.d examples/tuitetris/gamecontrol.d
+EXAMPLES_TUITETRIS = examples/TuiTetris/app.d examples/TuiTetris/gamewindow.d examples/TuiTetris/tetris.d examples/TuiTetris/gamecontrol.d
 
 EXAMPLES_MOREDUCKS = examples/MoreDucks/MoreDucks.d
 
