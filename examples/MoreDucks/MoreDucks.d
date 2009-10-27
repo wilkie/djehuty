@@ -15,12 +15,25 @@ class MyControl : Widget {
 	}
 
 	override void onAdd() {
-		images[0] = new Image("examples/MoreDucks/baby_ducks.png");
-		images[1] = new Image("examples/MoreDucks/duckling.png");
-		images[2] = new Image("examples/MoreDucks/ducks-cute.png");
 	}
 
 	override void onDraw(ref Graphics g) {
+		if (images[curImage] is null) {
+			string path = "";
+			switch(curImage) {
+				case 0:
+					path = "baby_ducks.png";
+					break;
+				case 1:
+					path = "duckling.png";
+					break;
+				case 2:
+				default:
+					path = "ducks-cute.png";
+					break;
+			}
+			images[curImage] = new Image("examples/MoreDucks/" ~ path);
+		}
 		g.drawImage(this.left,this.top,images[curImage]);
 	}
 
