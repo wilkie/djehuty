@@ -12,3 +12,5 @@ key.pub
 djehuty.lib
 *.map
 *.idb
+dspec
+runtests
