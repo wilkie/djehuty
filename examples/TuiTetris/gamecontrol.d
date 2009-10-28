@@ -16,7 +16,7 @@ class GameControl : TuiWidget {
 	}
 
 	this() {
-		super(20,0,16,20);
+		super(20,0,40,80);
 
 		board = new Tetris();
 		lock = new Semaphore(1);
@@ -109,7 +109,7 @@ class GameControl : TuiWidget {
 
 		for(uint j; j < 20; j++) {
 			for(uint o; o < 2; o++) {
-				Console.position(this.left, this.top + (j*2) + o);
+				Console.position(0, (j*2) + o);
 				for (uint i; i < 10; i++) {
 					if (clr != board[i,j]) {
 						clr = board[i,j];
@@ -137,9 +137,9 @@ class GameControl : TuiWidget {
 
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
-				Console.position(this.left + pt.x, this.top + pt.y);
+				Console.position(pt.x, pt.y);
 				Console.put("    ");
-				Console.position(this.left + pt.x, this.top + pt.y + 1);
+				Console.position(pt.x, pt.y + 1);
 				Console.put("    ");
 			}
 		}
@@ -151,13 +151,17 @@ class GameControl : TuiWidget {
 		Console.setColor(fgColor.Blue, bgColor.Black);
 		foreach(pt; lastPiece) {
 			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
-				Console.position(this.left + pt.x, this.top + pt.y);
+				Console.position(pt.x, pt.y);
 				Console.put("    ");
-				Console.position(this.left + pt.x, this.top + pt.y + 1);
+				Console.position(pt.x, pt.y + 1);
 				Console.put("    ");
 			}
 		}
 		Console.setColor(fgColor.White);
+	}
+	
+	override bool isTabStop() {
+		return true;
 	}
 
 protected:
