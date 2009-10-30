@@ -28,13 +28,24 @@ public:
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(String filename) {
-		open(filename);
+		_name = new String(filename);
+
+		_pos = null;
+		_curpos = 0;
+		bool r = FileCreate(_pfvars, _name);
+
+		if (!r) {
+			throw new Exception("File Cannot be Created");
+		}
+
+		_length = 0;
+		_inited = true;
 	}
 
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(string filename) {
-		open(filename);
+		this(new String(filename));
 	}
 
 	// Description: Will create a closed File class.  You must open a file to use it as a stream.
@@ -43,6 +54,39 @@ public:
 
 	~this() {
 		close();
+	}
+
+	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
+	// filename: The file to open.
+	// Returns: Will return an instance to the opened file.
+	static File open(String filename) {
+		File foo = new File;
+		foo._name = new String(filename);
+
+		foo._pos = null;
+		foo._curpos = 0;
+		bool r = FileOpen(foo._pfvars, foo._name);
+
+		if (!r) {
+			return null;
+		}
+	
+		FileGetSize(foo._pfvars, foo._length);
+		foo._inited = true;
+
+		return foo;
+	}
+
+	static File open(string filename) {
+		return open(new String(filename));
+	}
+
+	static File create(String filename) {
+		return new File(filename);
+	}
+
+	static File create(string filename) {
+		return new File(filename);
 	}
 
 	// Methods //
@@ -54,52 +98,6 @@ public:
 	alias Stream.read read;
 
 	// Core Functionality
-
-	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
-	// filename: The file to open.
-	// Returns: Will return false when the file cannot be opened.
-
-	// TODO: Exceptions for opening of a file.
-    bool open(String filename) {
-        _name = new String(filename);
-
-        _pos = null;
-        _curpos = 0;
-        bool r = FileOpen(_pfvars, _name);
-
-        if (!r) {
-            return false;
-        }
-
-        // get file size
-        FileGetSize(_pfvars, _length);
-        _inited = true;
-
-        return true;
-    }
-
-	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
-	// filename: The file to open.
-	// Returns: Will return false when the file cannot be opened.
-
-	// TODO: Exceptions for opening of a file.
-    bool open(string filename) {
-        _name = new String(filename);
-
-        _pos = null;
-        _curpos = 0;
-        bool r = FileOpen(_pfvars, _name);
-
-        if (!r) {
-            return false;
-        }
-
-        // get file size
-        FileGetSize(_pfvars, _length);
-        _inited = true;
-
-        return true;
-    }
 
 	// Description: Will close the file.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
     void close() {

@@ -12,7 +12,7 @@ class Feeder
 {
 	this(String filename)
 	{
-		fp = new File(filename);
+		fp = File.open(filename);
 		//fp = fopen(std.string.toStringz(filename), "rb");
 
 		// reinit

@@ -17,15 +17,24 @@ import core.string;
 import core.main;
 
 import io.file;
+import io.console;
 
 // FILE //
 
-bool FileOpen(ref FilePlatformVars fileVars, ref String filename)
-{
+bool FileOpen(ref FilePlatformVars fileVars, ref String filename) {
 	String fn = new String(filename);
 	fn.appendChar('\0');
 
-	fileVars.file = fopen(fn.ptr, "rb");
+	fileVars.file = fopen(fn.ptr, "r+b");
+
+	return (fileVars.file !is null);
+}
+
+bool FileCreate(ref FilePlatformVars fileVars, ref String filename) {
+	String fn = new String(filename);
+	fn.appendChar('\0');
+
+	fileVars.file = fopen(fn.ptr, "w+b");
 
 	return (fileVars.file !is null);
 }

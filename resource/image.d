@@ -48,9 +48,9 @@ public:
 	// filename: The filename to open as an image.
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(String filename) {
-		FileReader f = new FileReader();
+		File f = File.open(filename);
 
-		if (f.open(filename) == false) {
+		if (f is null) {
 			return false;
 		}
 
@@ -61,9 +61,9 @@ public:
 	// filename: The filename to open as an image.
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(string filename) {
-		FileReader f = new FileReader();
+		File f = File.open(filename);
 
-		if (f.open(filename) == false) {
+		if (f is null) {
 			return false;
 		}
 
