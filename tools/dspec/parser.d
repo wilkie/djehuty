@@ -39,17 +39,17 @@ protected:
 		Feeder feeder = new Feeder(path);
 
 		// write out intentions
-		Console.putln("Parsing ... ", path.array);
+		//Console.putln("Parsing ... ", path.array);
 
 		parseUnit = new ParseDSpec();
 
 		parseUnit.attachFeeder(feeder);
 
-		Console.putln("Begin Parsing ... ", path.array);
+		//Console.putln("Begin Parsing ... ", path.array);
 
 		AST finished = parseUnit.parse();
 		
-		Console.putln("Done Parsing");
+		//Console.putln("Done Parsing");
 
 		output.work(finished);
 
@@ -252,7 +252,7 @@ protected:
 		{
 			foundName = true;
 			name = currentToken;
-			Console.putln("Section: ", name.array);
+			//Console.putln("Section: ", name.array);
 
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
@@ -375,7 +375,7 @@ protected:
 		{
 			foundName = true;
 			name = currentToken;
-			Console.putln("Class: ", name.array);
+			//Console.putln("Class: ", name.array);
 			
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
@@ -510,7 +510,7 @@ class ParseIt : ParseUnit
 		{
 			foundName = true;
 			name = currentToken;
-			Console.putln("It: ", name.array);
+			Console.putln("It: ", name.array, " @ ", feeder.getLineNumber());
 			
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
