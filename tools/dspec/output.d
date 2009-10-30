@@ -49,7 +49,7 @@ class Output
 
 	void work(AST result)
 	{
-		Console.putln("Outputting ... ");
+		//Console.putln("Outputting ... ");
 		AST working = result;
 		AST node;
 
@@ -63,7 +63,7 @@ class Output
 					String name;
 					node.getValue(name);
 
-					Console.putln("Tree: ", name.array);
+					//Console.putln("Tree: ", name.array);
 					//writefln(name);
 
 					switch(name.array)
@@ -153,7 +153,7 @@ protected:
 	bool shouldThrow = false;
 
 	bool readyOutput(String path) {
-		Console.putln("opening file");
+		//Console.putln("opening file");
 		//outfp = fopen(std.string.toStringz(path), "w+");
 		outfp = new File(path);
 
@@ -168,7 +168,7 @@ protected:
 	bool printHeader()
 	{
 		//fwritef(outfp, "%s", header);
-		Console.putln("output header");
+		//Console.putln("output header");
 		outfp.write(header);
 
 		return true;
@@ -295,8 +295,10 @@ protected:
 						case "LineNumber":
 							ulong val;
 							node.right.getValue(val);
+							Console.putln("LineNumber ", val);
 
-							lines ~= val;
+							lines ~= [val];
+							Console.putln(lines);
 							break;
 						case "ParseDone":
 							printDone(node,describing);
@@ -328,7 +330,7 @@ protected:
 		print("}catch(Exception _exception_)\n{\n");
 		if (shouldThrow)
 		{
-			Console.putln("!!", exception.array);
+			//Console.putln("!!", exception.array);
 			if (exception == "")
 			{
 				print("return it.does");
@@ -520,16 +522,16 @@ protected:
 					{
 						case "Identifier":
 							node.right.getValue(val);
-							Console.putln("ID: ", val.array);
+							//Console.putln("ID: ", val.array);
 
 							if (val[0] >= 'a' && val[0] <= 'z')
 							{
 								val.setCharAt(0, val[0] - 32);
 							}
-							Console.putln("ID: ", val.array, " len ", val.length);
+							//Console.putln("ID: ", val.array, " len ", val.length);
 
 							val ~= "Tester";
-							Console.putln("ID: ", val.array, " len ", val.length);
+							//Console.putln("ID: ", val.array, " len ", val.length);
 
 							print(new String("class ") ~ val ~ "\n{");
 							className = val;
@@ -568,10 +570,10 @@ protected:
 
 		// do tests
 
-		Console.putln("className: ", className.array, " len " , className.length);
+		//Console.putln("className: ", className.array, " len " , className.length);
 		String classNameFixed = className.subString(0,className.length-6);
-		Console.putln("className::", classNameFixed.array);
-		Console.putln("className::", className[0..className.length-6]);
+		//Console.putln("className::", classNameFixed.array);
+		//Console.putln("className::", className[0..className.length-6]);
 
 		print ("\n\tstatic void test()\n\t{\n");
 
@@ -595,6 +597,8 @@ protected:
 			print(new String("\ttester = new ") ~ className ~ "();\n\n");
 			print(new String("\tresult = tester.") ~ test ~ "();\n\t");
 			print(new String("\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
+			Console.putln(lines);
+			Console.putln(lines[i]);
 			print(new String(cast(long)lines[i]));
 			//fwritef(outfp, "", lines[i]);
 			print("\");\n\n");
