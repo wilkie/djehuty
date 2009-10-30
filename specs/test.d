@@ -852,74 +852,74 @@ this() { before(); }
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
-		test.logResult(result, "utflen should be the same for utf8 as utf32", "12");
+		test.logResult(result, "utflen should be the same for utf8 as utf32", "24");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
-		test.logResult(result, "utflen should be the same for utf16 as utf32", "18");
+		test.logResult(result, "utflen should be the same for utf16 as utf32", "31");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "utflen should account for combining marks for utf8", "24");
+		test.logResult(result, "utflen should account for combining marks for utf8", "38");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "utflen should account for combining marks for utf16", "30");
+		test.logResult(result, "utflen should account for combining marks for utf16", "44");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "utflen should account for combining marks for utf32", "36");
+		test.logResult(result, "utflen should account for combining marks for utf32", "50");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_empty_strings_for_utf8();
-		test.logResult(result, "utflen should account for empty strings for utf8", "48");
+		test.logResult(result, "utflen should account for empty strings for utf8", "56");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_empty_strings_for_utf16();
-		test.logResult(result, "utflen should account for empty strings for utf16", "54");
+		test.logResult(result, "utflen should account for empty strings for utf16", "62");
 
 	tester = new UnicodeTester();
 
 	result = tester.utflen_should_account_for_empty_strings_for_utf32();
-		test.logResult(result, "utflen should account for empty strings for utf32", "60");
+		test.logResult(result, "utflen should account for empty strings for utf32", "68");
 
 	test.logSubset("toUtfChars");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "66");
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "77");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "72");
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "83");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "80");
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "89");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "toUtfChars should account for combining marks for utf32", "86");
+		test.logResult(result, "toUtfChars should account for combining marks for utf32", "95");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "toUtfChars should account for combining marks for utf16", "98");
+		test.logResult(result, "toUtfChars should account for combining marks for utf16", "101");
 
 	tester = new UnicodeTester();
 
 	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "toUtfChars should account for combining marks for utf8", "109");
+		test.logResult(result, "toUtfChars should account for combining marks for utf8", "107");
 
 
 	}
@@ -1345,124 +1345,124 @@ this() { before(); }
 	tester = new StringTester();
 
 	result = tester.creation_should_handle_literals();
-		test.logResult(result, "creation should handle literals", "12");
+		test.logResult(result, "creation should handle literals", "9");
 
 	tester = new StringTester();
 
 	result = tester.creation_should_handle_integers();
-		test.logResult(result, "creation should handle integers", "18");
+		test.logResult(result, "creation should handle integers", "14");
 
 	tester = new StringTester();
 
 	result = tester.creation_should_handle_formatting();
-		test.logResult(result, "creation should handle formatting", "24");
+		test.logResult(result, "creation should handle formatting", "19");
 
 	tester = new StringTester();
 
 	result = tester.creation_should_handle_string_objects();
-		test.logResult(result, "creation should handle string objects", "30");
+		test.logResult(result, "creation should handle string objects", "24");
 
 	test.logSubset("trim");
 
 	tester = new StringTester();
 
 	result = tester.trim_should_trim_off_whitespace();
-		test.logResult(result, "trim should trim off whitespace", "36");
+		test.logResult(result, "trim should trim off whitespace", "32");
 
 	test.logSubset("length");
 
 	tester = new StringTester();
 
 	result = tester.length_should_account_for_combining_marks();
-		test.logResult(result, "length should account for combining marks", "48");
+		test.logResult(result, "length should account for combining marks", "40");
 
 	tester = new StringTester();
 
 	result = tester.length_should_return_the_number_of_characters();
-		test.logResult(result, "length should return the number of characters", "54");
+		test.logResult(result, "length should return the number of characters", "45");
 
 	tester = new StringTester();
 
 	result = tester.length_should_not_fail_on_an_empty_string();
-		test.logResult(result, "length should not fail on an empty string", "60");
+		test.logResult(result, "length should not fail on an empty string", "50");
 
 	test.logSubset("append");
 
 	tester = new StringTester();
 
 	result = tester.append_should_concatenate_a_string_object();
-		test.logResult(result, "append should concatenate a string object", "66");
+		test.logResult(result, "append should concatenate a string object", "57");
 
 	tester = new StringTester();
 
 	result = tester.append_should_concatenate_a_string_literal();
-		test.logResult(result, "append should concatenate a string literal", "72");
+		test.logResult(result, "append should concatenate a string literal", "66");
 
 	tester = new StringTester();
 
 	result = tester.append_should_concatenate_a_formatted_string_literal();
-		test.logResult(result, "append should concatenate a formatted string literal", "80");
+		test.logResult(result, "append should concatenate a formatted string literal", "73");
 
 	tester = new StringTester();
 
 	result = tester.append_should_not_fail_on_an_empty_string_object();
-		test.logResult(result, "append should not fail on an empty string object", "86");
+		test.logResult(result, "append should not fail on an empty string object", "80");
 
 	tester = new StringTester();
 
 	result = tester.append_should_not_fail_on_an_empty_string_literal();
-		test.logResult(result, "append should not fail on an empty string literal", "98");
+		test.logResult(result, "append should not fail on an empty string literal", "88");
 
 	tester = new StringTester();
 
 	result = tester.append_should_throw_an_exception_for_null_string_object();
-		test.logResult(result, "append should throw an exception for null string object", "109");
+		test.logResult(result, "append should throw an exception for null string object", "95");
 
 	test.logSubset("toLowercase");
 
 	tester = new StringTester();
 
 	result = tester.toLowercase_should_work_as_expected();
-		test.logResult(result, "toLowercase should work as expected", "117");
+		test.logResult(result, "toLowercase should work as expected", "106");
 
 	tester = new StringTester();
 
 	result = tester.toLowercase_should_not_fail_on_an_empty_string();
-		test.logResult(result, "toLowercase should not fail on an empty string", "125");
+		test.logResult(result, "toLowercase should not fail on an empty string", "113");
 
 	test.logSubset("toUppercase");
 
 	tester = new StringTester();
 
 	result = tester.toUppercase_should_work_as_expected();
-		test.logResult(result, "toUppercase should work as expected", "133");
+		test.logResult(result, "toUppercase should work as expected", "122");
 
 	tester = new StringTester();
 
 	result = tester.toUppercase_should_not_fail_on_an_empty_string();
-		test.logResult(result, "toUppercase should not fail on an empty string", "140");
+		test.logResult(result, "toUppercase should not fail on an empty string", "129");
 
 	test.logSubset("find");
 
 	tester = new StringTester();
 
 	result = tester.find_should_work_as_expected();
-		test.logResult(result, "find should work as expected", "146");
+		test.logResult(result, "find should work as expected", "138");
 
 	tester = new StringTester();
 
 	result = tester.find_should_fail_as_expected();
-		test.logResult(result, "find should fail as expected", "154");
+		test.logResult(result, "find should fail as expected", "146");
 
 	tester = new StringTester();
 
 	result = tester.find_should_work_at_the_beginning_of_the_string();
-		test.logResult(result, "find should work at the beginning of the string", "159");
+		test.logResult(result, "find should work at the beginning of the string", "154");
 
 	tester = new StringTester();
 
 	result = tester.find_should_work_at_the_end_of_the_string();
-		test.logResult(result, "find should work at the end of the string", "24");
+		test.logResult(result, "find should work at the end of the string", "162");
 
 
 	}
@@ -1607,17 +1607,17 @@ this() { before(); }
 	tester = new DigestTester();
 
 	result = tester.creation_should_allow_for_64_bits();
-		test.logResult(result, "creation should allow for 64 bits", "12");
+		test.logResult(result, "creation should allow for 64 bits", "9");
 
 	tester = new DigestTester();
 
 	result = tester.creation_should_allow_for_128_bits();
-		test.logResult(result, "creation should allow for 128 bits", "18");
+		test.logResult(result, "creation should allow for 128 bits", "16");
 
 	tester = new DigestTester();
 
 	result = tester.creation_should_allow_for_160_bits();
-		test.logResult(result, "creation should allow for 160 bits", "24");
+		test.logResult(result, "creation should allow for 160 bits", "23");
 
 	tester = new DigestTester();
 
@@ -1629,7 +1629,7 @@ this() { before(); }
 	tester = new DigestTester();
 
 	result = tester.comparison_should_work_for_equals_overload();
-		test.logResult(result, "comparison should work for equals overload", "36");
+		test.logResult(result, "comparison should work for equals overload", "39");
 
 	tester = new DigestTester();
 
@@ -1737,22 +1737,22 @@ this() { before(); }
 	tester = new MD5Tester();
 
 	result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "12");
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
 	tester = new MD5Tester();
 
 	result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "18");
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
 	tester = new MD5Tester();
 
 	result = tester.hash_should_respect_leading_zeroes();
-		test.logResult(result, "hash should respect leading zeroes", "24");
+		test.logResult(result, "hash should respect leading zeroes", "19");
 
 	tester = new MD5Tester();
 
 	result = tester.hash_should_work_on_byte_arrays();
-		test.logResult(result, "hash should work on byte arrays", "30");
+		test.logResult(result, "hash should work on byte arrays", "25");
 
 
 	}
@@ -1827,17 +1827,17 @@ this() { before(); }
 	tester = new SHA1Tester();
 
 	result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "12");
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
 	tester = new SHA1Tester();
 
 	result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "18");
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
 	tester = new SHA1Tester();
 
 	result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "24");
+		test.logResult(result, "hash should hash the empty string", "19");
 
 
 	}
@@ -1912,17 +1912,17 @@ this() { before(); }
 	tester = new SHA224Tester();
 
 	result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "12");
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
 	tester = new SHA224Tester();
 
 	result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "18");
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
 	tester = new SHA224Tester();
 
 	result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "24");
+		test.logResult(result, "hash should hash the empty string", "19");
 
 
 	}
@@ -1997,17 +1997,17 @@ this() { before(); }
 	tester = new SHA256Tester();
 
 	result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "12");
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
 	tester = new SHA256Tester();
 
 	result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "18");
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
 	tester = new SHA256Tester();
 
 	result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "24");
+		test.logResult(result, "hash should hash the empty string", "19");
 
 
 	}

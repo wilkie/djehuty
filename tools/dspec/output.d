@@ -71,6 +71,7 @@ class Output
 						case "ParseDescribe":
 
 							tests = null;
+							lines = null;
 							className = null;
 
 							printDescribe(node);
@@ -295,10 +296,10 @@ protected:
 						case "LineNumber":
 							ulong val;
 							node.right.getValue(val);
-							Console.putln("LineNumber ", val);
+							//Console.putln("LineNumber ", val);
 
 							lines ~= [val];
-							Console.putln(lines);
+							//Console.putln(lines);
 							break;
 						case "ParseDone":
 							printDone(node,describing);
@@ -534,6 +535,7 @@ protected:
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
 							print(new String("class ") ~ val ~ "\n{");
+							Console.putln("Creating ", val);
 							className = val;
 							break;
 						case "ParseDone":
@@ -597,8 +599,8 @@ protected:
 			print(new String("\ttester = new ") ~ className ~ "();\n\n");
 			print(new String("\tresult = tester.") ~ test ~ "();\n\t");
 			print(new String("\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
-			Console.putln(lines);
-			Console.putln(lines[i]);
+			//Console.putln(lines);
+			//Console.putln(lines[i]);
 			print(new String(cast(long)lines[i]));
 			//fwritef(outfp, "", lines[i]);
 			print("\");\n\n");

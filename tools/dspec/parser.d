@@ -510,7 +510,7 @@ class ParseIt : ParseUnit
 		{
 			foundName = true;
 			name = currentToken;
-			Console.putln("It: ", name.array, " @ ", feeder.getLineNumber());
+			//Console.putln("It: ", name.array, " @ ", feeder.getLineNumber());
 			
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
