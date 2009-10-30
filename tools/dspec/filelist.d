@@ -59,7 +59,7 @@ protected:
 	}
 
 	void lookForFiles(String path) {
-		Console.putln("filelist created");
+		//Console.putln("filelist created");
 
 		sanitizePath(path);
 
@@ -71,13 +71,13 @@ protected:
 		//char[] ext;
 
 		foreach (d; dirs) {
-			Console.putln(d);
+			//Console.putln(d);
 			if (d == "test.d") { continue; }
 			int pos = d.find(new String("."));
 			//int pos = find(d, '.');
 
 			if (dir.isDir(d)) {
-				Console.putln("is dir1");
+				//Console.putln("is dir1");
 				lookForFiles(path ~ d);
 			}
 
