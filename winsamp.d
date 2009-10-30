@@ -31,6 +31,8 @@ import gui.osbutton;
 
 import parsing.options;
 
+import io.file;
+
 class MyOptions : OptionParser {
 
 	mixin Options!(
@@ -284,7 +286,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -320,7 +322,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
 /*		list = new List!(String);
@@ -366,6 +368,16 @@ class MyConsoleApp : Application {
 		foreach(item; foo) {
 			Console.putln(item);
 		}*/
+
+		File foo = new File("temp.txt"); //File.create("temp.txt");
+		foo.write("foo bar"c);
+		foo.close();
+
+		foo = File.open("temp.txt");
+		ubyte f;
+		foo.read(f);
+		char d = cast(char)f;
+		Console.putln(d);
 	}
 
 protected:
