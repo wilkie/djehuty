@@ -23,6 +23,8 @@ module specs.test;
 
 import testing.logic;
 
+import djehuty;
+
 `;
 
 char[] footer =
@@ -36,7 +38,7 @@ class Output
 		if (!readyOutput(path))
 		{
 			// Error: cannot write file
-			Console.putln("Error: Cannot write to ", path.array);
+			Console.putln("Error: Cannot write to ", path);
 		}
 		printHeader();
 	}
@@ -150,8 +152,8 @@ protected:
 
 	bool shouldThrow = false;
 
-	bool readyOutput(String path)
-	{
+	bool readyOutput(String path) {
+		Console.putln("opening file");
 		//outfp = fopen(std.string.toStringz(path), "w+");
 		outfp = new File(path);
 
