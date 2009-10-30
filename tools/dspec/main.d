@@ -34,8 +34,6 @@ class Opts : OptionParser {
 	);
 
 	void onI(string path) {
-
-		Console.putln("foo");
 		_path = path;
 	}
 
@@ -77,8 +75,6 @@ class Dspec : Application {
 			return;
 		}
 
-		Console.putln("filelist created");
-
 		Parser parser = new Parser();
 		if (!(parser.parseFiles(path, files)))
 		{
@@ -86,7 +82,7 @@ class Dspec : Application {
 			return;
 		}
 
-		Console.putln("done");
+		Console.putln("Test Routines Built: test.d in ", path);
 	}
 
 private:
