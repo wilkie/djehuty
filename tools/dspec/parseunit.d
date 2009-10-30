@@ -22,7 +22,7 @@ class ParseUnit
 		ClassInfo ci = this.classinfo;
 		String className = new String(ci.name);
 
-		Console.putln("CLASS: ", className.array);
+		//Console.putln("CLASS: ", className.array);
 
 		original = new AST(null,null);
 		parseTree = original;
@@ -32,7 +32,7 @@ class ParseUnit
 		{
 			className = new String(className[pos+1..className.length]);
 		}
-		Console.putln("CLASS: ", className.array);
+		//Console.putln("CLASS: ", className.array);
 
 		parseTree.name = className;
 
