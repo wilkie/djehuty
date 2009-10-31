@@ -316,6 +316,20 @@ class String {
 		}
 	}
 
+	// Description: Inserts a String at an arbitrary position.
+	void insertAt(String s, uint pos) {
+		if (pos >= this.length())
+			return;
+		String rest = new String(this.subString(pos));
+		this = this.subString(0, pos);
+		this.append(s);
+		this.append(rest);
+	}
+
+	void insertAt(string s, uint pos) {
+		insertAt(new String(s), pos);
+	}
+
 	// Description: Repeats a given string.
 	// Returns: s repeated n times.
 	static String repeat(String s, uint n) {
