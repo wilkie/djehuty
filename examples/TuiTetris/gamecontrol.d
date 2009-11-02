@@ -41,7 +41,7 @@ class GameControl : TuiWidget {
 		if (key.code == Key.Down) {
 			tmr.stop();
 			timerProc();
-			//tmr.start();
+			tmr.start();
 		}
 		else if (key.code == Key.Left) {
 			if (board.moveLeft()) {
