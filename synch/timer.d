@@ -89,12 +89,13 @@ protected:
 				sleep(_timer._interval);
 
 				_inCall.down();
-				if (_stop) { break; }
+				if (_stop || !_inited) { break; }
 				if (_timer.fire() == false) { break; }
 				_inCall.up();
 			}
 
 			_stop = true;
+			_inCall.up();
 		}
 
 		bool _stop;

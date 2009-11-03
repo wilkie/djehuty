@@ -630,6 +630,7 @@ void ConsolePutString(dchar[] chrs) {
 				if (goBackOneLine) {
 					ConsoleSetPosition(m_width - 1, m_y);
 				}
+				Curses.refresh();
 				return;
 			}
 		}

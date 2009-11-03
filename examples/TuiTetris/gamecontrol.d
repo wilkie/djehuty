@@ -38,12 +38,12 @@ class GameControl : TuiWidget {
 	}
 
 	override void onKeyDown(Key key) {
-		if (key.code == Key.Down) {
+		if (key.code == Key.Down || key.code == Key.J) {
 			tmr.stop();
 			timerProc();
-			//tmr.start();
+			tmr.start();
 		}
-		else if (key.code == Key.Left) {
+		else if (key.code == Key.Left || key.code == Key.H) {
 			if (board.moveLeft()) {
 				lock.down();
 				clearPiece();
@@ -51,7 +51,7 @@ class GameControl : TuiWidget {
 				lock.up();
 			}
 		}
-		else if (key.code == Key.Right) {
+		else if (key.code == Key.Right || key.code == Key.L) {
 			if (board.moveRight()) {
 				lock.down();
 				clearPiece();
@@ -59,7 +59,7 @@ class GameControl : TuiWidget {
 				lock.up();
 			}
 		}
-		else if (key.code == Key.Up) {
+		else if (key.code == Key.Up || key.code == Key.K) {
 			if (board.rotate()) {
 				lock.down();
 				clearPiece();
