@@ -31,43 +31,34 @@ char[] footer =
 `
 `;
 
-class Output
-{
-	this(String path)
-	{
-		if (!readyOutput(path))
-		{
+class Output {
+	this(String path) {
+		if (!readyOutput(path)) {
 			// Error: cannot write file
 			Console.putln("Error: Cannot write to ", path);
 		}
 		printHeader();
 	}
 
-	~this()
-	{
+	~this() {
 	}
 
-	void work(AST result)
-	{
+	void work(AST result) {
 		//Console.putln("Outputting ... ");
 		AST working = result;
 		AST node;
 
-		while(working !is null)
-		{
+		while(working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 					String name;
 					node.getValue(name);
 
 					//Console.putln("Tree: ", name.array);
 					//writefln(name);
 
-					switch(name.array)
-					{
+					switch(name.array) {
 						case "ParseDescribe":
 
 							tests = null;
@@ -89,21 +80,18 @@ class Output
 		}
 	}
 
-	bool finalizeOutput()
-	{
-		if (outfp is null)
-		{
+	bool finalizeOutput() {
+		if (outfp is null) {
 			return false;
 		}
 
 		//fwritef(outfp, "%s", "\nclass Tests\n{\n");
-		outfp.write("\nclass Tests\n{\n"c);
+		outfp.write("\nclass Tests {\n"c);
 
-		foreach(className; classes)
-		{
+		foreach(className; classes) {
 			outfp.write("\tstatic void test"c);
 			outfp.write(Unicode.toUtf8(className.array));
-			outfp.write("()\n\t{\n"c);
+			outfp.write("() {\n"c);
 			//fwritef(outfp, "%s", "\tstatic void test", className, "()\n\t{\n");
 			outfp.write("\t\t"c);
 			outfp.write(Unicode.toUtf8(className.array));
@@ -113,11 +101,10 @@ class Output
 			//fwritef(outfp, "%s", "\t}\n\n");
 		}
 
-		outfp.write("\tstatic void testAll()\n\t{\n"c);
+		outfp.write("\tstatic void testAll() {\n"c);
 		//fwritef(outfp, "%s", "\tstatic void testAll()\n\t{\n");
 
-		foreach(className; classes)
-		{
+		foreach(className; classes) {
 			outfp.write("\t\ttest"c);
 			outfp.write(Unicode.toUtf8(className.array));
 			outfp.write("();\n"c);
@@ -158,16 +145,14 @@ protected:
 		//outfp = fopen(std.string.toStringz(path), "w+");
 		outfp = new File(path);
 
-		if (outfp is null)
-		{
+		if (outfp is null) {
 			return false;
 		}
 
 		return true;
 	}
 
-	bool printHeader()
-	{
+	bool printHeader() {
 		//fwritef(outfp, "%s", header);
 		//Console.putln("output header");
 		outfp.write(header);
@@ -176,35 +161,28 @@ protected:
 
 	}
 
-	bool printDone(AST tree, String describing)
-	{
+	bool printDone(AST tree, String describing) {
 		AST working = tree;
 		AST node;
 
-		if (describing !is null)
-		{
+		if (describing !is null) {
 			print(new String("done before_") ~ describing);
 		}
-		else
-		{
+		else {
 			print("done before");
 		}
 
 		print("()\n\t{");
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					printContent(content, 3);
 				}
 			}
 
@@ -216,25 +194,19 @@ protected:
 		return true;
 	}
 
-	bool printImport(AST tree)
-	{
+	bool printImport(AST tree) {
 		AST working = tree;
 		AST node;
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					if (!(content == " testing.support"))
-					{
+					if (!(content == " testing.support")) {
 						print("import");
 						print(content);
 						print(";\n\n");
@@ -248,50 +220,42 @@ protected:
 		return true;
 	}
 
-	bool printIt(AST tree, String describing)
-	{
+	bool printIt(AST tree, String describing) {
 		AST working = tree;
 		AST node;
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 					String name;
 					node.getValue(name);
 
-					switch(name.array)
-					{
+					switch(name.array) {
 						case "Identifier":
 							String val;
 							node.right.getValue(val);
 
-							print("it ");
-							if (describing !is null)
-							{
+							print("\n\tit ");
+							if (describing !is null) {
 								val = describing ~ "_" ~ val;
 							}
 
-							print(val ~ "()\n\t{");
+							print(val ~ "() {\n");
 
-							print("before");
-							if (describing !is null)
-							{
+							print("\t\tbefore");
+							if (describing !is null) {
 								print(new String("_") ~ describing);
 							}
 							print("();\n");
 
-							if (describing is null)
-							{
+							if (describing is null) {
 								val = new String("_") ~ val;
 							}
 
 							tests ~= val;
 
-							print("try\n{");
+							print("\t\ttry {\n");
 							break;
 						case "LineNumber":
 							ulong val;
@@ -317,121 +281,101 @@ protected:
 							break;
 					}
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					printContent(content, 3);
 				}
 			}
 
 			working = working.left;
 		}
 
-		print("}catch(Exception _exception_)\n{\n");
-		if (shouldThrow)
-		{
+		print("\t\t}\n\t\tcatch(Exception _exception_) {\n");
+		if (shouldThrow) {
 			//Console.putln("!!", exception.array);
-			if (exception == "")
-			{
-				print("return it.does");
+			if (exception == "") {
+				print("\t\t\treturn it.does");
 			}
-			else
-			{
-				print("if (_exception_.msg != ");
+			else {
+				print("\t\t\tif (_exception_.msg != ");
 				print(exception);
-				print(") { return it.doesnt; } return it.does");
+				print(") { return it.doesnt; }\n\t\t\treturn it.does");
 			}
 		}
-		else
-		{
-			print("return it.doesnt");
+		else {
+			print("\t\t\treturn it.doesnt");
 		}
 
-		print(";\n}\n\treturn it.does;\n\t}");
+		print(";\n\t\t}\n\t\treturn it.does;\n\t}\n");
 
 		return true;
 	}
 
-	bool printShould(AST tree)
-	{
+	bool printShould(AST tree) {
 		AST working = tree;
 		AST node;
 
-		print("if(!(");
+		print("\t\t\tif(!(");
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					printContent(content, 0);
 				}
 			}
 
 			working = working.left;
 		}
 
-		print("))\n\t{\n\t\treturn it.doesnt;\n\t}\n");
+		print(")) {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
 
-	bool printShouldNot(AST tree)
-	{
+	bool printShouldNot(AST tree) {
 		AST working = tree;
 		AST node;
 
-		print("if(");
+		print("\t\t\tif(");
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					printContent(content, 0);
 				}
 			}
 
 			working = working.left;
 		}
 
-		print(")\n{ return it.doesnt; }\n");
+		print(") {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
 
-	bool printShouldThrow(AST tree)
-	{
+	bool printShouldThrow(AST tree) {
 		AST working = tree;
 		AST node;
 
 		exception = new String("");
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
 					exception = content;
@@ -446,8 +390,7 @@ protected:
 		return true;
 	}
 
-	bool printDescribeSection(AST tree)
-	{
+	bool printDescribeSection(AST tree) {
 		AST working = tree;
 		AST node;
 
@@ -455,18 +398,14 @@ protected:
 
 		bool hasDone = false;
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 					String name;
 					node.getValue(name);
 
-					switch(name.array)
-					{
+					switch(name.array) {
 						case "Identifier":
 							node.right.getValue(describing);
 							break;
@@ -481,27 +420,24 @@ protected:
 							break;
 					}
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					printContent(content, 3);
 				}
 			}
 
 			working = working.left;
 		}
 
-		if (!hasDone)
-		{
-			print(new String("done before_") ~ describing ~ "() { }\n");
+		if (!hasDone) {
+			print(new String("\n\tdone before_") ~ describing ~ "() {\n\t}\n");
 		}
 
 		return true;
 	}
 
-	bool printDescribe(AST tree)
-	{
+	bool printDescribe(AST tree) {
 		AST working = tree;
 		AST node;
 
@@ -509,24 +445,19 @@ protected:
 
 		String val;
 
-		while (working !is null)
-		{
+		while (working !is null) {
 			node = working.right;
-			if (node !is null)
-			{
-				if (node.valueType == AST.ValueType.Name)
-				{
+			if (node !is null) {
+				if (node.valueType == AST.ValueType.Name) {
 					String name;
 					node.getValue(name);
 
-					switch(name.array)
-					{
+					switch(name.array) {
 						case "Identifier":
 							node.right.getValue(val);
 							//Console.putln("ID: ", val.array);
 
-							if (val[0] >= 'a' && val[0] <= 'z')
-							{
+							if (val[0] >= 'a' && val[0] <= 'z') {
 								val.setCharAt(0, val[0] - 32);
 							}
 							//Console.putln("ID: ", val.array, " len ", val.length);
@@ -534,7 +465,7 @@ protected:
 							val ~= "Tester";
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
-							print(new String("class ") ~ val ~ "\n{");
+							print(new String("class ") ~ val ~ " {\n");
 							Console.putln("Creating ", val);
 							className = val;
 							break;
@@ -552,23 +483,24 @@ protected:
 							break;
 					}
 				}
-				else
-				{
+				else {
 					String content;
 					node.getValue(content);
-					print(content);
+					if (content.trim != "") {
+						print("\n");
+						printContent(content, 1);
+					}
 				}
 			}
 
 			working = working.left;
 		}
 
-		if (!hasDone)
-		{
-			print("done before() { }\n\n");
+		if (!hasDone) {
+			print("\n\tdone before() {\n\t}\n\n");
 		}
 
-		print("this() { before(); }\n\n");
+		print("\tthis() {\n\t\tbefore();\n\t}\n");
 
 		// do tests
 
@@ -577,28 +509,26 @@ protected:
 		//Console.putln("className::", classNameFixed.array);
 		//Console.putln("className::", className[0..className.length-6]);
 
-		print ("\n\tstatic void test()\n\t{\n");
+		print ("\n\tstatic void test() {\n");
 
-		print (new String("\t") ~ className ~ " tester = new " ~ className ~ "();\n\n");
-		print (new String("\tTest test = new Test(\"") ~ classNameFixed ~ "\");\n\n");
-		print (new String("\tit result;\n\n"));
+		print (new String("\t\t") ~ className ~ " tester = new " ~ className ~ "();\n\n");
+		print (new String("\t\tTest test = new Test(\"") ~ classNameFixed ~ "\");\n\n");
+		print (new String("\t\tit result;\n\n"));
 
 		String currentSection = new String("");
 
-		foreach(i, test; tests)
-		{
+		foreach(i, test; tests) {
 			int pos = test.find(new String("_"));
 			String section = new String(test[0..pos]);
 
-			if (currentSection != section)
-			{
-				print(new String("\ttest.logSubset(\"") ~ section ~ "\");\n\n");
+			if (currentSection != section) {
+				print(new String("\t\ttest.logSubset(\"") ~ section ~ "\");\n\n");
 				currentSection = section;
 			}
 
-			print(new String("\ttester = new ") ~ className ~ "();\n\n");
-			print(new String("\tresult = tester.") ~ test ~ "();\n\t");
-			print(new String("\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
+			print(new String("\t\ttester = new ") ~ className ~ "();\n\n");
+			print(new String("\t\tresult = tester.") ~ test ~ "();\n");
+			print(new String("\t\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
 			//Console.putln(lines);
 			//Console.putln(lines[i]);
 			print(new String(cast(long)lines[i]));
@@ -606,24 +536,66 @@ protected:
 			print("\");\n\n");
 		}
 
-		print("\n\t}");
+		print("\t}");
 
-		print("\n}");
+		print("\n}\n\n");
 
 		classes ~= classNameFixed;
 
 		return true;
 	}
 
-	bool print(string stuff)
-	{
+	bool print(string stuff) {
 		return outfp.write(Unicode.toUtf8(stuff));
 		//fwritef(outfp, "%s", stuff);
 		//return true;
 	}
 
-	bool print(String stuff)
-	{
+	bool print(String stuff) {
 		return outfp.write(Unicode.toUtf8(stuff.array));
+	}
+	
+	void printContent(String content, int tabs) {
+		content = content.trim;
+		if (content == "") { return; }
+		int pos = content.find("\n");
+		while(pos != -1) {
+			if (tabs > 0) {
+				switch(tabs) {
+					case 3:
+						print("\t");
+					case 2:
+						print("\t");
+					case 1:
+						print("\t");
+					default:
+						break;
+				}
+				print(content.subString(0, pos));
+				print("\n");
+			}
+			else {
+				print(content.subString(0, pos));
+			}
+			content = content.subString(pos+1).trim;
+			pos = content.find("\n");
+		}
+		if (tabs > 0) {
+			switch(tabs) {
+				case 3:
+					print("\t");
+				case 2:
+					print("\t");
+				case 1:
+					print("\t");
+				default:
+					break;
+			}
+			print(content);
+			print("\n");
+		}
+		else {
+			print(content);
+		}
 	}
 }

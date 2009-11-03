@@ -352,6 +352,10 @@ class String {
 
 		int startpos;
 		int endpos;
+		
+		if (_data.length == 0) {
+			return new String("");
+		}
 
 		for(startpos=0; startpos<_data.length; startpos++) {
 			if (_data[startpos] != ' ' &&
@@ -375,6 +379,14 @@ class String {
 		endpos++;
 
 		String ret = new String("");
+		if (endpos > _data.length) {
+			endpos = _data.length;
+		}
+
+		if (startpos > endpos) {
+			return new String("");
+		}
+		
 		ret._data = _data[startpos..endpos];
 		return ret;
 	}
@@ -1123,3 +1135,18 @@ void strlwr(char* str) {
 	}
 }
 
+string trim(string chrs) {
+	size_t idx_s, idx_e;
+
+	idx_e = chrs.length;
+
+	while (idx_s < chrs.length && (chrs[idx_s] == ' ' || chrs[idx_s] == '\t' || chrs[idx_s] == '\n' || chrs[idx_s] == '\r')) {
+		idx_s++;
+	}
+
+	while (idx_e > 0 && (chrs[idx_e-1] == ' ' || chrs[idx_e-1] == '\t' || chrs[idx_e-1] == '\n' || chrs[idx_e-1] == '\r')) {
+		idx_e--;
+	}
+
+	return chrs[idx_s..idx_e].dup;
+}
