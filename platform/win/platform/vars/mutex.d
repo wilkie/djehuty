@@ -14,4 +14,6 @@ import platform.win.common;
 
 struct MutexPlatformVars {
 	CRITICAL_SECTION* _mutex;
+
+	HANDLE _semaphore;
 }
