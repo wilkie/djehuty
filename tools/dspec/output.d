@@ -43,7 +43,9 @@ class Output {
 	~this() {
 	}
 
-	void work(AST result) {
+	void work(AST result, String path) {
+		specName = new String(path);
+
 		//Console.putln("Outputting ... ");
 		AST working = result;
 		AST node;
@@ -127,6 +129,8 @@ class Output {
 	}
 
 protected:
+
+	String specName;
 
 	File outfp;
 	//_iobuf* outfp;
@@ -512,7 +516,8 @@ protected:
 		print ("\n\tstatic void test() {\n");
 
 		print (new String("\t\t") ~ className ~ " tester = new " ~ className ~ "();\n\n");
-		print (new String("\t\tTest test = new Test(\"") ~ classNameFixed ~ "\");\n\n");
+		print (new String("\t\tTest test = new Test(\"") ~ classNameFixed ~ "\", \"");
+		print (specName ~ "\");\n\n");
 		print (new String("\t\tit result;\n\n"));
 
 		String currentSection = new String("");
@@ -536,7 +541,7 @@ protected:
 			print("\");\n\n");
 		}
 
-		print("\t}");
+		print("\t\ttest.finish();\n\t}");
 
 		print("\n}\n\n");
 

@@ -10,8 +10,9 @@ enum it {
 }
 
 class Test {
-	this(char[] testClass) {
+	this(char[] testClass, char[] specFile = "") {
 		currentTest = testClass;
+		this.specFile = specFile;
 	}
 
 	void logSubset(char[] subsetName) {
@@ -21,20 +22,42 @@ class Test {
 	void logResult(it result, char[] msg, char[] lineNumber) {
 		if (result == it.does) {
 			// success
-			Console.setColor(fgColor.BrightGreen);
-			Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
-			Console.setColor(fgColor.White);
+			//Console.setColor(fgColor.BrightGreen);
+			//Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
+			//Console.setColor(fgColor.White);
 
 			testsOk++;
+			classOk++;
 		}
 		else {
 			// fail
 			Console.setColor(fgColor.BrightRed);
-			Console.putln("FAILED : (", lineNumber, ") : ", currentTest, " ", msg);
+			Console.putln("FAILED : (", specFile, ":", lineNumber, ")");
+			Console.putln("       : ", currentTest, " ", msg);
+			Console.putln();
 			Console.setColor(fgColor.White);
 
 			testsFailcopter++;
+			classFail++;
 		}
+	}
+
+	void finish() {
+		if (classFail == 0) {
+			// success
+			Console.setColor(fgColor.BrightGreen);
+			Console.putln("  OK   : ", currentTest, " (", classOk, " out of ", classOk + classFail, ")");
+			Console.setColor(fgColor.White);
+		}
+		else {
+			Console.setColor(fgColor.BrightRed);
+			Console.putln("FAILED : ", currentTest, " (", classOk, " out of ", classOk + classFail, ")");
+			Console.putln();
+			Console.setColor(fgColor.White);
+		}
+
+		classOk = 0;
+		classFail = 0;
 	}
 
 	static void done() {
@@ -76,6 +99,10 @@ private:
 	static int lastOk;
 	static int lastFailcopter;
 
+	int classFail;
+	int classOk;
+
 	char[] currentTest;
+	char[] specFile;
 	char[] currentRegion;
 }
