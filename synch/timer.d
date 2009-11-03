@@ -34,12 +34,7 @@ class Timer : Dispatcher {
 			stop();
 		}
 
-		_thread = new timer_thread();
-
-		_thread._timer = this;
-
-		_thread._inCall = new Semaphore();
-		_thread._inCall.init(1);
+		_thread = new timer_thread(this);
 
 		_started = true;
 
@@ -70,6 +65,12 @@ protected:
 
 	class timer_thread : Thread {
 		this() {
+			_inCall = new Semaphore(1);
+		}
+
+		this(Timer t) {
+			_timer = t;
+			this();
 		}
 
 		override void pleaseStop() {
