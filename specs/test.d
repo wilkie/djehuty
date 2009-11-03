@@ -384,7 +384,7 @@ class StringTester {
 	static void test() {
 		StringTester tester = new StringTester();
 
-		Test test = new Test("String");
+		Test test = new Test("String", "specs/core/string.d");
 
 		it result;
 
@@ -512,6 +512,7 @@ class StringTester {
 		result = tester.find_should_work_at_the_end_of_the_string();
 		test.logResult(result, "find should work at the end of the string", "162");
 
+		test.finish();
 	}
 }
 
@@ -759,7 +760,7 @@ class UnicodeTester {
 	static void test() {
 		UnicodeTester tester = new UnicodeTester();
 
-		Test test = new Test("Unicode");
+		Test test = new Test("Unicode", "specs/core/unicode.d");
 
 		it result;
 
@@ -837,6 +838,7 @@ class UnicodeTester {
 		result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
 		test.logResult(result, "toUtfChars should account for combining marks for utf8", "107");
 
+		test.finish();
 	}
 }
 
@@ -1236,7 +1238,7 @@ class RegexTester {
 	static void test() {
 		RegexTester tester = new RegexTester();
 
-		Test test = new Test("Regex");
+		Test test = new Test("Regex", "specs/core/regex.d");
 
 		it result;
 
@@ -1347,6 +1349,7 @@ class RegexTester {
 		result = tester.eval_should_handle_complicated_constructions();
 		test.logResult(result, "eval should handle complicated constructions", "159");
 
+		test.finish();
 	}
 }
 
@@ -1474,7 +1477,7 @@ class DigestTester {
 	static void test() {
 		DigestTester tester = new DigestTester();
 
-		Test test = new Test("Digest");
+		Test test = new Test("Digest", "specs/hashes/digest.d");
 
 		it result;
 
@@ -1512,6 +1515,7 @@ class DigestTester {
 		result = tester.comparison_should_work_for_equals_function();
 		test.logResult(result, "comparison should work for equals function", "48");
 
+		test.finish();
 	}
 }
 
@@ -1600,7 +1604,7 @@ class MD5Tester {
 	static void test() {
 		MD5Tester tester = new MD5Tester();
 
-		Test test = new Test("MD5");
+		Test test = new Test("MD5", "specs/hashes/md5.d");
 
 		it result;
 
@@ -1626,6 +1630,7 @@ class MD5Tester {
 		result = tester.hash_should_work_on_byte_arrays();
 		test.logResult(result, "hash should work on byte arrays", "25");
 
+		test.finish();
 	}
 }
 
@@ -1691,7 +1696,7 @@ class SHA1Tester {
 	static void test() {
 		SHA1Tester tester = new SHA1Tester();
 
-		Test test = new Test("SHA1");
+		Test test = new Test("SHA1", "specs/hashes/sha1.d");
 
 		it result;
 
@@ -1712,6 +1717,7 @@ class SHA1Tester {
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "19");
 
+		test.finish();
 	}
 }
 
@@ -1777,7 +1783,7 @@ class SHA224Tester {
 	static void test() {
 		SHA224Tester tester = new SHA224Tester();
 
-		Test test = new Test("SHA224");
+		Test test = new Test("SHA224", "specs/hashes/sha224.d");
 
 		it result;
 
@@ -1798,6 +1804,7 @@ class SHA224Tester {
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "19");
 
+		test.finish();
 	}
 }
 
@@ -1863,7 +1870,7 @@ class SHA256Tester {
 	static void test() {
 		SHA256Tester tester = new SHA256Tester();
 
-		Test test = new Test("SHA256");
+		Test test = new Test("SHA256", "specs/hashes/sha256.d");
 
 		it result;
 
@@ -1884,6 +1891,7 @@ class SHA256Tester {
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "19");
 
+		test.finish();
 	}
 }
 
