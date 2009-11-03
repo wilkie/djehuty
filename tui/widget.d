@@ -219,29 +219,29 @@ protected:
 			putlnv(vars);
 		}
 
-		// Description: This function is for printing strings within widget bounds.
-		// str: The String to print.string idget bounds
-		final void putString(String str) {
+		final void putAt(uint x, uint y, ...) {
+			Variadic vars = new Variadic(_arguments, _argptr);
+
+			putStringAt(x, y, new String(toStrv(vars)));
+		}
+
+		final void putStringAt(int x, int y, String str) {
 			if (widget !is TuiWidget.widgetClippingContext) {
 				// We need to set up the current widget that wants to draw so that widgets
 				// above this one are clipped.
 			}
+			
+			x += widget._base_x + widget._x;
+			y += widget._base_y + widget._y;
 
-			// Clip to the bounds of the control and the owner container
-			Coord pos = io.console.Console.position;
-
-			int x;
-			int y;
 			int r;
 			int b;
 
 			uint leftPos = 0;
 			uint rightPos = 0;
 
-			x = pos.x;
-			y = pos.y;
-			r = pos.x + str.length;
-			b = pos.y + 1;
+			r = x + str.length;
+			b = y + 1;
 
 			uint global_x = widget._base_x + widget._x;
 			uint global_y = widget._base_y + widget._y;
@@ -266,8 +266,8 @@ protected:
 			// Clip string (left edge)
 			if (x < global_x) {
 				leftPos = global_x - x;
-				pos.x = 0;
-				io.console.Console.position = pos;
+				x = 0;
+				io.console.Console.position = [x, y];
 			}
 
 			// Clip string (right edge)
@@ -277,7 +277,23 @@ protected:
 
 			str = str.subString(leftPos, str.length - rightPos - leftPos);
 
-			io.console.Console.putString(str);
+			io.console.Console.putStringAt(x, y, str);
+		}
+
+		// Description: This function is for printing strings within widget bounds.
+		// str: The String to print.string idget bounds
+		final void putString(String str) {
+			// Clip to the bounds of the control and the owner container
+			Coord pos = io.console.Console.position;
+
+			// Get x and y relative to top left of widget
+			uint global_x = widget._base_x + widget._x;
+			uint global_y = widget._base_y + widget._y;
+			
+			pos.x = pos.x - global_x;
+			pos.y = pos.y - global_y;
+
+			putStringAt(pos.x, pos.y, str);
 		}
 
 		// Description: This function is for printing strings within widget bounds.
