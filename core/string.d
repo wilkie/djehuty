@@ -317,17 +317,21 @@ class String {
 	}
 
 	// Description: Inserts a String at an arbitrary position.
-	void insertAt(String s, uint pos) {
+	String insertAt(String s, uint pos) {
 		if (pos >= this.length())
-			return;
-		String rest = new String(this.subString(pos));
-		this = this.subString(0, pos);
-		this.append(s);
-		this.append(rest);
+			return this;
+
+		String ret = new String();
+
+		ret.append(this.subString(0, pos));
+		ret.append(s);
+		ret.append(this.subString(pos));
+
+		return ret;
 	}
 
-	void insertAt(string s, uint pos) {
-		insertAt(new String(s), pos);
+	String insertAt(string s, uint pos) {
+		return insertAt(new String(s), pos);
 	}
 
 	// Description: Repeats a given string.
