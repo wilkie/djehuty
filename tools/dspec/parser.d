@@ -11,20 +11,16 @@ import feeder;
 import parseunit;
 import ast;
 
-class Parser
-{
-	bool parseFiles(String outputPath, FileList files)
-	{
+class Parser {
+	bool parseFiles(String outputPath, FileList files) {
 		output = new Output(outputPath ~ "test.d");
 
-		foreach(f; files)
-		{
-			if (!(parseFile(f)))
-			{
+		foreach(f; files) {
+			if (!(parseFile(f))) {
 				return false;
 			}
 		}
-		
+
 		output.finalizeOutput();
 
 		return true;
@@ -34,8 +30,7 @@ protected:
 
 	Output output;
 
-	bool parseFile(String path)
-	{		
+	bool parseFile(String path) {
 		Feeder feeder = new Feeder(path);
 
 		// write out intentions
@@ -48,10 +43,10 @@ protected:
 		//Console.putln("Begin Parsing ... ", path.array);
 
 		AST finished = parseUnit.parse();
-		
+
 		//Console.putln("Done Parsing");
 
-		output.work(finished);
+		output.work(finished, path);
 
 		return true;
 	}

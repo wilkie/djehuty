@@ -53,6 +53,10 @@ class Feeder {
 	uint getLineNumber() {
 		return lineNumber;
 	}
+	
+	String fileName() {
+		return fp.name;
+	}
 
 protected:
 
