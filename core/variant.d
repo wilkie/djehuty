@@ -51,6 +51,9 @@ enum Type {
 	Char,
 	Wchar,
 	Dchar,
+	
+	// Boolean
+	Bool,
 
 	// Abstract Data Types
 	Struct,
@@ -147,6 +150,13 @@ struct Variant {
 				return toStr(data.l);
 			case Type.Ulong:
 				return toStr(data.ul);
+			case Type.Bool:
+				if (data.truth) {
+					return "true";
+				}
+				else {
+					return "false";
+				}
 			default:
 				break;
 		}
@@ -187,6 +197,8 @@ union VariantData {
 
 	Object reference;
 	ubyte[] blob;
+	
+	bool truth;
 
 	Variant[] array;
 }
@@ -640,6 +652,23 @@ protected:
 				else {
 					// string
 					ret.data.ds = (cast(dchar*)arr.ptr)[0..arr.length];
+				}
+				break;
+			case "b":	// bool
+				ret.type = Type.Bool;
+				if (!ret.isArray) {
+					ret.data.truth = va_arg!(bool)(ptr);
+				}
+				else {
+					bool* arrPtr = cast(bool*)arr.ptr;
+
+					for (size_t i; i < arr.length; i++) {
+						Variant val;
+						val.type = Type.Bool;
+						val.data.truth = *arrPtr;
+						arrPtr++;
+						ret.data.array[i] = val;
+					}
 				}
 				break;
 			case "q":	// cfloat

@@ -14,917 +14,6 @@ import djehuty;
 
 import core.string;
 
-import core.regex;
-
-class RegexTester
-{
-	
-		it eval_should_handle_kleene_star()
-	{before_eval();
-try
-{
-			String str = Regex.eval("<EM>some text</EM>", `<.*>`);
-			if(!(str == "<EM>some text</EM>"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_lazy_kleene_star()
-	{before_eval();
-try
-{
-			String str = Regex.eval("<EM>some text</EM>", `<.*?>`);
-			if(!(str == "<EM>"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_kleene_plus()
-	{before_eval();
-try
-{
-			String str = Regex.eval("<>EM>some text</EM>", `<.+>`);
-			if(!(str == "<>EM>some text</EM>"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_lazy_kleene_plus()
-	{before_eval();
-try
-{
-			String str = Regex.eval("<>EM>some text</EM>", `<.+?>`);
-			if(!(str == "<>EM>"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_options()
-	{before_eval();
-try
-{
-			String str = Regex.eval("abc", `a?abc`);
-			if(!(str == "abc"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("aabc", `a?abc`);
-			if(!(str == "aabc"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("ababbababababbbc", `(a?b)*c`);
-			if(!(str == "ababbababababbbc"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_optional_groups()
-	{before_eval();
-try
-{
-			String str = Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
-			if(!(str == "abcdefeggfoo"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_union_at_base_level()
-	{before_eval();
-try
-{
-			String str = Regex.eval("dogbert", `cat|dog`);
-			if(!(str == "dog"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_union_at_group_level()
-	{before_eval();
-try
-{
-			String str = Regex.eval("bacd", `(bac|b)acd`);
-			if(!(str == "bacd"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_union_with_kleene_star()
-	{before_eval();
-try
-{
-			String str = Regex.eval("catdogdogcatbert", `(cat|dog)*`);
-			if(!(str == "catdogdogcat"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_nested_groups()
-	{before_eval();
-try
-{
-			String str = Regex.eval("acatbert", `a(cat(bert))`);
-			if(!(str == "acatbert"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_1 == "catbert"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_2 == "bert"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_nested_groups_with_union()
-	{before_eval();
-try
-{
-			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
-			if(!(str == "dogpoo"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_character_classes()
-	{before_eval();
-try
-{
-			String str = Regex.eval("daccabaaccbg", `d[abc]*g`);
-			if(!(str == "daccabaaccbg"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("daccabadaccbg", `d[abc]*g`);
-			if(!(str == "daccbg"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("daccabadaccbg", `^d[abc]*g`);
-			if(!(str is null))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_inverse_character_classes()
-	{before_eval();
-try
-{
-			String str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*g`);
-			if(!(str == "ddeffegggdefeddfeg"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*?g`);
-			if(!(str == "ddeffeg"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("ddeffeagggdefeddfeg", `d[^abc]*?g`);
-			if(!(str == "defeddfeg"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_dollar_sign()
-	{before_eval();
-try
-{
-			String str = Regex.eval("root woot moot foot", `.oot$`);
-			if(!(str == "foot"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval("root\nwoot\nmoot\nfoot", `.oot$`);
-			if(!(str == "root"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_beginning_of_line_caret()
-	{before_eval();
-try
-{
-			String str = Regex.eval("root woot moot foot", `^.oot`);
-			if(!(str == "root"))
-	{
-		return it.doesnt;
-	}
-
-
-			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`, "m");
-			if(!(str == "woot"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_group_consumption()
-	{before_eval();
-try
-{
-			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
-			if(!(str == "dogpoo"))
-	{
-		return it.doesnt;
-	}
-
-
-			if(!(_1 == "dogpoo"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_2 == "poo"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_group_reconsumption()
-	{before_eval();
-try
-{
-			String str = Regex.eval("bertpoopoobertpoo", `(bert|poo)+`);
-			if(!(str == "bertpoopoobertpoo"))
-	{
-		return it.doesnt;
-	}
-
-
-			if(!(_1 == "poo"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_backreferences()
-	{before_eval();
-try
-{
-			String str = Regex.eval("dogpoo=dogpoo", `(dogpoo)=\1`);
-			if(!(str == "dogpoo=dogpoo"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_1 == "dogpoo"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_forwardreferences()
-	{before_eval();
-try
-{
-			String str = Regex.eval("oneonetwo", `(\2two|(one))+`);
-			if(!(str == "oneonetwo"))
-	{
-		return it.doesnt;
-	}
-
-
-			if(!(_1 == "onetwo"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_2 == "one"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_comments()
-	{before_eval();
-try
-{
-			String str = Regex.eval("bleh", `bl(?#comment here)eh`);
-			if(!(str == "bleh"))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it eval_should_handle_complicated_constructions()
-	{before_eval();
-try
-{
-			String str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
-			if(!(str == `#line 43 "foo\bar"`))
-	{
-		return it.doesnt;
-	}
-
-
-			if(!(_1 == "43"))
-	{
-		return it.doesnt;
-	}
-
-			if(!(_2 == `"foo\bar"`))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}	done before_eval() { }
-done before() { }
-
-this() { before(); }
-
-
-	static void test()
-	{
-	RegexTester tester = new RegexTester();
-
-	Test test = new Test("Regex");
-
-	it result;
-
-	test.logSubset("eval");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_kleene_star();
-		test.logResult(result, "eval should handle kleene star", "12");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_lazy_kleene_star();
-		test.logResult(result, "eval should handle lazy kleene star", "18");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_kleene_plus();
-		test.logResult(result, "eval should handle kleene plus", "24");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_lazy_kleene_plus();
-		test.logResult(result, "eval should handle lazy kleene plus", "30");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_options();
-		test.logResult(result, "eval should handle options", "36");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_optional_groups();
-		test.logResult(result, "eval should handle optional groups", "48");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_union_at_base_level();
-		test.logResult(result, "eval should handle union at base level", "54");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_union_at_group_level();
-		test.logResult(result, "eval should handle union at group level", "60");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_union_with_kleene_star();
-		test.logResult(result, "eval should handle union with kleene star", "66");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_nested_groups();
-		test.logResult(result, "eval should handle nested groups", "72");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_nested_groups_with_union();
-		test.logResult(result, "eval should handle nested groups with union", "80");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_character_classes();
-		test.logResult(result, "eval should handle character classes", "86");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_inverse_character_classes();
-		test.logResult(result, "eval should handle inverse character classes", "98");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_dollar_sign();
-		test.logResult(result, "eval should handle dollar sign", "109");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_beginning_of_line_caret();
-		test.logResult(result, "eval should handle beginning of line caret", "117");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_group_consumption();
-		test.logResult(result, "eval should handle group consumption", "125");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_group_reconsumption();
-		test.logResult(result, "eval should handle group reconsumption", "133");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_backreferences();
-		test.logResult(result, "eval should handle backreferences", "140");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_forwardreferences();
-		test.logResult(result, "eval should handle forwardreferences", "146");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_comments();
-		test.logResult(result, "eval should handle comments", "154");
-
-	tester = new RegexTester();
-
-	result = tester.eval_should_handle_complicated_constructions();
-		test.logResult(result, "eval should handle complicated constructions", "159");
-
-
-	}
-}import core.unicode;
-
-import core.string;
-
-class UnicodeTester
-{
-	dstring utf32 = "hello\u015Bworld";
-	wstring utf16 = "hello\u015Bworld";
-	string utf8 = "hello\u015Bworld";
-
-	dstring utf32marks = "hello\u0364world";
-	wstring utf16marks = "hello\u0364world";
-	string utf8marks = "hello\u0364world";
-
-	dstring empty32 = "";
-	wstring empty16 = "";
-	string empty8 = "";
-
-	
-		it utflen_should_be_the_same_for_utf8_as_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf8);
-			uint compare = Unicode.utflen(utf32);
-			if(!(length == compare))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_be_the_same_for_utf16_as_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf16);
-			uint compare = Unicode.utflen(utf32);
-			if(!(length == compare))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf8()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf8marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf16()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf16marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_combining_marks_for_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(utf32marks);
-			if(!(length == 10))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf8()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty32);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf16()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty16);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it utflen_should_account_for_empty_strings_for_utf32()
-	{before_utflen();
-try
-{
-			uint length = Unicode.utflen(empty8);
-			if(!(length == 0))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}	done before_utflen() { }
-
-	
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf32marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf16()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf16marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it toUtfChars_should_work_as_expected_for_single_characters_for_utf8()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf8marks);
-			if(!(chrs.length == 1))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf32()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf32marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf16()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf16marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}
-		it toUtfChars_should_account_for_combining_marks_for_utf8()
-	{before_toUtfChars();
-try
-{
-			dchar chrs[] = Unicode.toUtf32Chars(utf8marks[4..$]);
-			if(!(chrs.length == 2))
-	{
-		return it.doesnt;
-	}
-
-		}catch(Exception _exception_)
-{
-return it.doesnt;
-}
-	return it.does;
-	}	done before_toUtfChars() { }
-done before() { }
-
-this() { before(); }
-
-
-	static void test()
-	{
-	UnicodeTester tester = new UnicodeTester();
-
-	Test test = new Test("Unicode");
-
-	it result;
-
-	test.logSubset("utflen");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
-		test.logResult(result, "utflen should be the same for utf8 as utf32", "24");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
-		test.logResult(result, "utflen should be the same for utf16 as utf32", "31");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "utflen should account for combining marks for utf8", "38");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "utflen should account for combining marks for utf16", "44");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "utflen should account for combining marks for utf32", "50");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf8();
-		test.logResult(result, "utflen should account for empty strings for utf8", "56");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf16();
-		test.logResult(result, "utflen should account for empty strings for utf16", "62");
-
-	tester = new UnicodeTester();
-
-	result = tester.utflen_should_account_for_empty_strings_for_utf32();
-		test.logResult(result, "utflen should account for empty strings for utf32", "68");
-
-	test.logSubset("toUtfChars");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "77");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "83");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
-		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "89");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
-		test.logResult(result, "toUtfChars should account for combining marks for utf32", "95");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
-		test.logResult(result, "toUtfChars should account for combining marks for utf16", "101");
-
-	tester = new UnicodeTester();
-
-	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
-		test.logResult(result, "toUtfChars should account for combining marks for utf8", "107");
-
-
-	}
-}import core.string;
-
 class StringTester
 {
 	
@@ -1463,6 +552,917 @@ this() { before(); }
 
 	result = tester.find_should_work_at_the_end_of_the_string();
 		test.logResult(result, "find should work at the end of the string", "162");
+
+
+	}
+}import core.unicode;
+
+import core.string;
+
+class UnicodeTester
+{
+	dstring utf32 = "hello\u015Bworld";
+	wstring utf16 = "hello\u015Bworld";
+	string utf8 = "hello\u015Bworld";
+
+	dstring utf32marks = "hello\u0364world";
+	wstring utf16marks = "hello\u0364world";
+	string utf8marks = "hello\u0364world";
+
+	dstring empty32 = "";
+	wstring empty16 = "";
+	string empty8 = "";
+
+	
+		it utflen_should_be_the_same_for_utf8_as_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf8);
+			uint compare = Unicode.utflen(utf32);
+			if(!(length == compare))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_be_the_same_for_utf16_as_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf16);
+			uint compare = Unicode.utflen(utf32);
+			if(!(length == compare))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf8()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf8marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf16()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf16marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_combining_marks_for_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(utf32marks);
+			if(!(length == 10))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf8()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty32);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf16()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty16);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it utflen_should_account_for_empty_strings_for_utf32()
+	{before_utflen();
+try
+{
+			uint length = Unicode.utflen(empty8);
+			if(!(length == 0))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_utflen() { }
+
+	
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf32()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf32marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf16()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf16marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_work_as_expected_for_single_characters_for_utf8()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf8marks);
+			if(!(chrs.length == 1))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf32()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf32marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf16()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf16marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it toUtfChars_should_account_for_combining_marks_for_utf8()
+	{before_toUtfChars();
+try
+{
+			dchar chrs[] = Unicode.toUtf32Chars(utf8marks[4..$]);
+			if(!(chrs.length == 2))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_toUtfChars() { }
+done before() { }
+
+this() { before(); }
+
+
+	static void test()
+	{
+	UnicodeTester tester = new UnicodeTester();
+
+	Test test = new Test("Unicode");
+
+	it result;
+
+	test.logSubset("utflen");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_be_the_same_for_utf8_as_utf32();
+		test.logResult(result, "utflen should be the same for utf8 as utf32", "24");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_be_the_same_for_utf16_as_utf32();
+		test.logResult(result, "utflen should be the same for utf16 as utf32", "31");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf8();
+		test.logResult(result, "utflen should account for combining marks for utf8", "38");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf16();
+		test.logResult(result, "utflen should account for combining marks for utf16", "44");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_combining_marks_for_utf32();
+		test.logResult(result, "utflen should account for combining marks for utf32", "50");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf8();
+		test.logResult(result, "utflen should account for empty strings for utf8", "56");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf16();
+		test.logResult(result, "utflen should account for empty strings for utf16", "62");
+
+	tester = new UnicodeTester();
+
+	result = tester.utflen_should_account_for_empty_strings_for_utf32();
+		test.logResult(result, "utflen should account for empty strings for utf32", "68");
+
+	test.logSubset("toUtfChars");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf32();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf32", "77");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf16();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf16", "83");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_work_as_expected_for_single_characters_for_utf8();
+		test.logResult(result, "toUtfChars should work as expected for single characters for utf8", "89");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf32();
+		test.logResult(result, "toUtfChars should account for combining marks for utf32", "95");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf16();
+		test.logResult(result, "toUtfChars should account for combining marks for utf16", "101");
+
+	tester = new UnicodeTester();
+
+	result = tester.toUtfChars_should_account_for_combining_marks_for_utf8();
+		test.logResult(result, "toUtfChars should account for combining marks for utf8", "107");
+
+
+	}
+}import core.string;
+
+import core.regex;
+
+class RegexTester
+{
+	
+		it eval_should_handle_kleene_star()
+	{before_eval();
+try
+{
+			String str = Regex.eval("<EM>some text</EM>", `<.*>`);
+			if(!(str == "<EM>some text</EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_lazy_kleene_star()
+	{before_eval();
+try
+{
+			String str = Regex.eval("<EM>some text</EM>", `<.*?>`);
+			if(!(str == "<EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_kleene_plus()
+	{before_eval();
+try
+{
+			String str = Regex.eval("<>EM>some text</EM>", `<.+>`);
+			if(!(str == "<>EM>some text</EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_lazy_kleene_plus()
+	{before_eval();
+try
+{
+			String str = Regex.eval("<>EM>some text</EM>", `<.+?>`);
+			if(!(str == "<>EM>"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_options()
+	{before_eval();
+try
+{
+			String str = Regex.eval("abc", `a?abc`);
+			if(!(str == "abc"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("aabc", `a?abc`);
+			if(!(str == "aabc"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("ababbababababbbc", `(a?b)*c`);
+			if(!(str == "ababbababababbbc"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_optional_groups()
+	{before_eval();
+try
+{
+			String str = Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
+			if(!(str == "abcdefeggfoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_union_at_base_level()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogbert", `cat|dog`);
+			if(!(str == "dog"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_union_at_group_level()
+	{before_eval();
+try
+{
+			String str = Regex.eval("bacd", `(bac|b)acd`);
+			if(!(str == "bacd"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_union_with_kleene_star()
+	{before_eval();
+try
+{
+			String str = Regex.eval("catdogdogcatbert", `(cat|dog)*`);
+			if(!(str == "catdogdogcat"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_nested_groups()
+	{before_eval();
+try
+{
+			String str = Regex.eval("acatbert", `a(cat(bert))`);
+			if(!(str == "acatbert"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_1 == "catbert"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "bert"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_nested_groups_with_union()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_character_classes()
+	{before_eval();
+try
+{
+			String str = Regex.eval("daccabaaccbg", `d[abc]*g`);
+			if(!(str == "daccabaaccbg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("daccabadaccbg", `d[abc]*g`);
+			if(!(str == "daccbg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("daccabadaccbg", `^d[abc]*g`);
+			if(!(str is null))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_inverse_character_classes()
+	{before_eval();
+try
+{
+			String str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*g`);
+			if(!(str == "ddeffegggdefeddfeg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "ddeffeg"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("ddeffeagggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "defeddfeg"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_dollar_sign()
+	{before_eval();
+try
+{
+			String str = Regex.eval("root woot moot foot", `.oot$`);
+			if(!(str == "foot"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval("root\nwoot\nmoot\nfoot", `.oot$`);
+			if(!(str == "root"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_beginning_of_line_caret()
+	{before_eval();
+try
+{
+			String str = Regex.eval("root woot moot foot", `^.oot`);
+			if(!(str == "root"))
+	{
+		return it.doesnt;
+	}
+
+
+			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`, "m");
+			if(!(str == "woot"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_group_consumption()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "poo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_group_reconsumption()
+	{before_eval();
+try
+{
+			String str = Regex.eval("bertpoopoobertpoo", `(bert|poo)+`);
+			if(!(str == "bertpoopoobertpoo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "poo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_backreferences()
+	{before_eval();
+try
+{
+			String str = Regex.eval("dogpoo=dogpoo", `(dogpoo)=\1`);
+			if(!(str == "dogpoo=dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_1 == "dogpoo"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_forwardreferences()
+	{before_eval();
+try
+{
+			String str = Regex.eval("oneonetwo", `(\2two|(one))+`);
+			if(!(str == "oneonetwo"))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "onetwo"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == "one"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_comments()
+	{before_eval();
+try
+{
+			String str = Regex.eval("bleh", `bl(?#comment here)eh`);
+			if(!(str == "bleh"))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}
+		it eval_should_handle_complicated_constructions()
+	{before_eval();
+try
+{
+			String str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
+			if(!(str == `#line 43 "foo\bar"`))
+	{
+		return it.doesnt;
+	}
+
+
+			if(!(_1 == "43"))
+	{
+		return it.doesnt;
+	}
+
+			if(!(_2 == `"foo\bar"`))
+	{
+		return it.doesnt;
+	}
+
+		}catch(Exception _exception_)
+{
+if (_exception_.msg != "Access Violation") { return it.doesnt; } return it.does;
+}
+	return it.does;
+	}	done before_eval() { }
+done before() { }
+
+this() { before(); }
+
+
+	static void test()
+	{
+	RegexTester tester = new RegexTester();
+
+	Test test = new Test("Regex");
+
+	it result;
+
+	test.logSubset("eval");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_kleene_star();
+		test.logResult(result, "eval should handle kleene star", "12");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_lazy_kleene_star();
+		test.logResult(result, "eval should handle lazy kleene star", "18");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_kleene_plus();
+		test.logResult(result, "eval should handle kleene plus", "24");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_lazy_kleene_plus();
+		test.logResult(result, "eval should handle lazy kleene plus", "30");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_options();
+		test.logResult(result, "eval should handle options", "36");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_optional_groups();
+		test.logResult(result, "eval should handle optional groups", "48");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_union_at_base_level();
+		test.logResult(result, "eval should handle union at base level", "54");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_union_at_group_level();
+		test.logResult(result, "eval should handle union at group level", "60");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_union_with_kleene_star();
+		test.logResult(result, "eval should handle union with kleene star", "66");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_nested_groups();
+		test.logResult(result, "eval should handle nested groups", "72");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_nested_groups_with_union();
+		test.logResult(result, "eval should handle nested groups with union", "80");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_character_classes();
+		test.logResult(result, "eval should handle character classes", "86");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_inverse_character_classes();
+		test.logResult(result, "eval should handle inverse character classes", "98");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_dollar_sign();
+		test.logResult(result, "eval should handle dollar sign", "109");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_beginning_of_line_caret();
+		test.logResult(result, "eval should handle beginning of line caret", "117");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_group_consumption();
+		test.logResult(result, "eval should handle group consumption", "125");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_group_reconsumption();
+		test.logResult(result, "eval should handle group reconsumption", "133");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_backreferences();
+		test.logResult(result, "eval should handle backreferences", "140");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_forwardreferences();
+		test.logResult(result, "eval should handle forwardreferences", "146");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_comments();
+		test.logResult(result, "eval should handle comments", "154");
+
+	tester = new RegexTester();
+
+	result = tester.eval_should_handle_complicated_constructions();
+		test.logResult(result, "eval should handle complicated constructions", "159");
 
 
 	}
@@ -2014,9 +2014,9 @@ this() { before(); }
 }
 class Tests
 {
-	static void testRegex()
+	static void testString()
 	{
-		RegexTester.test();
+		StringTester.test();
 	}
 
 	static void testUnicode()
@@ -2024,9 +2024,9 @@ class Tests
 		UnicodeTester.test();
 	}
 
-	static void testString()
+	static void testRegex()
 	{
-		StringTester.test();
+		RegexTester.test();
 	}
 
 	static void testDigest()
@@ -2056,9 +2056,9 @@ class Tests
 
 	static void testAll()
 	{
-		testRegex();
-		testUnicode();
 		testString();
+		testUnicode();
+		testRegex();
 		testDigest();
 		testMD5();
 		testSHA1();

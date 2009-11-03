@@ -60,10 +60,8 @@ void ThreadStop(ref ThreadPlatformVars threadVars)
 	threadVars.thread_id = 0;
 }*/
 
-void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
-{
-	while (milliseconds > 0xFFFFFFFF)
-	{
+void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
+	while (milliseconds > 0xFFFFFFFF) {
 		.Sleep(0xFFFFFFFF);
 
 		milliseconds -= 0xFFFFFFFF;
@@ -89,28 +87,23 @@ void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 
 // Semaphores
 
-void SemaphoreInit(ref SemaphorePlatformVars semVars, ref uint initialValue)
-{
+void SemaphoreInit(ref SemaphorePlatformVars semVars, ref uint initialValue) {
 	semVars._semaphore = CreateSemaphoreA(null, (initialValue), 0xFFFFFFF, null);
 }
 
-void SemaphoreUninit(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreUninit(ref SemaphorePlatformVars semVars) {
 	CloseHandle(semVars._semaphore);
 }
 
-void SemaphoreUp(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreUp(ref SemaphorePlatformVars semVars) {
 	ReleaseSemaphore(semVars._semaphore, 1, null);
 }
 
-void SemaphoreDown(ref SemaphorePlatformVars semVars, uint ms)
-{
+void SemaphoreDown(ref SemaphorePlatformVars semVars, uint ms) {
 	WaitForSingleObject(semVars._semaphore, ms);
 }
 
-void SemaphoreDown(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreDown(ref SemaphorePlatformVars semVars) {
 	WaitForSingleObject(semVars._semaphore, INFINITE);
 }
 
@@ -120,29 +113,30 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars)
 
 // Mutexes
 
-void MutexInit(ref MutexPlatformVars mutVars)
-{
-	InitializeCriticalSection(mutVars._mutex);
+void MutexInit(ref MutexPlatformVars mutVars) {
+//	InitializeCriticalSection(mutVars._mutex);
+	mutVars._semaphore = CreateSemaphoreA(null, (1), 0xFFFFFFF, null);
 }
 
-void MutexUninit(ref MutexPlatformVars mutVars)
-{
-	DeleteCriticalSection(mutVars._mutex);
+void MutexUninit(ref MutexPlatformVars mutVars) {
+	//DeleteCriticalSection(mutVars._mutex);
+	CloseHandle(mutVars._semaphore);
 }
 
-void MutexLock(ref MutexPlatformVars mutVars)
-{
-	EnterCriticalSection(mutVars._mutex);
+void MutexLock(ref MutexPlatformVars mutVars) {
+//	EnterCriticalSection(mutVars._mutex);
+	WaitForSingleObject(mutVars._semaphore, INFINITE);
 }
 
-void MutexLock(ref MutexPlatformVars mutVars, ref uint ms)
-{
-	EnterCriticalSection(mutVars._mutex);
+void MutexLock(ref MutexPlatformVars mutVars, ref uint ms) {
+	// XXX: Use TryEnterCriticalSection in a timed loop here
+	//EnterCriticalSection(mutVars._mutex);
+	WaitForSingleObject(mutVars._semaphore, ms);
 }
 
-void MutexUnlock(ref MutexPlatformVars mutVars)
-{
-	LeaveCriticalSection(mutVars._mutex);
+void MutexUnlock(ref MutexPlatformVars mutVars) {
+	//LeaveCriticalSection(mutVars._mutex);
+	ReleaseSemaphore(mutVars._semaphore, 1, null);
 }
 
 

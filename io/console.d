@@ -2,6 +2,8 @@ module io.console;
 
 import scaffold.console;
 
+import synch.mutex;
+
 import core.string;
 import core.tostring;
 import core.format;
@@ -107,6 +109,9 @@ static:
 	//Description: Sets the foreground color for the console.
 	//fgclr: The foreground color to set.
 	void setColor(fgColor fclr) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		int bright = 0;
 		if (fclr > fgColor.White)
 		{
@@ -123,6 +128,9 @@ static:
 	//fgclr: The foreground color to set.
 	//bgclr: The background color to set.
 	void setColor(fgColor fclr, bgColor bclr) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		int bright = 0;
 		if (fclr > fgColor.White)
 		{
@@ -139,6 +147,9 @@ static:
 	//Description: Sets the background color for the console.
 	//bgclr: The background color to set.
 	void setColor(bgColor bclr) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 	    cur_bg_color = bclr;
 
 	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
@@ -146,22 +157,37 @@ static:
 
 	// Description: Clears the console screen.
 	void clear() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		ConsoleClear();
 	}
 
 	void position(Coord coord) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		ConsoleSetPosition(coord.x, coord.y);
 	}
 
 	void position(uint[] coord) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		ConsoleSetPosition(coord[0], coord[1]);
 	}
 
 	void position(uint x, uint y) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		ConsoleSetPosition(x,y);
 	}
 
 	Coord position() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		Coord ret;
 		ConsoleGetPosition(cast(uint*)&ret.x,cast(uint*)&ret.y);
 		return ret;
@@ -171,11 +197,17 @@ static:
 	// x: The number of columns for the caret to move.  Negative values move down.
 	// y: The number of rows for the caret.  Negative values move up.
 	void setRelative(int x, int y) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		ConsoleSetRelative(x,y);
 	}
 
 	// Description: Will show the caret.
 	void showCaret() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		if (!_caretVisible) {
 			ConsoleShowCaret();
 			_caretVisible = true;
@@ -184,6 +216,9 @@ static:
 
 	// Description: Will hide the caret.
 	void hideCaret() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		if (_caretVisible) {
 			ConsoleHideCaret();
 			_caretVisible = false;
@@ -223,11 +258,17 @@ static:
 
 	// Description: This function will save the current clipping context.
 	void clipSave() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		_clippingStack ~= _clippingRegions;
 	}
 
 	// Description: This function will restore a former clipping context.
 	void clipRestore() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		if (_clippingStack.length > 0) {
 			_clippingRegions = _clippingStack[$-1];
 			_clippingStack.length = _clippingStack.length - 1;
@@ -236,12 +277,18 @@ static:
 
 	// Description: This function will clear the clipping context.
 	void clipClear() {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		_clippingRegions = null;
 	}
 
 	// Description: This function will add a rectangular region defined as screen coordinates that will clip the drawing surface. When a clipping context is not clear, only regions within rectangles will be drawn to the screen.
 	// region: The rectangular region to add as a clipping region.
 	void clipRect(Rect region) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		_clippingRegions ~= region;
 	}
 
@@ -256,20 +303,19 @@ static:
 	}
 
 	void putln(...) {
-		synchronized {
-			Variadic vars = new Variadic(_arguments, _argptr);
-			putlnv(vars);
-		}
+		Variadic vars = new Variadic(_arguments, _argptr);
+		putlnv(vars);
 	}
 
 	void put(...) {
-        synchronized {
-			Variadic vars = new Variadic(_arguments, _argptr);
-			putv(vars);
-		}
+		Variadic vars = new Variadic(_arguments, _argptr);
+		putv(vars);
 	}
 
 	void putv(Variadic vars) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		_putString(new String(toStrv(vars)));
 	}
 
@@ -279,12 +325,18 @@ static:
 	}
 
 	void putString(String str) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		_putString(str);
 	}
 
 	// Description: Will print out this character to the screen and the current location.
 	// chr: The UTF-32 character to print.
 	void putChar(dchar chr) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
 		if (_vt100_inescape2) {
 			if (chr >= '0' && chr <= '9') {
 				// another number,
@@ -452,6 +504,18 @@ static:
 		}
 	}
 
+	void lock() {
+		_lock.lock();
+	}
+
+	void unlock() {
+		if (_lock is null) {
+			_lock = new Mutex(); // _lock is initially unlocked
+		}
+		else {
+			_lock.unlock();
+		}
+	}
 
 private:
 
@@ -471,6 +535,8 @@ private:
 	int _vt100_paramFilled = 0;
 
 	bool _caretVisible = true;
+
+	Mutex _lock;
 
 	Rect[] _clippingRegions;
 	Rect[][] _clippingStack;
