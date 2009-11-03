@@ -167,4 +167,60 @@ describe string() {
 			should(pos == 3);
 		}
 	}
+
+	describe insertAt() {
+		it should_insert_a_string_object() {
+			String str = new String("foobaz");
+			String str2 = new String("bar");
+			str = str.insertAt(str2, 3);
+			should(str == "foobarbaz");
+		}
+
+		it should_insert_a_simple_string() {
+			String str = new String("foobaz");
+			str = str.insertAt("bar", 3);
+			should(str == "foobarbaz");
+		}
+
+		it should_not_fail_on_position_zero() {
+			String str = new String("barbaz");
+			str = str.insertAt("foo", 0);
+			should(str == "foobarbaz");
+		}
+
+		it should_not_fail_on_an_empty_string() {
+			String str = new String("foobar");
+			str = str.insertAt("", 0);
+			should(str == "foobar");
+		}
+
+		it should_not_fail_on_position_outside_string() {
+			String str = new String("foobar");
+			str = str.insertAt("baz", str.length() + 1);
+			should(str == "foobar");
+		}
+	}
+
+	describe repeat() {
+		it should_repeat_a_string_object() {
+			String str = new String("foo");
+			String str2 = String.repeat(str, 3);
+			should(str2 == "foofoofoo")
+		}
+
+		it should_repeat_a_simple_string() {
+			String str = String.repeat("foo", 3);
+			should(str == "foofoofoo")
+		}
+
+		it should_not_fail_on_an_empty_string() {
+			String str = String.repeat("", 3);
+			should(str == "")
+		}
+
+		it should_not_fail_on_zero_iterations() {
+			String str = String.repeat("foo", 0);
+			should(str == "")
+		}
+	}
 }
