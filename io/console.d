@@ -167,21 +167,29 @@ static:
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
-		ConsoleSetPosition(coord.x, coord.y);
+		_position(coord.x, coord.y);
 	}
 
 	void position(uint[] coord) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
 		ConsoleSetPosition(coord[0], coord[1]);
+=======
+		_position(coord[0], coord[1]);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	void position(uint x, uint y) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
 		ConsoleSetPosition(x,y);
+=======
+		_position(x,y);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	Coord position() {
@@ -316,12 +324,27 @@ static:
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
 		_putString(new String(toStrv(vars)));
+=======
+		_putv(vars);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	void putlnv(Variadic vars) {
-		putv(vars);
-		putChar('\n');
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
+		_putv(vars);
+		_putChar('\n');
+	}
+	
+	void putStringAt(uint x, uint y, String str) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
+		_position(x,y);
+		_putString(str);
 	}
 
 	void putString(String str) {
@@ -329,6 +352,20 @@ static:
 		scope(exit) _lock.unlock();
 
 		_putString(str);
+	}
+	
+	void putAt(uint x, uint y, ...) {
+		Variadic vars = new Variadic(_arguments, _argptr);
+		
+		putAtv(x, y, vars);
+	}
+
+	void putAtv(uint x, uint y, Variadic vars) {
+		_lock.lock();
+		scope(exit) _lock.unlock();
+
+		_position(x, y);
+		_putv(vars);
 	}
 
 	// Description: Will print out this character to the screen and the current location.
@@ -540,6 +577,14 @@ private:
 
 	Rect[] _clippingRegions;
 	Rect[][] _clippingStack;
+	
+	void _position(uint x, uint y) {
+		ConsoleSetPosition(x,y);
+	}
+	
+	void _putv(Variadic vars) {
+		_putString(new String(toStrv(vars)));
+	}
 
 	void _putChar(dchar chr) {
 		ConsolePutChar(chr);
@@ -552,7 +597,7 @@ private:
 		} while(value /= 10);
 		ConsolePutString(foo);
 	}
-	
+
 	void _putString(String str) {
 		uint x;
 		uint y;
