@@ -1314,63 +1314,68 @@ protected:
 	String regularExpression;
 
 	// For DFA regex operations
+	
+	class Link {
+		State from;
+		dchar transition;
+	}
 
 	static class State {
 		State[dchar] transitions;
-	
+		// List!(Group) groupStarts;
+		// List!(Group) groupEnds;
+		List!(dchar) backwardList;
+		List!(Link) incomingList;
+
 		bool accept;
-	
-		bool loopStart;
-		bool loopEnd;
-	
-		State loopDest;
-		State loopSource;
-		dchar loopOn;
 
-		List!(State) loopStack;
+		int id;
 
-		State root;
+		this() {
+			this(count);
+		}
+
+		this(int id) {
+			this.id = id;
+			backwardList = new List!(dchar);
+			incomingList = new List!(Link);
+			debugThis();
+		}
 
 		// Debugging block
 		static int count = 0;
 		static List!(State) all;
-		int id;
+
 		static this() {
 			all = new List!(State);
 		}
-		this() {
-			id = count;
+
+		void debugThis() {
 			count++;
 			all.add(this);
 		}
 	
 		string toString() {
 			string ret = "State " ~ toStr(id) ~ ": [";
-	
-			if (loopStart) {
-				ret ~= "L";
-			}
-			else {
-				ret ~= " ";
-			}
-	
+
 			if (accept) {
 				ret ~= "A] ";
 			}
 			else {
 				ret ~= " ] ";
 			}
-	
-			if (loopStart) {
-				ret ~= "{" ~ toStr(loopDest.id) ~ "} ";
-			}
-	
+
 			foreach(key; transitions.keys) {
-				ret ~= toStr(key) ~ "->" ~ toStr(transitions[key].id) ~ " ";
+				if (transitions[key].id <= id) {
+					ret ~= toStr(key) ~ "<>" ~ toStr(transitions[key].id) ~ " ";
+				}
+				else {
+					ret ~= toStr(key) ~ "->" ~ toStr(transitions[key].id) ~ " ";
+				}
 			}
 			return ret;
 		}
-	
+
 		static void printall() {
 			foreach(state; all) {
 				Console.putln(state);
@@ -1453,7 +1458,7 @@ private:
 
 	State buildDFA(String regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
 		State startState = new State();
-		startState.root = startState;
+		Console.putln("Start State: ", startState.id);
 
 		uint groupPos = regexPos - 1;
 
@@ -1481,13 +1486,17 @@ private:
 				// group
 				regexPos++;
 				buildDFA(regex, regexPos, current);
+				if (regex[regexPos] == '*') {
+					Console.putln("Inner Group Kleened");
+					lastOp = Operation.Kleene;
+				}
 			}
 			else {
 				lastConcatChar = lastChar;
 			}
 			regexPos++;
 		}
-	
+
 		while (regexPos <= regex.length) {
 			if (regexPos == regex.length) {
 				thisChar = '\0';
@@ -1500,80 +1509,55 @@ private:
 				// Kleene Star
 				//Console.putln("Kleene (", lastChar, ")");
 				if (lastChar == ')') {
-					// Group End (Kleene)
+					Console.putln("Kleene Group End, connecting ", lastConcatChar, " to ", startState.id);
 					foreach(state; current) {
-						State loopDest = startState;
-						dchar loopOn = lastConcatChar;
-						//while (loopOn in state.transitions) {
-						//	state = state.transitions[lastConcatChar];
-						//}
-						
-						state.transitions[lastConcatChar] = startState;
-
-						if (state.root is startState) {
-
-							startState.loopStart = true;
-							startState.loopDest = state;
-							startState.loopOn = lastConcatChar;
-							startState.loopSource = state;
-
-							state.loopEnd = true;
-							state.loopOn = lastConcatChar;
-							state.loopSource = startState;
-							state.loopDest = startState;
+						State ret = concat(state, lastConcatChar, startState);
+						if (ret is startState && startState.id <= state.id) {
+							state.backwardList.add(lastConcatChar);
+							Link link = new Link();
+							link.from = state;
+							link.transition = lastConcatChar;
+							startState.incomingList.add(link);
 						}
 					}
-					//Console.putln("Whoo");
+					old.add(startState);
 					current = old;
-					current.add(startState);
-					Console.putln("Kleene Group End");
 					State.printall();
+					return startState;
 				}
 				else {
 					// Single Character Kleene
 					// ex. "a*" => [p] -> 'a' -> [p]
-					State loopState;
-					//Console.putln("Single Character Kleene (", lastConcatChar, ")");
+					Console.putln("Single Character Kleene (", lastConcatChar, ")");
 
+					List!(State) newStateList = current.dup;
+					State loopState;
 					foreach(state; current) {
-						Console.putln("Single Character Kleene (", lastConcatChar, ")");
-						if (state.transitions.length != 0) {
+						if (state.backwardList.empty) {
+							while (lastConcatChar in state.transitions) {
+								state = concat(state, lastConcatChar, state);
+							}
+
+							state.transitions[lastConcatChar] = state;
+							state.backwardList.add(lastConcatChar);
+						}
+						else {
 							if (loopState is null) {
 								loopState = new State();
 								loopState.transitions[lastConcatChar] = loopState;
-								loopState.loopStart = true;
-								loopState.loopEnd = true;
-								loopState.loopSource = loopState;
-								loopState.loopDest = loopState;
-								loopState.loopOn = lastConcatChar;
+								loopState.backwardList.add(lastConcatChar);
 							}
-							State startState = state;
-
-							while (lastConcatChar in state.transitions) {
-								if (state.transitions[lastConcatChar] == state) { break; }
-								state = state.transitions[lastConcatChar];
-								if (state == startState) { break; }
-								current.add(state);
-							}
-
-							state.transitions[lastConcatChar] = loopState;
-						}
-						else {
-							state.transitions[lastConcatChar] = state;
-							state.loopStart = true;
-							state.loopEnd = true;
-							state.loopSource = state;
-							state.loopDest = state;
-							state.loopOn = lastConcatChar;
+							State ret = concat(state, lastConcatChar, loopState);
 						}
 					}
+
+					current = newStateList;
 
 					if (loopState !is null) {
 						current.add(loopState);
 					}
 
 					//Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
-					State.printall();
 				}
 				lastOp = Operation.Kleene;
 				lastConcatChar = '\0';
@@ -1581,91 +1565,44 @@ private:
 			else {
 				// concatenation
 				if (lastConcatChar != '\0' && thisChar != ')') {
-					State catState;
-					List!(State) newCurrent = new List!(State);
-					foreach(i, state; current) {
-						if (lastConcatChar in state.transitions) {
-							if (isKleene && state.loopEnd) {
-								State.printall();
-								Console.putln("Cancelling kleene group operation, ", lastConcatChar, " ", lastChar, " ", thisChar);
-								if (i == current.length - 1) {
-									regexPos = _groupInfo[groupPos].endPos;
-									return startingState;
-								}
-								continue;
-							}
-
-							Console.putln("Concating Character ", state.id, " (", lastConcatChar, ")");
-							State destState = state.transitions[lastConcatChar];
-							//Console.putln("Concating Character ", destState.id, " (", lastConcatChar, ")");
-							if (destState.loopStart && destState.loopDest is destState && destState !is state) {
-								State interState = new State();
-								Console.putln("Single character loop unroll ", state.id, " (", lastConcatChar, ")");
-								foreach(transition; destState.transitions.keys) {
-									interState.transitions[transition] = destState.transitions[transition];
-								}
-								state.transitions[lastConcatChar] = interState;
-								interState.transitions[lastConcatChar] = destState;
-								interState.root = state.root;
-								destState = interState;
-							}
-							else if (destState is state) {
-								unroll(destState);
-								if (lastConcatChar in destState.transitions) {
-									destState = destState.transitions[lastConcatChar];
-								}
-							}
-							else {
-								unroll(destState);
-								if (lastConcatChar in destState.transitions) {
-									destState = destState.transitions[lastConcatChar];
-								}
-							}
-							if (destState !is null) {
-								newCurrent.add(destState);
-							}
-						}
-						else {
-							if (catState is null) {
-								catState = new State();
-								catState.root = state.root;
-							}
-							Console.putln("adding state ", catState.id);
-							newCurrent.add(catState);
-							state.transitions[lastConcatChar] = catState;
+					Console.putln("-=-=-=-=-");
+					Console.putln("boo: ", lastOp == Operation.Kleene);
+					State concatState;
+					List!(State) newStateList = new List!(State);
+					foreach(state; current) {
+						State ret = concat(state, lastConcatChar, concatState, lastOp == Operation.Kleene);
+						if (ret !is concatState && ret !is null) {
+							newStateList.add(ret);
 						}
 					}
-					if (isKleene) { isKleene = false; }
-					current = newCurrent;
-
+					if (concatState !is null) {
+						newStateList.add(concatState);
+					}
+					current = newStateList;
 					Console.putln("Concat Character (", lastConcatChar, ")");
 					State.printall();
+					Console.putln("-=-=-=-=-");
+					foreach(state; current) {
+						Console.put(state.id, " ... ");
+					}
+					Console.putln;
+					lastOp = Operation.Concat;
 				}
 
 				if (thisChar == '(') {
 					// group start
-					int groupStart = regexPos;
-					bool hasKleene = false;
-					regexPos++;
-					if (groupStart in _groupInfo) {
-						// Found group...
-						Console.putln("Group in groupinfo ", groupStart, " : ", _groupInfo[groupStart].endPos);
-						if (_groupInfo[groupStart].hasKleene) {
-							Console.putln("Group is kleened");
-							hasKleene = true;
-						}
+					Console.putln("Inner Group Found");
+					regexPos+=1;
+					buildDFA(regex, regexPos, current, false);
+					if (regex[regexPos] == '*') {
+						Console.putln("Inner Group Kleened");
+						lastOp = Operation.Kleene;
 					}
-
-					State innerGroup = buildDFA(regex, regexPos, current, hasKleene);
-
-					//Console.putln("Inner Group Found");
 					lastConcatChar = '\0';
-					State.printall();
 				}
 				else if (thisChar != ')') {
 					lastConcatChar = thisChar;
 				}
-				lastOp = Operation.Concat;
 			}
 
 			//Console.putln("lastChar = ", thisChar);
@@ -1673,101 +1610,87 @@ private:
 
 			regexPos++;
 		}
-	
+
 		foreach(state; current) {
+			isolate(state);
 			state.accept = true;
 		}
-	
+
 		Console.putln("Done");
 		State.printall();
-	
+
 		return startState;
 	}
 
-	public static void test() {
-		State p = new State();
-		State q = new State();
-		State s = new State();
-		p.transitions['a'] = q;
-		q.transitions['b'] = s;
-		s.transitions['c'] = p;
+	State concat(State start, dchar transition, ref State to, bool doNotUnroll = false) {
+		if (to !is null) {
+			Console.putln(start.id, " to ", to.id);
+		}
+		else {
+			Console.putln(start.id, " to null");
+		}
 
-		p.loopStack = new List!(State);
-		p.loopStack.add(q);
-		p.loopStack.add(s);
-
-		// Loop (p) -> a -> (q) -> b -> (s)
-		//       ^---------- c <--------/
-
-		my_unroll(s, 'c');
-		my_unroll(s.transitions['c'], 'a');
-		my_unroll(s.transitions['c'].transitions['a'], 'b');
-
-		State.printall();
-	}
-
-	static void my_unroll(State state, dchar chr) {
-		if (chr in state.transitions) {
-			State loopDest = state.transitions[chr];
-
-			if (loopDest.loopStack !is null) {
-				if (loopDest.loopStack.contains(state)) {
-					State newState = new State();
-					state.transitions[chr] = newState;
-					foreach(transition; loopDest.transitions.keys) {
-						State toState = loopDest.transitions[transition];
-						newState.transitions[transition] = toState;
-						if (loopDest.loopStack.contains(toState)) {
-							toState.loopStack = loopDest.loopStack;
-						}
-					}
-					loopDest.loopStack.remove(loopDest);
-					loopDest.loopStack.add(newState);
-					Console.putln("loop stack: ", loopDest.loopStack);
-					loopDest.loopStack = null;
-				}
+		if ((to is null) || (to.id > start.id)) {
+			if (!doNotUnroll) {
+				isolate(start);
+				unroll(start);
+				isolate(start);
 			}
 		}
+
+		if (transition in start.transitions) {
+			return start.transitions[transition];
+		}
+		else {
+			if (to is null) {
+				to = new State();
+			}
+			start.transitions[transition] = to;
+		}
+
+		return to;
 	}
 
 	void unroll(State state) {
-		if (state.loopStart) {
-			Console.putln("Unlooping state ", state.id);
-			State.printall();
-	
-			// unroll
-			State loopDest = state.loopDest;
-			if (loopDest is null) { return; }
-			State newDest = new State();
-			Console.putln("loop destination: ", loopDest.id, " for ", state.loopOn);
-	
-			foreach(key; loopDest.transitions.keys) {
-				State toState = loopDest.transitions[key];
-				if (toState == loopDest) { toState = newDest; }
-				newDest.transitions[key] = toState;
+		Console.putln("unrolling ", state.id);
+		foreach(backwardTrans; state.backwardList) {
+			State newState = new State();
+			State destState = state.transitions[backwardTrans];
+
+			state.transitions[backwardTrans] = newState;
+			foreach(transition; destState.transitions.keys) {
+				State toState = destState.transitions[transition];
+				newState.transitions[transition] = toState;
+				newState.backwardList.add(transition);
+				Link link = new Link();
+				link.from = newState;
+				link.transition = transition;
+				toState.incomingList.add(link);
+/*
+				if (toState is state) {
+					Link link = new Link();
+					link.from = newState;
+					link.transition = transition;
+					state.incomingList.add(link);
+				}
+*/
 			}
-			Console.putln("b ", state.id);
-	
-			loopDest.loopEnd = false;
-	
-			state.loopDest = null;
-			state.loopStart = false;
-			state.transitions[state.loopOn] = newDest;
-	
-			newDest.loopStart = true;
-			newDest.loopDest = loopDest.transitions[state.loopOn];
-			newDest.loopOn = state.loopOn;
-	
-			newDest.loopDest.loopEnd = true;
-			newDest.loopDest.loopOn = state.loopOn;
-			newDest.loopDest.loopSource = newDest;
-	
-			Console.putln("Unlooped state ", state.id, " on transition ", state.loopOn);
-			State.printall();
 		}
-		else {
-			Console.putln("Unlooping Not Necessary ", state.id);
+		state.backwardList = new List!(dchar);
+	}
+
+	void isolate(State state) {
+		Console.putln("isolating ", state.id);
+		foreach(link; state.incomingList) {
+			unroll(link.from);
 		}
+		state.incomingList = new List!(Link);
+	}
+
+	public static void test() {
+	}
+
+	static void my_unroll(State state, dchar chr) {
 	}
 
 	// Common

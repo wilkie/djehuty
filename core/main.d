@@ -41,6 +41,9 @@ public:
 	void start() {
 		// Get default locale
 		Locale.id = System.Locale.id;
+		
+		// Allow console output
+		Console.unlock();
 
 		// Can only start the framework once
 		if (!_hasStarted) {

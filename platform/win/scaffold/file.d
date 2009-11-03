@@ -112,6 +112,15 @@ bool FileOpen(ref FilePlatformVars fileVars, ref String filename)
 	return (fileVars.f !is null);
 }
 
+bool FileCreate(ref FilePlatformVars fileVars, ref String filename)
+{
+	String newString = new String(filename);
+	newString.appendChar('\0');
+	fileVars.f = CreateFileW( newString.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,CREATE_ALWAYS,0,null);
+
+	return (fileVars.f !is null);
+}
+
 void FileClose(ref FilePlatformVars fileVars)
 {
 	CloseHandle(fileVars.f);

@@ -30,5 +30,7 @@ class Mutex {
 		MutexLock(_pfvars, milliseconds);
 	}
 
+protected:
+
 	MutexPlatformVars _pfvars;
 }
