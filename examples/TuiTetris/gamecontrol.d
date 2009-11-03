@@ -129,7 +129,7 @@ class GameControl : TuiWidget {
 			lastPiece = new Coord[](4);
 	
 			Console.setColor(cast(bgColor)(board.getPieceType() + 1));
-	
+
 			foreach(i, pt; board.getPiece()) {
 				Coord curPt;
 				lastPiece[i].x = (board.getPosition().x + pt.x) * 4;
@@ -150,16 +150,18 @@ class GameControl : TuiWidget {
 	}
 
 	void clearPiece() {
-		Console.setColor(fgColor.Blue, bgColor.Black);
-		foreach(pt; lastPiece) {
-			if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
-				//Console.position(pt.x, pt.y);
-				Console.putAt(pt.x, pt.y, "    ");
-				//Console.position(pt.x, pt.y + 1);
-				Console.putAt(pt.x, pt.y + 1, "    ");
+		synchronized(this) {
+			Console.setColor(fgColor.Blue, bgColor.Black);
+			foreach(pt; lastPiece) {
+				if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
+					//Console.position(pt.x, pt.y);
+					Console.putAt(pt.x, pt.y, "    ");
+					//Console.position(pt.x, pt.y + 1);
+					Console.putAt(pt.x, pt.y + 1, "    ");
+				}
 			}
+			Console.setColor(fgColor.White);
 		}
-		Console.setColor(fgColor.White);
 	}
 	
 	override bool isTabStop() {
