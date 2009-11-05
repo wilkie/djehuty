@@ -174,14 +174,22 @@ static:
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
+		ConsoleSetPosition(coord[0], coord[1]);
+=======
 		_position(coord[0], coord[1]);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	void position(uint x, uint y) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
+		ConsoleSetPosition(x,y);
+=======
 		_position(x,y);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	Coord position() {
@@ -316,7 +324,11 @@ static:
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
+<<<<<<< HEAD
+		_putString(new String(toStrv(vars)));
+=======
 		_putv(vars);
+>>>>>>> badf7a75d61da4a0676108bf166454f23845cba4
 	}
 
 	void putlnv(Variadic vars) {
