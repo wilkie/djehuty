@@ -36,6 +36,7 @@ class TuiTextBox : TuiWidget {
 		}
 
 		_tabWidth = 4;
+		_lineCont = '$';
 	}
 
 	override void onKeyDown(Key key) {
@@ -524,6 +525,13 @@ protected:
 			visibleLine = actualLine;
 		}
 
+		uint pos = 0;
+		// Make space for the line continuation symbol
+		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
+			visibleLine = visibleLine.insertAt(" ", _firstColumn);
+			pos++;
+		}
+
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
 			Console.setColor(_forecolor, _backcolor);
@@ -535,7 +543,6 @@ protected:
 		}
 		else {
 			// Splitting up the line due to formatting
-			uint pos = 0;
 			for (uint i; i < _lines[lineNumber].format.length; i += 3) {
 				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
 				//Console.Console.put("[", _lines[lineNumber].format[i+2], "]");
@@ -571,6 +578,18 @@ protected:
 		if (num != 0) {
 			Console.putSpaces(num);
 		}
+
+		// Output the necessary line continuation symbols.
+		Console.setColor(fgColor.BrightWhite, bgColor.Black);
+		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
+			Console.position(_lineNumbersWidth, lineNumber - _firstVisible);
+			Console.put(_lineCont);
+		}
+		if (visibleLine.length > _firstColumn && visibleLine.length - _firstColumn > this.width - _lineNumbersWidth) {
+			Console.position(this.width - 1, lineNumber - _firstVisible);
+			Console.put(_lineCont);
+		}
+		Console.setColor(_forecolor, _backcolor);
 	}
 
 	void drawEmptyLine(uint lineNumber) {
@@ -596,31 +615,28 @@ protected:
 
 		if (_column < _firstColumn) {
 			// scroll horizontally
-			_firstColumn = _column;
-			if (_firstColumn < 0) {
-				_firstColumn = 0;
-			}
+			// If scrolling left, go to the start of the line and let the next section do the work.
+			_firstColumn = 0;
 			shouldDraw = true;
 		}
 
-		if (_lineNumbersWidth + (_column + leftTabSpaces - _firstColumn) >= this.width) {
+		// _firstColumn > 0 means the characters are shifted 1 to the right thanks to the line continuation symbol
+		if (_column + leftTabSpaces - _firstColumn + (_firstColumn > 0 ? 1 : 0) >= this.width - _lineNumbersWidth - 1) {
 			// scroll horizontally
-			_firstColumn = _column + leftTabSpaces - this.width + _lineNumbersWidth + 1;
+			_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) / 2;
 			shouldDraw = true;
 		}
 
 		if (_row < _firstVisible) {
 			// scroll vertically
-			_firstVisible = _row;
-			if (_firstVisible < 0) {
-				_firstVisible = 0;
-			}
+			// If scrolling up, go to the first row and let the next section do the work.
+			_firstVisible = 0;
 			shouldDraw = true;
 		}
 
 		if (this.top + (_row - _firstVisible) >= this.bottom) {
 			// scroll vertically
-			_firstVisible = _row - this.height + 1;
+			_firstVisible = _row - this.height / 2;
 			if (_firstVisible >= _lines.length) {
 				_firstVisible = _lines.length - 1;
 			}
@@ -640,7 +656,7 @@ protected:
 		}
 		else {
 			// Move cursor to where the edit caret is
-			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces, _row - _firstVisible);
+			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces + (_firstColumn > 0 ? 1 : 0), _row - _firstVisible);
 
 			// The caret is within the bounds of the widget
 			Console.showCaret();
@@ -713,4 +729,7 @@ protected:
 	bgColor _backcolor = bgColor.Black;
 	fgColor _forecolorNum = fgColor.Yellow;
 	bgColor _backcolorNum = bgColor.Black;
+
+	// The symbol to use to show a line continuation
+	dchar _lineCont;
 }
