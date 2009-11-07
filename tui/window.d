@@ -683,8 +683,14 @@ private:
 		Console.clipRect(removed.region.left, 0, removed.region.right, removed.region.top);
 		Console.clipRect(removed.region.left, removed.region.bottom, removed.region.right, this.height);
 		Console.clipRect(removed.region.right, 0, this.width, this.height);
-		redraw();
+
+		_controlContainer.onDraw();
+
 		Console.clipClear();
+
+		if (_menus.length > 0) {
+		//	_drawSubmenu();
+		}
 	}
 
 	bgColor _bgClr = bgColor.Black;
