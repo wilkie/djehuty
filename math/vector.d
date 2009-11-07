@@ -7,9 +7,6 @@
 //  and keep the results of common vector manipulations in expression form
 module math.vector;
 
-// Imposed runtime import for variadics
-import std.stdarg;
-
 // Strings
 import core.string;
 
