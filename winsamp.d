@@ -33,6 +33,8 @@ import parsing.options;
 
 import io.file;
 
+import utils.priorityqueue;
+
 class MyOptions : OptionParser {
 
 	mixin Options!(
@@ -367,15 +369,26 @@ class MyConsoleApp : Application {
 			Console.putln(item);
 		}*/
 
-		File foo = new File("temp.txt"); //File.create("temp.txt");
-		foo.write("foo bar"c);
-		foo.close();
+	//	File foo = new File("temp.txt"); //File.create("temp.txt");
+	//	foo.write("foo bar"c);
+	//	foo.close();
 
-		foo = File.open("temp.txt");
-		ubyte f;
-		foo.read(f);
-		char d = cast(char)f;
-		Console.putln(d);
+	//	foo = File.open("temp.txt");
+	//	ubyte f;
+	//	foo.read(f);
+	//	char d = cast(char)f;
+	//	Console.putln(d);
+
+		auto queue = new PriorityQueue!(int, MaxHeap);
+
+		queue.add(10);
+		queue.add(4);
+		queue.add(15);
+
+
+		Console.putln(queue.remove);
+		Console.putln(queue.remove);
+		Console.putln(queue.remove);
 	}
 
 protected:
