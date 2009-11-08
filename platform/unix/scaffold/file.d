@@ -106,7 +106,7 @@ bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullP
 	return true;
 }
 
-void FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName)
+bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName)
 {
 	String old = new String(path);
 	old.appendChar('\0');

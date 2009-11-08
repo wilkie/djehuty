@@ -232,7 +232,7 @@ protected:
 
 				UnregisterThread(thread);
 
-				return 0;
+				return;
 			}
 
 			bool isSelf()
