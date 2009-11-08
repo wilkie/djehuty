@@ -245,15 +245,15 @@ import binding.pango.pbreak;
 import binding.pango.font;
 import binding.pango.fontmap;
 
-alias _PangoLogAttr PangoLogAttr;
+typedef _PangoLogAttr PangoLogAttr;
 
-alias _PangoEngineLang PangoEngineLang;
-alias _PangoEngineShape PangoEngineShape;
+typedef _PangoEngineLang PangoEngineLang;
+typedef _PangoEngineShape PangoEngineShape;
 
-alias _PangoFont    PangoFont;
-alias _PangoFontMap PangoFontMap;
+typedef _PangoFont    PangoFont;
+typedef _PangoFontMap PangoFontMap;
 
-alias _PangoRectangle PangoRectangle;
+typedef _PangoRectangle PangoRectangle;
 
 
 
