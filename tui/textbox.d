@@ -564,6 +564,7 @@ protected:
 			}
 		}
 
+		Console.setColor(_forecolor, _backcolor);
 		// Pad with spaces
 		uint num = (visibleLine.length - _firstColumn);
 		//uint num = (_lines[lineNumber].value.length - _firstColumn);
@@ -591,7 +592,6 @@ protected:
 			Console.position(this.width - 1, lineNumber - _firstVisible);
 			Console.put(_lineCont);
 		}
-		Console.setColor(_forecolor, _backcolor);
 	}
 
 	void drawEmptyLine(uint lineNumber) {
