@@ -134,6 +134,6 @@ protected:
 	
 	void parseDefault()
 	{
-		return false;
+		return;
 	}
 }
