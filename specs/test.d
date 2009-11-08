@@ -2105,6 +2105,51 @@ class PriorityQueueTester {
 	done before_add() {
 	}
 
+	it peek_should_return_the_first_item_in_min_heap() {
+		before_peek();
+		try {
+			auto queue = new PriorityQueue!(int, MinHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.peek() == 4)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it peek_should_return_the_first_item_in_max_heap() {
+		before_peek();
+		try {
+			auto queue = new PriorityQueue!(int, MaxHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.peek() == 15)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_peek() {
+	}
+
 	it remove_should_remove_the_first_item_in_min_heap() {
 		before_remove();
 		try {
@@ -2115,7 +2160,7 @@ class PriorityQueueTester {
 			if(!(queue.length == 3)) {
 				return it.doesnt;
 			}
-			if(!(queue.peek() == 4)) {
+			if(!(queue.remove() == 4)) {
 				return it.doesnt;
 			}
 		}
@@ -2136,7 +2181,7 @@ class PriorityQueueTester {
 			if(!(queue.length == 3)) {
 				return it.doesnt;
 			}
-			if(!(queue.peek() == 15)) {
+			if(!(queue.remove() == 15)) {
 				return it.doesnt;
 			}
 		}
@@ -2171,6 +2216,75 @@ class PriorityQueueTester {
 	done before_length() {
 	}
 
+	it clear_should_result_in_an_empty_list() {
+		before_clear();
+		try {
+			auto queue = new PriorityQueue!(int);
+			queue.add(15);
+			queue.add(10);
+			queue.add(24);
+			if(queue.length == 0) {
+				return it.doesnt;
+			}
+			if(queue.empty()) {
+				return it.doesnt;
+			}
+			queue.clear();
+			if(!(queue.length == 0)) {
+				return it.doesnt;
+			}
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_clear() {
+	}
+
+	it empty_should_be_true_when_the_list_is_empty() {
+		before_empty();
+		try {
+			auto queue = new PriorityQueue!(int);
+			queue.add(10);
+			if(queue.empty()) {
+				return it.doesnt;
+			}
+			queue.remove();
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it empty_should_be_true_for_a_new_list() {
+		before_empty();
+		try {
+			auto queue = new PriorityQueue!(int);
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_empty() {
+	}
+
 	done before() {
 	}
 
@@ -2199,24 +2313,55 @@ class PriorityQueueTester {
 		result = tester.add_should_add_an_item_to_an_empty_list();
 		test.logResult(result, "add should add an item to an empty list", "15");
 
+		test.logSubset("peek");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.peek_should_return_the_first_item_in_min_heap();
+		test.logResult(result, "peek should return the first item in min heap", "25");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.peek_should_return_the_first_item_in_max_heap();
+		test.logResult(result, "peek should return the first item in max heap", "34");
+
 		test.logSubset("remove");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_min_heap();
-		test.logResult(result, "remove should remove the first item in min heap", "25");
+		test.logResult(result, "remove should remove the first item in min heap", "45");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_max_heap();
-		test.logResult(result, "remove should remove the first item in max heap", "34");
+		test.logResult(result, "remove should remove the first item in max heap", "54");
 
 		test.logSubset("length");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.length_should_be_zero_for_an_empty_list();
-		test.logResult(result, "length should be zero for an empty list", "45");
+		test.logResult(result, "length should be zero for an empty list", "65");
+
+		test.logSubset("clear");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.clear_should_result_in_an_empty_list();
+		test.logResult(result, "clear should result in an empty list", "73");
+
+		test.logSubset("empty");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.empty_should_be_true_when_the_list_is_empty();
+		test.logResult(result, "empty should be true when the list is empty", "89");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.empty_should_be_true_for_a_new_list();
+		test.logResult(result, "empty should be true for a new list", "97");
 
 		test.finish();
 	}
