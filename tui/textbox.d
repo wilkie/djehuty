@@ -37,8 +37,8 @@ class TuiTextBox : TuiWidget {
 
 		_tabWidth = 4;
 		_lineCont = '$';
-		_scrollH = ScrollType.skip;
-		_scrollV = ScrollType.skip;
+		_scrollH = ScrollType.Skip;
+		_scrollV = ScrollType.Skip;
 	}
 
 	override void onKeyDown(Key key) {
@@ -615,10 +615,10 @@ protected:
 
 		if (_column < _firstColumn) {
 			// scroll horizontally
-			if (_scrollH == ScrollType.skip) {
+			if (_scrollH == ScrollType.Skip) {
 				// If scrolling left, go to the start of the line and let the next section do the work.
 				_firstColumn = 0;
-			} else { // ScrollType.step
+			} else { // ScrollType.Step
 				_firstColumn = _column;
 				if (_firstColumn <= 1)
 					_firstColumn = 0;
@@ -629,9 +629,9 @@ protected:
 		// _firstColumn > 0 means the characters are shifted 1 to the right thanks to the line continuation symbol
 		if (_column + leftTabSpaces - _firstColumn + (_firstColumn > 0 ? 1 : 0) >= this.width - _lineNumbersWidth - 1) {
 			// scroll horizontally
-			if (_scrollH == ScrollType.skip) {
+			if (_scrollH == ScrollType.Skip) {
 				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) / 2;
-			} else { // ScrollType.step
+			} else { // ScrollType.Step
 				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) + 3;
 			}
 			shouldDraw = true;
@@ -639,10 +639,10 @@ protected:
 
 		if (_row < _firstVisible) {
 			// scroll vertically
-			if (_scrollV == ScrollType.skip) {
+			if (_scrollV == ScrollType.Skip) {
 				// If scrolling up, go to the first row and let the next section do the work.
 				_firstVisible = 0;
-			} else { // ScrollType.step
+			} else { // ScrollType.Step
 				_firstVisible = _row;
 				if (_firstVisible < 0)
 					_firstVisible = 0;
@@ -652,9 +652,9 @@ protected:
 
 		if (this.top + (_row - _firstVisible) >= this.bottom) {
 			// scroll vertically
-			if (_scrollV == ScrollType.skip) {
+			if (_scrollV == ScrollType.Skip) {
 				_firstVisible = _row - this.height / 2;
-			} else { // ScrollType.step
+			} else { // ScrollType.Step
 				_firstVisible = _row - this.height + 1;
 			}
 			if (_firstVisible >= _lines.length) {
@@ -712,9 +712,10 @@ protected:
 		}
 	}
 
+	// The behavior when a line is scrolled via the keyboard.
 	enum ScrollType {
-		step,
-		skip,
+		Step,
+		Skip,
 	}
 
 	// The information about each line

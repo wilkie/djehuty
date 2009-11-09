@@ -145,7 +145,7 @@ protected:
 
 	bool foundDescribe = false;
 	bool foundName = false;
-	bool foundLeft = false;
+	int foundLeft = 0;
 	
 	String name;
 	
@@ -208,29 +208,18 @@ protected:
 		progressTree(section);
 	}
 
-	void parseLeft()
-	{
-		if (foundLeft)
-		{
-			// error
-		}
-		else
-		{
-			foundLeft = true;
+	void parseLeft() {
+		foundLeft++;
+		if (foundLeft > 1) {
+			working ~= currentToken;
 		}
 	}
 	
-	void parseRight()
-	{
-		if (!foundLeft)
-		{
-			// error
-		}
-		else
-		{
+	void parseRight() {
+		foundLeft--;
+		if (foundLeft == 0) {
 			// done	
-			if (working.length > 0)
-			{
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -238,6 +227,9 @@ protected:
 				working = new String("");
 			}			
 			done();
+		}
+		else {
+			working ~= currentToken;
 		}
 	}
 	
@@ -279,7 +271,7 @@ protected:
 	
 	bool foundDescribe = false;
 	bool foundName = false;
-	bool foundLeft = false;
+	int foundLeft = 0;
 	
 	String name;
 
@@ -314,29 +306,18 @@ protected:
 		progressTree(section);
 	}
 	
-	void parseLeft()
-	{
-		if (foundLeft)
-		{
-			// error
-		}
-		else
-		{
-			foundLeft = true;
+	void parseLeft() {
+		foundLeft++;
+		if (foundLeft > 1) {
+			working ~= currentToken;
 		}
 	}
 	
-	void parseRight()
-	{
-		if (!foundLeft)
-		{
-			// error
-		}
-		else
-		{
+	void parseRight() {
+		foundLeft--;
+		if (foundLeft == 0) {
 			// done
-			if (working.length > 0)
-			{
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -344,6 +325,9 @@ protected:
 				working = new String("");
 			}
 			done();
+		}
+		else {
+			working ~= currentToken;
 		}
 	}
 	
@@ -417,7 +401,7 @@ class ParseIt : ParseUnit
 
 	bool foundIt = false;
 	bool foundName = false;
-	bool foundLeft = false;
+	int foundLeft = 0;
 
 	String name;
 
@@ -468,27 +452,18 @@ class ParseIt : ParseUnit
 	
 	void parseLeft()
 	{
-		if (foundLeft)
-		{
-			// error
-		}
-		else
-		{
-			foundLeft = true;
+		foundLeft++;
+		if (foundLeft > 1) {
+			working ~= currentToken;
 		}
 	}
 	
 	void parseRight()
 	{
-		if (!foundLeft)
-		{
-			// error
-		}
-		else
-		{
+		foundLeft--;
+		if (foundLeft == 0) {
 			// done
-			if (working.length > 0)
-			{
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -496,6 +471,9 @@ class ParseIt : ParseUnit
 				working = new String("");
 			}
 			done();
+		}
+		else {
+			working ~= currentToken;
 		}
 	}
 	
@@ -566,8 +544,7 @@ class ParseShould : ParseUnit
 			}
 			done();
 		}
-		else
-		{
+		else {
 			working ~= currentToken;
 		}
 	}
@@ -612,7 +589,7 @@ class ParseDone : ParseUnit
 		registerToken("}", &parseRight);
 	}
 	
-	bool foundLeft = false;
+	int foundLeft = 0;
 	bool foundDone = false;
 	bool foundBefore = false;
 	
@@ -630,26 +607,16 @@ class ParseDone : ParseUnit
 		}
 	}
 	
-	void parseLeft()
-	{
-		if (foundLeft)
-		{
-			// error
-		}
-		else
-		{
-			foundLeft = true;
+	void parseLeft() {
+		foundLeft++;
+		if (foundLeft > 1) {
+			working ~= currentToken;
 		}
 	}
 	
-	void parseRight()
-	{
-		if (!foundLeft)
-		{
-			// error
-		}
-		else
-		{
+	void parseRight() {
+		foundLeft--;
+		if (foundLeft == 0) {
 			// done
 			if (working.length > 0)
 			{
@@ -660,6 +627,9 @@ class ParseDone : ParseUnit
 				working = new String("");
 			}
 			done();
+		}
+		else {
+			working ~= currentToken;
 		}
 	}
 	
