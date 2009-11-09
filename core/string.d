@@ -1138,7 +1138,7 @@ void strlwr(char* str) {
 		str++;
 	}
 }
-import std.stdio;
+
 string trim(string chrs) {
 	size_t idx_s, idx_e;
 
