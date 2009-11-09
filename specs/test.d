@@ -1515,15 +1515,16 @@ class StringTester {
 	}
 }
 
-import hashes.sha224;
+import hashes.digest;
 
-class SHA224Tester {
+class DigestTester {
 
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
+	it creation_should_allow_for_64_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
-			if(!(s == "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567")) {
 				return it.doesnt;
 			}
 		}
@@ -1534,11 +1535,12 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
+	it creation_should_allow_for_128_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash("a").getString();
-			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567")) {
 				return it.doesnt;
 			}
 		}
@@ -1549,11 +1551,12 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	it hash_should_hash_the_empty_string() {
-		before_hash();
+	it creation_should_allow_for_160_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash(new String("")).getString();
-			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567deadbeef")) {
 				return it.doesnt;
 			}
 		}
@@ -1564,7 +1567,66 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	done before_hash() {
+	it creation_should_allow_for_192_bits() {
+		before_creation();
+		try {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567deadbeef01234567")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it comparison_should_work_for_equals_overload() {
+		before_comparison();
+		try {
+			Digest d1 = new Digest(0xDEADBEEF);
+			Digest d2 = new Digest(0x01234567);
+			Digest d3 = new Digest(0xDEADBEEF);
+			if(!(d1 == d3)) {
+				return it.doesnt;
+			}
+			if(d1 == d2) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it comparison_should_work_for_equals_function() {
+		before_comparison();
+		try {
+			Digest d1 = new Digest(0xDEADBEEF);
+			Digest d2 = new Digest(0x01234567);
+			Digest d3 = new Digest(0xDEADBEEF);
+			if(!(d1.equals(d3))) {
+				return it.doesnt;
+			}
+			if(d1.equals(d2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_comparison() {
 	}
 
 	done before() {
@@ -1575,28 +1637,45 @@ class SHA224Tester {
 	}
 
 	static void test() {
-		SHA224Tester tester = new SHA224Tester();
+		DigestTester tester = new DigestTester();
 
-		Test test = new Test("SHA224", "specs/hashes/sha224.d");
+		Test test = new Test("Digest", "specs/hashes/digest.d");
 
 		it result;
 
-		test.logSubset("hash");
+		test.logSubset("creation");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
+		result = tester.creation_should_allow_for_64_bits();
+		test.logResult(result, "creation should allow for 64 bits", "9");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
+		result = tester.creation_should_allow_for_128_bits();
+		test.logResult(result, "creation should allow for 128 bits", "16");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "19");
+		result = tester.creation_should_allow_for_160_bits();
+		test.logResult(result, "creation should allow for 160 bits", "23");
+
+		tester = new DigestTester();
+
+		result = tester.creation_should_allow_for_192_bits();
+		test.logResult(result, "creation should allow for 192 bits", "30");
+
+		test.logSubset("comparison");
+
+		tester = new DigestTester();
+
+		result = tester.comparison_should_work_for_equals_overload();
+		test.logResult(result, "comparison should work for equals overload", "39");
+
+		tester = new DigestTester();
+
+		result = tester.comparison_should_work_for_equals_function();
+		test.logResult(result, "comparison should work for equals function", "48");
 
 		test.finish();
 	}
@@ -1804,16 +1883,15 @@ class SHA1Tester {
 	}
 }
 
-import hashes.digest;
+import hashes.sha224;
 
-class DigestTester {
+class SHA224Tester {
 
-	it creation_should_allow_for_64_bits() {
-		before_creation();
+	it hash_should_hash_as_expected_for_String_objects() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567")) {
+			String s = HashSHA224.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
+			if(!(s == "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")) {
 				return it.doesnt;
 			}
 		}
@@ -1824,12 +1902,11 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_128_bits() {
-		before_creation();
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567")) {
+			String s = HashSHA224.hash("a").getString();
+			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
 				return it.doesnt;
 			}
 		}
@@ -1840,12 +1917,11 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_160_bits() {
-		before_creation();
+	it hash_should_hash_the_empty_string() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567deadbeef")) {
+			String s = HashSHA224.hash(new String("")).getString();
+			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
 				return it.doesnt;
 			}
 		}
@@ -1856,66 +1932,7 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_192_bits() {
-		before_creation();
-		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567deadbeef01234567")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_creation() {
-	}
-
-	it comparison_should_work_for_equals_overload() {
-		before_comparison();
-		try {
-			Digest d1 = new Digest(0xDEADBEEF);
-			Digest d2 = new Digest(0x01234567);
-			Digest d3 = new Digest(0xDEADBEEF);
-			if(!(d1 == d3)) {
-				return it.doesnt;
-			}
-			if(d1 == d2) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it comparison_should_work_for_equals_function() {
-		before_comparison();
-		try {
-			Digest d1 = new Digest(0xDEADBEEF);
-			Digest d2 = new Digest(0x01234567);
-			Digest d3 = new Digest(0xDEADBEEF);
-			if(!(d1.equals(d3))) {
-				return it.doesnt;
-			}
-			if(d1.equals(d2)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_comparison() {
+	done before_hash() {
 	}
 
 	done before() {
@@ -1926,45 +1943,28 @@ class DigestTester {
 	}
 
 	static void test() {
-		DigestTester tester = new DigestTester();
+		SHA224Tester tester = new SHA224Tester();
 
-		Test test = new Test("Digest", "specs/hashes/digest.d");
+		Test test = new Test("SHA224", "specs/hashes/sha224.d");
 
 		it result;
 
-		test.logSubset("creation");
+		test.logSubset("hash");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_64_bits();
-		test.logResult(result, "creation should allow for 64 bits", "9");
+		result = tester.hash_should_hash_as_expected_for_String_objects();
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_128_bits();
-		test.logResult(result, "creation should allow for 128 bits", "16");
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_160_bits();
-		test.logResult(result, "creation should allow for 160 bits", "23");
-
-		tester = new DigestTester();
-
-		result = tester.creation_should_allow_for_192_bits();
-		test.logResult(result, "creation should allow for 192 bits", "30");
-
-		test.logSubset("comparison");
-
-		tester = new DigestTester();
-
-		result = tester.comparison_should_work_for_equals_overload();
-		test.logResult(result, "comparison should work for equals overload", "39");
-
-		tester = new DigestTester();
-
-		result = tester.comparison_should_work_for_equals_function();
-		test.logResult(result, "comparison should work for equals function", "48");
+		result = tester.hash_should_hash_the_empty_string();
+		test.logResult(result, "hash should hash the empty string", "19");
 
 		test.finish();
 	}
@@ -2156,11 +2156,11 @@ class PriorityQueueTester {
 			int min;
 			int val;
 			Random r = new Random();
-			val = r.next();
+			val = cast(int)r.next();
 			queue.add(val);
 			min = val;
 			for(int i; i < 10000; i++) {
-			val = r.next();
+			val = cast(int)r.next();
 			queue.add(val);
 			if (val < min) {
 			min = val;
@@ -2416,8 +2416,8 @@ class Tests {
 		StringTester.test();
 	}
 
-	static void testSHA224() {
-		SHA224Tester.test();
+	static void testDigest() {
+		DigestTester.test();
 	}
 
 	static void testMD5() {
@@ -2428,8 +2428,8 @@ class Tests {
 		SHA1Tester.test();
 	}
 
-	static void testDigest() {
-		DigestTester.test();
+	static void testSHA224() {
+		SHA224Tester.test();
 	}
 
 	static void testSHA256() {
@@ -2444,10 +2444,10 @@ class Tests {
 		testUnicode();
 		testRegex();
 		testString();
-		testSHA224();
+		testDigest();
 		testMD5();
 		testSHA1();
-		testDigest();
+		testSHA224();
 		testSHA256();
 		testPriorityQueue();
 		Test.done();

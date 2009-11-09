@@ -1138,7 +1138,7 @@ void strlwr(char* str) {
 		str++;
 	}
 }
-
+import std.stdio;
 string trim(string chrs) {
 	size_t idx_s, idx_e;
 
@@ -1150,6 +1150,10 @@ string trim(string chrs) {
 
 	while (idx_e > 0 && (chrs[idx_e-1] == ' ' || chrs[idx_e-1] == '\t' || chrs[idx_e-1] == '\n' || chrs[idx_e-1] == '\r')) {
 		idx_e--;
+	}
+
+	if (idx_s >= idx_e) {
+		return "";
 	}
 
 	return chrs[idx_s..idx_e].dup;

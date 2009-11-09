@@ -48,12 +48,12 @@ describe priorityQueue() {
 			int val;
 
 			Random r = new Random();
-			val = r.next();
+			val = cast(int)r.next();
 			queue.add(val);
 			min = val;
 
 			for(int i; i < 10000; i++) {
-				val = r.next();
+				val = cast(int)r.next();
 				queue.add(val);
 				if (val < min) {
 					min = val;
