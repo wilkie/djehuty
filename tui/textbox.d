@@ -53,8 +53,7 @@ class TuiTextBox : TuiWidget {
 
 					_column = _lines[_row].value.length;
 
-					_lines[_row].value ~= _lines[_row+1].value;
-					_lines[_row].format ~= _lines[_row+1].format;
+					_lines[_row] ~= _lines[_row+1].dup();
 
 					LineInfo oldLine;
 					oldLine = _lines.removeAt(_row+1);
@@ -134,8 +133,7 @@ class TuiTextBox : TuiWidget {
 						// Last column of last row. Do nothing.
 					} else {
 						// Last column with more rows beneath, so suck next row up.
-						_lines[_row].value ~= _lines[_row+1].value;
-						_lines[_row].format ~= _lines[_row+1].format;
+						_lines[_row] ~= _lines[_row+1].dup();
 
 						LineInfo oldLine;
 						oldLine = _lines.removeAt(_row+1);
@@ -722,6 +720,42 @@ protected:
 
 	// The information about each line
 	class LineInfo {
+		this() {
+		}
+
+		this(String v, uint[] f) {
+			value = v;
+			format = f;
+			this();
+		}
+
+		LineInfo dup() {
+			return new LineInfo(new String(this.value), this.format.dup);
+		}
+
+		void opCatAssign(LineInfo li) {
+			if (_lines[_row].format !is null && _lines[_row+1].format !is null) {
+				// Merge format lines
+				this.format ~= li.format;
+			} else if (_lines[_row].format !is null) {
+				// Make a format for the 2nd line
+				this.format ~= [cast(uint)_forecolor, cast(uint)_backcolor, li.value.length];
+			} else if (_lines[_row+1].format !is null) {
+				// Make a format for the 1st line
+				this.format = [cast(uint)_forecolor, cast(uint)_backcolor, _lines[_row].value.length] ~ li.format;
+			} else {
+				// Ignore formats if none exist
+			}
+
+			this.value ~= li.value;
+		}
+
+		LineInfo opCat(LineInfo li) {
+			LineInfo li_new = this.dup();
+			li_new ~= li;
+			return li_new;
+		}
+
 		String value;
 		uint[] format;
 	}
