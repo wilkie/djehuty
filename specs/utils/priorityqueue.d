@@ -2,6 +2,8 @@ module specs.utils.priorityqueue;
 
 import utils.priorityqueue;
 
+import core.random;
+
 describe priorityQueue() {
 	describe creation() {
 		it should_work_as_expected() {
@@ -38,6 +40,27 @@ describe priorityQueue() {
 			queue.add(15);
 			should(queue.length == 3);
 			should(queue.peek() == 15);
+		}
+
+		it should_handle_a_heavy_workload() {
+			auto queue = new PriorityQueue!(int, MinHeap);
+			int min;
+			int val;
+
+			Random r = new Random();
+			val = r.next();
+			queue.add(val);
+			min = val;
+
+			for(int i; i < 10000; i++) {
+				val = r.next();
+				queue.add(val);
+				if (val < min) {
+					min = val;
+				}
+			}			
+
+			should(queue.peek() == min);
 		}
 	}
 

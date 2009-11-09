@@ -2059,6 +2059,8 @@ class SHA256Tester {
 
 import utils.priorityqueue;
 
+import core.random;
+
 class PriorityQueueTester {
 
 	it creation_should_work_as_expected() {
@@ -2137,6 +2139,34 @@ class PriorityQueueTester {
 				return it.doesnt;
 			}
 			if(!(queue.peek() == 15)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it peek_should_handle_a_heavy_workload() {
+		before_peek();
+		try {
+			auto queue = new PriorityQueue!(int, MinHeap);
+			int min;
+			int val;
+			Random r = new Random();
+			val = r.next();
+			queue.add(val);
+			min = val;
+			for(int i; i < 10000; i++) {
+			val = r.next();
+			queue.add(val);
+			if (val < min) {
+			min = val;
+			}
+			}
+			if(!(queue.peek() == min)) {
 				return it.doesnt;
 			}
 		}
@@ -2304,64 +2334,69 @@ class PriorityQueueTester {
 		tester = new PriorityQueueTester();
 
 		result = tester.creation_should_work_as_expected();
-		test.logResult(result, "creation should work as expected", "7");
+		test.logResult(result, "creation should work as expected", "9");
 
 		test.logSubset("add");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.add_should_add_an_item_to_an_empty_list();
-		test.logResult(result, "add should add an item to an empty list", "15");
+		test.logResult(result, "add should add an item to an empty list", "17");
 
 		test.logSubset("peek");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.peek_should_return_the_first_item_in_min_heap();
-		test.logResult(result, "peek should return the first item in min heap", "25");
+		test.logResult(result, "peek should return the first item in min heap", "27");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.peek_should_return_the_first_item_in_max_heap();
-		test.logResult(result, "peek should return the first item in max heap", "34");
+		test.logResult(result, "peek should return the first item in max heap", "36");
+
+		tester = new PriorityQueueTester();
+
+		result = tester.peek_should_handle_a_heavy_workload();
+		test.logResult(result, "peek should handle a heavy workload", "45");
 
 		test.logSubset("remove");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_min_heap();
-		test.logResult(result, "remove should remove the first item in min heap", "45");
+		test.logResult(result, "remove should remove the first item in min heap", "68");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_max_heap();
-		test.logResult(result, "remove should remove the first item in max heap", "54");
+		test.logResult(result, "remove should remove the first item in max heap", "77");
 
 		test.logSubset("length");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.length_should_be_zero_for_an_empty_list();
-		test.logResult(result, "length should be zero for an empty list", "65");
+		test.logResult(result, "length should be zero for an empty list", "88");
 
 		test.logSubset("clear");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.clear_should_result_in_an_empty_list();
-		test.logResult(result, "clear should result in an empty list", "73");
+		test.logResult(result, "clear should result in an empty list", "96");
 
 		test.logSubset("empty");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.empty_should_be_true_when_the_list_is_empty();
-		test.logResult(result, "empty should be true when the list is empty", "89");
+		test.logResult(result, "empty should be true when the list is empty", "112");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.empty_should_be_true_for_a_new_list();
-		test.logResult(result, "empty should be true for a new list", "97");
+		test.logResult(result, "empty should be true for a new list", "120");
 
 		test.finish();
 	}
