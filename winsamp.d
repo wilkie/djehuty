@@ -296,6 +296,8 @@ class MyTApp :TuiApplication {
 
 		//snd = new Sound("tests/begin.mp2");
 		//snd.play();
+
+		tuiwnd.tuibox.refresh();
 	}
 
 	override void onApplicationEnd() {

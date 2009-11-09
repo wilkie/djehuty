@@ -1152,5 +1152,9 @@ string trim(string chrs) {
 		idx_e--;
 	}
 
+	if (idx_s >= idx_e) {
+		return "";
+	}
+
 	return chrs[idx_s..idx_e].dup;
 }
