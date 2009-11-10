@@ -734,15 +734,15 @@ protected:
 		}
 
 		void opCatAssign(LineInfo li) {
-			if (_lines[_row].format !is null && _lines[_row+1].format !is null) {
+			if (this.format !is null && li.format !is null) {
 				// Merge format lines
 				this.format ~= li.format;
-			} else if (_lines[_row].format !is null) {
+			} else if (this.format !is null) {
 				// Make a format for the 2nd line
 				this.format ~= [cast(uint)_forecolor, cast(uint)_backcolor, li.value.length];
-			} else if (_lines[_row+1].format !is null) {
+			} else if (li.format !is null) {
 				// Make a format for the 1st line
-				this.format = [cast(uint)_forecolor, cast(uint)_backcolor, _lines[_row].value.length] ~ li.format;
+				this.format = [cast(uint)_forecolor, cast(uint)_backcolor, this.value.length] ~ li.format;
 			} else {
 				// Ignore formats if none exist
 			}
