@@ -167,16 +167,30 @@ class TuiWindow : Responder {
 				// within a submenu
 
 				if (key.code == Key.Down) {
-					_selectedMenuIndex++;
-					if (_selectedMenuIndex < _focusedMenu.length) {
-						_selectedMenu = _focusedMenu[_selectedMenuIndex];
-						_drawSubmenu();
-					}
-					else {
-						_selectedMenuIndex = _focusedMenu.length - 1;
+					size_t tmpIndex = _selectedMenuIndex;
+					tmpIndex++;
+					while (tmpIndex < _focusedMenu.length) {
+						if (_focusedMenu[tmpIndex].displayText.trim() != "") {
+							_selectedMenuIndex = tmpIndex;
+							_selectedMenu = _focusedMenu[_selectedMenuIndex];
+							_drawSubmenu();
+							return;
+						}
+						tmpIndex++;
 					}
 				}
 				else if (key.code == Key.Up) {
+					size_t tmpIndex = _selectedMenuIndex;
+					while (tmpIndex > 0) {
+						tmpIndex--;
+						if (_focusedMenu[tmpIndex].displayText.trim() != "") {
+							_selectedMenuIndex = tmpIndex;
+							_selectedMenu = _focusedMenu[_selectedMenuIndex];
+							_drawSubmenu();
+							return;
+						}
+					}
+					
 					if (_selectedMenuIndex > 0) {
 						_selectedMenuIndex--;
 						_selectedMenu = _focusedMenu[_selectedMenuIndex];
