@@ -1,6 +1,7 @@
 module utils.linkedlist;
 
 import core.list;
+import core.exception;
 
 // Section: Utils
 
@@ -9,37 +10,37 @@ class LinkedList(T) : ListInterface!(T) {
 	this() {
 	}
 
-	// add to the head
+	// add to the _head
 
-	// Description: Will add the data to the head of the list.
+	// Description: Will add the data to the _head of the list.
 	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
 	void add(T data) {
 		synchronized(this) {
 			LinkedListNode* newNode = new LinkedListNode;
 			newNode.data = data;
 
-			if (head is null) {
-				head = newNode;
-				tail = newNode;
+			if (_head is null) {
+				_head = newNode;
+				_tail = newNode;
 
 				newNode.next = newNode;
 				newNode.prev = newNode;
 			}
 			else {
-				newNode.next = head;
-				newNode.prev = tail;
+				newNode.next = _head;
+				newNode.prev = _tail;
 
-				head.prev = newNode;
-				tail.next = newNode;
+				_head.prev = newNode;
+				_tail.next = newNode;
 
-				head = newNode;
+				_head = newNode;
 			}
 
 			_count++;
 		}
 	}
 
-	// Description: Will add the list to the head of the list.
+	// Description: Will add the list to the _head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
 	void add(ListInterface!(T) list) {
 		foreach(item; list) {
@@ -55,92 +56,90 @@ class LinkedList(T) : ListInterface!(T) {
 
 	T peek() {
 		if (_count == 0) {
-			// XXX: Throw list exception
-			return _nullValue();
+			throw new OutOfElements(this.classinfo.name);
 		}
 
-		return head.data;
+		return _head.data;
 	}
 
 	T peekAt(size_t index) {
 		synchronized(this) {
-			if (index < _count) {
-				if (index == 0) {
-					return head.data;
-				}
-
-				LinkedListNode* curnode = null;
-
-				if (last !is null) {
-					uint cacheDistance;
-
-					if (lastIndex < index) {
-						cacheDistance = index - lastIndex;
-
-						if (cacheDistance < index) {
-							curnode = last;
-							for ( ; cacheDistance >= 0; cacheDistance--) {
-								curnode = curnode.next;
-							}
-						}
-					}
-					else {
-						cacheDistance = lastIndex - index;
-
-						if (cacheDistance < index) {
-							curnode = last;
-
-							for ( ; cacheDistance >= 0; cacheDistance--) {
-								curnode = curnode.prev;
-							}
-						}
-					}
-				}
-
-				if (curnode is null) {
-					curnode = head;
-
-					for ( ; index > 0; index--) {
-						curnode = curnode.next;
-					}
-				}
-
-				// keep cache of last accessed item
-				last = curnode;
-				lastIndex = index;
-
-				return curnode.data;
+			if (index >= _count) {
+				throw new OutOfBounds(this.classinfo.name);
 			}
 
-			return _nullValue();
+			if (index == 0) {
+				return _head.data;
+			}
+
+			LinkedListNode* curnode = null;
+
+			if (_last !is null) {
+				uint cacheDistance;
+
+				if (_lastIndex < index) {
+					cacheDistance = index - _lastIndex;
+
+					if (cacheDistance < index) {
+						curnode = _last;
+						for ( ; cacheDistance >= 0; cacheDistance--) {
+							curnode = curnode.next;
+						}
+					}
+				}
+				else {
+					cacheDistance = _lastIndex - index;
+
+					if (cacheDistance < index) {
+						curnode = _last;
+
+						for ( ; cacheDistance >= 0; cacheDistance--) {
+							curnode = curnode.prev;
+						}
+					}
+				}
+			}
+
+			if (curnode is null) {
+				curnode = _head;
+
+				for ( ; index > 0; index--) {
+					curnode = curnode.next;
+				}
+			}
+
+			// keep cache of _last accessed item
+			_last = curnode;
+			_lastIndex = index;
+
+			return curnode.data;
 		}
     }
 		
-	// remove the tail
+	// remove the _tail
 
-	// Description: Will remove an item from the tail of the list, which would remove in a first-in-first-out ordering (FIFO).
+	// Description: Will remove an item from the _tail of the list, which would remove in a first-in-first-out ordering (FIFO).
 	// data: Will be set to the data retreived.
 	T remove() {
 		synchronized(this) {
-			if (tail == null) {
-				// XXX: Throw list exception
-				return _nullValue();
+			if (_tail == null) {
+				throw new OutOfElements(this.classinfo.name);
 			}
 
-			T data = tail.data;
+			T data = _tail.data;
 
-			//tail.next = null;
-			//tail.prev = null;
+			//_tail.next = null;
+			//_tail.prev = null;
 
-			if (head is tail) {
+			if (_head is _tail) {
 				// unlink all
-				head = null;
-				tail = null;
+				_head = null;
+				_tail = null;
 			}
 			else {
-				tail.prev.next = tail.next;
-				tail.next.prev = tail.prev;
-				tail = tail.prev;
+				_tail.prev.next = _tail.next;
+				_tail.next.prev = _tail.prev;
+				_tail = _tail.prev;
 			}
 
 			_count--;
@@ -151,26 +150,33 @@ class LinkedList(T) : ListInterface!(T) {
 
 	T remove(T item) {
 		synchronized(this) {
-			if (head is null) {
-				// XXX: throw list exception
-				return _nullValue();
+			if (_head is null) {
+				throw new OutOfElements(this.classinfo.name);
 			}
 
 			LinkedListNode* curnode = null;
 
-			curnode = head;
+			curnode = _head;
 			do {
 				if (curnode.data == item) {
 					// remove this item
 
-					if (head is tail) {
+					if (_head is _tail) {
 						// unlink all
-						head = null;
-						tail = null;
+						_head = null;
+						_tail = null;
+						_last = null;
+						_lastIndex = 0;
 					}
 					else {
 						curnode.prev.next = curnode.next;
 						curnode.next.prev = curnode.prev;
+				
+						// nullify cached value, if it has been removed
+						if (_last is curnode) {
+							_last = null;
+							_lastIndex = 0;
+						}
 					}
 
 					_count--;
@@ -179,22 +185,86 @@ class LinkedList(T) : ListInterface!(T) {
 				}
 
 				curnode = curnode.next;
-			} while (curnode !is head);
+			} while (curnode !is _head);
 
-			// XXX: Throw list exception
-			return _nullValue();
+			throw new ElementNotFound(this.classinfo.name);
 		}
 	}
 
 	T removeAt(size_t index) {
-		return _nullValue();
+		synchronized(this) {
+			if (index >= _count) {
+				throw new OutOfBounds(this.classinfo.name);
+			}
+
+			LinkedListNode* curnode = null;
+
+			if (_last !is null) {
+				uint cacheDistance;
+
+				if (_lastIndex < index) {
+					cacheDistance = index - _lastIndex;
+
+					if (cacheDistance < index) {
+						curnode = _last;
+						for ( ; cacheDistance >= 0; cacheDistance--) {
+							curnode = curnode.next;
+						}
+					}
+				}
+				else {
+					cacheDistance = _lastIndex - index;
+
+					if (cacheDistance < index) {
+						curnode = _last;
+
+						for ( ; cacheDistance >= 0; cacheDistance--) {
+							curnode = curnode.prev;
+						}
+					}
+				}
+			}
+
+			if (curnode is null) {
+				curnode = _head;
+
+				for ( ; index > 0; index--) {
+					curnode = curnode.next;
+				}
+			}
+
+			// curnode is the node to be removed
+			T ret;
+			ret = curnode.data;
+
+			curnode.prev.next = curnode.next;
+			curnode.next.prev = curnode.prev;
+
+			// nullify cached value, if it has been removed
+			if (_last is curnode) {
+				_last = null;
+				_lastIndex = 0;
+			}
+
+			_count--;
+
+			if (_count == 0) {
+				_tail = null;
+				_head = null;
+			}
+
+			return ret;
+
+		}
 	}
 
 	void clear() {
 		synchronized(this) {
 			_count = 0;
-			tail = null;
-			head = null;
+			_tail = null;
+			_head = null;
+			_last = null;
+			_lastIndex = 0;
 		}
 	}
 
@@ -233,7 +303,7 @@ class LinkedList(T) : ListInterface!(T) {
 		synchronized (this) {
 			LinkedList!(T) ret = new LinkedList!(T);
 
-			LinkedListNode* curnode = head;
+			LinkedListNode* curnode = _head;
 
 			if (_count == 0) {
 				return ret;
@@ -269,7 +339,7 @@ class LinkedList(T) : ListInterface!(T) {
 
 	int opApply(int delegate(ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = head;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 
@@ -290,7 +360,7 @@ class LinkedList(T) : ListInterface!(T) {
 
 	int opApply(int delegate(ref size_t, ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = head;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 			size_t idx;
@@ -313,7 +383,7 @@ class LinkedList(T) : ListInterface!(T) {
 
 	int opApplyReverse(int delegate(inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = tail;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 
@@ -334,7 +404,7 @@ class LinkedList(T) : ListInterface!(T) {
 
 	int opApplyReverse(int delegate(inout size_t, inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = tail;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 			size_t idx = _count - 1;
@@ -368,13 +438,13 @@ protected:
 		T data;
 	}
 
-	// the head and tail of the list
-	LinkedListNode* head = null;
-	LinkedListNode* tail = null;
+	// the _head and _tail of the list
+	LinkedListNode* _head = null;
+	LinkedListNode* _tail = null;
 
-	// the last accessed node is cached
-	LinkedListNode* last = null;
-	size_t lastIndex = 0;
+	// the _last accessed node is cached
+	LinkedListNode* _last = null;
+	size_t _lastIndex = 0;
 
 	// the number of items in the list
 	size_t _count;

@@ -33,7 +33,8 @@ import parsing.options;
 
 import io.file;
 
-import utils.priorityqueue;
+import utils.heap;
+import utils.fibonacci;
 
 class MyOptions : OptionParser {
 
@@ -288,7 +289,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -324,7 +325,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+//	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		
 /*		list = new List!(String);
@@ -381,16 +382,56 @@ class MyConsoleApp : Application {
 	//	char d = cast(char)f;
 	//	Console.putln(d);
 
-		auto queue = new PriorityQueue!(int, MaxHeap);
+//		auto queue = new PriorityQueue!(int, MaxHeap);
 
-		queue.add(10);
-		queue.add(4);
-		queue.add(15);
+//		queue.add(10);
+//		queue.add(4);
+//		queue.add(15);
 
 
-		Console.putln(queue.remove);
-		Console.putln(queue.remove);
-		Console.putln(queue.remove);
+//		Console.putln(queue.remove);
+//		Console.putln(queue.remove);
+//:q			Console.putln(queue.remove);
+
+		auto fibheap = new FibonacciHeap!(int, MaxHeap);
+		fibheap.add(10);
+		fibheap.add(4);
+		fibheap.add(15);
+		
+		Console.putln(fibheap.remove());
+		Console.putln(fibheap.remove());
+		Console.putln(fibheap.remove());
+		
+		auto queue = new FibonacciHeap!(int, MinHeap);
+		int min;
+		int val;
+
+		Random r = new Random();
+		val = cast(int)r.next();
+//		queue.add(val);
+		min = val;
+
+		for(int i; i < 2; i++) {
+			val = cast(int)r.next();
+//			queue.add(val);
+			if (val < min) {
+				min = val;
+			}
+		}			
+
+		queue.add(1);
+		queue.add(3);
+		queue.add(2);
+//		queue.add(3);
+		int foo;
+		int last = queue.peek();
+
+		while (!queue.empty()) {
+			foo = queue.remove();
+			Console.putln(foo);
+			last = foo;
+		}
+
 	}
 
 protected:
