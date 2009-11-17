@@ -617,9 +617,10 @@ protected:
 			// scroll horizontally
 			if (_scrollH == ScrollType.Skip) {
 				// If scrolling left, go to the start of the line and let the next section do the work.
-				_firstColumn = 0;
+				if (_column + leftTabSpaces < _firstColumn)
+					_firstColumn = 0;
 			} else { // ScrollType.Step
-				_firstColumn = _column;
+				_firstColumn = _column + leftTabSpaces;
 				if (_firstColumn <= 1)
 					_firstColumn = 0;
 			}
