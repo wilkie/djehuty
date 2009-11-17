@@ -1515,16 +1515,15 @@ class StringTester {
 	}
 }
 
-import hashes.digest;
+import hashes.sha224;
 
-class DigestTester {
+class SHA224Tester {
 
-	it creation_should_allow_for_64_bits() {
-		before_creation();
+	it hash_should_hash_as_expected_for_String_objects() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567")) {
+			String s = HashSHA224.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
+			if(!(s == "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")) {
 				return it.doesnt;
 			}
 		}
@@ -1535,12 +1534,11 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_128_bits() {
-		before_creation();
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567")) {
+			String s = HashSHA224.hash("a").getString();
+			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
 				return it.doesnt;
 			}
 		}
@@ -1551,12 +1549,11 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_160_bits() {
-		before_creation();
+	it hash_should_hash_the_empty_string() {
+		before_hash();
 		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567deadbeef")) {
+			String s = HashSHA224.hash(new String("")).getString();
+			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
 				return it.doesnt;
 			}
 		}
@@ -1567,66 +1564,7 @@ class DigestTester {
 		return it.does;
 	}
 
-	it creation_should_allow_for_192_bits() {
-		before_creation();
-		try {
-			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
-			if(!(s == "deadbeef01234567deadbeef01234567deadbeef01234567")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_creation() {
-	}
-
-	it comparison_should_work_for_equals_overload() {
-		before_comparison();
-		try {
-			Digest d1 = new Digest(0xDEADBEEF);
-			Digest d2 = new Digest(0x01234567);
-			Digest d3 = new Digest(0xDEADBEEF);
-			if(!(d1 == d3)) {
-				return it.doesnt;
-			}
-			if(d1 == d2) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it comparison_should_work_for_equals_function() {
-		before_comparison();
-		try {
-			Digest d1 = new Digest(0xDEADBEEF);
-			Digest d2 = new Digest(0x01234567);
-			Digest d3 = new Digest(0xDEADBEEF);
-			if(!(d1.equals(d3))) {
-				return it.doesnt;
-			}
-			if(d1.equals(d2)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_comparison() {
+	done before_hash() {
 	}
 
 	done before() {
@@ -1637,45 +1575,28 @@ class DigestTester {
 	}
 
 	static void test() {
-		DigestTester tester = new DigestTester();
+		SHA224Tester tester = new SHA224Tester();
 
-		Test test = new Test("Digest", "specs/hashes/digest.d");
+		Test test = new Test("SHA224", "specs/hashes/sha224.d");
 
 		it result;
 
-		test.logSubset("creation");
+		test.logSubset("hash");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_64_bits();
-		test.logResult(result, "creation should allow for 64 bits", "9");
+		result = tester.hash_should_hash_as_expected_for_String_objects();
+		test.logResult(result, "hash should hash as expected for String objects", "9");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_128_bits();
-		test.logResult(result, "creation should allow for 128 bits", "16");
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "14");
 
-		tester = new DigestTester();
+		tester = new SHA224Tester();
 
-		result = tester.creation_should_allow_for_160_bits();
-		test.logResult(result, "creation should allow for 160 bits", "23");
-
-		tester = new DigestTester();
-
-		result = tester.creation_should_allow_for_192_bits();
-		test.logResult(result, "creation should allow for 192 bits", "30");
-
-		test.logSubset("comparison");
-
-		tester = new DigestTester();
-
-		result = tester.comparison_should_work_for_equals_overload();
-		test.logResult(result, "comparison should work for equals overload", "39");
-
-		tester = new DigestTester();
-
-		result = tester.comparison_should_work_for_equals_function();
-		test.logResult(result, "comparison should work for equals function", "48");
+		result = tester.hash_should_hash_the_empty_string();
+		test.logResult(result, "hash should hash the empty string", "19");
 
 		test.finish();
 	}
@@ -1883,15 +1804,16 @@ class SHA1Tester {
 	}
 }
 
-import hashes.sha224;
+import hashes.digest;
 
-class SHA224Tester {
+class DigestTester {
 
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
+	it creation_should_allow_for_64_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
-			if(!(s == "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567")) {
 				return it.doesnt;
 			}
 		}
@@ -1902,11 +1824,12 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
+	it creation_should_allow_for_128_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash("a").getString();
-			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567")) {
 				return it.doesnt;
 			}
 		}
@@ -1917,11 +1840,12 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	it hash_should_hash_the_empty_string() {
-		before_hash();
+	it creation_should_allow_for_160_bits() {
+		before_creation();
 		try {
-			String s = HashSHA224.hash(new String("")).getString();
-			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567deadbeef")) {
 				return it.doesnt;
 			}
 		}
@@ -1932,7 +1856,66 @@ class SHA224Tester {
 		return it.does;
 	}
 
-	done before_hash() {
+	it creation_should_allow_for_192_bits() {
+		before_creation();
+		try {
+			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+			String s = d.getString();
+			if(!(s == "deadbeef01234567deadbeef01234567deadbeef01234567")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it comparison_should_work_for_equals_overload() {
+		before_comparison();
+		try {
+			Digest d1 = new Digest(0xDEADBEEF);
+			Digest d2 = new Digest(0x01234567);
+			Digest d3 = new Digest(0xDEADBEEF);
+			if(!(d1 == d3)) {
+				return it.doesnt;
+			}
+			if(d1 == d2) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it comparison_should_work_for_equals_function() {
+		before_comparison();
+		try {
+			Digest d1 = new Digest(0xDEADBEEF);
+			Digest d2 = new Digest(0x01234567);
+			Digest d3 = new Digest(0xDEADBEEF);
+			if(!(d1.equals(d3))) {
+				return it.doesnt;
+			}
+			if(d1.equals(d2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_comparison() {
 	}
 
 	done before() {
@@ -1943,28 +1926,45 @@ class SHA224Tester {
 	}
 
 	static void test() {
-		SHA224Tester tester = new SHA224Tester();
+		DigestTester tester = new DigestTester();
 
-		Test test = new Test("SHA224", "specs/hashes/sha224.d");
+		Test test = new Test("Digest", "specs/hashes/digest.d");
 
 		it result;
 
-		test.logSubset("hash");
+		test.logSubset("creation");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
+		result = tester.creation_should_allow_for_64_bits();
+		test.logResult(result, "creation should allow for 64 bits", "9");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
+		result = tester.creation_should_allow_for_128_bits();
+		test.logResult(result, "creation should allow for 128 bits", "16");
 
-		tester = new SHA224Tester();
+		tester = new DigestTester();
 
-		result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "19");
+		result = tester.creation_should_allow_for_160_bits();
+		test.logResult(result, "creation should allow for 160 bits", "23");
+
+		tester = new DigestTester();
+
+		result = tester.creation_should_allow_for_192_bits();
+		test.logResult(result, "creation should allow for 192 bits", "30");
+
+		test.logSubset("comparison");
+
+		tester = new DigestTester();
+
+		result = tester.comparison_should_work_for_equals_overload();
+		test.logResult(result, "comparison should work for equals overload", "39");
+
+		tester = new DigestTester();
+
+		result = tester.comparison_should_work_for_equals_function();
+		test.logResult(result, "comparison should work for equals function", "48");
 
 		test.finish();
 	}
@@ -2057,7 +2057,7 @@ class SHA256Tester {
 	}
 }
 
-import utils.priorityqueue;
+import utils.heap;
 
 import core.random;
 
@@ -2168,6 +2168,15 @@ class PriorityQueueTester {
 			}
 			if(!(queue.peek() == min)) {
 				return it.doesnt;
+			}
+			int foo;
+			int last;
+			while (!queue.empty()) {
+			foo = queue.remove();
+			if(!(foo >= last)) {
+				return it.doesnt;
+			}
+			last = foo;
 			}
 		}
 		catch(Exception _exception_) {
@@ -2325,7 +2334,7 @@ class PriorityQueueTester {
 	static void test() {
 		PriorityQueueTester tester = new PriorityQueueTester();
 
-		Test test = new Test("PriorityQueue", "specs/utils/priorityqueue.d");
+		Test test = new Test("PriorityQueue", "specs/utils/heap.d");
 
 		it result;
 
@@ -2365,38 +2374,394 @@ class PriorityQueueTester {
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_min_heap();
-		test.logResult(result, "remove should remove the first item in min heap", "68");
+		test.logResult(result, "remove should remove the first item in min heap", "77");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.remove_should_remove_the_first_item_in_max_heap();
-		test.logResult(result, "remove should remove the first item in max heap", "77");
+		test.logResult(result, "remove should remove the first item in max heap", "86");
 
 		test.logSubset("length");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.length_should_be_zero_for_an_empty_list();
-		test.logResult(result, "length should be zero for an empty list", "88");
+		test.logResult(result, "length should be zero for an empty list", "97");
 
 		test.logSubset("clear");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.clear_should_result_in_an_empty_list();
-		test.logResult(result, "clear should result in an empty list", "96");
+		test.logResult(result, "clear should result in an empty list", "105");
 
 		test.logSubset("empty");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.empty_should_be_true_when_the_list_is_empty();
-		test.logResult(result, "empty should be true when the list is empty", "112");
+		test.logResult(result, "empty should be true when the list is empty", "121");
 
 		tester = new PriorityQueueTester();
 
 		result = tester.empty_should_be_true_for_a_new_list();
-		test.logResult(result, "empty should be true for a new list", "120");
+		test.logResult(result, "empty should be true for a new list", "129");
+
+		test.finish();
+	}
+}
+
+import utils.fibonacci;
+
+import utils.heap;
+
+import core.random;
+
+class FibonacciHeapTester {
+
+	it creation_should_work_as_expected() {
+		before_creation();
+		try {
+			FibonacciHeap!(int) queue = new FibonacciHeap!(int)();
+			if(queue is null) {
+				return it.doesnt;
+			}
+			if(!(queue.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it add_should_add_an_item_to_an_empty_list() {
+		before_add();
+		try {
+			FibonacciHeap!(int) queue = new FibonacciHeap!(int)();
+			int item = 42;
+			queue.add(item);
+			if(!(queue.length == 1)) {
+				return it.doesnt;
+			}
+			if(!(queue.peek() == item)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_add() {
+	}
+
+	it peek_should_return_the_first_item_in_min_heap() {
+		before_peek();
+		try {
+			auto queue = new FibonacciHeap!(int, MinHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.peek() == 4)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it peek_should_return_the_first_item_in_max_heap() {
+		before_peek();
+		try {
+			auto queue = new FibonacciHeap!(int, MaxHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.peek() == 15)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it peek_should_handle_a_heavy_workload() {
+		before_peek();
+		try {
+			auto queue = new FibonacciHeap!(int, MinHeap);
+			int min;
+			int val;
+			Random r = new Random();
+			val = cast(int)r.next();
+			queue.add(val);
+			min = val;
+			for(int i; i < 100; i++) {
+			val = cast(int)r.next();
+			queue.add(val);
+			if (val < min) {
+			min = val;
+			}
+			}
+			if(!(queue.peek() == min)) {
+				return it.doesnt;
+			}
+			int foo;
+			int last = queue.peek();
+			while (!queue.empty()) {
+			foo = queue.remove();
+			if(!(foo >= last)) {
+				return it.doesnt;
+			}
+			last = foo;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_peek() {
+	}
+
+	it remove_should_remove_the_first_item_in_min_heap() {
+		before_remove();
+		try {
+			auto queue = new FibonacciHeap!(int, MinHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.remove() == 4)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it remove_should_remove_the_first_item_in_max_heap() {
+		before_remove();
+		try {
+			auto queue = new FibonacciHeap!(int, MaxHeap);
+			queue.add(10);
+			queue.add(4);
+			queue.add(15);
+			if(!(queue.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(queue.remove() == 15)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_remove() {
+	}
+
+	it length_should_be_zero_for_an_empty_list() {
+		before_length();
+		try {
+			auto queue = new FibonacciHeap!(int);
+			if(!(queue.empty)) {
+				return it.doesnt;
+			}
+			if(!(queue.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_length() {
+	}
+
+	it clear_should_result_in_an_empty_list() {
+		before_clear();
+		try {
+			auto queue = new FibonacciHeap!(int);
+			queue.add(15);
+			queue.add(10);
+			queue.add(24);
+			if(queue.length == 0) {
+				return it.doesnt;
+			}
+			if(queue.empty()) {
+				return it.doesnt;
+			}
+			queue.clear();
+			if(!(queue.length == 0)) {
+				return it.doesnt;
+			}
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_clear() {
+	}
+
+	it empty_should_be_true_when_the_list_is_empty() {
+		before_empty();
+		try {
+			auto queue = new FibonacciHeap!(int);
+			queue.add(10);
+			if(queue.empty()) {
+				return it.doesnt;
+			}
+			queue.remove();
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it empty_should_be_true_for_a_new_list() {
+		before_empty();
+		try {
+			auto queue = new FibonacciHeap!(int);
+			if(!(queue.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_empty() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		FibonacciHeapTester tester = new FibonacciHeapTester();
+
+		Test test = new Test("FibonacciHeap", "specs/utils/fibonacci.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.creation_should_work_as_expected();
+		test.logResult(result, "creation should work as expected", "10");
+
+		test.logSubset("add");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.add_should_add_an_item_to_an_empty_list();
+		test.logResult(result, "add should add an item to an empty list", "18");
+
+		test.logSubset("peek");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.peek_should_return_the_first_item_in_min_heap();
+		test.logResult(result, "peek should return the first item in min heap", "28");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.peek_should_return_the_first_item_in_max_heap();
+		test.logResult(result, "peek should return the first item in max heap", "37");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.peek_should_handle_a_heavy_workload();
+		test.logResult(result, "peek should handle a heavy workload", "46");
+
+		test.logSubset("remove");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.remove_should_remove_the_first_item_in_min_heap();
+		test.logResult(result, "remove should remove the first item in min heap", "78");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.remove_should_remove_the_first_item_in_max_heap();
+		test.logResult(result, "remove should remove the first item in max heap", "87");
+
+		test.logSubset("length");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.length_should_be_zero_for_an_empty_list();
+		test.logResult(result, "length should be zero for an empty list", "98");
+
+		test.logSubset("clear");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.clear_should_result_in_an_empty_list();
+		test.logResult(result, "clear should result in an empty list", "106");
+
+		test.logSubset("empty");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.empty_should_be_true_when_the_list_is_empty();
+		test.logResult(result, "empty should be true when the list is empty", "122");
+
+		tester = new FibonacciHeapTester();
+
+		result = tester.empty_should_be_true_for_a_new_list();
+		test.logResult(result, "empty should be true for a new list", "130");
 
 		test.finish();
 	}
@@ -2416,8 +2781,8 @@ class Tests {
 		StringTester.test();
 	}
 
-	static void testDigest() {
-		DigestTester.test();
+	static void testSHA224() {
+		SHA224Tester.test();
 	}
 
 	static void testMD5() {
@@ -2428,8 +2793,8 @@ class Tests {
 		SHA1Tester.test();
 	}
 
-	static void testSHA224() {
-		SHA224Tester.test();
+	static void testDigest() {
+		DigestTester.test();
 	}
 
 	static void testSHA256() {
@@ -2440,16 +2805,21 @@ class Tests {
 		PriorityQueueTester.test();
 	}
 
+	static void testFibonacciHeap() {
+		FibonacciHeapTester.test();
+	}
+
 	static void testAll() {
 		testUnicode();
 		testRegex();
 		testString();
-		testDigest();
+		testSHA224();
 		testMD5();
 		testSHA1();
-		testSHA224();
+		testDigest();
 		testSHA256();
 		testPriorityQueue();
+		testFibonacciHeap();
 		Test.done();
 	}
 }
