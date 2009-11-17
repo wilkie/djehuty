@@ -10,10 +10,7 @@
 module opengl.gl;
 
 // The functions supported by opengl
-template _GLFunctionPrototypes()
-{
-	const char[] _GLFunctionPrototypes = `
-
+extern (System) {
 	void  glAccum(GLenum op, GLfloat value);
 	void  glAlphaFunc(GLenum func, GLclampf refr);
 	GLboolean  glAreTexturesResident(GLsizei n, GLuint *textures, GLboolean *residences);
@@ -350,25 +347,6 @@ template _GLFunctionPrototypes()
 	void  glVertex4sv(GLshort *v);
 	void  glVertexPointer(GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 	void  glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
-
-	`;
-}
-
-
-
-// THIS IS AWFULLY DUMB, ISN'T IT?
-version(PlatformWindows)
-{
-extern (Windows):
-
-mixin(_GLFunctionPrototypes!());
-
-}
-else
-{
-extern (C):
-
-mixin(_GLFunctionPrototypes!());
 
 }
 
