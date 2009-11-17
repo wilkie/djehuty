@@ -14,6 +14,7 @@ module core.list;
 import core.definitions;
 import core.util;
 import core.tostring;
+import core.exception;
 
 interface ListInterface(T) {
 	template add(R) {
@@ -112,8 +113,8 @@ class List(T) : ListInterface!(T) {
 					_resize();
 				}
 				
-				if (idx > _count) {
-					idx = _count;
+				if (idx >= _count) {
+					throw new OutOfBounds(this.classinfo.name);
 				}
 				
 				if (_count == 0) {
@@ -162,7 +163,11 @@ class List(T) : ListInterface!(T) {
 	T removeAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
-				return _nullValue();
+				throw new OutOfBounds(this.classinfo.name);
+			}
+
+			if (this.empty()) {
+				throw new OutOfElements(this.classinfo.name);
 			}
 		
 			_count--;
@@ -174,7 +179,7 @@ class List(T) : ListInterface!(T) {
 	T peek() {			
 		synchronized(this) {
 			if (this.empty()) {
-				return _nullValue();
+				throw new OutOfElements(this.classinfo.name);
 			}
 			
 			return _data[_count-1];
@@ -184,8 +189,13 @@ class List(T) : ListInterface!(T) {
 	T peekAt(size_t index) {		
 		synchronized(this) {
 			if (index >= _count) {
-				return _nullValue();
+				throw new OutOfBounds(this.classinfo.name);
 			}
+
+			if (this.empty()) {
+				throw new OutOfElements(this.classinfo.name);
+			}
+
 			return _data[index];
 		}
 	}
@@ -193,6 +203,10 @@ class List(T) : ListInterface!(T) {
 	template set(R) {
 		void set(R value) {		
 			synchronized(this) {
+				if (this.empty()) {
+					throw new OutOfElements(this.classinfo.name);
+				}
+
 				if (_count > 0) {
 					_data[_count-1] = cast(T)value;
 				}
@@ -203,6 +217,14 @@ class List(T) : ListInterface!(T) {
 	template setAt(R) {
 		void setAt(size_t index, R value) {
 			synchronized(this) {
+				if (index >= _count) {
+					throw new OutOfBounds(this.classinfo.name);
+				}
+
+				if (this.empty()) {
+					throw new OutOfElements(this.classinfo.name);
+				}
+
 				_data[index] = cast(T)value;
 			}
 		}
