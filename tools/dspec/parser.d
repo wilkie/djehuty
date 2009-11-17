@@ -52,267 +52,146 @@ protected:
 	}
 
 	// parsing
-	
+
 	ParseUnit parseUnit;
 }
 
-bool isDelimiter(String s)
-{
-	if (s.length > 1 || s.length == 0)
-	{
+bool isDelimiter(String s) {
+	if (s.length > 1 || s.length == 0) {
 		return false;
 	}
-	
-	foreach(cmp; delims)
-	{
-		if (cmp == s[0])
-		{
+
+	foreach(cmp; delims) {
+		if (cmp == s[0]) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
-class ParseDSpec : ParseUnit
-{
-	this()
-	{
+class ParseDSpec : ParseUnit {
+	this() {
 		// hook for describe section
 		registerToken("describe", &parseDescribe);
 		registerToken("import", &parseImport);
-		
+
 		// hook for comments
 		//registerToken(...)
 	}
-	
-	void parseDescribe()
-	{
+
+	void parseDescribe() {
 		AST ast = newParseUnit(new ParseDescribe());
 		progressTree(ast);
 	}
-	
-	void parseImport()
-	{
+
+	void parseImport() {
 		AST ast = newParseUnit(new ParseImport());
-		progressTree(ast);		
+		progressTree(ast);
 	}
 }
 
-class ParseImport : ParseUnit
-{
+class ParseImport : ParseUnit {
 	String mod;
 
-	this()
-	{
+	this() {
 		registerToken(";", &parseSemicolon);
 		mod = new String("");
 	}
 
-	void parseSemicolon()
-	{
+	void parseSemicolon() {
 		AST ast = new AST(null, null);
 		ast.value = mod;
 		progressTree(ast);
-		
+
 		done();
 	}
-	
-	void parseDefault()
-	{
-		if (currentToken != "import")
-		{
+
+	void parseDefault() {
+		if (currentToken != "import") {
 			mod ~= currentToken;
 		}
 	}
 }
 
-class ParseDescribe : ParseUnit
-{
-	this()
-	{
+class ParseDescribe : ParseUnit {
+	this() {
 		working = new String("");
 
 		registerToken("describe", &parseDescribe);
 		registerToken("it", &parseIt);
 		registerToken("done", &parseDone);
-		
+
 		registerToken("{", &parseLeft);
 		registerToken("}", &parseRight);
 	}
-	
+
 protected:
 
 	bool foundDescribe = false;
 	bool foundName = false;
 	int foundLeft = 0;
-	
+
 	String name;
-	
+
 	String working;
 
-	void parseDescribe()
-	{
-		if (foundDescribe)
-		{
-			if (working.length > 0)
-			{
-				AST ast = new AST(null, null);
-				ast.value = working;
-				progressTree(ast);
-			
-				working = new String("");
-			}
-			AST section;
-			section = newParseUnit(new ParseDescribeSection());
-			
-			progressTree(section);
-		}
-		else
-		{
-			foundDescribe = true;
-		}
-	}
-	
-	void parseIt()
-	{
-		if (working.length > 0)
-		{
-			AST ast = new AST(null, null);
-			ast.value = working;
-			progressTree(ast);
-
-			working = new String("");
-		}
-			
-		AST section;
-		section = newParseUnit(new ParseIt());
-			
-		progressTree(section);
-	}
-	
-	void parseDone()
-	{
-		if (working.length > 0)
-		{
-			AST ast = new AST(null, null);
-			ast.value = working;
-			progressTree(ast);
-
-			working = new String("");
-		}
-			
-		AST section;
-		section = newParseUnit(new ParseDone());
-		
-		progressTree(section);
-	}
-
-	void parseLeft() {
-		foundLeft++;
-		if (foundLeft > 1) {
-			working ~= currentToken;
-		}
-	}
-	
-	void parseRight() {
-		foundLeft--;
-		if (foundLeft == 0) {
-			// done	
+	void parseDescribe() {
+		if (foundDescribe) {
 			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
 
 				working = new String("");
-			}			
-			done();
+			}
+			AST section;
+			section = newParseUnit(new ParseDescribeSection());
+
+			progressTree(section);
 		}
 		else {
-			working ~= currentToken;
-		}
-	}
-	
-	void parseDefault()
-	{
-		if (foundDescribe && !foundName && !foundLeft && !isDelimiter(currentToken))
-		{
-			foundName = true;
-			name = currentToken;
-			//Console.putln("Section: ", name.array);
-
-			AST meta = new AST(null, new AST(null, null));
-			meta.name = new String("Identifier");
-			meta.right.value = name;
-			progressTree(meta);
-		}
-		if (foundDescribe && foundName && foundLeft)
-		{
-			working ~= currentToken;
-		}
-	}	
-}
-
-class ParseDescribeSection : ParseUnit
-{
-	this()
-	{
-		working = new String("");
-
-		registerToken("describe", &parseDescribe);
-		registerToken("it", &parseIt);
-		registerToken("done", &parseDone);
-		
-		registerToken("{", &parseLeft);
-		registerToken("}", &parseRight);
-	}
-	
-protected:
-	
-	bool foundDescribe = false;
-	bool foundName = false;
-	int foundLeft = 0;
-	
-	String name;
-
-	String working;
-	
-	void parseDescribe()
-	{
-		if (foundDescribe)
-		{
-			// error
-		}
-		else
-		{
 			foundDescribe = true;
 		}
 	}
-	
-	void parseIt()
-	{
-		if (working.length > 0)
-		{
+
+	void parseIt() {
+		if (working.length > 0) {
 			AST ast = new AST(null, null);
 			ast.value = working;
 			progressTree(ast);
 
 			working = new String("");
 		}
-		
+
 		AST section;
 		section = newParseUnit(new ParseIt());
-		
+
 		progressTree(section);
 	}
-	
+
+	void parseDone() {
+		if (working.length > 0) {
+			AST ast = new AST(null, null);
+			ast.value = working;
+			progressTree(ast);
+
+			working = new String("");
+		}
+
+		AST section;
+		section = newParseUnit(new ParseDone());
+
+		progressTree(section);
+	}
+
 	void parseLeft() {
 		foundLeft++;
 		if (foundLeft > 1) {
 			working ~= currentToken;
 		}
 	}
-	
+
 	void parseRight() {
 		foundLeft--;
 		if (foundLeft == 0) {
@@ -330,11 +209,98 @@ protected:
 			working ~= currentToken;
 		}
 	}
-	
-	void parseDone()
-	{
-		if (working.length > 0)
-		{
+
+	void parseDefault() {
+		if (foundDescribe && !foundName && !foundLeft && !isDelimiter(currentToken)) {
+			foundName = true;
+			name = currentToken;
+			//Console.putln("Section: ", name.array);
+
+			AST meta = new AST(null, new AST(null, null));
+			meta.name = new String("Identifier");
+			meta.right.value = name;
+			progressTree(meta);
+		}
+		if (foundDescribe && foundName && foundLeft) {
+			working ~= currentToken;
+		}
+	}
+}
+
+class ParseDescribeSection : ParseUnit
+{
+	this() {
+		working = new String("");
+
+		registerToken("describe", &parseDescribe);
+		registerToken("it", &parseIt);
+		registerToken("done", &parseDone);
+
+		registerToken("{", &parseLeft);
+		registerToken("}", &parseRight);
+	}
+
+protected:
+
+	bool foundDescribe = false;
+	bool foundName = false;
+	int foundLeft = 0;
+
+	String name;
+
+	String working;
+
+	void parseDescribe() {
+		if (foundDescribe) {
+			// error
+		}
+		else {
+			foundDescribe = true;
+		}
+	}
+
+	void parseIt() {
+		if (working.length > 0) {
+			AST ast = new AST(null, null);
+			ast.value = working;
+			progressTree(ast);
+
+			working = new String("");
+		}
+
+		AST section;
+		section = newParseUnit(new ParseIt());
+
+		progressTree(section);
+	}
+
+	void parseLeft() {
+		foundLeft++;
+		if (foundLeft > 1) {
+			working ~= currentToken;
+		}
+	}
+
+	void parseRight() {
+		foundLeft--;
+		if (foundLeft == 0) {
+			// done
+			if (working.length > 0) {
+				AST ast = new AST(null, null);
+				ast.value = working;
+				progressTree(ast);
+
+				working = new String("");
+			}
+			done();
+		}
+		else {
+			working ~= currentToken;
+		}
+	}
+
+	void parseDone() {
+		if (working.length > 0) {
 			AST ast = new AST(null, null);
 			ast.value = working;
 			progressTree(ast);
@@ -344,49 +310,44 @@ protected:
 
 		AST section;
 		section = newParseUnit(new ParseDone());
-		
+
 		progressTree(section);
 	}
-	
-	void parseDefault()
-	{
-		if (foundDescribe && !foundName && !foundLeft && !isDelimiter(currentToken))
-		{
+
+	void parseDefault() {
+		if (foundDescribe && !foundName && !foundLeft && !isDelimiter(currentToken)) {
 			foundName = true;
 			name = currentToken;
 			//Console.putln("Class: ", name.array);
-			
+
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
 			meta.right.value = name;
 			progressTree(meta);
 		}
-		if (foundDescribe && foundName && foundLeft)
-		{
+		if (foundDescribe && foundName && foundLeft) {
 			working ~= currentToken;
 		}
 	}
-	
+
 	// Parses:
-	
-	// describe section { 
-	//     
+
+	// describe section {
+	//
 	//     it should {
 	//     }
 	//
 	// }
-	
+
 	// Passes off control:
-	
+
 	// ParseIt()
 	// ParseDescribe()
-	
+
 }
 
-class ParseIt : ParseUnit
-{
-	this()
-	{		
+class ParseIt : ParseUnit {
+	this() {
 		working = new String("");
 
 		registerToken("{", &parseLeft);
@@ -407,16 +368,12 @@ class ParseIt : ParseUnit
 
 	String working;
 
-	void parseShould()
-	{
-		if(!foundIt)
-		{
+	void parseShould() {
+		if(!foundIt) {
 			// error
 		}
-		else
-		{
-			if (working.length > 0)
-			{
+		else {
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -425,41 +382,34 @@ class ParseIt : ParseUnit
 			}
 
 			AST section;
-			if (currentToken == "should")
-			{
+			if (currentToken == "should") {
 				section = newParseUnit(new ParseShould());
 			}
-			else if (currentToken == "shouldThrow")
-			{
+			else if (currentToken == "shouldThrow") {
 				section = newParseUnit(new ParseShouldThrow());
 			}
-			else
-			{
+			else {
 				section = newParseUnit(new ParseShouldNot());
 			}
 
 			progressTree(section);
 		}
 	}
-	
-	void parseIt()
-	{
-		if (!foundIt)
-		{
+
+	void parseIt() {
+		if (!foundIt) {
 			foundIt = true;
 		}
 	}
-	
-	void parseLeft()
-	{
+
+	void parseLeft() {
 		foundLeft++;
 		if (foundLeft > 1) {
 			working ~= currentToken;
 		}
 	}
-	
-	void parseRight()
-	{
+
+	void parseRight() {
 		foundLeft--;
 		if (foundLeft == 0) {
 			// done
@@ -476,15 +426,13 @@ class ParseIt : ParseUnit
 			working ~= currentToken;
 		}
 	}
-	
-	void parseDefault()
-	{
-		if (foundIt && !foundName && !foundLeft && !isDelimiter(currentToken))
-		{
+
+	void parseDefault() {
+		if (foundIt && !foundName && !foundLeft && !isDelimiter(currentToken)) {
 			foundName = true;
 			name = currentToken;
 			//Console.putln("It: ", name.array, " @ ", feeder.getLineNumber());
-			
+
 			AST meta = new AST(null, new AST(null, null));
 			meta.name = new String("Identifier");
 			meta.right.value = name;
@@ -496,46 +444,38 @@ class ParseIt : ParseUnit
 			meta.right.value = lnum;
 			progressTree(meta);
 		}
-		if (foundIt && foundName && foundLeft)
-		{
+		if (foundIt && foundName && foundLeft) {
 			working ~= currentToken;
 		}
 	}
 }
 
-class ParseShould : ParseUnit
-{
-	this()
-	{
+class ParseShould : ParseUnit {
+	this() {
 		working = new String("");
 
 		registerToken("(", &parseLeft);
 		registerToken(")", &parseRight);
 	}
-	
+
 	bool foundShould;
-	
+
 	uint parens = 0;
-	
+
 	String working;
-	
-	void parseLeft()
-	{
-		if (parens != 0)
-		{
+
+	void parseLeft() {
+		if (parens != 0) {
 			working ~= currentToken;
 		}
 		parens++;
 	}
-	
-	void parseRight()
-	{
+
+	void parseRight() {
 		parens--;
-		if (parens == 0)
-		{
+		if (parens == 0) {
 			// done
-			if (working.length > 0)
-			{
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -548,34 +488,27 @@ class ParseShould : ParseUnit
 			working ~= currentToken;
 		}
 	}
-	
-	void parseDefault()
-	{
-		if (currentToken == "should" && !foundShould)
-		{
+
+	void parseDefault() {
+		if (currentToken == "should" && !foundShould) {
 			foundShould = true;
 		}
-		else if (currentToken == "shouldNot" && !foundShould)
-		{
+		else if (currentToken == "shouldNot" && !foundShould) {
 			foundShould = true;
 		}
-		else if (currentToken == "shouldThrow" && !foundShould)
-		{
+		else if (currentToken == "shouldThrow" && !foundShould) {
 			foundShould = true;
 		}
-		else
-		{
+		else {
 			working ~= currentToken;
 		}
 	}
 }
 
-class ParseShouldNot : ParseShould
-{
+class ParseShouldNot : ParseShould {
 }
 
-class ParseShouldThrow : ParseShould
-{
+class ParseShouldThrow : ParseShould {
 }
 
 class ParseDone : ParseUnit
@@ -595,31 +528,27 @@ class ParseDone : ParseUnit
 	
 	String working;
 	
-	void parseDone()
-	{
-		if (foundDone)
-		{
+	void parseDone() {
+		if (foundDone) {
 			// error
 		}
-		else
-		{
+		else {
 			foundDone = true;
 		}
 	}
-	
+
 	void parseLeft() {
 		foundLeft++;
 		if (foundLeft > 1) {
 			working ~= currentToken;
 		}
 	}
-	
+
 	void parseRight() {
 		foundLeft--;
 		if (foundLeft == 0) {
 			// done
-			if (working.length > 0)
-			{
+			if (working.length > 0) {
 				AST ast = new AST(null, null);
 				ast.value = working;
 				progressTree(ast);
@@ -632,23 +561,18 @@ class ParseDone : ParseUnit
 			working ~= currentToken;
 		}
 	}
-	
-	void parseBefore()
-	{
-		if (foundDone && !foundBefore && !foundLeft)
-		{
+
+	void parseBefore() {
+		if (foundDone && !foundBefore && !foundLeft) {
 			foundBefore = true;
 		}
-		else
-		{
+		else {
 			 // error
 		}
 	}
-	
-	void parseDefault()
-	{
-		if (foundDone && foundBefore && foundLeft)
-		{
+
+	void parseDefault() {
+		if (foundDone && foundBefore && foundLeft) {
 			working ~= currentToken;
 		}
 	}
