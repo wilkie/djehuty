@@ -12,10 +12,8 @@ module opengl.glu;
 import opengl.gl;
 
 // The functions supported by opengl
-template _GLUFunctionPrototypes()
-{
-	const char[] _GLUFunctionPrototypes = `
 
+extern (System) {
 	extern(C) struct GLUnurbs;
 	extern(C) struct GLUquadric;
 	extern(C) struct GLUtesselator;
@@ -41,32 +39,9 @@ template _GLUFunctionPrototypes()
 
 	int  gluBuild1DMipmaps(GLenum target, GLint components, GLint width, GLenum format, GLenum type, void *data);
 	int  gluBuild2DMipmaps(GLenum target, GLint components, GLint width, GLint height, GLenum format, GLenum type, void *data);
-
-
-
-	`;
 }
 
-
-
-// THIS IS AWFULLY DUMB, ISN'T IT?
-version(PlatformWindows)
-{
-extern (Windows):
-
-mixin(_GLUFunctionPrototypes!());
-
-}
-else
-{
-extern (C):
-
-mixin(_GLUFunctionPrototypes!());
-
-}
-
-
-extern (C):
+extern (System):
 
 /* backwards compatibility: */
 

@@ -9,19 +9,32 @@
  *
  */
 
-module utils.priorityqueue;
+module utils.heap;
 
 import core.list;
 import core.util;
 
-// XXX: Need TreeInterface!(T), a priority queue is a tree, not a list.
+import utils.heap;
 
 enum : bool {
 	MinHeap = true,
 	MaxHeap = false
 }
 
-class PriorityQueue(T, bool minHeap = MinHeap) {
+interface HeapInterface(T, bool minHeap = MinHeap) {
+	template add(R) {
+		void add(R item);
+	}
+
+	T remove();
+
+	void clear();
+	bool empty();
+
+	size_t length();
+}
+
+class PriorityQueue(T, bool minHeap = MinHeap) : HeapInterface!(T, minHeap) {
 
 	this() {
 		_length = 0;
