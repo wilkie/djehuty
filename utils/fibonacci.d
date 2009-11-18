@@ -217,7 +217,7 @@ protected:
 
 		T data;
 
-		long rank;
+		size_t rank;
 		bool marked;
 	}
 
