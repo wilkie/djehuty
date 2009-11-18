@@ -85,7 +85,7 @@ class Sound : Responder {
 	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.
 	// filename: The string containing the filename of the audio file to load.
 	bool load(string filename) {
-		load(new File(filename));
+		load(File.open(filename));
 
 		return false;
 	}
