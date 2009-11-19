@@ -115,6 +115,7 @@ class Sound : Responder {
 
 		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
 
+		Console.putln("Sound : Creating Device");
 		wavDevice.openDevice(buffers[0].getAudioFormat());
 		wavDevice.pause();
 
@@ -129,6 +130,7 @@ class Sound : Responder {
 			return ret;
 		}
 		else {
+			Console.putln("Sound : Sending Buffer");
 			wavDevice.sendBuffer(buffers[0]);
 		}
 
