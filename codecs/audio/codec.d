@@ -17,12 +17,18 @@ import core.stream;
 
 import io.audio;
 import io.wavelet;
+import io.console;
 
 // Section: Interfaces
 
 // Description: The interface to an audio codec.
-class AudioCodec : Codec {
+abstract class AudioCodec : Codec {
 public:
+
+	this() {
+		Console.putln("WHAT");
+		curTime = new Time();
+	}
 
 	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wf) {
 		return StreamData.Invalid;
@@ -45,8 +51,7 @@ protected:
 
 	// For some decoders to aid in seeks
 	// through the stream
-	struct SeekPointer
-	{
+	struct SeekPointer {
 		Time time;
 		ulong streamPosition;
 
