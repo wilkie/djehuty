@@ -71,7 +71,7 @@ class MP3Codec : AudioCodec {
 					// if it knows its layer it will search for
 					// the sync bits plus that part of the header
 				case MP3_BUFFER_AUDIO:
-				
+
 					samplesLeft = 1728 * NUM_BLOCKS;
 					bufferSize = samplesLeft;
 
@@ -82,8 +82,7 @@ class MP3Codec : AudioCodec {
 				case MP3_READ_HEADER:
 					//Console.putln("pos: ", new String("%x", stream.position));
 
-					if (!stream.read(mpeg_header))
-					{
+					if (!stream.read(mpeg_header)) {
 						return StreamData.Accepted;
 					}
 
@@ -128,7 +127,7 @@ class MP3Codec : AudioCodec {
 						continue;
 					}
 
-//					Console.putln("mpeg_header ", new String("%x", mpeg_header)	);
+					//Console.putln("mpeg_header ", new String("%x", mpeg_header)	);
 
 					if ((mpeg_header & MPEG_SYNC_BITS) == MPEG_SYNC_BITS) {
 						// sync bits found
@@ -250,8 +249,9 @@ class MP3Codec : AudioCodec {
 						if (!accepted) {
 							if (toBuffer !is null) {
 								if (toBuffer.length() != bufferSize) {
-									Console.putln("resize ", bufferSize, " from ", toBuffer.length());
+									//Console.putln("resize ", bufferSize, " from ", toBuffer.length());
 									toBuffer.resize(bufferSize);
+									//Console.putln("resize ", bufferSize, " from ", toBuffer.length());
 								}
 								toBuffer.rewind();
 							}
@@ -260,7 +260,7 @@ class MP3Codec : AudioCodec {
 								return StreamData.Accepted;
 							}
 						}
-						
+
 						accepted = true;
 
 						continue;
@@ -272,7 +272,7 @@ class MP3Codec : AudioCodec {
 
 						// test 5K worth
 						syncAmount++;
-						
+
 						if (syncAmount == 1024*15) {
 							return StreamData.Invalid;
 						}
@@ -299,7 +299,7 @@ class MP3Codec : AudioCodec {
 					continue;
 					
 				case MP3_READ_AUDIO_DATA:
-					//Console.putln("pos: ", new String("%x", stream.position));
+				//	Console.putln("pos: ", new String("%x", stream.position));
 					
 					// curByte is currently at the end of the last frame (supposedly)
 					// main_data_end depicts the end of the data frame
@@ -470,10 +470,11 @@ class MP3Codec : AudioCodec {
 					audioRef = audioData;
 
 					curPos = 0;
-					
+
 					bool output = false;
 
 					for (uint gr = 0; gr < 2; gr++) {
+						//Console.putln("gr ", gr);
 						for (uint ch = 0; ch < channels; ch++) {
 
 							part2_length = (curByte * 8) + curPos;
@@ -533,7 +534,7 @@ class MP3Codec : AudioCodec {
 							for (uint sb; sb < SBLIMIT; sb++) {
 								hybridSynthesis(gr, ch, sb);
 							}
-							
+
 							// Multiply every second subband's every second input by -1
 							// To correct for frequency inversion of the polyphase filterbank
 							for (uint sb; sb < SBLIMIT; sb++) {
@@ -552,17 +553,18 @@ class MP3Codec : AudioCodec {
 								}
 							}
 						}
-							
+
 						// Polyphase Synthesis
+						//Console.putln("polyphase");
 						for (uint ss; ss < 18; ss++) {
 							polyphaseSynthesis(gr, ss, toBuffer);
 						}
+						//Console.putln("polyphase!");
 					}
 
 					samplesLeft -= (3*18*32*channels);
 
-					if (samplesLeft <= 0)
-					{
+					if (samplesLeft <= 0) {
 						decoderState = MP3_BUFFER_AUDIO;
 						curTime += bufferTime;
 							//curTime.toString();

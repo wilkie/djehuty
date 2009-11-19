@@ -2,6 +2,7 @@ module core.time;
 
 import core.string;
 import core.definitions;
+import core.tostring;
 
 import io.console;
 
@@ -56,7 +57,7 @@ class Time {
 
 		return cast(uint)tmp % 60;
 	}
-	
+
 	uint minute() {
 		ulong h,ms,s,m;
 		long tmp = micros;
@@ -69,7 +70,7 @@ class Time {
 
 		return cast(uint)tmp % 60;
 	}
-	
+
 	uint millsecond() {
 		ulong h,ms,s,m;
 		long tmp = micros;
@@ -102,6 +103,8 @@ class Time {
 		ulong h,ms,s,m;
 		long tmp = micros;
 
+		String str = new String("");
+
 		ms = (cast(uint)tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
@@ -113,51 +116,41 @@ class Time {
 
 		h = cast(uint)tmp;
 
-		if (h != 0)
-		{
-			Console.put(h, ":");
+		if (h != 0) {
+			str.append(toStr(h, ":"));
 		}
 
-		if (m < 10 && h > 0)
-		{
-			Console.put("0");
+		if (m < 10 && h > 0) {
+			str.append("0");
 		}
-		Console.put(m, ":");
+		str.append(toStr(m, ":"));
 
-		if (s < 10)
-		{
-			Console.put("0");
+		if (s < 10) {
+			str.append("0");
 		}
-		Console.put(s, ".");
+		str.append(toStr(s, "."));
 
-		if (ms < 100)
-		{
-			Console.put("0");
+		if (ms < 100) {
+			str.append("0");
 		}
-		if (ms < 10)
-		{
-			Console.put("0");
+		if (ms < 10) {
+			str.append("0");
 		}
-		Console.put(ms);
+		str.append(toStr(ms));
 
-		Console.put("");
-
-		string str = "";
-
-		return str;
+		return str.toString();
 	}
 
 	// mathematical functions
 	Time opAdd(Time o) {
-		Time ret;
+		Time ret = new Time();
 		ret.micros = micros + o.micros;
 
 		return ret;
 	}
 
 	Time opSub(Time o) {
-		Time ret;
-
+		Time ret = new Time();
 		ret.micros = micros - o.micros;
 
 		return ret;
