@@ -54,18 +54,25 @@ class GuiApplicationController {
 
 		ubyte* bleh; uint dontcare;
 
-		Hook("USER32.DLL\0"c.ptr, "BeginPaint\0"c.ptr, syscall_BeginPaint, bleh, cast(void*)&HookBeginPaint);
-		pBeginPaint = cast(BeginPaintFunc)bleh;
-		Hook("USER32.DLL\0"c.ptr, "EndPaint\0"c.ptr, syscall_EndPaint, bleh, cast(void*)&HookEndPaint);
-		pEndPaint = cast(EndPaintFunc)bleh;
+		//Hook("USER32.DLL\0"c.ptr, "BeginPaint\0"c.ptr, syscall_BeginPaint, bleh, cast(void*)&HookBeginPaint);
+		//pBeginPaint = cast(BeginPaintFunc)bleh;
+		//Hook("USER32.DLL\0"c.ptr, "EndPaint\0"c.ptr, syscall_EndPaint, bleh, cast(void*)&HookEndPaint);
+		//pEndPaint = cast(EndPaintFunc)bleh;
+		//Hook("USER32.DLL\0"c.ptr, "IsWindowVisible\0"c.ptr, syscall_IsWindowVisible, bleh, cast(void*)&HookIsWindowVisible);
+		//pIsWindowVisible = cast(IsWindowVisibleFunc)bleh;
+		
+		//Hook("USER32.DLL\0"c.ptr, "WindowFromPoint\0"c.ptr, dontcare, bleh, cast(void*)&HookWindowFromPoint);
+		//Hook("USER32.DLL\0"c.ptr, "GetWindowRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetWindowRect);
+		//Hook("USER32.DLL\0"c.ptr, "GetClientRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetClientRect);
+		
 		Hook("UXTHEME.DLL\0"c.ptr, "BufferedPaintRenderAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBufferedPaintRenderAnimation);
 		pBufferedPaintRenderAnimation = cast(void*)bleh;
-		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
+		/*Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
 		pBeginBufferedPaint = cast(void*)bleh;
 		Hook("UXTHEME.DLL\0"c.ptr, "EndBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookEndBufferedAnimation);
 		pEndBufferedAnimation = cast(void*)bleh;
 		Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedAnimation);
-		pBeginBufferedAnimation = cast(void*)bleh;
+		pBeginBufferedAnimation = cast(void*)bleh;*/
 
 		mainloop();
 	}
@@ -87,7 +94,7 @@ private:
 	void registerWindowClass() {
 		WNDCLASSW wc;
 		wc.lpszClassName = djehutyClassName.ptr;
-		wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+		wc.style = CS_PARENTDC;//CS_OWNDC;//| CS_HREDRAW | CS_VREDRAW;
 		wc.lpfnWndProc = &DefaultProc;
 		wc.hInstance = null;
 		wc.hIcon = LoadIconA(cast(HINSTANCE) null, IDI_APPLICATION);
@@ -139,9 +146,14 @@ static:
 	alias extern(C) HDC function(HWND, LPPAINTSTRUCT) BeginPaintFunc;
 	BeginPaintFunc pBeginPaint;
 	uint syscall_BeginPaint;
+	
 	alias extern(C) BOOL function(HWND, LPPAINTSTRUCT) EndPaintFunc;
 	EndPaintFunc pEndPaint;
 	uint syscall_EndPaint;
+	
+	alias extern(C) BOOL function(HWND) IsWindowVisibleFunc;
+	IsWindowVisibleFunc pIsWindowVisible;
+	uint syscall_IsWindowVisible;
 
 	void* pBufferedPaintRenderAnimation;
 	void* pBeginBufferedPaint;
@@ -196,24 +208,72 @@ static:
 		HDC ret;
 
 		// normal operations:
-		asm {
-	        mov     EAX, syscall_BeginPaint;
-	        push    lpPaint;
-	        push    hWnd;
-			call    pBeginPaint;
-	        mov		ret, EAX;
-		}
 
 		// abnormal operations:
-		if (hWnd == button_hWnd) {
-
-			//Console.putln("BeginPaint");
-
-			//lpPaint.hdc = button_hdc;
-			//ret = button_hdc;
+		if (hWnd != button_hWnd) {
+			asm {
+		        mov     EAX, syscall_BeginPaint;
+		        push    lpPaint;
+		        push    hWnd;
+				call    pBeginPaint;
+		        mov		ret, EAX;
+			}
+			return ret;
 		}
-
-		return ret;
+		
+		lpPaint.fErase = 0;
+		
+		lpPaint.rcPaint.left = 0;
+		lpPaint.rcPaint.right = button_width;
+		lpPaint.rcPaint.top = 0;
+		lpPaint.rcPaint.bottom = button_height;
+		
+		lpPaint.fIncUpdate = 0;
+		lpPaint.fRestore = 0;
+		
+		lpPaint.hdc = button_hdc;
+		
+		return button_hdc;
+	}
+	
+	extern(C) BOOL HookIsWindowVisible() {	
+		asm {
+			naked;
+			mov EAX, 1;
+			ret 4;
+		}	
+	}
+	
+	extern(C) BOOL HookWindowFromPoint(POINT pnt) {
+		asm {
+			naked;
+			mov EAX, button_hWnd;
+			ret 8;
+		}
+	}
+	
+	extern(C) BOOL HookGetWindowRect(HWND hWnd, RECT* rt) {
+		Console.putln("GetWindowRect ", hWnd);
+		if (rt !is null) {
+			rt.left = button_x;
+			rt.right = button_x + button_width;
+			rt.top = 299;
+			rt.bottom = 299 + button_height;
+		}
+		
+		asm {
+			mov EAX, 1;
+		}
+		
+		return 1;
+	}
+	
+	extern(C) BOOL HookGetClientRect(HWND hWnd, RECT* rt) {
+		asm {
+			naked;
+			mov EAX, 1;
+			ret 8;
+		}
 	}
 
 	void HookBeginPaintImpl() {
@@ -566,6 +626,18 @@ static:
 
 		        return cast(LRESULT)GetStockObject(NULL_BRUSH);
 
+			case WM_DRAWITEM:
+				DRAWITEMSTRUCT* pDIS = cast(DRAWITEMSTRUCT*)lParam;
+
+				View view = w._view;
+				ViewPlatformVars* viewVars = w._viewVars;
+				
+				RECT rt;
+				GetClientRect(pDIS.hwndItem, &rt);
+				BitBlt(pDIS.hDC, 0, 0, w.width, w.height, viewVars.dc, 0, 0, SRCCOPY);
+				//Rectangle(pDIS.hDC, 0, 0, rt.right, rt.bottom);
+				break;
+				
 			case WM_ERASEBKGND:
 
 				break;

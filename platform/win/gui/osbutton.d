@@ -44,18 +44,20 @@ class OSButton : Button, WinWidget {
 		DeleteObject(hbmp);
 		ReleaseDC(_hWnd, dc);
 
-		newy = _window.height -1 ;//- this.height;
-		 _hWnd = CreateWindowExW(0,
-			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , this.left,newy,this.width,this.height,
-			_window._pfvars.hWnd,null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
-
+		newy = _window.height -1;
+		
+		_hWnd = CreateWindowExW(0,
+			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , 
+			-this.width + 1, -this.height + 1, this.width, this.height,
+			_window._pfvars.hWnd, null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
+			
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)GuiApplicationController.win_button_font, 1);
 
 		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(ulong)(cast(void*)(cast(WinWidget)this)));
 		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&GuiApplicationController.CtrlProc);
-
+		
 		GuiApplicationController.button_hWnd = _hWnd;
 		GuiApplicationController.button_hdc = dc2;
 		GuiApplicationController.button_x = this.left;
@@ -124,6 +126,7 @@ class OSButton : Button, WinWidget {
 		lparam = ((mouse.y - this.top) << 16) | (mouse.x - this.left);
 
 		SendMessageW(_hWnd, WM_MOUSEMOVE, 0, lparam);
+		SendMessageW(_hWnd, WM_PAINT, 0, 0);
 		//SendMessageW(_hWnd, WM_MOUSEHOVER, 0, lparam);
 		return false;
 	}
@@ -217,6 +220,7 @@ protected:
 		}
 
 		auto ret = CallWindowProcW(_oldproc, _hWnd, message, wParam, lParam);
+		
 		//Console.putln("return: ", ret);
 
 		if (message == WM_PAINT) {
