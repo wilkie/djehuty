@@ -80,6 +80,7 @@ const auto WM_INPUT			= 0x00FF;
 const auto WM_CAPTURECHANGED = 0x215;
 const auto WM_PRINT			= 0x0317;
 const auto WM_PRINTCLIENT	= 0x0318;
+const auto WM_DRAWITEM		= 0x002B;
 
 // WM_PRINT flags
 
@@ -114,6 +115,20 @@ align(1) struct BLENDFUNCTION
     ubyte   BlendFlags;
     ubyte   SourceConstantAlpha;
     ubyte   AlphaFormat;
+}
+
+struct DRAWITEMSTRUCT {
+	uint CtlType;
+	uint CtlID;
+	uint itemID;
+	uint itemAction;
+	uint itemState;
+	
+	HWND hwndItem;
+	HDC hDC;
+	RECT rcItem;
+	
+	ulong* itemData;
 }
 
 struct WNDCLASSW {
@@ -1061,8 +1076,7 @@ const auto VK_OEM_PLUS = 0xBB;
 
 typedef DWORD LCID;
 
-extern(Windows)
-{
+extern(System) {
 	DWORD timeGetTime();
 	void GetSystemTime(SYSTEMTIME*);
 
@@ -1070,6 +1084,9 @@ extern(Windows)
 
 	ulong GetWindowLongW(HWND hWnd, int nIndex);
 	ulong SetWindowLongW(HWND hWnd, int nIndex, ulong newValue);
+	
+	ulong GetClassLongW(HWND hWnd, int nIndex);
+	int SetClassLongW(HWND hWnd, int nIndex, int ret);
 
 	int ChoosePixelFormat(HDC hdc, PIXELFORMATDESCRIPTOR* ppfd);
 	BOOL SetPixelFormat(HDC hdc, int iPixelFormat, PIXELFORMATDESCRIPTOR* ppfd);

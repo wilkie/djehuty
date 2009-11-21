@@ -261,6 +261,7 @@ void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexsty
 	{
 		istyle = WS_OVERLAPPEDWINDOW;
 	}
+	//iexstyle |= 0x02000000;
 
 	if (window.visible)
 	{
