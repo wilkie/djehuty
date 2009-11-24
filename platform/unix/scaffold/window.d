@@ -107,8 +107,24 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 
 	X.Window parent = X.XRootWindow(_pfvars.display, _pfvars.screen);
 
+	uint w_x = window.x;
+	uint w_y = window.y;
+
+	if (window.position == WindowPosition.Center) {
+		// Get the display width and height and center the window
+		uint d_width = X.XDisplayWidth(_pfvars.display, _pfvars.screen);
+		uint d_height = X.XDisplayHeight(_pfvars.display, _pfvars.screen);
+
+		w_x = d_width - window.width;
+		w_x >>= 1;
+
+		w_y = d_height - window.height;
+		w_y >>= 1;
+
+	}
+
 	windowVars.window = X.XCreateWindow(_pfvars.display,
-		parent, window.x,window.y,window.width,window.height,0,
+		parent, w_x,w_y,window.width,window.height,0,
 		X.CopyFromParent,
 		X.WindowClass.InputOutput,
 		cast(X.Visual*)X.CopyFromParent,
@@ -133,7 +149,9 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 //	int x_return, y_return, width_return, height_return, grav_return;
 //	X.XSizeHints hints;
 //	X.XWMGeometry(_pfvars.display, _pfvars.screen, null, null, &hints, &x_return, &y_return, &width_return, &height_return, &grav_return);
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
+	if (window.position != WindowPosition.Default) {
+		X.XMoveWindow(_pfvars.display, windowVars.window, w_x, w_y);
+	}
 //	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
 
 //	X.XQueryTree(_pfvars.display, windowVars.window, &root, &windowVars.wm_parent, &children, &childrenCount);
