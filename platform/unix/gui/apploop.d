@@ -118,7 +118,6 @@ private:
 					printf("CREATE\n");
 				}
 				if (event.type == X.EventType.ReparentNotify) {
-					printf("REPARENT\n");
 				}
 				continue;
 			}
@@ -165,23 +164,42 @@ private:
 					break;
 
 				case X.EventType.CreateNotify:
-					printf("PARENT\n");
-
-					printf("parent: %d", event.xcreatewindow.parent);
 
 					break;
 				
 				case X.EventType.PropertyNotify:
 
-					printf("PROPERTY: %d %d\n", event.xproperty.atom, event.xproperty.state);
 					break;
 
+					// This is for window managers that will reparent your window inside
+					// a decorated frame. This way, we can reposition the window relative
+					// to this frame.
 				case X.EventType.ReparentNotify:
-
-					printf("PARENT\n");
 					windowVars.wm_parent = event.xreparent.event;
 					windowVars.wm_x = event.xreparent.x;
 					windowVars.wm_y = event.xreparent.y;
+
+					// reposition
+					uint w_x;
+					uint w_y;
+
+					w_x = window.x;
+					w_y = window.y;
+
+					if (window.position == WindowPosition.Center) {
+						uint d_width = X.XDisplayWidth(_pfvars.display, _pfvars.screen);
+						uint d_height = X.XDisplayHeight(_pfvars.display, _pfvars.screen);
+
+						w_x = d_width - window.width;
+						w_y = d_height - window.height;
+
+						w_x >>= 1;
+						w_y >>= 1;
+					}
+
+					if (window.position != WindowPosition.Default) {
+						X.XMoveWindow(_pfvars.display, windowVars.wm_parent, w_x, w_y);
+					}
 
 					break;
 

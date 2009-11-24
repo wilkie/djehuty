@@ -289,7 +289,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -440,7 +440,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
