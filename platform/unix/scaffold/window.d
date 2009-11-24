@@ -154,9 +154,9 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	}
 //	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
 
-//	X.XQueryTree(_pfvars.display, windowVars.window, &root, &windowVars.wm_parent, &children, &childrenCount);
-//	X.XFree(children);
-//	printf("ROOT: %d, PARENT: %d\n", root, windowVars.wm_parent);
+	X.XQueryTree(_pfvars.display, windowVars.window, &root, &windowVars.wm_parent, &children, &childrenCount);
+	X.XFree(children);
+	printf("ROOT: %d, PARENT: %d\n", root, windowVars.wm_parent);
 
 	// Create View
 	window.onInitialize();
@@ -179,7 +179,11 @@ void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars) {
 
 void WindowReposition(ref Window window, WindowPlatformVars* windowVars) {
 	// code to move a window
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
+	X.Window wind = windowVars.window;
+	if (windowVars.wm_parent != 0) {
+		wind = windowVars.wm_parent;
+	}
+	X.XMoveWindow(_pfvars.display, wind, window.x, window.y);
 }
 
 void WindowSetState(ref Window window, WindowPlatformVars* windowVars) {
