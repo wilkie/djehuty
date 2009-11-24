@@ -154,10 +154,6 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	}
 //	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
 
-	X.XQueryTree(_pfvars.display, windowVars.window, &root, &windowVars.wm_parent, &children, &childrenCount);
-	X.XFree(children);
-	printf("ROOT: %d, PARENT: %d\n", root, windowVars.wm_parent);
-
 	// Create View
 	window.onInitialize();
 
