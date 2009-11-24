@@ -101,20 +101,25 @@ private:
 			window_test = app.firstWindow();
 			window = null;
 
-			if (window_test is null) {
-				continue;
+			if (window_test !is null) {
+				do {
+					windowVars = &window_test._pfvars;
+					if (windowVars.window == event.xany.window) {
+						window = window_test;
+						break;
+					}
+					window_test = window_test.nextWindow();
+				} while (window_test !is app.firstWindow())
 			}
 
-			do {
-				windowVars = &window_test._pfvars;
-				if (windowVars.window == event.xany.window) {
-					window = window_test;
-					break;
-				}
-				window_test = window_test.nextWindow();
-			} while (window_test !is app.firstWindow())
-
 			if (window is null) {
+				printf("FUDGE\n");
+				if (event.type == X.EventType.CreateNotify) {
+					printf("CREATE\n");
+				}
+				if (event.type == X.EventType.ReparentNotify) {
+					printf("REPARENT\n");
+				}
 				continue;
 			}
 
@@ -159,7 +164,24 @@ private:
 					}
 					break;
 
+				case X.EventType.CreateNotify:
+					printf("PARENT\n");
+
+					printf("parent: %d", event.xcreatewindow.parent);
+
+					break;
+				
+				case X.EventType.PropertyNotify:
+
+					printf("PROPERTY: %d %d\n", event.xproperty.atom, event.xproperty.state);
+					break;
+
 				case X.EventType.ReparentNotify:
+
+					printf("PARENT\n");
+					windowVars.wm_parent = event.xreparent.event;
+					windowVars.wm_x = event.xreparent.x;
+					windowVars.wm_y = event.xreparent.y;
 
 					break;
 

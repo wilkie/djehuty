@@ -26,7 +26,6 @@ abstract class AudioCodec : Codec {
 public:
 
 	this() {
-		Console.putln("WHAT");
 		curTime = new Time();
 	}
 
