@@ -105,13 +105,25 @@ struct Rect {
 // Description: This enum gives all possible window styles.  Use the SetStyle() function within the BaseWindow class to set the style of the window to this value.
 enum WindowStyle : int {
 	// Description: Represents a non-sizable window.
-	Fixed = 0,
+	Fixed,
 
 	// Description: Represents a common sizable window.
-	Sizable = 1,
+	Sizable,
 
 	// Description: Represents a borderless window.
-	Popup = 2,
+	Popup,
+}
+
+// Window Positions
+enum WindowPosition : int {
+	// Description: Will be placed according to the window manager.
+	Default,
+
+	// Description: Will be placed in the center of the default monitor.
+	Center,
+
+	// Description: Will be placed with the Window's x and y properties.
+	User,
 }
 
 // Window States
@@ -119,13 +131,13 @@ enum WindowStyle : int {
 // Description: This enum gives all possible window states.  Use the SetState() function within the BaseWindow class to set the state of the window to this value.
 enum WindowState : int {
 	// Description: This would be the normal view of the window.  Sometimes refered to as the restored view.
-	Normal = 0,
+	Normal,
 	// Description: This state will cause the window to be minimized.  Sometimes refered to as shrinking, or even rarely iconizing.
-	Minimized = 1,
+	Minimized,
 	// Description: This state will cause the window to be maximized, and this would mean the window would get as big as it can within the constraints of the desktop environment.
-	Maximized = 2,
+	Maximized,
 	// Description: This state will cause the window to take up the entire screen, essentially the width and height would be that of the current screen resolution on the current display.
-	Fullscreen = 3
+	Fullscreen
 }
 
 // System Colors
