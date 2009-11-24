@@ -37,9 +37,7 @@ import core.system;
 import interfaces.container;
 
 // Description: This class implements and abstracts a common window.  This window is a control container and a view canvas.
-class Window : Responder, AbstractContainer
-{
-
+class Window : Responder, AbstractContainer {
 public:
 
 	// Constructors
@@ -60,6 +58,7 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+		_position = WindowPosition.User;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -78,6 +77,7 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+		_position = WindowPosition.User;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -96,6 +96,7 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+		_position = WindowPosition.User;
 	}
 
 	// Description: Will create the window with certain default parameters
@@ -114,7 +115,45 @@ public:
 		_x = x;
 		_y = y;
 		_style = windowStyle;
+		_position = WindowPosition.User;
 	}
+
+	this(String windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
+		_color = color;
+		_window_title = new String(windowTitle);
+		_width = width;
+		_height = height;
+		_position = pos;
+		_style = windowStyle;
+	}
+
+	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, WindowPosition pos, int width, int height) {
+		ColorGetSystemColor(_color, sysColor);
+		_window_title = new String(windowTitle);
+		_width = width;
+		_height = height;
+		_position = pos;
+		_style = windowStyle;
+	}
+
+	this(string windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
+		_color = color;
+		_window_title = new String(windowTitle);
+		_width = width;
+		_height = height;
+		_position = pos;
+		_style = windowStyle;
+	}
+
+	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, WindowPosition pos, int width, int height) {
+		ColorGetSystemColor(_color, sysColor);
+		_window_title = new String(windowTitle);
+		_width = width;
+		_height = height;
+		_position = pos;
+		_style = windowStyle;
+	}
+
 
 	~this() {
 		uninitialize();
@@ -688,6 +727,12 @@ public:
 
 	// Methods //
 
+	// Description: This will give the preferred position for the window.
+	// Returns: The position this window was created with.
+	WindowPosition position() {
+		return _position;
+	}
+
 	// Description: This will retreive the current window color.
 	// Returns: The color currently associated with the window.
 	Color color() {
@@ -993,6 +1038,7 @@ protected:
 	package ViewPlatformVars* _viewVars;
 
 	Color _color;
+	WindowPosition _position;
 
 	// imposes left and top margins on the window, when set
 	long _constraint_x = 0;
