@@ -10,6 +10,10 @@
 
 module scaffold.graphics;
 
+pragma(lib, "gdi32.lib");
+pragma(lib, "msimg32.lib");
+pragma(lib, "advapi32.lib");
+
 import graphics.view;
 
 import platform.vars.view;

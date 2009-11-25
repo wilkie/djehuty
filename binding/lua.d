@@ -11,6 +11,12 @@
 
 module binding.lua;
 
+version(PlatformWindows) {
+	pragma(lib, `"lua5.1.lib"`);
+}
+else {
+}
+
  // lib: liblua5.1
 
  // Copyright for original set of files is reproduced wholely as follows:
