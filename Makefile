@@ -10,7 +10,7 @@ PLATFORM = WINDOWS
 
 LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua -L-lncurses -J./tests
 LFLAGS_MAC = -Iplatform/osx -lobjc -framework Cocoa -framework Foundation
-LFLAGS_WIN = -Iplatform/win platform/win/lib/gdi32.lib platform/win/lib/mpr.lib platform/win/lib/netapi32.lib platform/win/lib/user32.lib platform/win/lib/WS2_32.lib platform/win/lib/winmm.lib platform/win/lib/comctl32.lib platform/win/lib/msimg32.lib platform/win/lib/advapi32.lib platform/win/lib/opengl32.lib platform/win/lib/glu32.lib platform/win/lib/lua5.1.lib
+LFLAGS_WIN = -Iplatform/win
 
 ifeq (${MY_ARCH},MINGW32_NT-5.1)
 	OBJEXT = .obj
@@ -55,7 +55,7 @@ DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/s
 DFILES_CONSOLE = console/prompt.d
 DFILES_TUI = tui/filebox.d tui/container.d tui/dialog.d tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d tui/textbox.d tui/codebox.d tui/tabbox.d
 DFILES_SCRIPTING = scripting/lua.d
-DFILES_BINDING = binding/lua.d
+DFILES_BINDING = binding/win32/gdiplus.d binding/lua.d
 DFILES_INTERFACES = interfaces/container.d interfaces/mod.d
 DFILES_MATH = math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/gl.d opengl/window.d opengl/glu.d opengl/texture.d opengl/light.d

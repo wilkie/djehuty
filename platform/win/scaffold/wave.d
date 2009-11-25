@@ -8,8 +8,9 @@
  *
  */
 
-
 module scaffold.wave;
+
+pragma(lib, "winmm.lib");
 
 import platform.win.common;
 import platform.win.main;

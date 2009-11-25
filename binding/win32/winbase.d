@@ -19,7 +19,3 @@
 
 module binding.win32.winbase;
 
-version(_MAC) {
-	public import binding.win32.macwin32;
-}
-

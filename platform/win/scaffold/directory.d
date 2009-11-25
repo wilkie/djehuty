@@ -10,6 +10,9 @@
 
 module scaffold.directory;
 
+pragma(lib, "netapi32.lib");
+pragma(lib, "mpr.lib");
+
 import platform.win.common;
 
 import platform.vars.directory;

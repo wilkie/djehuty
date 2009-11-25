@@ -10,6 +10,8 @@
 
 module gui.apploop;
 
+pragma(lib, "comctl32.lib");
+
 import platform.win.common;
 import platform.win.widget;
 import platform.win.main;
