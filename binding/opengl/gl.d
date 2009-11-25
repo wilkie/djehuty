@@ -7,7 +7,7 @@
  *
  */
 
-module opengl.gl;
+module binding.opengl.gl;
 
 version(PlatformWindows) {
 	pragma(lib, "opengl32.lib");
