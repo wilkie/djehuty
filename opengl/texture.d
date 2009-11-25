@@ -9,7 +9,7 @@
 
 module opengl.texture;
 
-import opengl.gl;
+import binding.opengl.gl;
 
 import core.string;
 import core.definitions;
