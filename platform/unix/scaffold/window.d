@@ -31,11 +31,11 @@ import gui.window;
 import io.console;
 
 struct MWMHints {
-  Clong flags;
-  Clong functions;
-  Clong decorations;
-  Clong input_mode;
-  Clong status;
+	Clong flags;
+	Clong functions;
+	Clong decorations;
+	Clong input_mode;
+	Clong status;
 }
 
 const int PROP_MWM_HINTS_ELEMENTS = 5;
@@ -90,35 +90,51 @@ const int PAllHints     = (PPosition|PSize|
 
 
 // all windows
-void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
-{
-
-
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	// code to create the window
 	windowVars.destroy_called = false;
 
 	X.XSetWindowAttributes attributes;
 
-	if (window.style == WindowStyle.Popup)
-	{
+	if (window.style == WindowStyle.Popup) {
 		attributes.override_redirect = X.Bool.True;
 	}
 
+	attributes.event_mask =	X.EventMask.ExposureMask | X.EventMask.ButtonPressMask | X.EventMask.KeyPressMask |
+		X.EventMask.ButtonReleaseMask | X.EventMask.PointerMotionMask | X.EventMask.KeyReleaseMask | X.EventMask.StructureNotifyMask |
+		X.EventMask.EnterWindowMask | X.EventMask.LeaveWindowMask | X.EventMask.FocusChangeMask;
+	attributes.win_gravity = X.BitGravity.StaticGravity;
+
 	X.Window parent = X.XRootWindow(_pfvars.display, _pfvars.screen);
 
+	uint w_x = window.x;
+	uint w_y = window.y;
+
+	if (window.position == WindowPosition.Center) {
+		// Get the display width and height and center the window
+		uint d_width = X.XDisplayWidth(_pfvars.display, _pfvars.screen);
+		uint d_height = X.XDisplayHeight(_pfvars.display, _pfvars.screen);
+
+		w_x = d_width - window.width;
+		w_x >>= 1;
+
+		w_y = d_height - window.height;
+		w_y >>= 1;
+
+	}
+
 	windowVars.window = X.XCreateWindow(_pfvars.display,
-		parent, window.x,window.y,window.width,window.height,0,
+		parent, w_x,w_y,window.width,window.height,0,
 		X.CopyFromParent,
 		X.WindowClass.InputOutput,
 		cast(X.Visual*)X.CopyFromParent,
-		X.WindowAttribute.CWOverrideRedirect,
+		X.WindowAttribute.CWOverrideRedirect | X.WindowAttribute.CWEventMask | X.WindowAttribute.CWWinGravity,
 		&attributes);
 
+	X.Window root;
+	X.Window* children;
+	uint childrenCount;
 	X.Window last = windowVars.window;
-
-	X.XSelectInput(_pfvars.display, windowVars.window, X.EventMask.ExposureMask | X.EventMask.ButtonPressMask | X.EventMask.KeyPressMask |
-		X.EventMask.ButtonReleaseMask | X.EventMask.PointerMotionMask | X.EventMask.KeyReleaseMask | X.EventMask.StructureNotifyMask |
-		X.EventMask.EnterWindowMask | X.EventMask.LeaveWindowMask | X.EventMask.FocusChangeMask );
 
 	X.Status r = X.XSetWMProtocols(_pfvars.display, windowVars.window, &_pfvars.wm_destroy_window, 1);
 
@@ -126,16 +142,21 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 
 	WindowSetTitle(window, windowVars);
 
-	X.XChangeWindowAttributes(_pfvars.display, windowVars.window, X.WindowAttribute.CWOverrideRedirect, &attributes);
-
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
-
-	if (window.visible)
-	{
+	if (window.visible) {
 		WindowSetVisible(window, windowVars, true);
 	}
 
-	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
+//	int x_return, y_return, width_return, height_return, grav_return;
+//	X.XSizeHints hints;
+//	X.XWMGeometry(_pfvars.display, _pfvars.screen, null, null, &hints, &x_return, &y_return, &width_return, &height_return, &grav_return);
+	if (window.position != WindowPosition.Default) {
+		X.XMoveWindow(_pfvars.display, windowVars.window, w_x, w_y);
+	}
+//	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
+
+//	X.XQueryTree(_pfvars.display, windowVars.window, &root, &windowVars.wm_parent, &children, &childrenCount);
+//	X.XFree(children);
+//	printf("ROOT: %d, PARENT: %d\n", root, windowVars.wm_parent);
 
 	// Create View
 	window.onInitialize();
@@ -144,8 +165,7 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 	window.onAdd();
 }
 
-void WindowCreate(ref Window parent, WindowPlatformVars* parentHelper, ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowCreate(ref Window parent, WindowPlatformVars* parentHelper, ref Window window, WindowPlatformVars* windowVars) {
 	// code to create a child window
 	//int screen;
 
@@ -153,27 +173,20 @@ void WindowCreate(ref Window parent, WindowPlatformVars* parentHelper, ref Windo
 	return;
 }
 
-void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
-{
-
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars) {
 	// code to change the style of a window
 }
 
-void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars) {
 	// code to move a window
 	X.XMoveWindow(_pfvars.display, windowVars.window, window.x, window.y);
 }
 
-void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
-{
-
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars) {
 	// code to change the state of a window
 }
 
-void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
-{
-
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars) {
 	// code to Size a window
 	int width, height;
 	width = window.width;
@@ -184,12 +197,10 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 	X.XSizeHints* xhints;
 
 	X.Atom wm_normal_hints = X.XInternAtom(_pfvars.display, "WM_NORMAL_HINTS\0"c.ptr, X.Bool.True);
-	if (window.style == WindowStyle.Popup)
-	{
+	if (window.style == WindowStyle.Popup) {
 
 		X.Atom prop = X.XInternAtom(_pfvars.display, "_MOTIF_WM_HINTS\0"c.ptr, X.Bool.True);
-		if (prop != X.None)
-		{
+		if (prop != X.None) {
 			//set with MWM
 			mwmhints.flags = MWM_HINTS_DECORATIONS;
 			mwmhints.functions = MWM_FUNC_MOVE;
@@ -213,12 +224,10 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 		X.XFree(xhints);
 
 	}
-	else if (window.style == WindowStyle.Fixed)
-	{
+	else if (window.style == WindowStyle.Fixed) {
 		X.Atom prop = X.XInternAtom(_pfvars.display, "_MOTIF_WM_HINTS\0"c.ptr, X.Bool.True);
 
-		if (prop != X.None)
-		{
+		if (prop != X.None) {
 			//set with MWM
 			mwmhints.flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
 			mwmhints.functions = MWM_FUNC_MINIMIZE | MWM_FUNC_CLOSE | MWM_FUNC_MOVE;
@@ -244,10 +253,7 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 	}
 }
 
-void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
-{
-
-
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars) {
 	// code to destroy a window
 	windowVars.destroy_called = true;
 
@@ -255,25 +261,17 @@ void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 	X.XDestroyWindow(_pfvars.display, windowVars.window);
 }
 
-void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
-{
-
-
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow) {
 	// code to show or hide a window
-	if (bShow)
-	{
+	if (bShow) {
 		X.XMapWindow(_pfvars.display, windowVars.window);
 	}
-	else
-	{
+	else {
 		X.XUnmapWindow(_pfvars.display, windowVars.window);
 	}
 }
 
-void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
-{
-
-
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
 	// code to change a window's title
 
 	//Set the window's text
@@ -312,15 +310,12 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 
 }
 
-
-
 // CLIENT TO SCREEN
 
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
-{
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y) {
 	//Coord pt = {x,y};
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
@@ -329,8 +324,7 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
-{
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt) {
 	//ClientToScreen(windowVars.hWnd, &pt);
 	Window wret;
 
@@ -338,20 +332,12 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong*)&wret);
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
-{
-
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt) {
 }
 
 
-
-
-
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
-
-
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	// code executed at the start of a redraw for a window
 
 	// should establish a white brush and a black pen
@@ -375,10 +361,7 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	viewVars.isOpaqueRendering = 0;
 }
 
-void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
-
-
+void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	// code to reclaim resources, and executed after all components have drawn to the window
 
 	//copy over area
@@ -389,14 +372,10 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref Window
 		0, 0, window.width, window.height, 0, 0);
 }
 
-void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars) {
 	// capture the mouse
 }
 
-void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars) {
 	// release the mouse
 }
-
-

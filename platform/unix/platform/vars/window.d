@@ -21,6 +21,9 @@ struct WindowPlatformVars {
 	// -----
 
 	X.Window window;
+	X.Window wm_parent;
+	int wm_x;
+	int wm_y;
 
 	//GLXContext ctx;
 

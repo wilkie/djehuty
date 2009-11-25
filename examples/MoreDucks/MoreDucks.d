@@ -53,7 +53,7 @@ private:
 
 class MyWindow : Window {
 	this() {
-		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,50,50,360,347);
+		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,WindowPosition.Center,360,347);
 	}
 
 	override void onAdd() {
