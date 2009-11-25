@@ -30,8 +30,7 @@ import utils.linkedlist;
 
 
 // views
-void ViewCreate(View view, ViewPlatformVars*viewVars)
-{
+void ViewCreate(View view, ViewPlatformVars*viewVars) {
 	HDC dc;
 
 	dc = GetDC(null);
@@ -49,13 +48,11 @@ void ViewCreate(View view, ViewPlatformVars*viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewDestroy(ref View view, ViewPlatformVars*viewVars)
-{
+void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {
 	DeleteDC(viewVars.dc);
 }
 
-void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars)
-{
+void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
 	HDC dc;
 
 	dc = GetDC(null);
@@ -64,7 +61,7 @@ void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars)
 
 	viewVars.dc = CreateCompatibleDC(dc);
 
-	BITMAPINFO bi = BITMAPINFOHEADER.init;
+	BITMAPINFO bi;
 
 	bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
 	bi.bmiHeader.biWidth = view.width();
@@ -84,18 +81,15 @@ void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars)
 	DeleteObject(bmp);
 }
 
-void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars)
-{
+void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 	//will set _inited to true:
 	ViewCreate(view, viewVars);
 }
 
-void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars)
-{
+void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 }
 
-void ViewResize(ref View view, ViewPlatformVars*viewVars)
-{
+void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 	HDC dc;
 
 	dc = GetDC(null);
@@ -104,7 +98,7 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars)
 
 	if (cast(Bitmap)view !is null) {
 
-		BITMAPINFO bi = BITMAPINFO.init;
+		BITMAPINFO bi;
 
 		bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
 		bi.bmiHeader.biWidth = view.width();
@@ -125,22 +119,17 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars)
 	DeleteObject(bmp);
 }
 
-void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length)
-{
+void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length) {
 	length = viewVars.length;
 	return viewVars.bits;
 }
 
-void* ViewGetBytes(ViewPlatformVars*viewVars)
-{
+void* ViewGetBytes(ViewPlatformVars*viewVars) {
 	return viewVars.bits;
 }
 
-uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
-{
-	//writeln("rgba");
-	if (!_forcenopremultiply)
-	{
+uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a) {
+	if (!_forcenopremultiply) {
 		float anew = a;
 		anew /= cast(float)0xFF;
 
@@ -151,8 +140,6 @@ uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref
 	return (r << 16) | (g << 8) | (b) | (a << 24);
 }
 
-uint ViewRGBAToInt32(ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b)
-{
-	//writeln("rgb");
+uint ViewRGBAToInt32(ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b) {
 	return (r << 16) | (g << 8) | (b) | 0xFF000000;
 }

@@ -9,6 +9,8 @@
 
 module platform.win.common;
 
+pragma(lib, "user32.lib");
+
 // import the windows libraries from Phobos
 public import std.c.windows.windows;
 public import std.c.windows.winsock;

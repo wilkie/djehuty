@@ -10,6 +10,8 @@
 
 module scaffold.socket;
 
+pragma(lib, "WS2_32.lib");
+
 import platform.win.common;
 import platform.win.main;
 

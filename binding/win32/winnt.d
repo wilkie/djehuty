@@ -30,6 +30,8 @@ module binding.win32.winnt;
 
 import binding.c;
 
+import binding.win32.windef;
+
 version (X86_64) {
 	const auto MEMORY_ALLOCATION_ALIGNMENT = 16;
 	const auto MAX_NATURAL_ALIGNMENT = ulong.sizeof;
@@ -57,26 +59,44 @@ typedef Clong_t	LONG;
 
 typedef ushort WCHAR;    // wc,   16-bit UNICODE character
 
-typedef WCHAR *PWCHAR, *LPWCH, *PWCH;
-typedef WCHAR *LPCWCH, *PCWCH;
-typedef WCHAR *NWPSTR, *LPWSTR, *PWSTR;
+typedef WCHAR *PWCHAR;
+
+typedef WCHAR *LPWCH;
+typedef WCHAR *PWCH;
+
+typedef WCHAR *LPCWCH;
+typedef WCHAR *PCWCH;
+
+typedef WCHAR *NWPSTR;
+typedef WCHAR *LPWSTR;
+typedef WCHAR *PWSTR;
+
 typedef PWSTR *PZPWSTR;
 typedef PWSTR *PCZPWSTR;
-typedef WCHAR UNALIGNED *LPUWSTR, *PUWSTR;
-typedef WCHAR *LPCWSTR, *PCWSTR;
+typedef WCHAR *LPUWSTR;
+typedef WCHAR *PUWSTR;
+typedef WCHAR *LPCWSTR;
+typedef WCHAR *PCWSTR;
 typedef PCWSTR *PZPCWSTR;
-typedef WCHAR *LPCUWSTR, *PCUWSTR;
+typedef WCHAR *LPCUWSTR;
+typedef WCHAR *PCUWSTR;
 
 //
 // ANSI (Multi-byte Character) types
 //
-typedef CHAR *PCHAR, *LPCH, *PCH;
-typedef CHAR *LPCCH, *PCCH;
+typedef CHAR *PCHAR;
+typedef CHAR *LPCH;
+typedef CHAR *PCH;
+typedef CHAR *LPCCH;
+typedef CHAR *PCCH;
 
-typedef CHAR *NPSTR, *LPSTR, *PSTR;
+typedef CHAR *NPSTR;
+typedef CHAR *LPSTR;
+typedef CHAR *PSTR;
 typedef PSTR *PZPSTR;
 typedef PSTR *PCZPSTR;
-typedef CHAR *LPCSTR, *PCSTR;
+typedef CHAR *LPCSTR; 
+typedef CHAR *PCSTR;
 typedef PCSTR *PZPCSTR;
 
 //
@@ -84,23 +104,39 @@ typedef PCSTR *PZPCSTR;
 //
 
 version(UNICODE) {
-	typedef WCHAR TCHAR, *PTCHAR;
-	typedef WCHAR TBYTE , *PTBYTE ;
+	typedef WCHAR TCHAR;
+	typedef WCHAR *PTCHAR;
+	typedef WCHAR TBYTE;
+	typedef WCHAR *PTBYTE ;
 
-	typedef LPWSTR LPTCH, PTCH;
-	typedef LPWSTR PTSTR, LPTSTR;
-	typedef LPCWSTR PCTSTR, LPCTSTR;
-	typedef LPUWSTR PUTSTR, LPUTSTR;
-	typedef LPCUWSTR PCUTSTR, LPCUTSTR;
+	typedef LPWSTR LPTCH;
+	typedef LPWSTR PTCH;
+	typedef LPWSTR PTSTR;
+	typedef LPWSTR LPTSTR;
+	typedef LPCWSTR PCTSTR;
+	typedef LPCWSTR LPCTSTR;
+	typedef LPUWSTR PUTSTR;
+	typedef LPUWSTR LPUTSTR;
+	typedef LPCUWSTR PCUTSTR;
+	typedef LPCUWSTR LPCUTSTR;
 	typedef LPWSTR LP;
 }
 else {
-	typedef char TCHAR, *PTCHAR;
-	typedef ubyte TBYTE , *PTBYTE ;
+	typedef char TCHAR;
+	typedef char *PTCHAR;
+	typedef ubyte TBYTE ;
+	typedef ubyte *PTBYTE ;
 
-	typedef LPSTR LPTCH, PTCH;
-	typedef LPSTR PTSTR, LPTSTR, PUTSTR, LPUTSTR;
-	typedef LPCSTR PCTSTR, LPCTSTR, PCUTSTR, LPCUTSTR;
+	typedef LPSTR LPTCH;
+	typedef LPSTR PTCH;
+	typedef LPSTR PTSTR;
+	typedef LPSTR LPTSTR;
+	typedef LPSTR PUTSTR;
+	typedef LPSTR LPUTSTR;
+	typedef LPCSTR PCTSTR;
+	typedef LPCSTR LPCTSTR;
+	typedef LPCSTR PCUTSTR;
+	typedef LPCSTR LPCUTSTR;
 }
 
 typedef SHORT*	PSHORT;
@@ -195,7 +231,8 @@ struct LIST_ENTRY {
    LIST_ENTRY* Blink;
 }
 
-typedef LIST_ENTRY* PLIST_ENTRY, *PRLIST_ENTRY;
+typedef LIST_ENTRY* PLIST_ENTRY;
+typedef LIST_ENTRY* PRLIST_ENTRY;
 
 //
 //  Singly linked list structure. Can be used as either a list head, or
