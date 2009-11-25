@@ -17,9 +17,10 @@ import core.string;
 
 import gui.window;
 
+import binding.opengl.gl;
+import binding.opengl.glu;
+
 import opengl.window;
-import opengl.gl;
-import opengl.glu;
 
 import synch.thread;
 
