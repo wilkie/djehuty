@@ -617,7 +617,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
