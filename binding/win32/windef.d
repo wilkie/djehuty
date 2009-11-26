@@ -19,17 +19,22 @@
 
 module binding.win32.windef;
 
-public import binding.win32.winnt;
+import binding.win32.winnt;
 
 import binding.c;
 
-typedef Culong_t	ULONG;
-typedef ULONG*		PULONG;
-typedef ushort		USHORT;
-typedef USHORT*		PUSHORT;
-typedef ubyte		UCHAR;
-typedef UCHAR*		PUCHAR;
-typedef char*		PSZ;
+extern(System):
+
+alias Culong_t	ULONG;
+alias ULONG*		PULONG;
+alias ushort		USHORT;
+alias USHORT*		PUSHORT;
+alias ubyte		UCHAR;
+alias UCHAR*		PUCHAR;
+alias char*		PSZ;
+
+alias size_t		SIZE_T;
+alias size_t*		PSIZE_T;
 
 const auto MAX_PATH = 260;
 
@@ -39,43 +44,61 @@ enum : uint {
 }
 
 version(X86_64) {
-	typedef	ulong DWORD;
+	alias	ulong DWORD;
 }
 else {
-	typedef	uint DWORD;
+	alias	uint DWORD;
 }
 
-typedef int			BOOL;
-typedef ubyte		BYTE;
-typedef ushort		WORD;
-typedef float		FLOAT;
-typedef FLOAT*		PFLOAT;
-typedef BOOL*		PBOOL;
-typedef BOOL*		LPBOOL;
-typedef BYTE*		PBYTE;
-typedef BYTE*		LPBYTE;
-typedef int*		PINT;
-typedef int*		LPINT;
-typedef WORD*		PWORD;
-typedef WORD*		LPWORD;
-typedef Clong_t*	LPLONG;
-typedef DWORD*		PDWORD;
-typedef DWORD*		LPDWORD;
-typedef void		VOID;
-typedef void*		LPVOID;
-typedef void*		LPCVOID;
-typedef int			INT;
-typedef uint		UINT;
-typedef uint*		PUINT;
+alias ulong DWORD64;
 
-typedef Culong_t*	ULONG_PTR;
-typedef Clong_t*	LONG_PTR;
-typedef UINT*		UINT_PTR;
+alias int			BOOL;
+alias ubyte		BYTE;
+alias ushort		WORD;
+alias float		FLOAT;
+alias FLOAT*		PFLOAT;
+alias BOOL*		PBOOL;
+alias BOOL*		LPBOOL;
+alias BYTE*		PBYTE;
+alias BYTE*		LPBYTE;
+alias int*		PINT;
+alias int*		LPINT;
+alias WORD*		PWORD;
+alias WORD*		LPWORD;
+alias Clong_t*	LPLONG;
+alias DWORD*		PDWORD;
+alias DWORD*		LPDWORD;
+alias void		VOID;
+alias void*		LPVOID;
+alias void*		LPCVOID;
+alias int			INT;
+alias uint		UINT;
+alias uint*		PUINT;
+
+alias long		LONG64;
+alias long*		PLONG64;
+alias ulong		ULONG64;
+alias ulong*		PULONG64;
+
+alias Culong_t	ULONG_PTR;
+alias Culong_t**	PULONG_PTR;
+alias Clong_t	LONG_PTR;
+alias Clong_t**	PLONG_PTR;
+alias LONG_PTR	INT_PTR;
+alias ULONG_PTR UINT_PTR;
+alias UINT**		PUINT_PTR;
+alias Culong_t** PDWORD_PTR;
+alias ULONG_PTR	DWORD_PTR;
+
+alias ulong	QWORD;
+
+alias long*		LONGLONG_PTR;
+alias ulong*		ULONGLONG_PTR;
 
 /* Types use for passing & returning polymorphic values */
-typedef UINT_PTR	WPARAM;
-typedef LONG_PTR	LPARAM;
-typedef LONG_PTR	LRESULT;
+alias UINT_PTR	WPARAM;
+alias LONG_PTR	LPARAM;
+alias LONG_PTR	LRESULT;
 
 WORD MAKEWORD(WORD a, WORD b) {
 	return (cast(WORD)((cast(BYTE)(cast(DWORD_PTR)(a) & 0xff)) | (cast(WORD)(cast(BYTE)(cast(DWORD_PTR)(b) & 0xff))) << 8));
@@ -101,76 +124,78 @@ BYTE HIBYTE(WORD w) {
 	return (cast(BYTE)(cast(DWORD_PTR)(w) >> 8));
 }
 
-typedef WORD	ATOM;
+alias WORD	ATOM;
 
-typedef HANDLE*	SPHANDLE;
-typedef HANDLE*	LPHANDLE;
-typedef HANDLE	HGLOBAL;
-typedef HANDLE	HLOCAL;
-typedef HANDLE	GLOBALHANDLE;
-typedef HANDLE	LOCALHANDLE;
+alias HANDLE*	SPHANDLE;
+alias HANDLE*	LPHANDLE;
+alias HANDLE	HGLOBAL;
+alias HANDLE	HLOCAL;
+alias HANDLE	GLOBALHANDLE;
+alias HANDLE	LOCALHANDLE;
 
 version(X86_64) {
-	typedef INT_PTR function() FARPROC;
-	typedef INT_PTR function() NEARPROC;
-	typedef INT_PTR function() PROC;
+	alias INT_PTR function() FARPROC;
+	alias INT_PTR function() NEARPROC;
+	alias INT_PTR function() PROC;
 }
 else {
-	typedef int function() FARPROC;
-	typedef int function() NEARPROC;
-	typedef int function() PROC;
+	alias int function() FARPROC;
+	alias int function() NEARPROC;
+	alias int function() PROC;
 }
 
-typedef void* HGDIOBJ;
+alias void* HGDIOBJ;
 
-typedef HANDLE HKEY;
-typedef HKEY* PHKEY;
+alias HANDLE HKEY;
+alias HKEY* PHKEY;
 
-typedef HANDLE (HACCEL);
+alias HANDLE (HACCEL);
 
-typedef HANDLE (HBITMAP);
-typedef HANDLE (HBRUSH);
+alias HANDLE (HBITMAP);
+alias HANDLE (HBRUSH);
 
-typedef HANDLE (HCOLORSPACE);
+alias HANDLE (HCOLORSPACE);
 
-typedef HANDLE (HDC);
+alias HANDLE (HDC);
 
-typedef HANDLE (HGLRC);          // OpenGL
-typedef HANDLE (HDESK);
-typedef HANDLE (HENHMETAFILE);
+alias HANDLE (HGLRC);          // OpenGL
+alias HANDLE (HDESK);
+alias HANDLE (HENHMETAFILE);
 
-typedef HANDLE (HFONT);
+alias HANDLE (HFONT);
 
-typedef HANDLE (HICON);
+alias HANDLE (HICON);
 
-typedef HANDLE (HMENU);
+alias HANDLE (HMENU);
 
-typedef HANDLE (HMETAFILE);
-typedef HANDLE (HINSTANCE);
-typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
+alias HANDLE (HHOOK);
 
-typedef HANDLE (HPALETTE);
-typedef HANDLE (HPEN);
+alias HANDLE (HMETAFILE);
+alias HANDLE (HINSTANCE);
+alias HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
 
-typedef HANDLE (HRGN);
-typedef HANDLE (HRSRC);
-typedef HANDLE (HSPRITE);
-typedef HANDLE (HSTR);
-typedef HANDLE (HTASK);
-typedef HANDLE (HWINSTA);
-typedef HANDLE (HKL);
+alias HANDLE (HPALETTE);
+alias HANDLE (HPEN);
 
-typedef HANDLE (HWND);
+alias HANDLE (HRGN);
+alias HANDLE (HRSRC);
+alias HANDLE (HSPRITE);
+alias HANDLE (HSTR);
+alias HANDLE (HTASK);
+alias HANDLE (HWINSTA);
+alias HANDLE (HKL);
 
-typedef HANDLE HWINEVENTHOOK;
+alias HANDLE (HWND);
 
-typedef HANDLE HMONITOR;
+alias HANDLE HWINEVENTHOOK;
 
-typedef int HFILE;
-typedef HICON HCURSOR;      /* HICONs & HCURSORs are polymorphic */
+alias HANDLE HMONITOR;
 
-typedef DWORD   COLORREF;
-typedef DWORD   *LPCOLORREF;
+alias int HFILE;
+alias HICON HCURSOR;      /* HICONs & HCURSORs are polymorphic */
+
+alias DWORD   COLORREF;
+alias DWORD   *LPCOLORREF;
 
 const auto HFILE_ERROR = (cast(HFILE)-1);
 
@@ -181,11 +206,11 @@ struct RECT {
     LONG    bottom;
 }
 
-typedef RECT* PRECT;
-typedef RECT* NPRECT;
-typedef RECT* LPRECT;
+alias RECT* PRECT;
+alias RECT* NPRECT;
+alias RECT* LPRECT;
 
-typedef RECT* LPCRECT;
+alias RECT* LPCRECT;
 
 struct RECTL {       /* rcl */
     LONG    left;
@@ -194,47 +219,47 @@ struct RECTL {       /* rcl */
     LONG    bottom;
 }
 
-typedef RECTL* PRECTL;
-typedef RECTL* LPRECTL;
+alias RECTL* PRECTL;
+alias RECTL* LPRECTL;
 
-typedef RECTL* LPCRECTL;
+alias RECTL* LPCRECTL;
 
 struct POINT {
     LONG  x;
     LONG  y;
 }
 
-typedef POINT* PPOINT;
-typedef POINT* NPPOINT;
-typedef POINT* LPPOINT;
+alias POINT* PPOINT;
+alias POINT* NPPOINT;
+alias POINT* LPPOINT;
 
 struct POINTL {    /* ptl  */
     LONG  x;
     LONG  y;
 }
 
-typedef POINTL* PPOINTL;
-typedef POINTL* LPPOINTL;
+alias POINTL* PPOINTL;
+alias POINTL* LPPOINTL;
 
 struct SIZE {
     LONG        cx;
     LONG        cy;
 }
 
-typedef SIZE* PSIZE;
-typedef SIZE* LPSIZE;
+alias SIZE* PSIZE;
+alias SIZE* LPSIZE;
 
-typedef SIZE SIZEL;
-typedef SIZE* PSIZEL;
-typedef SIZE* LPSIZEL;
+alias SIZE SIZEL;
+alias SIZE* PSIZEL;
+alias SIZE* LPSIZEL;
 
 struct POINTS {
     SHORT   y;
     SHORT   x;
 }
 
-typedef POINTS* PPOINTS;
-typedef POINTS* LPPOINTS;
+alias POINTS* PPOINTS;
+alias POINTS* LPPOINTS;
 
 //
 //  File System time stamps are represented with the following structure:
@@ -245,8 +270,8 @@ struct FILETIME {
     DWORD dwHighDateTime;
 }
 
-typedef FILETIME* PFILETIME;
-typedef FILETIME* LPFILETIME;
+alias FILETIME* PFILETIME;
+alias FILETIME* LPFILETIME;
 
 /* mode selections for the device mode function */
 const auto DM_UPDATE           = 1;

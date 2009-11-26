@@ -10,7 +10,7 @@
 
 module platform.vars.menu;
 
-import platform.win.common;
+import binding.win32.windef;
 
 struct MenuPlatformVars {
 	HMENU hMenu;

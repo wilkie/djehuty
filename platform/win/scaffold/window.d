@@ -12,7 +12,12 @@ module scaffold.window;
 
 import scaffold.system;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+
 import platform.win.main;
 
 import platform.vars.window;
@@ -32,8 +37,7 @@ import opengl.window;
 import synch.thread;
 
 // all windows
-void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	windowVars.oldWidth = window.width;
 	windowVars.oldHeight = window.height;
 
@@ -50,12 +54,10 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 
 	windowVars.windowClass = window;
 
-	if (cast(GLWindow)window !is null)
-	{
+	if (cast(GLWindow)window !is null) {
 		windowVars.msgThread = new Thread(&windowVars.gameLoop);
 	}
-	else
-	{
+	else {
 		windowVars.msgThread = new Thread(&windowVars.msgLoop);
 	}
 
@@ -73,8 +75,7 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
 }
 
-void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars)
-{
+void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars) {
 	/*
 	int width, height, x, y;
 
@@ -111,12 +112,10 @@ void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window 
 	*/
 }
 
-void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars) {
 	bool wasMaximized = false;
 
-	if (window.state == WindowState.Maximized)
-	{
+	if (window.state == WindowState.Maximized) {
 		ShowWindow(windowVars.hWnd, SW_HIDE);
 		wasMaximized = true;
 		window.state = WindowState.Normal;
@@ -141,26 +140,21 @@ void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars)
 	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 	windowVars.supress_WM_MOVE = false;
 
-	if (wasMaximized)
-	{
+	if (wasMaximized) {
 		window.state = WindowState.Maximized;
 
-		if (window.visible)
-		{
+		if (window.visible) {
 			ShowWindow(windowVars.hWnd, SW_SHOW);
 		}
 	}
 }
 
-void WindowReposition(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowReposition(ref Window window, WindowPlatformVars* windowVars) {
 	SetWindowPos(windowVars.hWnd, null, window.x,window.y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
-void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
-{
-	if (window.state == WindowState.Fullscreen)
-	{
+void WindowSetState(ref Window window, WindowPlatformVars* windowVars) {
+	if (window.state == WindowState.Fullscreen) {
 		windowVars.oldX = window.x;
 		windowVars.oldY = window.y;
 
@@ -169,7 +163,9 @@ void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 
 		windowVars.supress_WM_MOVE = true;
 		windowVars.supress_WM_SIZE = true;
+
 		windowVars.oldStyle = SetWindowLongW(windowVars.hWnd, GWL_STYLE, WS_POPUP);
+
 		windowVars.supress_WM_SIZE = false;
 		windowVars.supress_WM_MOVE = false;
 
@@ -183,19 +179,16 @@ void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 
 		SetWindowRgn(windowVars.hWnd, null, true);
 
-		if (window.visible)
-		{
+		if (window.visible) {
 			ShowWindow(windowVars.hWnd, SW_SHOW);
 		}
 
 		windowVars.infullscreen = true;
 	}
-	else if (window.visible)
-	{
-		if (windowVars.infullscreen)
-		{
-			SetWindowLongW(windowVars.hWnd, GWL_STYLE, windowVars.oldStyle);
-			SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, windowVars.oldExStyle);
+	else if (window.visible) {
+		if (windowVars.infullscreen) {
+			SetWindowLongW(windowVars.hWnd, GWL_STYLE, cast(DWORD)windowVars.oldStyle);
+			SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, cast(DWORD)windowVars.oldExStyle);
 
 			int width, height;
 			width = window.width;
@@ -209,8 +202,7 @@ void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 			windowVars.infullscreen = false;
 		}
 
-		switch(window.state)
-		{
+		switch(window.state) {
 			case WindowState.Normal:
 
 				windowVars.supress_WM_SIZE_state = true;
@@ -234,10 +226,8 @@ void WindowSetState(ref Window window, WindowPlatformVars* windowVars)
 	}
 }
 
-void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexstyle)
-{
-	if (window.style == WindowStyle.Fixed)
-	{
+void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexstyle) {
+	if (window.style == WindowStyle.Fixed) {
 		istyle = WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
                 /+
@@ -253,35 +243,31 @@ void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexsty
 		istyle |= WS_BORDER | WS_CAPTION;
 		iexstyle |= WS_EX_DLGMODALFRAME;
 	}
-	else if (window.style == WindowStyle.Popup)
-	{
+	else if (window.style == WindowStyle.Popup) {
 		istyle = WS_POPUP;
 	}
-	else //Sizable
-	{
+	else { //Sizable
 		istyle = WS_OVERLAPPEDWINDOW;
 	}
 	//iexstyle |= 0x02000000;
 
-	if (window.visible)
-	{
+	if (window.visible) {
 		istyle |= WS_VISIBLE;
 	}
 }
 
-void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
-{
-	if (width == Default) { width = CW_USEDEFAULT; }
-	else
-	{
+void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height) {
+	if (width == Default) {
+		width = CW_USEDEFAULT;
+	}
+	else {
 		//normalize sizes
 
 		//account for borders and title bar...
 		//because windows is retarded in this
 		//respect
 
-		if (window.style == WindowStyle.Fixed)
-		{
+		if (window.style == WindowStyle.Fixed) {
 			int border_width, border_height;
 			border_width = ( GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME) ) * 2;
 			border_height = (GetSystemMetrics(SM_CYDLGFRAME) * 2) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
@@ -289,12 +275,11 @@ void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 			width += border_width;
 			height += border_height;
 		}
-		else if (window.style == WindowStyle.Popup)
-		{
+		else if (window.style == WindowStyle.Popup) {
 			//do nothing
 		}
-		else //Sizable
-		{
+		else { 
+			//Sizable
 			int border_width, border_height;
 			border_width = GetSystemMetrics(SM_CXFRAME) * 2;
 			border_height = GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
@@ -307,8 +292,7 @@ void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height)
 	}
 }
 
-void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowRebound(ref Window window, WindowPlatformVars* windowVars) {
 	int width, height;
 
 	width = window.width;
@@ -320,25 +304,20 @@ void WindowRebound(ref Window window, WindowPlatformVars* windowVars)
 	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER);
 }
 
-void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
-{
-	PostMessageW(windowVars.hWnd, WM_CLOSE, 0,0);
+void WindowDestroy(ref Window window, WindowPlatformVars* windowVars) {
+	PostMessageW(windowVars.hWnd, WM_CLOSE, 0, 0);
 }
 
-void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
-{
-	if (bShow)
-	{
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow) {
+	if (bShow) {
 		ShowWindow(windowVars.hWnd, SW_SHOW);
 	}
-	else
-	{
+	else {
 		ShowWindow(windowVars.hWnd, SW_HIDE);
 	}
 }
 
-void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
 	String s = new String(window.text);
 	s.appendChar('\0');
 	SetWindowTextW(windowVars.hWnd, cast(wchar*)s.ptr);
@@ -349,21 +328,18 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars)
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y)
-{
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y) {
 	Coord pt = {x,y};
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
 	x = pt.x;
 	y = pt.y;
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt)
-{
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt) {
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
 }
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt)
-{
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt) {
 // could optimize by directly accessing a point worth from the rect
 	Coord pt = {rt.left,rt.top};
 	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
@@ -377,8 +353,7 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	RECT rt;
 
 	rt.left = 0;
@@ -408,8 +383,7 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	//window->_view._graphics.SetTextModeTransparent();
 }
 
-void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
+void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	//window->_view._graphics.DestroyFont(window->_pfvars.fnt);
 
 	DeleteObject(windowVars.pen);
@@ -423,14 +397,12 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref Window
 	ReleaseDC(windowVars.hWnd, hdc);
 }
 
-void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars) {
 	const int WM_MOUSECAPTURE = 0xffff;
 
 	SendMessageW(windowVars.hWnd, WM_MOUSECAPTURE, 0, 0);
 }
 
-void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars)
-{
+void WindowReleaseMouse(ref Window window, WindowPlatformVars* windowVars) {
 	ReleaseCapture();
 }

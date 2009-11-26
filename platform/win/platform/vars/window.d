@@ -10,7 +10,11 @@
 
 module platform.vars.window;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
 
 import core.definitions;
 import core.string;
@@ -97,17 +101,15 @@ struct WindowPlatformVars {
 	// ----
 
 	// Deeply routed logic for windows in a file that doesn't need it
-	void msgLoop(bool pleaseStop)
-	{
-		if (pleaseStop)
-		{
+	void msgLoop(bool pleaseStop) {
+		if (pleaseStop) {
 			return;
 		}
 
 		oldTitle.appendChar('\0');
-		
+
 		while(hWnd is null) {
-			hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle | WS_CLIPSIBLINGS,
+			hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, cast(DWORD)(istyle | WS_CLIPSIBLINGS),
 				oldX, oldY, oldWidth, oldHeight, null,
 				cast(HMENU) null, null, cast(void*)userData);
 		}
@@ -119,11 +121,9 @@ struct WindowPlatformVars {
 		windowClass.onAdd();
 
 		MSG msg;
-		while (GetMessageW(&msg, cast(HWND) hWnd, 0, 0))
-		{
+		while (GetMessageW(&msg, cast(HWND) hWnd, 0, 0)) {
 			TranslateMessage(&msg);
-			if (msg.message == WM_DESTROY || msg.message == 0)
-			{
+			if (msg.message == WM_DESTROY || msg.message == 0) {
 				break;
 			}
 			DispatchMessageW(&msg);
@@ -132,8 +132,7 @@ struct WindowPlatformVars {
 
 
 
-	void gameLoopCallResize()
-	{
+	void gameLoopCallResize() {
 		GLWindow glWindow = cast(GLWindow)windowClass;
 
 		glWindow.onDraw(getDeltaTime());
@@ -144,9 +143,7 @@ struct WindowPlatformVars {
 
 
 
-	void initTime()
-	{
-
+	void initTime() {
 		long perfFreq;
 
 		// initialize query performance timer
@@ -158,9 +155,7 @@ struct WindowPlatformVars {
 		tmInfo.timeLast_tick = GetTickCount();
 	}
 
-	double getDeltaTime()
-	{
-
+	double getDeltaTime() {
 		QueryPerformanceCounter(&tmInfo.timeCur);
 
 		double timeSpan = cast(double)(tmInfo.timeCur - tmInfo.timeLast) * tmInfo.timeFactor;

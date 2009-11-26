@@ -570,7 +570,7 @@ class String {
 				}
 			}
 			if (found) {
-				return i;
+				return i+start;
 			}
 		}
 

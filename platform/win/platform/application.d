@@ -13,6 +13,26 @@ import binding.c;
 
 import analyzing.debugger;
 
+enum : uint
+{
+	OsVersionWindows95			= 0,
+	OsVersionWindowsNT			= 1,
+	OsVersionWindows98			= 2,
+	OsVersionWindows98Se		= 3,
+	OsVersionWindowsMe			= 4,
+	OsVersionWindows2000		= 5,
+	OsVersionWindowsXp			= 6,
+	OsVersionWindowsServer2003	= 7,
+	OsVersionWindowsVista		= 8,
+	OsVersionWindowsLonghorn	= 9,
+	OsVersionWindows7			= 10,
+	OsVersionWindowsServer2008	= 11,
+	OsVersionWindowsMax			= uint.max,
+}
+
+//XXX:CommCtrl.h
+extern(System) void InitCommonControls();
+
 // The main ApplicationController
 class ApplicationController {
 

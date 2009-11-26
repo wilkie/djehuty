@@ -289,7 +289,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -325,21 +325,21 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-//	static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
-		
+
 /*		list = new List!(String);
-		
+
 		list.addItem(new String("blah"));
 		list.addItem(new String("bloo"));
-		
+
 		int index = list.indexOf(new String("blod"));
-		
+
 		Console.putln(index);
 */
 		new MyOptions();
 		Console.putln("foobar");
-	
+
 /*		String exp = new String(`a*(abc)*a(bc)*b`);
 		String find = new String("aaaaabcab");
 		Regex regex = new Regex(exp);
@@ -392,16 +392,16 @@ class MyConsoleApp : Application {
 //		Console.putln(queue.remove);
 //		Console.putln(queue.remove);
 //:q			Console.putln(queue.remove);
-
+/*
 		auto fibheap = new FibonacciHeap!(int, MaxHeap);
 		fibheap.add(10);
 		fibheap.add(4);
 		fibheap.add(15);
-		
+
 		Console.putln(fibheap.remove());
 		Console.putln(fibheap.remove());
 		Console.putln(fibheap.remove());
-		
+
 		auto queue = new FibonacciHeap!(int, MinHeap);
 		int min;
 		int val;
@@ -417,7 +417,7 @@ class MyConsoleApp : Application {
 			if (val < min) {
 				min = val;
 			}
-		}			
+		}
 
 		queue.add(1);
 		queue.add(3);
@@ -431,7 +431,184 @@ class MyConsoleApp : Application {
 			Console.putln(foo);
 			last = foo;
 		}
+*/
 
+		File unfinished = File.open("binding/win32/winbaseold.d");
+		File finished = File.create("binding/win32/winbasenew.d");
+
+		bool inUnicodeBlock = false;
+		bool inStruct = false;
+		String structStr;
+		char[] structName;
+		uint leftsFound;
+		bool firstFound = false;
+		uint lineNumber = 0;
+		foreach(String line; unfinished) {
+			lineNumber++;
+
+			// handle typedef struct
+			if (line.length > 13 && line[0..14] == "typedef struct" && line.find(";") == -1) {
+				Console.putln("struct:", lineNumber);
+				inStruct = true;
+				int bracketPos = line.find("{");
+				if (bracketPos == -1) {
+					leftsFound = 0;
+					firstFound = false;
+					line = new String("");
+					structStr = new String("");
+				}
+				else {
+					leftsFound = 1;
+					firstFound = true;
+					line = line.subString(bracketPos+1);
+					structStr = new String("{");
+				}
+			}
+
+			if (inStruct) {
+				// find content of struct
+				foreach(int i, c; line) {
+					if (c == '{') {
+						if (!firstFound) {
+							firstFound = true;
+							structStr = new String("{");
+							line = line.subString(i+1);
+						}
+						leftsFound++;
+					}
+					else if (c == '}') {
+						leftsFound--;
+						if (leftsFound == 0) {
+							structStr.append(line.subString(0, i+1));
+							structStr.append("\n\n");
+							line = line.subString(i+1);
+							break;
+						}
+					}
+				}
+
+				if (leftsFound == 0 && firstFound) {
+					// parse typedef foo
+					line = line.trim;
+
+					if (line.length > 0 && line[line.length-1] == ';') {
+						inStruct = false;
+					}
+
+					int pos = 0;
+
+					String structName;
+					Console.putln("done:", lineNumber,":", line );
+					while(pos < line.length) {
+						Console.putln("-->", line, "<--");
+						int newpos = line.find(",", pos);
+						Console.putln("inner");
+
+						if (newpos == -1) {
+							newpos = line.length;
+						}
+
+						String section = line.subString(pos, newpos-pos);
+						section = section.trim;
+
+						if (section.length > 0 && section[section.length-1] == ';') {
+							section = section.subString(0, section.length-1);
+						}
+
+						if (structName is null && section[0] != '*') {
+							structName = section;
+						}
+						else {
+							if (section[0] == '*') {
+								structStr.append("typedef ");
+								structStr.append(structName);
+								structStr.append("* ");
+								structStr.append(section[1..section.length]);
+								structStr.append(";\n");
+							}
+							else {
+								structStr.append("typedef ");
+								structStr.append(structName);
+								structStr.append(" ");
+								structStr.append(section);
+								structStr.append(";\n");
+							}
+						}
+
+						Console.putln(section);
+
+						pos = newpos+1;
+					}
+
+					finished.write("struct "c);
+					finished.write(structName.toUtf8);
+					finished.write(" "c);
+					finished.write(structStr.toUtf8);
+					Console.putln("done!");
+				}
+				else {
+					structStr.append(line);
+					structStr.append("\n");
+				}
+			}
+			else {
+				// handle #defines
+				if (line.length > 7 && line[0..8] == "#define ") {
+					bool spaceFound = false;
+					foreach(int i, c; line[8..line.length]) {
+						if (c == ' ' || c == '\t') {
+							spaceFound = true;
+						}
+						else if (spaceFound) {
+							int commentPos = line.find("//");
+							if (commentPos != -1) {
+								line = new String("const auto ") ~ line[8..i+8] ~ " = " ~ line[i+8..commentPos] ~ "; " ~ line[commentPos..line.length];
+							}
+							else {
+								line = new String("const auto ") ~ line[8..i+8] ~ " = " ~ line[i+8..line.length] ~ ";";
+							}
+							break;
+						}
+					}
+				}
+
+				// handle version blocks
+				if (line == "#ifdef UNICODE" || line == "#ifdef (UNICODE)" || line == "#ifdef(UNICODE)") {
+					inUnicodeBlock = true;
+					line = new String("\nversion(UNICODE) {");
+				}
+				else if (line.length > 5 && line[0..6] == "#endif" && inUnicodeBlock) {
+					line = new String("}");
+					inUnicodeBlock = false;
+				}
+				else if (line == "#else" && inUnicodeBlock) {
+					line = new String("}\nelse {");
+				}
+				else if (inUnicodeBlock) {
+					// could be formatted to a 'const auto ITEM = ITEMB;'
+					if (line.length > 10 && line[0..10] == "const auto") {
+						line = line.subString(10);
+						int equalPos = line.find("=");
+						if (equalPos != -1) {
+							String item = line.subString(0, equalPos);
+							String itemB = line.subString(equalPos+1);
+							item = item.trim;
+							itemB = itemB.trim;
+							if (itemB[itemB.length-1] == ';') {
+								itemB = itemB.subString(0, itemB.length-1);
+							}
+							line = new String("alias ") ~ itemB ~ " " ~ item ~ ";";
+						}
+					}
+					line = new String("\t") ~ line;
+				}
+
+				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI") {
+					finished.write(line.toUtf8);
+					finished.write("\n"c);
+				}
+			}
+		}
 	}
 
 protected:

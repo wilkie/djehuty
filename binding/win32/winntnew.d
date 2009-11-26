@@ -32,8 +32,6 @@ import binding.c;
 
 import binding.win32.windef;
 
-extern(System):
-
 version (X86_64) {
 	const auto MEMORY_ALLOCATION_ALIGNMENT = 16;
 	const auto MAX_NATURAL_ALIGNMENT = ulong.sizeof;
@@ -47,123 +45,123 @@ else {
 // Void
 //
 
-alias void*	PVOID;
-alias void*	PVOID64;
+typedef void*	PVOID;
+typedef void*	PVOID64;
 
-alias char	CHAR;
-alias short	SHORT;
-alias Clong_t	LONG;
+typedef char	CHAR;
+typedef short	SHORT;
+typedef Clong_t	LONG;
 
 
 //
 // UNICODE (Wide Character) types
 //
 
-alias wchar WCHAR;    // wc,   16-bit UNICODE character
+typedef ushort WCHAR;    // wc,   16-bit UNICODE character
 
-alias WCHAR *PWCHAR;
+typedef WCHAR *PWCHAR;
 
-alias WCHAR *LPWCH;
-alias WCHAR *PWCH;
+typedef WCHAR *LPWCH;
+typedef WCHAR *PWCH;
 
-alias WCHAR *LPCWCH;
-alias WCHAR *PCWCH;
+typedef WCHAR *LPCWCH;
+typedef WCHAR *PCWCH;
 
-alias WCHAR *NWPSTR;
-alias WCHAR *LPWSTR;
-alias WCHAR *PWSTR;
+typedef WCHAR *NWPSTR;
+typedef WCHAR *LPWSTR;
+typedef WCHAR *PWSTR;
 
-alias PWSTR *PZPWSTR;
-alias PWSTR *PCZPWSTR;
-alias WCHAR *LPUWSTR;
-alias WCHAR *PUWSTR;
-alias WCHAR *LPCWSTR;
-alias WCHAR *PCWSTR;
-alias PCWSTR *PZPCWSTR;
-alias WCHAR *LPCUWSTR;
-alias WCHAR *PCUWSTR;
+typedef PWSTR *PZPWSTR;
+typedef PWSTR *PCZPWSTR;
+typedef WCHAR *LPUWSTR;
+typedef WCHAR *PUWSTR;
+typedef WCHAR *LPCWSTR;
+typedef WCHAR *PCWSTR;
+typedef PCWSTR *PZPCWSTR;
+typedef WCHAR *LPCUWSTR;
+typedef WCHAR *PCUWSTR;
 
 //
 // ANSI (Multi-byte Character) types
 //
-alias CHAR *PCHAR;
-alias CHAR *LPCH;
-alias CHAR *PCH;
-alias CHAR *LPCCH;
-alias CHAR *PCCH;
+typedef CHAR *PCHAR;
+typedef CHAR *LPCH;
+typedef CHAR *PCH;
+typedef CHAR *LPCCH;
+typedef CHAR *PCCH;
 
-alias CHAR *NPSTR;
-alias CHAR *LPSTR;
-alias CHAR *PSTR;
-alias PSTR *PZPSTR;
-alias PSTR *PCZPSTR;
-alias CHAR *LPCSTR; 
-alias CHAR *PCSTR;
-alias PCSTR *PZPCSTR;
+typedef CHAR *NPSTR;
+typedef CHAR *LPSTR;
+typedef CHAR *PSTR;
+typedef PSTR *PZPSTR;
+typedef PSTR *PCZPSTR;
+typedef CHAR *LPCSTR; 
+typedef CHAR *PCSTR;
+typedef PCSTR *PZPCSTR;
 
 //
 // Neutral ANSI/UNICODE types and macros
 //
 
 version(UNICODE) {
-	alias WCHAR TCHAR;
-	alias WCHAR *PTCHAR;
-	alias WCHAR TBYTE;
-	alias WCHAR *PTBYTE ;
+	typedef WCHAR TCHAR;
+	typedef WCHAR *PTCHAR;
+	typedef WCHAR TBYTE;
+	typedef WCHAR *PTBYTE ;
 
-	alias LPWSTR LPTCH;
-	alias LPWSTR PTCH;
-	alias LPWSTR PTSTR;
-	alias LPWSTR LPTSTR;
-	alias LPCWSTR PCTSTR;
-	alias LPCWSTR LPCTSTR;
-	alias LPUWSTR PUTSTR;
-	alias LPUWSTR LPUTSTR;
-	alias LPCUWSTR PCUTSTR;
-	alias LPCUWSTR LPCUTSTR;
-	alias LPWSTR LP;
+	typedef LPWSTR LPTCH;
+	typedef LPWSTR PTCH;
+	typedef LPWSTR PTSTR;
+	typedef LPWSTR LPTSTR;
+	typedef LPCWSTR PCTSTR;
+	typedef LPCWSTR LPCTSTR;
+	typedef LPUWSTR PUTSTR;
+	typedef LPUWSTR LPUTSTR;
+	typedef LPCUWSTR PCUTSTR;
+	typedef LPCUWSTR LPCUTSTR;
+	typedef LPWSTR LP;
 }
 else {
-	alias char TCHAR;
-	alias char *PTCHAR;
-	alias ubyte TBYTE ;
-	alias ubyte *PTBYTE ;
+	typedef char TCHAR;
+	typedef char *PTCHAR;
+	typedef ubyte TBYTE ;
+	typedef ubyte *PTBYTE ;
 
-	alias LPSTR LPTCH;
-	alias LPSTR PTCH;
-	alias LPSTR PTSTR;
-	alias LPSTR LPTSTR;
-	alias LPSTR PUTSTR;
-	alias LPSTR LPUTSTR;
-	alias LPCSTR PCTSTR;
-	alias LPCSTR LPCTSTR;
-	alias LPCSTR PCUTSTR;
-	alias LPCSTR LPCUTSTR;
+	typedef LPSTR LPTCH;
+	typedef LPSTR PTCH;
+	typedef LPSTR PTSTR;
+	typedef LPSTR LPTSTR;
+	typedef LPSTR PUTSTR;
+	typedef LPSTR LPUTSTR;
+	typedef LPCSTR PCTSTR;
+	typedef LPCSTR LPCTSTR;
+	typedef LPCSTR PCUTSTR;
+	typedef LPCSTR LPCUTSTR;
 }
 
-alias SHORT*	PSHORT;
-alias LONG*	PLONG;
+typedef SHORT*	PSHORT;
+typedef LONG*	PLONG;
 
-alias void* HANDLE;
+typedef PVOID HANDLE;
 
-alias HANDLE *PHANDLE;
+typedef HANDLE *PHANDLE;
 
 //
 // Flag (bit) fields
 //
 
-alias BYTE	FCHAR;
-alias WORD	FSHORT;
-alias DWORD	FLONG;
+typedef BYTE	FCHAR;
+typedef WORD	FSHORT;
+typedef DWORD	FLONG;
 
 // Component Object Model defines, and macros
 
-alias LONG	HRESULT;
+typedef LONG	HRESULT;
 
-alias char	CCHAR;
-alias DWORD	LCID;
-alias PDWORD	PLCID;
-alias WORD	LANGID;
+typedef char	CCHAR;
+typedef DWORD	LCID;
+typedef PDWORD	PLCID;
+typedef WORD	LANGID;
 
 const auto APPLICATION_ERROR_MASK		= 0x20000000;
 const auto ERROR_SEVERITY_SUCCESS		= 0x00000000;
@@ -176,27 +174,31 @@ struct FLOAT128 {
     long HighPart;
 }
 
-alias FLOAT128*	PFLOAT128;
+typedef FLOAT128*	PFLOAT128;
 
-alias long LONGLONG;
-alias ulong ULONGLONG;
+typedef long LONGLONG;
+typedef ulong ULONGLONG;
 
 const auto MAXLONGLONG = long.max;
 
-alias LONGLONG*	PLONGLONG;
-alias ULONGLONG*	PULONGLONG;
+typedef LONGLONG*	PLONGLONG;
+typedef ULONGLONG*	PULONGLONG;
 
 // Update Sequence Number
 
-alias LONGLONG USN;
+typedef LONGLONG USN;
 
-alias LONGLONG LARGE_INTEGER; 
+struct LARGE_INTEGER {
+    LONGLONG QuadPart;
+}
 
-alias LARGE_INTEGER*	PLARGE_INTEGER;
+typedef LARGE_INTEGER*	PLARGE_INTEGER;
 
-alias ULONGLONG ULARGE_INTEGER;
+struct ULARGE_INTEGER {
+	ULONGLONG QuadPart;
+}
 
-alias ULARGE_INTEGER*	PULARGE_INTEGER;
+typedef ULARGE_INTEGER*	PULARGE_INTEGER;
 
 //
 // Locally Unique Identifier
@@ -206,18 +208,18 @@ struct LUID {
     DWORD LowPart;
     LONG HighPart;
 }
-alias LUID*	PLUID;
+typedef LUID*	PLUID;
 
-alias ULONGLONG	DWORDLONG;
-alias DWORDLONG*	PDWORDLONG;
+typedef ULONGLONG	DWORDLONG;
+typedef DWORDLONG*	PDWORDLONG;
 
 const auto ANSI_NULL				= (cast(CHAR)0);
 const auto UNICODE_NULL				= (cast(WCHAR)0);
 const auto UNICODE_STRING_MAX_BYTES	= (cast(WORD)65534);
 const auto UNICODE_STRING_MAX_CHARS = (32767);
 
-alias BYTE 		BOOLEAN;
-alias BOOLEAN*	PBOOLEAN;
+typedef BYTE 		BOOLEAN;
+typedef BOOLEAN*	PBOOLEAN;
 
 //
 //  Doubly linked list structure.  Can be used as either a list head, or
@@ -229,8 +231,8 @@ struct LIST_ENTRY {
    LIST_ENTRY* Blink;
 }
 
-alias LIST_ENTRY* PLIST_ENTRY;
-alias LIST_ENTRY* PRLIST_ENTRY;
+typedef LIST_ENTRY* PLIST_ENTRY;
+typedef LIST_ENTRY* PRLIST_ENTRY;
 
 //
 //  Singly linked list structure. Can be used as either a list head, or
@@ -241,7 +243,7 @@ struct SINGLE_LIST_ENTRY {
     SINGLE_LIST_ENTRY* Next;
 }
 
-alias SINGLE_LIST_ENTRY* PSINGLE_LIST_ENTRY;
+typedef SINGLE_LIST_ENTRY* PSINGLE_LIST_ENTRY;
 
 //
 // These are needed for portable debugger support.
@@ -252,14 +254,14 @@ struct LIST_ENTRY32 {
     DWORD Blink;
 }
 
-alias LIST_ENTRY32 *PLIST_ENTRY32;
+typedef LIST_ENTRY32 *PLIST_ENTRY32;
 
 struct LIST_ENTRY64 {
     ULONGLONG Flink;
     ULONGLONG Blink;
 }
 
-alias LIST_ENTRY64 *PLIST_ENTRY64;
+typedef LIST_ENTRY64 *PLIST_ENTRY64;
 
 public import binding.win32.guiddef;
 
@@ -267,72 +269,6 @@ struct OBJECTID {     // size is 20
     GUID Lineage;
     DWORD Uniquifier;
 }
-
-struct TP_IO;
-alias TP_IO* PTP_IO;
-
-struct TP_POOL;
-alias TP_POOL* PTP_POOL;
-
-struct TP_CLEANUP_GROUP;
-alias TP_CLEANUP_GROUP* PTP_CLEANUP_GROUP;
-
-alias VOID function(PVOID ObjectContext, PVOID CleanupContext) PTP_CLEANUP_GROUP_CANCEL_CALLBACK;
-
-struct TP_CALLBACK_INSTANCE;
-alias TP_CALLBACK_INSTANCE* PTP_CALLBACK_INSTANCE;
-
-alias VOID function(PTP_CALLBACK_INSTANCE Instance, PVOID Context) PTP_SIMPLE_CALLBACK;
-
-struct TP_TIMER;
-alias TP_TIMER* PTP_TIMER;
-
-alias VOID function(PTP_CALLBACK_INSTANCE Instance, PVOID Context, PTP_TIMER Timer) PTP_TIMER_CALLBACK;
-
-alias DWORD TP_WAIT_RESULT;
-
-struct TP_WAIT;
-alias TP_WAIT* PTP_WAIT;
-
-alias VOID function(PTP_CALLBACK_INSTANCE Instance, PVOID Context, PTP_WAIT Wait, TP_WAIT_RESULT WaitResult) PTP_WAIT_CALLBACK;
-
-struct TP_WORK;
-alias TP_WORK* PTP_WORK;
-
-alias VOID function(PTP_CALLBACK_INSTANCE Instance, PVOID Context, PTP_WORK Work) PTP_WORK_CALLBACK;
-
-alias DWORD TP_VERSION;
-alias DWORD* PTP_VERSION;
-
-struct _ACTIVATION_CONTEXT;
-alias _ACTIVATION_CONTEXT ACTIVATION_CONTEXT;
-//
-// Do not manipulate this structure directly!  Allocate space for it
-// and use the inline interfaces below.
-//
-
-struct TP_CALLBACK_ENVIRON {
-    TP_VERSION                         Version;
-    PTP_POOL                           Pool;
-    PTP_CLEANUP_GROUP                  CleanupGroup;
-    PTP_CLEANUP_GROUP_CANCEL_CALLBACK  CleanupGroupCancelCallback;
-    PVOID                              RaceDll;
-    ACTIVATION_CONTEXT        *ActivationContext;
-    PTP_SIMPLE_CALLBACK                FinalizationCallback;
-    union _inner_union {
-        DWORD                          Flags;
-        struct _inner_struct {
-            //DWORD                      LongFunction :  1;
-            //DWORD                      Private      : 31;
-        }
-
-		_inner_struct s;
-    }
-
-	_inner_union u;
-}
-
-alias TP_CALLBACK_ENVIRON* PTP_CALLBACK_ENVIRON;
 
 const auto MINCHAR	= 0x80;
 const auto MAXCHAR	= 0x7f;
@@ -873,7 +809,7 @@ const auto SUBLANGID(lgid)         = ((WORD  )(lgid) >> 10); */
 
 const auto NLS_VALID_LOCALE_MASK   = 0x000fffff;
 
-template MAKELCID(uint lgid, uint srtid) {
+template MAKELCID(uint lgid, srtid) {
 	const DWORD MAKELCID = (cast(DWORD)(((cast(DWORD)(cast(WORD)(srtid))) << 16) |(cast(DWORD)(cast(WORD)(lgid)))));
 }
 // const auto MAKELCID(lgid,  = srtid)  ((DWORD)((((DWORD)((WORD  )(srtid))) << 16) |((DWORD)((WORD  )(lgid)))))
@@ -942,6 +878,27 @@ const auto LOCALE_INVARIANT                                                     
 // Note: lint -e530 says don't complain about uninitialized variables for
 // this varible.  Error 527 has to do with unreachable code.
 // -restore restores checking to the -save state
+/+
+const auto UNREFERENCED_PARAMETER(P)           = \;
+    /*lint -save -e527 -e530 */ \
+    { \
+        (P) = (P); \
+    } \
+    /*lint -restore */
+const auto DBG_UNREFERENCED_PARAMETER(P)       = \;
+    /*lint -save -e527 -e530 */ \
+    { \
+        (P) = (P); \
+    } \
+    /*lint -restore */
+const auto DBG_UNREFERENCED_LOCAL_VARIABLE(V)  = \;
+    /*lint -save -e527 -e530 */ \
+    { \
+        (V) = (V); \
+    } \
+    /*lint -restore */
+
+#endif // lint +/
 
 //
 // Macro used to eliminate compiler warning 4715 within a switch statement
@@ -1010,18 +967,97 @@ const auto MAXIMUM_WAIT_OBJECTS  = 64     ; // Maximum number of wait objects
 
 const auto MAXIMUM_SUSPEND_COUNT  = MAXCHAR ; // Maximum times thread can be suspended
 
-alias ULONG_PTR KSPIN_LOCK;
-alias KSPIN_LOCK *PKSPIN_LOCK;
+typedef ULONG_PTR KSPIN_LOCK;
+typedef KSPIN_LOCK *PKSPIN_LOCK;
 
 //
 // PreFetchCacheLine level defines.
 //
 
-/*const auto PF_TEMPORAL_LEVEL_1  = _MM_HINT_T0;
+const auto PF_TEMPORAL_LEVEL_1  = _MM_HINT_T0;
 const auto PF_TEMPORAL_LEVEL_2  = _MM_HINT_T1;
 const auto PF_TEMPORAL_LEVEL_3  = _MM_HINT_T2;
 const auto PF_NON_TEMPORAL_LEVEL_ALL  = _MM_HINT_NTA;
-*/
+
+//
+// Define get/set MXCSR intrinsics.
+//
+
+const auto ReadMxCsr  = _mm_getcsr;
+const auto WriteMxCsr  = _mm_setcsr;
+
+unsigned int
+_mm_getcsr (
+    VOID
+    );
+
+VOID
+_mm_setcsr (
+     unsigned int MxCsr
+    );
+
+#pragma intrinsic(_mm_getcsr)
+#pragma intrinsic(_mm_setcsr)
+
+//
+// Assert exception.
+//
+
+VOID
+__int2c (
+    VOID
+    );
+
+#pragma intrinsic(__int2c)
+
+const auto DbgRaiseAssertionFailure()  = __int2c();
+
+//
+// Define function to get the caller's EFLAGs value.
+//
+
+const auto GetCallersEflags()  = __getcallerseflags();
+
+unsigned __int32
+__getcallerseflags (
+    VOID
+    );
+
+#pragma intrinsic(__getcallerseflags)
+
+//
+// Define function to get segment limit.
+//
+
+DWORD
+__segmentlimit (
+     DWORD Selector
+    );
+
+alias __segmentlimit GetSegmentLimit ;
+
+//
+// Define function to read the value of a performance counter.
+//
+
+
+DWORD64
+__readpmc (
+     DWORD Counter
+    );
+
+alias __readpmc ReadPMC ;
+
+//
+// Define function to read the value of the time stamp counter
+//
+
+
+DWORD64
+__rdtsc (
+    );
+
+alias __rdtsc ReadTimeStampCounter ;
 
 //
 // The following values specify the type of access in the first parameter
@@ -1075,7 +1111,7 @@ struct M128A {
     LONGLONG High;
 }
 
-alias M128A* PM128A;
+typedef M128A* PM128A;
 
 //
 // Format of data for 32-bit fxsave/fxrstor instructions.
@@ -1100,7 +1136,7 @@ struct XMM_SAVE_AREA32 {
     BYTE[96]  Reserved4;
 }
 
-alias XMM_SAVE_AREA32* PXMM_SAVE_AREA32;
+typedef XMM_SAVE_AREA32* PXMM_SAVE_AREA32;
 
 const auto LEGACY_SAVE_AREA_LENGTH  = XMM_SAVE_AREA32.sizeof;
 
@@ -1236,10 +1272,10 @@ struct CONTEXT {
             M128A Xmm14;
             M128A Xmm15;
         }
-
+        
         _inner_struct regs;
     }
-
+    
     _inner_union xmm;
 
     //
@@ -1260,7 +1296,7 @@ struct CONTEXT {
     DWORD64 LastExceptionFromRip;
 }
 
-alias CONTEXT* PCONTEXT;
+typedef CONTEXT* PCONTEXT;
 
 //
 // Define function table entry - a function table entry is generated for
@@ -1275,15 +1311,15 @@ struct RUNTIME_FUNCTION {
     DWORD UnwindData;
 }
 
-alias RUNTIME_FUNCTION* PRUNTIME_FUNCTION;
+typedef RUNTIME_FUNCTION* PRUNTIME_FUNCTION;
 
 //
 // Define dynamic function table entry.
 //
 
-alias PRUNTIME_FUNCTION function(DWORD64, PVOID) PGET_RUNTIME_FUNCTION_CALLBACK;
+typedef PRUNTIME_FUNCTION function(DWORD64, PVOID) PGET_RUNTIME_FUNCTION_CALLBACK;
 
-alias DWORD function(HANDLE, PVOID, PDWORD, PRUNTIME_FUNCTION* Functions) POUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK;
+typedef DWORD function(HANDLE, PVOID, PDWORD, PRUNTIME_FUNCTION* Functions) POUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK;
 
 const auto OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK_EXPORT_NAME  = "OutOfProcessFunctionTableCallback"c;
 
@@ -1296,8 +1332,8 @@ VOID
 
 RtlRestoreContext (
      PCONTEXT ContextRecord,
-     EXCEPTION_RECORD *ExceptionRecord
-   );
+     EXCEPTION_RECORD *ExceptionRecord OPTIONAL
+    );
 
 
 
@@ -1318,7 +1354,7 @@ RtlInstallFunctionTableCallback (
      DWORD Length,
      PGET_RUNTIME_FUNCTION_CALLBACK Callback,
      PVOID Context,
-     PCWSTR OutOfProcessCallbackDll 
+     PCWSTR OutOfProcessCallbackDll OPTIONAL
     );
 
 
@@ -1327,6 +1363,21 @@ BOOLEAN
 RtlDeleteFunctionTable (
      PRUNTIME_FUNCTION FunctionTable
     );
+
+//
+// Disable these two pragmas that evaluate to "sti" "cli" on x86 so that driver
+// writers to not leave them inadvertantly in their code.
+//
+
+
+//
+// The following values specify the type of failing access when the status is
+// STATUS_ACCESS_VIOLATION and the first parameter in the execpetion record.
+//
+
+const auto EXCEPTION_READ_FAULT           = 0 ; // Access violation was caused by a read
+const auto EXCEPTION_WRITE_FAULT          = 1 ; // Access violation was caused by a write
+const auto EXCEPTION_EXECUTE_FAULT        = 8 ; // Access violation was caused by an instruction fetch
 
 // begin_wx86
 // begin_ntddk
@@ -1344,6 +1395,21 @@ const auto SIZE_OF_80387_REGISTERS       = 80;
 const auto CONTEXT_i386     = 0x00010000    ; // this assumes that i386 and
 const auto CONTEXT_i486     = 0x00010000    ; // i486 have identical context records
 
+// end_wx86
+
+const auto CONTEXT_CONTROL          = (CONTEXT_i386 | 0x00000001L) ; // SS:SP, CS:IP, FLAGS, BP
+const auto CONTEXT_INTEGER          = (CONTEXT_i386 | 0x00000002L) ; // AX, BX, CX, DX, SI, DI
+const auto CONTEXT_SEGMENTS         = (CONTEXT_i386 | 0x00000004L) ; // DS, ES, FS, GS
+const auto CONTEXT_FLOATING_POINT   = (CONTEXT_i386 | 0x00000008L) ; // 387 state
+const auto CONTEXT_DEBUG_REGISTERS  = (CONTEXT_i386 | 0x00000010L) ; // DB 0-3,6,7
+const auto CONTEXT_EXTENDED_REGISTERS   = (CONTEXT_i386 | 0x00000020L) ; // cpu specific extensions
+
+const auto CONTEXT_FULL  = (CONTEXT_CONTROL | CONTEXT_INTEGER |\;
+                      CONTEXT_SEGMENTS)
+
+const auto CONTEXT_ALL              = (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_SEGMENTS | \;
+                                 CONTEXT_FLOATING_POINT | CONTEXT_DEBUG_REGISTERS | \
+                                 CONTEXT_EXTENDED_REGISTERS)
 
 // begin_wx86
 
@@ -1362,7 +1428,7 @@ struct FLOATING_SAVE_AREA {
 }
 
 
-alias FLOATING_SAVE_AREA *PFLOATING_SAVE_AREA;
+typedef FLOATING_SAVE_AREA *PFLOATING_SAVE_AREA;
 
 //
 // Context Frame
@@ -1374,7 +1440,7 @@ alias FLOATING_SAVE_AREA *PFLOATING_SAVE_AREA;
 //  The layout of the record conforms to a standard call frame.
 //
 
-struct _CONTEXT {
+struct CONTEXT {
 
     //
     // The flags values within this flag control the contents of
@@ -1463,7 +1529,7 @@ struct _CONTEXT {
 
 
 
-alias _CONTEXT *_PCONTEXT;
+typedef CONTEXT *PCONTEXT;
 
 //
 // __lfetch control defines.
@@ -1478,32 +1544,32 @@ const auto MD_LFHINT_NTA      = 0x03;
 // PreFetchCacheLine level defines.
 //
 
-const auto _PF_TEMPORAL_LEVEL_1          = MD_LFHINT_NONE;
-const auto _PF_TEMPORAL_LEVEL_2          = MD_LFHINT_NT1;
-const auto _PF_TEMPORAL_LEVEL_3          = MD_LFHINT_NT2;
-const auto _PF_NON_TEMPORAL_LEVEL_ALL    = MD_LFHINT_NTA;
+const auto PF_TEMPORAL_LEVEL_1          = MD_LFHINT_NONE;
+const auto PF_TEMPORAL_LEVEL_2          = MD_LFHINT_NT1;
+const auto PF_TEMPORAL_LEVEL_3          = MD_LFHINT_NT2;
+const auto PF_NON_TEMPORAL_LEVEL_ALL    = MD_LFHINT_NTA;
 
 
 const auto CONTEXT_IA64                     = 0x00080000;
 
-const auto _CONTEXT_CONTROL                  = (CONTEXT_IA64 | 0x00000001L);
-const auto _CONTEXT_LOWER_FLOATING_POINT     = (CONTEXT_IA64 | 0x00000002L);
-const auto _CONTEXT_HIGHER_FLOATING_POINT    = (CONTEXT_IA64 | 0x00000004L);
-const auto _CONTEXT_INTEGER                  = (CONTEXT_IA64 | 0x00000008L);
-const auto _CONTEXT_DEBUG                    = (CONTEXT_IA64 | 0x00000010L);
-const auto _CONTEXT_IA32_CONTROL             = (CONTEXT_IA64 | 0x00000020L)  ; // Includes StIPSR
+const auto CONTEXT_CONTROL                  = (CONTEXT_IA64 | 0x00000001L);
+const auto CONTEXT_LOWER_FLOATING_POINT     = (CONTEXT_IA64 | 0x00000002L);
+const auto CONTEXT_HIGHER_FLOATING_POINT    = (CONTEXT_IA64 | 0x00000004L);
+const auto CONTEXT_INTEGER                  = (CONTEXT_IA64 | 0x00000008L);
+const auto CONTEXT_DEBUG                    = (CONTEXT_IA64 | 0x00000010L);
+const auto CONTEXT_IA32_CONTROL             = (CONTEXT_IA64 | 0x00000020L)  ; // Includes StIPSR
 
 
-const auto _CONTEXT_FLOATING_POINT           = (_CONTEXT_LOWER_FLOATING_POINT | _CONTEXT_HIGHER_FLOATING_POINT);
-const auto _CONTEXT_FULL                     = (_CONTEXT_CONTROL | _CONTEXT_FLOATING_POINT | _CONTEXT_INTEGER | _CONTEXT_IA32_CONTROL);
-const auto _CONTEXT_ALL                      = (_CONTEXT_CONTROL | _CONTEXT_FLOATING_POINT | _CONTEXT_INTEGER | _CONTEXT_DEBUG | _CONTEXT_IA32_CONTROL);
+const auto CONTEXT_FLOATING_POINT           = (CONTEXT_LOWER_FLOATING_POINT | CONTEXT_HIGHER_FLOATING_POINT);
+const auto CONTEXT_FULL                     = (CONTEXT_CONTROL | CONTEXT_FLOATING_POINT | CONTEXT_INTEGER | CONTEXT_IA32_CONTROL);
+const auto CONTEXT_ALL                      = (CONTEXT_CONTROL | CONTEXT_FLOATING_POINT | CONTEXT_INTEGER | CONTEXT_DEBUG | CONTEXT_IA32_CONTROL);
 
-const auto _CONTEXT_EXCEPTION_ACTIVE         = 0x8000000;
-const auto _CONTEXT_SERVICE_ACTIVE           = 0x10000000;
-const auto _CONTEXT_EXCEPTION_REQUEST        = 0x40000000;
-const auto _CONTEXT_EXCEPTION_REPORTING      = 0x80000000;
+const auto CONTEXT_EXCEPTION_ACTIVE         = 0x8000000;
+const auto CONTEXT_SERVICE_ACTIVE           = 0x10000000;
+const auto CONTEXT_EXCEPTION_REQUEST        = 0x40000000;
+const auto CONTEXT_EXCEPTION_REPORTING      = 0x80000000;
 
-const auto _OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK_EXPORT_NAME  = "OutOfProcessFunctionTableCallback"c;
+const auto OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK_EXPORT_NAME  = "OutOfProcessFunctionTableCallback"c;
 
 const auto WOW64_CONTEXT_i386       = 0x00010000    ; // this assumes that i386 and
 const auto WOW64_CONTEXT_i486       = 0x00010000    ; // i486 have identical context records
@@ -1517,9 +1583,9 @@ const auto WOW64_CONTEXT_EXTENDED_REGISTERS     = (WOW64_CONTEXT_i386 | 0x000000
 
 const auto WOW64_CONTEXT_FULL       = (WOW64_CONTEXT_CONTROL | WOW64_CONTEXT_INTEGER | WOW64_CONTEXT_SEGMENTS);
 
-const auto WOW64_CONTEXT_ALL        = (WOW64_CONTEXT_CONTROL | WOW64_CONTEXT_INTEGER | WOW64_CONTEXT_SEGMENTS |
-                                 WOW64_CONTEXT_FLOATING_POINT | WOW64_CONTEXT_DEBUG_REGISTERS |
-                                 WOW64_CONTEXT_EXTENDED_REGISTERS);
+const auto WOW64_CONTEXT_ALL        = (WOW64_CONTEXT_CONTROL | WOW64_CONTEXT_INTEGER | WOW64_CONTEXT_SEGMENTS | \;
+                                 WOW64_CONTEXT_FLOATING_POINT | WOW64_CONTEXT_DEBUG_REGISTERS | \
+                                 WOW64_CONTEXT_EXTENDED_REGISTERS)
 
 //
 //  Define the size of the 80387 save area, which is in the context frame.
@@ -1542,7 +1608,7 @@ struct WOW64_FLOATING_SAVE_AREA {
 }
 
 
-alias WOW64_FLOATING_SAVE_AREA *PWOW64_FLOATING_SAVE_AREA;
+typedef WOW64_FLOATING_SAVE_AREA *PWOW64_FLOATING_SAVE_AREA;
 
 //
 // Context Frame
@@ -1641,7 +1707,7 @@ struct WOW64_CONTEXT {
 }
 
 
-alias WOW64_CONTEXT *PWOW64_CONTEXT;
+typedef WOW64_CONTEXT *PWOW64_CONTEXT;
 
 const auto EXCEPTION_NONCONTINUABLE  = 0x1    ; // Noncontinuable exception
 const auto EXCEPTION_MAXIMUM_PARAMETERS  = 15 ; // maximum number of exception parameters
@@ -1653,14 +1719,14 @@ const auto EXCEPTION_MAXIMUM_PARAMETERS  = 15 ; // maximum number of exception p
 struct EXCEPTION_RECORD {
     DWORD    ExceptionCode;
     DWORD ExceptionFlags;
-    EXCEPTION_RECORD *ExceptionRecord;
+    struct _EXCEPTION_RECORD *ExceptionRecord;
     PVOID ExceptionAddress;
     DWORD NumberParameters;
     ULONG_PTR ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
 }
 
 
-alias EXCEPTION_RECORD *PEXCEPTION_RECORD;
+typedef EXCEPTION_RECORD *PEXCEPTION_RECORD;
 
 struct EXCEPTION_RECORD32 {
     DWORD    ExceptionCode;
@@ -1671,7 +1737,7 @@ struct EXCEPTION_RECORD32 {
     DWORD ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
 }
 
-alias EXCEPTION_RECORD32* PEXCEPTION_RECORD32;
+typedef EXCEPTION_RECORD32* PEXCEPTION_RECORD32;
 
 struct EXCEPTION_RECORD64 {
     DWORD    ExceptionCode;
@@ -1683,7 +1749,7 @@ struct EXCEPTION_RECORD64 {
     DWORD64 ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
 }
 
-alias EXCEPTION_RECORD64* PEXCEPTION_RECORD64;
+typedef EXCEPTION_RECORD64* PEXCEPTION_RECORD64;
 
 //
 // Typedef for pointer returned by exception_info()
@@ -1694,10 +1760,10 @@ struct EXCEPTION_POINTERS {
     PCONTEXT ContextRecord;
 }
 
-alias EXCEPTION_POINTERS* PEXCEPTION_POINTERS;
-alias PVOID PACCESS_TOKEN;            
-alias PVOID PSECURITY_DESCRIPTOR;     
-alias PVOID PSID;     
+typedef EXCEPTION_POINTERS* PEXCEPTION_POINTERS;
+typedef PVOID PACCESS_TOKEN;            
+typedef PVOID PSECURITY_DESCRIPTOR;     
+typedef PVOID PSID;     
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                             ACCESS MASK                            //
@@ -1715,7 +1781,7 @@ alias PVOID PSID;
 //      |R|W|E|A|     |S|               |                               |
 //      +-+-------------+---------------+-------------------------------+
 //
-//      alias struct _ACCESS_MASK {
+//      typedef struct _ACCESS_MASK {
 //          WORD   SpecificRights;
 //          BYTE  StandardRights;
 //          BYTE  AccessSystemAcl : 1;
@@ -1725,7 +1791,7 @@ alias PVOID PSID;
 //          BYTE  GenericWrite : 1;
 //          BYTE  GenericRead : 1;
 //      } ACCESS_MASK;
-//      alias ACCESS_MASK *PACCESS_MASK;
+//      typedef ACCESS_MASK *PACCESS_MASK;
 //
 //  but to make life simple for programmer's we'll allow them to specify
 //  a desired access mask by simply OR'ing together mulitple single rights
@@ -1737,8 +1803,8 @@ alias PVOID PSID;
 //
 
 // begin_wdm
-alias DWORD ACCESS_MASK;
-alias ACCESS_MASK *PACCESS_MASK;
+typedef DWORD ACCESS_MASK;
+typedef ACCESS_MASK *PACCESS_MASK;
 
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
@@ -1752,39 +1818,39 @@ alias ACCESS_MASK *PACCESS_MASK;
 //  The following are masks for the predefined standard access types
 //
 
-const auto DELETE                            = (0x00010000);
-const auto READ_CONTROL                      = (0x00020000);
-const auto WRITE_DAC                         = (0x00040000);
-const auto WRITE_OWNER                       = (0x00080000);
-const auto SYNCHRONIZE                       = (0x00100000);
+const auto DELETE                            = (0x00010000L);
+const auto READ_CONTROL                      = (0x00020000L);
+const auto WRITE_DAC                         = (0x00040000L);
+const auto WRITE_OWNER                       = (0x00080000L);
+const auto SYNCHRONIZE                       = (0x00100000L);
 
-const auto STANDARD_RIGHTS_REQUIRED          = (0x000F0000);
+const auto STANDARD_RIGHTS_REQUIRED          = (0x000F0000L);
 
 const auto STANDARD_RIGHTS_READ              = (READ_CONTROL);
 const auto STANDARD_RIGHTS_WRITE             = (READ_CONTROL);
 const auto STANDARD_RIGHTS_EXECUTE           = (READ_CONTROL);
 
-const auto STANDARD_RIGHTS_ALL               = (0x001F0000);
+const auto STANDARD_RIGHTS_ALL               = (0x001F0000L);
 
-const auto SPECIFIC_RIGHTS_ALL               = (0x0000FFFF);
+const auto SPECIFIC_RIGHTS_ALL               = (0x0000FFFFL);
 
 //
 // AccessSystemAcl access type
 //
 
-const auto ACCESS_SYSTEM_SECURITY            = (0x01000000);
+const auto ACCESS_SYSTEM_SECURITY            = (0x01000000L);
 
 //
 // MaximumAllowed access type
 //
 
-const auto MAXIMUM_ALLOWED                   = (0x02000000);
+const auto MAXIMUM_ALLOWED                   = (0x02000000L);
 
 //
 //  These are the generic rights.
 //
 
-const auto GENERIC_READ                      = (0x80000000);
+const auto GENERIC_READ                      = (0x80000000L);
 const auto GENERIC_WRITE                     = (0x40000000L);
 const auto GENERIC_EXECUTE                   = (0x20000000L);
 const auto GENERIC_ALL                       = (0x10000000L);
@@ -1802,7 +1868,7 @@ struct GENERIC_MAPPING {
     ACCESS_MASK GenericAll;
 }
 
-alias GENERIC_MAPPING *PGENERIC_MAPPING;
+typedef GENERIC_MAPPING *PGENERIC_MAPPING;
 
 
 
@@ -1821,9 +1887,9 @@ align(4) struct LUID_AND_ATTRIBUTES {
     DWORD Attributes;
 }
 
-alias LUID_AND_ATTRIBUTES*  PLUID_AND_ATTRIBUTES;
-alias LUID_AND_ATTRIBUTES LUID_AND_ATTRIBUTES_ARRAY[];
-alias LUID_AND_ATTRIBUTES_ARRAY *PLUID_AND_ATTRIBUTES_ARRAY;
+typedef LUID_AND_ATTRIBUTES*  PLUID_AND_ATTRIBUTES;
+typedef LUID_AND_ATTRIBUTES LUID_AND_ATTRIBUTES_ARRAY[ANYSIZE_ARRAY];
+typedef LUID_AND_ATTRIBUTES_ARRAY *PLUID_AND_ATTRIBUTES_ARRAY;
 
 
 
@@ -1861,16 +1927,17 @@ struct SID_IDENTIFIER_AUTHORITY {
     BYTE  Value[6];
 }
 
-alias SID_IDENTIFIER_AUTHORITY* PSID_IDENTIFIER_AUTHORITY;
+typedef SID_IDENTIFIER_AUTHORITY* PSID_IDENTIFIER_AUTHORITY;
 
 struct SID {
    BYTE  Revision;
    BYTE  SubAuthorityCount;
    SID_IDENTIFIER_AUTHORITY IdentifierAuthority;
-   DWORD SubAuthority[];
+   [size_is(SubAuthorityCount)] DWORD SubAuthority[*];
+   DWORD SubAuthority[ANYSIZE_ARRAY];
 }
 
-alias SID* PISID;
+typedef SID* PISID;
 
 const auto SID_REVISION                      = (1)    ; // Current revision level
 const auto SID_MAX_SUB_AUTHORITIES           = (15);
@@ -1892,21 +1959,20 @@ enum SID_NAME_USE {
     SidTypeLabel
 }
 
-alias SID_NAME_USE* PSID_NAME_USE;
+typedef SID_NAME_USE* PSID_NAME_USE;
 
 struct SID_AND_ATTRIBUTES {
     PSID Sid;
     DWORD Attributes;
     }
 
-alias SID_AND_ATTRIBUTES*  PSID_AND_ATTRIBUTES;
+typedef SID_AND_ATTRIBUTES*  PSID_AND_ATTRIBUTES;
 
-alias SID_AND_ATTRIBUTES SID_AND_ATTRIBUTES_ARRAY[];
-alias SID_AND_ATTRIBUTES_ARRAY *PSID_AND_ATTRIBUTES_ARRAY;
+typedef SID_AND_ATTRIBUTES SID_AND_ATTRIBUTES_ARRAY[ANYSIZE_ARRAY];
+typedef SID_AND_ATTRIBUTES_ARRAY *PSID_AND_ATTRIBUTES_ARRAY;
 
 const auto SID_HASH_SIZE  = 32;
-alias ULONG_PTR SID_HASH_ENTRY;
-alias ULONG_PTR* PSID_HASH_ENTRY;
+typedef ULONG_PTR SID_HASH_ENTRY, *PSID_HASH_ENTRY;
 
 struct SID_AND_ATTRIBUTES_HASH {
     DWORD SidCount;
@@ -1914,7 +1980,7 @@ struct SID_AND_ATTRIBUTES_HASH {
     SID_HASH_ENTRY Hash[SID_HASH_SIZE];
 }
 
-alias SID_AND_ATTRIBUTES_HASH* PSID_AND_ATTRIBUTES_HASH;
+typedef SID_AND_ATTRIBUTES_HASH* PSID_AND_ATTRIBUTES_HASH;
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -1932,12 +1998,12 @@ alias SID_AND_ATTRIBUTES_HASH* PSID_AND_ATTRIBUTES_HASH;
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 
-const auto SECURITY_NULL_SID_AUTHORITY          = [0,0,0,0,0,0];
-const auto SECURITY_WORLD_SID_AUTHORITY         = [0,0,0,0,0,1];
-const auto SECURITY_LOCAL_SID_AUTHORITY         = [0,0,0,0,0,2];
-const auto SECURITY_CREATOR_SID_AUTHORITY       = [0,0,0,0,0,3];
-const auto SECURITY_NON_UNIQUE_AUTHORITY        = [0,0,0,0,0,4];
-const auto SECURITY_RESOURCE_MANAGER_AUTHORITY  = [0,0,0,0,0,9];
+const auto SECURITY_NULL_SID_AUTHORITY          = {0,0,0,0,0,0};
+const auto SECURITY_WORLD_SID_AUTHORITY         = {0,0,0,0,0,1};
+const auto SECURITY_LOCAL_SID_AUTHORITY         = {0,0,0,0,0,2};
+const auto SECURITY_CREATOR_SID_AUTHORITY       = {0,0,0,0,0,3};
+const auto SECURITY_NON_UNIQUE_AUTHORITY        = {0,0,0,0,0,4};
+const auto SECURITY_RESOURCE_MANAGER_AUTHORITY  = {0,0,0,0,0,9};
 
 const auto SECURITY_NULL_RID                  = (0x00000000L);
 const auto SECURITY_WORLD_RID                 = (0x00000000L);
@@ -2220,11 +2286,11 @@ enum WELL_KNOWN_SID_TYPE {
 // Use #999 here (0x3e7 = 999)
 //
 
-const auto SYSTEM_LUID                      = [ 0x3e7, 0x0 ];
-const auto ANONYMOUS_LOGON_LUID             = [ 0x3e6, 0x0 ];
-const auto LOCALSERVICE_LUID                = [ 0x3e5, 0x0 ];
-const auto NETWORKSERVICE_LUID              = [ 0x3e4, 0x0 ];
-const auto IUSER_LUID                       = [ 0x3e3, 0x0 ];
+const auto SYSTEM_LUID                      = { 0x3e7, 0x0 };
+const auto ANONYMOUS_LOGON_LUID             = { 0x3e6, 0x0 };
+const auto LOCALSERVICE_LUID                = { 0x3e5, 0x0 };
+const auto NETWORKSERVICE_LUID              = { 0x3e4, 0x0 };
+const auto IUSER_LUID                       = { 0x3e3, 0x0 };
 
 // end_ntifs
 
@@ -2304,8 +2370,8 @@ const auto ACL_REVISION_DS   = (4);
 // ACL_REVISION is updated
 
 const auto ACL_REVISION1    = (1);
-const auto ACL_REVISION2    = (2);
 const auto MIN_ACL_REVISION  = ACL_REVISION2;
+const auto ACL_REVISION2    = (2);
 const auto ACL_REVISION3    = (3);
 const auto ACL_REVISION4    = (4);
 const auto MAX_ACL_REVISION  = ACL_REVISION4;
@@ -2318,7 +2384,7 @@ struct ACL {
     WORD   Sbz2;
 }
 
-alias ACL *PACL;
+typedef ACL *PACL;
 
 // end_wdm
 // begin_ntifs
@@ -2347,7 +2413,7 @@ struct ACE_HEADER {
     WORD   AceSize;
 }
 
-alias ACE_HEADER *PACE_HEADER;
+typedef ACE_HEADER *PACE_HEADER;
 
 //
 //  The following are the predefined ace types that go into the AceType
@@ -2460,7 +2526,7 @@ struct ACCESS_ALLOWED_ACE {
 }
 
 
-alias ACCESS_ALLOWED_ACE *PACCESS_ALLOWED_ACE;
+typedef ACCESS_ALLOWED_ACE *PACCESS_ALLOWED_ACE;
 
 struct ACCESS_DENIED_ACE {
     ACE_HEADER Header;
@@ -2468,7 +2534,7 @@ struct ACCESS_DENIED_ACE {
     DWORD SidStart;
 }
 
-alias ACCESS_DENIED_ACE *PACCESS_DENIED_ACE;
+typedef ACCESS_DENIED_ACE *PACCESS_DENIED_ACE;
 
 struct SYSTEM_AUDIT_ACE {
     ACE_HEADER Header;
@@ -2476,7 +2542,7 @@ struct SYSTEM_AUDIT_ACE {
     DWORD SidStart;
 }
 
-alias SYSTEM_AUDIT_ACE *PSYSTEM_AUDIT_ACE;
+typedef SYSTEM_AUDIT_ACE *PSYSTEM_AUDIT_ACE;
 
 struct SYSTEM_ALARM_ACE {
     ACE_HEADER Header;
@@ -2484,7 +2550,7 @@ struct SYSTEM_ALARM_ACE {
     DWORD SidStart;
 }
 
-alias SYSTEM_ALARM_ACE *PSYSTEM_ALARM_ACE;
+typedef SYSTEM_ALARM_ACE *PSYSTEM_ALARM_ACE;
 
 struct SYSTEM_MANDATORY_LABEL_ACE {
     ACE_HEADER Header;
@@ -2492,7 +2558,7 @@ struct SYSTEM_MANDATORY_LABEL_ACE {
     DWORD SidStart;
 }
 
-alias SYSTEM_MANDATORY_LABEL_ACE* PSYSTEM_MANDATORY_LABEL_ACE;
+typedef SYSTEM_MANDATORY_LABEL_ACE* PSYSTEM_MANDATORY_LABEL_ACE;
 
 const auto SYSTEM_MANDATORY_LABEL_NO_WRITE_UP          = 0x1;
 const auto SYSTEM_MANDATORY_LABEL_NO_READ_UP           = 0x2;
@@ -2513,7 +2579,7 @@ struct ACCESS_ALLOWED_OBJECT_ACE {
     DWORD SidStart;
 }
 
-alias ACCESS_ALLOWED_OBJECT_ACE* PACCESS_ALLOWED_OBJECT_ACE;
+typedef ACCESS_ALLOWED_OBJECT_ACE* PACCESS_ALLOWED_OBJECT_ACE;
 
 struct ACCESS_DENIED_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2524,7 +2590,7 @@ struct ACCESS_DENIED_OBJECT_ACE {
     DWORD SidStart;
 }
 
-alias ACCESS_DENIED_OBJECT_ACE* PACCESS_DENIED_OBJECT_ACE;
+typedef ACCESS_DENIED_OBJECT_ACE* PACCESS_DENIED_OBJECT_ACE;
 
 struct SYSTEM_AUDIT_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2535,7 +2601,7 @@ struct SYSTEM_AUDIT_OBJECT_ACE {
     DWORD SidStart;
 }
 
-alias SYSTEM_AUDIT_OBJECT_ACE* PSYSTEM_AUDIT_OBJECT_ACE;
+typedef SYSTEM_AUDIT_OBJECT_ACE* PSYSTEM_AUDIT_OBJECT_ACE;
 
 struct SYSTEM_ALARM_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2546,7 +2612,7 @@ struct SYSTEM_ALARM_OBJECT_ACE {
     DWORD SidStart;
 }
 
-alias SYSTEM_ALARM_OBJECT_ACE* PSYSTEM_ALARM_OBJECT_ACE;
+typedef SYSTEM_ALARM_OBJECT_ACE* PSYSTEM_ALARM_OBJECT_ACE;
 
 //
 // Callback ace support in post Win2000.
@@ -2560,7 +2626,7 @@ struct ACCESS_ALLOWED_CALLBACK_ACE {
     // Opaque resouce manager specific data
 }
 
-alias ACCESS_ALLOWED_CALLBACK_ACE* PACCESS_ALLOWED_CALLBACK_ACE;
+typedef ACCESS_ALLOWED_CALLBACK_ACE* PACCESS_ALLOWED_CALLBACK_ACE;
 
 struct ACCESS_DENIED_CALLBACK_ACE {
     ACE_HEADER Header;
@@ -2569,7 +2635,7 @@ struct ACCESS_DENIED_CALLBACK_ACE {
     // Opaque resouce manager specific data
 }
 
-alias ACCESS_DENIED_CALLBACK_ACE* PACCESS_DENIED_CALLBACK_ACE;
+typedef ACCESS_DENIED_CALLBACK_ACE* PACCESS_DENIED_CALLBACK_ACE;
 
 struct SYSTEM_AUDIT_CALLBACK_ACE {
     ACE_HEADER Header;
@@ -2578,7 +2644,7 @@ struct SYSTEM_AUDIT_CALLBACK_ACE {
     // Opaque resouce manager specific data
 }
 
-alias SYSTEM_AUDIT_CALLBACK_ACE* PSYSTEM_AUDIT_CALLBACK_ACE;
+typedef SYSTEM_AUDIT_CALLBACK_ACE* PSYSTEM_AUDIT_CALLBACK_ACE;
 
 struct SYSTEM_ALARM_CALLBACK_ACE {
     ACE_HEADER Header;
@@ -2587,7 +2653,7 @@ struct SYSTEM_ALARM_CALLBACK_ACE {
     // Opaque resouce manager specific data
 }
 
-alias SYSTEM_ALARM_CALLBACK_ACE* PSYSTEM_ALARM_CALLBACK_ACE;
+typedef SYSTEM_ALARM_CALLBACK_ACE* PSYSTEM_ALARM_CALLBACK_ACE;
 
 struct ACCESS_ALLOWED_CALLBACK_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2599,7 +2665,7 @@ struct ACCESS_ALLOWED_CALLBACK_OBJECT_ACE {
     // Opaque resouce manager specific data
 }
 
-alias ACCESS_ALLOWED_CALLBACK_OBJECT_ACE* PACCESS_ALLOWED_CALLBACK_OBJECT_ACE;
+typedef ACCESS_ALLOWED_CALLBACK_OBJECT_ACE* PACCESS_ALLOWED_CALLBACK_OBJECT_ACE;
 
 struct ACCESS_DENIED_CALLBACK_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2611,7 +2677,7 @@ struct ACCESS_DENIED_CALLBACK_OBJECT_ACE {
     // Opaque resouce manager specific data
 }
 
-alias ACCESS_DENIED_CALLBACK_OBJECT_ACE* PACCESS_DENIED_CALLBACK_OBJECT_ACE;
+typedef ACCESS_DENIED_CALLBACK_OBJECT_ACE* PACCESS_DENIED_CALLBACK_OBJECT_ACE;
 
 struct SYSTEM_AUDIT_CALLBACK_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2623,7 +2689,7 @@ struct SYSTEM_AUDIT_CALLBACK_OBJECT_ACE {
     // Opaque resouce manager specific data
 }
 
-alias SYSTEM_AUDIT_CALLBACK_OBJECT_ACE* PSYSTEM_AUDIT_CALLBACK_OBJECT_ACE;
+typedef SYSTEM_AUDIT_CALLBACK_OBJECT_ACE* PSYSTEM_AUDIT_CALLBACK_OBJECT_ACE;
 
 struct SYSTEM_ALARM_CALLBACK_OBJECT_ACE {
     ACE_HEADER Header;
@@ -2635,7 +2701,7 @@ struct SYSTEM_ALARM_CALLBACK_OBJECT_ACE {
     // Opaque resouce manager specific data
 }
 
-alias SYSTEM_ALARM_CALLBACK_OBJECT_ACE* PSYSTEM_ALARM_CALLBACK_OBJECT_ACE;
+typedef SYSTEM_ALARM_CALLBACK_OBJECT_ACE* PSYSTEM_ALARM_CALLBACK_OBJECT_ACE;
 
 //
 // Currently define Flags for "OBJECT" ACE types.
@@ -2664,7 +2730,7 @@ struct ACL_REVISION_INFORMATION {
     DWORD AclRevision;
 }
 
-alias ACL_REVISION_INFORMATION *PACL_REVISION_INFORMATION;
+typedef ACL_REVISION_INFORMATION *PACL_REVISION_INFORMATION;
 
 //
 //  This record is returned if the user is requesting AclSizeInformation
@@ -2676,7 +2742,7 @@ struct ACL_SIZE_INFORMATION {
     DWORD AclBytesFree;
 }
 
-alias ACL_SIZE_INFORMATION *PACL_SIZE_INFORMATION;
+typedef ACL_SIZE_INFORMATION *PACL_SIZE_INFORMATION;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -2700,9 +2766,10 @@ const auto SECURITY_DESCRIPTOR_REVISION1     = (1);
 // end_wdm
 // begin_ntifs
 
+const auto SECURITY_DESCRIPTOR_MIN_LENGTH    = (sizeof(SECURITY_DESCRIPTOR));
 
-alias WORD   SECURITY_DESCRIPTOR_CONTROL;
-alias WORD* PSECURITY_DESCRIPTOR_CONTROL;
+
+typedef WORD   SECURITY_DESCRIPTOR_CONTROL, *PSECURITY_DESCRIPTOR_CONTROL;
 
 const auto SE_OWNER_DEFAULTED                = (0x0001);
 const auto SE_GROUP_DEFAULTED                = (0x0002);
@@ -2802,7 +2869,7 @@ struct SECURITY_DESCRIPTOR_RELATIVE {
     DWORD Dacl;
     }
 
-alias SECURITY_DESCRIPTOR_RELATIVE* PISECURITY_DESCRIPTOR_RELATIVE;
+typedef SECURITY_DESCRIPTOR_RELATIVE* PISECURITY_DESCRIPTOR_RELATIVE;
 
 struct SECURITY_DESCRIPTOR {
    BYTE  Revision;
@@ -2815,10 +2882,8 @@ struct SECURITY_DESCRIPTOR {
 
    }
 
-alias SECURITY_DESCRIPTOR* PISECURITY_DESCRIPTOR;
+typedef SECURITY_DESCRIPTOR* PISECURITY_DESCRIPTOR;
 
-
-const auto SECURITY_DESCRIPTOR_MIN_LENGTH    = ((SECURITY_DESCRIPTOR.sizeof));
 // end_ntifs
 
 // Where:
@@ -2874,7 +2939,7 @@ struct OBJECT_TYPE_LIST {
     GUID *ObjectType;
 }
 
-alias OBJECT_TYPE_LIST* POBJECT_TYPE_LIST;
+typedef OBJECT_TYPE_LIST* POBJECT_TYPE_LIST;
 
 //
 // DS values for Level
@@ -2890,12 +2955,12 @@ const auto ACCESS_MAX_LEVEL          = 4;
 // Parameters to NtAccessCheckByTypeAndAditAlarm
 //
 
-enum AUDIT_EVENT_TYPE {
+enum _AUDIT_EVENT_TYPE {
     AuditEventObjectAccess,
     AuditEventDirectoryServiceAccess
 }
 
-alias AUDIT_EVENT_TYPE* PAUDIT_EVENT_TYPE;
+typedef AUDIT_EVENT_TYPE* PAUDIT_EVENT_TYPE;
 
 const auto AUDIT_ALLOW_NO_PRIVILEGE  = 0x1;
 
@@ -2903,9 +2968,9 @@ const auto AUDIT_ALLOW_NO_PRIVILEGE  = 0x1;
 // DS values for Source and ObjectTypeName
 //
 
-const auto ACCESS_DS_SOURCE_A  = "DS"c;
-const auto ACCESS_DS_SOURCE_W  = "DS"w;
-const auto ACCESS_DS_OBJECT_TYPE_NAME_A  = "Directory Service Object"c;
+const auto ACCESS_DS_SOURCE_A  = "DS";
+const auto ACCESS_DS_SOURCE_W  = L"DS";
+const auto ACCESS_DS_OBJECT_TYPE_NAME_A  = "Directory Service Object";
 const auto ACCESS_DS_OBJECT_TYPE_NAME_W  = "Directory Service Object"w;
 
 
@@ -2950,10 +3015,10 @@ const auto PRIVILEGE_SET_ALL_NECESSARY     = (1);
 struct PRIVILEGE_SET {
     DWORD PrivilegeCount;
     DWORD Control;
-    LUID_AND_ATTRIBUTES Privilege[];
+    LUID_AND_ATTRIBUTES Privilege[ANYSIZE_ARRAY];
     }
 
-alias PRIVILEGE_SET*  PPRIVILEGE_SET;
+typedef PRIVILEGE_SET*  PPRIVILEGE_SET;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -3061,11 +3126,11 @@ enum SECURITY_IMPERSONATION_LEVEL {
     SecurityDelegation
 }
 
-alias SECURITY_IMPERSONATION_LEVEL* PSECURITY_IMPERSONATION_LEVEL;
+typedef SECURITY_IMPERSONATION_LEVEL* PSECURITY_IMPERSONATION_LEVEL;
 
-const auto SECURITY_MAX_IMPERSONATION_LEVEL  = SECURITY_IMPERSONATION_LEVEL.SecurityDelegation;
-const auto SECURITY_MIN_IMPERSONATION_LEVEL  = SECURITY_IMPERSONATION_LEVEL.SecurityAnonymous;
-const auto DEFAULT_IMPERSONATION_LEVEL  = SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation;
+const auto SECURITY_MAX_IMPERSONATION_LEVEL  = SecurityDelegation;
+const auto SECURITY_MIN_IMPERSONATION_LEVEL  = SecurityAnonymous;
+const auto DEFAULT_IMPERSONATION_LEVEL  = SecurityImpersonation;
 ///const auto VALID_IMPERSONATION_LEVEL(L)  = (((L) >= SECURITY_MIN_IMPERSONATION_LEVEL) && ((L) <= SECURITY_MAX_IMPERSONATION_LEVEL));
 
 ////////////////////////////////////////////////////////////////////
@@ -3123,7 +3188,7 @@ enum TOKEN_TYPE {
     TokenPrimary = 1,
     TokenImpersonation
 }
-alias TOKEN_TYPE *PTOKEN_TYPE;
+typedef TOKEN_TYPE *PTOKEN_TYPE;
 
 //
 // Token elevation values describe the relative strength of a given token.
@@ -3137,7 +3202,7 @@ enum TOKEN_ELEVATION_TYPE {
     TokenElevationTypeLimited,
 }
 
-alias TOKEN_ELEVATION_TYPE* PTOKEN_ELEVATION_TYPE;
+typedef TOKEN_ELEVATION_TYPE* PTOKEN_ELEVATION_TYPE;
 
 //
 // Token Information Classes.
@@ -3176,7 +3241,7 @@ enum TOKEN_INFORMATION_CLASS {
     MaxTokenInfoClass  // MaxTokenInfoClass should always be the last enum
 }
 
-alias TOKEN_INFORMATION_CLASS* PTOKEN_INFORMATION_CLASS;
+typedef TOKEN_INFORMATION_CLASS* PTOKEN_INFORMATION_CLASS;
 
 //
 // Token information class structures
@@ -3187,43 +3252,43 @@ struct TOKEN_USER {
     SID_AND_ATTRIBUTES User;
 }
 
-alias TOKEN_USER* PTOKEN_USER;
+typedef TOKEN_USER* PTOKEN_USER;
 
 struct TOKEN_GROUPS {
     DWORD GroupCount;
-    SID_AND_ATTRIBUTES[] Groups;
+    SID_AND_ATTRIBUTES[ANYSIZE_ARRAY] Groups;
 }
 
-alias TOKEN_GROUPS* PTOKEN_GROUPS;
+typedef TOKEN_GROUPS* PTOKEN_GROUPS;
 
 
 struct TOKEN_PRIVILEGES {
     DWORD PrivilegeCount;
-    LUID_AND_ATTRIBUTES[] Privileges;
+    LUID_AND_ATTRIBUTES[ANYSIZE_ARRAY] Privileges;
 }
 
-alias TOKEN_PRIVILEGES* PTOKEN_PRIVILEGES;
+typedef TOKEN_PRIVILEGES* PTOKEN_PRIVILEGES;
 
 
 struct TOKEN_OWNER {
     PSID Owner;
 }
 
-alias TOKEN_OWNER* PTOKEN_OWNER;
+typedef TOKEN_OWNER* PTOKEN_OWNER;
 
 
 struct TOKEN_PRIMARY_GROUP {
     PSID PrimaryGroup;
 }
 
-alias TOKEN_PRIMARY_GROUP* PTOKEN_PRIMARY_GROUP;
+typedef TOKEN_PRIMARY_GROUP* PTOKEN_PRIMARY_GROUP;
 
 
 struct TOKEN_DEFAULT_DACL {
     PACL DefaultDacl;
 }
 
-alias TOKEN_DEFAULT_DACL* PTOKEN_DEFAULT_DACL;
+typedef TOKEN_DEFAULT_DACL* PTOKEN_DEFAULT_DACL;
 
 struct TOKEN_GROUPS_AND_PRIVILEGES {
     DWORD SidCount;
@@ -3238,25 +3303,25 @@ struct TOKEN_GROUPS_AND_PRIVILEGES {
     LUID AuthenticationId;
 }
 
-alias TOKEN_GROUPS_AND_PRIVILEGES* PTOKEN_GROUPS_AND_PRIVILEGES;
+typedef TOKEN_GROUPS_AND_PRIVILEGES* PTOKEN_GROUPS_AND_PRIVILEGES;
 
 struct TOKEN_LINKED_TOKEN {
     HANDLE LinkedToken;
 }
 
-alias TOKEN_LINKED_TOKEN* PTOKEN_LINKED_TOKEN;
+typedef TOKEN_LINKED_TOKEN* PTOKEN_LINKED_TOKEN;
 
 struct TOKEN_ELEVATION {
     DWORD TokenIsElevated;
 }
 
-alias TOKEN_ELEVATION* PTOKEN_ELEVATION;
+typedef TOKEN_ELEVATION* PTOKEN_ELEVATION;
 
 struct TOKEN_MANDATORY_LABEL {
     SID_AND_ATTRIBUTES Label;
 }
 
-alias TOKEN_MANDATORY_LABEL* PTOKEN_MANDATORY_LABEL;
+typedef TOKEN_MANDATORY_LABEL* PTOKEN_MANDATORY_LABEL;
 
 const auto TOKEN_MANDATORY_POLICY_OFF              = 0x0;
 const auto TOKEN_MANDATORY_POLICY_NO_WRITE_UP      = 0x1;
@@ -3269,7 +3334,7 @@ struct TOKEN_MANDATORY_POLICY {
     DWORD Policy;
 }
 
-alias TOKEN_MANDATORY_POLICY* PTOKEN_MANDATORY_POLICY;
+typedef TOKEN_MANDATORY_POLICY* PTOKEN_MANDATORY_POLICY;
 
 struct TOKEN_ACCESS_INFORMATION {
     PSID_AND_ATTRIBUTES_HASH SidHash;
@@ -3282,7 +3347,7 @@ struct TOKEN_ACCESS_INFORMATION {
     DWORD Flags;
 }
 
-alias TOKEN_ACCESS_INFORMATION* PTOKEN_ACCESS_INFORMATION;
+typedef TOKEN_ACCESS_INFORMATION* PTOKEN_ACCESS_INFORMATION;
 
 //
 // Valid bits for each TOKEN_AUDIT_POLICY policy mask field.
@@ -3294,7 +3359,7 @@ struct TOKEN_AUDIT_POLICY {
     BYTE[((POLICY_AUDIT_SUBCATEGORY_COUNT) >> 1) + 1]  PerUserPolicy;
 }
 
-alias TOKEN_AUDIT_POLICY* PTOKEN_AUDIT_POLICY;
+typedef TOKEN_AUDIT_POLICY* PTOKEN_AUDIT_POLICY;
 
 const auto TOKEN_SOURCE_LENGTH  = 8;
 
@@ -3303,7 +3368,7 @@ struct TOKEN_SOURCE {
     LUID SourceIdentifier;
 }
 
-alias TOKEN_SOURCE* PTOKEN_SOURCE;
+typedef TOKEN_SOURCE* PTOKEN_SOURCE;
 
 
 struct TOKEN_STATISTICS {
@@ -3319,7 +3384,7 @@ struct TOKEN_STATISTICS {
     LUID ModifiedId;
 }
 
-alias TOKEN_STATISTICS* PTOKEN_STATISTICS;
+typedef TOKEN_STATISTICS* PTOKEN_STATISTICS;
 
 
 
@@ -3330,13 +3395,13 @@ struct TOKEN_CONTROL {
     TOKEN_SOURCE TokenSource;
 }
 
-alias TOKEN_CONTROL* PTOKEN_CONTROL;
+typedef TOKEN_CONTROL* PTOKEN_CONTROL;
 
 struct TOKEN_ORIGIN {
     LUID OriginatingLogonSession ;
 }
 
-alias TOKEN_ORIGIN*  PTOKEN_ORIGIN ;
+typedef TOKEN_ORIGIN*  PTOKEN_ORIGIN ;
 
 enum MANDATORY_LEVEL {
     MandatoryLevelUntrusted = 0,
@@ -3348,17 +3413,17 @@ enum MANDATORY_LEVEL {
     MandatoryLevelCount
 }
 
-alias MANDATORY_LEVEL* PMANDATORY_LEVEL;
+typedef MANDATORY_LEVEL* PMANDATORY_LEVEL;
 
 //
 // Security Tracking Mode
 //
 
-const auto SECURITY_DYNAMIC_TRACKING       = 1;
-const auto SECURITY_STATIC_TRACKING        = 0;
+const auto SECURITY_DYNAMIC_TRACKING       = (TRUE);
+const auto SECURITY_STATIC_TRACKING        = (FALSE);
 
-alias BOOLEAN SECURITY_CONTEXT_TRACKING_MODE;
-alias BOOLEAN* PSECURITY_CONTEXT_TRACKING_MODE;
+typedef BOOLEAN SECURITY_CONTEXT_TRACKING_MODE;
+typedef BOOLEAN* PSECURITY_CONTEXT_TRACKING_MODE;
 
 
 
@@ -3373,7 +3438,7 @@ struct SECURITY_QUALITY_OF_SERVICE {
     BOOLEAN EffectiveOnly;
     }
 
-alias SECURITY_QUALITY_OF_SERVICE*  PSECURITY_QUALITY_OF_SERVICE;
+typedef SECURITY_QUALITY_OF_SERVICE*  PSECURITY_QUALITY_OF_SERVICE;
 
 
 //
@@ -3387,15 +3452,15 @@ struct SE_IMPERSONATION_STATE {
     SECURITY_IMPERSONATION_LEVEL Level;
 }
 
-alias SE_IMPERSONATION_STATE* PSE_IMPERSONATION_STATE;
+typedef SE_IMPERSONATION_STATE* PSE_IMPERSONATION_STATE;
 
 const auto DISABLE_MAX_PRIVILEGE    = 0x1 ;
 const auto SANDBOX_INERT            = 0x2 ;
 const auto LUA_TOKEN                = 0x4 ;
 const auto WRITE_RESTRICTED         = 0x8 ;
 
-alias DWORD SECURITY_INFORMATION;
-alias DWORD* PSECURITY_INFORMATION;
+typedef DWORD SECURITY_INFORMATION;
+typedef DWORD* PSECURITY_INFORMATION;
 
 const auto OWNER_SECURITY_INFORMATION        = (0x00000001L);
 const auto GROUP_SECURITY_INFORMATION        = (0x00000002L);
@@ -3461,12 +3526,12 @@ struct JOB_SET_ARRAY {
     DWORD Flags;        // Unused. Must be zero
 }
 
-alias JOB_SET_ARRAY* PJOB_SET_ARRAY;
+typedef JOB_SET_ARRAY* PJOB_SET_ARRAY;
 
 const auto FLS_MAXIMUM_AVAILABLE  = 128   ;
 const auto TLS_MINIMUM_AVAILABLE  = 64    ;
 
-/*struct NT_TIB {
+struct NT_TIB {
     EXCEPTION_REGISTRATION_RECORD *ExceptionList;
     PVOID StackBase;
     PVOID StackLimit;
@@ -3480,8 +3545,7 @@ const auto TLS_MINIMUM_AVAILABLE  = 64    ;
     NT_TIB *Self;
 }
 
-alias NT_TIB *PNT_TIB;
-*/
+typedef NT_TIB *PNT_TIB;
 
 //
 // 32 and 64 bit specific version for wow64 and the debugger
@@ -3500,7 +3564,7 @@ struct NT_TIB32 {
     DWORD Self;
 }
 
-alias NT_TIB32* PNT_TIB32;
+typedef NT_TIB32* PNT_TIB32;
 
 struct NT_TIB64 {
     DWORD64 ExceptionList;
@@ -3516,7 +3580,7 @@ struct NT_TIB64 {
     DWORD64 Self;
 }
 
-alias NT_TIB64* PNT_TIB64;
+typedef NT_TIB64* PNT_TIB64;
 
 const auto THREAD_BASE_PRIORITY_LOWRT   = 15  ; // value that gets a thread to LowRealtime-1
 const auto THREAD_BASE_PRIORITY_MAX     = 2   ; // maximum thread base priority boost
@@ -3533,7 +3597,7 @@ struct QUOTA_LIMITS {
     LARGE_INTEGER TimeLimit;
 }
 
-alias QUOTA_LIMITS* PQUOTA_LIMITS;
+typedef QUOTA_LIMITS* PQUOTA_LIMITS;
 
 const auto QUOTA_LIMITS_HARDWS_MIN_ENABLE   = 0x00000001;
 const auto QUOTA_LIMITS_HARDWS_MIN_DISABLE  = 0x00000002;
@@ -3563,7 +3627,7 @@ union RATE_QUOTA_LIMIT {
     }
 }
 
-alias RATE_QUOTA_LIMIT* PRATE_QUOTA_LIMIT;
+typedef RATE_QUOTA_LIMIT* PRATE_QUOTA_LIMIT;
 
 struct QUOTA_LIMITS_EX {
     SIZE_T PagedPoolLimit;
@@ -3580,7 +3644,7 @@ struct QUOTA_LIMITS_EX {
     RATE_QUOTA_LIMIT CpuRateLimit;
 }
 
-alias QUOTA_LIMITS_EX* PQUOTA_LIMITS_EX;
+typedef QUOTA_LIMITS_EX* PQUOTA_LIMITS_EX;
 
 struct IO_COUNTERS {
     ULONGLONG  ReadOperationCount;
@@ -3591,7 +3655,7 @@ struct IO_COUNTERS {
     ULONGLONG OtherTransferCount;
 }
 
-alias IO_COUNTERS *PIO_COUNTERS;
+typedef IO_COUNTERS *PIO_COUNTERS;
 
 struct JOBOBJECT_BASIC_ACCOUNTING_INFORMATION {
     LARGE_INTEGER TotalUserTime;
@@ -3604,7 +3668,7 @@ struct JOBOBJECT_BASIC_ACCOUNTING_INFORMATION {
     DWORD TotalTerminatedProcesses;
 }
 
-alias JOBOBJECT_BASIC_ACCOUNTING_INFORMATION* PJOBOBJECT_BASIC_ACCOUNTING_INFORMATION;
+typedef JOBOBJECT_BASIC_ACCOUNTING_INFORMATION* PJOBOBJECT_BASIC_ACCOUNTING_INFORMATION;
 
 struct JOBOBJECT_BASIC_LIMIT_INFORMATION {
     LARGE_INTEGER PerProcessUserTimeLimit;
@@ -3618,7 +3682,7 @@ struct JOBOBJECT_BASIC_LIMIT_INFORMATION {
     DWORD SchedulingClass;
 }
 
-alias JOBOBJECT_BASIC_LIMIT_INFORMATION* PJOBOBJECT_BASIC_LIMIT_INFORMATION;
+typedef JOBOBJECT_BASIC_LIMIT_INFORMATION* PJOBOBJECT_BASIC_LIMIT_INFORMATION;
 
 struct JOBOBJECT_EXTENDED_LIMIT_INFORMATION {
     JOBOBJECT_BASIC_LIMIT_INFORMATION BasicLimitInformation;
@@ -3629,7 +3693,7 @@ struct JOBOBJECT_EXTENDED_LIMIT_INFORMATION {
     SIZE_T PeakJobMemoryUsed;
 }
 
-alias JOBOBJECT_EXTENDED_LIMIT_INFORMATION* PJOBOBJECT_EXTENDED_LIMIT_INFORMATION;
+typedef JOBOBJECT_EXTENDED_LIMIT_INFORMATION* PJOBOBJECT_EXTENDED_LIMIT_INFORMATION;
 
 struct JOBOBJECT_BASIC_PROCESS_ID_LIST {
     DWORD NumberOfAssignedProcesses;
@@ -3637,13 +3701,13 @@ struct JOBOBJECT_BASIC_PROCESS_ID_LIST {
     ULONG_PTR[1] ProcessIdList;
 }
 
-alias JOBOBJECT_BASIC_PROCESS_ID_LIST* PJOBOBJECT_BASIC_PROCESS_ID_LIST;
+typedef JOBOBJECT_BASIC_PROCESS_ID_LIST* PJOBOBJECT_BASIC_PROCESS_ID_LIST;
 
 struct JOBOBJECT_BASIC_UI_RESTRICTIONS {
     DWORD UIRestrictionsClass;
 }
 
-alias JOBOBJECT_BASIC_UI_RESTRICTIONS* PJOBOBJECT_BASIC_UI_RESTRICTIONS;
+typedef JOBOBJECT_BASIC_UI_RESTRICTIONS* PJOBOBJECT_BASIC_UI_RESTRICTIONS;
 
 struct JOBOBJECT_SECURITY_LIMIT_INFORMATION {
     DWORD SecurityLimitFlags ;
@@ -3653,33 +3717,33 @@ struct JOBOBJECT_SECURITY_LIMIT_INFORMATION {
     PTOKEN_GROUPS RestrictedSids ;
 }
 
-alias JOBOBJECT_SECURITY_LIMIT_INFORMATION* PJOBOBJECT_SECURITY_LIMIT_INFORMATION ;
+typedef JOBOBJECT_SECURITY_LIMIT_INFORMATION* PJOBOBJECT_SECURITY_LIMIT_INFORMATION ;
 
 struct JOBOBJECT_END_OF_JOB_TIME_INFORMATION {
     DWORD EndOfJobTimeAction;
 }
 
-alias JOBOBJECT_END_OF_JOB_TIME_INFORMATION* PJOBOBJECT_END_OF_JOB_TIME_INFORMATION;
+typedef JOBOBJECT_END_OF_JOB_TIME_INFORMATION* PJOBOBJECT_END_OF_JOB_TIME_INFORMATION;
 
 struct JOBOBJECT_ASSOCIATE_COMPLETION_PORT {
     PVOID CompletionKey;
     HANDLE CompletionPort;
 }
 
-alias JOBOBJECT_ASSOCIATE_COMPLETION_PORT* PJOBOBJECT_ASSOCIATE_COMPLETION_PORT;
+typedef JOBOBJECT_ASSOCIATE_COMPLETION_PORT* PJOBOBJECT_ASSOCIATE_COMPLETION_PORT;
 
 struct JOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION {
     JOBOBJECT_BASIC_ACCOUNTING_INFORMATION BasicInfo;
     IO_COUNTERS IoInfo;
 }
 
-alias JOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION* PJOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION;
+typedef JOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION* PJOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION;
 
 struct JOBOBJECT_JOBSET_INFORMATION {
     DWORD MemberLevel;
 }
 
-alias JOBOBJECT_JOBSET_INFORMATION* PJOBOBJECT_JOBSET_INFORMATION;
+typedef JOBOBJECT_JOBSET_INFORMATION* PJOBOBJECT_JOBSET_INFORMATION;
 
 const auto JOB_OBJECT_TERMINATE_AT_END_OF_JOB   = 0;
 const auto JOB_OBJECT_POST_AT_END_OF_JOB        = 1;
@@ -3780,8 +3844,8 @@ const auto EVENT_MODIFY_STATE       = 0x0002  ;
 const auto EVENT_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3) ;
 const auto MUTANT_QUERY_STATE       = 0x0001;
 
-const auto MUTANT_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|
-                          MUTANT_QUERY_STATE);
+const auto MUTANT_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\;
+                          MUTANT_QUERY_STATE)
 const auto SEMAPHORE_MODIFY_STATE       = 0x0002  ;
 const auto SEMAPHORE_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3) ;
 //
@@ -3791,8 +3855,8 @@ const auto SEMAPHORE_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3) ;
 const auto TIMER_QUERY_STATE        = 0x0001;
 const auto TIMER_MODIFY_STATE       = 0x0002;
 
-const auto TIMER_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|
-                          TIMER_QUERY_STATE|TIMER_MODIFY_STATE);
+const auto TIMER_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\;
+                          TIMER_QUERY_STATE|TIMER_MODIFY_STATE)
 
 const auto TIME_ZONE_ID_UNKNOWN   = 0;
 const auto TIME_ZONE_ID_STANDARD  = 1;
@@ -3812,7 +3876,7 @@ enum PROCESSOR_CACHE_TYPE {
     CacheInstruction,
     CacheData,
     CacheTrace
-}
+} PROCESSOR_CACHE_TYPE;
 
 const auto CACHE_FULLY_ASSOCIATIVE  = 0xFF;
 
@@ -3824,28 +3888,24 @@ struct CACHE_DESCRIPTOR {
     PROCESSOR_CACHE_TYPE Type;
 }
 
-alias CACHE_DESCRIPTOR* PCACHE_DESCRIPTOR;
+typedef CACHE_DESCRIPTOR* PCACHE_DESCRIPTOR;
 
 struct SYSTEM_LOGICAL_PROCESSOR_INFORMATION {
     ULONG_PTR   ProcessorMask;
     LOGICAL_PROCESSOR_RELATIONSHIP Relationship;
-    union _inner_union{
-        struct _inner_struct {
+    union {
+        struct {
             BYTE  Flags;
-        }
-
-		_inner_struct ProcessorCore;
-        struct _inner_struct2 {
+        } ProcessorCore;
+        struct {
             DWORD NodeNumber;
-        }
-		_inner_struct2 NumaNode;
+        } NumaNode;
         CACHE_DESCRIPTOR Cache;
         ULONGLONG  Reserved[2];
-    }
-    _inner_union fields;
+    };
 }
 
-alias SYSTEM_LOGICAL_PROCESSOR_INFORMATION* PSYSTEM_LOGICAL_PROCESSOR_INFORMATION;
+typedef SYSTEM_LOGICAL_PROCESSOR_INFORMATION* PSYSTEM_LOGICAL_PROCESSOR_INFORMATION;
 
 
 const auto PROCESSOR_INTEL_386      = 386;
@@ -3914,7 +3974,7 @@ struct MEMORY_BASIC_INFORMATION {
     DWORD Type;
 }
 
-alias MEMORY_BASIC_INFORMATION* PMEMORY_BASIC_INFORMATION;
+typedef MEMORY_BASIC_INFORMATION* PMEMORY_BASIC_INFORMATION;
 
 struct MEMORY_BASIC_INFORMATION32 {
     DWORD BaseAddress;
@@ -3926,7 +3986,7 @@ struct MEMORY_BASIC_INFORMATION32 {
     DWORD Type;
 }
 
-alias MEMORY_BASIC_INFORMATION32* PMEMORY_BASIC_INFORMATION32;
+typedef MEMORY_BASIC_INFORMATION32* PMEMORY_BASIC_INFORMATION32;
 
 struct MEMORY_BASIC_INFORMATION64 {
     ULONGLONG BaseAddress;
@@ -3940,7 +4000,7 @@ struct MEMORY_BASIC_INFORMATION64 {
     DWORD     __alignment2;
 }
 
-alias MEMORY_BASIC_INFORMATION64* PMEMORY_BASIC_INFORMATION64;
+typedef MEMORY_BASIC_INFORMATION64* PMEMORY_BASIC_INFORMATION64;
 
 const auto SECTION_QUERY                 = 0x0001;
 const auto SECTION_MAP_WRITE             = 0x0002;
@@ -3949,18 +4009,18 @@ const auto SECTION_MAP_EXECUTE           = 0x0008;
 const auto SECTION_EXTEND_SIZE           = 0x0010;
 const auto SECTION_MAP_EXECUTE_EXPLICIT  = 0x0020 ; // not included in SECTION_ALL_ACCESS
 
-const auto SECTION_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|
-                            SECTION_MAP_WRITE |
-                            SECTION_MAP_READ |
-                            SECTION_MAP_EXECUTE |
-                            SECTION_EXTEND_SIZE);
+const auto SECTION_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|\;
+                            SECTION_MAP_WRITE |      \
+                            SECTION_MAP_READ |       \
+                            SECTION_MAP_EXECUTE |    \
+                            SECTION_EXTEND_SIZE)
 
 const auto SESSION_QUERY_ACCESS   = 0x0001;
 const auto SESSION_MODIFY_ACCESS  = 0x0002;
 
-const auto SESSION_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED |
-                            SESSION_QUERY_ACCESS |
-                            SESSION_MODIFY_ACCESS);
+const auto SESSION_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED |  \;
+                            SESSION_QUERY_ACCESS |             \
+                            SESSION_MODIFY_ACCESS)
 
 const auto PAGE_NOACCESS           = 0x01     ;
 const auto PAGE_READONLY           = 0x02     ;
@@ -4036,25 +4096,25 @@ const auto FILE_WRITE_ATTRIBUTES      = ( 0x0100 )    ; // all
 
 const auto FILE_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF);
 
-const auto FILE_GENERIC_READ          = (STANDARD_RIGHTS_READ     |
-                                   FILE_READ_DATA           |
-                                   FILE_READ_ATTRIBUTES     |
-                                   FILE_READ_EA             |
-                                   SYNCHRONIZE);
+const auto FILE_GENERIC_READ          = (STANDARD_RIGHTS_READ     |\;
+                                   FILE_READ_DATA           |\
+                                   FILE_READ_ATTRIBUTES     |\
+                                   FILE_READ_EA             |\
+                                   SYNCHRONIZE)
 
 
-const auto FILE_GENERIC_WRITE         = (STANDARD_RIGHTS_WRITE    |
-                                   FILE_WRITE_DATA          |
-                                   FILE_WRITE_ATTRIBUTES    |
-                                   FILE_WRITE_EA            |
-                                   FILE_APPEND_DATA         |
-                                   SYNCHRONIZE);
+const auto FILE_GENERIC_WRITE         = (STANDARD_RIGHTS_WRITE    |\;
+                                   FILE_WRITE_DATA          |\
+                                   FILE_WRITE_ATTRIBUTES    |\
+                                   FILE_WRITE_EA            |\
+                                   FILE_APPEND_DATA         |\
+                                   SYNCHRONIZE)
 
 
-const auto FILE_GENERIC_EXECUTE       = (STANDARD_RIGHTS_EXECUTE  |
-                                   FILE_READ_ATTRIBUTES     |
-                                   FILE_EXECUTE             |
-                                   SYNCHRONIZE);
+const auto FILE_GENERIC_EXECUTE       = (STANDARD_RIGHTS_EXECUTE  |\;
+                                   FILE_READ_ATTRIBUTES     |\
+                                   FILE_EXECUTE             |\
+                                   SYNCHRONIZE)
 
 const auto FILE_SHARE_READ                  = 0x00000001  ;
 const auto FILE_SHARE_WRITE                 = 0x00000002  ;
@@ -4117,19 +4177,17 @@ struct FILE_NOTIFY_INFORMATION {
     WCHAR FileName[1];
 }
 
-alias FILE_NOTIFY_INFORMATION* PFILE_NOTIFY_INFORMATION;
+typedef FILE_NOTIFY_INFORMATION* PFILE_NOTIFY_INFORMATION;
 
 
 //
 // Define segement buffer structure for scatter/gather read/write.
 //
 
-union FILE_SEGMENT_ELEMENT {
+typedef union _FILE_SEGMENT_ELEMENT {
     PVOID64 Buffer;
     ULONGLONG Alignment;
-}
-
-alias FILE_SEGMENT_ELEMENT* PFILE_SEGMENT_ELEMENT;
+}FILE_SEGMENT_ELEMENT, *PFILE_SEGMENT_ELEMENT;
 
 //
 // The reparse GUID structure is used by all 3rd party layered drivers to
@@ -4144,15 +4202,14 @@ struct REPARSE_GUID_DATA_BUFFER {
     WORD   ReparseDataLength;
     WORD   Reserved;
     GUID   ReparseGuid;
-    struct _inner_struct {
-        BYTE[1]   DataBuffer;
-    }
-	_inner_struct GenericReparseBuffer;
+    struct {
+        BYTE   DataBuffer[1];
+    } GenericReparseBuffer;
 }
 
-alias REPARSE_GUID_DATA_BUFFER* PREPARSE_GUID_DATA_BUFFER;
+typedef REPARSE_GUID_DATA_BUFFER* PREPARSE_GUID_DATA_BUFFER;
 
-//const auto REPARSE_GUID_DATA_BUFFER_HEADER_SIZE    = FIELD_OFFSET(REPARSE_GUID_DATA_BUFFER, GenericReparseBuffer);
+const auto REPARSE_GUID_DATA_BUFFER_HEADER_SIZE    = FIELD_OFFSET(REPARSE_GUID_DATA_BUFFER, GenericReparseBuffer);
 
 
 
@@ -4206,17 +4263,17 @@ const auto IO_REPARSE_TAG_RESERVED_RANGE             = IO_REPARSE_TAG_RESERVED_O
 // owned by Microsoft.
 //
 
-// const auto IsReparseTagMicrosoft(_tag)  = (              \;
-//                            ((_tag) & 0x80000000)   \
-//                            )
+const auto IsReparseTagMicrosoft(_tag)  = (              \;
+                           ((_tag) & 0x80000000)   \
+                           )
 
 //
 // Macro to determine whether a reparse point tag is a name surrogate
 //
 
-// const auto IsReparseTagNameSurrogate(_tag)  = (          \;
-//                            ((_tag) & 0x20000000)   \
-//                            )
+const auto IsReparseTagNameSurrogate(_tag)  = (          \;
+                           ((_tag) & 0x20000000)   \
+                           )
 
 const auto IO_REPARSE_TAG_MOUNT_POINT               = (0xA0000003L)       ;
 const auto IO_REPARSE_TAG_HSM                       = (0xC0000004L)       ;
@@ -4245,7 +4302,6 @@ const auto DUPLICATE_SAME_ACCESS        = 0x00000002  ;
 // =========================================
 //
 
-/*
 //
 // Maximum Power Savings - indicates that very aggressive power savings measures will be used to help
 //                         stretch battery life.
@@ -4680,7 +4736,6 @@ DEFINE_GUID( GUID_PCIEXPRESS_SETTINGS_SUBGROUP, 0x501a4d13, 0x42af,0x4429, 0x9f,
 //
 DEFINE_GUID( GUID_PCIEXPRESS_ASPM_POLICY, 0xee12f906, 0xd277, 0x404b, 0xb6, 0xda, 0xe5, 0xfa, 0x1a, 0x57, 0x6d, 0xf5 );
 
-*/
 
 enum SYSTEM_POWER_STATE {
     PowerSystemUnspecified = 0,
@@ -4693,7 +4748,7 @@ enum SYSTEM_POWER_STATE {
     PowerSystemMaximum     = 7
 }
 
-alias SYSTEM_POWER_STATE* PSYSTEM_POWER_STATE;
+typedef SYSTEM_POWER_STATE* PSYSTEM_POWER_STATE;
 
 const auto POWER_SYSTEM_MAXIMUM  = 7;
 
@@ -4708,7 +4763,7 @@ enum POWER_ACTION {
     PowerActionWarmEject
 }
 
-alias POWER_ACTION* PPOWER_ACTION;
+typedef POWER_ACTION* PPOWER_ACTION;
 
 enum DEVICE_POWER_STATE {
     PowerDeviceUnspecified = 0,
@@ -4719,22 +4774,22 @@ enum DEVICE_POWER_STATE {
     PowerDeviceMaximum
 }
 
-alias DEVICE_POWER_STATE* PDEVICE_POWER_STATE;
+typedef DEVICE_POWER_STATE* PDEVICE_POWER_STATE;
 
 
 
-const auto ES_SYSTEM_REQUIRED    = (cast(DWORD)0x00000001);
-const auto ES_DISPLAY_REQUIRED   = (cast(DWORD)0x00000002);
-const auto ES_USER_PRESENT       = (cast(DWORD)0x00000004);
-const auto ES_AWAYMODE_REQUIRED  = (cast(DWORD)0x00000040);
-const auto ES_CONTINUOUS         = (cast(DWORD)0x80000000);
+const auto ES_SYSTEM_REQUIRED    = ((DWORD)0x00000001);
+const auto ES_DISPLAY_REQUIRED   = ((DWORD)0x00000002);
+const auto ES_USER_PRESENT       = ((DWORD)0x00000004);
+const auto ES_AWAYMODE_REQUIRED  = ((DWORD)0x00000040);
+const auto ES_CONTINUOUS         = ((DWORD)0x80000000);
 
-alias DWORD EXECUTION_STATE;
+typedef DWORD EXECUTION_STATE;
 
 enum LATENCY_TIME {
     LT_DONT_CARE,
     LT_LOWEST_LATENCY
-}
+} 
 
 // end_ntminiport 
 
@@ -4764,7 +4819,7 @@ struct CM_POWER_DATA {
     SYSTEM_POWER_STATE  PD_DeepestSystemWake;
 }
 
-alias CM_POWER_DATA* PCM_POWER_DATA;
+typedef CM_POWER_DATA* PCM_POWER_DATA;
 
 // begin_wdm
 
@@ -4819,27 +4874,27 @@ const auto PO_TRANSITION_VETO_TYPE_WINDOW   = 0x00000001;
 const auto PO_TRANSITION_VETO_TYPE_SERVICE  = 0x00000002;
 //#define PO_TRANSITION_VETO_TYPE_DRIVER  0x00000004
 
-const auto PO_TRANSITION_VETO_TYPE_ALL      =
-    (PO_TRANSITION_VETO_TYPE_WINDOW | PO_TRANSITION_VETO_TYPE_SERVICE);
+const auto PO_TRANSITION_VETO_TYPE_ALL      = \;
+    (PO_TRANSITION_VETO_TYPE_WINDOW | PO_TRANSITION_VETO_TYPE_SERVICE)
 
 struct PO_TRANSITION_VETO_REASON {
     DWORD ResourceId;
     DWORD ModuleNameOffset;
 }
 
-alias PO_TRANSITION_VETO_REASON* PPO_TRANSITION_VETO_REASON;
+typedef PO_TRANSITION_VETO_REASON* PPO_TRANSITION_VETO_REASON;
 
 struct PO_TRANSITION_VETO_WINDOW {
     HANDLE Handle;
 }
 
-alias PO_TRANSITION_VETO_WINDOW* PPO_TRANSITION_VETO_WINDOW;
+typedef PO_TRANSITION_VETO_WINDOW* PPO_TRANSITION_VETO_WINDOW;
 
 struct PO_TRANSITION_VETO_SERVICE {
     DWORD ServiceNameOffset;
 }
 
-alias PO_TRANSITION_VETO_SERVICE* PPO_TRANSITION_VETO_SERVICE;
+typedef PO_TRANSITION_VETO_SERVICE* PPO_TRANSITION_VETO_SERVICE;
 
 /*
 
@@ -4848,7 +4903,7 @@ struct PO_TRANSITION_VETO_DRIVER {
     DWORD DriverNameOffset;
 }
 
-alias PO_TRANSITION_VETO_DRIVER* PPO_TRANSITION_VETO_DRIVER;
+typedef PO_TRANSITION_VETO_DRIVER* PPO_TRANSITION_VETO_DRIVER;
 
 */
 
@@ -4864,14 +4919,14 @@ struct PO_TRANSITION_VETO {
     };
 }
 
-alias PO_TRANSITION_VETO* PPO_TRANSITION_VETO;
+typedef PO_TRANSITION_VETO* PPO_TRANSITION_VETO;
 
 struct PO_TRANSITION_VETOES {
     DWORD Count;
-    PO_TRANSITION_VETO Vetoes[];
+    PO_TRANSITION_VETO Vetoes[ANYSIZE_ARRAY];
 }
 
-alias PO_TRANSITION_VETOES* PPO_TRANSITION_VETOES;
+typedef PO_TRANSITION_VETOES* PPO_TRANSITION_VETOES;
 
 //
 // Power Setting definitions
@@ -4913,10 +4968,10 @@ struct SET_POWER_SETTING_VALUE {
     //
     // Data which contains the actual setting value.
     // 
-    BYTE    Data[];
+    BYTE    Data[ANYSIZE_ARRAY];
 }
 
-alias SET_POWER_SETTING_VALUE* PSET_POWER_SETTING_VALUE;
+typedef SET_POWER_SETTING_VALUE* PSET_POWER_SETTING_VALUE;
 
 const auto POWER_SETTING_VALUE_VERSION  = (0x1);
 
@@ -4924,7 +4979,7 @@ struct NOTIFY_USER_POWER_SETTING {
     GUID Guid;
 }
 
-alias NOTIFY_USER_POWER_SETTING* PNOTIFY_USER_POWER_SETTING;
+typedef NOTIFY_USER_POWER_SETTING* PNOTIFY_USER_POWER_SETTING;
 
 //
 // Package definition for an experience button device notification.  When
@@ -4952,7 +5007,7 @@ struct APPLICATIONLAUNCH_SETTING_VALUE {
 
 }
 
-alias APPLICATIONLAUNCH_SETTING_VALUE* PAPPLICATIONLAUNCH_SETTING_VALUE;
+typedef APPLICATIONLAUNCH_SETTING_VALUE* PAPPLICATIONLAUNCH_SETTING_VALUE;
 
 //
 // define platform roles
@@ -4979,7 +5034,7 @@ enum PO_WAKE_SOURCE_TYPE {
     FixedWakeSourceType
 }
 
-alias PO_WAKE_SOURCE_TYPE* PPO_WAKE_SOURCE_TYPE;
+typedef PO_WAKE_SOURCE_TYPE* PPO_WAKE_SOURCE_TYPE;
 
 enum PO_FIXED_WAKE_SOURCE_TYPE {
     FixedWakeSourcePowerButton,
@@ -4987,42 +5042,42 @@ enum PO_FIXED_WAKE_SOURCE_TYPE {
     FixedWakeSourceRtc
 }
 
-alias PO_FIXED_WAKE_SOURCE_TYPE* PPO_FIXED_WAKE_SOURCE_TYPE;
+typedef PO_FIXED_WAKE_SOURCE_TYPE* PPO_FIXED_WAKE_SOURCE_TYPE;
 
 struct PO_WAKE_SOURCE_HEADER {
     PO_WAKE_SOURCE_TYPE Type;
     DWORD Size;
 }
 
-alias PO_WAKE_SOURCE_HEADER* PPO_WAKE_SOURCE_HEADER;
+typedef PO_WAKE_SOURCE_HEADER* PPO_WAKE_SOURCE_HEADER;
 
 struct PO_WAKE_SOURCE_DEVICE {
     PO_WAKE_SOURCE_HEADER Header;
-    WCHAR InstancePath[];
+    WCHAR InstancePath[ANYSIZE_ARRAY];
 }
 
-alias PO_WAKE_SOURCE_DEVICE* PPO_WAKE_SOURCE_DEVICE;
+typedef PO_WAKE_SOURCE_DEVICE* PPO_WAKE_SOURCE_DEVICE;
 
 struct PO_WAKE_SOURCE_FIXED {
     PO_WAKE_SOURCE_HEADER Header;
     PO_FIXED_WAKE_SOURCE_TYPE FixedWakeSourceType;
 }
 
-alias PO_WAKE_SOURCE_FIXED* PPO_WAKE_SOURCE_FIXED;
+typedef PO_WAKE_SOURCE_FIXED* PPO_WAKE_SOURCE_FIXED;
 
 struct PO_WAKE_SOURCE_INFO {
     DWORD Count;
-    DWORD Offsets[];
+    DWORD Offsets[ANYSIZE_ARRAY];
 }
 
-alias PO_WAKE_SOURCE_INFO* PPO_WAKE_SOURCE_INFO;
+typedef PO_WAKE_SOURCE_INFO* PPO_WAKE_SOURCE_INFO;
 
 struct PO_WAKE_SOURCE_HISTORY {
     DWORD Count;
-    DWORD Offsets[];
+    DWORD Offsets[ANYSIZE_ARRAY];
 }
 
-alias PO_WAKE_SOURCE_HISTORY* PPO_WAKE_SOURCE_HISTORY;
+typedef PO_WAKE_SOURCE_HISTORY* PPO_WAKE_SOURCE_HISTORY;
 
 //
 // System power manager capabilities
@@ -5033,7 +5088,7 @@ struct BATTERY_REPORTING_SCALE {
     DWORD       Capacity;
 }
 
-alias BATTERY_REPORTING_SCALE* PBATTERY_REPORTING_SCALE;
+typedef BATTERY_REPORTING_SCALE* PBATTERY_REPORTING_SCALE;
 
 //
 
@@ -5042,7 +5097,7 @@ struct PPM_SIMULATED_PROCESSOR_LOAD {
     BYTE  PercentBusy[MAXIMUM_PROCESSORS];
 }
 
-alias PPM_SIMULATED_PROCESSOR_LOAD* PPPM_SIMULATED_PROCESSOR_LOAD;
+typedef PPM_SIMULATED_PROCESSOR_LOAD* PPPM_SIMULATED_PROCESSOR_LOAD;
 
 struct PPM_WMI_LEGACY_PERFSTATE {
     DWORD   Frequency;
@@ -5050,7 +5105,7 @@ struct PPM_WMI_LEGACY_PERFSTATE {
     DWORD   PercentFrequency;
 }
 
-alias PPM_WMI_LEGACY_PERFSTATE* PPPM_WMI_LEGACY_PERFSTATE;
+typedef PPM_WMI_LEGACY_PERFSTATE* PPPM_WMI_LEGACY_PERFSTATE;
 
 struct PPM_WMI_IDLE_STATE {
     DWORD Latency;
@@ -5066,7 +5121,7 @@ struct PPM_WMI_IDLE_STATE {
     DWORD Reserved1;            // reserved for future use
 }
 
-alias PPM_WMI_IDLE_STATE* PPPM_WMI_IDLE_STATE;
+typedef PPM_WMI_IDLE_STATE* PPPM_WMI_IDLE_STATE;
 
 struct PPM_WMI_IDLE_STATES {
     DWORD Type;
@@ -5074,10 +5129,10 @@ struct PPM_WMI_IDLE_STATES {
     DWORD TargetState;          // current idle state
     DWORD OldState;             // previous idle state
     DWORD64 TargetProcessors;
-    PPM_WMI_IDLE_STATE State[];
+    PPM_WMI_IDLE_STATE State[ANYSIZE_ARRAY];
 }
 
-alias PPM_WMI_IDLE_STATES* PPPM_WMI_IDLE_STATES;
+typedef PPM_WMI_IDLE_STATES* PPPM_WMI_IDLE_STATES;
 
 struct PPM_WMI_PERF_STATE {
     DWORD Frequency;            // in Mhz
@@ -5096,7 +5151,7 @@ struct PPM_WMI_PERF_STATE {
     DWORD64 Reserved3;
 }
 
-alias PPM_WMI_PERF_STATE* PPPM_WMI_PERF_STATE;
+typedef PPM_WMI_PERF_STATE* PPPM_WMI_PERF_STATE;
 
 struct PPM_WMI_PERF_STATES {
     DWORD Count;
@@ -5119,10 +5174,10 @@ struct PPM_WMI_PERF_STATES {
     DWORD FeedbackHandler;
     DWORD Reserved1;
     DWORD64 Reserved2;
-    PPM_WMI_PERF_STATE State[];
+    PPM_WMI_PERF_STATE State[ANYSIZE_ARRAY];
 }
 
-alias PPM_WMI_PERF_STATES* PPPM_WMI_PERF_STATES;
+typedef PPM_WMI_PERF_STATES* PPPM_WMI_PERF_STATES;
 
 //
 // Accounting info.
@@ -5138,17 +5193,17 @@ struct PPM_IDLE_STATE_ACCOUNTING {
     DWORD IdleTimeBuckets[PROC_IDLE_BUCKET_COUNT];
 }
 
-alias PPM_IDLE_STATE_ACCOUNTING* PPPM_IDLE_STATE_ACCOUNTING;
+typedef PPM_IDLE_STATE_ACCOUNTING* PPPM_IDLE_STATE_ACCOUNTING;
 
 struct PPM_IDLE_ACCOUNTING {
     DWORD StateCount;
     DWORD TotalTransitions;
     DWORD ResetCount;
     DWORD64 StartTime;
-    PPM_IDLE_STATE_ACCOUNTING State[];
+    PPM_IDLE_STATE_ACCOUNTING State[ANYSIZE_ARRAY];
 }
 
-alias PPM_IDLE_ACCOUNTING* PPPM_IDLE_ACCOUNTING;
+typedef PPM_IDLE_ACCOUNTING* PPPM_IDLE_ACCOUNTING;
 
 //
 // Definitions of coordination types for _PSD, _TSD, and _CSD BIOS objects from
@@ -5218,7 +5273,7 @@ struct PPM_PERFSTATE_EVENT {
     DWORD Processor;
 }
 
-alias PPM_PERFSTATE_EVENT* PPPM_PERFSTATE_EVENT;
+typedef PPM_PERFSTATE_EVENT* PPPM_PERFSTATE_EVENT;
 
 struct PPM_PERFSTATE_DOMAIN_EVENT {
     DWORD State;
@@ -5227,7 +5282,7 @@ struct PPM_PERFSTATE_DOMAIN_EVENT {
     DWORD64 Processors;
 }
 
-alias PPM_PERFSTATE_DOMAIN_EVENT* PPPM_PERFSTATE_DOMAIN_EVENT;
+typedef PPM_PERFSTATE_DOMAIN_EVENT* PPPM_PERFSTATE_DOMAIN_EVENT;
 
 struct PPM_IDLESTATE_EVENT {
     DWORD NewState;
@@ -5235,22 +5290,27 @@ struct PPM_IDLESTATE_EVENT {
     DWORD64 Processors;
 }
 
-alias PPM_IDLESTATE_EVENT* PPPM_IDLESTATE_EVENT;
+typedef PPM_IDLESTATE_EVENT* PPPM_IDLESTATE_EVENT;
 
 struct PPM_THERMALCHANGE_EVENT {
     DWORD ThermalConstraint;
     DWORD64 Processors;
 }
 
-alias PPM_THERMALCHANGE_EVENT* PPPM_THERMALCHANGE_EVENT;
+typedef PPM_THERMALCHANGE_EVENT* PPPM_THERMALCHANGE_EVENT;
+
+#pragma warning(push)
+#pragma warning(disable:4121)
 
 struct PPM_THERMAL_POLICY_EVENT {
     BYTE  Mode;
     DWORD64 Processors;
 }
 
-alias PPM_THERMAL_POLICY_EVENT* PPPM_THERMAL_POLICY_EVENT;
+typedef PPM_THERMAL_POLICY_EVENT* PPPM_THERMAL_POLICY_EVENT;
 
+#pragma warning(pop)
+       
 // Power Policy Management interfaces
 //
 
@@ -5260,7 +5320,7 @@ struct POWER_ACTION_POLICY {
     DWORD           EventCode;
 }
 
-alias POWER_ACTION_POLICY* PPOWER_ACTION_POLICY;
+typedef POWER_ACTION_POLICY* PPOWER_ACTION_POLICY;
 
 // POWER_ACTION_POLICY->Flags:
 const auto POWER_ACTION_QUERY_ALLOWED       = 0x00000001;
@@ -5298,7 +5358,7 @@ struct SYSTEM_POWER_LEVEL {
     SYSTEM_POWER_STATE      MinSystemState;
 }
 
-alias SYSTEM_POWER_LEVEL* PSYSTEM_POWER_LEVEL;
+typedef SYSTEM_POWER_LEVEL* PSYSTEM_POWER_LEVEL;
 
 // Discharge policy constants
 const auto NUM_DISCHARGE_POLICIES       = 4;
@@ -5358,7 +5418,7 @@ struct SYSTEM_POWER_POLICY {
 
 }
 
-alias SYSTEM_POWER_POLICY* PSYSTEM_POWER_POLICY;
+typedef SYSTEM_POWER_POLICY* PSYSTEM_POWER_POLICY;
 
 
 // processor power policy state
@@ -5376,30 +5436,24 @@ struct PROCESSOR_IDLESTATE_INFO {
     BYTE  Spare[2];
 }
 
-alias PROCESSOR_IDLESTATE_INFO* PPROCESSOR_IDLESTATE_INFO;
+typedef PROCESSOR_IDLESTATE_INFO* PPROCESSOR_IDLESTATE_INFO;
 
 struct PROCESSOR_IDLESTATE_POLICY {
     WORD   Revision;
-    union _inner_union {
+    union {
         WORD   AsWORD  ;
-        WORD AllowScaling() {
-        	return AsWord & 1;
-        }
-        WORD Disabled() {
-        	return (AsWord >> 1) & 1;
-        }
-        WORD Reserved() {
-        	return (AsWord >> 2);
-        }
-    } 
-
-	_inner_union Flags;
+        struct {
+            WORD   AllowScaling : 1;
+            WORD   Disabled : 1;
+            WORD   Reserved : 14;
+        };
+    } Flags;
 
     DWORD PolicyCount;
     PROCESSOR_IDLESTATE_INFO Policy[PROCESSOR_IDLESTATE_POLICY_COUNT];
 }
 
-alias PROCESSOR_IDLESTATE_POLICY* PPROCESSOR_IDLESTATE_POLICY;
+typedef PROCESSOR_IDLESTATE_POLICY* PPROCESSOR_IDLESTATE_POLICY;
 
 //
 // Legacy Processor Policy.  This is only provided to allow legacy 
@@ -5424,25 +5478,16 @@ struct PROCESSOR_POWER_POLICY_INFO {
     // Percentage based information
     BYTE                    DemotePercent;
     BYTE                    PromotePercent;
-    BYTE[2]                    Spare;
+    BYTE                    Spare[2];
 
     // Flags
-    DWORD flags;
-    
-	DWORD AllowDemotion() {
-    	return flags & 1;
-    }
+    DWORD                   AllowDemotion:1;
+    DWORD                   AllowPromotion:1;
+    DWORD                   Reserved:30;
 
-    DWORD AllowPromotion() {
-    	return (flags >> 1) & 1;
-    }
-    
-    DWORD Reserved() {
-    	return (flags >> 2);
-    }
 }
 
-alias PROCESSOR_POWER_POLICY_INFO* PPROCESSOR_POWER_POLICY_INFO;
+typedef PROCESSOR_POWER_POLICY_INFO* PPROCESSOR_POWER_POLICY_INFO;
 
 // processor power policy
 struct PROCESSOR_POWER_POLICY {
@@ -5450,28 +5495,21 @@ struct PROCESSOR_POWER_POLICY {
 
     // Dynamic Throttling Policy
     BYTE                        DynamicThrottle;
-    BYTE[3]                        Spare;
+    BYTE                        Spare[3];
 
     // Flags
-    DWORD flags;
-    
-    DWORD DisableCStates() {
-    	return flags & 1;
-    }
-    
-    DWORD Reserved() {
-    	return flags >> 1;
-    }
+    DWORD                       DisableCStates:1;
+    DWORD                       Reserved:31;
 
     // System policy information
     // The Array is last, in case it needs to be grown and the structure
     // revision incremented.
     DWORD                       PolicyCount;
-    PROCESSOR_POWER_POLICY_INFO[3] Policy;
+    PROCESSOR_POWER_POLICY_INFO Policy[3];
 
 }
 
-alias PROCESSOR_POWER_POLICY* PPROCESSOR_POWER_POLICY;
+typedef PROCESSOR_POWER_POLICY* PPROCESSOR_POWER_POLICY;
 
 //
 // Processor Perf State Policy.
@@ -5487,32 +5525,19 @@ struct PROCESSOR_PERFSTATE_POLICY {
     BYTE  MaxThrottle;
     BYTE  MinThrottle;
     BYTE  BusyAdjThreshold;
-    union _inner_union {
+    union {
         BYTE  Spare;
-        union _inner_inner_union {
+        union {
             BYTE  AsBYTE ;
-            
-            BYTE NoDomainAccounting() {
-            	return AsBYTE & 1;
-            }
-            
-            BYTE IncreasePolicy() {
-            	return (AsBYTE >> 1) & 0x3;
-            }
-
-            BYTE DecreasePolicy() {
-            	return (AsBYTE >> 3) & 0x3;
-            }
-            
-            BYTE Reserved() {
-            	return AsBYTE >> 5;
-            }
-        }
-		_inner_inner_union Flags;
-    }
-
-    _inner_union fields;
-
+            struct {
+                BYTE  NoDomainAccounting : 1;
+                BYTE  IncreasePolicy: 2;
+                BYTE  DecreasePolicy: 2;
+                BYTE  Reserved : 3;
+            };
+        } Flags;
+    };
+    
     DWORD TimeCheck;
     DWORD IncreaseTime;
     DWORD DecreaseTime;
@@ -5520,7 +5545,7 @@ struct PROCESSOR_PERFSTATE_POLICY {
     DWORD DecreasePercent;
 }
 
-alias PROCESSOR_PERFSTATE_POLICY* PPROCESSOR_PERFSTATE_POLICY;
+typedef PROCESSOR_PERFSTATE_POLICY* PPROCESSOR_PERFSTATE_POLICY;
 
 // administrator power policy overrides
 struct ADMINISTRATOR_POWER_POLICY {
@@ -5538,7 +5563,7 @@ struct ADMINISTRATOR_POWER_POLICY {
     DWORD                   MaxSpindownTimeout;
 }
 
-alias ADMINISTRATOR_POWER_POLICY* PADMINISTRATOR_POWER_POLICY;
+typedef ADMINISTRATOR_POWER_POLICY* PADMINISTRATOR_POWER_POLICY;
 
 
 
@@ -5585,7 +5610,7 @@ struct SYSTEM_POWER_CAPABILITIES {
     SYSTEM_POWER_STATE  DefaultLowLatencyWake;
 }
 
-alias SYSTEM_POWER_CAPABILITIES* PSYSTEM_POWER_CAPABILITIES;
+typedef SYSTEM_POWER_CAPABILITIES* PSYSTEM_POWER_CAPABILITIES;
 
 struct SYSTEM_BATTERY_STATE {
     BOOLEAN             AcOnLine;
@@ -5603,7 +5628,7 @@ struct SYSTEM_BATTERY_STATE {
     DWORD               DefaultAlert2;
 }
 
-alias SYSTEM_BATTERY_STATE* PSYSTEM_BATTERY_STATE;
+typedef SYSTEM_BATTERY_STATE* PSYSTEM_BATTERY_STATE;
 
 
 
@@ -5640,7 +5665,7 @@ align(2) struct IMAGE_DOS_HEADER {      // DOS .EXE header
     LONG   e_lfanew;                    // File address of new exe header
   }
 
-alias IMAGE_DOS_HEADER* PIMAGE_DOS_HEADER;
+typedef IMAGE_DOS_HEADER* PIMAGE_DOS_HEADER;
 
 align(2) struct IMAGE_OS2_HEADER {      // OS/2 .EXE header
     WORD   ne_magic;                    // Magic number
@@ -5675,7 +5700,7 @@ align(2) struct IMAGE_OS2_HEADER {      // OS/2 .EXE header
     WORD   ne_expver;                   // Expected Windows version number
   }
 
-alias IMAGE_OS2_HEADER* PIMAGE_OS2_HEADER;
+typedef IMAGE_OS2_HEADER* PIMAGE_OS2_HEADER;
 
 align(2) struct IMAGE_VXD_HEADER {      // Windows VXD header
     WORD   e32_magic;                   // Magic number
@@ -5731,7 +5756,7 @@ align(2) struct IMAGE_VXD_HEADER {      // Windows VXD header
     WORD   e32_ddkver;                  // DDK version for VxD
   }
 
-alias IMAGE_VXD_HEADER* PIMAGE_VXD_HEADER;
+typedef IMAGE_VXD_HEADER* PIMAGE_VXD_HEADER;
 
 
 //
@@ -5748,7 +5773,7 @@ align(2) struct IMAGE_FILE_HEADER {
     WORD    Characteristics;
 }
 
-alias IMAGE_FILE_HEADER* PIMAGE_FILE_HEADER;
+typedef IMAGE_FILE_HEADER* PIMAGE_FILE_HEADER;
 
 const auto IMAGE_SIZEOF_FILE_HEADER              = 20;
 
@@ -5807,7 +5832,7 @@ align(2) struct IMAGE_DATA_DIRECTORY {
     DWORD   Size;
 }
 
-alias IMAGE_DATA_DIRECTORY* PIMAGE_DATA_DIRECTORY;
+typedef IMAGE_DATA_DIRECTORY* PIMAGE_DATA_DIRECTORY;
 
 const auto IMAGE_NUMBEROF_DIRECTORY_ENTRIES     = 16;
 
@@ -5815,7 +5840,7 @@ const auto IMAGE_NUMBEROF_DIRECTORY_ENTRIES     = 16;
 // Optional header format.
 //
 
-align(2) struct IMAGE__HEADER32 {
+align(2) struct IMAGE_OPTIONAL_HEADER32 {
     //
     // Standard fields.
     //
@@ -5858,9 +5883,9 @@ align(2) struct IMAGE__HEADER32 {
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 }
 
-alias IMAGE__HEADER32* PIMAGE__HEADER32;
+typedef IMAGE_OPTIONAL_HEADER32* PIMAGE_OPTIONAL_HEADER32;
 
-align(2) struct IMAGE_ROM__HEADER {
+align(2) struct IMAGE_ROM_OPTIONAL_HEADER {
     WORD   Magic;
     BYTE   MajorLinkerVersion;
     BYTE   MinorLinkerVersion;
@@ -5876,9 +5901,9 @@ align(2) struct IMAGE_ROM__HEADER {
     DWORD  GpValue;
 }
 
-alias IMAGE_ROM__HEADER* PIMAGE_ROM__HEADER;
+typedef IMAGE_ROM_OPTIONAL_HEADER* PIMAGE_ROM_OPTIONAL_HEADER;
 
-struct IMAGE__HEADER64 {
+struct IMAGE_OPTIONAL_HEADER64 {
     WORD        Magic;
     BYTE        MajorLinkerVersion;
     BYTE        MinorLinkerVersion;
@@ -5911,53 +5936,53 @@ struct IMAGE__HEADER64 {
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 }
 
-alias IMAGE__HEADER64* PIMAGE__HEADER64;
+typedef IMAGE_OPTIONAL_HEADER64* PIMAGE_OPTIONAL_HEADER64;
 
-const auto IMAGE_NT__HDR32_MAGIC       = 0x10b;
-const auto IMAGE_NT__HDR64_MAGIC       = 0x20b;
-const auto IMAGE_ROM__HDR_MAGIC        = 0x107;
+const auto IMAGE_NT_OPTIONAL_HDR32_MAGIC       = 0x10b;
+const auto IMAGE_NT_OPTIONAL_HDR64_MAGIC       = 0x20b;
+const auto IMAGE_ROM_OPTIONAL_HDR_MAGIC        = 0x107;
 
 version(X86_64) {
-	alias IMAGE__HEADER64             IMAGE__HEADER;
-	alias PIMAGE__HEADER64            PIMAGE__HEADER;
-	const auto IMAGE_NT__HDR_MAGIC          = IMAGE_NT__HDR64_MAGIC;
+	typedef IMAGE_OPTIONAL_HEADER64             IMAGE_OPTIONAL_HEADER;
+	typedef PIMAGE_OPTIONAL_HEADER64            PIMAGE_OPTIONAL_HEADER;
+	const auto IMAGE_NT_OPTIONAL_HDR_MAGIC          = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 }
 else {
-	alias IMAGE__HEADER32             IMAGE__HEADER;
-	alias PIMAGE__HEADER32            PIMAGE__HEADER;
-	const auto IMAGE_NT__HDR_MAGIC          = IMAGE_NT__HDR32_MAGIC;
+	typedef IMAGE_OPTIONAL_HEADER32             IMAGE_OPTIONAL_HEADER;
+	typedef PIMAGE_OPTIONAL_HEADER32            PIMAGE_OPTIONAL_HEADER;
+	const auto IMAGE_NT_OPTIONAL_HDR_MAGIC          = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
 }
 
 struct IMAGE_NT_HEADERS64 {
     DWORD Signature;
     IMAGE_FILE_HEADER FileHeader;
-    IMAGE__HEADER64 OptionalHeader;
+    IMAGE_OPTIONAL_HEADER64 OptionalHeader;
 }
 
-alias IMAGE_NT_HEADERS64* PIMAGE_NT_HEADERS64;
+typedef IMAGE_NT_HEADERS64* PIMAGE_NT_HEADERS64;
 
 struct IMAGE_NT_HEADERS32 {
     DWORD Signature;
     IMAGE_FILE_HEADER FileHeader;
-    IMAGE__HEADER32 OptionalHeader;
+    IMAGE_OPTIONAL_HEADER32 OptionalHeader;
 }
 
-alias IMAGE_NT_HEADERS32* PIMAGE_NT_HEADERS32;
+typedef IMAGE_NT_HEADERS32* PIMAGE_NT_HEADERS32;
 
 struct IMAGE_ROM_HEADERS {
     IMAGE_FILE_HEADER FileHeader;
-    IMAGE_ROM__HEADER OptionalHeader;
+    IMAGE_ROM_OPTIONAL_HEADER OptionalHeader;
 }
 
-alias IMAGE_ROM_HEADERS* PIMAGE_ROM_HEADERS;
+typedef IMAGE_ROM_HEADERS* PIMAGE_ROM_HEADERS;
 
 version(X86_64) {
-	alias IMAGE_NT_HEADERS64                  IMAGE_NT_HEADERS;
-	alias PIMAGE_NT_HEADERS64                 PIMAGE_NT_HEADERS;
+	typedef IMAGE_NT_HEADERS64                  IMAGE_NT_HEADERS;
+	typedef PIMAGE_NT_HEADERS64                 PIMAGE_NT_HEADERS;
 }
 else {
-	alias IMAGE_NT_HEADERS32                  IMAGE_NT_HEADERS;
-	alias PIMAGE_NT_HEADERS32                 PIMAGE_NT_HEADERS;
+	typedef IMAGE_NT_HEADERS32                  IMAGE_NT_HEADERS;
+	typedef PIMAGE_NT_HEADERS32                 PIMAGE_NT_HEADERS;
 }
 
 // Subsystem Values
@@ -6065,7 +6090,7 @@ struct IMAGE_SECTION_HEADER {
     DWORD   Characteristics;
 }
 
-alias IMAGE_SECTION_HEADER* PIMAGE_SECTION_HEADER;
+typedef IMAGE_SECTION_HEADER* PIMAGE_SECTION_HEADER;
 
 const auto IMAGE_SIZEOF_SECTION_HEADER           = 40;
 
@@ -6152,7 +6177,7 @@ align(2) struct IMAGE_SYMBOL {
     BYTE    NumberOfAuxSymbols;
 }
 
-alias IMAGE_SYMBOL *PIMAGE_SYMBOL;
+typedef IMAGE_SYMBOL UNALIGNED *PIMAGE_SYMBOL;
 
 
 const auto IMAGE_SIZEOF_SYMBOL                   = 18;
@@ -6164,9 +6189,9 @@ const auto IMAGE_SIZEOF_SYMBOL                   = 18;
 // defined. Otherwise, section numbers have the following meanings:
 //
 
-const auto IMAGE_SYM_UNDEFINED            = cast(SHORT)0          ; // Symbol is undefined or is common.
-const auto IMAGE_SYM_ABSOLUTE             = cast(SHORT)-1         ; // Symbol is an absolute value.
-const auto IMAGE_SYM_DEBUG                = cast(SHORT)-2         ; // Symbol is a special debug item.
+const auto IMAGE_SYM_UNDEFINED            = (SHORT)0          ; // Symbol is undefined or is common.
+const auto IMAGE_SYM_ABSOLUTE             = (SHORT)-1         ; // Symbol is an absolute value.
+const auto IMAGE_SYM_DEBUG                = (SHORT)-2         ; // Symbol is a special debug item.
 const auto IMAGE_SYM_SECTION_MAX          = 0xFEFF            ; // Values 0xFF00-0xFFFF are special
 
 //
@@ -6249,7 +6274,7 @@ const auto N_TSHIFT                             = 2;
 // Auxiliary entry format.
 //
 /*
-alias union _IMAGE_AUX_SYMBOL {
+typedef union _IMAGE_AUX_SYMBOL {
     struct {
         DWORD    TagIndex;                      // struct, union, or enum tag index
         union {
@@ -6282,7 +6307,7 @@ alias union _IMAGE_AUX_SYMBOL {
         BYTE    Selection;                      // communal selection type
     } Section;
 } IMAGE_AUX_SYMBOL;
-alias IMAGE_AUX_SYMBOL UNALIGNED *PIMAGE_AUX_SYMBOL;
+typedef IMAGE_AUX_SYMBOL UNALIGNED *PIMAGE_AUX_SYMBOL;
 
 enum IMAGE_AUX_SYMBOL_TYPE {
     IMAGE_AUX_SYMBOL_TYPE_TOKEN_DEF = 1,
@@ -6296,7 +6321,7 @@ align(2) struct IMAGE_AUX_SYMBOL_TOKEN_DEF {
 }
 
 
-alias IMAGE_AUX_SYMBOL_TOKEN_DEF UNALIGNED *PIMAGE_AUX_SYMBOL_TOKEN_DEF;
+typedef IMAGE_AUX_SYMBOL_TOKEN_DEF UNALIGNED *PIMAGE_AUX_SYMBOL_TOKEN_DEF;
 */
 
 //
@@ -6329,7 +6354,7 @@ struct IMAGE_RELOCATION {
     WORD    Type;
 }
 
-alias IMAGE_RELOCATION  *PIMAGE_RELOCATION;
+typedef IMAGE_RELOCATION UNALIGNED *PIMAGE_RELOCATION;
 
 //
 // I386 relocation types.
@@ -6694,7 +6719,7 @@ struct IMAGE_LINENUMBER {
     WORD    Linenumber;                         // Line number.
 }
 
-alias IMAGE_LINENUMBER  *PIMAGE_LINENUMBER;
+typedef IMAGE_LINENUMBER UNALIGNED *PIMAGE_LINENUMBER;
 
 
 //
@@ -6707,7 +6732,7 @@ struct IMAGE_BASE_RELOCATION {
 //  WORD    TypeOffset[1];
 }
 
-alias IMAGE_BASE_RELOCATION  * PIMAGE_BASE_RELOCATION;
+typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;
 
 //
 // Based relocation types.
@@ -6729,11 +6754,11 @@ const auto IMAGE_REL_BASED_DIR64                  = 10;
 //
 
 const auto IMAGE_ARCHIVE_START_SIZE              = 8;
-const auto IMAGE_ARCHIVE_START                   = "!<arch>\n"c;
-const auto IMAGE_ARCHIVE_END                     = "`\n"c;
-const auto IMAGE_ARCHIVE_PAD                     = "\n"c;
-const auto IMAGE_ARCHIVE_LINKER_MEMBER           = "/               "c;
-const auto IMAGE_ARCHIVE_LONGNAMES_MEMBER        = "//              "c;
+const auto IMAGE_ARCHIVE_START                   = "!<arch>\n";
+const auto IMAGE_ARCHIVE_END                     = "`\n";
+const auto IMAGE_ARCHIVE_PAD                     = "\n";
+const auto IMAGE_ARCHIVE_LINKER_MEMBER           = "/               ";
+const auto IMAGE_ARCHIVE_LONGNAMES_MEMBER        = "; //              "
 
 struct IMAGE_ARCHIVE_MEMBER_HEADER {
     BYTE     Name[16];                          // File member name - `/' terminated.
@@ -6745,7 +6770,7 @@ struct IMAGE_ARCHIVE_MEMBER_HEADER {
     BYTE     EndHeader[2];                      // String to end header.
 }
 
-alias IMAGE_ARCHIVE_MEMBER_HEADER* PIMAGE_ARCHIVE_MEMBER_HEADER;
+typedef IMAGE_ARCHIVE_MEMBER_HEADER* PIMAGE_ARCHIVE_MEMBER_HEADER;
 
 const auto IMAGE_SIZEOF_ARCHIVE_MEMBER_HDR       = 60;
 
@@ -6771,7 +6796,7 @@ struct IMAGE_EXPORT_DIRECTORY {
     DWORD   AddressOfNameOrdinals;  // RVA from base of image
 }
 
-alias IMAGE_EXPORT_DIRECTORY* PIMAGE_EXPORT_DIRECTORY;
+typedef IMAGE_EXPORT_DIRECTORY* PIMAGE_EXPORT_DIRECTORY;
 
 //
 // Import Format
@@ -6782,7 +6807,7 @@ struct IMAGE_IMPORT_BY_NAME {
     BYTE    Name[1];
 }
 
-alias IMAGE_IMPORT_BY_NAME* PIMAGE_IMPORT_BY_NAME;
+typedef IMAGE_IMPORT_BY_NAME* PIMAGE_IMPORT_BY_NAME;
 
 align(8) struct IMAGE_THUNK_DATA64 {
     union _inner_union {
@@ -6794,7 +6819,7 @@ align(8) struct IMAGE_THUNK_DATA64 {
     _inner_union u1;
 }
 
-alias IMAGE_THUNK_DATA64 * PIMAGE_THUNK_DATA64;
+typedef IMAGE_THUNK_DATA64 * PIMAGE_THUNK_DATA64;
 
 struct IMAGE_THUNK_DATA32 {
     union _inner_union {
@@ -6806,20 +6831,20 @@ struct IMAGE_THUNK_DATA32 {
 	_inner_union u1;
 }
 
-alias IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;
+typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;
 
 const auto IMAGE_ORDINAL_FLAG64  = 0x8000000000000000;
 const auto IMAGE_ORDINAL_FLAG32  = 0x80000000;
-//const auto IMAGE_ORDINAL64(Ordinal)  = (Ordinal & 0xffff);
-//const auto IMAGE_ORDINAL32(Ordinal)  = (Ordinal & 0xffff);
-//const auto IMAGE_SNAP_BY_ORDINAL64(Ordinal)  = ((Ordinal & IMAGE_ORDINAL_FLAG64) != 0);
-//const auto IMAGE_SNAP_BY_ORDINAL32(Ordinal)  = ((Ordinal & IMAGE_ORDINAL_FLAG32) != 0);
+const auto IMAGE_ORDINAL64(Ordinal)  = (Ordinal & 0xffff);
+const auto IMAGE_ORDINAL32(Ordinal)  = (Ordinal & 0xffff);
+const auto IMAGE_SNAP_BY_ORDINAL64(Ordinal)  = ((Ordinal & IMAGE_ORDINAL_FLAG64) != 0);
+const auto IMAGE_SNAP_BY_ORDINAL32(Ordinal)  = ((Ordinal & IMAGE_ORDINAL_FLAG32) != 0);
 
 //
 // Thread Local Storage
 //
 
-alias VOID function(PVOID DllHandle, DWORD Reason, PVOID Reserved) PIMAGE_TLS_CALLBACK;
+typedef VOID function(PVOID DllHandle, DWORD Reason, PVOID Reserved) PIMAGE_TLS_CALLBACK;
 
 struct IMAGE_TLS_DIRECTORY64 {
     ULONGLONG   StartAddressOfRawData;
@@ -6830,7 +6855,7 @@ struct IMAGE_TLS_DIRECTORY64 {
     DWORD   Characteristics;
 }
 
-alias IMAGE_TLS_DIRECTORY64 * PIMAGE_TLS_DIRECTORY64;
+typedef IMAGE_TLS_DIRECTORY64 * PIMAGE_TLS_DIRECTORY64;
 
 struct IMAGE_TLS_DIRECTORY32 {
     DWORD   StartAddressOfRawData;
@@ -6841,21 +6866,22 @@ struct IMAGE_TLS_DIRECTORY32 {
     DWORD   Characteristics;
 }
 
-alias IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;
+typedef IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;
 
+#ifdef _WIN64
 version(X86_64) {
 	const auto IMAGE_ORDINAL_FLAG               = IMAGE_ORDINAL_FLAG64;
-	alias IMAGE_THUNK_DATA64              IMAGE_THUNK_DATA;
-	alias PIMAGE_THUNK_DATA64             PIMAGE_THUNK_DATA;
-	alias IMAGE_TLS_DIRECTORY64           IMAGE_TLS_DIRECTORY;
-	alias PIMAGE_TLS_DIRECTORY64          PIMAGE_TLS_DIRECTORY;
+	typedef IMAGE_THUNK_DATA64              IMAGE_THUNK_DATA;
+	typedef PIMAGE_THUNK_DATA64             PIMAGE_THUNK_DATA;
+	typedef IMAGE_TLS_DIRECTORY64           IMAGE_TLS_DIRECTORY;
+	typedef PIMAGE_TLS_DIRECTORY64          PIMAGE_TLS_DIRECTORY;
 }
 else {
 	const auto IMAGE_ORDINAL_FLAG               = IMAGE_ORDINAL_FLAG32;
-	alias IMAGE_THUNK_DATA32              IMAGE_THUNK_DATA;
-	alias PIMAGE_THUNK_DATA32             PIMAGE_THUNK_DATA;
-	alias IMAGE_TLS_DIRECTORY32           IMAGE_TLS_DIRECTORY;
-	alias PIMAGE_TLS_DIRECTORY32          PIMAGE_TLS_DIRECTORY;
+	typedef IMAGE_THUNK_DATA32              IMAGE_THUNK_DATA;
+	typedef PIMAGE_THUNK_DATA32             PIMAGE_THUNK_DATA;
+	typedef IMAGE_TLS_DIRECTORY32           IMAGE_TLS_DIRECTORY;
+	typedef PIMAGE_TLS_DIRECTORY32          PIMAGE_TLS_DIRECTORY;
 }
 
 struct IMAGE_IMPORT_DESCRIPTOR {
@@ -6874,7 +6900,7 @@ struct IMAGE_IMPORT_DESCRIPTOR {
     DWORD   FirstThunk;                     // RVA to IAT (if bound this IAT has actual addresses)
 }
 
-alias IMAGE_IMPORT_DESCRIPTOR  *PIMAGE_IMPORT_DESCRIPTOR;
+typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;
 
 //
 // New format import descriptors pointed to by DataDirectory[ IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT ]
@@ -6887,7 +6913,7 @@ struct IMAGE_BOUND_IMPORT_DESCRIPTOR {
 // Array of zero or more IMAGE_BOUND_FORWARDER_REF follows
 }
 
-alias IMAGE_BOUND_IMPORT_DESCRIPTOR* PIMAGE_BOUND_IMPORT_DESCRIPTOR;
+typedef IMAGE_BOUND_IMPORT_DESCRIPTOR* PIMAGE_BOUND_IMPORT_DESCRIPTOR;
 
 struct IMAGE_BOUND_FORWARDER_REF {
     DWORD   TimeDateStamp;
@@ -6895,7 +6921,7 @@ struct IMAGE_BOUND_FORWARDER_REF {
     WORD    Reserved;
 }
 
-alias IMAGE_BOUND_FORWARDER_REF* PIMAGE_BOUND_FORWARDER_REF;
+typedef IMAGE_BOUND_FORWARDER_REF* PIMAGE_BOUND_FORWARDER_REF;
 
 //
 // Resource Format.
@@ -6925,7 +6951,7 @@ struct IMAGE_RESOURCE_DIRECTORY {
 //  IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntries[];
 }
 
-alias IMAGE_RESOURCE_DIRECTORY* PIMAGE_RESOURCE_DIRECTORY;
+typedef IMAGE_RESOURCE_DIRECTORY* PIMAGE_RESOURCE_DIRECTORY;
 
 const auto IMAGE_RESOURCE_NAME_IS_STRING         = 0x80000000;
 const auto IMAGE_RESOURCE_DATA_IS_DIRECTORY      = 0x80000000;
@@ -6968,7 +6994,7 @@ struct IMAGE_RESOURCE_DIRECTORY_ENTRY {
     _inner_union2 data;
 }
 
-alias IMAGE_RESOURCE_DIRECTORY_ENTRY* PIMAGE_RESOURCE_DIRECTORY_ENTRY;
+typedef IMAGE_RESOURCE_DIRECTORY_ENTRY* PIMAGE_RESOURCE_DIRECTORY_ENTRY;
 
 //
 // For resource directory entries that have actual string names, the Name
@@ -6984,7 +7010,7 @@ struct IMAGE_RESOURCE_DIRECTORY_STRING {
     CHAR[1]    NameString;
 }
 
-alias IMAGE_RESOURCE_DIRECTORY_STRING* PIMAGE_RESOURCE_DIRECTORY_STRING;
+typedef IMAGE_RESOURCE_DIRECTORY_STRING* PIMAGE_RESOURCE_DIRECTORY_STRING;
 
 
 struct IMAGE_RESOURCE_DIR_STRING_U {
@@ -6992,7 +7018,7 @@ struct IMAGE_RESOURCE_DIR_STRING_U {
     WCHAR[1]   NameString;
 }
 
-alias IMAGE_RESOURCE_DIR_STRING_U* PIMAGE_RESOURCE_DIR_STRING_U;
+typedef IMAGE_RESOURCE_DIR_STRING_U* PIMAGE_RESOURCE_DIR_STRING_U;
 
 
 //
@@ -7011,7 +7037,7 @@ struct IMAGE_RESOURCE_DATA_ENTRY {
     DWORD   Reserved;
 }
 
-alias IMAGE_RESOURCE_DATA_ENTRY* PIMAGE_RESOURCE_DATA_ENTRY;
+typedef IMAGE_RESOURCE_DATA_ENTRY* PIMAGE_RESOURCE_DATA_ENTRY;
 
 //
 // Load Configuration Directory Entry
@@ -7040,7 +7066,7 @@ struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
     DWORD   SEHandlerCount;
 }
 
-alias IMAGE_LOAD_CONFIG_DIRECTORY32* PIMAGE_LOAD_CONFIG_DIRECTORY32;
+typedef IMAGE_LOAD_CONFIG_DIRECTORY32* PIMAGE_LOAD_CONFIG_DIRECTORY32;
 
 struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
     DWORD      Size;
@@ -7065,15 +7091,15 @@ struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
     ULONGLONG  SEHandlerCount;
 }
 
-alias IMAGE_LOAD_CONFIG_DIRECTORY64* PIMAGE_LOAD_CONFIG_DIRECTORY64;
+typedef IMAGE_LOAD_CONFIG_DIRECTORY64* PIMAGE_LOAD_CONFIG_DIRECTORY64;
 
 version(X86_64) {
-	alias IMAGE_LOAD_CONFIG_DIRECTORY64     IMAGE_LOAD_CONFIG_DIRECTORY;
-	alias PIMAGE_LOAD_CONFIG_DIRECTORY64    PIMAGE_LOAD_CONFIG_DIRECTORY;
+	typedef IMAGE_LOAD_CONFIG_DIRECTORY64     IMAGE_LOAD_CONFIG_DIRECTORY;
+	typedef PIMAGE_LOAD_CONFIG_DIRECTORY64    PIMAGE_LOAD_CONFIG_DIRECTORY;
 }
 else {
-	alias IMAGE_LOAD_CONFIG_DIRECTORY32     IMAGE_LOAD_CONFIG_DIRECTORY;
-	alias PIMAGE_LOAD_CONFIG_DIRECTORY32    PIMAGE_LOAD_CONFIG_DIRECTORY;
+	typedef IMAGE_LOAD_CONFIG_DIRECTORY32     IMAGE_LOAD_CONFIG_DIRECTORY;
+	typedef PIMAGE_LOAD_CONFIG_DIRECTORY32    PIMAGE_LOAD_CONFIG_DIRECTORY;
 }
 
 //
@@ -7093,7 +7119,7 @@ struct IMAGE_CE_RUNTIME_FUNCTION_ENTRY {
     DWORD ExceptionFlag : 1;
 }
 
-alias IMAGE_CE_RUNTIME_FUNCTION_ENTRY*  PIMAGE_CE_RUNTIME_FUNCTION_ENTRY;
+typedef IMAGE_CE_RUNTIME_FUNCTION_ENTRY*  PIMAGE_CE_RUNTIME_FUNCTION_ENTRY;
 */
 struct IMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY {
     ULONGLONG BeginAddress;
@@ -7103,7 +7129,7 @@ struct IMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY {
     ULONGLONG PrologEndAddress;
 }
 
-alias IMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY* PIMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY;
+typedef IMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY* PIMAGE_ALPHA64_RUNTIME_FUNCTION_ENTRY;
 
 struct IMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY {
     DWORD BeginAddress;
@@ -7113,7 +7139,7 @@ struct IMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY {
     DWORD PrologEndAddress;
 }
 
-alias IMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY* PIMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY;
+typedef IMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY* PIMAGE_ALPHA_RUNTIME_FUNCTION_ENTRY;
 
 struct _IMAGE_RUNTIME_FUNCTION_ENTRY {
     DWORD BeginAddress;
@@ -7121,13 +7147,13 @@ struct _IMAGE_RUNTIME_FUNCTION_ENTRY {
     DWORD UnwindInfoAddress;
 }
 
-alias _IMAGE_RUNTIME_FUNCTION_ENTRY* _PIMAGE_RUNTIME_FUNCTION_ENTRY;
+typedef _IMAGE_RUNTIME_FUNCTION_ENTRY* _PIMAGE_RUNTIME_FUNCTION_ENTRY;
 
-alias  _IMAGE_RUNTIME_FUNCTION_ENTRY  IMAGE_IA64_RUNTIME_FUNCTION_ENTRY;
-alias _PIMAGE_RUNTIME_FUNCTION_ENTRY PIMAGE_IA64_RUNTIME_FUNCTION_ENTRY;
+typedef  _IMAGE_RUNTIME_FUNCTION_ENTRY  IMAGE_IA64_RUNTIME_FUNCTION_ENTRY;
+typedef _PIMAGE_RUNTIME_FUNCTION_ENTRY PIMAGE_IA64_RUNTIME_FUNCTION_ENTRY;
 
-alias  _IMAGE_RUNTIME_FUNCTION_ENTRY  IMAGE_RUNTIME_FUNCTION_ENTRY;
-alias _PIMAGE_RUNTIME_FUNCTION_ENTRY PIMAGE_RUNTIME_FUNCTION_ENTRY;
+typedef  _IMAGE_RUNTIME_FUNCTION_ENTRY  IMAGE_RUNTIME_FUNCTION_ENTRY;
+typedef _PIMAGE_RUNTIME_FUNCTION_ENTRY PIMAGE_RUNTIME_FUNCTION_ENTRY;
 
 //
 // Debug Format
@@ -7144,7 +7170,7 @@ struct IMAGE_DEBUG_DIRECTORY {
     DWORD   PointerToRawData;
 }
 
-alias IMAGE_DEBUG_DIRECTORY* PIMAGE_DEBUG_DIRECTORY;
+typedef IMAGE_DEBUG_DIRECTORY* PIMAGE_DEBUG_DIRECTORY;
 
 const auto IMAGE_DEBUG_TYPE_UNKNOWN           = 0;
 const auto IMAGE_DEBUG_TYPE_COFF              = 1;
@@ -7171,7 +7197,7 @@ struct IMAGE_COFF_SYMBOLS_HEADER {
     DWORD   RvaToLastByteOfData;
 }
 
-alias IMAGE_COFF_SYMBOLS_HEADER* PIMAGE_COFF_SYMBOLS_HEADER;
+typedef IMAGE_COFF_SYMBOLS_HEADER* PIMAGE_COFF_SYMBOLS_HEADER;
 
 const auto FRAME_FPO        = 0;
 const auto FRAME_TRAP       = 1;
@@ -7183,34 +7209,15 @@ struct FPO_DATA {
     DWORD       cbProcSize;             // # bytes in function
     DWORD       cdwLocals;              // # bytes in locals/4
     WORD        cdwParams;              // # bytes in params/4
-    WORD flags;
-    
-    WORD cbProlog() {
-    	return flags & 0xff;
-    }
-    
-    WORD cbRegs() {
-    	return (flags >> 8) & 0x7;
-    }
-    
-    WORD fHasSEH() {
-    	return (flags >> 11) & 1;
-    }
-    
-    WORD fUseBP() {
-    	return (flags >> 12) & 1;
-    }
-
-    WORD reserved() {
-    	return (flags >> 13) & 1;
-    }
-    
-    WORD cbFrame() {
-    	return (flags >> 14) & 3;
-    }
+    WORD        cbProlog : 8;           // # bytes in prolog
+    WORD        cbRegs   : 3;           // # regs saved
+    WORD        fHasSEH  : 1;           // TRUE if SEH in func
+    WORD        fUseBP   : 1;           // TRUE if EBP has been allocated
+    WORD        reserved : 1;           // reserved for future use
+    WORD        cbFrame  : 2;           // frame type
 }
 
-alias FPO_DATA* PFPO_DATA;
+typedef FPO_DATA* PFPO_DATA;
 const auto SIZEOF_RFPO_DATA  = 16;
 
 
@@ -7225,7 +7232,7 @@ struct IMAGE_DEBUG_MISC {
     BYTE        Data[ 1 ];              // Actual data
 }
 
-alias IMAGE_DEBUG_MISC* PIMAGE_DEBUG_MISC;
+typedef IMAGE_DEBUG_MISC* PIMAGE_DEBUG_MISC;
 
 
 //
@@ -7240,7 +7247,7 @@ struct IMAGE_FUNCTION_ENTRY {
     DWORD   EndOfPrologue;
 }
 
-alias IMAGE_FUNCTION_ENTRY* PIMAGE_FUNCTION_ENTRY;
+typedef IMAGE_FUNCTION_ENTRY* PIMAGE_FUNCTION_ENTRY;
 
 struct IMAGE_FUNCTION_ENTRY64 {
     ULONGLONG   StartingAddress;
@@ -7252,7 +7259,7 @@ struct IMAGE_FUNCTION_ENTRY64 {
     _inner_union fields;
 }
 
-alias IMAGE_FUNCTION_ENTRY64* PIMAGE_FUNCTION_ENTRY64;
+typedef IMAGE_FUNCTION_ENTRY64* PIMAGE_FUNCTION_ENTRY64;
 
 //
 // Debugging information can be stripped from an image file and placed
@@ -7290,7 +7297,7 @@ struct IMAGE_SEPARATE_DEBUG_HEADER {
     DWORD       Reserved[2];
 }
 
-alias IMAGE_SEPARATE_DEBUG_HEADER* PIMAGE_SEPARATE_DEBUG_HEADER;
+typedef IMAGE_SEPARATE_DEBUG_HEADER* PIMAGE_SEPARATE_DEBUG_HEADER;
 
 struct NON_PAGED_DEBUG_INFO {
     WORD        Signature;
@@ -7306,7 +7313,7 @@ struct NON_PAGED_DEBUG_INFO {
     //IMAGE_DEBUG_DIRECTORY
 }
 
-alias NON_PAGED_DEBUG_INFO* PNON_PAGED_DEBUG_INFO;
+typedef NON_PAGED_DEBUG_INFO* PNON_PAGED_DEBUG_INFO;
 
 const auto IMAGE_SEPARATE_DEBUG_SIGNATURE  = 0x4944;
 const auto NON_PAGED_DEBUG_SIGNATURE       = 0x494E;
@@ -7331,15 +7338,15 @@ struct IMAGE_ARCHITECTURE_HEADER {
     int :16;                                    // MBZ
     DWORD FirstEntryRVA;                        // RVA into .arch section to array of ARCHITECTURE_ENTRY's
 }
-alias IMAGE_ARCHITECTURE_HEADER* PIMAGE_ARCHITECTURE_HEADER;
-+/
+*/
+typedef IMAGE_ARCHITECTURE_HEADER* PIMAGE_ARCHITECTURE_HEADER;
 
 struct IMAGE_ARCHITECTURE_ENTRY {
     DWORD FixupInstRVA;                         // RVA of instruction to fixup
     DWORD NewInst;                              // fixup instruction (see alphaops.h)
 }
 
-alias IMAGE_ARCHITECTURE_ENTRY* PIMAGE_ARCHITECTURE_ENTRY;
+typedef IMAGE_ARCHITECTURE_ENTRY* PIMAGE_ARCHITECTURE_ENTRY;
 
 
 // The following structure defines the new import object.  Note the values of the first two fields,
@@ -7348,7 +7355,7 @@ alias IMAGE_ARCHITECTURE_ENTRY* PIMAGE_ARCHITECTURE_ENTRY;
 // import at the time of use.  The first string is the import's name, the second is the dll's name.
 
 const auto IMPORT_OBJECT_HDR_SIG2   = 0xffff;
-/*
+
 struct IMPORT_OBJECT_HEADER {
     WORD    Sig1;                       // Must be IMAGE_FILE_MACHINE_UNKNOWN
     WORD    Sig2;                       // Must be IMPORT_OBJECT_HDR_SIG2.
@@ -7362,14 +7369,15 @@ struct IMPORT_OBJECT_HEADER {
         WORD    Hint;
     }
     _inner_union fields;
-
+    
     WORD flags;
+/*
+    WORD    Type : 2;                   // IMPORT_TYPE
+    WORD    NameType : 3;               // IMPORT_NAME_TYPE
+    WORD    Reserved : 11;              // Reserved. Must be zero.
+    */
+}
 
-    //WORD    Type : 2;                   // IMPORT_TYPE
-    //WORD    NameType : 3;               // IMPORT_NAME_TYPE
-    //WORD    Reserved : 11;              // Reserved. Must be zero.
-
-}*/
 
 enum IMPORT_OBJECT_TYPE {
     IMPORT_OBJECT_CODE = 0,
@@ -7429,59 +7437,8 @@ enum ReplacesCorHdrNumericDefines {
 
 // CLR 2.0 header structure.
 struct SLIST_ENTRY {
-    SLIST_ENTRY* Next;
+    PSLIST_ENTRY Next;
 }
-
-version(X86_64) {
-	align(16) union SLIST_HEADER {
-	    struct _inner_struct {  // original struct
-	        ULONGLONG Alignment;
-	        ULONGLONG Region;
-	    }
-	    _inner_struct original;
-
-	    struct _inner_struct2 {  // 8-byte header
-	     /*   ULONGLONG Depth:16;
-	        ULONGLONG Sequence:9;
-	        ULONGLONG NextEntry:39;
-	        ULONGLONG HeaderType:1; // 0: 8-byte; 1: 16-byte
-	        ULONGLONG Init:1;       // 0: uninitialized; 1: initialized
-	        ULONGLONG Reserved:59;
-	        ULONGLONG Region:3;
-	        
-	        */
-	    }
-		_inner_struct2 Header8;
-
-	    struct _inner_struct3 {  // 16-byte header
-	        /*ULONGLONG Depth:16;
-	        ULONGLONG Sequence:48;
-	        ULONGLONG HeaderType:1; // 0: 8-byte; 1: 16-byte
-	        ULONGLONG Init:1;       // 0: uninitialized; 1: initialized
-	        ULONGLONG Reserved:2;
-	        ULONGLONG NextEntry:60; // last 4 bits are always 0's
-	        */
-	    }
-		_inner_struct3 Header16;
-	}
-
-}
-else {
-
-	union SLIST_HEADER {
-	    ULONGLONG Alignment;
-	    struct _inner_struct {
-	        SLIST_ENTRY Next;
-	        WORD   Depth;
-	        WORD   Sequence;
-	    }
-	    _inner_struct fields;
-	}
-
-}
-
-alias SLIST_ENTRY* PSLIST_ENTRY;
-alias SLIST_HEADER* PSLIST_HEADER;
 
 VOID
 
@@ -7531,8 +7488,6 @@ RtlQueryDepthSList (
 // Run once
 //
 
-const auto RTL_RUN_ONCE_INIT = RTL_RUN_ONCE.init;   // Static initializer
-
 //
 // Run once flags
 //
@@ -7553,9 +7508,9 @@ union RTL_RUN_ONCE {
     PVOID Ptr;
 }
 
-alias RTL_RUN_ONCE* PRTL_RUN_ONCE;
+typedef RTL_RUN_ONCE* PRTL_RUN_ONCE;
 
-alias DWORD function(PRTL_RUN_ONCE RunOnce, PVOID Parameter, PVOID* Context) PRTL_RUN_ONCE_INIT_FN;
+typedef DWORD function(PRTL_RUN_ONCE RunOnce, PVOID Parameter, PVOID* Context) PRTL_RUN_ONCE_INIT_FN;
 
 VOID
 RtlRunOnceInitialize (
@@ -7598,21 +7553,40 @@ const auto HEAP_CREATE_ENABLE_EXECUTE       = 0x00040000      ;
 const auto HEAP_MAXIMUM_TAG                 = 0x0FFF              ;
 const auto HEAP_PSEUDO_TAG_FLAG             = 0x8000              ;
 const auto HEAP_TAG_SHIFT                   = 18                  ;
+#if !defined(MIDL_PASS)
+FORCEINLINE
+DWORD
+HEAP_MAKE_TAG_FLAGS (
+     DWORD TagBase,
+     DWORD Tag
+    )
+
+{
+    __assume_bound(TagBase);
+    return ((DWORD)((TagBase) + ((Tag) << HEAP_TAG_SHIFT)));
+}
+#endif
+
+#if (NTDDI_VERSION > NTDDI_WINXP)
 
 WORD
 
 RtlCaptureStackBackTrace(
      DWORD FramesToSkip,
      DWORD FramesToCapture,
-    PVOID *BackTrace,
+    _ecount(FramesToCapture) PVOID *BackTrace,
      PDWORD BackTraceHash
    );
+#endif
+
+#if (NTDDI_VERSION > NTDDI_WIN2K)
 
 VOID
 
 RtlCaptureContext (
-     CONTEXT* ContextRecord
+     PCONTEXT ContextRecord
     );
+#endif
 
 
 const auto IS_TEXT_UNICODE_ASCII16                = 0x0001;
@@ -7644,34 +7618,78 @@ const auto COMPRESSION_ENGINE_STANDARD       = (0x0000)   ;
 const auto COMPRESSION_ENGINE_MAXIMUM        = (0x0100)   ;
 const auto COMPRESSION_ENGINE_HIBER          = (0x0200)   ;
 
+#if _DBG_MEMCPY_INLINE_ && !defined(MIDL_PASS) && !defined(_MEMCPY_INLINE_) && !defined(_CRTBLD)
+#define _MEMCPY_INLINE_
+FORCEINLINE
+PVOID
+
+memcpy_inline (
+    void *dst,
+    const void *src,
+    size_t size
+    )
+{
+    //
+    // Make sure the source and destination do not overlap such that the
+    // move destroys the destination.
+    //
+    if (((char *)dst > (char *)src) &&
+        ((char *)dst < ((char *)src + size))) {
+        __debugbreak();
+    }
+    return memcpy(dst, src, size);
+}
+const auto memcpy  = memcpy_inline;
+#endif
+
+#if (NTDDI_VERSION >= NTDDI_WIN2K)
 
 SIZE_T
 
 RtlCompareMemory (
-    VOID *Source1,
-    VOID *Source2,
+    const VOID *Source1,
+    const VOID *Source2,
     SIZE_T Length
     );
 
-void RtlMoveMemory(void* Destination, void* Source, size_t Length) {
-	memmove(Destination, Source, Length);
+#endif
+
+const auto RtlEqualMemory(Destination,Source,Length)  = (!memcmp((Destination),(Source),(Length)));
+const auto RtlMoveMemory(Destination,Source,Length)  = memmove((Destination),(Source),(Length));
+const auto RtlCopyMemory(Destination,Source,Length)  = memcpy((Destination),(Source),(Length));
+const auto RtlFillMemory(Destination,Length,Fill)  = memset((Destination),(Fill),(Length));
+const auto RtlZeroMemory(Destination,Length)  = memset((Destination),0,(Length));
+
+
+#if !defined(MIDL_PASS)
+
+FORCEINLINE
+PVOID
+RtlSecureZeroMemory(
+    _bcount(cnt) PVOID ptr,
+     SIZE_T cnt
+    )
+{
+    volatile char *vptr = (volatile char *)ptr;
+
+#if defined(_M_AMD64)
+
+        __stosb((PBYTE )((DWORD64)vptr), 0, cnt);
+
+#else
+
+    while (cnt) {
+        *vptr = 0;
+        vptr++;
+        cnt--;
+    }
+
+#endif
+
+    return ptr;
 }
 
-void RtlCopyMemory(void* Destination, void* Source, size_t Length) {
-	memcpy(Destination, Source, Length);
-}
-
-bool RtlEqualMemory(void* Destination, void* Source, size_t Length) {
-	return !memcmp(Destination, Source, Length);
-}
-
-void RtlFillMemory(void* Destination, size_t Length, UCHAR Fill) {
-	memset(Destination, Fill, Length);
-}
-
-void RtlZeroMemory(void* Destination, size_t Length) {
-	memset(Destination, 0, Length);
-}
+#endif
 
 
 const auto SEF_DACL_AUTO_INHERIT              = 0x01;
@@ -7686,9 +7704,9 @@ const auto SEF_MACL_NO_READ_UP                = 0x200;
 const auto SEF_MACL_NO_EXECUTE_UP             = 0x400;
 const auto SEF_AVOID_OWNER_RESTRICTION        = 0x1000;
 
-const auto SEF_MACL_VALID_FLAGS               = (SEF_MACL_NO_WRITE_UP   |
-                                           SEF_MACL_NO_READ_UP    |
-                                           SEF_MACL_NO_EXECUTE_UP);
+const auto SEF_MACL_VALID_FLAGS               = (SEF_MACL_NO_WRITE_UP   | \;
+                                           SEF_MACL_NO_READ_UP    | \
+                                           SEF_MACL_NO_EXECUTE_UP)
 
 
 struct MESSAGE_RESOURCE_ENTRY {
@@ -7697,7 +7715,7 @@ struct MESSAGE_RESOURCE_ENTRY {
     BYTE  Text[ 1 ];
 }
 
-alias MESSAGE_RESOURCE_ENTRY* PMESSAGE_RESOURCE_ENTRY;
+typedef MESSAGE_RESOURCE_ENTRY* PMESSAGE_RESOURCE_ENTRY;
 
 const auto MESSAGE_RESOURCE_UNICODE  = 0x0001;
 
@@ -7707,14 +7725,14 @@ struct MESSAGE_RESOURCE_BLOCK {
     DWORD OffsetToEntries;
 }
 
-alias MESSAGE_RESOURCE_BLOCK* PMESSAGE_RESOURCE_BLOCK;
+typedef MESSAGE_RESOURCE_BLOCK* PMESSAGE_RESOURCE_BLOCK;
 
 struct MESSAGE_RESOURCE_DATA {
     DWORD NumberOfBlocks;
     MESSAGE_RESOURCE_BLOCK Blocks[ 1 ];
 }
 
-alias MESSAGE_RESOURCE_DATA* PMESSAGE_RESOURCE_DATA;
+typedef MESSAGE_RESOURCE_DATA* PMESSAGE_RESOURCE_DATA;
 
 struct OSVERSIONINFOA {
     DWORD dwOSVersionInfoSize;
@@ -7725,8 +7743,8 @@ struct OSVERSIONINFOA {
     CHAR   szCSDVersion[ 128 ];     // Maintenance string for PSS usage
 }
 
-alias OSVERSIONINFOA* POSVERSIONINFOA;
-alias OSVERSIONINFOA* LPOSVERSIONINFOA;
+typedef OSVERSIONINFOA* POSVERSIONINFOA;
+typedef OSVERSIONINFOA* LPOSVERSIONINFOA;
 
 struct OSVERSIONINFOW {
     DWORD dwOSVersionInfoSize;
@@ -7737,20 +7755,19 @@ struct OSVERSIONINFOW {
     WCHAR  szCSDVersion[ 128 ];     // Maintenance string for PSS usage
 }
 
-alias OSVERSIONINFOW* POSVERSIONINFOW;
-alias OSVERSIONINFOW* LPOSVERSIONINFOW;
-alias OSVERSIONINFOW RTL_OSVERSIONINFOW;
-alias OSVERSIONINFOW* PRTL_OSVERSIONINFOW;
-
+typedef OSVERSIONINFOW* POSVERSIONINFOW;
+typedef OSVERSIONINFOW* LPOSVERSIONINFOW;
+typedef OSVERSIONINFOW RTL_OSVERSIONINFOW;
+typedef OSVERSIONINFOW* PRTL_OSVERSIONINFOW;
 version(UNICODE) {
-	alias OSVERSIONINFOW OSVERSIONINFO;
-	alias POSVERSIONINFOW POSVERSIONINFO;
-	alias LPOSVERSIONINFOW LPOSVERSIONINFO;
+typedef OSVERSIONINFOW OSVERSIONINFO;
+typedef POSVERSIONINFOW POSVERSIONINFO;
+typedef LPOSVERSIONINFOW LPOSVERSIONINFO;
 }
 else {
-	alias OSVERSIONINFOA OSVERSIONINFO;
-	alias POSVERSIONINFOA POSVERSIONINFO;
-	alias LPOSVERSIONINFOA LPOSVERSIONINFO;
+typedef OSVERSIONINFOA OSVERSIONINFO;
+typedef POSVERSIONINFOA POSVERSIONINFO;
+typedef LPOSVERSIONINFOA LPOSVERSIONINFO;
 }
 
 struct OSVERSIONINFOEXA {
@@ -7767,8 +7784,8 @@ struct OSVERSIONINFOEXA {
     BYTE  wReserved;
 }
 
-alias OSVERSIONINFOEXA* POSVERSIONINFOEXA;
-alias OSVERSIONINFOEXA* LPOSVERSIONINFOEXA;
+typedef OSVERSIONINFOEXA* POSVERSIONINFOEXA;
+typedef OSVERSIONINFOEXA* LPOSVERSIONINFOEXA;
 struct OSVERSIONINFOEXW {
     DWORD dwOSVersionInfoSize;
     DWORD dwMajorVersion;
@@ -7783,20 +7800,19 @@ struct OSVERSIONINFOEXW {
     BYTE  wReserved;
 }
 
-alias OSVERSIONINFOEXW* POSVERSIONINFOEXW;
-alias OSVERSIONINFOEXW* LPOSVERSIONINFOEXW;
-alias OSVERSIONINFOEXW RTL_OSVERSIONINFOEXW;
-alias OSVERSIONINFOEXW* PRTL_OSVERSIONINFOEXW;
-
+typedef OSVERSIONINFOEXW* POSVERSIONINFOEXW;
+typedef OSVERSIONINFOEXW* LPOSVERSIONINFOEXW;
+typedef OSVERSIONINFOEXW RTL_OSVERSIONINFOEXW;
+typedef OSVERSIONINFOEXW* PRTL_OSVERSIONINFOEXW;
 version(UNICODE) {
-	alias OSVERSIONINFOEXW OSVERSIONINFOEX;
-	alias POSVERSIONINFOEXW POSVERSIONINFOEX;
-	alias LPOSVERSIONINFOEXW LPOSVERSIONINFOEX;
+typedef OSVERSIONINFOEXW OSVERSIONINFOEX;
+typedef POSVERSIONINFOEXW POSVERSIONINFOEX;
+typedef LPOSVERSIONINFOEXW LPOSVERSIONINFOEX;
 }
 else {
-	alias OSVERSIONINFOEXA OSVERSIONINFOEX;
-	alias POSVERSIONINFOEXA POSVERSIONINFOEX;
-	alias LPOSVERSIONINFOEXA LPOSVERSIONINFOEX;
+typedef OSVERSIONINFOEXA OSVERSIONINFOEX;
+typedef POSVERSIONINFOEXA POSVERSIONINFOEX;
+typedef LPOSVERSIONINFOEXA LPOSVERSIONINFOEX;
 }
 
 //
@@ -7853,9 +7869,10 @@ const auto VER_PLATFORM_WIN32_NT            = 2;
 // #define VER_SET_CONDITION(_m_,_t_,_c_)  _m_=(_m_|(_c_<<(1<<_t_)))
 //
 
-/*const auto VER_SET_CONDITION(_m_,_t_,_c_)   = \;
+const auto VER_SET_CONDITION(_m_,_t_,_c_)   = \;
         ((_m_)=VerSetConditionMask((_m_),(_t_),(_c_)))
-*/
+
+#if (NTDDI_VERSION >= NTDDI_WIN2K)
 
 ULONGLONG
 
@@ -7864,8 +7881,11 @@ VerSetConditionMask(
           DWORD   TypeMask,
           BYTE    Condition
         );
+#endif
 
 //
+
+#if (NTDDI_VERSION >= NTDDI_LONGHORN)
 
 
 BOOLEAN
@@ -7878,10 +7898,13 @@ RtlGetProductInfo(
      PDWORD ReturnedProductType
     );
 
+#endif
+
+
 struct RTL_CRITICAL_SECTION_DEBUG {
     WORD   Type;
     WORD   CreatorBackTraceIndex;
-    RTL_CRITICAL_SECTION *CriticalSection;
+    struct _RTL_CRITICAL_SECTION *CriticalSection;
     LIST_ENTRY ProcessLocksList;
     DWORD EntryCount;
     DWORD ContentionCount;
@@ -7890,9 +7913,9 @@ struct RTL_CRITICAL_SECTION_DEBUG {
     WORD   SpareWORD  ;
 }
 
-alias RTL_CRITICAL_SECTION_DEBUG* PRTL_CRITICAL_SECTION_DEBUG;
-alias RTL_CRITICAL_SECTION_DEBUG RTL_RESOURCE_DEBUG;
-alias RTL_CRITICAL_SECTION_DEBUG* PRTL_RESOURCE_DEBUG;
+typedef RTL_CRITICAL_SECTION_DEBUG* PRTL_CRITICAL_SECTION_DEBUG;
+typedef RTL_CRITICAL_SECTION_DEBUG RTL_RESOURCE_DEBUG;
+typedef RTL_CRITICAL_SECTION_DEBUG* PRTL_RESOURCE_DEBUG;
 
 const auto RTL_CRITSECT_TYPE  = 0;
 const auto RTL_RESOURCE_TYPE  = 1;
@@ -7911,7 +7934,9 @@ const auto RTL_CRITICAL_SECTION_FLAG_RESERVED               = (RTL_CRITICAL_SECT
 //
 const auto RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT      = 0x00000001;
 
-align(8) struct RTL_CRITICAL_SECTION {
+#pragma pack(push, 8)
+
+struct RTL_CRITICAL_SECTION {
     PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
 
     //
@@ -7926,31 +7951,34 @@ align(8) struct RTL_CRITICAL_SECTION {
     ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 }
 
-alias RTL_CRITICAL_SECTION* PRTL_CRITICAL_SECTION;
+typedef RTL_CRITICAL_SECTION* PRTL_CRITICAL_SECTION;
 
-struct RTL_SRWLOCK {
-        PVOID Ptr;
+#pragma pack(pop)
+
+struct RTL_SRWLOCK {                            
+        PVOID Ptr;                                       
 }
 
-alias RTL_SRWLOCK* PRTL_SRWLOCK;
-const auto RTL_SRWLOCK_INIT  = RTL_SRWLOCK.init                            ;
-struct RTL_CONDITION_VARIABLE {
-        PVOID Ptr;
+typedef RTL_SRWLOCK* PRTL_SRWLOCK;
+const auto RTL_SRWLOCK_INIT  = {0}                            ;
+struct RTL_CONDITION_VARIABLE {                    
+        PVOID Ptr;                                       
 }
 
-alias RTL_CONDITION_VARIABLE* PRTL_CONDITION_VARIABLE;
-const auto RTL_CONDITION_VARIABLE_INIT  = RTL_CONDITION_VARIABLE.init                 ;
+typedef RTL_CONDITION_VARIABLE* PRTL_CONDITION_VARIABLE;
+const auto RTL_CONDITION_VARIABLE_INIT  = {0}                 ;
 const auto RTL_CONDITION_VARIABLE_LOCKMODE_SHARED   = 0x1     ;
+typedef LONG ( *PVECTORED_EXCEPTION_HANDLER)(
+    struct _EXCEPTION_POINTERS *ExceptionInfo
+    );
 
-alias LONG function(EXCEPTION_POINTERS* ExceptionInfo) PVECTORED_EXCEPTION_HANDLER;
-
-enum HEAP_INFORMATION_CLASS {
+typedef enum _HEAP_INFORMATION_CLASS {
 
     HeapCompatibilityInformation,
     HeapEnableTerminationOnCorruption
 
 
-}
+} HEAP_INFORMATION_CLASS;
 
 
 const auto WT_EXECUTEDEFAULT        = 0x00000000                           ;
@@ -7963,16 +7991,19 @@ const auto WT_EXECUTELONGFUNCTION   = 0x00000010                           ;
 const auto WT_EXECUTEINPERSISTENTIOTHREAD   = 0x00000040                   ;
 const auto WT_EXECUTEINPERSISTENTTHREAD  = 0x00000080                      ;
 const auto WT_TRANSFER_IMPERSONATION  = 0x00000100                         ;
-//const auto WT_SET_MAX_THREADPOOL_THREADS(Flags,  = Limit)  ((Flags) |= (Limit)<<16) ;
-alias VOID function(PVOID, BOOLEAN) WAITORTIMERCALLBACKFUNC;
-alias VOID function(PVOID) WORKERCALLBACKFUNC;
-alias VOID function(DWORD, PVOID, PVOID) APC_CALLBACK_FUNCTION;
-alias VOID function(PVOID lpFlsData) PFLS_CALLBACK_FUNCTION;
-
+const auto WT_SET_MAX_THREADPOOL_THREADS(Flags,  = Limit)  ((Flags) |= (Limit)<<16) ;
+typedef VOID ( * WAITORTIMERCALLBACKFUNC) (PVOID, BOOLEAN );   
+typedef VOID ( * WORKERCALLBACKFUNC) (PVOID );                 
+typedef VOID ( * APC_CALLBACK_FUNCTION) (DWORD   , PVOID, PVOID); 
+typedef
+VOID
+( *PFLS_CALLBACK_FUNCTION) (
+     PVOID lpFlsData
+    );
 const auto WT_EXECUTEINLONGTHREAD   = 0x00000010                           ;
 const auto WT_EXECUTEDELETEWAIT     = 0x00000008                           ;
 
-enum ACTIVATION_CONTEXT_INFO_CLASS {
+typedef enum _ACTIVATION_CONTEXT_INFO_CLASS {
     ActivationContextBasicInformation                       = 1,
     ActivationContextDetailedInformation                    = 2,
     AssemblyDetailedInformationInActivationContext          = 3,
@@ -7985,7 +8016,7 @@ enum ACTIVATION_CONTEXT_INFO_CLASS {
     //
     AssemblyDetailedInformationInActivationContxt           = 3,
     FileInformationInAssemblyOfAssemblyInActivationContxt   = 4
-}
+} ACTIVATION_CONTEXT_INFO_CLASS;
 
 const auto ACTIVATIONCONTEXTINFOCLASS  = ACTIVATION_CONTEXT_INFO_CLASS;
 
@@ -7995,9 +8026,9 @@ struct ACTIVATION_CONTEXT_QUERY_INDEX {
     DWORD ulFileIndexInAssembly;
 }
 
-alias ACTIVATION_CONTEXT_QUERY_INDEX*  PACTIVATION_CONTEXT_QUERY_INDEX;
+typedef ACTIVATION_CONTEXT_QUERY_INDEX*  PACTIVATION_CONTEXT_QUERY_INDEX;
 
-alias ACTIVATION_CONTEXT_QUERY_INDEX* PCACTIVATION_CONTEXT_QUERY_INDEX;
+typedef const struct _ACTIVATION_CONTEXT_QUERY_INDEX * PCACTIVATION_CONTEXT_QUERY_INDEX;
 
 
 const auto ACTIVATION_CONTEXT_PATH_TYPE_NONE  = (1);
@@ -8014,16 +8045,16 @@ struct ASSEMBLY_FILE_DETAILED_INFORMATION {
     PCWSTR lpFilePath;
 }
 
-alias ASSEMBLY_FILE_DETAILED_INFORMATION* PASSEMBLY_FILE_DETAILED_INFORMATION;
-alias ASSEMBLY_FILE_DETAILED_INFORMATION *PCASSEMBLY_FILE_DETAILED_INFORMATION;
+typedef ASSEMBLY_FILE_DETAILED_INFORMATION* PASSEMBLY_FILE_DETAILED_INFORMATION;
+typedef const ASSEMBLY_FILE_DETAILED_INFORMATION *PCASSEMBLY_FILE_DETAILED_INFORMATION;
 
 //
 // compatibility with old names
 // The new names use "file" consistently.
 //
-const auto _ASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION = ASSEMBLY_FILE_DETAILED_INFORMATION;
-const auto ASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION  = ASSEMBLY_FILE_DETAILED_INFORMATION;
-const auto PASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION = PASSEMBLY_FILE_DETAILED_INFORMATION;
+const auto   = _ASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION  _ASSEMBLY_FILE_DETAILED_INFORMATION;
+const auto    = ASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION   ASSEMBLY_FILE_DETAILED_INFORMATION;
+const auto   = PASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION  PASSEMBLY_FILE_DETAILED_INFORMATION;
 const auto PCASSEMBLY_DLL_REDIRECTION_DETAILED_INFORMATION  = PCASSEMBLY_FILE_DETAILED_INFORMATION;
 
 struct ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION {
@@ -8051,17 +8082,18 @@ struct ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION {
     DWORD  ulFileCount;
 }
 
-alias ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION*  PACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION;
+typedef ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION*  PACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION;
 
-alias ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION * PCACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION ;
+typedef const struct _ACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION * PCACTIVATION_CONTEXT_ASSEMBLY_DETAILED_INFORMATION ;
 
-enum ACTCTX_REQUESTED_RUN_LEVEL {
+typedef enum
+{
     ACTCTX_RUN_LEVEL_UNSPECIFIED = 0,
     ACTCTX_RUN_LEVEL_AS_INVOKER,
     ACTCTX_RUN_LEVEL_HIGHEST_AVAILABLE,
     ACTCTX_RUN_LEVEL_REQUIRE_ADMIN,
     ACTCTX_RUN_LEVEL_NUMBERS
-}
+} ACTCTX_REQUESTED_RUN_LEVEL;
 
 struct ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION {
     DWORD ulFlags;
@@ -8069,9 +8101,9 @@ struct ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION {
     DWORD UiAccess;
 }
 
-alias ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION*  PACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION;
+typedef ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION*  PACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION;
 
-alias ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION * PCACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION ;
+typedef const struct _ACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION * PCACTIVATION_CONTEXT_RUN_LEVEL_INFORMATION ;
 
 struct ACTIVATION_CONTEXT_DETAILED_INFORMATION {
     DWORD dwFlags;
@@ -8088,9 +8120,9 @@ struct ACTIVATION_CONTEXT_DETAILED_INFORMATION {
     PCWSTR lpAppDirPath;
 }
 
-alias ACTIVATION_CONTEXT_DETAILED_INFORMATION* PACTIVATION_CONTEXT_DETAILED_INFORMATION;
+typedef ACTIVATION_CONTEXT_DETAILED_INFORMATION* PACTIVATION_CONTEXT_DETAILED_INFORMATION;
 
-alias ACTIVATION_CONTEXT_DETAILED_INFORMATION *PCACTIVATION_CONTEXT_DETAILED_INFORMATION;
+typedef const struct _ACTIVATION_CONTEXT_DETAILED_INFORMATION *PCACTIVATION_CONTEXT_DETAILED_INFORMATION;
 
 const auto DLL_PROCESS_ATTACH    = 1    ;
 const auto DLL_THREAD_ATTACH     = 2    ;
@@ -8165,12 +8197,16 @@ struct EVENTLOGRECORD {
     //
 }
 
-alias EVENTLOGRECORD* PEVENTLOGRECORD;
+typedef EVENTLOGRECORD* PEVENTLOGRECORD;
 
 //SS: start of changes to support clustering
 //SS: ideally the
 const auto MAXLOGICALLOGNAMESIZE    = 256;
 
+#if _MSC_VER >= 1200
+#pragma warning(push)
+#endif
+#pragma warning(disable : 4200)
 struct EVENTSFORLOGFILE {
     DWORD           ulSize;
     WCHAR           szLogicalLogFile[MAXLOGICALLOGNAMESIZE];        //name of the logical file-security/application/system
@@ -8178,7 +8214,7 @@ struct EVENTSFORLOGFILE {
     EVENTLOGRECORD  pEventLogRecords[];
 }
 
-alias EVENTSFORLOGFILE* PEVENTSFORLOGFILE;
+typedef EVENTSFORLOGFILE* PEVENTSFORLOGFILE;
 
 struct PACKEDEVENTINFO {
     DWORD               ulSize;  //total size of the structure
@@ -8186,12 +8222,17 @@ struct PACKEDEVENTINFO {
     DWORD               ulOffsets[];           //the offsets from the start of this structure to the EVENTSFORLOGFILE structure
 }
 
-alias PACKEDEVENTINFO* PPACKEDEVENTINFO;
+typedef PACKEDEVENTINFO* PPACKEDEVENTINFO;
 
+#if _MSC_VER >= 1200
+#pragma warning(pop)
+#else
+#pragma warning(default : 4200)
+#endif
 //SS: end of changes to support clustering
 //
 
-// begin_wdm
+// begin_wdm 
 //
 // Registry Specific Access Rights.
 //
@@ -8206,33 +8247,33 @@ const auto KEY_WOW64_32KEY          = (0x0200);
 const auto KEY_WOW64_64KEY          = (0x0100);
 const auto KEY_WOW64_RES            = (0x0300);
 
-const auto KEY_READ                 = ((STANDARD_RIGHTS_READ       |
-                                  KEY_QUERY_VALUE            |
-                                  KEY_ENUMERATE_SUB_KEYS     |
-                                  KEY_NOTIFY)
-                                  &
-                                 (~SYNCHRONIZE));
+const auto KEY_READ                 = ((STANDARD_RIGHTS_READ       |\;
+                                  KEY_QUERY_VALUE            |\
+                                  KEY_ENUMERATE_SUB_KEYS     |\
+                                  KEY_NOTIFY)                 \
+                                  &                           \
+                                 (~SYNCHRONIZE))
 
 
-const auto KEY_WRITE                = ((STANDARD_RIGHTS_WRITE      |
-                                  KEY_SET_VALUE              |
-                                  KEY_CREATE_SUB_KEY)
-                                  &
-                                 (~SYNCHRONIZE));
+const auto KEY_WRITE                = ((STANDARD_RIGHTS_WRITE      |\;
+                                  KEY_SET_VALUE              |\
+                                  KEY_CREATE_SUB_KEY)         \
+                                  &                           \
+                                 (~SYNCHRONIZE))
 
-const auto KEY_EXECUTE              = ((KEY_READ)
-                                  &
-                                 (~SYNCHRONIZE));
+const auto KEY_EXECUTE              = ((KEY_READ)                   \;
+                                  &                           \
+                                 (~SYNCHRONIZE))
 
-const auto KEY_ALL_ACCESS           = ((STANDARD_RIGHTS_ALL        |
-                                  KEY_QUERY_VALUE            |
-                                  KEY_SET_VALUE              |
-                                  KEY_CREATE_SUB_KEY         |
-                                  KEY_ENUMERATE_SUB_KEYS     |
-                                  KEY_NOTIFY                 |
-                                  KEY_CREATE_LINK)
-                                  &
-                                 (~SYNCHRONIZE));
+const auto KEY_ALL_ACCESS           = ((STANDARD_RIGHTS_ALL        |\;
+                                  KEY_QUERY_VALUE            |\
+                                  KEY_SET_VALUE              |\
+                                  KEY_CREATE_SUB_KEY         |\
+                                  KEY_ENUMERATE_SUB_KEYS     |\
+                                  KEY_NOTIFY                 |\
+                                  KEY_CREATE_LINK)            \
+                                  &                           \
+                                 (~SYNCHRONIZE))
 
 //
 // Open/Create Options
@@ -8255,13 +8296,13 @@ const auto REG_OPTION_BACKUP_RESTORE    = (0x00000004L)   ; // open for backup o
 
 const auto REG_OPTION_OPEN_LINK         = (0x00000008L)   ; // Open symbolic link
 
-const auto REG_LEGAL_OPTION             =
-                (REG_OPTION_RESERVED            |
-                 REG_OPTION_NON_VOLATILE        |
-                 REG_OPTION_VOLATILE            |
-                 REG_OPTION_CREATE_LINK         |
-                 REG_OPTION_BACKUP_RESTORE      |
-                 REG_OPTION_OPEN_LINK);
+const auto REG_LEGAL_OPTION             = \;
+                (REG_OPTION_RESERVED            |\
+                 REG_OPTION_NON_VOLATILE        |\
+                 REG_OPTION_VOLATILE            |\
+                 REG_OPTION_CREATE_LINK         |\
+                 REG_OPTION_BACKUP_RESTORE      |\
+                 REG_OPTION_OPEN_LINK)
 
 //
 // Key creation/open disposition
@@ -8306,11 +8347,11 @@ const auto REG_NOTIFY_CHANGE_ATTRIBUTES     = (0x00000002L);
 const auto REG_NOTIFY_CHANGE_LAST_SET       = (0x00000004L) ; // time stamp
 const auto REG_NOTIFY_CHANGE_SECURITY       = (0x00000008L);
 
-const auto REG_LEGAL_CHANGE_FILTER                  =
-                (REG_NOTIFY_CHANGE_NAME          |
-                 REG_NOTIFY_CHANGE_ATTRIBUTES    |
-                 REG_NOTIFY_CHANGE_LAST_SET      |
-                 REG_NOTIFY_CHANGE_SECURITY);
+const auto REG_LEGAL_CHANGE_FILTER                  = \;
+                (REG_NOTIFY_CHANGE_NAME          |\
+                 REG_NOTIFY_CHANGE_ATTRIBUTES    |\
+                 REG_NOTIFY_CHANGE_LAST_SET      |\
+                 REG_NOTIFY_CHANGE_SECURITY)
  
 // end_wdm 
 
@@ -8346,21 +8387,21 @@ const auto SERVICE_FILE_SYSTEM_DRIVER      = 0x00000002;
 const auto SERVICE_ADAPTER                 = 0x00000004;
 const auto SERVICE_RECOGNIZER_DRIVER       = 0x00000008;
 
-const auto SERVICE_DRIVER                  = (SERVICE_KERNEL_DRIVER |
-                                        SERVICE_FILE_SYSTEM_DRIVER |
-                                        SERVICE_RECOGNIZER_DRIVER);
+const auto SERVICE_DRIVER                  = (SERVICE_KERNEL_DRIVER | \;
+                                        SERVICE_FILE_SYSTEM_DRIVER | \
+                                        SERVICE_RECOGNIZER_DRIVER)
 
 const auto SERVICE_WIN32_OWN_PROCESS       = 0x00000010;
 const auto SERVICE_WIN32_SHARE_PROCESS     = 0x00000020;
-const auto SERVICE_WIN32                   = (SERVICE_WIN32_OWN_PROCESS |
-                                        SERVICE_WIN32_SHARE_PROCESS);
+const auto SERVICE_WIN32                   = (SERVICE_WIN32_OWN_PROCESS | \;
+                                        SERVICE_WIN32_SHARE_PROCESS)
 
 const auto SERVICE_INTERACTIVE_PROCESS     = 0x00000100;
 
-const auto SERVICE_TYPE_ALL                = (SERVICE_WIN32  |
-                                        SERVICE_ADAPTER |
-                                        SERVICE_DRIVER  |
-                                        SERVICE_INTERACTIVE_PROCESS);
+const auto SERVICE_TYPE_ALL                = (SERVICE_WIN32  | \;
+                                        SERVICE_ADAPTER | \
+                                        SERVICE_DRIVER  | \
+                                        SERVICE_INTERACTIVE_PROCESS)
 
 //
 // Start Type
@@ -8385,34 +8426,29 @@ const auto SERVICE_ERROR_CRITICAL          = 0x00000003;
 // Define the registry driver node enumerations
 //
 
-enum CM_SERVICE_NODE_TYPE {
+typedef enum _CM_SERVICE_NODE_TYPE {
     DriverType               = SERVICE_KERNEL_DRIVER,
     FileSystemType           = SERVICE_FILE_SYSTEM_DRIVER,
     Win32ServiceOwnProcess   = SERVICE_WIN32_OWN_PROCESS,
     Win32ServiceShareProcess = SERVICE_WIN32_SHARE_PROCESS,
     AdapterType              = SERVICE_ADAPTER,
     RecognizerType           = SERVICE_RECOGNIZER_DRIVER
-}
-alias CM_SERVICE_NODE_TYPE SERVICE_NODE_TYPE;
+} SERVICE_NODE_TYPE;
 
-enum CM_SERVICE_LOAD_TYPE {
+typedef enum _CM_SERVICE_LOAD_TYPE {
     BootLoad    = SERVICE_BOOT_START,
     SystemLoad  = SERVICE_SYSTEM_START,
     AutoLoad    = SERVICE_AUTO_START,
     DemandLoad  = SERVICE_DEMAND_START,
     DisableLoad = SERVICE_DISABLED
-}
+} SERVICE_LOAD_TYPE;
 
-alias CM_SERVICE_LOAD_TYPE SERVICE_LOAD_TYPE;
-
-enum CM_ERROR_CONTROL_TYPE {
+typedef enum _CM_ERROR_CONTROL_TYPE {
     IgnoreError   = SERVICE_ERROR_IGNORE,
     NormalError   = SERVICE_ERROR_NORMAL,
     SevereError   = SERVICE_ERROR_SEVERE,
     CriticalError = SERVICE_ERROR_CRITICAL
-}
-
-alias CM_ERROR_CONTROL_TYPE SERVICE_ERROR_TYPE;
+} SERVICE_ERROR_TYPE;
 
 
 
@@ -8428,7 +8464,7 @@ struct TAPE_ERASE {
     BOOLEAN Immediate;
 }
 
-alias TAPE_ERASE* PTAPE_ERASE;
+typedef TAPE_ERASE* PTAPE_ERASE;
 
 //
 // IOCTL_TAPE_PREPARE definitions
@@ -8446,7 +8482,7 @@ struct TAPE_PREPARE {
     BOOLEAN Immediate;
 }
 
-alias TAPE_PREPARE* PTAPE_PREPARE;
+typedef TAPE_PREPARE* PTAPE_PREPARE;
 
 //
 // IOCTL_TAPE_WRITE_MARKS definitions
@@ -8463,7 +8499,7 @@ struct TAPE_WRITE_MARKS {
     BOOLEAN Immediate;
 }
 
-alias TAPE_WRITE_MARKS* PTAPE_WRITE_MARKS;
+typedef TAPE_WRITE_MARKS* PTAPE_WRITE_MARKS;
 
 //
 // IOCTL_TAPE_GET_POSITION definitions
@@ -8479,7 +8515,7 @@ struct TAPE_GET_POSITION {
     LARGE_INTEGER Offset;
 }
 
-alias TAPE_GET_POSITION* PTAPE_GET_POSITION;
+typedef TAPE_GET_POSITION* PTAPE_GET_POSITION;
 
 //
 // IOCTL_TAPE_SET_POSITION definitions
@@ -8503,7 +8539,7 @@ struct TAPE_SET_POSITION {
     BOOLEAN Immediate;
 }
 
-alias TAPE_SET_POSITION* PTAPE_SET_POSITION;
+typedef TAPE_SET_POSITION* PTAPE_SET_POSITION;
 
 //
 // IOCTL_TAPE_GET_DRIVE_PARAMS definitions
@@ -8605,7 +8641,7 @@ struct TAPE_GET_DRIVE_PARAMETERS {
     DWORD EOTWarningZoneSize;
 }
 
-alias TAPE_GET_DRIVE_PARAMETERS* PTAPE_GET_DRIVE_PARAMETERS;
+typedef TAPE_GET_DRIVE_PARAMETERS* PTAPE_GET_DRIVE_PARAMETERS;
 
 //
 // IOCTL_TAPE_SET_DRIVE_PARAMETERS definitions
@@ -8619,7 +8655,7 @@ struct TAPE_SET_DRIVE_PARAMETERS {
     DWORD EOTWarningZoneSize;
 }
 
-alias TAPE_SET_DRIVE_PARAMETERS* PTAPE_SET_DRIVE_PARAMETERS;
+typedef TAPE_SET_DRIVE_PARAMETERS* PTAPE_SET_DRIVE_PARAMETERS;
 
 //
 // IOCTL_TAPE_GET_MEDIA_PARAMETERS definitions
@@ -8633,7 +8669,7 @@ struct TAPE_GET_MEDIA_PARAMETERS {
     BOOLEAN WriteProtected;
 }
 
-alias TAPE_GET_MEDIA_PARAMETERS* PTAPE_GET_MEDIA_PARAMETERS;
+typedef TAPE_GET_MEDIA_PARAMETERS* PTAPE_GET_MEDIA_PARAMETERS;
 
 //
 // IOCTL_TAPE_SET_MEDIA_PARAMETERS definitions
@@ -8643,7 +8679,7 @@ struct TAPE_SET_MEDIA_PARAMETERS {
     DWORD BlockSize;
 }
 
-alias TAPE_SET_MEDIA_PARAMETERS* PTAPE_SET_MEDIA_PARAMETERS;
+typedef TAPE_SET_MEDIA_PARAMETERS* PTAPE_SET_MEDIA_PARAMETERS;
 
 //
 // IOCTL_TAPE_CREATE_PARTITION definitions
@@ -8659,7 +8695,7 @@ struct TAPE_CREATE_PARTITION {
     DWORD Size;
 }
 
-alias TAPE_CREATE_PARTITION* PTAPE_CREATE_PARTITION;
+typedef TAPE_CREATE_PARTITION* PTAPE_CREATE_PARTITION;
 
 
 //
@@ -8677,7 +8713,7 @@ struct TAPE_WMI_OPERATIONS {
    PVOID DataBuffer;
 }
 
-alias TAPE_WMI_OPERATIONS* PTAPE_WMI_OPERATIONS;
+typedef TAPE_WMI_OPERATIONS* PTAPE_WMI_OPERATIONS;
 
 //
 // Type of drive errors

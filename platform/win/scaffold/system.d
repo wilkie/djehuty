@@ -23,6 +23,10 @@ import core.locale;
 
 import platform.vars.library;
 
+//XXX: winnls.h
+
+extern(System) LCID GetUserDefaultLCID();
+
 private {
 	uint count;
 	uint primary;

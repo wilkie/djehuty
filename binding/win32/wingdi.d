@@ -12,6 +12,8 @@
 module binding.win32.wingdi;
 
 import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winuser;
 
 import binding.c;
 
@@ -1922,7 +1924,8 @@ const auto  FLOODFILLBORDER   = 0;
 const auto  FLOODFILLSURFACE  = 1;
 
 /* size of a device name string */
-const auto CCHDEVICENAME = 32;
+// import winuser.d:
+//const auto CCHDEVICENAME = 32;
 
 /* size of a form name string */
 const auto CCHFORMNAME = 32;
@@ -2938,18 +2941,21 @@ typedef UINT function(HWND, HMODULE, LPDEVMODE, LPSTR, LPSTR, LPDEVMODE, LPSTR, 
 typedef DWORD function(LPSTR, LPSTR, UINT, LPSTR, LPDEVMODE) LPFNDEVCAPS;
 
 /* mode selections for the device mode function */
-const auto DM_UPDATE           = 1;
+// import windef.d:
+/*const auto DM_UPDATE           = 1;
 const auto DM_COPY             = 2;
 const auto DM_PROMPT           = 4;
-const auto DM_MODIFY           = 8;
+const auto DM_MODIFY           = 8;*/
 
-const auto DM_IN_BUFFER        = DM_MODIFY;
+// import windef.d:
+/*const auto DM_IN_BUFFER        = DM_MODIFY;
 const auto DM_IN_PROMPT        = DM_PROMPT;
 const auto DM_OUT_BUFFER       = DM_COPY;
-const auto DM_OUT_DEFAULT      = DM_UPDATE;
+const auto DM_OUT_DEFAULT      = DM_UPDATE;*/
 
 /* device capabilities indices */
-const auto DC_FIELDS           = 1;
+// import windef.d:
+/*const auto DC_FIELDS           = 1;
 const auto DC_PAPERS           = 2;
 const auto DC_PAPERSIZE        = 3;
 const auto DC_MINEXTENT        = 4;
@@ -2966,7 +2972,7 @@ const auto DC_FILEDEPENDENCIES = 14;
 const auto DC_TRUETYPE         = 15;
 const auto DC_PAPERNAMES       = 16;
 const auto DC_ORIENTATION      = 17;
-const auto DC_COPIES           = 18;
+const auto DC_COPIES           = 18;*/
 
 const auto DC_BINADJUST            = 19;
 const auto DC_EMF_COMPLIANT        = 20;
