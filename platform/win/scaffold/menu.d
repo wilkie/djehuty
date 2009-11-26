@@ -12,7 +12,12 @@ module scaffold.menu;
 
 import scaffold.window;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+
 import platform.win.main;
 
 import platform.vars.menu;
@@ -41,20 +46,20 @@ void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 	String s;
 	if (text == "") {
 		if (hasSubitems) {
-			AppendMenuW(mnuVars.hMenu,MF_SEPARATOR,cast(uint*)toAppendVars.hMenu,"\0"w.ptr);
+			AppendMenuW(mnuVars.hMenu,MF_SEPARATOR,cast(UINT_PTR)toAppendVars.hMenu,"\0"w.ptr);
 		}
 		else {
-			AppendMenuW(mnuVars.hMenu,MF_SEPARATOR,cast(uint*)identifier,"\0"w.ptr);
+			AppendMenuW(mnuVars.hMenu,MF_SEPARATOR,cast(UINT_PTR)identifier,"\0"w.ptr);
 		}
 	}
 	else {
 		s = new String(text);
 		s.appendChar('\0');
 		if (hasSubitems) {
-			AppendMenuW(mnuVars.hMenu,MF_POPUP,cast(uint*)toAppendVars.hMenu,s.ptr);
+			AppendMenuW(mnuVars.hMenu,MF_POPUP,cast(UINT_PTR)toAppendVars.hMenu,s.ptr);
 		}
 		else {
-			AppendMenuW(mnuVars.hMenu,MF_STRING,cast(uint*)identifier,s.ptr);
+			AppendMenuW(mnuVars.hMenu,MF_STRING,cast(UINT_PTR)identifier,s.ptr);
 		}
 	}
 }
@@ -63,20 +68,20 @@ void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 	String s;
 	if (text.trim() == "") {
 		if (hasSubitems) {
-			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_SEPARATOR,cast(uint*)toUpdateVars.hMenu,"\0"w.ptr);
+			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_SEPARATOR,cast(UINT_PTR)toUpdateVars.hMenu,"\0"w.ptr);
 		}
 		else {
-			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_SEPARATOR,cast(uint*)identifier,"\0"w.ptr);
+			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_SEPARATOR,cast(UINT_PTR)identifier,"\0"w.ptr);
 		}
 	}
 	else {
 		s = new String(text);
 		s.appendChar('\0');
 		if (hasSubitems) {
-			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_POPUP,cast(uint*)toUpdateVars.hMenu,s.ptr);
+			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_POPUP,cast(UINT_PTR)toUpdateVars.hMenu,s.ptr);
 		}
 		else {
-			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_STRING,cast(uint*)identifier,s.ptr);
+			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_STRING,cast(UINT_PTR)identifier,s.ptr);
 		}
 	}
 }

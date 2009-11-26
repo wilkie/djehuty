@@ -10,7 +10,17 @@
 
 module gui.apploop;
 
-import platform.win.common;
+pragma(lib, "comctl32.lib");
+
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+import binding.win32.winerror;
+
+import binding.win32.uxtheme;
+
 import platform.win.widget;
 import platform.win.main;
 
@@ -36,6 +46,7 @@ import core.application;
 import core.definitions;
 
 import io.console;
+
 
 class GuiApplicationController {
 
@@ -116,7 +127,7 @@ private:
 
 		// THIS CODE PRINTS TO THE CONSOLE WINDOW USING GDI
 
-		HWND hwndConsole = GetConsoleWindow();
+		/*HWND hwndConsole = GetConsoleWindow();
 		HDC dc = GetDC(hwndConsole);
 
 		CONSOLE_FONT_INFO cfi ;
@@ -133,7 +144,7 @@ private:
 		SetTextColor(dc, 0xf800f8);
 
 		SelectObject(dc, fvars.fontHandle);
-
+*/
 		ConsoleUninit();
 
 		ApplicationController.instance.end;
@@ -381,8 +392,8 @@ static:
 		if (uMsg == WM_CREATE) {
 			Window w = cast(Window)cs.lpCreateParams;
 
-			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(ulong)&WindowProc);
-			SetWindowLongW(hWnd, GWLP_USERDATA, cast(ulong)cs.lpCreateParams);
+			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&WindowProc);
+			SetWindowLongW(hWnd, GWLP_USERDATA, cast(LONG)cs.lpCreateParams);
 
 			return 0;
 		}

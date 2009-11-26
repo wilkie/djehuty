@@ -2,7 +2,12 @@ module gui.osbutton;
 
 import gui.button;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+
 import platform.win.widget;
 import platform.win.main;
 
@@ -55,8 +60,8 @@ class OSButton : Button, WinWidget {
 
 		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)GuiApplicationController.win_button_font, 1);
 
-		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(ulong)(cast(void*)(cast(WinWidget)this)));
-		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&GuiApplicationController.CtrlProc);
+		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(LONG)(cast(void*)(cast(WinWidget)this)));
+		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ULONG)&GuiApplicationController.CtrlProc);
 		
 		GuiApplicationController.button_hWnd = _hWnd;
 		GuiApplicationController.button_hdc = dc2;

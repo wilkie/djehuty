@@ -8,8 +8,9 @@
  *
  */
 
-
 module scaffold.wave;
+
+pragma(lib, "winmm.lib");
 
 import platform.win.common;
 import platform.win.main;
@@ -28,7 +29,7 @@ import io.audio;
 import io.console;
 
 // Worker Thread
-extern(Windows)
+/*extern(Windows)
 DWORD waveOutThread(void* udata)
 {
 	WavePlatformVars* waveVars = cast(WavePlatformVars*)udata;
@@ -130,9 +131,9 @@ void waveOutProc(HWAVEOUT wOut, UINT uMsg, DWORD dwInstance, DWORD p1, DWORD p2)
 	}
 //	Console.putln("Driver Thread : Returning");
 }
-
+*/
 void WaveOpenDevice(ref Audio wave, ref WavePlatformVars waveVars, ref AudioFormat wf)
-{
+{/*
 	if (waveVars.inited) { return; }
 
 	waveVars.queueLock = CreateSemaphoreA(null, 1, 0xFFFFFFF, null);
@@ -154,11 +155,11 @@ void WaveOpenDevice(ref Audio wave, ref WavePlatformVars waveVars, ref AudioForm
 	if (true)
 	{
 		Console.putln("ERROR: cannot open wave device", " : ", waveOutOpen(&waveVars.waveOut, WAVE_MAPPER, &waveVars.wfx, &waveOutProc, cast(DWORD)&waveVars, CALLBACK_FUNCTION));
-	}
+	}*/
 }
 
 void WaveCloseDevice(ref Audio wave, ref WavePlatformVars waveVars)
-{
+{/*
 	if (waveVars.isClosed) { return; }
 
 	// kill any threads
@@ -213,11 +214,11 @@ void WaveCloseDevice(ref Audio wave, ref WavePlatformVars waveVars)
 		waveVars.inited = false;
 
 		Console.putln("Audio : Done");
-	}
+	}*/
 }
 
 void WaveSendBuffer(ref Audio wave, ref WavePlatformVars waveVars, Stream waveBuffer, bool isLast)
-{
+{/*
 	if (waveVars.isClosed) { return; }
 
 	// make a new waveHeader structure
@@ -281,29 +282,29 @@ void WaveSendBuffer(ref Audio wave, ref WavePlatformVars waveVars, Stream waveBu
 	//Console.putln("yep: ", &queueNode.waveHeader);
 
 	// unlock the buffer queue
-	ReleaseSemaphore(waveVars.queueLock, 1, null);
+	ReleaseSemaphore(waveVars.queueLock, 1, null);*/
 }
 
 void WaveResume(ref Audio wave, ref WavePlatformVars waveVars)
-{
+{/*
 	if (waveVars.isClosed) { return; }
 
 	waveOutRestart(waveVars.waveOut);
 
-	SetEvent(waveVars.resumeEvent);
+	SetEvent(waveVars.resumeEvent);*/
 }
 
 void WavePause(ref Audio wave, ref WavePlatformVars waveVars)
-{
+{/*
 	if (waveVars.isClosed) { return; }
 
-	waveOutPause(waveVars.waveOut);
+	waveOutPause(waveVars.waveOut);*/
 }
 
 
 
 Time WaveGetPosition(ref Audio wave, ref WavePlatformVars waveVars)
-{
+{/*
 	if (waveVars.isClosed) { Time myTime = new Time(0); return myTime; }
 
 	MMTIME mmTime;
@@ -317,10 +318,12 @@ Time WaveGetPosition(ref Audio wave, ref WavePlatformVars waveVars)
 
 	ret = cast(long)((cast(float)mmTime.u.cb / cast(float)waveVars.wfx.nAvgBytesPerSec) * 1000.0);
 	retTime.fromMilliseconds(ret);
-	return retTime;
+	return retTime;*/
+	return new Time();
 }
 
 bool WaveIsOpen(ref Audio wave, ref WavePlatformVars waveVars)
-{
-	return !waveVars.isClosed;
+{/*
+	return !waveVars.isClosed;*/
+	return false;
 }

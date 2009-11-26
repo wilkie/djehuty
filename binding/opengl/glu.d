@@ -7,9 +7,9 @@
  *
  */
 
-module opengl.glu;
+module binding.opengl.glu;
 
-import opengl.gl;
+import binding.opengl.gl;
 
 // The functions supported by opengl
 

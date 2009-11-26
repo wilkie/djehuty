@@ -17,7 +17,8 @@ import core.color;
 import core.event;
 
 import opengl.texture;
-import opengl.gl;
+
+import binding.opengl.gl;
 
 import platform.vars.window;
 

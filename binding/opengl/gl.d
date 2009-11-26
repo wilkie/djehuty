@@ -7,7 +7,14 @@
  *
  */
 
-module opengl.gl;
+module binding.opengl.gl;
+
+version(PlatformWindows) {
+	pragma(lib, "opengl32.lib");
+	pragma(lib, "glu32.lib");
+}
+else {
+}
 
 // The functions supported by opengl
 extern (System) {

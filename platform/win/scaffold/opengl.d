@@ -10,10 +10,12 @@
 
 module scaffold.opengl;
 
-import opengl.gl;
+import binding.opengl.gl;
+
 import opengl.window;
 
-import platform.win.common;
+import binding.win32.wingdi;
+import binding.win32.windef;
 
 // some extra GDI imports
 
@@ -46,15 +48,6 @@ const auto PFD_SUPPORT_DIRECTDRAW		= 0x00002000;
 const auto PFD_DEPTH_DONTCARE			= 0x20000000;
 const auto PFD_DOUBLEBUFFER_DONTCARE	= 0x40000000;
 const auto PFD_STEREO_DONTCARE			= 0x80000000;
-
-// the necessary windows GL calls
-
-extern (Windows) {
-
-	HGLRC wglCreateContext(HDC hdc);
-	BOOL wglMakeCurrent(HDC hdc, HGLRC hglrc);
-
-}
 
 PIXELFORMATDESCRIPTOR pfd =              // pfd Tells Windows How We Want Things To Be
 {
