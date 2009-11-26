@@ -21,3 +21,4 @@ public import binding.win32.winerror;
 public import binding.win32.wingdi;
 public import binding.win32.winuser;
 public import binding.win32.wincon;
+public import binding.win32.mmsystem;

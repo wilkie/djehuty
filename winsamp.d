@@ -325,7 +325,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
 /*		list = new List!(String);
@@ -337,7 +337,7 @@ class MyConsoleApp : Application {
 
 		Console.putln(index);
 */
-		new MyOptions();
+//		new MyOptions();
 		Console.putln("foobar");
 
 /*		String exp = new String(`a*(abc)*a(bc)*b`);
@@ -432,9 +432,10 @@ class MyConsoleApp : Application {
 			last = foo;
 		}
 */
+				Console.putln("awesome:");
 
-		File unfinished = File.open("binding/win32/winbaseold.d");
-		File finished = File.create("binding/win32/winbasenew.d");
+		File unfinished = File.open("binding/win32/mmsystem.d");
+		File finished = File.create("binding/win32/mmsystemnew.d");
 
 		bool inUnicodeBlock = false;
 		bool inStruct = false;
@@ -561,6 +562,10 @@ class MyConsoleApp : Application {
 						}
 						else if (spaceFound) {
 							int commentPos = line.find("//");
+							int commentBlockPos = line.find("/*");
+							if (commentPos == -1 || (commentBlockPos < commentPos && commentBlockPos != -1)) {
+								commentPos = commentBlockPos;
+							}
 							if (commentPos != -1) {
 								line = new String("const auto ") ~ line[8..i+8] ~ " = " ~ line[i+8..commentPos] ~ "; " ~ line[commentPos..line.length];
 							}
@@ -603,7 +608,7 @@ class MyConsoleApp : Application {
 					line = new String("\t") ~ line;
 				}
 
-				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI") {
+				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI" && line != "WINMMAPI") {
 					finished.write(line.toUtf8);
 					finished.write("\n"c);
 				}

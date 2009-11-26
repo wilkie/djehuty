@@ -25,8 +25,7 @@ import synch.thread;
 //	(Functionality)
 // Feature: The log file can be easily parsed and the information easily
 //	extracted. (Usability)
-class Debugger
-{
+class Debugger {
 static:
 public:
 
