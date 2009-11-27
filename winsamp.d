@@ -325,7 +325,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
 /*		list = new List!(String);
@@ -434,8 +434,8 @@ class MyConsoleApp : Application {
 */
 				Console.putln("awesome:");
 
-		File unfinished = File.open("binding/win32/mmsystem.d");
-		File finished = File.create("binding/win32/mmsystemnew.d");
+		File unfinished = File.open("binding/win32/winsock2.d");
+		File finished = File.create("binding/win32/winsock2new.d");
 
 		bool inUnicodeBlock = false;
 		bool inStruct = false;
@@ -444,6 +444,8 @@ class MyConsoleApp : Application {
 		uint leftsFound;
 		bool firstFound = false;
 		uint lineNumber = 0;
+		int blockType;
+
 		foreach(String line; unfinished) {
 			lineNumber++;
 
@@ -451,6 +453,47 @@ class MyConsoleApp : Application {
 			if (line.length > 13 && line[0..14] == "typedef struct" && line.find(";") == -1) {
 				Console.putln("struct:", lineNumber);
 				inStruct = true;
+				blockType = 0;
+				int bracketPos = line.find("{");
+				if (bracketPos == -1) {
+					leftsFound = 0;
+					firstFound = false;
+					line = new String("");
+					structStr = new String("");
+				}
+				else {
+					leftsFound = 1;
+					firstFound = true;
+					line = line.subString(bracketPos+1);
+					structStr = new String("{");
+				}
+			}
+			
+			// handle typedef enum
+			if (line.length > 11 && line[0..12] == "typedef enum" && line.find(";") == -1) {
+				Console.putln("enum:", lineNumber);
+				inStruct = true;
+				blockType = 1;
+				int bracketPos = line.find("{");
+				if (bracketPos == -1) {
+					leftsFound = 0;
+					firstFound = false;
+					line = new String("");
+					structStr = new String("");
+				}
+				else {
+					leftsFound = 1;
+					firstFound = true;
+					line = line.subString(bracketPos+1);
+					structStr = new String("{");
+				}
+			}
+			
+			// handle typedef union
+			if (line.length > 12 && line[0..13] == "typedef union" && line.find(";") == -1) {
+				Console.putln("enum:", lineNumber);
+				inStruct = true;
+				blockType = 1;
 				int bracketPos = line.find("{");
 				if (bracketPos == -1) {
 					leftsFound = 0;
@@ -541,7 +584,18 @@ class MyConsoleApp : Application {
 						pos = newpos+1;
 					}
 
-					finished.write("struct "c);
+					switch( blockType ) {
+						default:
+						case 0:
+							finished.write("struct "c);
+							break;
+						case 1:
+							finished.write("enum "c);
+							break;
+						case 2:
+							finished.write("union "c);
+							break;
+					}
 					finished.write(structName.toUtf8);
 					finished.write(" "c);
 					finished.write(structStr.toUtf8);
@@ -608,7 +662,8 @@ class MyConsoleApp : Application {
 					line = new String("\t") ~ line;
 				}
 
-				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI" && line != "WINMMAPI") {
+				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI" 
+					&& line != "WINMMAPI" && line != "WINSOCK_API_LINKAGE" && line != "WSAAPI") {
 					finished.write(line.toUtf8);
 					finished.write("\n"c);
 				}
@@ -622,7 +677,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
+	//static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
