@@ -28,7 +28,25 @@ struct GUID {
     Culong_t Data1;
     ushort Data2;
     ushort Data3;
-    byte[8]           Data4;
+    ubyte[8]           Data4;
+
+    GUID define(Culong_t d1, ushort d2, ushort d3, byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte b7, byte b8) {
+    	GUID ret;
+    	ret.Data1 = d1;
+    	ret.Data2 = d2;
+    	ret.Data3 = d3;
+
+    	ret.Data4[0] = b1;
+    	ret.Data4[1] = b2;
+    	ret.Data4[2] = b3;
+    	ret.Data4[3] = b4;
+    	ret.Data4[4] = b5;
+    	ret.Data4[5] = b6;
+    	ret.Data4[6] = b7;
+    	ret.Data4[7] = b8;
+
+    	return ret;
+    }
 }
 
 typedef GUID* LPGUID;

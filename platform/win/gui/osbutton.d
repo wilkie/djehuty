@@ -65,13 +65,6 @@ class OSButton : Button, WinWidget {
 		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(LONG)(cast(void*)(cast(WinWidget)this)));
 		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ULONG)&GuiApplicationController.CtrlProc);
 
-//		GuiApplicationController.button_hWnd = _hWnd;
-//		GuiApplicationController.button_hdc = dc2;
-//		GuiApplicationController.button_x = this.left;
-//		GuiApplicationController.button_y = this.top;
-//		GuiApplicationController.button_width = this.width;
-//		GuiApplicationController.button_height = this.height;
-
 		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(DWORD)_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
 

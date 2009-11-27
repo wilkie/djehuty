@@ -221,7 +221,7 @@ static:
 		// normal operations:
 
 		// abnormal operations:
-		if (hWnd != button_hWnd) {
+/*		if (hWnd != button_hWnd) {
 			asm {
 		        mov     EAX, syscall_BeginPaint;
 		        push    lpPaint;
@@ -230,21 +230,21 @@ static:
 		        mov		ret, EAX;
 			}
 			return ret;
-		}
-		
+		}*/
+
 		lpPaint.fErase = 0;
 		
 		lpPaint.rcPaint.left = 0;
-		lpPaint.rcPaint.right = button_width;
+//		lpPaint.rcPaint.right = button_width;
 		lpPaint.rcPaint.top = 0;
-		lpPaint.rcPaint.bottom = button_height;
-		
+	//	lpPaint.rcPaint.bottom = button_height;
+
 		lpPaint.fIncUpdate = 0;
 		lpPaint.fRestore = 0;
 		
-		lpPaint.hdc = button_hdc;
+//		lpPaint.hdc = button_hdc;
 
-		return button_hdc;
+		return null; //button_hdc;
 	}
 	
 	extern(C) BOOL HookIsWindowVisible() {	
@@ -258,7 +258,7 @@ static:
 	extern(C) BOOL HookWindowFromPoint(POINT pnt) {
 		asm {
 			naked;
-			mov EAX, button_hWnd;
+//			mov EAX, button_hWnd;
 			ret 8;
 		}
 	}
@@ -266,10 +266,10 @@ static:
 	extern(C) BOOL HookGetWindowRect(HWND hWnd, RECT* rt) {
 		Console.putln("GetWindowRect ", hWnd);
 		if (rt !is null) {
-			rt.left = button_x;
-			rt.right = button_x + button_width;
+//			rt.left = button_x;
+//			rt.right = button_x + button_width;
 			rt.top = 299;
-			rt.bottom = 299 + button_height;
+	//		rt.bottom = 299 + button_height;
 		}
 		
 		asm {
@@ -375,10 +375,10 @@ static:
 
 	extern(C) BOOL HookEndPaint(HWND hWnd, LPPAINTSTRUCT lpPaint) {
 		// abnormal operations:
-		if (hWnd == button_hWnd) {
+//		if (hWnd == button_hWnd) {
 			//Console.putln("End Paint");
 	//		return true;
-		}
+	//	}
 
 		// normal operations:
 		asm {
@@ -482,13 +482,6 @@ static:
 	OpenThemeDataFunc OpenThemeDataDLL;
 	GetThemeSysFontFunc GetThemeSysFontDLL;
 	CloseThemeDataFunc CloseThemeDataDLL;
-
-	HWND button_hWnd;
-	HDC button_hdc;
-	int button_width;
-	int button_height;
-	int button_x;
-	int button_y;
 
 	void loadThemingData() {
 		const int TMT_MSGBOXFONT = 805;
