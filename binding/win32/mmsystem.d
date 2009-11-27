@@ -2515,6 +2515,11 @@ else {
 	
 	const auto MMIOM_USER          = 0x8000       ; /* beginning of user-defined messages */
 	
+	/* MMIO macros */
+	template mmioFOURCC(char ch0, char ch1, char ch2, char ch3) {
+		const auto mmioFOURCC = MAKEFOURCC!(ch0,ch1,ch2,ch3);
+	}
+	
 	/* standard four character codes */
 	const auto FOURCC_RIFF      = mmioFOURCC!('R', 'I', 'F', 'F');
 	const auto FOURCC_LIST      = mmioFOURCC!('L', 'I', 'S', 'T');
@@ -2530,11 +2535,6 @@ else {
 	
 	/* other constants */
 	const auto MMIO_DEFAULTBUFFER       = 8192    ; /* default buffer size */
-
-	/* MMIO macros */
-	template mmioFOURCC(char ch0, char ch1, char ch2, char ch3) {
-		const auto mmioFOURCC = MAKEFOURCC!(ch0,ch1,ch2,ch3);
-	}
 
 	/* MMIO function prototypes */
 	FOURCC mmioStringToFOURCCA( LPCSTR sz, UINT uFlags);
