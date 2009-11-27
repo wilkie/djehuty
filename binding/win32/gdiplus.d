@@ -28,7 +28,22 @@ module binding.win32.gdiplus;
 *
 \**************************************************************************/
 
-extern(System) struct IDirectDrawSurface7;
-
+public import binding.win32.gdiplusmem;
 public import binding.win32.gdiplusbase;
 public import binding.win32.gdiplusenums;
+public import binding.win32.gdiplustypes;
+public import binding.win32.gdiplusinit;
+public import binding.win32.gdipluspixelformats;
+public import binding.win32.gdipluscolor;
+public import binding.win32.gdiplusmetaheader;
+public import binding.win32.gdiplusimaging;
+public import binding.win32.gdipluscolormatrix;
+public import binding.win32.gdipluseffects;
+public import binding.win32.gdiplusgpstubs;
+
+public import binding.win32.gdiplusflat;
+
+public import binding.win32.gdiplusimageattributes;
+public import binding.win32.gdiplusmatrix;
+public import binding.win32.gdiplusbitmap;
+public import binding.win32.gdiplusbrush;
