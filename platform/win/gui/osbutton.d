@@ -49,11 +49,12 @@ class OSButton : Button, WinWidget {
 		DeleteObject(hbmp);
 		ReleaseDC(_hWnd, dc);
 
-		newy = _window.height -1;
-		
+		newx = -this.width + 1;
+		newy = -this.height + 1;
+
 		_hWnd = CreateWindowExW(0,
-			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT , 
-			-this.width + 1, -this.height + 1, this.width, this.height,
+			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT ,
+			newx, newy, this.width, this.height,
 			_window._pfvars.hWnd, null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
 			
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
@@ -119,7 +120,7 @@ class OSButton : Button, WinWidget {
 		ncx = rect.left;
 		ncy = rect.top;
 
-		ncx = pt.x;
+		ncx = pt.x + (newx - this.left);
 		ncy = pt.y + (newy - this.top);
 
 		ncy &= 0xffff;
@@ -160,7 +161,7 @@ protected:
 			y = cast(short)((lParam >> 16) & 0xffff);
 
 			// convert coords to window coords, send window WM_MOUSEMOVE
-			x += this.left;
+			x += newx; //this.left;
 			y += newy;
 			uint windowlParam = (y << 16) | x;
 			x = cast(short)(lParam & 0xffff);
@@ -195,7 +196,7 @@ protected:
 
 			if (hasCapture) {
 				// convert coords to window coords, send window WM_MOUSEMOVE
-				x += this.left;
+				x += newx; //this.left;
 				y += newy;
 				uint windowlParam = (y << 16) | x;
 				x = cast(short)(lParam & 0xffff);
@@ -210,6 +211,7 @@ protected:
 			if (message == WM_MOUSEMOVE) {
 				if (_hovered) {
 				//	Console.putln("hovered");
+					x += (newx - this.left);
 					y += (newy - this.top);
 					lParam = (y << 16) | x;
 				}
@@ -251,4 +253,5 @@ protected:
 	bool hasCapture;
 
 	int newy;
+	int newx;
 }
