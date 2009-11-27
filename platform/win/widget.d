@@ -15,11 +15,15 @@ import graphics.view;
 
 // os control interface
 
-interface WinWidget
-{
+interface WinWidget {
 protected:
 	LRESULT _AppLoopMessage(uint message, WPARAM wParam, LPARAM lParam);
 	View _ReturnView(out int x, out int y, out int w, out int h);
+	HDC _GetDC();
+}
+
+HDC GetBaseDC(WinWidget ctrl) {
+	return ctrl._GetDC;
 }
 
 LRESULT CallAppLoopMessage(WinWidget ctrl, uint message, WPARAM wParam, LPARAM lParam) {

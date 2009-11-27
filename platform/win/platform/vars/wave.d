@@ -18,7 +18,7 @@ import io.audio;
 
 struct WavePlatformVars {
 	// Handle to the device
-/*	HWAVEOUT waveOut;
+	HWAVEOUT waveOut;
 	WAVEFORMATEX wfx;
 
 	struct BufferNode {
@@ -47,6 +47,6 @@ struct WavePlatformVars {
 	Audio wave;
 
 	HANDLE event;
-	HANDLE resumeEvent;*/
+	HANDLE resumeEvent;
 	//_WaveThread waveThread;
 }

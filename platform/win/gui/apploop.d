@@ -71,11 +71,11 @@ class GuiApplicationController {
 		//pEndPaint = cast(EndPaintFunc)bleh;
 		//Hook("USER32.DLL\0"c.ptr, "IsWindowVisible\0"c.ptr, syscall_IsWindowVisible, bleh, cast(void*)&HookIsWindowVisible);
 		//pIsWindowVisible = cast(IsWindowVisibleFunc)bleh;
-		
+
 		//Hook("USER32.DLL\0"c.ptr, "WindowFromPoint\0"c.ptr, dontcare, bleh, cast(void*)&HookWindowFromPoint);
 		//Hook("USER32.DLL\0"c.ptr, "GetWindowRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetWindowRect);
 		//Hook("USER32.DLL\0"c.ptr, "GetClientRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetClientRect);
-		
+
 		Hook("UXTHEME.DLL\0"c.ptr, "BufferedPaintRenderAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBufferedPaintRenderAnimation);
 		pBufferedPaintRenderAnimation = cast(void*)bleh;
 		/*Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
@@ -243,7 +243,7 @@ static:
 		lpPaint.fRestore = 0;
 		
 		lpPaint.hdc = button_hdc;
-		
+
 		return button_hdc;
 	}
 	
@@ -350,16 +350,21 @@ static:
 		return;
 	}
 
-	extern(C) void HookBufferedPaintRenderAnimation() {
+	extern(C) void HookBufferedPaintRenderAnimation(HWND hWnd, HDC hdcTarget) {
 
 		mixin(UXThemePrologue!());
 
-		//Console.putln("BufferedPaintRenderAnimation");
+		void* ctrl_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
 
-		asm {
-			mov EAX, button_hdc;
-			mov [EBP+12], EAX;
+		if (ctrl_in !is null) {
+			WinWidget _ctrlvars = cast(WinWidget)ctrl_in;
+			hdcTarget = GetBaseDC(_ctrlvars);
 		}
+
+	//	asm {
+	//			mov EAX, button_hdc;
+	//			mov [EBP+12], EAX;
+	//	}
 
 		asm {
 	        jmp		pBufferedPaintRenderAnimation;
