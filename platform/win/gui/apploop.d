@@ -12,7 +12,15 @@ module gui.apploop;
 
 pragma(lib, "comctl32.lib");
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+import binding.win32.winerror;
+
+import binding.win32.uxtheme;
+
 import platform.win.widget;
 import platform.win.main;
 
@@ -39,6 +47,7 @@ import core.definitions;
 
 import io.console;
 
+
 class GuiApplicationController {
 
 	// The initial entry for the gui application
@@ -62,11 +71,11 @@ class GuiApplicationController {
 		//pEndPaint = cast(EndPaintFunc)bleh;
 		//Hook("USER32.DLL\0"c.ptr, "IsWindowVisible\0"c.ptr, syscall_IsWindowVisible, bleh, cast(void*)&HookIsWindowVisible);
 		//pIsWindowVisible = cast(IsWindowVisibleFunc)bleh;
-		
+
 		//Hook("USER32.DLL\0"c.ptr, "WindowFromPoint\0"c.ptr, dontcare, bleh, cast(void*)&HookWindowFromPoint);
 		//Hook("USER32.DLL\0"c.ptr, "GetWindowRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetWindowRect);
 		//Hook("USER32.DLL\0"c.ptr, "GetClientRect\0"c.ptr, dontcare, bleh, cast(void*)&HookGetClientRect);
-		
+
 		Hook("UXTHEME.DLL\0"c.ptr, "BufferedPaintRenderAnimation\0"c.ptr, dontcare, bleh, cast(void*)&HookBufferedPaintRenderAnimation);
 		pBufferedPaintRenderAnimation = cast(void*)bleh;
 		/*Hook("UXTHEME.DLL\0"c.ptr, "BeginBufferedPaint\0"c.ptr, dontcare, bleh, cast(void*)&HookBeginBufferedPaint);
@@ -118,7 +127,7 @@ private:
 
 		// THIS CODE PRINTS TO THE CONSOLE WINDOW USING GDI
 
-		HWND hwndConsole = GetConsoleWindow();
+		/*HWND hwndConsole = GetConsoleWindow();
 		HDC dc = GetDC(hwndConsole);
 
 		CONSOLE_FONT_INFO cfi ;
@@ -135,7 +144,7 @@ private:
 		SetTextColor(dc, 0xf800f8);
 
 		SelectObject(dc, fvars.fontHandle);
-
+*/
 		ConsoleUninit();
 
 		ApplicationController.instance.end;
@@ -234,7 +243,7 @@ static:
 		lpPaint.fRestore = 0;
 		
 		lpPaint.hdc = button_hdc;
-		
+
 		return button_hdc;
 	}
 	
@@ -341,16 +350,21 @@ static:
 		return;
 	}
 
-	extern(C) void HookBufferedPaintRenderAnimation() {
+	extern(C) void HookBufferedPaintRenderAnimation(HWND hWnd, HDC hdcTarget) {
 
 		mixin(UXThemePrologue!());
 
-		//Console.putln("BufferedPaintRenderAnimation");
+		void* ctrl_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
 
-		asm {
-			mov EAX, button_hdc;
-			mov [EBP+12], EAX;
+		if (ctrl_in !is null) {
+			WinWidget _ctrlvars = cast(WinWidget)ctrl_in;
+			hdcTarget = GetBaseDC(_ctrlvars);
 		}
+
+	//	asm {
+	//			mov EAX, button_hdc;
+	//			mov [EBP+12], EAX;
+	//	}
 
 		asm {
 	        jmp		pBufferedPaintRenderAnimation;
@@ -383,8 +397,8 @@ static:
 		if (uMsg == WM_CREATE) {
 			Window w = cast(Window)cs.lpCreateParams;
 
-			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(ulong)&WindowProc);
-			SetWindowLongW(hWnd, GWLP_USERDATA, cast(ulong)cs.lpCreateParams);
+			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&WindowProc);
+			SetWindowLongW(hWnd, GWLP_USERDATA, cast(LONG)cs.lpCreateParams);
 
 			return 0;
 		}

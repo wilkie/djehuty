@@ -2,7 +2,12 @@ module gui.osbutton;
 
 import gui.button;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winbase;
+import binding.win32.wingdi;
+import binding.win32.winuser;
+
 import platform.win.widget;
 import platform.win.main;
 
@@ -46,27 +51,28 @@ class OSButton : Button, WinWidget {
 
 		newx = -this.width + 1;
 		newy = -this.height + 1;
+		_hdc = dc2;
 
 		_hWnd = CreateWindowExW(0,
 			"BUTTON\0", cast(wchar*)_value.ptr, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_TEXT ,
 			newx, newy, this.width, this.height,
 			_window._pfvars.hWnd, null, cast(HINSTANCE)GetWindowLongW(_window._pfvars.hWnd,GWLP_HINSTANCE), null);
-			
+
 		SetWindowPos(_hWnd, cast(HWND)HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 		SendMessageW( _hWnd, WM_SETFONT, cast(WPARAM)GuiApplicationController.win_button_font, 1);
 
-		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(ulong)(cast(void*)(cast(WinWidget)this)));
-		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ulong)&GuiApplicationController.CtrlProc);
-		
-		GuiApplicationController.button_hWnd = _hWnd;
-		GuiApplicationController.button_hdc = dc2;
-		GuiApplicationController.button_x = this.left;
-		GuiApplicationController.button_y = this.top;
-		GuiApplicationController.button_width = this.width;
-		GuiApplicationController.button_height = this.height;
+		SetWindowLongW(_hWnd, GWLP_USERDATA, cast(LONG)(cast(void*)(cast(WinWidget)this)));
+		_oldproc = cast(WNDPROC)SetWindowLongW(_hWnd, GWLP_WNDPROC, cast(ULONG)&GuiApplicationController.CtrlProc);
 
-		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(WPARAM)GuiApplicationController.button_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
+//		GuiApplicationController.button_hWnd = _hWnd;
+//		GuiApplicationController.button_hdc = dc2;
+//		GuiApplicationController.button_x = this.left;
+//		GuiApplicationController.button_y = this.top;
+//		GuiApplicationController.button_width = this.width;
+//		GuiApplicationController.button_height = this.height;
+
+		SendMessageW(_hWnd, WM_PRINTCLIENT, cast(DWORD)_hdc, PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED);
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -75,7 +81,7 @@ class OSButton : Button, WinWidget {
 		// copy over current image
 		ViewPlatformVars* viewVars = _window._viewVars;
 
-		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, GuiApplicationController.button_hdc, 0,0,SRCCOPY);
+		BitBlt(viewVars.dc, this.left, this.top, this.width, this.height, _hdc, 0,0,SRCCOPY);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mouse) {
@@ -143,6 +149,10 @@ class OSButton : Button, WinWidget {
 	}
 
 protected:
+
+	HDC _GetDC() {
+		return _hdc;
+	}
 
 	LRESULT _AppLoopMessage(uint message, WPARAM wParam, LPARAM lParam) {
 	//	Console.putln("message: ", new String("%x",message), " ml:", new String("%x", WM_MOUSELEAVE));
@@ -241,6 +251,7 @@ protected:
 	}
 
 	HWND _hWnd;
+	HDC _hdc;
 	WNDPROC _oldproc;
 
 	bool noDraw;

@@ -16,6 +16,10 @@ import core.date;
 
 // Timing
 
+//XXX:MMSystem.h
+
+extern(System) DWORD timeGetTime();
+
 uint TimeGet() {
 	return timeGetTime();
 }

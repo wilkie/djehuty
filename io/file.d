@@ -375,6 +375,31 @@ public:
 		return (_path.path ~ "/" ~ _name).toString();
 	}
 
+	int opApply(int delegate(ref string) loopFunc) {
+		string nextLine;
+		int ret;
+		while(readLine(nextLine)) {
+			ret = loopFunc(nextLine);
+
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApply(int delegate(ref String) loopFunc) {
+		string nextLine;
+		int ret;
+		while(readLine(nextLine)) {
+			String str = new String(nextLine);
+			ret = loopFunc(str);
+
+			if (ret) { break; }
+		}
+		
+		return ret;
+	}
+
 protected:
 
     bool _inited = false;

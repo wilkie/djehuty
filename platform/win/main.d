@@ -45,7 +45,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	try {
 
 		ApplicationController app = ApplicationController.instance;
-		
+
 		windowsVersion = app.windowsVersion;
 
 		_moduleCtor();		// call module constructors
