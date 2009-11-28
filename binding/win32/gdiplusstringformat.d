@@ -58,7 +58,7 @@ class StringFormat : GdiplusBase {
         );
     }
 
-    static StringFormat *GenericDefault() {
+    static StringFormat GenericDefault() {
 		StringFormat genericDefaultStringFormat = new StringFormat();
 
 	    genericDefaultStringFormat.lastError =
@@ -80,10 +80,10 @@ class StringFormat : GdiplusBase {
 	    return genericTypographicStringFormat;
     }
 
-    this(in StringFormat *format) {
+    this(in StringFormat format) {
         nativeFormat = null;
         lastError = GdipCloneStringFormat(
-            format ? format->nativeFormat : null,
+            format ? format.nativeFormat : null,
             &nativeFormat
         );
     }
@@ -96,7 +96,7 @@ class StringFormat : GdiplusBase {
             &clonedStringFormat
         );
 
-        if (lastError == Ok)
+        if (lastError == Status.Ok)
             return new StringFormat(clonedStringFormat, lastError);
         else
             return null;
@@ -250,12 +250,12 @@ class StringFormat : GdiplusBase {
 
     Status SetMeasurableCharacterRanges(
         in INT                  rangeCount,
-        in CharacterRange *ranges
+        in CharacterRange[] ranges
     ) {
         return SetStatus(GdipSetStringFormatMeasurableCharacterRanges(
             nativeFormat,
             rangeCount,
-            ranges
+            ranges.ptr
         ));
     }
 
@@ -270,7 +270,7 @@ class StringFormat : GdiplusBase {
 
     Status GetLastStatus() {
         Status lastStatus = lastError;
-        lastError = Ok;
+        lastError = Status.Ok;
 
         return lastStatus;
     }
@@ -279,31 +279,14 @@ protected:
 
     Status SetStatus(GpStatus newStatus) {
         if (newStatus == Status.Ok) {
-            return Ok;
+            return Status.Ok;
         }
         else {
             return lastError = newStatus;
         }
     }
 
-    StringFormat(StringFormat &source) {
-        nativeFormat = null;
-        lastError = GdipCloneStringFormat(
-            source.nativeFormat,
-            &nativeFormat
-        );
-    }
-
-	StringFormat opAssign(StringFormat source) {
-        GdipDeleteStringFormat(nativeFormat);
-        lastError = GdipCloneStringFormat(
-            source.nativeFormat,
-            &nativeFormat
-        );
-        return this;
-	}
-
-    StringFormat(GpStringFormat * clonedStringFormat, Status status) {
+    package this(GpStringFormat* clonedStringFormat, Status status) {
         lastError = status;
         nativeFormat = clonedStringFormat;
 

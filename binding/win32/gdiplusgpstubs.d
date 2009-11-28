@@ -73,7 +73,7 @@ struct GpFontCollection {};
 alias GpFontCollection GpInstalledFontCollection;
 alias GpFontCollection GpPrivateFontCollection;
 
-struct GpCachedBitmap;
+struct GpCachedBitmap {};
 
 alias Status GpStatus;
 alias FillMode GpFillMode;

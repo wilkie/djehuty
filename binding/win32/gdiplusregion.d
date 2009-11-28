@@ -30,6 +30,8 @@ import binding.win32.gdiplusimaging;
 import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
+import binding.win32.gdipluspath;
+import binding.win32.gdiplusgraphics;
 
 /**************************************************************************\
 *
@@ -45,504 +47,371 @@ import binding.win32.gdiplusmatrix;
 *
 \**************************************************************************/
 
-#ifndef _GDIPLUSREGION_H
-#define _GDIPLUSREGION_H
-
-inline 
-Region::Region()
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegion(&region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region::Region(IN const RectF& rect)
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegionRect(&rect, &region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region::Region(IN const Rect& rect)
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegionRectI(&rect, &region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region::Region(IN const GraphicsPath* path)
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegionPath(path->nativePath, &region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region::Region(IN const BYTE* regionData, IN INT size)
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegionRgnData(regionData, size, 
-                                                     &region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region::Region(IN HRGN hRgn)
-{
-    GpRegion *region = NULL;
-
-    lastResult = DllExports::GdipCreateRegionHrgn(hRgn, &region);
-
-    SetNativeRegion(region);
-}
-
-inline 
-Region* Region::FromHRGN(IN HRGN hRgn)
-{
-    GpRegion *region = NULL;
-
-    if (DllExports::GdipCreateRegionHrgn(hRgn, &region) == Ok)
-    {
-        Region* newRegion = new Region(region);
-
-        if (newRegion == NULL) 
-        {
-            DllExports::GdipDeleteRegion(region);
-        }
-
-        return newRegion;
+class Region : GdiplusBase {
+public:
+    this() {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegion(&region);
+  
+      SetNativeRegion(region);
     }
-    else
-        return NULL;
-}
-
-inline 
-Region::~Region()
-{
-    DllExports::GdipDeleteRegion(nativeRegion);
-}
-
-inline Region* 
-Region::Clone() const
-{
-    GpRegion *region = NULL;
-
-    SetStatus(DllExports::GdipCloneRegion(nativeRegion, &region));
-
-    return new Region(region);
-}
-
-inline Status 
-Region::MakeInfinite()
-{
-    return SetStatus(DllExports::GdipSetInfinite(nativeRegion));
-}
-
-inline Status 
-Region::MakeEmpty()
-{
-    return SetStatus(DllExports::GdipSetEmpty(nativeRegion));
-}
-
-inline Status 
-Region::Intersect(IN const RectF& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRect(nativeRegion, &rect, 
-                                                       CombineModeIntersect));
-}
-
-inline Status 
-Region::Intersect(IN const Rect& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRectI(nativeRegion, &rect, 
-                                                        CombineModeIntersect));
-}
-
-inline Status 
-Region::Intersect(IN const GraphicsPath* path)
-{
-    return SetStatus(DllExports::GdipCombineRegionPath(nativeRegion, 
-                                                       path->nativePath, 
-                                                       CombineModeIntersect));
-}
-
-inline Status 
-Region::Intersect(IN const Region* region)
-{
-    return SetStatus(DllExports::GdipCombineRegionRegion(nativeRegion, 
-                                                         region->nativeRegion, 
-                                                         CombineModeIntersect));
-}
-
-inline Status 
-Region::Union(IN const RectF& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRect(nativeRegion, &rect, 
-                                                       CombineModeUnion));
-}
-
-inline Status 
-Region::Union(IN const Rect& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRectI(nativeRegion, &rect, 
-                                                        CombineModeUnion));
-}
-
-inline Status 
-Region::Union(IN const GraphicsPath* path)
-{
-    return SetStatus(DllExports::GdipCombineRegionPath(nativeRegion, 
-                                                       path->nativePath, 
-                                                       CombineModeUnion));
-}
-
-inline Status 
-Region::Union(IN const Region* region)
-{
-    return SetStatus(DllExports::GdipCombineRegionRegion(nativeRegion, 
-                                                         region->nativeRegion, 
-                                                         CombineModeUnion));
-}
-
-inline Status 
-Region::Xor(IN const RectF& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRect(nativeRegion, &rect, 
-                                                       CombineModeXor));
-}
-
-inline Status 
-Region::Xor(IN const Rect& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRectI(nativeRegion, &rect, 
-                                                        CombineModeXor));
-}
-
-inline Status 
-Region::Xor(IN const GraphicsPath* path)
-{
-    return SetStatus(DllExports::GdipCombineRegionPath(nativeRegion, 
-                                                       path->nativePath, 
-                                                       CombineModeXor));
-}
-
-inline Status 
-Region::Xor(IN const Region* region)
-{
-    return SetStatus(DllExports::GdipCombineRegionRegion(nativeRegion, 
-                                                         region->nativeRegion, 
-                                                         CombineModeXor));
-}
-
-inline Status 
-Region::Exclude(IN const RectF& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRect(nativeRegion, &rect, 
-                                                       CombineModeExclude));
-}
-
-inline Status 
-Region::Exclude(IN const Rect& rect)
-{
-     return SetStatus(DllExports::GdipCombineRegionRectI(nativeRegion, &rect, 
-                                                         CombineModeExclude));
-}
-
-inline Status 
-Region::Exclude(IN const GraphicsPath* path)
-{
-    return SetStatus(DllExports::GdipCombineRegionPath(nativeRegion, 
-                                                       path->nativePath, 
-                                                       CombineModeExclude));
-}
-
-inline Status
-Region::Exclude(IN const Region* region)
-{
-    return SetStatus(DllExports::GdipCombineRegionRegion(nativeRegion,
-                                               region->nativeRegion, 
-                                                         CombineModeExclude));
-}
-
-inline Status 
-Region::Complement(IN const RectF& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRect(nativeRegion, &rect, 
-                                                       CombineModeComplement));
-}
-
-inline Status 
-Region::Complement(IN const Rect& rect)
-{
-    return SetStatus(DllExports::GdipCombineRegionRectI(nativeRegion, &rect, 
-                                                        CombineModeComplement));
-}
-
-inline Status 
-Region::Complement(IN const GraphicsPath* path)
-{
-    return SetStatus(DllExports::GdipCombineRegionPath(nativeRegion,
-                                                path->nativePath, 
-                                                CombineModeComplement));
-}
-
-inline Status 
-Region::Complement(IN const Region* region)
-{
-    return SetStatus(DllExports::GdipCombineRegionRegion(nativeRegion,
-                                                  region->nativeRegion, 
-                                                         CombineModeComplement));
-}
-
-inline Status 
-Region::Translate(IN REAL dx, 
-                  IN REAL dy)
-{
-    return SetStatus(DllExports::GdipTranslateRegion(nativeRegion, dx, dy));
-}
-
-inline Status 
-Region::Translate(IN INT dx, 
-                  IN INT dy)
-{
-    return SetStatus(DllExports::GdipTranslateRegionI(nativeRegion, dx, dy));
-}
-
-inline Status 
-Region::Transform(IN const Matrix* matrix)
-{
-    return SetStatus(DllExports::GdipTransformRegion(nativeRegion, 
-                                                     matrix->nativeMatrix));
-}
-
-inline Status 
-Region::GetBounds(OUT RectF* rect,
-                  IN const Graphics* g) const
-{
-    return SetStatus(DllExports::GdipGetRegionBounds(nativeRegion,
-                                                g->nativeGraphics,
-                                                rect));
-}
-
-inline Status 
-Region::GetBounds(OUT Rect* rect,
-                  IN const Graphics* g) const
-{
-    return SetStatus(DllExports::GdipGetRegionBoundsI(nativeRegion,
-                                                g->nativeGraphics,
-                                                rect));
-}
-
-inline HRGN
-Region::GetHRGN(IN const Graphics* g) const
-{
-    HRGN hrgn;
-
-    SetStatus(DllExports::GdipGetRegionHRgn(nativeRegion,
-                                            g->nativeGraphics,
-                                            &hrgn));
-
-    return hrgn;
-}
-
-inline BOOL 
-Region::IsEmpty(IN const Graphics *g) const
-{
-    BOOL booln = FALSE;
-   
-    SetStatus(DllExports::GdipIsEmptyRegion(nativeRegion,
-                                            g->nativeGraphics,
-                                            &booln));
-
-    return booln;
-}
-
-inline BOOL 
-Region::IsInfinite(IN const Graphics *g) const
-{
-    BOOL booln = FALSE;
-
-    SetStatus(DllExports::GdipIsInfiniteRegion(nativeRegion,
-                                                 g->nativeGraphics,
-                                                 &booln));
-
-    return booln;
-}
-
-inline BOOL 
-Region::Equals(IN const Region* region, 
-               IN const Graphics* g) const
-{
-    BOOL booln = FALSE;
-
-    SetStatus(DllExports::GdipIsEqualRegion(nativeRegion,
-                                              region->nativeRegion,
-                                              g->nativeGraphics,
-                                              &booln));
-    return booln;
-}
-
-// Get the size of the buffer needed for the GetData method
-inline UINT 
-Region::GetDataSize() const
-{
-    UINT     bufferSize = 0;
     
-    SetStatus(DllExports::GdipGetRegionDataSize(nativeRegion, &bufferSize));
+    this(in RectF rect) {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegionRect(&rect, &region);
+  
+      SetNativeRegion(region);
+    }
     
-    return bufferSize;
-}
+    this(in Rect rect) {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegionRectI(&rect, &region);
+  
+      SetNativeRegion(region);      
+    }
+    
+    this(in GraphicsPath path) {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegionPath(path.nativePath, &region);
+  
+      SetNativeRegion(region);      
+    }
+    
+    this(in BYTE* regionData, in INT size) {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegionRgnData(regionData, size, 
+                                                       &region);
+  
+      SetNativeRegion(region);      
+    }
+    
+    this(in HRGN hRgn) {
+      GpRegion *region = null;
+  
+      lastResult = GdipCreateRegionHrgn(hRgn, &region);
+  
+      SetNativeRegion(region);      
+    }
+    
+    static Region FromHRGN(in HRGN hRgn) {
+      GpRegion *region = null;
+  
+      if (GdipCreateRegionHrgn(hRgn, &region) == Status.Ok) {
+          Region newRegion = new Region(region);
+  
+          if (newRegion is null) {
+              GdipDeleteRegion(region);
+          }
+  
+          return newRegion;
+      }
+      else
+          return null;      
+    }
 
-// buffer     - where to put the data
-// bufferSize - how big the buffer is (should be at least as big as GetDataSize())
-// sizeFilled - if not NULL, this is an OUT param that says how many bytes
-//              of data were written to the buffer.
-inline Status 
-Region::GetData(OUT BYTE* buffer, 
-                IN UINT bufferSize, 
-                OUT UINT* sizeFilled) const
-{
-    return SetStatus(DllExports::GdipGetRegionData(nativeRegion, buffer, 
-                                                   bufferSize, sizeFilled));
-}
+    ~this() {
+      GdipDeleteRegion(nativeRegion);
+    }
+    
+    Region Clone() {
+      GpRegion *region = null;
+  
+      SetStatus(GdipCloneRegion(nativeRegion, &region));
+  
+      return new Region(region);
+    }
+    
+    alias Clone dup;
 
-/**
- * Hit testing operations
- */
-inline BOOL 
-Region::IsVisible(IN const PointF& point, 
-                  IN const Graphics* g) const
-{
-    BOOL booln = FALSE;
+    Status MakeInfinite() {
+      return SetStatus(GdipSetInfinite(nativeRegion));      
+    }
+    
+    Status MakeEmpty() {
+      return SetStatus(GdipSetEmpty(nativeRegion));
+    }
 
-    SetStatus(DllExports::GdipIsVisibleRegionPoint(nativeRegion,
-                                     point.X, point.Y, 
-                                     (g == NULL) ? NULL : g->nativeGraphics,
-                                     &booln));
-    return booln;
-}
+    UINT GetDataSize() {
+      UINT     bufferSize = 0;
+      
+      SetStatus(GdipGetRegionDataSize(nativeRegion, &bufferSize));
+      
+      return bufferSize;      
+    }
 
-inline BOOL 
-Region::IsVisible(IN const RectF& rect, 
-                  IN const Graphics* g) const
-{
-    BOOL booln = FALSE;
+    // buffer     - where to put the data
+    // bufferSize - how big the buffer is (should be at least as big as GetDataSize())
+    // sizeFilled - if not null, this is an param that says how many bytes
+    //              of data were written to the buffer.
 
-    SetStatus(DllExports::GdipIsVisibleRegionRect(nativeRegion, rect.X,
-                                                    rect.Y, rect.Width,
+    Status GetData(BYTE* buffer, in UINT bufferSize, UINT* sizeFilled = null) {
+      return SetStatus(GdipGetRegionData(nativeRegion, buffer, bufferSize, sizeFilled));                     
+    }
+
+    Status Intersect(in Rect rect) {
+      return SetStatus(GdipCombineRegionRectI(nativeRegion, &rect, CombineMode.CombineModeIntersect));
+    }
+    
+    Status Intersect(in RectF rect) {
+      return SetStatus(GdipCombineRegionRect(nativeRegion, &rect, CombineMode.CombineModeIntersect));      
+    }
+    
+    Status Intersect(in GraphicsPath path) {
+      return SetStatus(GdipCombineRegionPath(nativeRegion, path.nativePath, CombineMode.CombineModeIntersect));      
+    }
+    
+    Status Intersect(in Region region) {
+      return SetStatus(GdipCombineRegionRegion(nativeRegion, region.nativeRegion, CombineMode.CombineModeIntersect));
+    }
+    
+    Status Union(in Rect rect) {
+      return SetStatus(GdipCombineRegionRectI(nativeRegion, &rect, CombineMode.CombineModeUnion));            
+    }
+    
+    Status Union(in RectF rect) {
+      return SetStatus(GdipCombineRegionRect(nativeRegion, &rect, CombineMode.CombineModeUnion));      
+    }
+    
+    Status Union(in GraphicsPath path) {
+      return SetStatus(GdipCombineRegionPath(nativeRegion, path.nativePath, CombineMode.CombineModeUnion));      
+    }
+    
+    Status Union(in Region region) {
+      return SetStatus(GdipCombineRegionRegion(nativeRegion, region.nativeRegion, CombineMode.CombineModeUnion));      
+    }
+    
+    Status Xor(in Rect rect) {    
+      return SetStatus(GdipCombineRegionRectI(nativeRegion, &rect, CombineMode.CombineModeXor));  
+    }
+    
+    Status Xor(in RectF rect) {
+      return SetStatus(GdipCombineRegionRect(nativeRegion, &rect, CombineMode.CombineModeXor));        
+    }
+    
+    Status Xor(in GraphicsPath path) {
+      return SetStatus(GdipCombineRegionPath(nativeRegion, path.nativePath, CombineMode.CombineModeXor));      
+    }
+    
+    Status Xor(in Region region) {
+      return SetStatus(GdipCombineRegionRegion(nativeRegion, region.nativeRegion, CombineMode.CombineModeXor));      
+    }
+    
+    Status Exclude(in Rect rect) {
+      return SetStatus(GdipCombineRegionRectI(nativeRegion, &rect, CombineMode.CombineModeExclude));      
+    }
+    
+    Status Exclude(in RectF rect) {
+      return SetStatus(GdipCombineRegionRect(nativeRegion, &rect, CombineMode.CombineModeExclude));      
+    }
+    
+    Status Exclude(in GraphicsPath path) {
+      return SetStatus(GdipCombineRegionPath(nativeRegion, path.nativePath, CombineMode.CombineModeExclude));      
+    }
+    
+    Status Exclude(in Region region) {
+      return SetStatus(GdipCombineRegionRegion(nativeRegion, region.nativeRegion, CombineMode.CombineModeExclude));      
+    }
+    
+    Status Complement(in Rect rect) {
+      return SetStatus(GdipCombineRegionRectI(nativeRegion, &rect, CombineMode.CombineModeComplement));      
+    }
+    
+    Status Complement(in RectF rect) {
+      return SetStatus(GdipCombineRegionRect(nativeRegion, &rect, CombineMode.CombineModeComplement));      
+      
+    }
+    
+    Status Complement(in GraphicsPath path) {
+      return SetStatus(GdipCombineRegionPath(nativeRegion, path.nativePath, CombineMode.CombineModeComplement));      
+    }
+    
+    Status Complement(in Region region) {
+      return SetStatus(GdipCombineRegionRegion(nativeRegion, region.nativeRegion, CombineMode.CombineModeComplement));      
+    }
+    
+    Status Translate(in REAL dx,
+                     in REAL dy) {
+      return SetStatus(GdipTranslateRegion(nativeRegion, dx, dy)); 
+    }
+                     
+    Status Translate(in INT dx,
+                     in INT dy) {
+      return SetStatus(GdipTranslateRegionI(nativeRegion, dx, dy));                       
+    }
+                     
+    Status Transform(in Matrix matrix) {
+      return SetStatus(GdipTransformRegion(nativeRegion, matrix.nativeMatrix));      
+    }
+
+    Status GetBounds(ref Rect rect, in Graphics g) {
+      return SetStatus(GdipGetRegionBoundsI(nativeRegion, g.nativeGraphics, &rect));
+    }
+
+    Status GetBounds(ref RectF rect, in Graphics g) {
+      return SetStatus(GdipGetRegionBounds(nativeRegion, g.nativeGraphics, &rect));                       
+    }
+
+    HRGN   GetHRGN  (in Graphics g) {
+      HRGN hrgn;
+  
+      SetStatus(GdipGetRegionHRgn(nativeRegion, g.nativeGraphics, &hrgn));
+  
+      return hrgn;      
+    }
+
+    BOOL IsEmpty(in Graphics g) {
+      BOOL booln = FALSE;
+     
+      SetStatus(GdipIsEmptyRegion(nativeRegion, g.nativeGraphics, &booln));
+  
+      return booln;      
+    }
+    
+    BOOL IsInfinite(in Graphics g) {
+      BOOL booln = FALSE;
+  
+      SetStatus(GdipIsInfiniteRegion(nativeRegion, g.nativeGraphics, &booln));
+  
+      return booln;      
+    }
+
+    BOOL IsVisible(in INT x,
+                   in INT y,
+                   in Graphics g = null) {
+        return IsVisible(Point(x, y), g);
+    }
+
+    BOOL IsVisible(in Point point,
+                   in Graphics g = null) {
+      BOOL booln = FALSE;
+  
+  
+      SetStatus(GdipIsVisibleRegionPointI(nativeRegion,
+                                                     point.X,
+                                                     point.Y,
+                                                     (g is null) 
+                                                      ? null : g.nativeGraphics,
+                                                     &booln));
+      return booln;                     
+    }
+
+    BOOL IsVisible(in REAL x,
+                   in REAL y,
+                   in Graphics g = null) {
+        return IsVisible(PointF(x, y), g);
+    }
+
+    BOOL IsVisible(in PointF point,
+                   in Graphics g = null) {
+      BOOL booln = FALSE;
+  
+      SetStatus(GdipIsVisibleRegionPoint(nativeRegion, point.X, point.Y, 
+                                       (g is null) ? null : g.nativeGraphics,
+                                       &booln));
+      return booln;                     
+    }
+
+    BOOL IsVisible(in INT x,
+                   in INT y,
+                   in INT width,
+                   in INT height,
+                   in Graphics g) {
+        return IsVisible(Rect(x, y, width, height), g);
+    }
+
+    BOOL IsVisible(in Rect rect,
+                   in Graphics g = null) {
+      BOOL booln = FALSE;
+  
+      SetStatus(GdipIsVisibleRegionRectI(nativeRegion,
+                                                    rect.X,
+                                                    rect.Y,
+                                                    rect.Width,
                                                     rect.Height,
-                                                    (g == NULL) ?
-                                                      NULL : g->nativeGraphics,
+                                                    (g is null) 
+                                                      ? null : g.nativeGraphics,
                                                     &booln));
-    return booln;
+      return booln;                     
+    }
+
+    BOOL IsVisible(in REAL x,
+                   in REAL y,
+                   in REAL width,
+                   in REAL height,
+                   in Graphics g = null) {
+        return IsVisible(RectF.init(x, y, width, height), g);
+    }
+
+    BOOL IsVisible(in RectF rect,
+                   in Graphics g = null) {
+      BOOL booln = FALSE;
+  
+      SetStatus(GdipIsVisibleRegionRect(nativeRegion, rect.X,
+                                                      rect.Y, rect.Width,
+                                                      rect.Height,
+                                                      (g is null) ?
+                                                        null : g.nativeGraphics,
+                                                      &booln));
+      return booln;                     
+    }
+
+    BOOL Equals(in Region region, in Graphics g) {
+      BOOL booln = FALSE;
+  
+      SetStatus(GdipIsEqualRegion(nativeRegion, region.nativeRegion, g.nativeGraphics, &booln));
+      
+      return booln;                  
+    }
+
+    UINT GetRegionScansCount(in Matrix matrix) {
+      UINT count = 0;
+  
+      SetStatus(GdipGetRegionScansCount(nativeRegion, &count, matrix.nativeMatrix));
+      return count;      
+    }
+    
+    Status GetRegionScans(in Matrix matrix,
+                          RectF[] rects,
+                          ref INT count) {
+      return SetStatus(GdipGetRegionScans(nativeRegion, rects.ptr, &count, matrix.nativeMatrix));                              
+    }
+                          
+    Status GetRegionScans(in Matrix matrix,
+                          Rect[]  rects,
+                          ref INT count) {
+      return SetStatus(GdipGetRegionScansI(nativeRegion, rects.ptr, &count, matrix.nativeMatrix));                            
+    }
+                          
+    Status GetLastStatus() {
+      Status lastStatus = lastResult;
+      lastResult = Status.Ok;
+  
+      return lastStatus;      
+    }
+
+protected:
+
+    Status SetStatus(Status status) {
+        if (status != Status.Ok)
+            return (lastResult = status);
+        else
+            return status;
+    }
+
+    this(GpRegion* nativeRegion) {
+      SetNativeRegion(nativeRegion);      
+    }
+
+    VOID SetNativeRegion(GpRegion* nativeRegion) {
+      this.nativeRegion = nativeRegion;      
+    }
+
+protected:
+    package GpRegion* nativeRegion;
+    package Status lastResult;
 }
-
-inline BOOL 
-Region::IsVisible(IN const Point& point, 
-                  IN const Graphics* g) const
-{
-    BOOL booln = FALSE;
-
-
-    SetStatus(DllExports::GdipIsVisibleRegionPointI(nativeRegion,
-                                                   point.X,
-                                                   point.Y,
-                                                   (g == NULL) 
-                                                    ? NULL : g->nativeGraphics,
-                                                   &booln));
-    return booln;
-}
-
-inline BOOL 
-Region::IsVisible(IN const Rect& rect, 
-                  IN const Graphics* g) const
-{
-    BOOL booln = FALSE;
-
-    SetStatus(DllExports::GdipIsVisibleRegionRectI(nativeRegion,
-                                                  rect.X,
-                                                  rect.Y,
-                                                  rect.Width,
-                                                  rect.Height,
-                                                  (g == NULL) 
-                                                    ? NULL : g->nativeGraphics,
-                                                  &booln));
-    return booln;
-}
-
-inline UINT 
-Region::GetRegionScansCount(IN const Matrix* matrix) const
-{
-    UINT count = 0;
-
-    SetStatus(DllExports::GdipGetRegionScansCount(nativeRegion,
-                                                  &count,
-                                                  matrix->nativeMatrix));
-    return count;
-}
-
-// If rects is NULL, return the count of rects in the region.
-// Otherwise, assume rects is big enough to hold all the region rects
-// and fill them in and return the number of rects filled in.
-// The rects are returned in the units specified by the matrix
-// (which is typically a world-to-device transform).
-// Note that the number of rects returned can vary, depending on the
-// matrix that is used.
-
-inline Status 
-Region::GetRegionScans(
-    IN const Matrix* matrix,
-    OUT RectF* rects,
-    IN OUT INT* count) const
-{
-    return SetStatus(DllExports::GdipGetRegionScans(nativeRegion,
-                                          rects,
-                                          count,
-                                          matrix->nativeMatrix));
-}
-
-inline Status
-Region::GetRegionScans(
-    IN const Matrix* matrix,
-    OUT Rect* rects,
-    IN OUT INT* count) const
-{
-    return SetStatus(DllExports::GdipGetRegionScansI(nativeRegion,
-                                          rects,
-                                          count,
-                                          matrix->nativeMatrix));
-}
-
-inline Region::Region(GpRegion* nativeRegion)
-{
-    SetNativeRegion(nativeRegion);
-}
-
-inline VOID Region::SetNativeRegion(GpRegion* nativeRegion)
-{
-    this->nativeRegion = nativeRegion;
-}
-
-inline Status Region::GetLastStatus() const
-{
-    Status lastStatus = lastResult;
-    lastResult = Ok;
-
-    return lastStatus;
-}
-
-#endif // !_GDIPLUSREGION_H
-

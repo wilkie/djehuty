@@ -166,14 +166,14 @@ public:
 
 struct Size {
 public:
-    Size init(Size size) {
+    static Size init(Size size) {
     	Size ret;
         ret.Width = size.Width;
         ret.Height = size.Height;
         return ret;
     }
 
-    Size init(INT width, INT height) {
+    static Size init(INT width, INT height) {
     	Size ret;
         ret.Width = width;
         ret.Height = height;
@@ -208,21 +208,21 @@ public:
 
 struct PointF {
 public:
-	PointF init(ref PointF point) {
+	static PointF init(ref PointF point) {
 		PointF ret;
 		ret.X = point.X;
 		ret.Y = point.Y;
 		return ret;
 	}
 
-	PointF init(ref SizeF size) {
+	static PointF init(ref SizeF size) {
 		PointF ret;
 		ret.X = size.Width;
 		ret.Y = size.Height;
 		return ret;
 	}
 
-	PointF init(REAL x, REAL y)  {
+	static PointF init(REAL x, REAL y)  {
 		PointF ret;
 	    ret.X = x;
 	    ret.Y = y;
@@ -252,14 +252,14 @@ public:
 struct Point {
 public:
 
-	Point init(in Point point) {
+	static Point init(in Point point) {
 		Point ret;
 	    ret.X = point.X;
 	    ret.Y = point.Y;
 	    return ret;
 	}
 
-	Point init(in Size size) {
+	static Point init(in Size size) {
 		Point ret;
 	    ret.X = size.Width;
 	    ret.Y = size.Height;
@@ -295,7 +295,7 @@ public:
 
 class RectF {
 public:
-    RectF init(REAL x, REAL y, REAL width, REAL height) {
+    static RectF init(REAL x, REAL y, REAL width, REAL height) {
     	RectF ret;
         ret.X = x;
         ret.Y = y;
@@ -304,7 +304,7 @@ public:
         return ret;
     }
 
-    RectF init(in PointF location, in SizeF size) {
+    static RectF init(in PointF location, in SizeF size) {
     	RectF ret;
         ret.X = location.X;
         ret.Y = location.Y;
@@ -452,7 +452,7 @@ public:
 struct Rect {
 public:
 
-	Rect init(in INT x, in INT y, in INT width, in INT height) {
+	static Rect init(in INT x, in INT y, in INT width, in INT height) {
 		Rect ret;
         ret.X = x;
         ret.Y = y;
@@ -461,7 +461,7 @@ public:
         return ret;
     }
 
-    Rect init(in Point location, in Size size) {
+    static Rect init(in Point location, in Size size) {
     	Rect ret;
         ret.X = location.X;
         ret.Y = location.Y;
@@ -605,8 +605,8 @@ public:
 struct PathData {
 public:
     INT Count;
-    PointF* Points;
-	BYTE* Types;
+    PointF[] Points;
+	BYTE[] Types;
 }
 
 struct CharacterRange {

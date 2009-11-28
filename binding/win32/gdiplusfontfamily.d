@@ -1,7 +1,7 @@
 /*
- * gdiplusfamily.d
+ * gdiplusfontfamily.d
  *
- * This module implements GdiPlusFamily.h for D. The original
+ * This module implements GdiPlusFontFamily.h for D. The original
  * copyright info is given below.
  *
  * Author: Dave Wilkinson
@@ -9,7 +9,7 @@
  *
  */
 
-module binding.win32.gdiplusfamily;
+module binding.win32.gdiplusfontfamily;
 
 import binding.win32.windef;
 import binding.win32.winbase;
@@ -30,6 +30,7 @@ import binding.win32.gdiplusimaging;
 import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
+import binding.win32.gdiplusfontcollection;
 
 /**************************************************************************\
 *
@@ -45,197 +46,169 @@ import binding.win32.gdiplusmatrix;
 *
 \**************************************************************************/
 
-#ifndef _GDIPLUS_FONT_FAMILY_H
-#define _GDIPLUS_FONT_FAMILY_H
+//--------------------------------------------------------------------------
+// FontFamily
+//--------------------------------------------------------------------------
 
-inline 
-FontFamily::FontFamily() :
-    nativeFamily (NULL),
-    lastResult    (Ok)
-{
-}
+class FontFamily : GdiplusBase {
 
-inline 
-FontFamily::FontFamily(
-    IN const WCHAR*          name,
-    IN const FontCollection* fontCollection
-)
-{
-    nativeFamily = NULL;
-    lastResult = DllExports::GdipCreateFontFamilyFromName(
-        name,
-        fontCollection ? fontCollection->nativeFontCollection : NULL,
-        &nativeFamily
-    );
-}
-
-inline
-FontFamily::FontFamily(
-    IN GpFontFamily *nativeOrig,
-    IN Status status
-)
-{
-    lastResult    = status;
-    nativeFamily = nativeOrig;
-}
-
-inline const FontFamily *
-FontFamily::GenericSansSerif() 
-{
-    if (GenericSansSerifFontFamily != NULL)
-    {
-        return GenericSansSerifFontFamily;
+    this() {
     }
 
-    GenericSansSerifFontFamily =
-        (FontFamily*) GenericSansSerifFontFamilyBuffer;
-
-    GenericSansSerifFontFamily->lastResult =
-        DllExports::GdipGetGenericFontFamilySansSerif(
-            &(GenericSansSerifFontFamily->nativeFamily)
-        );
-
-    return GenericSansSerifFontFamily;
-}
-
-inline const FontFamily *
-FontFamily::GenericSerif() 
-{
-    if (GenericSerifFontFamily != NULL)
-    {
-        return GenericSerifFontFamily;
+    this(in WCHAR* name, in FontCollection fontCollection = null) {
+        nativeFamily = null;
+        lastResult = GdipCreateFontFamilyFromName(
+            name,
+            fontCollection ? fontCollection.nativeFontCollection : null,
+            &nativeFamily
+        );        
     }
 
-    GenericSerifFontFamily =
-        (FontFamily*) GenericSerifFontFamilyBuffer;
-
-    GenericSerifFontFamily->lastResult =
-        DllExports::GdipGetGenericFontFamilySerif(
-            &(GenericSerifFontFamily->nativeFamily)
-        );
-
-    return GenericSerifFontFamily;
-}
-
-inline const FontFamily *
-FontFamily::GenericMonospace()
-{
-    if (GenericMonospaceFontFamily != NULL)
-    {
-        return GenericMonospaceFontFamily;
+    ~this() {
+        GdipDeleteFontFamily (nativeFamily);
     }
 
-    GenericMonospaceFontFamily =
-        (FontFamily*) GenericMonospaceFontFamilyBuffer;
+    static FontFamily GenericSansSerif() {
+        static FontFamily GenericSansSerifFontFamily;
+        
+        if (GenericSansSerifFontFamily !is null) {
+            return GenericSansSerifFontFamily;
+        }
+    
+        GenericSansSerifFontFamily = new FontFamily();
+    
+        GenericSansSerifFontFamily.lastResult =
+            GdipGetGenericFontFamilySansSerif(
+                &(GenericSansSerifFontFamily.nativeFamily)
+            );
+    
+        return GenericSansSerifFontFamily; 
+    }
+    
+    static FontFamily GenericSerif() {   
+        static FontFamily GenericSerifFontFamily;
+        
+        if (GenericSerifFontFamily !is null) {
+            return GenericSerifFontFamily;
+        }
+    
+        GenericSerifFontFamily = new FontFamily();
+    
+        GenericSerifFontFamily.lastResult =
+            GdipGetGenericFontFamilySerif(
+                &(GenericSerifFontFamily.nativeFamily)
+            );
+    
+        return GenericSerifFontFamily;     
+    }
+    
+    static FontFamily GenericMonospace() { 
+        static FontFamily GenericMonospaceFontFamily; 
+        
+        if (GenericMonospaceFontFamily !is null) {
+            return GenericMonospaceFontFamily;
+        }
+    
+        GenericMonospaceFontFamily = new FontFamily();
+    
+        GenericMonospaceFontFamily.lastResult =
+            GdipGetGenericFontFamilyMonospace(
+                &(GenericMonospaceFontFamily.nativeFamily)
+            );
+    
+        return GenericMonospaceFontFamily;      
+    }
 
-    GenericMonospaceFontFamily->lastResult =
-        DllExports::GdipGetGenericFontFamilyMonospace(
-            &(GenericMonospaceFontFamily->nativeFamily)
-        );
+    Status GetFamilyName(LPWSTR name, in LANGID language = 0) { 
+        return SetStatus(GdipGetFamilyName(nativeFamily, 
+                                                       name, 
+                                                       language));           
+    }
 
-    return GenericMonospaceFontFamily;
+    FontFamily Clone() { 
+        GpFontFamily * clonedFamily = null;
+    
+        SetStatus(GdipCloneFontFamily (nativeFamily, &clonedFamily));
+    
+        return new FontFamily(clonedFamily, lastResult);       
+    }
+    
+    alias Clone dup;
+
+    BOOL    IsAvailable() {
+        return (nativeFamily !is null);
+    }
+
+    BOOL    IsStyleAvailable(in INT style) {
+        BOOL    StyleAvailable;
+        Status  status;
+    
+        status = SetStatus(GdipIsStyleAvailable(nativeFamily, style, &StyleAvailable));
+    
+        if (status != Status.Ok)
+            StyleAvailable = FALSE;
+    
+        return StyleAvailable;        
+    }
+
+    UINT16  GetEmHeight     (in INT style) {
+        UINT16  EmHeight;
+    
+        SetStatus(GdipGetEmHeight(nativeFamily, style, &EmHeight));
+    
+        return EmHeight;
+        
+    }
+    
+    UINT16  GetCellAscent   (in INT style) {
+        UINT16  CellAscent;
+    
+        SetStatus(GdipGetCellAscent(nativeFamily, style, &CellAscent));
+    
+        return CellAscent;
+        
+    }
+    
+    UINT16  GetCellDescent  (in INT style) {
+        UINT16  CellDescent;
+    
+        SetStatus(GdipGetCellDescent(nativeFamily, style, &CellDescent));
+    
+        return CellDescent;
+        
+    }
+    
+    UINT16  GetLineSpacing  (in INT style) {
+        UINT16  LineSpacing;
+    
+        SetStatus(GdipGetLineSpacing(nativeFamily, style, &LineSpacing));
+    
+        return LineSpacing;
+        
+    }
+    
+    Status GetLastStatus() {
+        Status lastStatus = lastResult;
+        lastResult = Status.Ok;
+    
+        return lastStatus;        
+    }
+
+protected:
+    package Status SetStatus(Status status) {
+        if (status != Status.Ok) {
+            return (lastResult = status);
+        }
+        else {
+            return status;
+        }        
+    }
+
+    package this(GpFontFamily * nativeOrig, Status status) {
+        lastResult    = status;
+        nativeFamily = nativeOrig;        
+    }
+
+    package GpFontFamily    *nativeFamily = null;
+    package Status   lastResult = Status.Ok;
 }
-
-inline FontFamily::~FontFamily()
-{
-    DllExports::GdipDeleteFontFamily (nativeFamily);
-}
-
-inline FontFamily *
-FontFamily::Clone() const
-{
-    GpFontFamily * clonedFamily = NULL;
-
-    SetStatus(DllExports::GdipCloneFontFamily (nativeFamily, &clonedFamily));
-
-    return new FontFamily(clonedFamily, lastResult);
-}
-
-inline Status 
-FontFamily::GetFamilyName(
-    __out_ecount(LF_FACESIZE) LPWSTR    name,
-    IN LANGID                           language
-) const
-{
-    return SetStatus(DllExports::GdipGetFamilyName(nativeFamily, 
-                                                   name, 
-                                                   language));
-}
-
-inline BOOL 
-FontFamily::IsStyleAvailable(IN INT style) const
-{
-    BOOL    StyleAvailable;
-    Status  status;
-
-    status = SetStatus(DllExports::GdipIsStyleAvailable(nativeFamily, style, &StyleAvailable));
-
-    if (status != Ok)
-        StyleAvailable = FALSE;
-
-    return StyleAvailable;
-}
-
-
-inline UINT16 
-FontFamily::GetEmHeight(IN INT style) const
-{
-    UINT16  EmHeight;
-
-    SetStatus(DllExports::GdipGetEmHeight(nativeFamily, style, &EmHeight));
-
-    return EmHeight;
-}
-
-inline UINT16 
-FontFamily::GetCellAscent(IN INT style) const
-{
-    UINT16  CellAscent;
-
-    SetStatus(DllExports::GdipGetCellAscent(nativeFamily, style, &CellAscent));
-
-    return CellAscent;
-}
-
-inline UINT16 
-FontFamily::GetCellDescent(IN INT style) const
-{
-    UINT16  CellDescent;
-
-    SetStatus(DllExports::GdipGetCellDescent(nativeFamily, style, &CellDescent));
-
-    return CellDescent;
-}
-
-
-inline UINT16 
-FontFamily::GetLineSpacing(IN INT style) const
-{
-    UINT16  LineSpacing;
-
-    SetStatus(DllExports::GdipGetLineSpacing(nativeFamily, style, &LineSpacing));
-
-    return LineSpacing;
-
-}
-
-inline Status 
-FontFamily::GetLastStatus() const
-{
-    Status lastStatus = lastResult;
-    lastResult = Ok;
-
-    return lastStatus;
-}
-
-inline Status
-FontFamily::SetStatus(Status status) const 
-{
-    if (status != Ok)
-        return (lastResult = status);
-    else
-        return status;
-}
-
-#endif
-

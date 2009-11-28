@@ -30,6 +30,12 @@ import binding.win32.gdiplusimaging;
 import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
+import binding.win32.gdiplusgraphics;
+import binding.win32.gdiplusfontfamily;
+import binding.win32.gdiplusfont;
+import binding.win32.gdiplusbrush;
+import binding.win32.gdipluspen;
+import binding.win32.gdiplusstringformat;
 
 /**************************************************************************\
 *
@@ -47,7 +53,7 @@ import binding.win32.gdiplusmatrix;
 
 class GraphicsPath : GdiplusBase {
 
-    this(in FillMode fillMode = FillModeAlternate) {
+    this(in FillMode fillMode = FillMode.FillModeAlternate) {
         nativePath = null;
         lastResult = GdipCreatePath(fillMode, &nativePath);
     }
@@ -97,7 +103,7 @@ class GraphicsPath : GdiplusBase {
     }
 
     FillMode GetFillMode() {
-        FillMode fillmode = FillModeAlternate;
+        FillMode fillmode = FillMode.FillModeAlternate;
 
         SetStatus(GdipGetPathFillMode(nativePath, &fillmode));
 
@@ -109,47 +115,41 @@ class GraphicsPath : GdiplusBase {
                                                          fillmode));
     }
 
-    Status GetPathData(out PathData* pathData) {
-        if (pathData is null)  {
-            return SetStatus(InvalidParameter);
-        }
-
+    Status GetPathData(ref PathData pathData) {
+        
         INT count = GetPointCount();
 
         if ((count <= 0) || (pathData.Count>0 && pathData.Count<count)) {
             pathData.Count = 0;
-            if (pathData.Points) {
-                delete [] pathData.Points;
+            if (pathData.Points) {                
                 pathData.Points = null;
             }
 
             if (pathData.Types) {
-                delete [] pathData.Types;
                 pathData.Types = null;
             }
 
             if (count <= 0) {
-                return Ok;
+                return Status.Ok;
             }
         }
 
         if (pathData.Count == 0)  {
             pathData.Points = new PointF[count];
             if (pathData.Points is null)  {
-                return SetStatus(OutOfMemory);
+                return SetStatus(Status.OutOfMemory);
 
             }
-            pathData.Types = new byte[count];
+            pathData.Types = new BYTE[count];
             if (pathData.Types is null)  {
-                delete [] pathData.Points;
                 pathData.Points = null;
 
-                return SetStatus(OutOfMemory);
+                return SetStatus(Status.OutOfMemory);
             }
             pathData.Count = count;
         }
 
-        return SetStatus(GdipGetPathData(nativePath, pathData));
+        return SetStatus(GdipGetPathData(nativePath, &pathData));
     }
 
     Status StartFigure() {
@@ -176,13 +176,13 @@ class GraphicsPath : GdiplusBase {
         return SetStatus(GdipReversePath(nativePath));
     }
 
-    Status GetLastPoint(out PointF* lastPoint) {
+    Status GetLastPoint(PointF* lastPoint) {
         return SetStatus(GdipGetPathLastPoint(nativePath,
                                                           lastPoint));
     }
 
-    Status AddLine(in PointF& pt1,
-                   in PointF& pt2) {
+    Status AddLine(in PointF pt1,
+                   in PointF pt2) {
         return AddLine(pt1.X, pt1.Y, pt2.X, pt2.Y);
     }
 
@@ -200,8 +200,8 @@ class GraphicsPath : GdiplusBase {
                                                       count));
     }
 
-    Status AddLine(in Point& pt1,
-                   in Point& pt2) {
+    Status AddLine(in Point pt1,
+                   in Point pt2) {
         return AddLine(pt1.X,
                        pt1.Y,
                        pt2.X,
@@ -226,7 +226,7 @@ class GraphicsPath : GdiplusBase {
                                                        count));
     }
 
-    Status AddArc(in RectF& rect,
+    Status AddArc(in RectF rect,
                   in REAL startAngle,
                   in REAL sweepAngle) {
         return AddArc(rect.X, rect.Y, rect.Width, rect.Height,
@@ -244,7 +244,7 @@ class GraphicsPath : GdiplusBase {
                                                     sweepAngle));
     }
 
-    Status AddArc(in Rect& rect,
+    Status AddArc(in Rect rect,
                   in REAL startAngle,
                   in REAL sweepAngle) {
         return AddArc(rect.X, rect.Y, rect.Width, rect.Height,
@@ -266,10 +266,10 @@ class GraphicsPath : GdiplusBase {
                                                     sweepAngle));
     }
 
-    Status AddBezier(in PointF& pt1,
-                     in PointF& pt2,
-                     in PointF& pt3,
-                     in PointF& pt4) {
+    Status AddBezier(in PointF pt1,
+                     in PointF pt2,
+                     in PointF pt3,
+                     in PointF pt4) {
         return AddBezier(pt1.X, pt1.Y, pt2.X, pt2.Y, pt3.X, pt3.Y, pt4.X,
                          pt4.Y);
     }
@@ -292,10 +292,10 @@ class GraphicsPath : GdiplusBase {
                                                         count));
     }
 
-    Status AddBezier(in Point& pt1,
-                     in Point& pt2,
-                     in Point& pt3,
-                     in Point& pt4) {
+    Status AddBezier(in Point pt1,
+                     in Point pt2,
+                     in Point pt3,
+                     in Point pt4) {
        return AddBezier(pt1.X, pt1.Y, pt2.X, pt2.Y, pt3.X, pt3.Y, pt4.X,
                         pt4.Y);
     }
@@ -417,7 +417,7 @@ class GraphicsPath : GdiplusBase {
                                                              tension));
     }
 
-    Status AddRectangle(in RectF& rect) {
+    Status AddRectangle(in RectF rect) {
         return SetStatus(GdipAddPathRectangle(nativePath,
                                                           rect.X,
                                                           rect.Y,
@@ -432,7 +432,7 @@ class GraphicsPath : GdiplusBase {
                                                            count));
     }
 
-    Status AddRectangle(in Rect& rect) {
+    Status AddRectangle(in Rect rect) {
         return SetStatus(GdipAddPathRectangleI(nativePath,
                                                           rect.X,
                                                           rect.Y,
@@ -446,7 +446,7 @@ class GraphicsPath : GdiplusBase {
                                                            count));
     }
 
-    Status AddEllipse(in RectF& rect) {
+    Status AddEllipse(in RectF rect) {
         return AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
     }
 
@@ -461,7 +461,7 @@ class GraphicsPath : GdiplusBase {
                                                         height));
     }
 
-    Status AddEllipse(in Rect& rect) {
+    Status AddEllipse(in Rect rect) {
         return AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
     }
 
@@ -476,7 +476,7 @@ class GraphicsPath : GdiplusBase {
                                                         height));
     }
 
-    Status AddPie(in RectF& rect,
+    Status AddPie(in RectF rect,
                   in REAL startAngle,
                   in REAL sweepAngle) {
         return AddPie(rect.X, rect.Y, rect.Width, rect.Height, startAngle,
@@ -494,7 +494,7 @@ class GraphicsPath : GdiplusBase {
                                                     sweepAngle));
     }
 
-    Status AddPie(in Rect& rect,
+    Status AddPie(in Rect rect,
                   in REAL startAngle,
                   in REAL sweepAngle) {
         return AddPie(rect.X,
@@ -532,7 +532,7 @@ class GraphicsPath : GdiplusBase {
                                                         count));
     }
 
-    Status AddPath(in GraphicsPath* addingPath,
+    Status AddPath(in GraphicsPath addingPath,
                    in BOOL connect) {
         GpPath* nativePath2 = null;
         if(addingPath)
@@ -545,13 +545,13 @@ class GraphicsPath : GdiplusBase {
     Status AddString(
         in WCHAR         *string,
         in INT                  length,
-        in FontFamily    *family,
+        in FontFamily    family,
         in INT                  style,
         in REAL                 emSize,  // World units
-        in PointF        &origin,
-        in StringFormat  *format
+        in PointF        origin,
+        in StringFormat  format
     ) {
-        RectF rect(origin.X, origin.Y, 0.0f, 0.0f);
+        RectF rect = RectF.init(origin.X, origin.Y, 0.0f, 0.0f);
 
         return SetStatus(GdipAddPathString(
             nativePath,
@@ -568,11 +568,11 @@ class GraphicsPath : GdiplusBase {
     Status AddString(
         in WCHAR         *string,
         in INT                  length,
-        in FontFamily    *family,
+        in FontFamily    family,
         in INT                  style,
         in REAL                 emSize,  // World units
-        in RectF         &layoutRect,
-        in StringFormat  *format
+        in RectF         layoutRect,
+        in StringFormat  format
     ) {
         return SetStatus(GdipAddPathString(
             nativePath,
@@ -589,13 +589,13 @@ class GraphicsPath : GdiplusBase {
     Status AddString(
         in WCHAR         *string,
         in INT                  length,
-        in FontFamily    *family,
+        in FontFamily    family,
         in INT                  style,
         in REAL                 emSize,  // World units
-        in Point         &origin,
-        in StringFormat  *format
+        in Point         origin,
+        in StringFormat  format
     ) {
-        Rect rect(origin.X, origin.Y, 0, 0);
+        Rect rect = Rect.init(origin.X, origin.Y, 0, 0);
 
         return SetStatus(GdipAddPathStringI(
             nativePath,
@@ -612,11 +612,11 @@ class GraphicsPath : GdiplusBase {
     Status AddString(
         in WCHAR         *string,
         in INT                  length,
-        in FontFamily    *family,
+        in FontFamily    family,
         in INT                  style,
         in REAL                 emSize,  // World units
-        in Rect          &layoutRect,
-        in StringFormat  *format
+        in Rect          layoutRect,
+        in StringFormat  format
     ) {
         return SetStatus(GdipAddPathStringI(
             nativePath,
@@ -630,19 +630,19 @@ class GraphicsPath : GdiplusBase {
         ));
     }
 
-    Status Transform(in Matrix* matrix) {
+    Status Transform(in Matrix matrix) {
         if(matrix)
             return SetStatus(GdipTransformPath(nativePath,
                                                       matrix.nativeMatrix));
         else
-            return Ok;
+            return Status.Ok;
     }
 
     // This is not always the tightest bounds.
 
-    Status GetBounds(out RectF* bounds,
-                     in Matrix* matrix = null,
-                     in Pen* pen = null) {
+    Status GetBounds(RectF* bounds,
+                     in Matrix matrix = null,
+                     in Pen pen = null) {
 	    GpMatrix* nativeMatrix = null;
 	    GpPen* nativePen = null;
 
@@ -656,9 +656,9 @@ class GraphicsPath : GdiplusBase {
 	                                                   nativeMatrix, nativePen));
     }
 
-    Status GetBounds(out Rect* bounds,
-                     in Matrix* matrix = null,
-                     in Pen* pen = null) {
+    Status GetBounds(Rect* bounds,
+                     in Matrix matrix = null,
+                     in Pen pen = null) {
 	    GpMatrix* nativeMatrix = null;
 	    GpPen* nativePen = null;
 
@@ -676,7 +676,7 @@ class GraphicsPath : GdiplusBase {
     // the original path information is lost.  When matrix is null the
     // identity matrix is assumed.
 
-    Status Flatten(in Matrix* matrix = null,
+    Status Flatten(in Matrix matrix = null,
                    in REAL flatness = FlatnessDefault) {
         GpMatrix* nativeMatrix = null;
         if(matrix) {
@@ -692,7 +692,7 @@ class GraphicsPath : GdiplusBase {
 
     Status Widen(
         in Pen* pen,
-        in Matrix* matrix = null,
+        in Matrix matrix = null,
         in REAL flatness = FlatnessDefault
     ) {
         GpMatrix* nativeMatrix = null;
@@ -708,7 +708,7 @@ class GraphicsPath : GdiplusBase {
     }
 
     Status Outline(
-        in Matrix *matrix = null,
+        in Matrix matrix = null,
         in REAL flatness = FlatnessDefault
     ) {
         GpMatrix* nativeMatrix = null;
@@ -727,10 +727,10 @@ class GraphicsPath : GdiplusBase {
 
     Status Warp(in PointF* destPoints,
                 in INT count,
-                in RectF& srcRect,
-                in Matrix* matrix = null,
+                in RectF srcRect,
+                in Matrix matrix = null,
                 in WarpMode warpMode = WarpMode.WarpModePerspective,
-                in REAL flatness = Flatness.FlatnessDefault) {
+                in REAL flatness = FlatnessDefault) {
         GpMatrix* nativeMatrix = null;
         if(matrix)
             nativeMatrix = matrix.nativeMatrix;
@@ -756,19 +756,19 @@ class GraphicsPath : GdiplusBase {
         return count;
     }
 
-    Status GetPathTypes(out BYTE* types,
+    Status GetPathTypes(BYTE* types,
                         in INT count) {
         return SetStatus(GdipGetPathTypes(nativePath, types,
                                                       count));
     }
 
-    Status GetPathPoints(out PointF* points,
+    Status GetPathPoints(PointF* points,
                          in INT count) {
         return SetStatus(GdipGetPathPoints(nativePath, points,
                                                        count));
     }
 
-    Status GetPathPoints(out Point* points,
+    Status GetPathPoints(Point* points,
                          in INT count) {
         return SetStatus(GdipGetPathPointsI(nativePath, points,
                                                         count));
@@ -776,19 +776,19 @@ class GraphicsPath : GdiplusBase {
 
     Status GetLastStatus() {
         Status lastStatus = lastResult;
-        lastResult = Ok;
+        lastResult = Status.Ok;
 
         return lastStatus;
     }
 
-    BOOL IsVisible(in PointF& point,
-                   in Graphics* g = null) {
+    BOOL IsVisible(in PointF point,
+                   in Graphics g = null) {
         return IsVisible(point.X, point.Y, g);
     }
 
     BOOL IsVisible(in REAL x,
                    in REAL y,
-                   in Graphics* g = null) {
+                   in Graphics g = null) {
 	   BOOL booln = FALSE;
 	
 	   GpGraphics* nativeGraphics = null;
@@ -802,14 +802,14 @@ class GraphicsPath : GdiplusBase {
 	   return booln;
     }
 
-    BOOL IsVisible(in Point& point,
-                   in Graphics* g = null) {
+    BOOL IsVisible(in Point point,
+                   in Graphics g = null) {
         return IsVisible(point.X, point.Y, g);
     }
 
     BOOL IsVisible(in INT x,
                    in INT y,
-                   in Graphics* g = null) {
+                   in Graphics g = null) {
 	   BOOL booln = FALSE;
 	
 	   GpGraphics* nativeGraphics = null;
@@ -822,31 +822,31 @@ class GraphicsPath : GdiplusBase {
 	                                                 &booln));
 	   return booln;
     }
-
-    BOOL IsOutlineVisible(in PointF& point,
-                          in Pen* pen,
-                          in Graphics* g = null) {
+/*
+    BOOL IsOutlineVisible(in PointF point,
+                          in Pen pen,
+                          in Graphics g = null) {
         return IsOutlineVisible(point.X, point.Y, pen, g);
     }
 
     BOOL IsOutlineVisible(in REAL x,
                           in REAL y,
-                          in Pen* pen,
-                          in Graphics* g = null) {
+                          in Pen pen,
+                          in Graphics g = null) {
     }
 
-    BOOL IsOutlineVisible(in Point& point,
-                          in Pen* pen,
-                          in Graphics* g = null) {
+    BOOL IsOutlineVisible(in Point point,
+                          in Pen pen,
+                          in Graphics g = null) {
         return IsOutlineVisible(point.X, point.Y, pen, g);
     }
 
     BOOL IsOutlineVisible(in INT x,
                           in INT y,
-                          in Pen* pen,
-                          in Graphics* g = null) {
+                          in Pen pen,
+                          in Graphics g = null) {
     }
-
+*/
 protected:
 
     package this(GraphicsPath path) {
@@ -856,7 +856,7 @@ protected:
     }
 
     package this(GpPath* nativePath) {
-        lastResult = Ok;
+        lastResult = Status.Ok;
         SetNativePath(nativePath);
     }
 
@@ -865,7 +865,7 @@ protected:
     }
 
     Status SetStatus(Status status) {
-        if (status != Ok)
+        if (status != Status.Ok)
             return (lastResult = status);
         else
             return status;
@@ -896,9 +896,9 @@ class GraphicsPathIterator : GdiplusBase {
     }
 
 
-    INT NextSubpath(out INT* startIndex,
-                    out INT* endIndex,
-                    out BOOL* isClosed) {
+    INT NextSubpath(INT* startIndex,
+                    INT* endIndex,
+                    BOOL* isClosed) {
         INT resultCount;
 
         SetStatus(GdipPathIterNextSubpath(nativeIterator,
@@ -908,8 +908,8 @@ class GraphicsPathIterator : GdiplusBase {
     }
 
 
-    INT NextSubpath(out GraphicsPath* path,
-                    out BOOL* isClosed) {
+    INT NextSubpath(GraphicsPath path,
+                    BOOL* isClosed) {
         GpPath* nativePath = null;
 
         INT resultCount;
@@ -923,9 +923,9 @@ class GraphicsPathIterator : GdiplusBase {
         return resultCount;
     }
 
-    INT NextPathType(out BYTE* pathType,
-                     out INT* startIndex,
-                     out INT* endIndex) {
+    INT NextPathType(BYTE* pathType,
+                     INT* startIndex,
+                     INT* endIndex) {
         INT resultCount;
 
         SetStatus(GdipPathIterNextPathType(nativeIterator,
@@ -934,8 +934,8 @@ class GraphicsPathIterator : GdiplusBase {
         return resultCount;
     }
 
-    INT NextMarker(out INT* startIndex,
-                   out INT* endIndex) {
+    INT NextMarker(INT* startIndex,
+                   INT* endIndex) {
         INT resultCount;
 
         SetStatus(GdipPathIterNextMarker(nativeIterator,
@@ -945,7 +945,7 @@ class GraphicsPathIterator : GdiplusBase {
     }
 
 
-    INT NextMarker(out GraphicsPath* path) {
+    INT NextMarker(GraphicsPath path) {
         GpPath* nativePath = null;
 
         INT resultCount;
@@ -989,8 +989,8 @@ class GraphicsPathIterator : GdiplusBase {
         SetStatus(GdipPathIterRewind(nativeIterator));
     }
 
-    INT Enumerate(out PointF *points,
-                  out BYTE *types,
+    INT Enumerate(PointF *points,
+                  BYTE *types,
                   in INT count) {
         INT resultCount;
 
@@ -1000,8 +1000,8 @@ class GraphicsPathIterator : GdiplusBase {
         return resultCount;
     }
 
-    INT CopyData(out PointF* points,
-                 out BYTE* types,
+    INT CopyData(PointF* points,
+                 BYTE* types,
                  in INT startIndex,
                  in INT endIndex) {
         INT resultCount;
@@ -1014,7 +1014,7 @@ class GraphicsPathIterator : GdiplusBase {
 
     Status GetLastStatus() {
         Status lastStatus = lastResult;
-        lastResult = Ok;
+        lastResult = Status.Ok;
 
         return lastStatus;
     }
@@ -1074,7 +1074,7 @@ class PathGradientBrush : Brush {
         SetNativeBrush(brush);
     }
 
-    Status GetCenterColor(out Color color) {
+    Status GetCenterColor(Color color) {
         ARGB argb;
 
         if (color is null) {
@@ -1126,7 +1126,7 @@ class PathGradientBrush : Brush {
         SetStatus(GdipGetPathGradientSurroundColorCount(
                         cast(GpPathGradient*) nativeBrush, &count1));
 
-        if(lastResult != Ok)
+        if(lastResult != Status.Ok)
             return lastResult;
 
         if((*count < count1) || (count1 <= 0))
@@ -1139,14 +1139,13 @@ class PathGradientBrush : Brush {
         SetStatus(GdipGetPathGradientSurroundColorsWithCount(
                     cast(GpPathGradient*)nativeBrush, argbs.ptr, &count1));
 
-        if(lastResult == Ok) {
+        if(lastResult == Status.Ok) {
             for(INT i = 0; i < count1; i++) {
                 colors[i].SetValue(argbs[i]);
             }
             *count = count1;
         }
 
-        delete [] argbs;
         return lastResult;
     }
 
@@ -1180,7 +1179,7 @@ class PathGradientBrush : Brush {
         return lastResult;
     }
 
-    Status GetGraphicsPath(out GraphicsPath* path) {
+    Status GetGraphicsPath(GraphicsPath* path) {
         if(path is null)
             return SetStatus(Status.InvalidParameter);
 
@@ -1220,12 +1219,12 @@ class PathGradientBrush : Brush {
                                 &point));
     }
 
-    Status GetRectangle(out RectF* rect) {
+    Status GetRectangle(RectF* rect) {
         return SetStatus(GdipGetPathGradientRect(
                             cast(GpPathGradient*)nativeBrush, rect));
     }
 
-    Status GetRectangle(out Rect* rect) {
+    Status GetRectangle(Rect* rect) {
         return SetStatus(GdipGetPathGradientRectI(
                             cast(GpPathGradient*)nativeBrush, rect));
     }
@@ -1253,9 +1252,9 @@ class PathGradientBrush : Brush {
        return count;
     }
 
-    Status GetBlend(out REAL* blendFactors, out REAL* blendPositions, in INT count) {
+    Status GetBlend(REAL* blendFactors, REAL* blendPositions, in INT count) {
         return SetStatus(GdipGetPathGradientBlend(
-                            (GpPathGradient*)nativeBrush,
+                            cast(GpPathGradient*)nativeBrush,
                             blendFactors, blendPositions, count));
     }
 
@@ -1274,7 +1273,7 @@ class PathGradientBrush : Brush {
        return count;
     }
 
-    Status SetInterpolationColors(in Color presetColors, in REAL* blendPositions, in INT count) {
+    Status SetInterpolationColors(in Color[] presetColors, in REAL* blendPositions, in INT count) {
         if ((count <= 0) || !presetColors) {
             return SetStatus(Status.InvalidParameter);
         }
@@ -1294,11 +1293,11 @@ class PathGradientBrush : Brush {
             return status;
         }
         else {
-            return SetStatus(OutOfMemory);
+            return SetStatus(Status.OutOfMemory);
         }
     }
 
-    Status GetInterpolationColors(out Color presetColors, out REAL* blendPositions, in INT count) {
+    Status GetInterpolationColors(Color[] presetColors, REAL* blendPositions, in INT count) {
         if ((count <= 0) || !presetColors) {
             return SetStatus(Status.InvalidParameter);
         }
@@ -1316,7 +1315,7 @@ class PathGradientBrush : Brush {
                                 count));
 
         for(INT i = 0; i < count; i++) {
-            presetColors[i] = Color(argbs[i]);
+            presetColors[i] = new Color(argbs[i]);
         }
 
         return status;
@@ -1332,13 +1331,13 @@ class PathGradientBrush : Brush {
                             cast(GpPathGradient*)nativeBrush, focus, scale));
     }
 
-    Status GetTransform(out Matrix *matrix) {
+    Status GetTransform(Matrix matrix) {
         return SetStatus(GdipGetPathGradientTransform(
                             cast(GpPathGradient*) nativeBrush,
                             matrix.nativeMatrix));
     }
 
-    Status SetTransform(in Matrix* matrix) {
+    Status SetTransform(in Matrix matrix) {
         return SetStatus(GdipSetPathGradientTransform(
                             cast(GpPathGradient*) nativeBrush,
                             matrix.nativeMatrix));
@@ -1349,7 +1348,7 @@ class PathGradientBrush : Brush {
                             cast(GpPathGradient*)nativeBrush));
     }
 
-    Status MultiplyTransform(in Matrix* matrix, in MatrixOrder order = MatrixOrder.MatrixOrderPrepend) {
+    Status MultiplyTransform(in Matrix matrix, in MatrixOrder order = MatrixOrder.MatrixOrderPrepend) {
         return SetStatus(GdipMultiplyPathGradientTransform(
                             cast(GpPathGradient*)nativeBrush,
                             matrix.nativeMatrix,
@@ -1368,21 +1367,18 @@ class PathGradientBrush : Brush {
                             sx, sy, order));
     }
 
-    Status RotateTransform(in REAL angle,
-                           in MatrixOrder order = MatrixOrder.MatrixOrderPrepend) {
+    Status RotateTransform(in REAL angle, in MatrixOrder order = MatrixOrder.MatrixOrderPrepend) {
         return SetStatus(GdipRotatePathGradientTransform(
                             cast(GpPathGradient*)nativeBrush,
                             angle, order));
     }
 
-    Status GetFocusScales(out REAL* xScale,
-                          out REAL* yScale) {
+    Status GetFocusScales(REAL* xScale, REAL* yScale) {
         return SetStatus(GdipGetPathGradientFocusScales(
                             cast(GpPathGradient*) nativeBrush, xScale, yScale));
     }
 
-    Status SetFocusScales(in REAL xScale,
-                          in REAL yScale) {
+    Status SetFocusScales(in REAL xScale, in REAL yScale) {
         return SetStatus(GdipSetPathGradientFocusScales(
                             cast(GpPathGradient*) nativeBrush, xScale, yScale));
     }

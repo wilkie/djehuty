@@ -60,7 +60,7 @@ enum ColorChannelFlags {
 // Color
 //----------------------------------------------------------------------------
 
-struct Color {
+class Color {
 public:
 
     // Construct an opaque Color object with
@@ -68,23 +68,19 @@ public:
     //
     // Color values are not premultiplied.
 
-	Color init() {
-		Color ret;
-		return ret;
+	this() {
 	}
 
-    Color init(in BYTE r, in BYTE g, in BYTE b) {
-        return Color(MakeARGB(255, r, g, b));
+    this(in BYTE r, in BYTE g, in BYTE b) {
+        this(MakeARGB(255, r, g, b));
     }
 
-    Color init(in BYTE a, in BYTE r, in BYTE g, in BYTE b) {
-        return Color(MakeARGB(a, r, g, b));
+    this(in BYTE a, in BYTE r, in BYTE g, in BYTE b) {
+        this(MakeARGB(a, r, g, b));
     }
 
-    Color init(in ARGB argb) {
-    	Color ret;
-        ret.Argb = argb;
-        return ret;
+    this(in ARGB argb) {
+        Argb = argb;        
     }
 
     BYTE GetAlpha() {

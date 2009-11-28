@@ -217,10 +217,10 @@ protected:
 
     // protected data members.
 
-    CGpEffect *nativeEffect = null;
-    INT auxDataSize = 0;
-    VOID *auxData = null;
-    BOOL useAuxData = FALSE;
+    package CGpEffect *nativeEffect = null;
+    package INT auxDataSize = 0;
+    package VOID *auxData = null;
+    package BOOL useAuxData = FALSE;
 }
 
 // Blur

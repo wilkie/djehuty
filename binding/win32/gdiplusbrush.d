@@ -90,28 +90,28 @@ class Brush : GdiplusBase {
 
 protected:
 
-    this() {
+    package this() {
         SetStatus(Status.NotImplemented);
     }
 
-    this(GpBrush* nativeBrush, Status status) {
+    package this(GpBrush* nativeBrush, Status status) {
         lastResult = status;
         SetNativeBrush(nativeBrush);
     }
 
-    VOID SetNativeBrush(GpBrush* nativeBrush) {
+    package VOID SetNativeBrush(GpBrush* nativeBrush) {
         this.nativeBrush = nativeBrush;
     }
 
-    Status SetStatus(Status status) {
+    package Status SetStatus(Status status) {
         if (status != Status.Ok)
             return (lastResult = status);
         else
             return status;
     }
 
-    GpBrush* nativeBrush;
-    Status lastResult;
+    package GpBrush* nativeBrush;
+    package Status lastResult;
 }
 
 //--------------------------------------------------------------------------
@@ -128,7 +128,7 @@ class SolidBrush : Brush {
         SetNativeBrush(cast(GpBrush*)brush);
     }
 
-    Status GetColor(out Color* color) {
+    Status GetColor(Color color) {
         ARGB argb;
 
         if (color is null) {
@@ -138,7 +138,7 @@ class SolidBrush : Brush {
         SetStatus(GdipGetSolidFillColor(cast(GpSolidFill*)nativeBrush,
                                                     &argb));
 
-        *color = Color(argb);
+        color = new Color(argb);
 
         return lastResult;
     }
@@ -150,7 +150,7 @@ class SolidBrush : Brush {
 
 protected:
 
-    this() {
+    package this() {
     }
 }
 
@@ -358,7 +358,7 @@ class TextureBrush : Brush {
 
 protected:
 
-    this() {
+    package this() {
     }
 }
 
@@ -476,29 +476,31 @@ class LinearGradientBrush : Brush {
                                                        color2.GetValue()));
     }
 
-    Status GetLinearColors(out Color* colors) {
+    Status GetLinearColors(Color[] colors) {
         ARGB[2] argb;
 
         if (colors is null) {
             return SetStatus(Status.InvalidParameter);
         }
+        
+        colors = new Color[2];
 
         Status status = SetStatus(GdipGetLineColors(cast(GpLineGradient*) nativeBrush, argb.ptr));
 
         if (status == Status.Ok) {
             // use bitwise copy operator for Color copy
-            colors[0] = Color(argb[0]);
-            colors[1] = Color(argb[1]);
+            colors[0] = new Color(argb[0]);
+            colors[1] = new Color(argb[1]);
         }
 
         return status;
     }
 
-    Status GetRectangle(out RectF* rect) {
+    Status GetRectangle(RectF* rect) {
         return SetStatus(GdipGetLineRect(cast(GpLineGradient*)nativeBrush, rect));
     }
 
-    Status GetRectangle(out Rect* rect) {
+    Status GetRectangle(Rect* rect) {
         return SetStatus(GdipGetLineRectI(cast(GpLineGradient*)nativeBrush, rect));
     }
 
@@ -536,8 +538,8 @@ class LinearGradientBrush : Brush {
                                                       count));
     }
 
-    Status GetBlend(out REAL* blendFactors,
-                    out REAL* blendPositions,
+    Status GetBlend(REAL* blendFactors,
+                    REAL* blendPositions,
                     in INT count) {
         return SetStatus(GdipGetLineBlend(cast(GpLineGradient*)nativeBrush,
                                                       blendFactors,
@@ -580,25 +582,26 @@ class LinearGradientBrush : Brush {
         }
     }
 
-    Status GetInterpolationColors(out Color* presetColors,
-                                  out REAL* blendPositions,
+    Status GetInterpolationColors(Color[] presetColors,
+                                  REAL* blendPositions,
                                   in INT count) {
         if ((count <= 0) || !presetColors)
             return SetStatus(Status.InvalidParameter);
 
-        ARGB* argbs = cast(ARGB*) new BYTE[count*ARGB.sizeof];
+        ARGB[] argbs = new ARGB[count];
 
         if (!argbs) {
             return SetStatus(Status.OutOfMemory);
         }
 
         Status status = SetStatus(GdipGetLinePresetBlend(cast(GpLineGradient*)nativeBrush,
-                                                                     argbs,
+                                                                     argbs.ptr,
                                                                      blendPositions,
                                                                      count));
+                                                                     
         if (status == Status.Ok) {
             for (INT i = 0; i < count; i++) {
-                presetColors[i] = Color(argbs[i]);
+                presetColors[i] = new Color(argbs[i]);
             }
         }
 
@@ -622,7 +625,7 @@ class LinearGradientBrush : Brush {
                                                           matrix.nativeMatrix));
     }
 
-    Status GetTransform(out Matrix *matrix) {
+    Status GetTransform(Matrix *matrix) {
         return SetStatus(GdipGetLineTransform(cast(GpLineGradient*)nativeBrush,
                                                           matrix.nativeMatrix));
     }
@@ -675,7 +678,7 @@ class LinearGradientBrush : Brush {
 
 protected:
 
-    this() {
+    package this() {
     }
 }
 
@@ -711,7 +714,7 @@ class HatchBrush : Brush {
         return hatchStyle;
     }
 
-    Status GetForegroundColor(out Color* color) {
+    Status GetForegroundColor(Color* color) {
         ARGB argb;
 
         if (color is null) {
@@ -727,7 +730,7 @@ class HatchBrush : Brush {
         return status;
     }
 
-    Status GetBackgroundColor(out Color *color) {
+    Status GetBackgroundColor(Color *color) {
         ARGB argb;
 
         if (color is null) {
@@ -745,7 +748,7 @@ class HatchBrush : Brush {
 
 protected:
 
-    this() {
+    package this() {
     }
 }
 

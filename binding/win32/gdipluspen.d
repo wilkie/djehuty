@@ -31,6 +31,7 @@ import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
 import binding.win32.gdiplusbrush;
+import binding.win32.gdipluslinecaps;
 
 /**************************************************************************\
 *
@@ -56,14 +57,14 @@ class Pen : GdiplusBase {
 
     this(in Color color,
         in REAL width = 1.0f) {
-        Unit unit = UnitWorld;
+        Unit unit = Unit.UnitWorld;
         nativePen = null;
         lastResult = GdipCreatePen1(color.GetValue(),
                                     width, unit, &nativePen);
     }
 
     this(in Brush brush, in REAL width = 1.0f) {
-        Unit unit = UnitWorld;
+        Unit unit = Unit.UnitWorld;
         nativePen = null;
         lastResult = GdipCreatePen2(brush.nativeBrush,
                                     width, unit, &nativePen);
@@ -167,7 +168,7 @@ class Pen : GdiplusBase {
 
     Status GetCustomStartCap(out CustomLineCap* customCap) {
         if(!customCap)
-            return SetStatus(InvalidParameter);
+            return SetStatus(Status.InvalidParameter);
 
         return SetStatus(GdipGetPenCustomStartCap(nativePen,
                                                     &(customCap.nativeCap)));
@@ -286,7 +287,7 @@ class Pen : GdiplusBase {
         PenType type = GetPenType();
 
         if (type != PenType.PenTypeSolidColor) {
-            return WrongState;
+            return Status.WrongState;
         }
 
         ARGB argb;

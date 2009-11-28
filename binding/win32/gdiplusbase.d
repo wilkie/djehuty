@@ -38,6 +38,6 @@ class GdiplusBase {
     }
 
     new(size_t in_size) {
-       GdipAlloc(in_size);
+       return GdipAlloc(in_size);
     }
 }

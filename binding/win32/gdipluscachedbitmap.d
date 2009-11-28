@@ -30,6 +30,7 @@ import binding.win32.gdiplusimaging;
 import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
+import binding.win32.gdiplusgraphics;
 
 /**************************************************************************
 *
@@ -49,37 +50,29 @@ import binding.win32.gdiplusmatrix;
 *
 **************************************************************************/
 
-#ifndef _GDIPLUSCACHEDBITMAP_H
-#define _GDIPLUSCACHEDBITMAP_H
+class CachedBitmap : GdiplusBase {
+    this(in Bitmap bitmap, in Graphics graphics) {
+        nativeCachedBitmap = null;    
+    
+        lastResult = GdipCreateCachedBitmap(
+            bitmap.nativeImage,
+            graphics.nativeGraphics,
+            &nativeCachedBitmap
+        );
+    }
+    
+    ~this() {
+        GdipDeleteCachedBitmap(nativeCachedBitmap);
+    }
 
-inline 
-CachedBitmap::CachedBitmap(
-    IN Bitmap *bitmap, 
-    IN Graphics *graphics)
-{
-    nativeCachedBitmap = NULL;    
+    Status GetLastStatus() {
+        Status lastStatus = lastResult;
+        lastResult = Status.Ok;    
+        return (lastStatus);
+    }
 
-    lastResult = DllExports::GdipCreateCachedBitmap(
-        (GpBitmap *)bitmap->nativeImage,
-        graphics->nativeGraphics,
-        &nativeCachedBitmap
-    );
+protected:
+    package GpCachedBitmap *nativeCachedBitmap;
+    package Status lastResult;
 }
-
-inline 
-CachedBitmap::~CachedBitmap()
-{
-    DllExports::GdipDeleteCachedBitmap(nativeCachedBitmap);
-}
-
-inline Status 
-CachedBitmap::GetLastStatus() const 
-{
-    Status lastStatus = lastResult;
-    lastResult = Ok;    
-    return (lastStatus);
-}
-
-#endif
-
 

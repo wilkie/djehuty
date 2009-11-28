@@ -45,49 +45,23 @@ import binding.win32.gdiplusmatrix;
 *
 \**************************************************************************/
 
-#ifndef _GDIPLUSIMAGECODEC_H
-#define _GDIPLUSIMAGECODEC_H
-
 //--------------------------------------------------------------------------
 // Codec Management APIs
 //--------------------------------------------------------------------------
 
-inline Status 
-GetImageDecodersSize(
-    OUT UINT *numDecoders,
-    OUT UINT *size)
-{
-    return DllExports::GdipGetImageDecodersSize(numDecoders, size);
+Status GetImageDecodersSize(UINT *numDecoders, UINT *size) {
+    return GdipGetImageDecodersSize(numDecoders, size);
 }
 
-
-inline Status 
-GetImageDecoders(
-    IN UINT numDecoders,
-    IN UINT size,
-    OUT ImageCodecInfo *decoders)
-{
-    return DllExports::GdipGetImageDecoders(numDecoders, size, decoders);
+Status GetImageDecoders(in UINT numDecoders, in UINT size, ImageCodecInfo *decoders) {
+    return GdipGetImageDecoders(numDecoders, size, decoders);
 }
 
-
-inline Status 
-GetImageEncodersSize(
-    OUT UINT *numEncoders, 
-    OUT UINT *size)
-{
-    return DllExports::GdipGetImageEncodersSize(numEncoders, size);
+Status GetImageEncodersSize(UINT *numEncoders, UINT *size) {
+    return GdipGetImageEncodersSize(numEncoders, size);
 }
 
-
-inline Status 
-GetImageEncoders(
-    IN UINT numEncoders,
-    IN UINT size,
-    OUT ImageCodecInfo *encoders)
-{
-    return DllExports::GdipGetImageEncoders(numEncoders, size, encoders);
+Status GetImageEncoders(in UINT numEncoders, in UINT size, ImageCodecInfo *encoders) {
+    return GdipGetImageEncoders(numEncoders, size, encoders);
 }
-
-#endif  // _GDIPLUSIMAGECODEC_H
 

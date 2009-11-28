@@ -27,6 +27,7 @@ import binding.win32.gdipluscolor;
 import binding.win32.gdipluscolormatrix;
 import binding.win32.gdiplusflat;
 import binding.win32.gdiplusimaging;
+import binding.win32.gdiplusgraphics;
 
 class Image : GdiplusBase {
 
@@ -110,7 +111,7 @@ class Image : GdiplusBase {
 	    return type;
     }
 
-    Status GetPhysicalDimension(out SizeF* size) {
+    Status GetPhysicalDimension(SizeF* size) {
 	    if (size is null) {
 	        return SetStatus(Status.InvalidParameter);
 	    }
@@ -127,8 +128,8 @@ class Image : GdiplusBase {
 	    return status;
     }
 
-    Status GetBounds(out RectF* srcRect,
-                     out Unit* srcUnit) {
+    Status GetBounds(RectF* srcRect,
+                     Unit* srcUnit) {
 	    return SetStatus(GdipGetImageBounds(nativeImage,
 	                    srcRect, srcUnit));
     }
@@ -173,7 +174,7 @@ class Image : GdiplusBase {
 	    return flags;
     }
 
-    Status GetRawFormat(out GUID *format) {
+    Status GetRawFormat(GUID *format) {
    		return SetStatus(GdipGetImageRawFormat(nativeImage, format));
     }
 
@@ -193,7 +194,7 @@ class Image : GdiplusBase {
 	    return size;
     }
 
-    Status GetPalette(out ColorPalette* palette,
+    Status GetPalette(ColorPalette* palette,
                       in INT size) {
 	    return SetStatus(GdipGetImagePalette(nativeImage, palette, size));
     }
@@ -231,7 +232,7 @@ class Image : GdiplusBase {
 	    return count;
     }
 
-    Status GetFrameDimensionsList(out GUID* dimensionIDs,
+    Status GetFrameDimensionsList(GUID* dimensionIDs,
                                   in UINT count) {
 	    return SetStatus(GdipImageGetFrameDimensionsList(nativeImage,
 	                                                                 dimensionIDs,
@@ -269,7 +270,7 @@ class Image : GdiplusBase {
     }
 
     Status GetPropertyIdList(in UINT numOfProperty,
-                             out PROPID* list) {
+                             PROPID* list) {
 	    return SetStatus(GdipGetPropertyIdList(nativeImage,
 	                                                       numOfProperty, list));
     }
@@ -286,13 +287,13 @@ class Image : GdiplusBase {
 
     Status GetPropertyItem(in PROPID propId,
                            in UINT propSize,
-                           out PropertyItem* buffer) {
+                           PropertyItem* buffer) {
 	    return SetStatus(GdipGetPropertyItem(nativeImage,
 	                                                     propId, propSize, buffer));
 	}
 
-    Status GetPropertySize(out UINT* totalBufferSize,
-                           out UINT* numProperties) {
+    Status GetPropertySize(UINT* totalBufferSize,
+                           UINT* numProperties) {
 	    return SetStatus(GdipGetPropertySize(nativeImage,
 	                                                     totalBufferSize,
 	                                                     numProperties));
@@ -300,7 +301,7 @@ class Image : GdiplusBase {
 
     Status GetAllPropertyItems(in UINT totalBufferSize,
                                in UINT numProperties,
-                               out PropertyItem* allItems) {
+                               PropertyItem* allItems) {
 	    if (allItems == null) {
 	        return SetStatus(Status.InvalidParameter);
 	    }
@@ -329,7 +330,7 @@ class Image : GdiplusBase {
 
     Status GetEncoderParameterList(in CLSID* clsidEncoder,
                                    in UINT size,
-                                   out EncoderParameters* buffer) {
+                                   EncoderParameters* buffer) {
 	    return SetStatus(GdipGetEncoderParameterList(nativeImage,
 	                                                             clsidEncoder,
 	                                                             size,
@@ -386,3 +387,324 @@ protected:
     package Status lastResult;
     package Status loadStatus;
 }
+
+
+
+class Bitmap : Image {
+
+    this(in WCHAR* filename, in BOOL useEmbeddedColorManagement = FALSE) {
+	    GpBitmap *bitmap = null;
+	
+	    if(useEmbeddedColorManagement) {
+	        lastResult = GdipCreateBitmapFromFileICM(filename, &bitmap);
+	    }
+	    else {
+	        lastResult = GdipCreateBitmapFromFile(filename, &bitmap);
+	    }
+	
+	    SetNativeImage(bitmap);    	
+    }
+
+	/*
+    this(in IStream *stream, in BOOL useEmbeddedColorManagement = FALSE) {
+	    GpBitmap *bitmap = null;
+	
+	    if(useEmbeddedColorManagement) {
+	        lastResult = GdipCreateBitmapFromStreamICM(stream, &bitmap);
+	    }
+	    else {
+	        lastResult = GdipCreateBitmapFromStream(stream, &bitmap);
+	    }
+	
+	    SetNativeImage(bitmap);    	
+    }
+    */
+
+    static Bitmap FromFile(in WCHAR* filename, in BOOL useEmbeddedColorManagement = FALSE) {
+	    return new Bitmap(
+	        filename,
+	        useEmbeddedColorManagement
+	    );
+    }
+
+	/*
+    static Bitmap FromStream(in IStream *stream, in BOOL useEmbeddedColorManagement = FALSE) {    	
+	    return new Bitmap(
+	        stream,
+	        useEmbeddedColorManagement
+	    );
+    }
+    */
+
+    this(in INT width, in INT height, in INT stride, PixelFormat format, in BYTE* scan0) {   
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromScan0(width,
+	                                                       height,
+	                                                       stride,
+	                                                       format,
+	                                                       scan0,
+	                                                       &bitmap);
+	
+	    SetNativeImage(bitmap);        	
+    }
+    
+    this(in INT width, in INT height, in PixelFormat format = PixelFormat32bppARGB) {
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromScan0(width,
+	                                                       height,
+	                                                       0,
+	                                                       format,
+	                                                       null,
+	                                                       &bitmap);
+	
+	    SetNativeImage(bitmap);
+    }
+    
+    this(in INT width, in INT height, in Graphics target) { 
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromGraphics(width,
+	                                                          height,
+	                                                          target.nativeGraphics,
+	                                                          &bitmap);
+	
+	    SetNativeImage(bitmap);   	
+    }
+
+    Bitmap Clone(in Rect rect, in PixelFormat format) {
+    	return Clone(rect.X, rect.Y, rect.Width, rect.Height, format);    	
+    }
+    
+    Bitmap Clone(in INT x, in INT y, in INT width, in INT height, in PixelFormat format) {
+	   GpBitmap* gpdstBitmap = null;
+	   Bitmap bitmap;
+	
+	   lastResult = GdipCloneBitmapAreaI(
+	                               x,
+	                               y,
+	                               width,
+	                               height,
+	                               format,
+	                               cast(GpBitmap *)nativeImage,
+	                               &gpdstBitmap);
+	
+	   if (lastResult == Status.Ok) {
+	       bitmap = new Bitmap(gpdstBitmap);
+	
+	       if (bitmap is null) {
+	           GdipDisposeImage(gpdstBitmap);
+	       }
+	
+	       return bitmap;
+	   }
+	   else
+	       return null;
+    	
+    }
+    
+    Bitmap Clone(in RectF rect, in PixelFormat format) {
+    	return Clone(rect.X, rect.Y, rect.Width, rect.Height, format);    	    	
+    }
+    
+    Bitmap Clone(in REAL x, in REAL y, in REAL width, in REAL height, in PixelFormat format) {
+	   GpBitmap* gpdstBitmap = null;
+	   Bitmap bitmap;
+	
+	   SetStatus(GdipCloneBitmapArea(
+	                               x,
+	                               y,
+	                               width,
+	                               height,
+	                               format,
+	                               cast(GpBitmap *)nativeImage,
+	                               &gpdstBitmap));
+	
+	   if (lastResult == Status.Ok) {
+	       bitmap = new Bitmap(gpdstBitmap);
+	
+	       if (bitmap is null) {
+	       		GdipDisposeImage(gpdstBitmap);
+	       }
+	
+	       return bitmap;
+	   }
+	   else
+	       return null;
+    	
+    }
+
+    Status LockBits(in Rect* rect, in UINT flags, in PixelFormat format, BitmapData* lockedBitmapData) {
+	    return SetStatus(GdipBitmapLockBits(
+	                                    cast(GpBitmap*)(nativeImage),
+	                                    rect,
+	                                    flags,
+	                                    format,
+	                                    lockedBitmapData));    	
+    }
+    
+    Status UnlockBits(in BitmapData* lockedBitmapData) {
+	    return SetStatus(GdipBitmapUnlockBits(
+	                                    cast(GpBitmap*)(nativeImage),
+	                                    lockedBitmapData));    	
+    }
+    
+    Status GetPixel(in INT x, in INT y, Color *color) {
+	    ARGB argb;
+	
+	    Status status = SetStatus(GdipBitmapGetPixel(
+	        cast(GpBitmap *)(nativeImage),
+	        x, y,        
+	        &argb));
+	
+	    if (status == Status.Ok) {
+	        color.SetValue(argb);
+	    }
+	
+	    return  status;    	
+    }
+    
+    Status SetPixel(in INT x, in INT y, in Color color) {
+	    return SetStatus(GdipBitmapSetPixel(
+	        cast(GpBitmap *)(nativeImage),
+	        x, y,
+	        color.GetValue()));    	
+    }
+    /*
+    Status ConvertFormat(PixelFormat format, DitherType dithertype, PaletteType palettetype, ColorPalette *palette, REAL alphaThresholdPercent) {
+    	
+    }
+    
+    // The palette must be allocated and count must be set to the number of
+    // entries in the palette. If there are not enough, the API will fail.
+    
+    static Status InitializePalette(
+        in ColorPalette *palette,  // Palette to initialize.
+        PaletteType palettetype,       // palette enumeration type.
+        INT optimalColors,             // how many optimal colors
+        BOOL useTransparentColor,      // add a transparent color to the palette.
+        Bitmap *bitmap                 // optional bitmap for median cut.
+        ) {
+        	
+    }
+        
+    Status ApplyEffect(Effect *effect, RECT* ROI) {
+    }
+    
+    static Status ApplyEffect(
+        in  Bitmap **inputs,
+        in  INT numInputs,
+        in  Effect *effect, 
+        in  RECT *ROI,           // optional parameter.
+        RECT *outputRect,    // optional parameter.
+        Bitmap **output
+    ) {    	
+    }
+    
+    Status GetHistogram(
+        in HistogramFormat format,
+        in UINT NumberOfEntries,
+        UINT *channel0,
+        UINT *channel1,
+        UINT *channel2,
+        UINT *channel3
+    ) {    	
+    }
+    
+    static Status GetHistogramSize(in HistogramFormat format, UINT *NumberOfEntries) {    	
+    }
+    */
+    
+    Status SetResolution(in REAL xdpi, in REAL ydpi) {  
+	    return SetStatus(GdipBitmapSetResolution(
+	        cast(GpBitmap *)(nativeImage),
+	        xdpi, ydpi));  	
+    }
+
+    this(in IDirectDrawSurface7* surface) {
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromDirectDrawSurface(surface,
+	                                                       &bitmap);
+	
+	    SetNativeImage(bitmap);    	
+    }
+    
+    this(in BITMAPINFO* gdiBitmapInfo, in VOID* gdiBitmapData) {   
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromGdiDib(gdiBitmapInfo,
+	                                                        gdiBitmapData,
+	                                                        &bitmap);
+	
+	    SetNativeImage(bitmap); 	
+    }
+    
+    this(in HBITMAP hbm, in HPALETTE hpal) {  
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromHBITMAP(hbm, hpal, &bitmap);
+	
+	    SetNativeImage(bitmap);  	
+    }
+    
+    this(in HICON hicon) {  
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromHICON(hicon, &bitmap);
+	
+	    SetNativeImage(bitmap);  	
+    }
+    
+    this(in HINSTANCE hInstance, in WCHAR * bitmapName) { 
+	    GpBitmap *bitmap = null;
+	
+	    lastResult = GdipCreateBitmapFromResource(hInstance,
+	                                                          bitmapName,
+	                                                          &bitmap);
+	
+	    SetNativeImage(bitmap);   	
+    }
+    
+    static Bitmap FromDirectDrawSurface7(in IDirectDrawSurface7* surface) {    
+    	return new Bitmap(surface);	
+    }
+    
+    static Bitmap FromBITMAPINFO(in BITMAPINFO* gdiBitmapInfo, in VOID* gdiBitmapData) {    
+    	return new Bitmap(gdiBitmapInfo, gdiBitmapData);	
+    }
+    
+    static Bitmap FromHBITMAP(in HBITMAP hbm, in HPALETTE hpal) { 
+    	return new Bitmap(hbm, hpal);   	
+    }
+    
+    static Bitmap FromHICON(in HICON hicon) {
+    	return new Bitmap(hicon);    	
+    }
+    
+    static Bitmap FromResource(in HINSTANCE hInstance, in WCHAR * bitmapName) {  
+    	return new Bitmap(hInstance, bitmapName);  	
+    }
+    
+    Status GetHBITMAP(in Color colorBackground, HBITMAP *hbmReturn) {
+	    return SetStatus(GdipCreateHBITMAPFromBitmap(
+	                                        cast(GpBitmap*)(nativeImage),
+	                                        hbmReturn,
+	                                        colorBackground.GetValue()));    	
+    }
+    
+    Status GetHICON(HICON *hicon) {   
+	    return SetStatus(GdipCreateHICONFromBitmap(
+	                                        cast(GpBitmap*)(nativeImage),
+	                                        hicon)); 	
+    }
+    
+protected:
+    package this(GpBitmap *nativeBitmap) {  
+	    lastResult = Status.Ok;
+	
+	    SetNativeImage(nativeBitmap);  	
+    }
+}
+

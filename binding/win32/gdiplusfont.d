@@ -30,6 +30,9 @@ import binding.win32.gdiplusimaging;
 import binding.win32.gdiplusbitmap;
 import binding.win32.gdiplusimageattributes;
 import binding.win32.gdiplusmatrix;
+import binding.win32.gdiplusfontfamily;
+import binding.win32.gdiplusfontcollection;
+import binding.win32.gdiplusgraphics;
 
 /**************************************************************************\
 *
@@ -45,270 +48,204 @@ import binding.win32.gdiplusmatrix;
 *
 \**************************************************************************/
 
-#ifndef _GDIPLUSFONT_H
-#define _GDIPLUSFONT_H
+//--------------------------------------------------------------------------
+// Font
+//--------------------------------------------------------------------------
 
-inline
-Font::Font(IN HDC hdc)
-{
-    GpFont *font = NULL;
-    lastResult = DllExports::GdipCreateFontFromDC(hdc, &font);
+class Font : GdiplusBase {
 
-    SetNativeFont(font);
-}
+    this(in HDC hdc) {
+        GpFont *font = null;
+        lastResult = GdipCreateFontFromDC(hdc, &font);
+    
+        SetNativeFont(font);
+    }
+    
+    this(in HDC hdc, in LOGFONTA* logfont) {
+        GpFont *font = null;
+    
+        if (logfont) {
+            lastResult = GdipCreateFontFromLogfontA(hdc, logfont, &font);
+        }
+        else {
+            lastResult = GdipCreateFontFromDC(hdc, &font);
+        }
+    
+        SetNativeFont(font);           
+    }
+         
+    this(in HDC hdc, in LOGFONTW* logfont) {
+        GpFont *font = null;
+        if (logfont) {
+            lastResult = GdipCreateFontFromLogfontW(hdc, logfont, &font);
+        }
+        else {
+            lastResult = GdipCreateFontFromDC(hdc, &font);
+        }
+    
+        SetNativeFont(font);
+    }
+         
+    this(in HDC hdc, in HFONT hfont) {
+        GpFont *font = null;
+    
+        if (hfont) {
+            LOGFONTA lf;
+    
+            if(GetObjectA(hfont, LOGFONTA.sizeof, &lf))
+                lastResult = GdipCreateFontFromLogfontA(hdc, &lf, &font);
+            else
+                lastResult = GdipCreateFontFromDC(hdc, &font);
+        }
+        else {
+            lastResult = GdipCreateFontFromDC(hdc, &font);
+        }
+    
+        SetNativeFont(font);      
+    }
+    
+    this(in FontFamily family, in REAL emSize, in INT style = FontStyle.FontStyleRegular, in Unit unit = Unit.UnitPoint) {
+        GpFont *font = null;
+    
+        lastResult = GdipCreateFont(family ? family.nativeFamily : null,
+                        emSize,
+                        style,
+                        unit,
+                        &font);
+    
+        SetNativeFont(font);        
+    }
 
-inline
-Font::Font(IN HDC hdc,
-           IN const HFONT hfont)
-{
-    GpFont *font = NULL;
+    this(in WCHAR* familyName, in REAL emSize, in INT style = FontStyle.FontStyleRegular, in Unit unit = Unit.UnitPoint, in FontCollection fontCollection = null) {
+        nativeFont = null;
+    
+        FontFamily family = new FontFamily(familyName, fontCollection);
+        GpFontFamily *nativeFamily = family.nativeFamily;
+    
+        lastResult = family.GetLastStatus();
+    
+        if (lastResult != Status.Ok) {
+            nativeFamily = FontFamily.GenericSansSerif().nativeFamily;
+            lastResult = FontFamily.GenericSansSerif().lastResult;
+            if (lastResult != Status.Ok)
+                return;
+        }
+    
+        lastResult = GdipCreateFont(nativeFamily,
+                                emSize,
+                                style,
+                                unit,
+                                &nativeFont);
+    
+        if (lastResult != Status.Ok) {
+            nativeFamily = FontFamily.GenericSansSerif().nativeFamily;
+            lastResult = FontFamily.GenericSansSerif().lastResult;
+            if (lastResult != Status.Ok)
+                return;
+    
+            lastResult = GdipCreateFont(
+                nativeFamily,
+                emSize,
+                style,
+                unit,
+                &nativeFont);
+        }        
+    }
 
-    if (hfont)
-    {
-        LOGFONTA lf;
+    Status GetLogFontA(in Graphics g, LOGFONTA * logfontA) {
+        return SetStatus(GdipGetLogFontA(nativeFont, g ? g.nativeGraphics : null, logfontA));
+    }
+    
+    Status GetLogFontW(in Graphics g, LOGFONTW * logfontW) {
+        return SetStatus(GdipGetLogFontW(nativeFont, g ? g.nativeGraphics : null, logfontW));
+    }
 
-        if(GetObjectA(hfont, sizeof(LOGFONTA), &lf))
-            lastResult = DllExports::GdipCreateFontFromLogfontA(hdc, &lf, &font);
+    Font Clone() {
+        GpFont *cloneFont = null;
+    
+        SetStatus(GdipCloneFont(nativeFont, &cloneFont));
+    
+        return new Font(cloneFont, lastResult);
+    }
+    
+    alias Clone dup;
+    
+    ~this() {
+        GdipDeleteFont(nativeFont);        
+    }
+    
+    BOOL IsAvailable()   {
+        return (nativeFont ? TRUE : FALSE);
+    }
+    
+    INT GetStyle()      {
+        INT style;
+        SetStatus(GdipGetFontStyle(nativeFont, &style));
+        return style;  
+        
+    }
+    
+    REAL GetSize()       {
+        REAL size;
+        SetStatus(GdipGetFontSize(nativeFont, &size));
+        return size;        
+    }
+    
+    Unit GetUnit()       {
+        Unit unit;
+        SetStatus(GdipGetFontUnit(nativeFont, &unit));
+        return unit;
+        
+    }
+    
+    Status GetLastStatus() {
+        return lastResult;      
+    }
+    
+    REAL GetHeight(in Graphics graphics) {
+        REAL height;
+        SetStatus(GdipGetFontHeight(
+            nativeFont,
+            graphics ? graphics.nativeGraphics : null,
+            &height
+        ));
+        return height;                
+    }
+    
+    REAL GetHeight(in REAL dpi) {
+        REAL height;
+        SetStatus(GdipGetFontHeightGivenDPI(nativeFont, dpi, &height));
+        return height;        
+    }
+
+    Status GetFamily(FontFamily family) {  
+        if (family is null) {
+            return SetStatus(Status.InvalidParameter);
+        }
+    
+        Status status = GdipGetFamily(nativeFont, &(family.nativeFamily));
+        family.SetStatus(status);
+    
+        return SetStatus(status);
+    }
+
+protected:
+    this(GpFont* font, Status status) {
+        lastResult = status;
+        SetNativeFont(font);        
+    }
+    
+    VOID SetNativeFont(GpFont *Font) {
+        nativeFont = Font;        
+    }
+    
+    Status SetStatus(Status status) {
+        if (status != Status.Ok)
+            return (lastResult = status);
         else
-            lastResult = DllExports::GdipCreateFontFromDC(hdc, &font);
-    }
-    else
-    {
-        lastResult = DllExports::GdipCreateFontFromDC(hdc, &font);
+            return status;        
     }
 
-    SetNativeFont(font);
+    package GpFont* nativeFont;
+    package Status lastResult;
 }
-
-inline
-Font::Font(IN HDC hdc,
-           IN const LOGFONTW* logfont)
-{
-    GpFont *font = NULL;
-    if (logfont)
-    {
-        lastResult = DllExports::GdipCreateFontFromLogfontW(hdc, logfont, &font);
-    }
-    else
-    {
-        lastResult = DllExports::GdipCreateFontFromDC(hdc, &font);
-    }
-
-    SetNativeFont(font);
-}
-
-inline
-Font::Font(IN HDC hdc,
-           IN const LOGFONTA* logfont)
-{
-    GpFont *font = NULL;
-
-    if (logfont)
-    {
-        lastResult = DllExports::GdipCreateFontFromLogfontA(hdc, logfont, &font);
-    }
-    else
-    {
-        lastResult = DllExports::GdipCreateFontFromDC(hdc, &font);
-    }
-
-    SetNativeFont(font);
-}
-
-inline
-Font::Font(
-     IN const FontFamily * family,
-     IN REAL         emSize,
-     IN INT          style,
-     IN Unit         unit
-)
-{
-    GpFont *font = NULL;
-
-    lastResult = DllExports::GdipCreateFont(family ? family->nativeFamily : NULL,
-                    emSize,
-                    style,
-                    unit,
-                    &font);
-
-    SetNativeFont(font);
-}
-
-inline
-Font::Font(
-     IN const WCHAR *          familyName,
-     IN REAL                   emSize,
-     IN INT                    style,
-     IN Unit                   unit,
-     IN const FontCollection * fontCollection
-)
-{
-    nativeFont = NULL;
-
-    FontFamily family(familyName, fontCollection);
-    GpFontFamily *nativeFamily = family.nativeFamily;
-
-    lastResult = family.GetLastStatus();
-
-    if (lastResult != Ok)
-    {
-        nativeFamily = FontFamily::GenericSansSerif()->nativeFamily;
-        lastResult = FontFamily::GenericSansSerif()->lastResult;
-        if (lastResult != Ok)
-            return;
-    }
-
-    lastResult = DllExports::GdipCreateFont(nativeFamily,
-                            emSize,
-                            style,
-                            unit,
-                            &nativeFont);
-
-    if (lastResult != Ok)
-    {
-        nativeFamily = FontFamily::GenericSansSerif()->nativeFamily;
-        lastResult = FontFamily::GenericSansSerif()->lastResult;
-        if (lastResult != Ok)
-            return;
-
-        lastResult = DllExports::GdipCreateFont(
-            nativeFamily,
-            emSize,
-            style,
-            unit,
-            &nativeFont);
-    }
-}
-
-inline Status
-Font::GetLogFontA(IN const Graphics *g,
-                  OUT LOGFONTA *logfontA) const
-{
-    return SetStatus(DllExports::GdipGetLogFontA(nativeFont, g ? g->nativeGraphics : NULL, logfontA));
-
-}
-
-inline Status
-Font::GetLogFontW(IN const Graphics *g,
-                  OUT LOGFONTW *logfontW) const
-{
-    return SetStatus(DllExports::GdipGetLogFontW(nativeFont, g ? g->nativeGraphics : NULL, logfontW));
-}
-
-
-inline Font*
-Font::Clone() const
-{
-    GpFont *cloneFont = NULL;
-
-    SetStatus(DllExports::GdipCloneFont(nativeFont, &cloneFont));
-
-    return new Font(cloneFont, lastResult);
-}
-
-inline
-Font::~Font()
-{
-    DllExports::GdipDeleteFont(nativeFont);
-}
-
-// Operations
-
-inline BOOL
-Font::IsAvailable() const
-{
-    return (nativeFont ? TRUE : FALSE);
-}
-
-inline Status
-Font::GetFamily(OUT FontFamily *family) const
-{
-    if (family == NULL)
-    {
-        return SetStatus(InvalidParameter);
-    }
-
-    Status status = DllExports::GdipGetFamily(nativeFont, &(family->nativeFamily));
-    family->SetStatus(status);
-
-    return SetStatus(status);
-}
-
-inline INT
-Font::GetStyle() const
-{
-    INT style;
-
-    SetStatus(DllExports::GdipGetFontStyle(nativeFont, &style));
-
-    return style;
-}
-
-inline REAL
-Font::GetSize() const
-{
-    REAL size;
-    SetStatus(DllExports::GdipGetFontSize(nativeFont, &size));
-    return size;
-}
-
-inline Unit
-Font::GetUnit() const
-{
-    Unit unit;
-    SetStatus(DllExports::GdipGetFontUnit(nativeFont, &unit));
-    return unit;
-}
-
-inline REAL
-Font::GetHeight(IN const Graphics *graphics) const
-{
-    REAL height;
-    SetStatus(DllExports::GdipGetFontHeight(
-        nativeFont,
-        graphics ? graphics->nativeGraphics : NULL,
-        &height
-    ));
-    return height;
-}
-
-
-inline REAL
-Font::GetHeight(IN REAL dpi) const
-{
-    REAL height;
-    SetStatus(DllExports::GdipGetFontHeightGivenDPI(nativeFont, dpi, &height));
-    return height;
-}
-
-inline
-Font::Font(IN GpFont* font,
-           IN Status status)
-{
-    lastResult = status;
-    SetNativeFont(font);
-}
-
-inline VOID
-Font::SetNativeFont(GpFont *Font)
-{
-    nativeFont = Font;
-}
-
-inline Status
-Font::GetLastStatus(void) const
-{
-    return lastResult;
-}
-
-inline Status
-Font::SetStatus(IN Status status) const
-{
-    if (status != Ok)
-        return (lastResult = status);
-    else
-        return status;
-}
-
-#endif
-

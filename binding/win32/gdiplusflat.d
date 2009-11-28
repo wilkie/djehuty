@@ -26,6 +26,7 @@ import binding.win32.gdipluscolor;
 import binding.win32.gdipluscolormatrix;
 import binding.win32.gdiplusimaging;
 import binding.win32.gdipluseffects;
+import binding.win32.gdipluscachedbitmap;
 
 /**************************************************************************\
 *
@@ -40,6 +41,8 @@ import binding.win32.gdipluseffects;
 *   Private GDI+ header file.
 *
 \**************************************************************************/
+
+pragma(lib, "gdiplus.lib");
 
 extern(System):
 

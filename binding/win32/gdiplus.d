@@ -45,5 +45,17 @@ public import binding.win32.gdiplusflat;
 
 public import binding.win32.gdiplusimageattributes;
 public import binding.win32.gdiplusmatrix;
-public import binding.win32.gdiplusbitmap;
 public import binding.win32.gdiplusbrush;
+public import binding.win32.gdipluspen;
+public import binding.win32.gdiplusstringformat;
+public import binding.win32.gdipluspath;
+public import binding.win32.gdipluslinecaps;
+public import binding.win32.gdiplusmetafile;
+public import binding.win32.gdiplusgraphics;
+public import binding.win32.gdipluscachedbitmap;
+public import binding.win32.gdiplusregion;
+public import binding.win32.gdiplusfontcollection;
+public import binding.win32.gdiplusfontfamily;
+public import binding.win32.gdiplusfont;
+public import binding.win32.gdiplusbitmap;
+public import binding.win32.gdiplusimagecodec;
