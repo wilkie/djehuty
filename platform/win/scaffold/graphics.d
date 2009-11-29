@@ -45,33 +45,33 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 }
 
 void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x+x2, y+y2);
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
 }
 
 void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x+x2, y+y2);
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
 void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	//Rectangle(viewVars.dc, x, y, x2, y2);
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
 }
 
 void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	//Ellipse(viewVars.dc, x, y, x2, y2);
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Text
@@ -85,20 +85,28 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
             stringFormat ? stringFormat.nativeFormat : null,
             brush ? brush.nativeBrush : null
         ));*/
-	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
+	str = new String(str);
+	str.appendChar('\0');
+
+    //Gdiplus.RectF rect = Gdiplus.RectF.init(x, y, 0.0f, 0.0f);
+
+	//Gdiplus.GdipDrawString(viewVars.g, str.ptr, str.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
+	TextOutW(viewVars.dc, x, y, str.ptr, str.length-1);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str) {
-	wstring utf16 = Unicode.toUtf16(str);
-	TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length);
+	wstring utf16 = Unicode.toUtf16(str ~ '\0');
+	TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length-1);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length) {
+	str = new String(str);
+	str.appendChar('\0');
 	TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length) {
-	wstring utf16 = Unicode.toUtf16(str);
+	wstring utf16 = Unicode.toUtf16(str ~ '\0');
 	TextOutW(viewVars.dc, x, y, utf16.ptr, length);
 }
 
@@ -146,7 +154,8 @@ void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
 }
 
 void setTextColor(ViewPlatformVars* viewVars, ref Color textColor) {
-	platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
+	//platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
+	Gdiplus.GdipCreateSolidFill(textColor.value, &viewVars.curTextBrush);
 }
 
 // Text States

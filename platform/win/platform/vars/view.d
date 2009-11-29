@@ -25,6 +25,8 @@ struct ViewPlatformVars {
 	
 	GpBrush* curBrush = null;
 	GpPen* curPen = null;
+	GpBrush* curTextBrush = null;
+	GpFont* curFont = null;
 	
 	GpGraphics* g = null;
 

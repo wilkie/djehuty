@@ -19,7 +19,7 @@ alias wchar Char;
 // Color Representation
 
 static const Parameter_Colorbpp Colorbpp = Parameter_Colorbpp.Color8bpp;
-static const Parameter_ColorType ColorType = Parameter_ColorType.ColorARGB;
+static const Parameter_ColorType ColorType = Parameter_ColorType.ColorBGRA;
 
 
 // Common Fonts

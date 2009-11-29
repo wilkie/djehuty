@@ -98,20 +98,20 @@ public:
 	// -- Predefined values
 
 	// Description: Black!
-	static Color Black 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)) } } };
+	static Color Black 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color Green		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Red		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Blue 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Green		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Red		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Blue 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color Magenta 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Yellow 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Cyan 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Magenta 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Yellow 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Cyan 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color DarkGray	= { _internal: { components: {r: eval!(_8toNativebpp(0x80)), g: eval!(_8toNativebpp(0x80)), b: eval!(_8toNativebpp(0x80)) } } };
-	static Color Gray 		= { _internal: { components: {r: eval!(_8toNativebpp(0xC0)), g: eval!(_8toNativebpp(0xC0)), b: eval!(_8toNativebpp(0xC0)) } } };
+	static Color DarkGray	= { _internal: { components: {r: eval!(_8toNativebpp(0x80)), g: eval!(_8toNativebpp(0x80)), b: eval!(_8toNativebpp(0x80)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Gray 		= { _internal: { components: {r: eval!(_8toNativebpp(0xC0)), g: eval!(_8toNativebpp(0xC0)), b: eval!(_8toNativebpp(0xC0)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color White 		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color White 		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
 	// --
 
