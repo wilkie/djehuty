@@ -13,6 +13,8 @@ module scaffold.view;
 import platform.win.common;
 import platform.win.main;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import platform.vars.view;
 import platform.vars.window;
 
@@ -46,10 +48,13 @@ void ViewCreate(View view, ViewPlatformVars*viewVars) {
 	SelectObject(viewVars.dc, bmp);
 
 	DeleteObject(bmp);
+	
+    Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
 }
 
 void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {
 	DeleteDC(viewVars.dc);
+	Gdiplus.GdipDeleteGraphics(viewVars.g);
 }
 
 void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {

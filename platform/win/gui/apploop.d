@@ -48,7 +48,6 @@ import core.application;
 import core.definitions;
 
 import io.console;
-import std.stdio;
 
 class GuiApplicationController {
 

@@ -72,11 +72,11 @@ class ToggleField : Widget {
 	override void onAdd() {
 		_brsh = new Brush(Color.White);
 
-		_clroutline.fromRGB(0x80, 0x80, 0x80);
-		_clrhighlight.fromRGB(0xdd,0xdd,0xdd);
-		_clrnormal.fromRGB(0xaa,0xaa,0xaa);
-		_clrforeground.fromRGB(0,0,0);
-		_clrbackground.fromRGB(0xff,0xff,0xff);
+		_clroutline = Color.fromRGB(0x80, 0x80, 0x80);
+		_clrhighlight = Color.fromRGB(0xdd,0xdd,0xdd);
+		_clrnormal = Color.fromRGB(0xaa,0xaa,0xaa);
+		_clrforeground = Color.fromRGB(0,0,0);
+		_clrbackground = Color.fromRGB(0xff,0xff,0xff);
 
 		Graphics grp = _view.lockDisplay();
 

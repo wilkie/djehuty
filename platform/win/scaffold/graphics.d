@@ -22,6 +22,8 @@ import platform.vars.font;
 import platform.vars.pen;
 import platform.vars.region;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import core.string;
 import core.color;
 import core.main;
@@ -42,18 +44,47 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	LineTo(viewVars.dc, x2, y2);
 }
 
+void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x+x2, y+y2);
+}
+
+void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x+x2, y+y2);
+}
+
 // Draw a rectangle (filled with the current brush, outlined with current pen)
 void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	Rectangle(viewVars.dc, x, y, x2, y2);
+	//Rectangle(viewVars.dc, x, y, x2, y2);
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
+}
+
+void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
+}
+
+void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	Ellipse(viewVars.dc, x, y, x2, y2);
+	//Ellipse(viewVars.dc, x, y, x2, y2);
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x+x2-1, y+y2-1);
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x+x2-1, y+y2-1);
 }
 
 // Text
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
+	/*GdipDrawString(
+            nativeGraphics,
+            string,
+            length,
+            font ? font.nativeFont : null,
+            &layoutRect,
+            stringFormat ? stringFormat.nativeFormat : null,
+            brush ? brush.nativeBrush : null
+        ));*/
 	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
 }
 
@@ -160,31 +191,37 @@ void destroyFont(FontPlatformVars* font) {
 // Brushes
 
 void createBrush(BrushPlatformVars* brush, ref Color clr) {
-	brush.brushHandle = CreateSolidBrush(ColorGetValue(clr) & 0xFFFFFF);
+	//brush.brushHandle = CreateSolidBrush(clr.value);
+	Gdiplus.GdipCreateSolidFill(clr.value, &brush.handle);
 }
 
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
-	SelectObject(viewVars.dc, brush.brushHandle);
+	viewVars.curBrush = brush.handle;
+	//SelectObject(viewVars.dc, brush.brushHandle);
 }
 
 void destroyBrush(BrushPlatformVars* brush) {
-	DeleteObject(brush.brushHandle);
+	//DeleteObject(brush.brushHandle);
+    Gdiplus.GdipDeleteBrush(brush.handle);
 }
 
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr) {
-	pen.clr = ColorGetValue(clr) & 0xFFFFFF;
-	pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
+    Gdiplus.GdipCreatePen1(clr.value, 1.0, Gdiplus.Unit.UnitWorld, &pen.handle);
+	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
+	viewVars.curPen = pen.handle;
 	viewVars.penClr = pen.clr;
-	SelectObject(viewVars.dc, pen.penHandle);
+	//SelectObject(viewVars.dc, pen.penHandle);
 }
 
 void destroyPen(PenPlatformVars* pen) {
-	DeleteObject(pen.penHandle);
+	//DeleteObject(pen.penHandle);
+	Gdiplus.GdipDeletePen(pen.handle);
+	pen.handle = null;
 }
 
 // View Interfacing
