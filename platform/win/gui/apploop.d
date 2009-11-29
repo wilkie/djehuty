@@ -19,6 +19,8 @@ import binding.win32.wingdi;
 import binding.win32.winuser;
 import binding.win32.winerror;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import binding.win32.uxtheme;
 
 import platform.win.widget;
@@ -46,15 +48,19 @@ import core.application;
 import core.definitions;
 
 import io.console;
-
+import std.stdio;
 
 class GuiApplicationController {
 
 	// The initial entry for the gui application
 	this() {
+		// Initialize GDI+
+		Gdiplus.GdiplusStartupInput gdiplusStartupInput;
+		Gdiplus.GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, null);
 	}
 
 	void start() {
+
 		// Register the class that a window will be created with
 		registerWindowClass();
 
@@ -89,12 +95,17 @@ class GuiApplicationController {
 	}
 
 	void end(uint code) {
+		Gdiplus.GdiplusShutdown(gdiplusToken);
+
 		_appEnd = true;
 
 		ApplicationController.instance.exitCode = code;
 	}
 
 private:
+
+	// GDI+ Instance
+	ULONG_PTR gdiplusToken;
 
 	bool _appEnd = false;
 
@@ -241,7 +252,7 @@ static:
 
 		lpPaint.fIncUpdate = 0;
 		lpPaint.fRestore = 0;
-		
+
 //		lpPaint.hdc = button_hdc;
 
 		return null; //button_hdc;
@@ -659,10 +670,11 @@ static:
 				viewW.onDraw();
 
 				view.lockDisplay();
-
 				PAINTSTRUCT ps;
 				HDC dc = BeginPaint(hWnd, &ps);
+
 				BitBlt(ps.hdc, 0, 0, w.width, w.height, viewVars.dc, 0, 0, SRCCOPY);
+
 				EndPaint(hWnd, &ps);
 
 				view.unlockDisplay();

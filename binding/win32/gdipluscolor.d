@@ -61,7 +61,6 @@ enum ColorChannelFlags {
 //----------------------------------------------------------------------------
 
 class Color {
-public:
 
     // Construct an opaque Color object with
     // the specified Red, Green, Blue values.

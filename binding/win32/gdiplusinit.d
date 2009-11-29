@@ -74,7 +74,7 @@ struct GdiplusStartupInput {
 }
 
 struct GdiplusStartupInputEx {
-    UINT32 GdiplusVersion = 1;             // Must be 1  (or 2 for the Ex version)
+    UINT32 GdiplusVersion = 2;             // Must be 1  (or 2 for the Ex version)
     DebugEventProc DebugEventCallback = null; // Ignored on free builds
     BOOL SuppressBackgroundThread = FALSE;     // FALSE unless you're prepared to call
                                        // the hook/unhook functions properly

@@ -33,11 +33,15 @@ import binding.win32.gdiplusmem;
 // These are C++ class bindings, and cannot be binded
 
 class GdiplusBase {
-    delete(void* in_pVoid) {
+    /*
+    
+	delete(void* in_pVoid) {
        GdipFree(in_pVoid);
     }
 
     new(size_t in_size) {
        return GdipAlloc(in_size);
     }
+	
+	*/
 }

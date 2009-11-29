@@ -325,7 +325,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
 /*		list = new List!(String);
@@ -677,7 +677,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();

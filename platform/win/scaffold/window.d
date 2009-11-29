@@ -18,6 +18,8 @@ import binding.win32.winbase;
 import binding.win32.wingdi;
 import binding.win32.winuser;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import platform.win.main;
 
 import platform.vars.window;
@@ -392,8 +394,23 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref Window
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
 
-	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
+/*
+	Gdiplus.GpGraphics* g;
+	Gdiplus.GpPen* pen;
+    Gdiplus.GpSolidFill* brush;
+    Gdiplus.GpSolidFill* brush2;
 
+    Gdiplus.GdipCreateFromHDC( viewVars.dc, &g);
+    Gdiplus.GdipCreateSolidFill(0x800000ff, &brush);
+    Gdiplus.GdipCreateSolidFill(0x80ff0000, &brush2);
+	Gdiplus.GdipCreatePen1(0xff000000, 1.0, Gdiplus.Unit.UnitWorld, &pen);
+	Gdiplus.GdipFillRectangleI(g, brush, 0, 0, window.width-100, window.height-100);
+	Gdiplus.GdipFillRectangleI(g, brush2, 100, 100, window.width-100, window.height-100);
+	Gdiplus.GdipDrawRectangleI(g, pen, 0, 0, window.width, window.height);
+	Gdiplus.GdipDeleteGraphics(g);
+*/
+
+	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
 	ReleaseDC(windowVars.hWnd, hdc);
 }
 

@@ -3,7 +3,12 @@ EXETYPE NT
 SUBSYSTEM WINDOWS
 EXPORTS
 
+_GdiplusStartup@12 = GdiplusStartup
+_GdiplusShutdown@4 = GdiplusShutdown
 _GdipAlloc@4 = GdipAlloc
+_GdipCreateFromHDC@8 = GdipCreateFromHDC
+_GdipCreateSolidFill@8 = GdipCreateSolidFill
+_GdipCreatePen1@16 = GdipCreatePen1
 _GdipCloneStringFormat@8 = GdipCloneStringFormat
 _GdipDeleteStringFormat@4 = GdipDeleteStringFormat
 _GdipSetStringFormatFlags@8 = GdipSetStringFormatFlags
