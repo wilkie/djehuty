@@ -226,12 +226,14 @@ class Graphics : GdiplusBase {
         return SetStatus(GdipSetInterpolationMode(nativeGraphics, interpolationMode));
     }
 
+version(GDIPLUS6) {
     Status SetAbort(GdiplusAbort *pIAbort) {
         return SetStatus(GdipGraphicsSetAbort(
             nativeGraphics,
             pIAbort
         ));
     }
+}
 
     SmoothingMode GetSmoothingMode() {
         SmoothingMode smoothingMode = SmoothingMode.SmoothingModeInvalid;
@@ -1704,6 +1706,7 @@ class Graphics : GdiplusBase {
         ));
     }
 
+version(GDIPLUS6) {
     Status DrawImage(
         in Image image,
         in RectF *sourceRect,
@@ -1723,6 +1726,7 @@ class Graphics : GdiplusBase {
             srcUnit
         ));
     }
+}
 
     // The following methods are for playing an EMF+ to a graphics
     // via the enumeration interface.  Each record of the EMF+ is

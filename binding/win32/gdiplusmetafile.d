@@ -337,19 +337,20 @@ class Metafile : Image {
             eFlags);
     }
 
+version(GDIPLUS6) {
     Status ConvertToEmfPlus(
         in Graphics* refGraphics,
         in INT* conversionFailureFlag = null,
         in EmfType emfType = EmfType.EmfTypeEmfPlusOnly,
         in WCHAR* description = null
-    ) {        
+    ) {
         GpMetafile * metafile = null;
         GpStatus status = GdipConvertToEmfPlus(
             cast(GpGraphics*)refGraphics.nativeGraphics,
             cast(GpMetafile *)nativeImage,
             conversionFailureFlag,
             emfType, description, &metafile);
-    
+
         if (metafile !is null) {
             if (status == Status.Ok) {
                 GdipDisposeImage(nativeImage);
@@ -361,21 +362,21 @@ class Metafile : Image {
         }
         return status;
     }
-    
+
     Status ConvertToEmfPlus(
         in Graphics* refGraphics,
-        in WCHAR* filename, 
+        in WCHAR* filename,
         in INT* conversionFailureFlag = null,
         in EmfType emfType = EmfType.EmfTypeEmfPlusOnly,
         in WCHAR* description = null
-    ) {        
+    ) {
         GpMetafile * metafile = null;
         GpStatus status = GdipConvertToEmfPlusToFile(
             cast(GpGraphics*)refGraphics.nativeGraphics,
             cast(GpMetafile *)nativeImage,
             conversionFailureFlag,
             filename, emfType, description, &metafile);
-    
+
         if (metafile !is null) {
             if (status == Status.Ok) {
                 GdipDisposeImage(nativeImage);
@@ -387,21 +388,22 @@ class Metafile : Image {
         }
         return status;
     }
-    
+}
+
 /*    Status ConvertToEmfPlus(
         in Graphics* refGraphics,
-        in IStream* stream, 
+        in IStream* stream,
         in INT* conversionFailureFlag = null,
         in EmfType emfType = EmfType.EmfTypeEmfPlusOnly,
         in WCHAR* description = null
-    ) {    
+    ) {
         GpMetafile * metafile = null;
         GpStatus status = GdipConvertToEmfPlusToStream(
             cast(GpGraphics*)refGraphics.nativeGraphics,
             cast(GpMetafile *)nativeImage,
             conversionFailureFlag,
             stream, emfType, description, &metafile);
-    
+
         if (metafile != null) {
             if (status == Status.Ok) {
                 GdipDisposeImage(nativeImage);
@@ -411,7 +413,7 @@ class Metafile : Image {
                 GdipDisposeImage(metafile);
             }
         }
-        return status;    
+        return status;
     }
 */
 

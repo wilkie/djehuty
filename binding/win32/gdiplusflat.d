@@ -954,11 +954,13 @@ GpStatus GdipRemovePropertyItem(GpImage *image, PROPID propId);
 
 GpStatus GdipSetPropertyItem(GpImage *image, PropertyItem* item);
 
+version(GDIPLUS6) {
 GpStatus GdipFindFirstImageItem(GpImage *image, ImageItemData* item);
 
 GpStatus GdipFindNextImageItem(GpImage *image, ImageItemData* item);
 
 GpStatus GdipGetImageItemData(GpImage *image, ImageItemData* item);
+}
 
 GpStatus GdipImageForceValidation(GpImage *image);
 
@@ -1037,6 +1039,7 @@ GpStatus GdipBitmapGetPixel(GpBitmap* bitmap, INT x, INT y, ARGB *color);
 
 GpStatus GdipBitmapSetPixel(GpBitmap* bitmap, INT x, INT y, ARGB color);
 
+version(GDIPLUS6) {
 GpStatus GdipImageSetAbort(
     GpImage *pImage,
     GdiplusAbort *pIAbort
@@ -1099,6 +1102,7 @@ GpStatus GdipBitmapGetHistogramSize(
     HistogramFormat format,
     UINT *NumberOfEntries
 );
+}
 
 GpStatus GdipBitmapSetResolution(GpBitmap* bitmap, REAL xdpi, REAL ydpi);
 
@@ -1429,6 +1433,7 @@ GpStatus GdipFillClosedCurve2I(GpGraphics *graphics, GpBrush *brush,
 GpStatus GdipFillRegion(GpGraphics *graphics, GpBrush *brush,
                         GpRegion *region);
 
+version(GDIPLUS6) {
 GpStatus GdipDrawImageFX(
     GpGraphics *graphics,
     GpImage *image,
@@ -1438,6 +1443,7 @@ GpStatus GdipDrawImageFX(
     GpImageAttributes *imageAttributes,
     GpUnit srcUnit
     );
+}
 
 GpStatus GdipDrawImage(GpGraphics *graphics, GpImage *image, REAL x, REAL y);
 
@@ -2135,6 +2141,7 @@ VOID GdiplusNotificationUnhook(
     ULONG_PTR token
 );
 
+version(GDIPLUS6) {
 GpStatus GdipConvertToEmfPlus(
    GpGraphics* refGraphics,
    GpMetafile*  metafile,
@@ -2164,3 +2171,4 @@ GpStatus GdipConvertToEmfPlusToFile(
    GpMetafile** out_metafile
 );
 */
+}

@@ -337,6 +337,7 @@ class Image : GdiplusBase {
 	                                                             buffer));
     }
 
+version(GDIPLUS6) {
     Status FindFirstItem(in ImageItemData *item) {
 	    return SetStatus(GdipFindFirstImageItem(nativeImage, item));
     }
@@ -355,6 +356,7 @@ class Image : GdiplusBase {
 	        pIAbort
 	        ));
     }
+}
 
     Status GetLastStatus() {
 	    Status lastStatus = lastResult;

@@ -38,6 +38,7 @@ import binding.win32.gdipluscolormatrix;
 **************************************************************************/
 
 extern(System):
+version(GDIPLUS6) {
 
 //-----------------------------------------------------------------------------
 // GDI+ effect GUIDs
@@ -432,4 +433,5 @@ class ColorCurve : Effect {
     Status GetParameters(UINT *size, ColorCurveParams *parameters) {
         return Effect.GetParameters(size, cast(VOID*)parameters);
     }
+}
 }
