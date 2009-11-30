@@ -56,7 +56,7 @@ class Button : Widget {
 
 		_brsh = new Brush(_clrNormal);
 		_pen = new Pen(Color.fromRGBA(0x20, 0xa8, 0xbe, 0xff));
-		_font = new Font(FontSans, 8, 400, false, false, false);
+		_font = new Font(FontSans, 8, 800, false, false, false);
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -78,7 +78,7 @@ class Button : Widget {
 
 		g.setTextModeTransparent();
 
-		g.setTextColor(Color.Red);
+		g.setTextColor(Color.fromRGBA(0x00,0x00,0x00,0xc8));
 
 		g.drawText(x, y, _value);
 	}

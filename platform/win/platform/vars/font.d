@@ -18,4 +18,5 @@ struct FontPlatformVars {
 	HFONT fontHandle;
 	
 	GpFont* handle;
+	GpFontFamily* family;
 }

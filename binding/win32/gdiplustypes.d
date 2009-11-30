@@ -293,7 +293,7 @@ public:
 // Represents a rectangle in a 2D coordinate system (floating-point coordinates)
 //--------------------------------------------------------------------------
 
-class RectF {
+struct RectF {
 public:
     static RectF init(REAL x, REAL y, REAL width, REAL height) {
     	RectF ret;
@@ -389,10 +389,10 @@ public:
     }
 
     BOOL Intersect(in RectF rect) {
-        return Intersect(this, this, rect);
+        return Intersect(*this, *this, rect);
     }
 
-    static BOOL Intersect(out RectF c, in RectF a, in RectF b) {
+    static BOOL Intersect(RectF c, in RectF a, in RectF b) {
     	REAL right = ((a.GetRight() < b.GetRight()) ? a.GetRight() : b.GetRight());
 //        REAL right = min(a.GetRight(), b.GetRight());
     	REAL bottom = ((a.GetBottom() < b.GetBottom()) ? a.GetBottom() : b.GetBottom());

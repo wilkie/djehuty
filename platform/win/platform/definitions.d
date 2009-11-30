@@ -26,7 +26,7 @@ static const Parameter_ColorType ColorType = Parameter_ColorType.ColorBGRA;
 
 const string FontMonospace = "Courier";
 const string FontTimes = "Times New Roman";
-const string FontSans = "Sans";
+const string FontSans = "Arial";
 const string FontSerif = "Sans Serif";
 const string FontSystem = "Sans Serif";
 

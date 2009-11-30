@@ -6,6 +6,10 @@ EXPORTS
 _GdiplusStartup@12 = GdiplusStartup
 _GdiplusShutdown@4 = GdiplusShutdown
 _GdipAlloc@4 = GdipAlloc
+_GdipCreateFont@20 = GdipCreateFont
+_GdipCreateStringFormat@12 = GdipCreateStringFormat
+_GdipStringFormatGetGenericDefault@4 = GdipStringFormatGetGenericDefault
+_GdipCreateFontFamilyFromName@12 = GdipCreateFontFamilyFromName
 _GdipCreateFromHDC@8 = GdipCreateFromHDC
 _GdipCreateSolidFill@8 = GdipCreateSolidFill
 _GdipCreatePen1@16 = GdipCreatePen1
