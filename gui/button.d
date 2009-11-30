@@ -51,15 +51,12 @@ class Button : Widget {
 	}
 
 	override void onAdd() {
-		Color c;
-		c.fromRGB(0xc8, 0x00, 0x00);
+		_clrNormal = Color.fromRGBA(0x50, 0xd8, 0xee, 0x80);
+		_clrHover = Color.fromRGBA(0x70, 0xf8, 0xff, 0xc0);
 
-		_brsh = new Brush(c);
-		_pen = new Pen(Color.Black);
-		_font = new Font(FontSans, 8, 400, false, false, false);
-
-		c.fromRGBA(0xc8, 0x00, 0x80, 0x40);
-		_brsh.setColor(c);
+		_brsh = new Brush(_clrNormal);
+		_pen = new Pen(Color.fromRGBA(0x20, 0xa8, 0xbe, 0xff));
+		_font = new Font(FontSans, 8, 800, false, false, false);
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -81,7 +78,7 @@ class Button : Widget {
 
 		g.setTextModeTransparent();
 
-		g.setTextColor(Color.Red);
+		g.setTextColor(Color.fromRGBA(0x00,0x00,0x00,0xc8));
 
 		g.drawText(x, y, _value);
 	}
@@ -107,16 +104,13 @@ class Button : Widget {
 	}
 
 	override bool onMouseEnter() {
-		_brsh.setColor(Color.White);
+		_brsh.color = _clrHover;
 
 		return true;
 	}
 
 	override bool onMouseLeave() {
-		Color c;
-		c.fromRGB(0xc8, 0xc8, 0xc8);
-
-		_brsh.setColor(c);
+		_brsh.color = _clrNormal;
 
 		return true;
 	}
@@ -137,6 +131,9 @@ protected:
 	String _value;
 
 private:
+	
+	Color _clrNormal;
+	Color _clrHover;
 
 	Brush _brsh;
 	Pen _pen;

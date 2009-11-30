@@ -325,7 +325,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
 /*		list = new List!(String);
@@ -434,8 +434,8 @@ class MyConsoleApp : Application {
 */
 				Console.putln("awesome:");
 
-		File unfinished = File.open("binding/win32/winsock2.d");
-		File finished = File.create("binding/win32/winsock2new.d");
+		File unfinished = File.open("binding/win32/gdiplusimaging.d");
+		File finished = File.create("binding/win32/gdiplusimagingnew.d");
 
 		bool inUnicodeBlock = false;
 		bool inStruct = false;

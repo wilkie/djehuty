@@ -11,7 +11,7 @@ import resource.image;
 
 class MyControl : Widget {
 	this() {
-		super(0,50,360,297);
+		super(0,0,360,297);
 	}
 
 	override void onAdd() {
@@ -48,17 +48,17 @@ class MyControl : Widget {
 
 private:
 	Image[3] images;
-	int curImage = 0;
+	int curImage = 1;
 }
 
 class MyWindow : Window {
 	this() {
-		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,WindowPosition.Center,360,347);
+		super("OMG DUCKS",WindowStyle.Fixed,Color.Gray,WindowPosition.Center,360,297);
 	}
 
 	override void onAdd() {
-		push(button = new OSButton(0,0,360,50,"MORE DUCKS!"));
 		push(imageBox = new MyControl());
+		push(button = new Button(1,1,358,48,"MORE DUCKS!"));
 	}
 
 	override bool onSignal(Dispatcher d, uint signal) {
@@ -75,7 +75,7 @@ class MyWindow : Window {
 
 
 private:
-	OSButton button;
+	Button button;
 	MyControl imageBox;
 }
 

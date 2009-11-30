@@ -179,6 +179,9 @@ void* ViewGetBytes(ViewPlatformVars*viewVars)
 	return Cairo.cairo_image_surface_get_data(viewVars.surface);
 }
 
+void ViewUnlockBytes(ViewPlatformVars* viewVars) {
+}
+
 uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a)
 {
 	if (!_forcenopremultiply)

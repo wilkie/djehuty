@@ -13,6 +13,8 @@ module scaffold.view;
 import platform.win.common;
 import platform.win.main;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import platform.vars.view;
 import platform.vars.window;
 
@@ -46,39 +48,29 @@ void ViewCreate(View view, ViewPlatformVars*viewVars) {
 	SelectObject(viewVars.dc, bmp);
 
 	DeleteObject(bmp);
+
+    Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
+/*
+	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
+	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
+	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);*/
 }
 
 void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {
 	DeleteDC(viewVars.dc);
+	Gdiplus.GdipDeleteGraphics(viewVars.g);
 }
 
 void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
-	HDC dc;
-
-	dc = GetDC(null);
-
 	viewVars.clipRegions = new _clipList();
-
-	viewVars.dc = CreateCompatibleDC(dc);
-
-	BITMAPINFO bi;
-
-	bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
-	bi.bmiHeader.biWidth = view.width();
-	bi.bmiHeader.biHeight = -view.height();
-	bi.bmiHeader.biPlanes = 1;
-	bi.bmiHeader.biBitCount = 32;
-
-	//HBITMAP bmp = CreateCompatibleBitmap(dc, _width, _height);
-	HBITMAP bmp = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &viewVars.bits, null, 0);
 
 	viewVars.length = (view.width() * view.height()) * 4;
 
-	ReleaseDC(null, dc);
-
-	SelectObject(viewVars.dc, bmp);
-
-	DeleteObject(bmp);
+	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
+	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
+	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
 }
 
 void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
@@ -97,7 +89,6 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 	HBITMAP bmp;
 
 	if (cast(Bitmap)view !is null) {
-
 		BITMAPINFO bi;
 
 		bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
@@ -118,14 +109,22 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 
 	DeleteObject(bmp);
 }
-
+import std.stdio;
 void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length) {
+    Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
+
 	length = viewVars.length;
-	return viewVars.bits;
+	return cast(void*)viewVars.bdata.Scan0;
 }
 
 void* ViewGetBytes(ViewPlatformVars*viewVars) {
-	return viewVars.bits;
+    Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
+
+	return cast(void*)viewVars.bdata.Scan0;
+}
+
+void ViewUnlockBytes(ViewPlatformVars* viewVars) {
+	Gdiplus.GdipBitmapUnlockBits(viewVars.image, &viewVars.bdata);
 }
 
 uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a) {

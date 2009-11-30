@@ -20,18 +20,15 @@ import core.util;
 
 
 
-static if (Colorbpp == Parameter_Colorbpp.Color8bpp)
-{
+static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
 	alias ubyte ColorComponent;
 	alias uint ColorValue;
 }
-else static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
-{
+else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
 	alias ushort ColorComponent;
 	alias ulong ColorValue;
 }
-else
-{
+else {
 	alias ubyte ColorComponent;
 	alias uint ColorValue;
 	pragma(msg, "WARNING: Colorbpp parameter is not set!");
@@ -101,53 +98,57 @@ public:
 	// -- Predefined values
 
 	// Description: Black!
-	static Color Black 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)) } } };
+	static Color Black 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color Green		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Red		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Blue 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Green		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Red		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Blue 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color Magenta 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Yellow 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)) } } };
-	static Color Cyan 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Magenta 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Yellow 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Cyan 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color DarkGray	= { _internal: { components: {r: eval!(_8toNativebpp(0x80)), g: eval!(_8toNativebpp(0x80)), b: eval!(_8toNativebpp(0x80)) } } };
-	static Color Gray 		= { _internal: { components: {r: eval!(_8toNativebpp(0xC0)), g: eval!(_8toNativebpp(0xC0)), b: eval!(_8toNativebpp(0xC0)) } } };
+	static Color DarkGray	= { _internal: { components: {r: eval!(_8toNativebpp(0x80)), g: eval!(_8toNativebpp(0x80)), b: eval!(_8toNativebpp(0x80)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Gray 		= { _internal: { components: {r: eval!(_8toNativebpp(0xC0)), g: eval!(_8toNativebpp(0xC0)), b: eval!(_8toNativebpp(0xC0)), a: eval!(_8toNativebpp(0xFF)) } } };
 
-	static Color White 		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)) } } };
+	static Color White 		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
 
 	// --
 
 	// Description: This function will set the color given the 8-bit red, green, blue, and alpha components.
-	void fromRGBA(ubyte r, ubyte g, ubyte b, ubyte a) {
+	static Color fromRGBA(ubyte r, ubyte g, ubyte b, ubyte a) {
+		Color ret;
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.r = r;
-			_internal.components.g = g;
-			_internal.components.b = b;
-			_internal.components.a = a;
+			ret._internal.components.r = r;
+			ret._internal.components.g = g;
+			ret._internal.components.b = b;
+			ret._internal.components.a = a;
 		}
 		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
-			_internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
-			_internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
-			_internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
-			_internal.components.a = (cast(double)a / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.a = (cast(double)a / cast(double)0xFF) * 0xFFFF;
 		}
+		return ret;
 	}
 
 	// Description: This function will set the color given the 8-bit red, green, and blue components.
-	void fromRGB(ubyte r, ubyte g, ubyte b) {
+	static Color fromRGB(ubyte r, ubyte g, ubyte b) {
+		Color ret;
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.r = r;
-			_internal.components.g = g;
-			_internal.components.b = b;
-			_internal.components.a = 0xFF;
+			ret._internal.components.r = r;
+			ret._internal.components.g = g;
+			ret._internal.components.b = b;
+			ret._internal.components.a = 0xFF;
 		}
 		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
-			_internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
-			_internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
-			_internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
-			_internal.components.a = 0xFFFF;
+			ret._internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
+			ret._internal.components.a = 0xFFFF;
 		}
+		return ret;
 	}
 
 	ubyte blue() {
@@ -202,6 +203,10 @@ public:
 		else {
 			_internal.components.r = (cast(double)val / cast(double)0xFF) * 0xFFFF;
 		}
+	}
+	
+	ColorValue value() {
+		return _internal.clr;
 	}
 
 private:

@@ -1627,9 +1627,17 @@ const auto PC_RESERVED     = 0x01;    /* palette index used for animation */
 const auto PC_EXPLICIT     = 0x02;    /* palette index is explicit to device */
 const auto PC_NOCOLLAPSE   = 0x04;    /* do not match color to system palette */
 
-// const auto GetRValue(rgb)      (LOBYTE(rgb));
-// const auto GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8));
-// const auto GetBValue(rgb)      (LOBYTE((rgb)>>16));
+BYTE GetRValue(COLORREF rgb) {
+	return LOBYTE(cast(WORD)rgb);
+}
+
+BYTE GetGValue(COLORREF rgb) {
+	return LOBYTE(cast(WORD)((cast(WORD)rgb) >> 8));
+}
+
+BYTE GetBValue(COLORREF rgb) {
+	return LOBYTE(cast(WORD)(rgb >> 16));
+}
 
 /* Background Modes */
 const auto TRANSPARENT         = 1;

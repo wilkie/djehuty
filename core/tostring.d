@@ -42,6 +42,21 @@ string toStrv(Variadic vars) {
 				}
 				continue;
 			}
+			else if (var.type <= Type.Float) {
+				switch(var.type) {
+					case Type.Float:
+						ret ~= ftoa(var.data.f);
+						break;
+					case Type.Real:
+						ret ~= "{real}";
+						break;
+					default:
+					case Type.Double:
+						ret ~= ftoa(var.data.d);
+						break;
+				}
+				continue;
+			}
 		}
 		ret ~= var.toString();
 	}
@@ -201,7 +216,7 @@ string ftoa(float val, uint base = 10) {
 		return "nan";
 	}
 	else if (val == 0.0) {
-		return "0.0";
+		return "0";
 	}
 
 	long mantissa;
@@ -220,10 +235,10 @@ string ftoa(float val, uint base = 10) {
 	intPart = 0;
 
 	if (exp >= 31) {
-		return "0.0";
+		return "0";
 	}
 	else if (exp < -23) {
-		return "0.0";
+		return "0";
 	}
 	else if (exp >= 23) {
 		intPart = mantissa << (exp - 23);
@@ -284,7 +299,7 @@ string ftoa(double val, uint base = 10, bool doIntPart = true) {
 		return "nan";
 	}
 	else if (val == 0.0) {
-		return "0.0";
+		return "0";
 	}
 
 	long mantissa;
@@ -299,7 +314,7 @@ string ftoa(double val, uint base = 10, bool doIntPart = true) {
 	// Conform to the IEEE standard
 	exp = ((iF.l >> 52) & 0x7ff);
 	if (exp == 0) {
-		return "0.0";
+		return "0";
 	}
 	else if (exp == 0x7ff) {
 		return "inf";
@@ -311,7 +326,7 @@ string ftoa(double val, uint base = 10, bool doIntPart = true) {
 	intPart = 0;
 
 	if (exp < -52) {
-		return "0.0";
+		return "0";
 	}
 	else if (exp >= 52) {
 		intPart = mantissa << (exp - 52);
@@ -378,7 +393,7 @@ string ftoa(real val, uint base = 10) {
 			return "nan";
 		}
 		else if (val == 0.0) {
-			return "0.0";
+			return "0";
 		}
 	
 		long mantissa;
@@ -393,7 +408,7 @@ string ftoa(real val, uint base = 10) {
 		// Conform to the IEEE standard
 		exp = iF.l.exp & 0x7fff;
 		if (exp == 0) {
-			return "0.0";
+			return "0";
 		}
 		else if (exp == 32767) {
 			return "inf";
@@ -405,10 +420,10 @@ string ftoa(real val, uint base = 10) {
 		intPart = 0;
 	
 		if (exp >= 31) {
-			return "0.0";
+			return "0";
 		}
 		else if (exp < -64) {
-			return "0.0";
+			return "0";
 		}
 		else if (exp >= 64) {
 			intPart = mantissa << (exp - 64);

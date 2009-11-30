@@ -40,13 +40,13 @@ public:
 		m_small_change = 1;
 		m_large_change = 10;
 
-		m_clroutline.fromRGB(0x80,0x80,0x80);
-		m_clrarea.fromRGB(0xe0, 0xe0, 0xe0);
-		m_clrbutton.fromRGB(0xc0, 0xc0, 0xc0);
-		m_clrhighlight.fromRGB(0xdd, 0xdd, 0xdd);
-		m_clrnormal.fromRGB(0,0,0);
-		m_clrthumb.fromRGB(0xc0, 0xc0, 0xc0);
-		m_clrhover.fromRGB(0xdd, 0xdd, 0xdd);
+		m_clroutline = Color.fromRGB(0x80,0x80,0x80);
+		m_clrarea = Color.fromRGB(0xe0, 0xe0, 0xe0);
+		m_clrbutton = Color.fromRGB(0xc0, 0xc0, 0xc0);
+		m_clrhighlight = Color.fromRGB(0xdd, 0xdd, 0xdd);
+		m_clrnormal = Color.fromRGB(0,0,0);
+		m_clrthumb = Color.fromRGB(0xc0, 0xc0, 0xc0);
+		m_clrhover = Color.fromRGB(0xdd, 0xdd, 0xdd);
 
 		_readyTimer = new Timer();
 		_clickTimer = new Timer();

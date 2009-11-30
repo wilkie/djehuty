@@ -36,6 +36,8 @@ alias char*		PSZ;
 alias size_t		SIZE_T;
 alias size_t*		PSIZE_T;
 
+alias ULONG	PROPID;
+
 const auto MAX_PATH = 260;
 
 enum : uint {
@@ -89,6 +91,16 @@ alias ULONG_PTR UINT_PTR;
 alias UINT**		PUINT_PTR;
 alias Culong_t** PDWORD_PTR;
 alias ULONG_PTR	DWORD_PTR;
+
+alias ubyte	UINT8;
+alias ushort UINT16;
+alias uint	UINT32;
+alias ulong	UINT64;
+
+alias byte	INT8;
+alias short INT16;
+alias int	INT32;
+alias long	INT64;
 
 alias ulong	QWORD;
 

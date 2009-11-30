@@ -22,6 +22,8 @@ import platform.vars.font;
 import platform.vars.pen;
 import platform.vars.region;
 
+import Gdiplus = binding.win32.gdiplus;
+
 import core.string;
 import core.color;
 import core.main;
@@ -33,42 +35,81 @@ import graphics.region;
 import platform.win.main;
 import platform.win.common;
 
+import io.console;
+
 // Shapes
 
 // Draw a line
 void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	MoveToEx(viewVars.dc, x, y, null);
+	//MoveToEx(viewVars.dc, x, y, null);
+	//LineTo(viewVars.dc, x2, y2);
 
-	LineTo(viewVars.dc, x2, y2);
+	Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
+}
+
+void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+}
+
+void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
 void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	Rectangle(viewVars.dc, x, y, x2, y2);
+	//Rectangle(viewVars.dc, x, y, x2, y2);
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+}
+
+void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+}
+
+void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	Ellipse(viewVars.dc, x, y, x2, y2);
+	//Ellipse(viewVars.dc, x, y, x2, y2);
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
 // Text
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
-	TextOutW(viewVars.dc, x, y, str.ptr, str.length);
+	str = new String(str);
+	str.appendChar('\0');
+
+	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
+    Gdiplus.GdipDrawString(viewVars.g, str.ptr, str.array.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
+	//TextOutW(viewVars.dc, x, y, str.ptr, str.length-1);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str) {
-	wstring utf16 = Unicode.toUtf16(str);
-	TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length);
+	wstring utf16 = Unicode.toUtf16(str ~ '\0');
+
+	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
+    Gdiplus.GdipDrawString(viewVars.g, utf16.ptr, utf16.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
+	//TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length-1);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length) {
-	TextOutW(viewVars.dc, x, y, str.ptr, length);
+	str = new String(str);
+	str.appendChar('\0');
+
+	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
+    Gdiplus.GdipDrawString(viewVars.g, str.ptr, length, viewVars.curFont, &rect, null, viewVars.curTextBrush);
+	//TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length) {
-	wstring utf16 = Unicode.toUtf16(str);
-	TextOutW(viewVars.dc, x, y, utf16.ptr, length);
+	wstring utf16 = Unicode.toUtf16(str ~ '\0');
+
+	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
+    Gdiplus.GdipDrawString(viewVars.g, utf16.ptr, length, viewVars.curFont, &rect, null, viewVars.curTextBrush);
+	//TextOutW(viewVars.dc, x, y, utf16.ptr, length);
 }
 
 // Clipped Text
@@ -92,21 +133,45 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 
 // Text Measurement
 void measureText(ViewPlatformVars* viewVars, String str, out Size sz) {
-	GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
+	//GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
+	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
+	Gdiplus.RectF result;
+	Gdiplus.GdipMeasureString(viewVars.g, str.ptr, str.array.length-1,
+		viewVars.curFont, &rect, null, &result, null, null);
+	sz.x = cast(uint)result.Width;
+	sz.y = cast(uint)result.Height;
 }
 
 void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size sz) {
-	GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
+	//GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
+	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
+	Gdiplus.RectF result;
+	Gdiplus.GdipMeasureString(viewVars.g, str.ptr, length,
+		viewVars.curFont, &rect, null, &result, null, null);
+	sz.x = cast(uint)result.Width;
+	sz.y = cast(uint)result.Height;
 }
 
 void measureText(ViewPlatformVars* viewVars, string str, out Size sz) {
-	wstring utf16 = Unicode.toUtf16(str);
-	GetTextExtentPoint32W(viewVars.dc, utf16.ptr, utf16.length, cast(SIZE*)&sz);
+	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
+	//GetTextExtentPoint32W(viewVars.dc, utf16.ptr, utf16.length, cast(SIZE*)&sz) ;
+	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
+	Gdiplus.RectF result;
+	Gdiplus.GdipMeasureString(viewVars.g, utf16.ptr, utf16.length-1,
+		viewVars.curFont, &rect, null, &result, null, null);
+	sz.x = cast(uint)result.Width;
+	sz.y = cast(uint)result.Height;
 }
 
 void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size sz) {
-	wstring utf16 = Unicode.toUtf16(str);
-	GetTextExtentPoint32W(viewVars.dc, utf16.ptr, length, cast(SIZE*)&sz);
+	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
+	//GetTextExtentPoint32W(viewVars.dc, utf16.ptr, length, cast(SIZE*)&sz);
+	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
+	Gdiplus.RectF result;
+	Gdiplus.GdipMeasureString(viewVars.g, utf16.ptr, length,
+		viewVars.curFont, &rect, null, &result, null, null);
+	sz.x = cast(uint)result.Width;
+	sz.y = cast(uint)result.Height;
 }
 
 // Text Colors
@@ -115,7 +180,8 @@ void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
 }
 
 void setTextColor(ViewPlatformVars* viewVars, ref Color textColor) {
-	platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
+	//platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
+	Gdiplus.GdipCreateSolidFill(textColor.value, &viewVars.curTextBrush);
 }
 
 // Text States
@@ -132,218 +198,183 @@ void setTextModeOpaque(ViewPlatformVars* viewVars) {
 
 
 // Fonts
-
+import std.stdio;
 void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
+	// Create family
 	wstring utf16 = Unicode.toUtf16(fontname) ~ cast(wchar)'\0';
-	HDC dcz = GetDC(cast(HWND)0);
-	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, utf16.ptr);
-	ReleaseDC(cast(HWND)0, dcz);
+	Gdiplus.GdipCreateFontFamilyFromName(utf16.ptr, null, &font.family);
+
+	Gdiplus.FontStyle style;
+	bool bold = false;
+	if (weight > 600) {
+		bold = true;
+	}
+
+	if (bold) {
+		style |= Gdiplus.FontStyle.FontStyleBold;
+	}
+
+	if (italic) {
+		style |= Gdiplus.FontStyle.FontStyleItalic;
+	}
+
+	if (underline) {
+		style |= Gdiplus.FontStyle.FontStyleUnderline;
+	}
+
+	if (strikethru) {
+		style |= Gdiplus.FontStyle.FontStyleStrikeout;
+	}
+
+	// Create font
+    Gdiplus.GdipCreateFont(font.family, fontsize, style, Gdiplus.Unit.UnitPoint, &font.handle);
+
+//	HDC dcz = GetDC(cast(HWND)0);
+//	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, utf16.ptr);
+//	ReleaseDC(cast(HWND)0, dcz);
 }
 
 void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
+	// Create family
 	fontname = new String(fontname);
 	fontname.appendChar('\0');
-	HDC dcz = GetDC(cast(HWND)0);
-	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, fontname.ptr);
-	ReleaseDC(cast(HWND)0, dcz);
+	Gdiplus.GdipCreateFontFamilyFromName(fontname.ptr, null, &font.family);
+
+	Gdiplus.FontStyle style;
+	bool bold = false;
+	if (weight > 600) {
+		bold = true;
+	}
+
+	if (bold) {
+		style |= Gdiplus.FontStyle.FontStyleBold;
+	}
+
+	if (italic) {
+		style |= Gdiplus.FontStyle.FontStyleItalic;
+	}
+
+	if (underline) {
+		style |= Gdiplus.FontStyle.FontStyleUnderline;
+	}
+
+	if (strikethru) {
+		style |= Gdiplus.FontStyle.FontStyleStrikeout;
+	}
+
+	// Create font
+    Gdiplus.GdipCreateFont(font.family, fontsize, style, Gdiplus.Unit.UnitPoint, &font.handle);
+
+//	HDC dcz = GetDC(cast(HWND)0);
+//	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, fontname.ptr);
+//	ReleaseDC(cast(HWND)0, dcz);
 }
 
 void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font) {
-	SelectObject(viewVars.dc, font.fontHandle);
+	viewVars.curFont = font.handle;
+	//SelectObject(viewVars.dc, font.fontHandle);
 }
 
 void destroyFont(FontPlatformVars* font) {
-	DeleteObject(font.fontHandle);
+	Gdiplus.GdipDeleteFontFamily(font.family);
+	Gdiplus.GdipDeleteFont(font.handle);
+	//DeleteObject(font.fontHandle);
 }
 
 
 // Brushes
 
 void createBrush(BrushPlatformVars* brush, ref Color clr) {
-	brush.brushHandle = CreateSolidBrush(ColorGetValue(clr) & 0xFFFFFF);
+	//brush.brushHandle = CreateSolidBrush(clr.value);
+	Gdiplus.GdipCreateSolidFill(clr.value, &brush.handle);
 }
 
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
-	SelectObject(viewVars.dc, brush.brushHandle);
+	viewVars.curBrush = brush.handle;
+	//SelectObject(viewVars.dc, brush.brushHandle);
 }
 
 void destroyBrush(BrushPlatformVars* brush) {
-	DeleteObject(brush.brushHandle);
+	//DeleteObject(brush.brushHandle);
+    Gdiplus.GdipDeleteBrush(brush.handle);
 }
 
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr) {
-	pen.clr = ColorGetValue(clr) & 0xFFFFFF;
-	pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
+    Gdiplus.GdipCreatePen1(clr.value, 1.0, Gdiplus.Unit.UnitWorld, &pen.handle);
+	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
+	viewVars.curPen = pen.handle;
 	viewVars.penClr = pen.clr;
-	SelectObject(viewVars.dc, pen.penHandle);
+	//SelectObject(viewVars.dc, pen.penHandle);
 }
 
 void destroyPen(PenPlatformVars* pen) {
-	DeleteObject(pen.penHandle);
+	//DeleteObject(pen.penHandle);
+	Gdiplus.GdipDeletePen(pen.handle);
+	pen.handle = null;
 }
 
 // View Interfacing
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		uint viewWidth = srcView.width();
-		uint viewHeight = srcView.height();
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0, viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, 0,0,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImageI(viewVars.g, viewVarsSrc.image , x, y);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		uint viewWidth = srcView.width();
-		uint viewHeight = srcView.height();
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-
-		if (viewX + viewWidth > srcView.width()) {
-			viewWidth = srcView.width() - viewX;
-		}
-
-		if (viewY + viewHeight > srcView.height()) {
-			viewHeight = srcView.height() - viewY;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, viewX,viewY,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, srcView.width(), srcView.height(), Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		if (viewWidth > srcView.width()) {
-			viewWidth = srcView.width();
-		}
-
-		if (viewHeight > srcView.height()) {
-			viewHeight = srcView.height();
-		}
-
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-
-		if (viewX + viewWidth > srcView.width()) {
-			viewWidth = srcView.width() - viewX;
-		}
-
-		if (viewY + viewHeight > srcView.height()) {
-			viewHeight = srcView.height() - viewY;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
+		0, 0, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	uint viewWidth = srcView.width();
-	uint viewHeight = srcView.height();
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
-
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	uint viewWidth = srcView.width();
-	uint viewHeight = srcView.height();
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
+		viewX, viewY, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-
-	if (viewX + viewWidth > srcView.width()) {
-		viewWidth = srcView.width() - viewX;
-	}
-
-	if (viewY + viewHeight > srcView.height()) {
-		viewHeight = srcView.height() - viewY;
-	}
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	if (viewWidth > srcView.width()) {
-		viewWidth = srcView.width();
-	}
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, viewWidth, viewHeight,
+		viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	if (viewHeight > srcView.height()) {
-		viewHeight = srcView.height();
-	}
-
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
-
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-
-	if (viewX + viewWidth > srcView.width()) {
-		viewWidth = srcView.width() - viewX;
-	}
-
-	if (viewY + viewHeight > srcView.height()) {
-		viewHeight = srcView.height() - viewY;
-	}
-
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {

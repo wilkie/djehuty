@@ -24,6 +24,9 @@ public:
 
 	// Sets color of a solid brush
 	void setColor(Color clr) {
+	}
+	
+	void color(Color clr) {
 		Scaffold.destroyBrush(&_pfvars);
 		Scaffold.createBrush(&_pfvars, clr);
 
@@ -33,7 +36,7 @@ public:
 			{
 				_view._graphics.setBrush(_view._brush);
 			}
-		}
+		}		
 	}
 
 private:

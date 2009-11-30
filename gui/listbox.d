@@ -51,11 +51,11 @@ class ListBox : Widget {
 		grp.measureText(" ", 1, m_entryHeight);
 		_view.unlockDisplay();
 
-		m_clroutline.fromRGB(0x80, 0x80, 0x80);
-		m_clrhighlight.fromRGB(0xdd,0xdd,0xdd);
-		m_clrhighlighttext.fromRGB(0xff,0xff,0xff);
-		m_clrnormal.fromRGB(0,0,0);
-		m_clrbackground.fromRGB(0xff,0xff,0xff);
+		m_clroutline = Color.fromRGB(0x80, 0x80, 0x80);
+		m_clrhighlight = Color.fromRGB(0xdd,0xdd,0xdd);
+		m_clrhighlighttext = Color.fromRGB(0xff,0xff,0xff);
+		m_clrnormal = Color.fromRGB(0,0,0);
+		m_clrbackground = Color.fromRGB(0xff,0xff,0xff);
 
 		m_first_visible = 0;
 		m_total_visible = 0;

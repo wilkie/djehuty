@@ -1,7 +1,7 @@
 /*
  * gdiplusbase.d
  *
- * This module implements GdiplusBase.h for D. The original copyright
+ * This module implements GdiPlusBase.h for D. The original copyright
  * info is given below.
  *
  * Author: Dave Wilkinson
@@ -10,6 +10,8 @@
  */
 
 module binding.win32.gdiplusbase;
+
+import binding.win32.gdiplusmem;
 
 // The original copyright notice from GdiplusBase.h from which this module
 // is based:
@@ -28,3 +30,18 @@ module binding.win32.gdiplusbase;
 *
 \**************************************************************************/
 
+// These are C++ class bindings, and cannot be binded
+
+class GdiplusBase {
+    /*
+    
+	delete(void* in_pVoid) {
+       GdipFree(in_pVoid);
+    }
+
+    new(size_t in_size) {
+       return GdipAlloc(in_size);
+    }
+	
+	*/
+}
