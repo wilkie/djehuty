@@ -10,12 +10,8 @@
 
 module platform.vars.brush;
 
-import platform.win.common;
-
 import binding.win32.gdiplusgpstubs;
 
-struct BrushPlatformVars {
-	HBRUSH brushHandle;
-	
+struct BrushPlatformVars {	
 	GpBrush* handle;
 }

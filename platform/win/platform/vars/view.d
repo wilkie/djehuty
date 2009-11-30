@@ -13,21 +13,27 @@ module platform.vars.view;
 import platform.win.common;
 
 import binding.win32.gdiplusgpstubs;
+import binding.win32.gdiplustypes;
+import binding.win32.gdiplusimaging;
 
 struct ViewPlatformVars {
 	RECT bounds;
 	HDC dc;
+	
+	GpImage* image;
+	Rect rt;
+	BitmapData bdata;
 
 	void* bits;
 	int length;
 
 	int penClr;
-	
+
 	GpBrush* curBrush = null;
 	GpPen* curPen = null;
 	GpBrush* curTextBrush = null;
 	GpFont* curFont = null;
-	
+
 	GpGraphics* g = null;
 
 	_clipList clipRegions;

@@ -37,7 +37,6 @@ class Texture {
 		ulong len;
 
 		view.lockBuffer(&bytes, len);
-		view.unlockBuffer();
 
 		glGenTextures(1, &_gl_tex_index);
 		glBindTexture(GL_TEXTURE_2D, _gl_tex_index);
@@ -47,6 +46,8 @@ class Texture {
 
 	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _img.width, _img.height, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bytes);
 
+		view.unlockBuffer();
+		
 		_frows = frameRows;
 		_fcols = frameCols;
 

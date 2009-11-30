@@ -154,9 +154,13 @@ struct Variant {
 				if (data.truth) {
 					return "true";
 				}
-				else {
-					return "false";
-				}
+				return "false";
+			case Type.Float:
+				return toStr(data.f);
+			case Type.Double:
+				return toStr(data.d);
+			case Type.Real:
+				return toStr(data.r);
 			default:
 				break;
 		}

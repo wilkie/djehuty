@@ -321,160 +321,60 @@ void destroyPen(PenPlatformVars* pen) {
 // View Interfacing
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		uint viewWidth = srcView.width();
-		uint viewHeight = srcView.height();
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0, viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, 0,0,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImageI(viewVars.g, viewVarsSrc.image , x, y);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		uint viewWidth = srcView.width();
-		uint viewHeight = srcView.height();
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-
-		if (viewX + viewWidth > srcView.width()) {
-			viewWidth = srcView.width() - viewX;
-		}
-
-		if (viewY + viewHeight > srcView.height()) {
-			viewHeight = srcView.height() - viewY;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, srcView.width(), srcView.height(), viewVarsSrc.dc, viewX,viewY,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, srcView.width(), srcView.height(), Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
-	static const BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
-
-	if (srcView.alpha) {
-		if (viewWidth > srcView.width()) {
-			viewWidth = srcView.width();
-		}
-
-		if (viewHeight > srcView.height()) {
-			viewHeight = srcView.height();
-		}
-
-		if (x + viewWidth > view.width()) {
-			viewWidth = view.width() - x;
-		}
-
-		if (y + viewHeight > view.height()) {
-			viewHeight = view.height() - y;
-		}
-
-		if (viewX + viewWidth > srcView.width()) {
-			viewWidth = srcView.width() - viewX;
-		}
-
-		if (viewY + viewHeight > srcView.height()) {
-			viewHeight = srcView.height() - viewY;
-		}
-		AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
-	}
-	else {
-		BitBlt(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,SRCCOPY);
-	}
+	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
+		0, 0, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	uint viewWidth = srcView.width();
-	uint viewHeight = srcView.height();
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
-
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, 0,0,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	uint viewWidth = srcView.width();
-	uint viewHeight = srcView.height();
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
+		viewX, viewY, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-
-	if (viewX + viewWidth > srcView.width()) {
-		viewWidth = srcView.width() - viewX;
-	}
-
-	if (viewY + viewHeight > srcView.height()) {
-		viewHeight = srcView.height() - viewY;
-	}
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
-	static BLENDFUNCTION bf = { AC_SRC_OVER, 0, 0xFF, AC_SRC_ALPHA };
+	static Gdiplus.ColorMatrix cm;
+	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
-	bf.SourceConstantAlpha = cast(ubyte)(opacity * 255.0);
+	Gdiplus.GpImageAttributes* ia;
+	Gdiplus.GdipCreateImageAttributes(&ia);
+	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
+		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	if (viewWidth > srcView.width()) {
-		viewWidth = srcView.width();
-	}
+	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, viewWidth, viewHeight,
+		viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel, ia, null, null);
 
-	if (viewHeight > srcView.height()) {
-		viewHeight = srcView.height();
-	}
-
-	if (x + viewWidth > view.width()) {
-		viewWidth = view.width() - x;
-	}
-
-	if (y + viewHeight > view.height()) {
-		viewHeight = view.height() - y;
-	}
-
-	if (viewX + viewWidth > srcView.width()) {
-		viewWidth = srcView.width() - viewX;
-	}
-
-	if (viewY + viewHeight > srcView.height()) {
-		viewHeight = srcView.height() - viewY;
-	}
-
-	AlphaBlend(viewVars.dc, x, y, viewWidth, viewHeight, viewVarsSrc.dc, viewX,viewY,viewWidth, viewHeight, bf);
+	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
 void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {

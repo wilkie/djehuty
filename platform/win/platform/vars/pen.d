@@ -10,12 +10,9 @@
 
 module platform.vars.pen;
 
-import platform.win.common;
-
 import binding.win32.gdiplusgpstubs;
 
 struct PenPlatformVars {
-	HPEN penHandle;
 	int clr;
 	
 	GpPen* handle;

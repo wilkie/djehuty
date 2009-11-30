@@ -55,6 +55,7 @@ class Bitmap : View {
 	}
 
 	void unlockBuffer() {
+		ViewUnlockBytes(&_pfvars);
 		_buffer_mutex.up();
 	}
 
