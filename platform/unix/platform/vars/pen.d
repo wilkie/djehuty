@@ -11,5 +11,8 @@
 module platform.vars.pen;
 
 struct PenPlatformVars {
-	uint val;
+	double r;
+	double g;
+	double b;
+	double a;
 }

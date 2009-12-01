@@ -41,20 +41,28 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
-void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	if (x2 > x) { x2--; } else if (x2 < x) { x2++; }
 	if (y2 > y) { y2--; } else if (y2 < y) { y2++; }
 
-	X.XSetForeground(_pfvars.display, viewVars.gc, viewVars.curbrush);
-	X.XFillRectangle(_pfvars.display, viewVars.pixmap, viewVars.gc, (x), (y), (x2)-(x), (y2)-(y));
-	X.XSetForeground(_pfvars.display, viewVars.gc, viewVars.curpen);
-	X.XDrawRectangle(_pfvars.display, viewVars.pixmap, viewVars.gc, (x), (y), (x2)-(x), (y2)-(y));
+//	X.XSetForeground(_pfvars.display, viewVars.gc, viewVars.curbrush);
+//	X.XFillRectangle(_pfvars.display, viewVars.pixmap, viewVars.gc, (x), (y), (x2)-(x), (y2)-(y));
+//	X.XSetForeground(_pfvars.display, viewVars.gc, viewVars.curpen);
+//	X.XDrawRectangle(_pfvars.display, viewVars.pixmap, viewVars.gc, (x), (y), (x2)-(x), (y2)-(y));
+
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curBrush.r, viewVars.curBrush.g, viewVars.curBrush.b, viewVars.curBrush.a);
+	Cairo.cairo_rectangle(viewVars.cr, x+1, y, x2-x, y2-y+1);
+	Cairo.cairo_fill_preserve(viewVars.cr);
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
+	Cairo.cairo_set_line_width(viewVars.cr, 1);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	Cairo.cairo_stroke(viewVars.cr);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
-void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
-{
+void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	if (x2 > x) { x2--; } else if (x2 < x) { x2++; }
 	if (y2 > y) { y2--; } else if (y2 < y) { y2++; }
 
@@ -70,8 +78,7 @@ void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2)
 // Fonts
 
 //void createFont(ViewPlatformVars* viewVars, out Font font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-{
+void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 	font.pangoFont = Pango.pango_font_description_new();
 
 	String fontnamestr = new String(fontname);
@@ -80,12 +87,10 @@ void createFont(FontPlatformVars* font, string fontname, int fontsize, int weigh
 	Pango.pango_font_description_set_family(font.pangoFont, fontnamestr.ptr);
 	Pango.pango_font_description_set_size(font.pangoFont, fontsize * Pango.PANGO_SCALE);
 
-	if (italic)
-	{
+	if (italic) {
 		Pango.pango_font_description_set_style(font.pangoFont, Pango.PangoStyle.PANGO_STYLE_ITALIC);
 	}
-	else
-	{
+	else {
 		Pango.pango_font_description_set_style(font.pangoFont, Pango.PangoStyle.PANGO_STYLE_NORMAL);
 	}
 
@@ -93,8 +98,7 @@ void createFont(FontPlatformVars* font, string fontname, int fontsize, int weigh
 }
 
 //void createFont(ViewPlatformVars* viewVars, out Font font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
-{
+void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 	font.pangoFont = Pango.pango_font_description_new();
 
 	fontname = new String(fontname);
@@ -103,12 +107,10 @@ void createFont(FontPlatformVars* font, String fontname, int fontsize, int weigh
 	Pango.pango_font_description_set_family(font.pangoFont, fontname.ptr);
 	Pango.pango_font_description_set_size(font.pangoFont, fontsize * Pango.PANGO_SCALE);
 
-	if (italic)
-	{
+	if (italic) {
 		Pango.pango_font_description_set_style(font.pangoFont, Pango.PangoStyle.PANGO_STYLE_ITALIC);
 	}
-	else
-	{
+	else {
 		Pango.pango_font_description_set_style(font.pangoFont, Pango.PangoStyle.PANGO_STYLE_NORMAL);
 	}
 
@@ -165,7 +167,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length)
 {
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
+	Cairo.cairo_set_source_rgba(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue, viewVars.textclr_alpha);
 
 	Cairo.cairo_move_to(viewVars.cr, (x), (y));
 
@@ -363,15 +365,17 @@ void setTextColor(ViewPlatformVars* viewVars, ref Color textColor)
 	// Color is an INT
 	// divide
 
-	double r, g, b;
+	double r, g, b, a;
 
-	r = ColorGetR(textColor);
-	g = ColorGetG(textColor);
-	b = ColorGetB(textColor);
+	r = textColor.red;
+	g = textColor.green;
+	b = textColor.blue;
+	a = textColor.alpha;
 
 	viewVars.textclr_red = r / 255.0;
 	viewVars.textclr_green = g / 255.0;
 	viewVars.textclr_blue = b / 255.0;
+	viewVars.textclr_alpha = a / 255.0;
 }
 
 // Text States
@@ -388,35 +392,34 @@ void setTextModeOpaque(ViewPlatformVars* viewVars)
 
 // Brushes
 
-void createBrush(BrushPlatformVars* brush, ref Color clr)
-{
-	brush.val = ColorGetValue(clr);
+void createBrush(BrushPlatformVars* brush, ref Color clr) {
+	brush.r = cast(double)clr.red / 255.0;
+	brush.g = cast(double)clr.green / 255.0;
+	brush.b = cast(double)clr.blue / 255.0;
+	brush.a = cast(double)clr.alpha / 255.0;
 }
 
-void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush)
-{
-	viewVars.curbrush = brush.val;
-	X.XSetBackground(_pfvars.display, viewVars.gc, viewVars.curbrush);
+void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
+	viewVars.curBrush = *brush;
 }
-void destroyBrush(BrushPlatformVars* brush)
-{
+
+void destroyBrush(BrushPlatformVars* brush) {
 }
 
 // Pens
 
-void createPen(PenPlatformVars* pen, ref Color clr)
-{
-	pen.val = ColorGetValue(clr);
+void createPen(PenPlatformVars* pen, ref Color clr) {
+	pen.r = cast(double)clr.red / 255.0;
+	pen.g = cast(double)clr.green / 255.0;
+	pen.b = cast(double)clr.blue / 255.0;
+	pen.a = cast(double)clr.alpha / 255.0;
 }
 
-void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen)
-{
-	viewVars.curpen = pen.val;
-	X.XSetForeground(_pfvars.display, viewVars.gc, viewVars.curpen);
+void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
+	viewVars.curPen = *pen;
 }
 
-void destroyPen(PenPlatformVars* pen)
-{
+void destroyPen(PenPlatformVars* pen) {
 }
 
 // View Interfacing

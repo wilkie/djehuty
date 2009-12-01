@@ -9,7 +9,8 @@
 
 module scaffold.opengl;
 
-import opengl.gl;
+import binding.opengl.gl;
+
 import opengl.window;
 
 import platform.unix.common;

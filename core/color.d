@@ -205,6 +205,24 @@ public:
 		}
 	}
 	
+	ubyte alpha() {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			return _internal.components.a;
+		}
+		else {
+			return (cast(double)_internal.components.a / cast(double)0xFFFF) * 0xFF;
+		}
+	}
+
+	void alpha(ubyte val) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			_internal.components.a = val;
+		}
+		else {
+			_internal.components.a = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+		}
+	}
+
 	ColorValue value() {
 		return _internal.clr;
 	}
