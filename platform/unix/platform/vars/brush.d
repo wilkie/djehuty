@@ -11,5 +11,8 @@
 module platform.vars.brush;
 
 struct BrushPlatformVars {
-	uint val;
+	double r;
+	double g;
+	double b;
+	double a;
 }
