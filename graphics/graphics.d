@@ -55,13 +55,49 @@ class Graphics {
 		Scaffold.drawRect(_viewVars, x,y,x2,y2);
 	}
 
-	// Description: Draws a ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
+	// Description: Fills a rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	void fillRect(int x, int y, int x2, int y2) {
+		Scaffold.fillRect(_viewVars, x, y, x2, y2);
+	}
+	
+	// Description: Outlines a rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	void strokeRect(int x, int y, int x2, int y2) {
+		Scaffold.strokeRect(_viewVars, x, y, x2, y2);
+	}
+
+	// Description: Draws an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
 	// x: The first coordinate's x value.
 	// y: The first coordinate's y value.
 	// x2: The second coordinate's x value.
 	// y2: The second coordinate's y value.
 	void drawOval(int x, int y, int x2, int y2) {
 		Scaffold.drawOval(_viewVars, x,y,x2,y2);
+	}
+
+	// Description: Fills an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	void fillOval(int x, int y, int x2, int y2) {
+		Scaffold.fillOval(_viewVars, x,y,x2,y2);
+	}
+
+	// Description: Outlines an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	void strokeOval(int x, int y, int x2, int y2) {
+		Scaffold.strokeOval(_viewVars, x,y,x2,y2);
 	}
 
 	// Description: Draws the region given.
@@ -89,6 +125,39 @@ class Graphics {
 	void strokeRegion(int x, int y, Region rgn) {
 		rgn.platformDirty = false;
 		Scaffold.strokeRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
+	}
+
+	// Description: Draws a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	// startAngle: The angle to start the pie wedge.
+	// sweepAngle: The length of the arc to draw.
+	void drawPie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+		Scaffold.drawPie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
+	}
+
+	// Description: Outlines a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	// startAngle: The angle to start the pie wedge.
+	// sweepAngle: The length of the arc to draw.
+	void strokePie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+		Scaffold.strokePie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
+	}
+
+	// Description: Fills a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
+	// x: The first coordinate's x value.
+	// y: The first coordinate's y value.
+	// x2: The second coordinate's x value.
+	// y2: The second coordinate's y value.
+	// startAngle: The angle to start the pie wedge.
+	// sweepAngle: The length of the arc to draw.
+	void fillPie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+		Scaffold.fillPie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
 	}
 
 // Text

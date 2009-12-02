@@ -72,9 +72,21 @@ void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	//Ellipse(viewVars.dc, x, y, x2, y2);
 	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
 	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+}
+
+void drawPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Gdiplus.GdipFillPieI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1, startAngle, sweepAngle);
+	Gdiplus.GdipDrawPieI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1, startAngle, sweepAngle);
+}
+
+void fillPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Gdiplus.GdipFillPieI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1, startAngle, sweepAngle);
+}
+
+void strokePie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Gdiplus.GdipDrawPieI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1, startAngle, sweepAngle);
 }
 
 // Text

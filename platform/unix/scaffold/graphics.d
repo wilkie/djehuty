@@ -61,6 +61,21 @@ void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Cairo.cairo_stroke(viewVars.cr);
 }
 
+void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curBrush.r, viewVars.curBrush.g, viewVars.curBrush.b, viewVars.curBrush.a);
+	Cairo.cairo_rectangle(viewVars.cr, x+1, y, x2-x, y2-y+1);
+	Cairo.cairo_fill(viewVars.cr);
+}
+
+void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
+	Cairo.cairo_set_line_width(viewVars.cr, 1);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	Cairo.cairo_stroke(viewVars.cr);
+}
+
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	if (x2 > x) { x2--; } else if (x2 < x) { x2++; }
@@ -72,7 +87,22 @@ void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	X.XDrawArc(_pfvars.display, viewVars.pixmap, viewVars.gc, (x), (y), (x2)-(x), (y2)-(y), 0, 360*64);
 }
 
+void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
+}
 
+void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
+}
+
+
+
+void drawPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+}
+
+void fillPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+}
+
+void strokePie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+}
 
 
 // Fonts
