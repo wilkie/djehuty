@@ -262,6 +262,11 @@ class MyControl : Widget {
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
+		Brush foo = new Brush(Color.fromRGBA(255,0,0,0x80));
+		g.setBrush(foo);
+		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
+		g.setPen(foo2);
+		g.drawPie(0,0,100,100, 215, 260.7);
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
