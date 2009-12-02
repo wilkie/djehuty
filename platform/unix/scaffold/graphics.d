@@ -110,14 +110,81 @@ void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 }
 
 
-
+import io.console;
 void drawPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curBrush.r, viewVars.curBrush.g, viewVars.curBrush.b, viewVars.curBrush.a);
+	Cairo.cairo_save(viewVars.cr);
+	Cairo.cairo_new_path(viewVars.cr);
+	//Cairo.cairo_translate(viewVars.cr, x + cast(double)(x2-x) / 2.0, y + cast(double)(y2-y) / 2.0);
+//	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x) / 2.0, cast(double)(y2-y) / 2.0);
+	double cx, cy;
+	cx = cast(double)x + cast(double)(x2-x) / 2.0;
+	cy = cast(double)y + cast(double)(y2-y) / 2.0;
+	Cairo.cairo_translate(viewVars.cr, cx, cy);
+	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x)/2.0, cast(double)(y2-y)/2.0);
+	double sA, eA;
+	sA = (startAngle*3.141596)/180.0;
+	eA = (sweepAngle*3.141596)/180.0;
+	eA += sA;
+	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, sA, eA);
+	Cairo.cairo_restore(viewVars.cr);
+	Cairo.cairo_line_to(viewVars.cr, cx, cy);
+	Cairo.cairo_close_path(viewVars.cr);
+	Cairo.cairo_fill_preserve(viewVars.cr);
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
+	Cairo.cairo_set_line_width(viewVars.cr, 1);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	Cairo.cairo_stroke(viewVars.cr);
 }
 
 void fillPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curBrush.r, viewVars.curBrush.g, viewVars.curBrush.b, viewVars.curBrush.a);
+	Cairo.cairo_save(viewVars.cr);
+	Cairo.cairo_new_path(viewVars.cr);
+	//Cairo.cairo_translate(viewVars.cr, x + cast(double)(x2-x) / 2.0, y + cast(double)(y2-y) / 2.0);
+//	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x) / 2.0, cast(double)(y2-y) / 2.0);
+	double cx, cy;
+	cx = cast(double)x + cast(double)(x2-x) / 2.0;
+	cy = cast(double)y + cast(double)(y2-y) / 2.0;
+	Cairo.cairo_translate(viewVars.cr, cx, cy);
+	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x)/2.0, cast(double)(y2-y)/2.0);
+	double sA, eA;
+	sA = (startAngle*3.141596)/180.0;
+	eA = (sweepAngle*3.141596)/180.0;
+	eA += sA;
+	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, sA, eA);
+	Cairo.cairo_restore(viewVars.cr);
+	Cairo.cairo_line_to(viewVars.cr, cx, cy);
+	Cairo.cairo_close_path(viewVars.cr);
+	Cairo.cairo_fill(viewVars.cr);
 }
 
 void strokePie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
+	Cairo.cairo_set_source_rgba(viewVars.cr,
+		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
+	Cairo.cairo_save(viewVars.cr);
+	Cairo.cairo_new_path(viewVars.cr);
+	//Cairo.cairo_translate(viewVars.cr, x + cast(double)(x2-x) / 2.0, y + cast(double)(y2-y) / 2.0);
+//	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x) / 2.0, cast(double)(y2-y) / 2.0);
+	double cx, cy;
+	cx = cast(double)x + cast(double)(x2-x) / 2.0;
+	cy = cast(double)y + cast(double)(y2-y) / 2.0;
+	Cairo.cairo_translate(viewVars.cr, cx, cy);
+	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x)/2.0, cast(double)(y2-y)/2.0);
+	double sA, eA;
+	sA = (startAngle*3.141596)/180.0;
+	eA = (sweepAngle*3.141596)/180.0;
+	eA += sA;
+	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, sA, eA);
+	Cairo.cairo_restore(viewVars.cr);
+	Cairo.cairo_line_to(viewVars.cr, cx, cy);
+	Cairo.cairo_close_path(viewVars.cr);
+	Cairo.cairo_set_line_width(viewVars.cr, 1);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	Cairo.cairo_stroke(viewVars.cr);
 }
 
 
