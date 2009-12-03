@@ -11,6 +11,10 @@ module scaffold.window;
 
 import platform.vars.window;
 import platform.vars.view;
+import platform.vars.brush;
+import platform.vars.pen;
+
+import scaffold.graphics;
 
 import platform.unix.common;
 import platform.unix.main;
@@ -345,20 +349,48 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	//Set initial Pen and Brush
 	//window->_initial_color = 0xFF;
 
-	X.XSetForeground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
-	X.XSetBackground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
+//	X.XSetForeground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
+//	X.XSetBackground(_pfvars.display, viewVars.gc, ColorGetValue(window.color));
 
 	//Fill background
 
-	X.XFillRectangle(_pfvars.display, viewVars.pixmap,
-		viewVars.gc,
-		0,0,window.width, window.height);
+//	X.XFillRectangle(_pfvars.display, viewVars.pixmap,
+//		viewVars.gc,
+//		0,0,window.width, window.height);
+
+	BrushPlatformVars brush;
+	brush.r = cast(double)window.color.red / 255.0;
+	brush.g = cast(double)window.color.green / 255.0;
+	brush.b = cast(double)window.color.blue / 255.0;
+	brush.a = cast(double)window.color.alpha / 255.0;
+
+	PenPlatformVars pen;
+	pen.r = 1.0;
+	pen.g = 1.0;
+	pen.b = 1.0;
+	pen.a = 1.0;
+
+	viewVars.curBrush = brush;
+	fillRect(&viewVars, 0, 0, window.width, window.height);
+	brush.r = 0.0;
+	brush.g = 0.0;
+	brush.b = 0.0;
+	brush.a = 1.0;
+
+	viewVars.curBrush = brush;
+	viewVars.curPen = pen;
+
 
 	viewVars.textclr_red = 0.0;
 	viewVars.textclr_green = 0.0;
 	viewVars.textclr_blue = 0.0;
 
 	viewVars.isOpaqueRendering = 0;
+
+	Cairo.cairo_new_path(viewVars.cr);
+	Cairo.cairo_identity_matrix(viewVars.cr);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
+//	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
