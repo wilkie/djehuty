@@ -55,7 +55,7 @@ class Timer : Dispatcher {
 	// Returns: Will return true if the timer is currently in the running state, false otherwise.
 	bool isRunning() { return _started; }
 
-	// Description: This function is called on every timer fire. It's normal operation is to call the callback provided by the setDelegate() function.  One can override to provide a class based timer procedure.
+	// Description: This function is called on every timer fire. It's normal operation is to call the callback provided by the callback property.  One can override to provide a class based timer procedure.
 	// Returns: If true is returned, the timer is stopped. Otherwise the timer will fire again after the interval depletes. Note: the time it takes to run the function is not accounted for in the interval at this time.
 	bool fire() {
 		return raiseSignal(0);
@@ -79,14 +79,14 @@ protected:
 			}
 			_stop = true;
 		}
-		
+
 		override void stop() {
 			pleaseStop();
 			super.stop();
 		}
 
 		override void run() {
-			while (!_stop) {
+			while (!_stop && _inited) {
 				sleep(_timer._interval);
 
 				_inCall.down();

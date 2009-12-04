@@ -4,6 +4,7 @@ import gui.application;
 import gui.window;
 import gui.button;
 import gui.widget;
+import gui.listbox;
 
 import resource.menu;
 
@@ -299,6 +300,10 @@ class MyWindow : Window {
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
 		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
+		ListBox lb;
+		push(lb = new ListBox(0,0,100,100));
+		lb.add("Hello");
+		lb.add("Goodbye");
 		push(new MyControl());
 	}
 }

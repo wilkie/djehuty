@@ -103,18 +103,18 @@ public:
 		g.pen = pen;
 		g.brush = brsh;
 
-		g.drawRect(this.left, this.top, this.right,this.bottom);
+		g.drawRect(this.left, this.top, this.width,this.height);
 
 		brsh.setColor(m_clrbutton);
 
-		g.drawRect(this.left, this.top, this.right, this.top+this.width);
-		g.drawRect(this.left, this.bottom-this.width, this.right, this.bottom);
+		g.drawRect(this.left, this.top, this.width, this.width);
+		g.drawRect(this.left, this.bottom-this.width, this.width, this.width);
 
 		//THUMB
 
 		brsh.setColor(m_clrthumb);
 
-		g.drawRect(this.left, m_thumb_pos_y, this.right, m_thumb_pos_b);
+		g.drawRect(this.left, m_thumb_pos_y, this.width, m_thumb_size);
 
 		//Draw triangle images...
 
@@ -230,7 +230,7 @@ public:
 			if (m_whatishovered == 3) {
 				g.brush = (brsh_hlight);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 
 				pen.setColor(m_clrnormal);
 			}
@@ -240,7 +240,7 @@ public:
 				g.brush = (brsh);
 				g.pen = (pen);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 			}
 		}
 		else if (m_thumb_size > 25) {
@@ -272,7 +272,7 @@ public:
 			if (m_whatishovered == 3) {
 				g.brush = (brsh_hlight);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 
 				pen.setColor(m_clrnormal);
 			}
@@ -282,7 +282,7 @@ public:
 				g.brush = (brsh);
 				g.pen = (pen);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 			}
 		}
 		else if(m_thumb_size > 15) {
@@ -292,7 +292,7 @@ public:
 				g.brush = (brsh_hlight);
 				g.pen = (pen_hlight);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 
 				pen.setColor(m_clrnormal);
 			}
@@ -302,7 +302,7 @@ public:
 				g.brush = (brsh);
 				g.pen = (pen);
 
-				g.drawRect(xH, yB, xH+base, yB+base);
+				g.drawRect(xH, yB, base, base);
 			}
 		}
 
