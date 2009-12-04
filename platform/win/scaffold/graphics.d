@@ -47,11 +47,11 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
 }
 
-void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
 }
 
-void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
@@ -62,11 +62,11 @@ void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
-void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
 }
 
-void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
+void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
 }
 
@@ -206,7 +206,10 @@ void setTextModeOpaque(ViewPlatformVars* viewVars) {
 	SetBkMode(viewVars.dc, OPAQUE);
 }
 
+// Graphics States
 
+void setAntialias(ViewPlatformVars* viewVars, bool value) {
+}
 
 
 // Fonts
@@ -402,7 +405,7 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 		pts[i].x = pt.x + x;
 		pts[i].y = pt.y + y;
 	}
-	
+
 	// call the platform to create a region object from the points
 	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.numPoints, ALTERNATE);
 }
