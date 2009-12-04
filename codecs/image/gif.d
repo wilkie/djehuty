@@ -125,8 +125,6 @@ class GIFCodec : ImageCodec {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.alpha = true;
-
 		// will read headers and such
 
 		StreamData ret = StreamData.Accepted;
@@ -164,8 +162,6 @@ class GIFCodec : ImageCodec {
 		int ret;
 
 		ret = Decoder(stream, view, imageDesc);
-
-		view.alpha = true;
 
 		if (ret == 2) {
 			// another frame will occur
