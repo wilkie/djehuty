@@ -466,6 +466,17 @@ public:
 
 			WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
+			Brush brush = new Brush(this.color);
+			Pen pen = new Pen(Color.Black);
+
+			g.brush = brush;
+			g.pen = pen;
+
+			g.fillRect(0,0,this.width,this.height);
+
+			brush = new Brush(Color.White);
+			g.brush = brush;
+
 			Widget c = _firstControl;
 
 			if (c !is null) {
