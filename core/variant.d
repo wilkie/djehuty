@@ -51,7 +51,7 @@ enum Type {
 	Char,
 	Wchar,
 	Dchar,
-	
+
 	// Boolean
 	Bool,
 
@@ -119,12 +119,13 @@ struct Variant {
 				else {
 					TypeInfo_Struct tis = cast(TypeInfo_Struct)ti;
 					if (tis.xtoString !is null) {
-						version(Tango) {
-							return tis.xtoString();
-						}
-						else {
-							return tis.xtoString(data.blob.ptr);
-						}
+						string function(void*) XToStringFunc = cast(string function(void*))tis.xtoString;
+//						version(Tango) {
+//							return tis.xtoString();
+//						}
+//						else {
+							return XToStringFunc(data.blob.ptr);
+//						}
 					}
 				}
 				break;
@@ -201,7 +202,7 @@ union VariantData {
 
 	Object reference;
 	ubyte[] blob;
-	
+
 	bool truth;
 
 	Variant[] array;
