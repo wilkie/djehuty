@@ -29,9 +29,8 @@ public:
 
 		// when tied to a locked view, update the brush being used
 		if (_view !is null) {
-			if (_view._locked)
-			{
-				_view._graphics.setPen(_view._pen);
+			if (_view._locked) {
+				_view._graphics.pen = _view._pen;
 			}
 		}
 	}

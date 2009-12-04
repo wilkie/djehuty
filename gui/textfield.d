@@ -49,7 +49,7 @@ public:
 		Graphics grp = _view.lockDisplay();
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
-		grp.setFont(_font);
+		grp.font = (_font);
 
 		if (_value.length > 0)
 		{
@@ -84,7 +84,7 @@ public:
 
 		if (mouseProps.leftDown) {
 			Graphics grp = _view.lockDisplay();
-			//grp.setFont(_font);
+			//grp.font = (_font);
 
 			uint sel_start = 0;
 
@@ -149,7 +149,7 @@ public:
 		if (x1 < 0) { _caret_pos = 0; return true; }
 
 		Graphics grp = _view.lockDisplay();
-		//grp.setFont(_font);
+		//grp.font = (_font);
 
 		int x_test;
 
@@ -255,7 +255,7 @@ public:
 						//load the font, and get the size of the text when drawn
 
 						Graphics grp = _view.lockDisplay();
-						//grp.setFont(_font);
+						//grp.font = (_font);
 
 						if (_value.length > 0) {
 							grp.measureText(_value, _value_size);
@@ -300,7 +300,7 @@ public:
 						//load the font, and get the size of the text when drawn
 
 						Graphics grp = _view.lockDisplay();
-						//grp.setFont(_font);
+						//grp.font = (_font);
 
 						if (_value.length > 0)
 						{
@@ -362,7 +362,7 @@ public:
 		//load the font, and get the size of the text when drawn
 
 		Graphics grp = _view.lockDisplay();
-		//grp.setFont(_font);
+		//grp.font = (_font);
 
 		if (_value.length > 0) {
 			grp.measureText(_value, _value_size);
@@ -387,14 +387,14 @@ public:
 
 		Pen pen = new Pen(_clr_outline);
 
-		g.setBrush(brush);
-		g.setPen(pen);
+		g.brush = (brush);
+		g.pen = (pen);
 
 		g.drawRect(this.left, this.top, this.right, this.bottom);
 
 		//Draw 3D Effect
 		pen.setColor(_clr_highlight);
-		g.setPen(pen);
+		g.pen = (pen);
 
 		g.drawLine(this.left + 1, this.top + 1, this.right - 1, this.top + 1);
 		g.drawLine(this.left + 1, this.top + 1, this.left + 1, this.bottom - 1);
@@ -415,9 +415,9 @@ public:
 		bounds.top = this.top + 1;
 		bounds.bottom = this.bottom - 1;
 
-		//g.setFont(_font);
+		//g.font = (_font);
 
-		g.setTextColor(Color.Black);
+		g.forecolor = (Color.Black);
 
 		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char)) {
 			//no selection visible
@@ -473,7 +473,7 @@ public:
 
 			x += s.x;
 
-			g.setTextColor(Color.White);
+			g.forecolor = (Color.White);
 
 			//draw background rect within the control's bounds
 			g.measureText(_value[from_pos..to_pos],s);
@@ -497,7 +497,7 @@ public:
 			//the selection
 			g.drawText(x,y,_value[from_pos..to_pos]);
 
-			g.setTextColor(Color.Black);
+			g.forecolor = (Color.Black);
 
 			//the right side of the selection
 			g.drawText(x2, y, _value[to_pos.._value.length]);
@@ -652,7 +652,7 @@ private:
 
 			//load the font, and get the size of the text when drawn
 			Graphics grp = _view.lockDisplay();
-			//grp.setFont(_font);
+			//grp.font = (_font);
 
 			if (_value.length) {
 				grp.measureText(_value, _value_size);

@@ -372,7 +372,7 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	pen.a = 1.0;
 	viewVars.curPen = pen;
 
-	fillRect(&viewVars, 0, 0, window.width, window.height);
+	fillRect(&viewVars, 0, 0, window.width+1, window.height+1);
 
 	brush.r = 1.0;
 	brush.g = 1.0;
@@ -389,8 +389,12 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 
 	Cairo.cairo_new_path(viewVars.cr);
 	Cairo.cairo_identity_matrix(viewVars.cr);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
-//	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	if (viewVars.aa) {
+		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
+	}
+	else {
+		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	}
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {

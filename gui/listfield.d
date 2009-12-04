@@ -77,7 +77,7 @@ class ListField : Widget, ListInterface!(String) {
 
 		Graphics grp = _view.lockDisplay();
 		_font = new Font(FontSans, 8, 400, false, false, false);
-		grp.setFont(_font);
+		grp.font = _font;
 		grp.measureText(" ", 1, m_entryHeight);
 		_view.unlockDisplay();
 
@@ -118,8 +118,8 @@ class ListField : Widget, ListInterface!(String) {
 		Brush brsh = new Brush(m_clrbackground);
 		Pen pen = new Pen(m_clroutline);
 
-		g.setPen(pen);
-		g.setBrush(brsh);
+		g.pen = pen;
+		g.brush = brsh;
 
 		g.drawRect(this.left, this.top, this.right, this.bottom);
 
@@ -146,71 +146,71 @@ class ListField : Widget, ListInterface!(String) {
 	void add(String[] list) {
 		control_listbox.add(list);
 	}
-	
+
 	String remove() {
 		return control_listbox.remove();
 	}
-	
+
 	String removeAt(size_t idx){
 		return control_listbox.removeAt(idx);
 	}
-	
+
 	String peek() {
 		return control_listbox.peek();
 	}
-	
+
 	String peekAt(size_t idx) {
 		return control_listbox.peekAt(idx);
 	}
-	
+
 	void set(String c) {
 		control_listbox.set(c);
 	}
-	
+
 	void apply(String delegate(String) func) {
 		control_listbox.apply(func);
 	}
-	
+
 	bool contains(String c) {
 		return control_listbox.contains(c);
 	}
-	
+
 	bool empty() {
 		return control_listbox.empty();
 	}
-	
+
 	void clear() {
 		control_listbox.clear();
 	}
-	
+
 	String[] array() {
 		return control_listbox.array();
 	}
-	
+
 	List!(String) dup() {
 		return control_listbox.dup();
 	}
-	
+
 	List!(String) slice(size_t start, size_t end) {
 		return control_listbox.slice(start, end);
 	}
-	
+
 	List!(String) reverse() {
 		return control_listbox.reverse();
 	}
-	
+
 	size_t length() {
 		return control_listbox.length();
 	}
-	
+
 	String opIndex(size_t i1) {
 		return control_listbox.opIndex(i1);
 	}
-	
+
 	int opApply(int delegate(ref String) loopFunc) {
 		return control_listbox.opApply(loopFunc);
 	}
-	
+
 	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return control_listbox.opApply(loopFunc);
 	}

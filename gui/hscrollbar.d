@@ -96,8 +96,8 @@ public:
 		Brush brsh = new Brush(m_clrarea);
 		Pen pen = new Pen(m_clroutline);
 
-		g.setPen(pen);
-		g.setBrush(brsh);
+		g.pen = (pen);
+		g.brush = (brsh);
 
 		g.drawRect(this.left, this.top, this.right,this.bottom);
 
@@ -110,7 +110,7 @@ public:
 
 		brsh.setColor(m_clrthumb);
 
-		g.setBrush(brsh);
+		g.brush = (brsh);
 
 		g.drawRect(m_thumb_pos_x, this.top, m_thumb_pos_r, this.bottom);
 
@@ -125,12 +125,12 @@ public:
 		Brush brsh_hlight = new Brush(m_clrhighlight);
 
 		if (m_whatishovered == 1) {
-			g.setBrush(brsh_hlight);
-			g.setPen(pen_hlight);
+			g.brush = (brsh_hlight);
+			g.pen = (pen_hlight);
 		}
 		else {
-			g.setBrush(brsh);
-			g.setPen(pen);
+			g.brush = (brsh);
+			g.pen = (pen);
 		}
 
 		int base, height;
@@ -169,14 +169,14 @@ public:
 		Coord pnt2[3] = [ Coord(yB,xH+(base/2)), Coord(yB-height,xH), Coord(yB-height,xH+base) ];
 
 		if (m_whatishovered == 2) {
-			g.setBrush(brsh_hlight);
-			g.setPen(pen_hlight);
+			g.brush = (brsh_hlight);
+			g.pen = (pen_hlight);
 		}
 		else
 		{
 			if (m_whatishovered == 1) {
-				g.setBrush(brsh);
-				g.setPen(pen);
+				g.brush = (brsh);
+				g.pen = (pen);
 			}
 		}
 
@@ -195,7 +195,7 @@ public:
 
 		//THUMB BAR LINE DESIGN
 
-		g.setPen(pen);
+		g.pen = (pen);
 
 		int new_y = this.top + 2;
 		int new_b = this.bottom - 2;
@@ -206,21 +206,21 @@ public:
 			}
 
 			//highlight pen
-			g.setPen(pen_hlight);
+			g.pen = (pen_hlight);
 
 			for (height = 11; height < 41; height+=4) {
 				g.drawLine(height+m_thumb_pos_x, new_y, height+m_thumb_pos_x, new_b);
 			}
 
 			//outline pen
-			g.setPen(pen);
+			g.pen = (pen);
 
 			for (height = m_thumb_size - 39; height < m_thumb_size - 9; height+=4) {
 				g.drawLine(height+m_thumb_pos_x, new_y, height+m_thumb_pos_x, new_b);
 			}
 
 			//highlight pen
-			g.setPen(pen_hlight);
+			g.pen = (pen_hlight);
 
 			for (height = m_thumb_size - 38; height < m_thumb_size - 8; height+=4) {
 				g.drawLine(height+m_thumb_pos_x, new_y, height+m_thumb_pos_x, new_b);
@@ -231,7 +231,7 @@ public:
 			yB = this.left + m_thumb_pos_x + ((m_thumb_size - base) / 2);
 
 			if (m_whatishovered == 3) {
-				g.setBrush(brsh_hlight);
+				g.brush = (brsh_hlight);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 
@@ -240,8 +240,8 @@ public:
 			else {
 				pen.setColor(m_clrnormal);
 
-				g.setBrush(brsh);
-				g.setPen(pen);
+				g.brush = (brsh);
+				g.pen = (pen);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 			}
@@ -263,7 +263,7 @@ public:
 			}
 
 			//highlight pen
-			g.setPen(pen_hlight);
+			g.pen = (pen_hlight);
 
 			for (total_value_space=0, height = yB + base+3; height < m_thumb_pos_x + m_thumb_size - 8; height+=4, total_value_space++) {
 				g.drawLine(height, new_y, height, new_b);
@@ -273,7 +273,7 @@ public:
 			}
 
 			if (m_whatishovered == 3) {
-				g.setBrush(brsh_hlight);
+				g.brush = (brsh_hlight);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 
@@ -283,8 +283,8 @@ public:
 
 				pen.setColor(m_clrnormal);
 
-				g.setBrush(brsh);
-				g.setPen(pen);
+				g.brush = (brsh);
+				g.pen = (pen);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 			}
@@ -293,8 +293,8 @@ public:
 			yB = this.left + m_thumb_pos_x + ((m_thumb_size - base) / 2);
 
 			if (m_whatishovered == 3) {
-				g.setBrush(brsh_hlight);
-				g.setPen(pen_hlight);
+				g.brush = (brsh_hlight);
+				g.pen = (pen_hlight);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 
@@ -303,27 +303,27 @@ public:
 			else {
 				pen.setColor(m_clrnormal);
 
-				g.setBrush(brsh);
-				g.setPen(pen);
+				g.brush = (brsh);
+				g.pen = (pen);
 
 				g.drawRect(yB, xH, yB+base, xH+base);
 			}
 		}
 
-		g.setBrush(brsh);
-		g.setPen(pen_hlight);
+		g.brush = (brsh);
+		g.pen = (pen_hlight);
 
 		new_y--;
 		new_b++;
 
 		//UP BUTTON
 		if (m_isclicked == 1) {
-			g.setPen(pen);
+			g.pen = (pen);
 
 			g.drawLine(this.left+1, new_y, this.left+1, new_b);
 			g.drawLine(this.left+1, new_y, this.left+this.height-1, new_y);
 
-			g.setPen(pen_hlight);
+			g.pen = (pen_hlight);
 		}
 		else {
 			g.drawLine(this.left+1, new_y, this.left+1, new_b);
@@ -332,12 +332,12 @@ public:
 
 		//DOWN BUTTON
 		if (m_isclicked == 2) {
-			g.setPen(pen);
+			g.pen = (pen);
 
 			g.drawLine(this.right-this.height+1, new_y, this.right-this.height+1, new_b);
 			g.drawLine(this.right-this.height+1, new_y, this.right-1, new_y);
 
-			g.setPen(pen_hlight);
+			g.pen = (pen_hlight);
 		}
 		else {
 			g.drawLine(this.right-this.height+1, new_y, this.right-this.height+1, new_b);
@@ -346,7 +346,7 @@ public:
 
 		//THUMB BAR
 		if (m_isclicked == 3) {
-			g.setPen(pen);
+			g.pen = (pen);
 
 			g.drawLine(m_thumb_pos_x+1, new_y, m_thumb_pos_x+1, new_b);
 			g.drawLine(m_thumb_pos_x+1, new_y, m_thumb_pos_r-1, new_y);
