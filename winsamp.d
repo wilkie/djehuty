@@ -177,19 +177,19 @@ class MyTWindow : TuiWindow {
 
 		push(tabbox = new TuiTabBox(0,0,this.width, this.height-1));
 		TuiContainer blah = new TuiContainer(0,0,0,0);
-		blah.text = "Poop";		
+		blah.text = "Poop";
 		blah.push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
 		TuiContainer bloh = new TuiContainer(0,0,0,0);
 		bloh.text = "Pee";
-		
+
 		TuiTextBox tuibox2 = new TuiTextBox(0,0,this.width,this.height-2);
 		tuibox2.lineNumbers = true;
 		bloh.push(tuibox2);
-		
+
 		tabbox.add(bloh);
 		tabbox.add(blah);
 
-		
+
 
 //		push(new TuiCodeBox(0,0,this.width, this.height-1));
 
@@ -199,7 +199,7 @@ class MyTWindow : TuiWindow {
 		//filebox.selectedBackcolor = bgColor.Green;
 		//filebox.selectedForecolor = fgColor.White;
 		//push(tuibox = new TuiTextBox(0,0,this.width,this.height-2));
-	
+
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open", [new Menu("From File"), new Menu("From URL")]), new Menu(""), new Menu("E&xit")]), new Menu("&Edit", [new Menu("F&oo"), new Menu("F&oo")]), new Menu("&Options")]);
 
 
@@ -263,11 +263,20 @@ class MyControl : Widget {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
 		Brush foo = new Brush(Color.fromRGBA(255,0,0,0x80));
-		g.setBrush(foo);
+		g.brush = foo;
 		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
-		g.setPen(foo2);
-		//g.drawOval(0, 0, 100, 100);
-		g.drawPie(0,0,100,100, 215, 260.7);
+		g.pen = foo2;
+		g.brush = new Brush(Color.fromRGBA(0x80,0x80,0x80,0x80));
+		g.fillRect(86, 86, 140, 140);
+		g.brush = Brush.White;
+		g.drawRect(80, 80, 140, 140);
+		g.antialias = true;
+		g.brush = new Brush(Color.fromRGBA(0xc8,0xc8,0xc8,0xff));
+		//g.drawOval(100, 100, 100, 100);
+		g.drawPie(100,100,100,100, (215+260)%360, 360-260);
+		g.brush = Brush.Blue;
+		g.drawPie(100,100,100,100, 215, 260);
+		g.antialias = false;
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
@@ -474,7 +483,7 @@ class MyConsoleApp : Application {
 					structStr = new String("{");
 				}
 			}
-			
+
 			// handle typedef enum
 			if (line.length > 11 && line[0..12] == "typedef enum" && line.find(";") == -1) {
 				Console.putln("enum:", lineNumber);
@@ -494,7 +503,7 @@ class MyConsoleApp : Application {
 					structStr = new String("{");
 				}
 			}
-			
+
 			// handle typedef union
 			if (line.length > 12 && line[0..13] == "typedef union" && line.find(";") == -1) {
 				Console.putln("enum:", lineNumber);
@@ -668,7 +677,7 @@ class MyConsoleApp : Application {
 					line = new String("\t") ~ line;
 				}
 
-				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI" 
+				if (line != "WINUSERAPI" && line != "WINAPI" && line != "WINBASEAPI"
 					&& line != "WINMMAPI" && line != "WINSOCK_API_LINKAGE" && line != "WSAAPI") {
 					finished.write(line.toUtf8);
 					finished.write("\n"c);

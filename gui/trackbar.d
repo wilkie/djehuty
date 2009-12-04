@@ -32,9 +32,9 @@ class TrackBar : Widget {
 	override void onDraw(ref Graphics g) {
 		Brush brsh = new Brush(Color.Red);
 
-		g.setBrush(brsh);
+		g.brush = brsh;
 
-		g.drawRect(this.left, this.top, this.right, this.bottom);
+		g.drawRect(this.left, this.top, this.width, this.height);
 
 		int barWidth;
 
@@ -43,9 +43,9 @@ class TrackBar : Widget {
 		//writefln("barwidth: ", barWidth, " width: ", this.width, " value: ", _value, " max: ", _max);
 
 		brsh.setColor(Color.Green);
-		g.setBrush(brsh);
+		g.brush = brsh;
 
-		g.drawRect(this.left, this.top, barWidth + this.left, this.bottom);
+		g.drawRect(this.left, this.top, barWidth, this.height);
 
 	}
 

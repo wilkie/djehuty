@@ -46,58 +46,58 @@ class Graphics {
 		Scaffold.drawLine(_viewVars, x,y,x2,y2);
 	}
 
-	// Description: Draws a rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void drawRect(int x, int y, int x2, int y2) {
-		Scaffold.drawRect(_viewVars, x,y,x2,y2);
+	// Description: Draws a rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to draw.
+	// height: The height of the rectangle to draw.
+	void drawRect(int x, int y, int width, int height) {
+		Scaffold.drawRect(_viewVars, x,y,width,height);
 	}
 
-	// Description: Fills a rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void fillRect(int x, int y, int x2, int y2) {
-		Scaffold.fillRect(_viewVars, x, y, x2, y2);
-	}
-	
-	// Description: Outlines a rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void strokeRect(int x, int y, int x2, int y2) {
-		Scaffold.strokeRect(_viewVars, x, y, x2, y2);
+	// Description: Fills a rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to draw.
+	// height: The height of the rectangle to draw.
+	void fillRect(int x, int y, int width, int height) {
+		Scaffold.fillRect(_viewVars, x, y, width, height);
 	}
 
-	// Description: Draws an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void drawOval(int x, int y, int x2, int y2) {
-		Scaffold.drawOval(_viewVars, x,y,x2,y2);
+	// Description: Outlines a rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to draw.
+	// height: The height of the rectangle to draw.
+	void strokeRect(int x, int y, int width, int height) {
+		Scaffold.strokeRect(_viewVars, x, y, width, height);
 	}
 
-	// Description: Fills an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void fillOval(int x, int y, int x2, int y2) {
-		Scaffold.fillOval(_viewVars, x,y,x2,y2);
+	// Description: Draws an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
+	void drawOval(int x, int y, int width, int height) {
+		Scaffold.drawOval(_viewVars, x,y,width,height);
 	}
 
-	// Description: Outlines an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void strokeOval(int x, int y, int x2, int y2) {
-		Scaffold.strokeOval(_viewVars, x,y,x2,y2);
+	// Description: Fills an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
+	void fillOval(int x, int y, int width, int height) {
+		Scaffold.fillOval(_viewVars, x,y,width,height);
+	}
+
+	// Description: Outlines an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
+	void strokeOval(int x, int y, int width, int height) {
+		Scaffold.strokeOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Draws the region given.
@@ -128,36 +128,36 @@ class Graphics {
 	}
 
 	// Description: Draws a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
 	// startAngle: The angle to start the pie wedge.
 	// sweepAngle: The length of the arc to draw.
-	void drawPie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
-		Scaffold.drawPie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
+	void drawPie(int x, int y, int width, int height, double startAngle, double sweepAngle) {
+		Scaffold.drawPie(_viewVars, x, y, width, height, startAngle, sweepAngle);
 	}
 
 	// Description: Outlines a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
 	// startAngle: The angle to start the pie wedge.
 	// sweepAngle: The length of the arc to draw.
-	void strokePie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
-		Scaffold.strokePie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
+	void strokePie(int x, int y, int width, int height, double startAngle, double sweepAngle) {
+		Scaffold.strokePie(_viewVars, x, y, width, height, startAngle, sweepAngle);
 	}
 
 	// Description: Fills a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangle to use to inscribe.
+	// height: The height of the rectangle to use to inscribe.
 	// startAngle: The angle to start the pie wedge.
 	// sweepAngle: The length of the arc to draw.
-	void fillPie(int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
-		Scaffold.fillPie(_viewVars, x, y, x2, y2, startAngle, sweepAngle);
+	void fillPie(int x, int y, int width, int height, double startAngle, double sweepAngle) {
+		Scaffold.fillPie(_viewVars, x, y, width, height, startAngle, sweepAngle);
 	}
 
 // Text
@@ -271,13 +271,13 @@ class Graphics {
 
 	// Description: Will set the text background color, sometimes refered to as the highlight color.
 	// textColor: The Color structure to be used as the background color.
-	void setTextBackgroundColor(ref Color textColor) {
+	void backcolor(ref Color textColor) {
 		//Scaffold.setTextBackgroundColor(_viewVars, textColor);
 	}
 
 	// Description: Will set the text foreground color.
 	// textColor: The Color structure to be used as the background color.
-	void setTextColor(ref Color textColor) {		
+	void forecolor(ref Color textColor) {
 		Scaffold.setTextColor(_viewVars, textColor);
 	}
 
@@ -293,9 +293,20 @@ class Graphics {
 		Scaffold.setTextModeOpaque(_viewVars);
 	}
 
+// Graphics States
+
+	bool antialias() {
+		return _antialias;
+	}
+
+	void antialias(bool value) {
+		Scaffold.setAntialias(_viewVars, value);
+		_antialias = value;
+	}
+
 // Fonts
 
-	void setFont(ref Font font) {
+	void font(ref Font font) {
 		Scaffold.setFont(_viewVars, &font._pfvars);
 	}
 
@@ -303,7 +314,7 @@ class Graphics {
 
 	// Description: Will set the fill type to that specified by the Brush object.
 	// brush: The Brush to use.
-	void setBrush(ref Brush brush) {
+	void brush(Brush brush) {
 		Scaffold.setBrush(_viewVars, &brush._pfvars);
 
 		if (_view._brush !is null)
@@ -321,7 +332,7 @@ class Graphics {
 
 	// Description: Will set the stroke type to that specified by the Pen object.
 	// pen: The Pen to use.
-	void setPen(ref Pen pen) {
+	void pen(Pen pen) {
 		Scaffold.setPen(_viewVars, &pen._pfvars);
 
 		// set the pen in the view
@@ -543,13 +554,13 @@ class Graphics {
 		Scaffold.clipRestore(_viewVars);
 	}
 
-	// Description: Unions the current clip region with a rectangle region defined by the top-left point: (x,y) and the bottom-right point: (x2,y2).
-	// x: The first coordinate's x value.
-	// y: The first coordinate's y value.
-	// x2: The second coordinate's x value.
-	// y2: The second coordinate's y value.
-	void clipRect(int x, int y, int x2, int y2) {
-		Scaffold.clipRect(_viewVars, x,y,x2,y2);
+	// Description: Unions the current clip region with a rectangle region defined by the top-left point: (x,y) and some size.
+	// x: The top-left coordinate's x value.
+	// y: The top-left coordinate's y value.
+	// width: The width of the rectangular region to clip.
+	// height: The height of the rectangular region to clip.
+	void clipRect(int x, int y, int width, int height) {
+		Scaffold.clipRect(_viewVars, x,y,width,height);
 	}
 
 	// Description: Unions the current clip region with the region given.
@@ -559,6 +570,8 @@ class Graphics {
 	}
 
 protected:
+
+	bool _antialias = false;
 
 	// a backward reference to the view object
 	package View _view;

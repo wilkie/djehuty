@@ -363,34 +363,38 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	brush.g = cast(double)window.color.green / 255.0;
 	brush.b = cast(double)window.color.blue / 255.0;
 	brush.a = cast(double)window.color.alpha / 255.0;
+	viewVars.curBrush = brush;
 
 	PenPlatformVars pen;
-	pen.r = 1.0;
-	pen.g = 1.0;
-	pen.b = 1.0;
+	pen.r = 0.0;
+	pen.g = 0.0;
+	pen.b = 0.0;
 	pen.a = 1.0;
-
-	viewVars.curBrush = brush;
-	fillRect(&viewVars, 0, 0, window.width, window.height);
-	brush.r = 0.0;
-	brush.g = 0.0;
-	brush.b = 0.0;
-	brush.a = 1.0;
-
-	viewVars.curBrush = brush;
 	viewVars.curPen = pen;
 
+	fillRect(&viewVars, 0, 0, window.width+1, window.height+1);
+
+	brush.r = 1.0;
+	brush.g = 1.0;
+	brush.b = 1.0;
+	brush.a = 1.0;
+	viewVars.curBrush = brush;
 
 	viewVars.textclr_red = 0.0;
 	viewVars.textclr_green = 0.0;
 	viewVars.textclr_blue = 0.0;
+	viewVars.textclr_alpha = 1.0;
 
 	viewVars.isOpaqueRendering = 0;
 
 	Cairo.cairo_new_path(viewVars.cr);
 	Cairo.cairo_identity_matrix(viewVars.cr);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
-//	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	if (viewVars.aa) {
+		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
+	}
+	else {
+		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+	}
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {

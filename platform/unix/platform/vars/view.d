@@ -18,6 +18,9 @@ import Pango = binding.pango.pango;
 import X = binding.x.Xlib;
 
 struct ViewPlatformVars {
+	// antialias
+	bool aa;
+
 	X.Window cur_window;
 
 	X.Pixmap pixmap;
