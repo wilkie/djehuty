@@ -399,7 +399,7 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 	}
 
 	// compute a platform graphics api version of the region
-	POINT[] pts = new POINT[](rgn.numPoints);
+	POINT[] pts = new POINT[](rgn.length);
 
 	foreach(i, pt; rgn) {
 		pts[i].x = pt.x + x;
@@ -407,7 +407,7 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 	}
 
 	// call the platform to create a region object from the points
-	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.numPoints, ALTERNATE);
+	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.length, ALTERNATE);
 }
 
 void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {

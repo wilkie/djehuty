@@ -21,11 +21,11 @@ class Region {
 	}
 
 	this(Region rgn) {
-		this.points = rgn.points.dup;
+		_points = rgn.points;
 	}
 
 	this(Coord[] points) {
-		this.points = points.dup;
+		_points = points.dup;
 	}
 
 	// Description: This function will test to see whether or not a point exists within this region.
@@ -45,21 +45,21 @@ class Region {
 
 	// Description: This function will return a copy of the array of points in the region.
 	// Returns: A duplicate of the array of points.
-	Coord[] getPoints() {
-		if (points is null) { return null; }
-		return points.dup;
+	Coord[] points() {
+		if (_points is null) { return null; }
+		return _points.dup;
 	}
 
-	uint numPoints() {
-		if (points is null) { return 0; }
-		return points.length;
+	uint length() {
+		if (_points is null) { return 0; }
+		return _points.length;
 	}
 
 	int opApply(int delegate(inout Coord) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < points.length; i++) {
-			ret = loopFunc(points[i]);
+		for(int i = 0; i < _points.length; i++) {
+			ret = loopFunc(_points[i]);
 			if (ret) { break; }
 		}
 
@@ -69,8 +69,8 @@ class Region {
 	int opApply(int delegate(inout int, inout Coord) loopFunc) {
 		int ret;
 
-		for(int i = 0; i < points.length; i++) {
-			ret = loopFunc(i, points[i]);
+		for(int i = 0; i < _points.length; i++) {
+			ret = loopFunc(i, _points[i]);
 			if (ret) { break; }
 		}
 
@@ -91,5 +91,5 @@ protected:
 	package RegionPlatformVars _pfvars;
 
 	// The collection of points
-	Coord[] points;
+	Coord[] _points;
 }
