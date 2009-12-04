@@ -320,7 +320,6 @@ class JPEGCodec : ImageCodec
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
-		view.alpha = false;
 		hasMultipleFrames = false;
 
 		ushort header;

@@ -33,8 +33,6 @@ class BMPCodec : ImageCodec
 			case BMP_STATE_INIT:
 				//initial stuff
 
-				view.alpha = false;
-
 				hasMultipleFrames = 0;
 
 				decoderState = BMP_STATE_READ_HEADERS;
@@ -1713,7 +1711,7 @@ class BMPCodec : ImageCodec
 			}
 			break;
 		}
-		
+
 		return StreamData.Invalid;
 	}
 

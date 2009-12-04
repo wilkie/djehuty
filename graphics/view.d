@@ -19,7 +19,6 @@ import scaffold.view;
 
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
 class View {
-public:
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
 		_mutex = new Semaphore;
@@ -127,18 +126,6 @@ public:
 		}
 		_pen = null;
 		_mutex.up();
-	}
-
-	// Description: Will allow an alpha channel to display on a canvas.
-	// isAlpha: Whether or not the canvas should be considered to have an alpha channel.
-	void alpha(bool isAlpha) {
-		_hasAlpha = isAlpha;
-	}
-
-	// Description: Will return the status of the view and whether it has a working alpha channel.
-	// Returns: The flag that is marked in order to use an alpha channel.
-	bool alpha() {
-		return _hasAlpha;
 	}
 
 	uint rgbaTouint(uint r, uint g, uint b, uint a) {
