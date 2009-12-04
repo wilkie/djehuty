@@ -386,6 +386,11 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	viewVars.textclr_alpha = 1.0;
 
 	viewVars.isOpaqueRendering = 0;
+
+	Cairo.cairo_new_path(viewVars.cr);
+	Cairo.cairo_identity_matrix(viewVars.cr);
+	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
+//	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {

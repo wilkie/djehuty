@@ -78,7 +78,8 @@ class Button : Widget {
 
 		g.setTextModeTransparent();
 
-		g.setTextColor(Color.fromRGBA(0x00,0x00,0x00,0xc8));
+		Color textColor = Color.fromRGBA(0x00,0x00,0x00,0xc8);
+		g.setTextColor(textColor);
 
 		g.drawText(x, y, _value);
 	}
@@ -131,7 +132,7 @@ protected:
 	String _value;
 
 private:
-	
+
 	Color _clrNormal;
 	Color _clrHover;
 

@@ -49,7 +49,6 @@ void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Cairo.cairo_set_source_rgba(viewVars.cr,
 		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
 }
 
@@ -65,15 +64,11 @@ void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
 	Cairo.cairo_rectangle(viewVars.cr, x, y, x2-x-1, y2-y-1);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	if (x2 > x) { x2--; } else if (x2 < x) { x2++; }
-	if (y2 > y) { y2--; } else if (y2 < y) { y2++; }
-
 	Cairo.cairo_set_source_rgba(viewVars.cr,
 		viewVars.curBrush.r, viewVars.curBrush.g, viewVars.curBrush.b, viewVars.curBrush.a);
 	Cairo.cairo_save(viewVars.cr);
@@ -88,7 +83,6 @@ void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Cairo.cairo_set_source_rgba(viewVars.cr,
 		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
 	Cairo.cairo_restore(viewVars.cr);
 }
@@ -104,6 +98,7 @@ void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Cairo.cairo_translate(viewVars.cr, cx, cy);
 	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x)/2.0, cast(double)(y2-y)/2.0);
 	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, 0, 2*3.14159265);
+	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
 	Cairo.cairo_restore(viewVars.cr);
 }
@@ -119,10 +114,10 @@ void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Cairo.cairo_translate(viewVars.cr, cx, cy);
 	Cairo.cairo_scale(viewVars.cr, cast(double)(x2-x)/2.0, cast(double)(y2-y)/2.0);
 	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, 0, 2*3.14159265);
-	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
+//	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
+	Cairo.cairo_restore(viewVars.cr);
 }
 
 void drawPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
@@ -149,7 +144,6 @@ void drawPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double st
 	Cairo.cairo_set_source_rgba(viewVars.cr,
 		viewVars.curPen.r, viewVars.curPen.g, viewVars.curPen.b, viewVars.curPen.a);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
-	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
 }
 
@@ -170,10 +164,10 @@ void fillPie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double st
 	eA = (sweepAngle*3.14159265)/180.0;
 	eA += sA;
 	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, sA, eA);
-	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_line_to(viewVars.cr, cx, cy);
 	Cairo.cairo_close_path(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
+	Cairo.cairo_restore(viewVars.cr);
 }
 
 void strokePie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double startAngle, double sweepAngle) {
@@ -193,12 +187,12 @@ void strokePie(ViewPlatformVars* viewVars, int x, int y, int x2, int y2, double 
 	eA = (sweepAngle*3.14159265)/180.0;
 	eA += sA;
 	Cairo.cairo_arc(viewVars.cr, 0, 0, 1.0, sA, eA);
-	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_line_to(viewVars.cr, cx, cy);
 	Cairo.cairo_close_path(viewVars.cr);
 	Cairo.cairo_set_line_width(viewVars.cr, 1);
 	Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	Cairo.cairo_stroke(viewVars.cr);
+	Cairo.cairo_restore(viewVars.cr);
 }
 
 
@@ -559,6 +553,7 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY)
 {
+	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
 	x1 = x;
@@ -566,11 +561,13 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	x2 = view.width() - viewX;
 	y2 = view.height() - viewY;
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
+	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight)
 {
+	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
 	x1 = x;
@@ -578,13 +575,16 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	x2 = viewWidth;
 	y2 = viewHeight;
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
+	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity)
 {
+	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x, y);
 	Cairo.cairo_paint_with_alpha(viewVars.cr, opacity);
+	Cairo.cairo_restore(viewVars.cr);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity)

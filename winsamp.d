@@ -266,6 +266,7 @@ class MyControl : Widget {
 		g.setBrush(foo);
 		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
 		g.setPen(foo2);
+		//g.drawOval(0, 0, 100, 100);
 		g.drawPie(0,0,100,100, 215, 260.7);
 	}
 
