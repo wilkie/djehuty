@@ -26,10 +26,7 @@ import io.console;
 // Section: Core/Synchronization
 
 // Description: This class represents a thread.  You can create and override the call function to use, or use a delegate to specify an external function to call.
-class Thread
-{
-
-public:
+class Thread {
 
 	// Description: Will create a normal thread that does not have any external callback functions.
 	this() {

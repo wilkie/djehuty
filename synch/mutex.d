@@ -2,6 +2,8 @@ module synch.mutex;
 
 import platform.vars.mutex;
 
+import synch.condition;
+
 import scaffold.thread;
 
 // Section: Core/Synchronization
@@ -28,6 +30,14 @@ class Mutex {
 
 	void lock(uint milliseconds) {
 		MutexLock(_pfvars, milliseconds);
+	}
+
+	void wait(Condition cond) {
+		cond.wait(_pfvars);
+	}
+
+	void wait(Waitable forObject) {
+		wait(forObject.waitCondition());
 	}
 
 protected:

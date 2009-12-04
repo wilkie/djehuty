@@ -48,8 +48,8 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 }
 
 void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
-	width--;
-	height--;
+	//width--;
+	//height--;
 	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, width, height);
 }
 

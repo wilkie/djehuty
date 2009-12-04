@@ -6,7 +6,7 @@ import core.exception;
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
-class LinkedList(T) : ListInterface!(T) {
+class LinkedList(T) : Listable!(T) {
 	this() {
 	}
 
@@ -42,7 +42,7 @@ class LinkedList(T) : ListInterface!(T) {
 
 	// Description: Will add the list to the _head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
-	void add(ListInterface!(T) list) {
+	void add(Listable!(T) list) {
 		foreach(item; list) {
 			add(item);
 		}
