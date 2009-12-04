@@ -37,7 +37,7 @@ protected:
 
 	// Description: This function will build the internal array of points using the given array of points
 	void quickHull(Coord[] pts) {
-		
+
 		// Initialize the hull with the furthest left and right points
 
 		uint min = 0;
@@ -49,7 +49,7 @@ protected:
 		}
 
 		// Now, with this hull, keep adding the farthest point
-		points = pts[min] ~ quickHullCompute(pts[min], pts[max], pts) 
+		_points = pts[min] ~ quickHullCompute(pts[min], pts[max], pts)
 						  ~ pts[max]
 						  ~ quickHullCompute(pts[max], pts[min], pts);
 	}
@@ -84,7 +84,7 @@ protected:
 				outerPoints ~= pt;
 			}
 		}
-		
+
 		Coord[] ret = null;
 
 		if (maxPoint != -1) {
