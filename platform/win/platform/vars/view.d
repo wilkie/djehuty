@@ -17,6 +17,9 @@ import binding.win32.gdiplustypes;
 import binding.win32.gdiplusimaging;
 
 struct ViewPlatformVars {
+	// antialias
+	bool aa;
+
 	RECT bounds;
 	HDC dc;
 	

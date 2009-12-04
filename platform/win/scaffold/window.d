@@ -383,6 +383,12 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	//window->_view._graphics.UseFont(window->_pfvars.fnt);
 
 	//window->_view._graphics.SetTextModeTransparent();
+	if (viewVars.aa) {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeAntiAlias);
+	}
+	else {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeDefault);
+	}
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
