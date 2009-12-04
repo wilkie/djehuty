@@ -188,7 +188,7 @@ struct IRC
 			_thread = new Thread();
 			_buffer = new Stream();
 
-			_thread.setDelegate(&_recvFunc);
+			_thread.callback = &_recvFunc;
 		}
 
 		~this()

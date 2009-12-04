@@ -53,9 +53,9 @@ class ListBox : Widget {
 
 		m_clroutline = Color.fromRGB(0x80, 0x80, 0x80);
 		m_clrhighlight = Color.fromRGB(0xdd,0xdd,0xdd);
-		m_clrhighlighttext = Color.fromRGB(0xff,0xff,0xff);
-		m_clrnormal = Color.fromRGB(0,0,0);
-		m_clrbackground = Color.fromRGB(0xff,0xff,0xff);
+		m_clrhighlighttext = Color.White;
+		m_clrnormal = Color.Black;
+		m_clrbackground = Color.White;
 
 		m_first_visible = 0;
 		m_total_visible = 0;
@@ -93,7 +93,7 @@ class ListBox : Widget {
 		g.pen = pen;
 		g.brush = brsh;
 
-		g.drawRect(this.left, this.top, this.right, this.bottom);
+		g.drawRect(this.left, this.top, this.width, this.height);
 
 		rt.left = this.left+1;
 		rt.top = this.top+1;
@@ -118,13 +118,13 @@ class ListBox : Widget {
 				g.setTextModeOpaque();
 				g.forecolor(m_clrhighlighttext);
 
-				g.drawClippedText(rt.left, rt.top, rt, data);
+				g.drawText(rt.left, rt.top, data);
 
 				g.forecolor(m_clrnormal);
 				g.setTextModeTransparent();
 			}
 			else {
-				g.drawClippedText(rt.left, rt.top, rt, data);
+				g.drawText(rt.left, rt.top, data);
 			}
 
 			rt.top = rt.bottom;
