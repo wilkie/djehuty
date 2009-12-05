@@ -11,8 +11,6 @@
 module scaffold.graphics;
 
 pragma(lib, "gdi32.lib");
-pragma(lib, "msimg32.lib");
-pragma(lib, "advapi32.lib");
 
 import graphics.view;
 
@@ -338,11 +336,21 @@ void destroyBrush(BrushPlatformVars* brush) {
     Gdiplus.GdipDeleteBrush(brush.handle);
 }
 
+// BitmapBrush
+
+void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSrc) {
+	Gdiplus.GdipCreateTexture(viewVarsSrc.image, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
+}
+
 // Pens
 
-void createPen(PenPlatformVars* pen, ref Color clr) {
-    Gdiplus.GdipCreatePen1(clr.value, 1.0, Gdiplus.Unit.UnitWorld, &pen.handle);
+void createPen(PenPlatformVars* pen, ref Color clr, double width) {
+    Gdiplus.GdipCreatePen1(clr.value, width, Gdiplus.Unit.UnitWorld, &pen.handle);
 	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
+}
+
+void createPenWithBrush(PenPlatformVars* pen, ref BrushPlatformVars brushVars, double width) {
+	Gdiplus.GdipCreatePen2(brushVars.handle, width, Gdiplus.Unit.UnitWorld, &pen.handle);
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {

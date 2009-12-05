@@ -6,13 +6,27 @@ import Scaffold = scaffold.graphics;
 
 import core.color;
 
+import resource.image;
+
+import graphics.bitmap;
 import graphics.view;
 
 class Brush {
+	this() {
+		this(Color.White);
+	}
 
 	// Constructor
 	this(Color clr) {
 		Scaffold.createBrush(&_pfvars, clr);
+	}
+
+	this(Image image) {
+		this(image.view);
+	}
+
+	this(Bitmap bitmap) {
+		Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
 	}
 
 	// Destructor

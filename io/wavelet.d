@@ -130,6 +130,8 @@ class Wavelet : Stream {
 		return tme;
 	}
 
+	void fourier() {
+	}
 
 private:
 

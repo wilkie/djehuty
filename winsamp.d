@@ -9,6 +9,7 @@ import gui.listbox;
 import resource.menu;
 
 import graphics.graphics;
+import graphics.hatchbrush;
 
 import resource.image;
 import resource.sound;
@@ -278,6 +279,20 @@ class MyControl : Widget {
 		g.brush = Brush.Blue;
 		g.drawPie(100,100,100,100, 215, 260);
 		g.antialias = false;
+
+		Brush b = new Brush(imgJPEG.view);
+		g.brush = b;
+
+		g.drawRect(30,30,30,30);
+		g.drawRect(60,60,30,30);
+		g.drawRect(90,90,30,30);
+
+		Pen p = new Pen(b, 10.0);
+
+		g.pen = p;
+		g.antialias = true;
+		g.strokeOval(120,120,100,100);
+		g.antialias = false;
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
@@ -301,9 +316,9 @@ class MyWindow : Window {
 		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
 		ListBox lb;
-		push(lb = new ListBox(0,0,100,100));
-		lb.add("Hello");
-		lb.add("Goodbye");
+		//push(lb = new ListBox(0,0,100,100));
+		//lb.add("Hello");
+		//lb.add("Goodbye");
 		push(new MyControl());
 	}
 }
