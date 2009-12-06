@@ -12,35 +12,33 @@ class Matrix(T) {
 
 	// Description: Creates a Matrix class based upon the 2 dimensional array of values given.
 	// Note: The array dimensions must be balanced.
-	this(T[][] operands...)
-	{
-		if (operands.length == 0)
-		{
+	this(T[][] operands...) {
+		if (operands.length == 0) {
 			_data = null;
 		}
-		else
-		{
+		else {
 			_data = operands.dup;
 		}
 	}
 
+	// Description: Creates an empty Matrix class with the size specified.
+	this(int x, int y) {
+	}
+
 	// Description: The copy constructor for the Matrix class.
-	this(Matrix!(T) copy)
-	{
+	this(Matrix!(T) copy) {
 		_data = copy._data.dup;
 	}
 
 	// Description: This function returns the number of rows in the matrix.
 	// Returns: The number of rows.
-	uint rows()
-	{
+	uint rows() {
 		return _data.length;
 	}
 
 	// Description: This function returns the number of columns in the matrix.
 	// Returns: The number of columns.
-	uint cols()
-	{
+	uint cols() {
 		if (rows() > 0) {
 			return _data[0].length;
 		}
@@ -55,8 +53,7 @@ class Matrix(T) {
 	// Description: Overrides the multiply operator to multiply two compatible matrices.
 	// operand: A compatible matrix.
 	// Returns: The matrix that is the result of the computation. An empty 0x0 matrix if the computation is invalid.
-	Matrix!(T) opMul(Matrix!(T) operand)
-	{
+	Matrix!(T) opMul(Matrix!(T) operand) {
 		// multiply both matrices, if possible
 
 		Matrix!(T) ret = new Matrix!(T)();
@@ -70,8 +67,7 @@ class Matrix(T) {
 
 		// a.cols MUST == b.rows
 
-		if (cols() != operand.rows())
-		{
+		if (cols() != operand.rows()) {
 			// error
 			return ret;
 		}
@@ -88,13 +84,10 @@ class Matrix(T) {
 
 		ret._data = new T[][](rows(), operand.cols());
 
-		for (int y1 = 0; y1<ret.cols(); y1++)
-		{
-			for (int x1 = 0; x1<ret.rows(); x1++)
-			{
+		for (int y1 = 0; y1<ret.cols(); y1++) {
+			for (int x1 = 0; x1<ret.rows(); x1++) {
 				ret._data[x1][y1] = 0;
-				for (int i = 0; i < cols(); i++)
-				{
+				for (int i = 0; i < cols(); i++) {
 					ret._data[x1][y1] += (_data[x1][i] * operand._data[i][y1]);
 				}
 			}
@@ -105,19 +98,16 @@ class Matrix(T) {
 
 	// Description: Overrides the multiply and assign operator to multiply two compatible matrices.
 	// operand: A compatible matrix.
-	void opMulAssign(Matrix!(T) operand)
-	{
+	void opMulAssign(Matrix!(T) operand) {
 	}
 
 	// Description: Overrides the multiply operator to compute the scalar multiplication of the matrix and a value.
 	// scalar: A scalar value.
 	// Returns: The result of such a computation.
-	Matrix!(T) opMul(double scalar)
-	{
+	Matrix!(T) opMul(double scalar) {
 		Matrix!(T) ret = new Matrix!(T)(this);
 
-		for (int i = 0; i<rows(); i++)
-		{
+		for (int i = 0; i<rows(); i++) {
 			for (int j = 0; j<cols(); j++)
 			{
 				ret._data[i][j] *= scalar;
@@ -129,12 +119,9 @@ class Matrix(T) {
 
 	// Description: Overrides the multiply and assign operator to compute the scalar multiplication of the matrix and a value.
 	// scalar: A scalar value.
-	void opMulAssign(double scalar)
-	{
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
+	void opMulAssign(double scalar) {
+		for (int i = 0; i<rows(); i++) {
+			for (int j = 0; j<cols(); j++) {
 				_data[i][j] *= scalar;
 			}
 		}
@@ -143,14 +130,11 @@ class Matrix(T) {
 	// Description: Overrides the addition operator to compute the addition of two matrices of common dimensions.
 	// operand: A matrix of equal dimensions.
 	// Returns: An empty 0x0 matrix upon error or the matrix result of the computation.
-	Matrix!(T) opAdd(Matrix!(T) operand)
-	{
+	Matrix!(T) opAdd(Matrix!(T) operand) {
 		Matrix!(T) ret = new Matrix!(T)(this);
 
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
+		for (int i = 0; i<rows(); i++) {
+			for (int j = 0; j<cols(); j++) {
 				ret._data[i][j] += operand._data[i][j];
 			}
 		}
@@ -160,12 +144,9 @@ class Matrix(T) {
 
 	// Description: Overrides the addition and assign operator to compute the addition of two matrices of common dimensions.
 	// operand: A matrix of equal dimensions.
-	void opAddAssign(Matrix!(T) operand)
-	{
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
+	void opAddAssign(Matrix!(T) operand) {
+		for (int i = 0; i<rows(); i++) {
+			for (int j = 0; j<cols(); j++) {
 				_data[i][j] += operand._data[i][j];
 			}
 		}
@@ -174,14 +155,11 @@ class Matrix(T) {
 	// Description: Overrides the subtraction operator to compute the addition of two matrices of common dimensions.
 	// operand: A matrix of equal dimensions.
 	// Returns: An empty 0x0 matrix upon error or the matrix result of the computation.
-	Matrix!(T) opSub(Matrix!(T) operand)
-	{
+	Matrix!(T) opSub(Matrix!(T) operand) {
 		Matrix!(T) ret = new Matrix!(T)(this);
 
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
+		for (int i = 0; i<rows(); i++) {
+			for (int j = 0; j<cols(); j++) {
 				ret._data[i][j] -= operand._data[i][j];
 			}
 		}
@@ -191,31 +169,24 @@ class Matrix(T) {
 
 	// Description: Overrides the subtraction and assign operator to compute the addition of two matrices of common dimensions.
 	// operand: A matrix of equal dimensions.
-	void opSubAssign(Matrix!(T) operand)
-	{
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
+	void opSubAssign(Matrix!(T) operand) {
+		for (int i = 0; i<rows(); i++) {
+			for (int j = 0; j<cols(); j++) {
 				_data[i][j] -= operand._data[i][j];
 			}
 		}
 	}
 
-	bool equals(Matrix!(T) compareTo)
-	{
-		if (compareTo.rows() != rows())
-		{
+	bool equals(Matrix!(T) compareTo) {
+		if (compareTo.rows() != rows()) {
 			return false;
 		}
 
-		if (compareTo.cols() != cols())
-		{
+		if (compareTo.cols() != cols()) {
 			return false;
 		}
 
-		if (compareTo._data[0..$][0..$] == _data[0..$][0..$])
-		{
+		if (compareTo._data[0..$][0..$] == _data[0..$][0..$]) {
 			return true;
 		}
 
@@ -226,56 +197,33 @@ class Matrix(T) {
 	// all asserts/runtime checks are done through D's own facilities
 
 	// mathematical operator overloads
-	int opEquals(Object o)
-	{
+	int opEquals(Object o) {
 		return equals(cast(Matrix!(T))o);
 	}
 
-	Vector!(T) row(int index)
-	{
+	Vector!(T) row(int index) {
 		T[] comps = new T[cols()];
 
-		for (int i = 0; i < cols(); i++)
-		{
+		for (int i = 0; i < cols(); i++) {
 			comps[i] = _data[index][i];
 		}
 
 		return new Vector!(T)(comps);
 	}
 
-	Vector!(T) col(int index)
-	{
+	Vector!(T) col(int index) {
 		T[] comps = new T[rows()];
 
-		for (int i = 0; i < rows(); i++)
-		{
+		for (int i = 0; i < rows(); i++) {
 			comps[i] = _data[i][index];
 		}
 
 		return new Vector!(T)(comps);
 	}
 
-	void write()
-	{
-		writefln("matrix:");
-		for (int i = 0; i<rows(); i++)
-		{
-			for (int j = 0; j<cols(); j++)
-			{
-				if (j==cols()-1){
-					writef(_data[i][j]);
-				} else{
-					writef(_data[i][j], ", ");
-				}
-			}
-			writefln("");
-		}
-	}
-
 protected:
 
 	T[][] _data;
-
 }
 
 /*
