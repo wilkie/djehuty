@@ -9,6 +9,8 @@ module math.vector;
 
 // Strings
 import core.string;
+import core.tostring;
+import core.definitions;
 
 // Math common
 import math.common;
@@ -21,22 +23,30 @@ import math.mathobject;
 // Description: This template class represents a mathematical vector.
 class Vector(T = double) {
 
+	this() {
+		_data = null;
+	}
+
 	// Description: This constructor produces a Vector with the specified component values.
-	this(T[] components...) {
+	this(T[] components) {
 		// make a copy of the input
 		if (components.length == 0) {
-			_components = null;
+			_data = null;
 		}
 		else {
-			_components = components.dup;
+			_data = components.dup;
 		}
+	}
+
+	this(uint size) {
+		_data = new T[size];
 	}
 
 	// Description: This function returns the number of components within the vector.
 	// Returns: The number of components.
 	int size() {
 		// get the number of components
-		return _components.length;
+		return _data.length;
 	}
 
 	// Description: This function returns the magnitude of the vector. This is the square root of the sum of the squares of each component. That is: sqrt((c1^2) + (c2^2) + ... + (cN^2)).
@@ -44,7 +54,7 @@ class Vector(T = double) {
 		static if (is(T : MathObject)) { T sum = new T; } else { T sum = 0; }
 
 		for (int i=0; i<size(); i++) {
-			sum += (_components[i] * _components[i]);
+			sum += (_data[i] * _data[i]);
 		}
 
 		sum = cast(T)sqrt(sum);
@@ -57,7 +67,7 @@ class Vector(T = double) {
 	T sum() {
 		static if (is(T : MathObject)) { T calcsum = new T; } else { T calcsum = 0; }
 
-		foreach(comp; _components) {
+		foreach(comp; _data) {
 			calcsum += comp;
 		}
 
@@ -75,7 +85,7 @@ class Vector(T = double) {
 		}
 
 		for (int i=0; i<size(); i++) {
-			sum += (_components[i] * operand._components[i]);
+			sum += (_data[i] * operand._data[i]);
 		}
 
 		return sum;
@@ -87,22 +97,22 @@ class Vector(T = double) {
 		// U = u / ||u||
 
 		Vector!(T) ret = new Vector!(T)();
-		ret._components = new T[size()];
+		ret._data = new T[size()];
 
 		T mag = magnitude();
 		for(int i=0; i<size(); i++) {
-			ret._components[i] = cast(T)(_components[i] / mag);
+			ret._data[i] = cast(T)(_data[i] / mag);
 		}
 
 		return ret;
 	}
 
 	bool equals(Vector!(T) compareTo) {
-		if (compareTo._components.length != _components.length) {
+		if (compareTo._data.length != _data.length) {
 			return false;
 		}
 
-		if (compareTo._components[0..$] == _components[0..$]) {
+		if (compareTo._data[0..$] == _data[0..$]) {
 			return true;
 		}
 
@@ -123,10 +133,10 @@ class Vector(T = double) {
 
 		Vector!(T) ret = new Vector!(T)();
 
-//		ret._components = new T[size()];
+//		ret._data = new T[size()];
 
 		for(int i=0;i<size();i++) {
-			ret._components[i] = cast(T)(_components[i] + operand._components[i]);
+			ret._data[i] = cast(T)(_data[i] + operand._data[i]);
 		}
 
 		return ret;
@@ -136,7 +146,7 @@ class Vector(T = double) {
 		assert(operand.size() == size(), "Vector: opAdd: vector operands do not have equal components.");
 
 		for(int i=0;i<size();i++) {
-			_components[i] += operand._components[i];
+			_data[i] += operand._data[i];
 		}
 	}
 
@@ -146,10 +156,10 @@ class Vector(T = double) {
 	Vector!(T) opMul(double operand) {
 		Vector!(T) ret = new Vector!(T)();
 
-		ret._components = new T[size()];
+		ret._data = new T[size()];
 
 		for(int i=0; i<size(); i++) {
-			ret._components[i] = cast(T)(_components[i] * operand);
+			ret._data[i] = cast(T)(_data[i] * operand);
 		}
 
 		return ret;
@@ -157,7 +167,7 @@ class Vector(T = double) {
 
 	void opMulAssign(double operand) {
 		for(int i=0; i<size(); i++) {
-			_components[i] *= operand;
+			_data[i] *= operand;
 		}
 	}
 
@@ -166,62 +176,85 @@ class Vector(T = double) {
 	{
 		for(int i=0; i<size(); i++)
 		{
-			_components[i] *= operand;
+			_data[i] *= operand;
 		}
 
 		return this;
 	} */
 
-
+	T[] array() {
+		return _data.dup;
+	}
 
 	// array operator overloads
 	T[] opSlice() {
-		return _components.dup;
+		return array();
 	}
 
 	T[] opSlice(size_t x, size_t y) {
-		return _components[x..y];
+		return _data[x..y];
 	}
 
 	T[] opSliceAssign(T val) {
-		return _components[] = val;
+		return _data[] = val;
 	}
 
 	T[] opSliceAssign(T[] val) {
-		return _components[] = val;
+		return _data[] = val;
 	}
 
 	T[] opSliceAssign(T val, size_t x, size_t y) {
-		return _components[x..y] = val;
+		return _data[x..y] = val;
 	}
 
 	T[] opSliceAssign(T[] val, size_t x, size_t y) {
-		return _components[x..y] = val;
+		return _data[x..y] = val;
 	}
 
 	T opIndex(size_t i) {
-		return _components[i];
+		return _data[i];
 	}
 
 	T opIndexAssign(T value, size_t i) {
-		return _components[i] = value;
+		return _data[i] = value;
 	}
-	
+
 	string toString() {
-		String ret = new String("[");
+		string ret = "[";
 
 		int i;
 		for (i = 0; i < size()-1; i++) {
-			ret ~= _components[i];
+			ret ~= toStr(_data[i]);
 			ret ~= ", ";
 		}
 
 		if (i == size() - 1) {
-			ret ~= _components[i];
+			ret ~= toStr(_data[i]);
 			ret ~= "]";
 		}
 
 		return ret;
+	}
+
+	void FFT() {
+		// Only implemented for powers of 2
+		if (_data is null || _data.length < 1 || _data.length & (_data.length - 1)) {
+			return;
+		}
+
+		fftRearrange();
+		fftPerform(false);
+	}
+
+	void inverseFFT() {
+		// Only implemented for powers of 2
+		if (_data is null || _data.length < 1 || _data.length & (_data.length - 1)) {
+			return;
+		}
+
+		fftRearrange();
+		fftPerform(true);
+		fftScale();
 	}
 
 protected:
@@ -233,50 +266,76 @@ protected:
 	T _dotProduct;
 	T _unitVector;
 
-	T[] _components;
+	T[] _data;
+
+	void fftPerform(bool inverse) {
+		size_t N = _data.length;
+
+		double pi = 3.14159265358979323846;
+
+		if (inverse) {
+			pi = -pi;
+		}
+
+		for (size_t step = 1; step < N; step <<= 1) {
+			// jump to the next entry of the same transform factor
+			uint jump = step << 1;
+			double delta = pi / cast(double)step;
+			double sine = sin(delta * .5);
+			cdouble multiplier = -2.0 * sine * sine + sin(delta) * 1.0i;
+
+			cdouble factor = 1.0 + 0.0i;
+
+			for (size_t group = 0; group < step; group++) {
+				for (size_t pair = group; pair < N; pair += jump) {
+					size_t match = pair + step;
+					cdouble product = factor * _data[match];
+					_data[match] = cast(T)(_data[pair] - product);
+					_data[pair] = cast(T)(_data[pair] + product);
+				}
+
+				factor = multiplier * factor + factor;
+			}
+		}
+	}
+
+	void fftRearrange() {
+		size_t N = _data.length;
+
+		uint target = 0;
+		for (size_t pos = 0; pos < N; pos++) {
+			if (target > pos) {
+				// swap entries
+				cdouble temp = cast(cdouble)(_data[target]);
+				_data[target] = _data[pos];
+				_data[pos] = cast(T)temp;
+			}
+
+			// bitmask
+			uint mask = N;
+			while (target & (mask >>= 1)) {
+				// drop bit
+				target &= ~mask;
+			}
+
+			// set bit 0
+			target |= mask;
+		}
+	}
+
+	void fftScale() {
+		size_t N = _data.length;
+
+		double factor = 1.0 / cast(double)N;
+
+		for (size_t pos = 0; pos < N; pos++) {
+			_data[pos] *= factor;
+		}
+	}
 }
 
-/*
-
-
-// Unit Testing
-
-import core.utest;
-
-unittest
-{
-	// Tested: construction, opEquals, equals
-
-	Vector!(double) u = new Vector!(double)(1,2,3);
-	Vector!(double) v = new Vector!(double)(1,2,3);
-
-	assert(u == v);
-
-	// Tested: opMul
-
-	u = v * 2;
-	v *= 4;
-	u = u * 2;
-
-	// they should be equal
-	assert(u == v);
-
-	// Tested: magnitude
-
-	u = new Vector!(double)(3, 4);
-	int mag = cast(int)u.magnitude();
-
-	// magnitude should be 5
-	assert(mag == 5);
-
-	// Tested: unitVector
-	v = new Vector!(double)(8, 0);
-	u = v.unitVector();
-
-	// compare against obvious answer
-	v = new Vector!(double)(1, 0);
-	assert(u == v);
-
-	// pass
-	UnitTestPassed(__FILE__);
-}*/
+double[] FFT(double[] arr) {
+	Vector!(double) foo = new Vector!(double)(arr);
+	foo.FFT();
+	return foo._data;
+}

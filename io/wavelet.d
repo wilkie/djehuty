@@ -8,6 +8,9 @@ import core.time;
 import io.audio;
 import io.console;
 
+import math.common;
+import math.vector;
+
 enum Interpolate {
 	Zeroth,
 	Linear,
@@ -28,7 +31,7 @@ class Wavelet : Stream {
 
 	// Description: Will get the format of the audio information.
 	// Returns: An AudioFormat struct containing useful information such as sample rate and average bytes per second.
-	AudioFormat getAudioFormat() {
+	AudioFormat audioFormat() {
 		return _fmt;
 	}
 
@@ -130,6 +133,39 @@ class Wavelet : Stream {
 		return tme;
 	}
 
+	double[] fourier(int samples = 512, uint skipSamples = 0) {
+		if ((samples + skipSamples) * _fmt.numChannels > (this.length / 2)) {
+			samples = cast(int)((this.length / 2 / _fmt.numChannels) - skipSamples);
+		}
+		if (samples < 0) {
+			return [];
+		}
+
+		uint rem = 1;
+
+		// floor samples to nearest power of 2
+		while(samples > 0) {
+			samples >>= 1;
+			rem <<= 1;
+		}
+		rem >>= 1;
+
+		double[] ret = new double[rem];
+
+		// I'll just average the channels, if possible
+		short* ptr = cast(short*)&_data[0];
+
+		size_t idx = skipSamples * _fmt.numChannels;
+		for(size_t sample = 0; sample < rem; sample++, idx += _fmt.numChannels) {
+			double data = 0.0;
+			for(size_t channel = 0; channel < _fmt.numChannels; channel++) {
+				data += (cast(double)ptr[idx + channel] / cast(double)short.max);
+			}
+			ret[sample] = data / _fmt.numChannels;
+		}
+
+		return ret.FFT();
+	}
 
 private:
 

@@ -7,14 +7,21 @@ import Scaffold = scaffold.graphics;
 import core.color;
 
 import graphics.view;
+import graphics.brush;
 
 class Pen {
 
 public:
 
 	// Constructor
-	this(Color clr) {
-		Scaffold.createPen(&_pfvars, clr);
+	this(Color clr, double width = 1.0) {
+		_width = width;
+		Scaffold.createPen(&_pfvars, clr, width);
+	}
+
+	this(Brush brush, double width = 1.0) {
+		_width = width;
+		Scaffold.createPenWithBrush(&_pfvars, brush._pfvars, width);
 	}
 
 	// Destructor
@@ -25,7 +32,7 @@ public:
 	// Sets color of a solid brush
 	void setColor(Color clr) {
 		Scaffold.destroyPen(&_pfvars);
-		Scaffold.createPen(&_pfvars, clr);
+		Scaffold.createPen(&_pfvars, clr, _width);
 
 		// when tied to a locked view, update the brush being used
 		if (_view !is null) {
@@ -36,6 +43,8 @@ public:
 	}
 
 private:
+
+	double _width;
 
 	package PenPlatformVars _pfvars;
 

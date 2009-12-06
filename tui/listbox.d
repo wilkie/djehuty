@@ -12,7 +12,7 @@ import tui.widget;
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
-class TuiListBox : TuiWidget, ListInterface!(String) {
+class TuiListBox : TuiWidget, Listable!(String) {
 	this( uint x, uint y, uint width, uint height ) {
 		super(x,y,width,height);
 

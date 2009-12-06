@@ -38,6 +38,8 @@ import opengl.window;
 
 import synch.thread;
 
+import io.console;
+
 // all windows
 void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	windowVars.oldWidth = window.width;
@@ -368,8 +370,12 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
+//	Gdiplus.GpGraphics* g;
+//	Gdiplus.GdipCreateFromHDC(hdc, &g);
+//	Gdiplus.GdipDrawImageI(g, viewVars.image, 0, 0);
 
-	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, window.width(), window.height(), viewVars.dc, 0, 0, SRCCOPY);
+
 	ReleaseDC(windowVars.hWnd, hdc);
 }
 

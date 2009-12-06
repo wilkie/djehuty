@@ -61,7 +61,7 @@ class Sound : Responder {
 		push(wavDevice = new Audio);
 
 		tmr = new Timer();
-		tmr.setInterval(1);
+		tmr.setInterval(250);
 
 		push(tmr);
 
@@ -116,7 +116,7 @@ class Sound : Responder {
 		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
 
 		Console.putln("Sound : Creating Device");
-		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.openDevice(buffers[0].audioFormat());
 		wavDevice.pause();
 
 		_state = State.Paused;
@@ -157,7 +157,7 @@ class Sound : Responder {
 		}
 
 		wavDevice.resume();
-		//tmr.start();
+		tmr.start();
 
 		_state = State.Playing;
 		raiseSignal(Signal.StateChanged);
@@ -217,13 +217,13 @@ class Sound : Responder {
 
 		_doneBuffering = false;
 
-		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.openDevice(buffers[0].audioFormat());
 		wavDevice.pause();
 		_state = State.Paused;
 
 		Time tme;
 		tme.fromMicroseconds(cast(long)toPosition);
-		_curCodec.seek(inStream, buffers[0].getAudioFormat(), wavInfo, tme);
+		_curCodec.seek(inStream, buffers[0].audioFormat(), wavInfo, tme);
 
 		_curCodec.decode(inStream, buffers[0], wavInfo);
 
@@ -243,6 +243,32 @@ class Sound : Responder {
 	// Returns: The current state of the device.
 	State state() {
 		return _state;
+	}
+
+	double[] spectrum() {
+		static uint samples = 0;
+		static int lastIndex = -1;
+		static Time last;
+		if (lastIndex == -1) {
+			lastIndex = 0;
+			last = Time.Now();
+		}
+		else if (bufferIndex == lastIndex) {
+			lastIndex = !bufferIndex;
+			samples = 0;
+			last = Time.Now();
+		}
+		else { // bufferIndex != lastIndex
+			Time cur = Time.Now();
+			Time diff = cur - last;
+			last = cur;
+		}
+
+		uint inc = buffers[lastIndex].audioFormat.samplesPerSecond / 20;
+		double[] ret = buffers[lastIndex].fourier(512, samples);
+		samples += inc;
+
+		return ret;
 	}
 
 protected:

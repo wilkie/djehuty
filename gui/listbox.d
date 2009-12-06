@@ -197,7 +197,7 @@ class ListBox : Widget {
 		}
 	}
 
-	void add(ListInterface!(String) list) {
+	void add(Listable!(String) list) {
 		foreach(item; list) {
 			_list.add(item);
 		}

@@ -16,7 +16,7 @@ import core.util;
 import core.tostring;
 import core.exception;
 
-interface ListInterface(T) {
+interface Listable(T) {
 	template add(R) {
 		void add(R item);
 	}
@@ -50,9 +50,9 @@ interface ListInterface(T) {
 	bool empty();
 	void clear();
 	T[] array();
-	ListInterface!(T) dup();
-	ListInterface!(T) slice(size_t start, size_t end);
-	ListInterface!(T) reverse();
+	Listable!(T) dup();
+	Listable!(T) slice(size_t start, size_t end);
+	Listable!(T) reverse();
 	size_t length();
 	
 	T opIndex(size_t i1);
@@ -66,7 +66,7 @@ interface ListInterface(T) {
 	int opApply(int delegate(ref size_t, ref T) loopFunc);
 }
 
-class List(T) : ListInterface!(T) {
+class List(T) : Listable!(T) {
 	this() {
 		_data.length = 10;
 		_data = new T[_data.length];
@@ -84,7 +84,7 @@ class List(T) : ListInterface!(T) {
 		_count = list.length;
 	}
 
-	this(ListInterface!(T) list) {
+	this(Listable!(T) list) {
 		_data = list.array();
 		_count = list.length();
 	}

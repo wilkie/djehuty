@@ -10,9 +10,9 @@
 
 module platform.vars.pen;
 
+import Cairo = binding.cairo.cairo;
+
 struct PenPlatformVars {
-	double r;
-	double g;
-	double b;
-	double a;
+	Cairo.cairo_pattern_t* handle;
+	double width;
 }

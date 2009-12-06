@@ -20,6 +20,8 @@ import tui.textfield;
 import tui.tabbox;
 import tui.container;
 
+import synch.timer;
+
 import networking.irc;
 
 import io.console;
@@ -248,6 +250,8 @@ private:
 
 class MyControl : Widget {
 	this() {
+		tmr = new Timer(50);
+		push(tmr);
 		super(200,200,100,100);
 	}
 
@@ -256,13 +260,14 @@ class MyControl : Widget {
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
 		//snd = new Sound("tests/begin.mp2");
-		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
-		snd = new Sound("tests/fazed.dreamer.mp3");
+		snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		//snd = new Sound("tests/fazed.dreamer.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
+
 		Brush foo = new Brush(Color.fromRGBA(255,0,0,0x80));
 		g.brush = foo;
 		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
@@ -278,13 +283,51 @@ class MyControl : Widget {
 		g.brush = Brush.Blue;
 		g.drawPie(100,100,100,100, 215, 260);
 		g.antialias = false;
+
+		Brush b = new Brush(imgJPEG.view);
+		g.brush = b;
+
+		g.drawRect(30,30,30,30);
+		g.drawRect(60,60,30,30);
+		g.drawRect(90,90,30,30);
+
+		Pen p = new Pen(b, 10.0);
+		//p = new Pen(Color.fromRGBA(0,0,0x80,0x80), 10.0);
+		g.pen = p;
+		g.antialias = true;
+		g.strokeOval(120,120,100,100);
+		g.antialias = false;
+//*/
+
+
+		g.pen = new Pen(Color.fromRGBA(0x0, 0x0, 0xff, 0x80), 1.0);
+
+		size_t o;
+		foreach(size_t i, freq; foobar) {
+			if (i % 8) {
+				int bar_height = 265 - cast(int)(150 * freq);
+				//Console.putln(freq, " :: ", bar_height);
+				g.drawLine(o, 265, o, bar_height);
+				o++;
+			}
+		}
+		g.drawLine(0,0,300,300);
+		g.drawLine(0,0,250,250);
+	}
+
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		foobar = snd.spectrum();
+		(cast(Window)responder).redraw();
+		return true;
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
 		snd.play();
+		tmr.start();
 		return false;
 	}
-
+	Timer tmr;
+	double[] foobar;
 	Image imgPNG;
 	Image imgJPEG;
 
@@ -293,7 +336,7 @@ class MyControl : Widget {
 
 class MyWindow : Window {
 	this() {
-		super("hey",WindowStyle.Fixed,Color.Red,0,0,300,300);
+		super("hey",WindowStyle.Fixed,Color.Red,0,0,450,330);
 	}
 
 	override void onAdd() {
@@ -301,10 +344,14 @@ class MyWindow : Window {
 		menu = foo;
 		push(new OSButton(0,0,100,50,"yo"));
 		ListBox lb;
-		push(lb = new ListBox(0,0,100,100));
-		lb.add("Hello");
-		lb.add("Goodbye");
+		//push(lb = new ListBox(0,0,100,100));
+		//lb.add("Hello");
+		//lb.add("Goodbye");
 		push(new MyControl());
+
+		cdouble aah = 1.0 + 0.0i;
+		double ah = cast(double)aah;
+		Console.putln(ah);
 	}
 }
 
