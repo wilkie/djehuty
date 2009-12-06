@@ -9,7 +9,6 @@ import gui.listbox;
 import resource.menu;
 
 import graphics.graphics;
-import graphics.hatchbrush;
 
 import resource.image;
 import resource.sound;
@@ -268,7 +267,7 @@ class MyControl : Widget {
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
-		/*
+
 		Brush foo = new Brush(Color.fromRGBA(255,0,0,0x80));
 		g.brush = foo;
 		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
@@ -293,12 +292,12 @@ class MyControl : Widget {
 		g.drawRect(90,90,30,30);
 
 		Pen p = new Pen(b, 10.0);
-
+		//p = new Pen(Color.fromRGBA(0,0,0x80,0x80), 10.0);
 		g.pen = p;
 		g.antialias = true;
 		g.strokeOval(120,120,100,100);
 		g.antialias = false;
-*/
+//*/
 
 
 		g.pen = new Pen(Color.fromRGBA(0x0, 0x0, 0xff, 0x80), 1.0);
@@ -310,6 +309,8 @@ class MyControl : Widget {
 				o++;
 			}
 		}
+		g.drawLine(0,0,300,300);
+		g.drawLine(0,0,250,250);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {

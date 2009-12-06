@@ -20,6 +20,7 @@ import synch.thread;
 import platform.unix.common;
 
 import platform.vars.thread;
+import platform.vars.condition;
 import platform.vars.mutex;
 import platform.vars.semaphore;
 
@@ -163,4 +164,20 @@ void MutexLock(ref MutexPlatformVars mutVars, ref uint ms)
 
 void MutexUnlock(ref MutexPlatformVars mutVars)
 {
+}
+
+void ConditionInit(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionSignal(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionWait(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionWait(ref ConditionPlatformVars condVars, ref MutexPlatformVars mutVars) {
+}
+
+void ConditionUninit(ref ConditionPlatformVars condVars) {
+	pthread_cond_destroy(&condVars.cond_id);
 }

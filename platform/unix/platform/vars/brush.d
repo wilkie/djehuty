@@ -13,5 +13,5 @@ module platform.vars.brush;
 import Cairo = binding.cairo.cairo;
 
 struct BrushPlatformVars {
-	Cairo.cairo_pattern_t* pattern;
+	Cairo.cairo_pattern_t* handle;
 }

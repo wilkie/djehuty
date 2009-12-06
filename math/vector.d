@@ -10,6 +10,7 @@ module math.vector;
 // Strings
 import core.string;
 import core.tostring;
+import core.definitions;
 
 // Math common
 import math.common;

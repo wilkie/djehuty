@@ -14,4 +14,5 @@ import Cairo = binding.cairo.cairo;
 
 struct PenPlatformVars {
 	Cairo.cairo_pattern_t* handle;
+	double width;
 }
