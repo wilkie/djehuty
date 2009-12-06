@@ -305,7 +305,9 @@ class MyControl : Widget {
 		size_t o;
 		foreach(size_t i, freq; foobar) {
 			if (i % 8) {
-				g.drawLine(o, 265, o, 265 - cast(uint)(150 * freq));
+				int bar_height = 265 - cast(int)(150 * freq);
+				//Console.putln(freq, " :: ", bar_height);
+				g.drawLine(o, 265, o, bar_height);
 				o++;
 			}
 		}
@@ -334,7 +336,7 @@ class MyControl : Widget {
 
 class MyWindow : Window {
 	this() {
-		super("hey",WindowStyle.Fixed,Color.Red,0,0,450,300);
+		super("hey",WindowStyle.Fixed,Color.Red,0,0,450,330);
 	}
 
 	override void onAdd() {
