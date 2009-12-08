@@ -57,6 +57,36 @@ string toStrv(Variadic vars) {
 				}
 				continue;
 			}
+			else if (var.type <= Type.Ifloat) {
+				switch(var.type) {
+					case Type.Float:
+						ret ~= ftoa(var.data.fi.im) ~ "i";
+						break;
+					case Type.Real:
+						ret ~= "{real}";
+						break;
+					default:
+					case Type.Double:
+						ret ~= ftoa(var.data.di.im) ~ "i";
+						break;
+				}
+				continue;
+			}
+			else if (var.type <= Type.Cfloat) {
+				switch(var.type) {
+					case Type.Float:
+						ret ~= ctoa(var.data.fc);
+						break;
+					case Type.Real:
+						ret ~= "{real}";
+						break;
+					default:
+					case Type.Double:
+						ret ~= ctoa(var.data.dc);
+						break;
+				}
+				continue;
+			}
 		}
 		ret ~= var.toString();
 	}
@@ -208,6 +238,39 @@ private union longReal {
 	real f;
 }
 
+string ctoa(cfloat val, uint base = 10) {
+	if (val is cfloat.infinity) {
+		return "inf";
+	}
+	else if (val is cfloat.nan) {
+		return "nan";
+	}
+
+	return ftoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
+string ctoa(cdouble val, uint base = 10) {
+	if (val is cdouble.infinity) {
+		return "inf";
+	}
+	else if (val is cdouble.nan) {
+		return "nan";
+	}
+
+	return ftoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
+string ctoa(creal val, uint base = 10) {
+	if (val is creal.infinity) {
+		return "inf";
+	}
+	else if (val is creal.nan) {
+		return "nan";
+	}
+
+	return ftoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
 string ftoa(float val, uint base = 10) {
 	if (val is float.infinity) {
 		return "inf";
@@ -284,6 +347,10 @@ string ftoa(float val, uint base = 10) {
 	foreach_reverse(uint i, chr; ret) {
 		if (chr != '0' && chr != '.') {
 			ret = ret[0..i+1];
+			break;
+		}
+		else if (chr == '.') {
+			ret = ret[0..i];
 			break;
 		}
 	}
@@ -377,6 +444,10 @@ string ftoa(double val, uint base = 10, bool doIntPart = true) {
 			ret = ret[0..i+1];
 			break;
 		}
+		else if (chr == '.') {
+			ret = ret[0..i];
+			break;
+		}
 	}
 
 	return ret;
@@ -468,6 +539,10 @@ string ftoa(real val, uint base = 10) {
 		foreach_reverse(uint i, chr; ret) {
 			if (chr != '0' && chr != '.') {
 				ret = ret[0..i+1];
+				break;
+			}
+			else if (chr == '.') {
+				ret = ret[0..i];
 				break;
 			}
 		}
