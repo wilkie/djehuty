@@ -678,12 +678,51 @@ protected:
 				break;
 			case "q":	// cfloat
 				ret.type = Type.Cfloat;
+				if (!ret.isArray) {
+					ret.data.fc = va_arg!(cfloat)(ptr);
+				}
+				else {
+					void* arrPtr = cast(void*)arr.ptr;
+
+					for (uint i; i < arr.length; i++) {
+						Variant val;
+						val.type = Type.Cfloat;
+						val.data.fc = va_arg!(cfloat)(arrPtr);
+						ret.data.array[i] = val;
+					}
+				}
 				break;
 			case "r":	// cdouble
 				ret.type = Type.Cdouble;
+				if (!ret.isArray) {
+					ret.data.dc = va_arg!(cdouble)(ptr);
+				}
+				else {
+					void* arrPtr = cast(void*)arr.ptr;
+
+					for (uint i; i < arr.length; i++) {
+						Variant val;
+						val.type = Type.Cdouble;
+						val.data.dc = va_arg!(cdouble)(arrPtr);
+						ret.data.array[i] = val;
+					}
+				}
 				break;
 			case "c":	// creal
 				ret.type = Type.Creal;
+				if (!ret.isArray) {
+					ret.data.rc = va_arg!(creal)(ptr);
+				}
+				else {
+					void* arrPtr = cast(void*)arr.ptr;
+
+					for (uint i; i < arr.length; i++) {
+						Variant val;
+						val.type = Type.Creal;
+						val.data.rc = va_arg!(creal)(arrPtr);
+						ret.data.array[i] = val;
+					}
+				}
 				break;
 			default:
 				break;
