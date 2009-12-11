@@ -16,6 +16,8 @@ import core.definitions;
 import math.common;
 import math.mathobject;
 
+import io.console;
+
 // math objects?
 
 // Section: Math
@@ -51,7 +53,7 @@ class Vector(T = double) {
 
 	// Description: This function returns the magnitude of the vector. This is the square root of the sum of the squares of each component. That is: sqrt((c1^2) + (c2^2) + ... + (cN^2)).
 	T magnitude() {
-		static if (is(T : MathObject)) { T sum = new T; } else { T sum = 0; }
+		static if (is(T : MathObject)) { T sum = new T; } else { T sum = cast(T)(0 + 0i); }
 
 		for (int i=0; i<size(); i++) {
 			sum += (_data[i] * _data[i]);
@@ -65,7 +67,7 @@ class Vector(T = double) {
 	// Description: This function returns the sum of the components.
 	// Returns: The computed value of comp(0) + comp(1) + ... + comp(size()-1)
 	T sum() {
-		static if (is(T : MathObject)) { T calcsum = new T; } else { T calcsum = 0; }
+		static if (is(T : MathObject)) { T calcsum = new T; } else { T calcsum = cast(T)(0 + 0i); }
 
 		foreach(comp; _data) {
 			calcsum += comp;
@@ -77,7 +79,7 @@ class Vector(T = double) {
 	// Description: This function returns the computed dot product for the vector.
 	// operand: The vector to compute the dot product with.
 	T dotProduct(Vector!(T) operand) {
-		static if (is(T : MathObject)) { T sum = new T; } else { T sum = 0; }
+		static if (is(T : MathObject)) { T sum = new T; } else { T sum = cast(T)(0 + 0i); }
 
 		if (operand.size() != size()) {
 			// error
@@ -244,9 +246,13 @@ class Vector(T = double) {
 
 		fftRearrange();
 		fftPerform(false);
+		fftScale();
+
+		// truncate
+		_data = _data[0.._data.length / 2];
 	}
 
-	void inverseFFT() {
+	void IFFT() {
 		// Only implemented for powers of 2
 		if (_data is null || _data.length < 1 || _data.length & (_data.length - 1)) {
 			return;
@@ -269,73 +275,75 @@ protected:
 	T[] _data;
 
 	void fftPerform(bool inverse) {
+		int isign = (inverse) ? -1 : 1;
 		size_t N = _data.length;
 
-		double pi = 3.14159265358979323846;
-
-		if (inverse) {
-			pi = -pi;
+		size_t i, j, m;
+		j = 0;
+		for (i = 0; i < N; i++) {
+//			Console.putln("i: ", i, " j: ", j);
+			if (j > i) {
+//				Console.putln("swaping ", _data[j], " with ", _data[i]);
+				T tmp = _data[j];
+				_data[j] = _data[i];
+				_data[i] = tmp;
+			}
+			m = N >> 1;
+			while (m >= 1 && (j+1) > m) {
+				//Console.putln("m: ", m);
+				j -= m;
+				m >>= 1;
+			}
+			j += m;
 		}
 
-		for (size_t step = 1; step < N; step <<= 1) {
-			// jump to the next entry of the same transform factor
-			uint jump = step << 1;
-			double delta = pi / cast(double)step;
-			double sine = sin(delta * .5);
-			cdouble multiplier = -2.0 * sine * sine + sin(delta) * 1.0i;
+		size_t mmax = 2;
+		size_t istep;
+		while (N*2 > mmax) {
+			istep = 2 * mmax;
 
+			double theta = (2.0 * 3.1415926535897932) / (isign * mmax);
+			double sine = sin(0.5 * theta);
+			cdouble mult = (-2.0 * sine * sine) + (sin(theta) * 1.0i);
 			cdouble factor = 1.0 + 0.0i;
 
-			for (size_t group = 0; group < step; group++) {
-				for (size_t pair = group; pair < N; pair += jump) {
-					size_t match = pair + step;
-					cdouble product = factor * _data[match];
-					_data[match] = cast(T)(_data[pair] - product);
-					_data[pair] = cast(T)(_data[pair] + product);
-				}
+//			Console.putln("n: ", N*2, " mmax: ", mmax);
 
-				factor = multiplier * factor + factor;
+			for (m = 1; m < mmax; m += 2) {
+				for (i = m; i <= N*2; i += istep) {
+					j = i + mmax;
+//					Console.putln("eval i: ", i , " j: ", j);
+					cdouble temp = factor * _data[(j-1)/2];
+//					Console.putln("temp: ", temp);
+					_data[(j-1)/2] = cast(T)(_data[(i-1)/2] - temp);
+					_data[(i-1)/2] = cast(T)(_data[(i-1)/2] + temp);
+				}
+//				Console.putln("factor: ", factor);
+//				Console.putln("mult: ", mult);
+				factor = mult * factor + factor;
+				//Console.putln("factor: ", factor);
+			}
+			mmax = istep;
+		}
+
+		// normalize
+		if (isign == 1) {
+			for (i = 0; i < N; i++) {
+				_data[i] /= N;
+//				Console.putln("scaled: ", _data[i]);
 			}
 		}
 	}
 
 	void fftRearrange() {
-		size_t N = _data.length;
-
-		uint target = 0;
-		for (size_t pos = 0; pos < N; pos++) {
-			if (target > pos) {
-				// swap entries
-				cdouble temp = cast(cdouble)(_data[target]);
-				_data[target] = _data[pos];
-				_data[pos] = cast(T)temp;
-			}
-
-			// bitmask
-			uint mask = N;
-			while (target & (mask >>= 1)) {
-				// drop bit
-				target &= ~mask;
-			}
-
-			// set bit 0
-			target |= mask;
-		}
 	}
 
 	void fftScale() {
-		size_t N = _data.length;
-
-		double factor = 1.0 / cast(double)N;
-
-		for (size_t pos = 0; pos < N; pos++) {
-			_data[pos] *= factor;
-		}
 	}
 }
 
-double[] FFT(double[] arr) {
-	Vector!(double) foo = new Vector!(double)(arr);
+cdouble[] FFT(cdouble[] arr) {
+	Vector!(cdouble) foo = new Vector!(cdouble)(arr);
 	foo.FFT();
 	return foo._data;
 }

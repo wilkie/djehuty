@@ -133,7 +133,7 @@ class Wavelet : Stream {
 		return tme;
 	}
 
-	double[] fourier(int samples = 512, uint skipSamples = 0) {
+	cdouble[] fourier(int samples = 512, uint skipSamples = 0) {
 		if ((samples + skipSamples) * _fmt.numChannels > (this.length / 2)) {
 			samples = cast(int)((this.length / 2 / _fmt.numChannels) - skipSamples);
 		}
@@ -150,16 +150,16 @@ class Wavelet : Stream {
 		}
 		rem >>= 1;
 
-		double[] ret = new double[rem];
+		cdouble[] ret = new cdouble[rem];
 
 		// I'll just average the channels, if possible
 		short* ptr = cast(short*)&_data[0];
 
 		size_t idx = skipSamples * _fmt.numChannels;
 		for(size_t sample = 0; sample < rem; sample++, idx += _fmt.numChannels) {
-			double data = 0.0;
+			cdouble data = 0.0 + 0.0i;
 			for(size_t channel = 0; channel < _fmt.numChannels; channel++) {
-				data += (cast(double)ptr[idx + channel] / cast(double)short.max);
+				data += (cast(cdouble)ptr[idx + channel] / cast(cdouble)short.max);
 			}
 			ret[sample] = data / _fmt.numChannels;
 		}

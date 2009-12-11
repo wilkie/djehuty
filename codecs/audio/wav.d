@@ -301,7 +301,7 @@ class WAVCodec : AudioCodec {
 
 						Console.putln("");
 
-						bufferTime.fromMicroseconds(2000000);
+						bufferTime = new Time(2000000);
 
 					}
 					else {

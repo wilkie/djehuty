@@ -116,7 +116,7 @@ class MP3Codec : AudioCodec {
 								id3length |= b;
 							}
 
-							//Console.putln("id3 length: ", new String("%x", id3length));
+							Console.putln("id3 length: ", new String("%x", id3length));
 						}
 
 						if (!stream.skip(id3length)) {
@@ -267,7 +267,7 @@ class MP3Codec : AudioCodec {
 					}
 					else
 					{
-						//Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
+						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
 						ubyte curByte;
 
 						// test 5K worth

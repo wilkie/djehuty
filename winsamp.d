@@ -39,6 +39,8 @@ import io.file;
 import utils.heap;
 import utils.fibonacci;
 
+import math.vector;
+
 class MyOptions : OptionParser {
 
 	mixin Options!(
@@ -262,6 +264,8 @@ class MyControl : Widget {
 		//snd = new Sound("tests/begin.mp2");
 		snd = new Sound("tests/01 Block Shaped Heart.mp3");
 		//snd = new Sound("tests/fazed.dreamer.mp3");
+//		snd = new Sound("tests/sine_440.wav");
+		//snd = new Sound("tests/sine_220.wav");
 	}
 
 	override void onDraw(ref Graphics g) {
@@ -305,9 +309,9 @@ class MyControl : Widget {
 		size_t o;
 		foreach(size_t i, freq; foobar) {
 			if (i % 8) {
-				int bar_height = 265 - cast(int)(150 * freq);
+				int bar_height = cast(int)(250000 * freq);
 				//Console.putln(freq, " :: ", bar_height);
-				g.drawLine(o, 265, o, bar_height);
+				g.drawLine(o, 256-bar_height, o, 256);
 				o++;
 			}
 		}
@@ -322,6 +326,18 @@ class MyControl : Widget {
 	}
 
 	override bool onPrimaryMouseDown(ref Mouse mp) {
+		/*
+		cdouble[16] test;
+		for (size_t i = 0; i < 16; i++) {
+			test[i] = i + 0.0i;
+			Console.putln(test[i]);
+		}
+  		Console.putln("-=-=-=-");
+  		cdouble[] ret = test.FFT();
+  		Console.putln("-=-=-=-");
+		for (size_t i = 0; i < 8; i++) {
+			Console.putln(ret[i]);
+		}*/
 		snd.play();
 		tmr.start();
 		return false;
@@ -336,7 +352,7 @@ class MyControl : Widget {
 
 class MyWindow : Window {
 	this() {
-		super("hey",WindowStyle.Fixed,Color.Red,0,0,450,330);
+		super("hey",WindowStyle.Fixed,Color.Red,0,0,2048,330);
 	}
 
 	override void onAdd() {

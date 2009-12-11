@@ -27,6 +27,8 @@ import io.console;
 import codecs.audio.codec;
 import codecs.audio.all;
 
+import math.common;
+
 // Section: Enums
 
 // Section: Core/Resources
@@ -265,8 +267,17 @@ class Sound : Responder {
 		}
 
 		uint inc = buffers[lastIndex].audioFormat.samplesPerSecond / 20;
-		double[] ret = buffers[lastIndex].fourier(512, samples);
+		cdouble[] samps = buffers[lastIndex].fourier(2048, samples);
 		samples += inc;
+
+		double[] ret = new double[samps.length];
+
+		foreach(size_t i, sample; samps) {
+			double re = sample.re * 0.6;
+			double im = sample.im * 0.6;
+
+			ret[i] = ((re * re) + (im * im));
+		}
 
 		return ret;
 	}
