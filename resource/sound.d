@@ -108,7 +108,7 @@ class Sound : Responder {
 		// Find the correct audio codec for this audio stream
 		ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
 
-		if (ret == StreamData.Invalid) { return ret; }
+		if (ret == StreamData.Invalid || ret == StreamData.Required) { return ret; }
 		Console.putln("dboo");
 		Console.putln("Sound: Codec name: ", _curCodec.name);
 
