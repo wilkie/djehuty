@@ -263,25 +263,26 @@ class MyControl : Widget {
 
 		//snd = new Sound("tests/begin.mp2");
 		snd = new Sound("tests/01 Block Shaped Heart.mp3");
-		//snd = new Sound("tests/fazed.dreamer.mp3");
+//		snd = new Sound("tests/fazed.dreamer.mp3");
 //		snd = new Sound("tests/sine_440.wav");
 		//snd = new Sound("tests/sine_220.wav");
+		//snd = new Sound("/c/Sonic_the_Hedgehog_3_Sonic_Gargles_with_Garden_Marbles_OC_ReMix.mp3");
 	}
 
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
 		g.drawImage(this.left,this.top,imgJPEG);
 
-		Brush foo = new Brush(Color.fromRGBA(255,0,0,0x80));
+		Brush foo = new Brush(Color.fromRGBA(1.0,0,0,0.5));
 		g.brush = foo;
-		Pen foo2 = new Pen(Color.fromRGBA(80,0,0,0x80));
+		Pen foo2 = new Pen(Color.fromRGBA(0.5,0,0,0.5));
 		g.pen = foo2;
-		g.brush = new Brush(Color.fromRGBA(0x80,0x80,0x80,0x80));
+		g.brush = new Brush(Color.fromRGBA(0.5,0.5,0.5,0.5));
 		g.fillRect(86, 86, 140, 140);
 		g.brush = Brush.White;
 		g.drawRect(80, 80, 140, 140);
 		g.antialias = true;
-		g.brush = new Brush(Color.fromRGBA(0xc8,0xc8,0xc8,0xff));
+		g.brush = new Brush(Color.fromRGBA(0.7,0.7,0.7,1.0));
 		//g.drawOval(100, 100, 100, 100);
 		g.drawPie(100,100,100,100, (215+260)%360, 360-260);
 		g.brush = Brush.Blue;
@@ -304,13 +305,16 @@ class MyControl : Widget {
 //*/
 
 
-		g.pen = new Pen(Color.fromRGBA(0x0, 0x0, 0xff, 0x80), 1.0);
+		g.pen = new Pen(Color.fromRGBA(0.0, 0.0, 1.0, 0.5), 1.0);
 
 		size_t o;
 		foreach(size_t i, freq; foobar) {
 			if (i % 8) {
 				int bar_height = cast(int)(250000 * freq);
 				//Console.putln(freq, " :: ", bar_height);
+				double curHue;
+				curHue = cast(double)i / cast(double)foobar.length;
+				g.pen = new Pen(Color.fromHSLA(curHue,1.0,0.3,0.75),1.0);
 				g.drawLine(o, 256-bar_height, o, 256);
 				o++;
 			}
