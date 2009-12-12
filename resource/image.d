@@ -22,8 +22,8 @@ import io.console;
 import synch.semaphore;
 
 // import the codec information
-import codecs.image.codec;
-import codecs.image.all;
+import decoders.image.decoder;
+import decoders.image.all;
 
 // Section: Core/Resources
 
@@ -95,9 +95,9 @@ public:
 		return _view;
 	}
 
-	// Description: This function will return the currently used ImageCodec, if available.
-	// Returns: The ImageCodec being used.
-	ImageCodec codec() {
+	// Description: This function will return the currently used ImageDecoder, if available.
+	// Returns: The ImageDecoder being used.
+	ImageDecoder codec() {
 		return _curCodec;
 	}
 
@@ -108,7 +108,7 @@ protected:
 	bool _hasMultipleFrames;
 	ImageFrameDescription _imageFrameDesc;
 
-	ImageCodec _curCodec;
+	ImageDecoder _curCodec;
 
 	//Semaphore _loaded;
 
@@ -118,7 +118,7 @@ protected:
 		_view = new Bitmap();
 
 		if (_curCodec is null) {
-			ret = runAllCodecs(_curCodec, stream, _view);
+			ret = runAllDecoders(_curCodec, stream, _view);
 		}
 		else {
 			ret = _curCodec.decode(stream, _view);

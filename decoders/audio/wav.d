@@ -9,12 +9,12 @@
  *
  */
 
-module codecs.audio.wav;
+module decoders.audio.wav;
 
-import codecs.audio.codec;
-import codecs.audio.mp2 : MP2Codec;
+import decoders.audio.decoder;
+import decoders.audio.mp2 : MP2Decoder;
 
-import codecs.codec;
+import decoders.decoder;
 
 import core.stream;
 import core.time;
@@ -27,7 +27,7 @@ import io.console;
 // Section: Codecs/Audio
 
 // Description: This is the Microsoft Wave file codec.
-class WAVCodec : AudioCodec {
+class WAVDecoder : AudioDecoder {
 
 	String name() {
 		return new String("Microsoft Wave");
@@ -173,7 +173,7 @@ class WAVCodec : AudioCodec {
 
 					if (FMTHeader.compressionCode == 0x50) {
 						if (embeddedCodec is null) {
-							embeddedCodec = new MP2Codec();
+							embeddedCodec = new MP2Decoder();
 						}
 						return embeddedCodec.decode(stream, toBuffer, wi);
 					}
@@ -394,7 +394,7 @@ protected:
 	bool formatHeaderFound = false;
 	uint dataToRead = 0;
 
-	AudioCodec embeddedCodec;
+	AudioDecoder embeddedCodec;
 
 	AudioFormat wf;
 	Time bufferTime;

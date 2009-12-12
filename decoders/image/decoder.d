@@ -1,11 +1,11 @@
-module codecs.image.codec;
+module decoders.image.decoder;
 
 import graphics.bitmap;
 
 import core.string;
 import core.stream;
 
-import codecs.codec;
+import decoders.decoder;
 
 struct ImageFrameDescription {
 	uint time;	//time till the display of the next image
@@ -15,13 +15,13 @@ struct ImageFrameDescription {
 	uint clearColor; //the color to use when clearing
 }
 
-class ImageCodec : Codec {
+class ImageDecoder : Decoder {
 public:
 	StreamData decode(Stream stream, ref Bitmap view) {
 		return StreamData.Invalid;
 	}
 
 	override String name() {
-		return new String("Unknown Image Codec");
+		return new String("Unknown Image Decoder");
 	}
 }

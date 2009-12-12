@@ -1,4 +1,4 @@
-module codecs.audio.all;
+module decoders.audio.all;
 
 import io.audio;
 import io.wavelet;
@@ -8,25 +8,25 @@ import core.string;
 import core.stream;
 import core.definitions;
 
-import codecs.codec;
-import codecs.audio.codec;
+import decoders.decoder;
+import decoders.audio.decoder;
 
 version(NoWaveAudio) {
 }
 else {
-	public import codecs.audio.wav : WAVCodec;
+	public import decoders.audio.wav : WAVDecoder;
 }
 
 version(NoMp2Audio) {
 }
 else {
-	public import codecs.audio.mp2 : MP2Codec;
+	public import decoders.audio.mp2 : MP2Decoder;
 }
 
 version(NoMp3Audio) {
 }
 else {
-	public import codecs.audio.mp3 : MP3Codec;
+	public import decoders.audio.mp3 : MP3Decoder;
 }
 
 // MP1
@@ -42,7 +42,7 @@ else {
 
 template RunCodec(string codec) {
 	const char[] RunCodec = `
-		audioCodec = new ` ~ codec ~ `Codec();
+		audioCodec = new ` ~ codec ~ `Decoder();
 
 		pos = stream.position;
 
@@ -54,7 +54,7 @@ template RunCodec(string codec) {
 	`;
 }
 
-StreamData runAllCodecs(ref AudioCodec audioCodec, Stream stream, Wavelet buffer, ref AudioInfo wf) {
+StreamData runAllCodecs(ref AudioDecoder audioCodec, Stream stream, Wavelet buffer, ref AudioInfo wf) {
 	StreamData ret;
 	ulong pos;
 

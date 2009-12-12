@@ -1,4 +1,4 @@
-module codecs.audio.mpegCommon;
+module decoders.audio.mpegCommon;
 
 
 // Coefficients Di of the synthesis window

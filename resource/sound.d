@@ -24,8 +24,8 @@ import io.audio;
 import io.file;
 import io.console;
 
-import codecs.audio.codec;
-import codecs.audio.all;
+import decoders.audio.decoder;
+import decoders.audio.all;
 
 import math.common;
 
@@ -289,7 +289,7 @@ protected:
 
 	ulong curPos;
 
-	AudioCodec _curCodec;
+	AudioDecoder _curCodec;
 	Stream inStream;
 
 	Audio wavDevice;

@@ -1,24 +1,20 @@
 /*
- * codec.d
+ * decoder.d
  *
- * This file implements the base class for all codecs.
+ * This file implements the base class for all decoders.
  *
  * Author: Dave Wilkinson
  *
  */
 
-module codecs.codec;
+module decoders.decoder;
 
 import core.time;
 import core.string;
 
 // Description: Base class for all codecs
-class Codec
-{
-public:
-
-	String name()
-	{
+class Decoder {
+	String name() {
 		return new String("Unknown Codec");
 	}
 

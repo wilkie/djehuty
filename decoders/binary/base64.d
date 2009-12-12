@@ -7,12 +7,12 @@
  *
  */
 
-module codecs.binary.base64;
+module decoders.binary.base64;
 
 import core.endian;
 import core.stream;
 
-import codecs.binary.codec;
+import decoders.binary.decoder;
 
 private {
 
@@ -44,7 +44,7 @@ private {
 // Section: Codecs/Binary
 
 // Description: This represents the Base64 Codec.
-class Base64Codec : BinaryCodec {
+class Base64Decoder : BinaryDecoder {
 
 	StreamData decode(Stream stream, Stream toStream) {
 		ubyte chunk;
