@@ -262,8 +262,8 @@ class MyControl : Widget {
 		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
 
 		//snd = new Sound("tests/begin.mp2");
-		snd = new Sound("tests/01 Block Shaped Heart.mp3");
-//		snd = new Sound("tests/fazed.dreamer.mp3");
+		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
+		snd = new Sound("tests/fazed.dreamer.mp3");
 //		snd = new Sound("tests/sine_440.wav");
 		//snd = new Sound("tests/sine_220.wav");
 		//snd = new Sound("/c/Sonic_the_Hedgehog_3_Sonic_Gargles_with_Garden_Marbles_OC_ReMix.mp3");
@@ -310,7 +310,7 @@ class MyControl : Widget {
 		size_t o;
 		foreach(size_t i, freq; foobar) {
 			if (i % 8) {
-				int bar_height = cast(int)(250000 * freq);
+				int bar_height = cast(int)(2500000 * freq);
 				//Console.putln(freq, " :: ", bar_height);
 				double curHue;
 				curHue = cast(double)i / cast(double)foobar.length;

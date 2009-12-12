@@ -238,7 +238,7 @@ class Vector(T = double) {
 		return ret;
 	}
 
-	void FFT() {
+	void fft() {
 		// Only implemented for powers of 2
 		if (_data is null || _data.length < 1 || _data.length & (_data.length - 1)) {
 			return;
@@ -252,7 +252,7 @@ class Vector(T = double) {
 		_data = _data[0.._data.length / 2];
 	}
 
-	void IFFT() {
+	void ifft() {
 		// Only implemented for powers of 2
 		if (_data is null || _data.length < 1 || _data.length & (_data.length - 1)) {
 			return;
@@ -342,8 +342,8 @@ protected:
 	}
 }
 
-cdouble[] FFT(cdouble[] arr) {
+cdouble[] fft(cdouble[] arr) {
 	Vector!(cdouble) foo = new Vector!(cdouble)(arr);
-	foo.FFT();
+	foo.fft();
 	return foo._data;
 }
