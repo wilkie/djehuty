@@ -315,57 +315,45 @@ private:
 			this.red = _lum;
 			this.blue = _lum;
 			this.green = _lum;
+			return;
 		}
 
-		double tmp1;
-		double tmp2;
+		double p;
+		double q;
 		if (_lum < 0.5) {
-			tmp2 = _lum * (1.0 + _sat);
+			q = _lum * (1.0 + _sat);
 		}
 		else {
-			tmp2 = _lum + _sat - (_lum * _sat);
+			q = _lum + _sat - (_lum * _sat);
 		}
 
-		tmp1 = (2.0 * _lum) - tmp2;
+		p = (2.0 * _lum) - q;
 
 		double[3] ctmp;
 
 		ctmp[0] = _hue + (1.0/3.0);
-		if (ctmp[0] < 0) {
-			ctmp[0] = ctmp[0] + 1.0;
-		}
-		else if (ctmp[0] > 1) {
-			ctmp[0] = ctmp[0] - 1.0;
-		}
-
 		ctmp[1] = _hue;
-		if (ctmp[1] < 0) {
-			ctmp[1] = ctmp[1] + 1.0;
-		}
-		else if (ctmp[1] > 1) {
-			ctmp[1] = ctmp[1] - 1.0;
-		}
-
 		ctmp[2] = _hue - (1.0/3.0);
-		if (ctmp[2] < 0) {
-			ctmp[2] = ctmp[2] + 1.0;
-		}
-		else if (ctmp[2] > 1) {
-			ctmp[2] = ctmp[2] - 1.0;
-		}
 
 		for(size_t i = 0; i < 3; i++) {
-			if ((6.0 * ctmp[i]) < 1) {
-				ctmp[i] = tmp1 + (tmp2 - tmp1) * 6.0 * ctmp[i];
+			if (ctmp[i] < 0) {
+				ctmp[i] += 1.0;
 			}
-			else if ((2.0 * ctmp[1]) < 1) {
-				ctmp[i] = tmp2;
+			else if (ctmp[i] > 1) {
+				ctmp[i] -= 1.0;
 			}
-			else if ((3.0 * ctmp[1]) < 1) {
-				ctmp[i] = tmp1 + (tmp2 - tmp1) * ((2.0 / 3.0) - ctmp[i]) * 6.0;
+
+			if (ctmp[i] < (1.0 / 6.0)) {
+				ctmp[i] = p + ((q - p) * 6.0 * ctmp[i]);
+			}
+			else if (ctmp[i] < 0.5) {
+				ctmp[i] = q;
+			}
+			else if (ctmp[i] < (2.0 / 3.0)) {
+				ctmp[i] = p + (q - p) * ((2.0 / 3.0) - ctmp[i]) * 6.0;
 			}
 			else {
-				ctmp[i] = tmp1;
+				ctmp[i] = p;
 			}
 		}
 

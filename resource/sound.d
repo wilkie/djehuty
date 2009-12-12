@@ -275,8 +275,8 @@ class Sound : Responder {
 		foreach(size_t i, sample; samps) {
 			double re = sample.re * 0.6;
 			double im = sample.im * 0.6;
-
-			ret[i] = ((re * re) + (im * im));
+			
+			ret[i] = sqrt((re * re) + (im * im));
 		}
 
 		return ret;
