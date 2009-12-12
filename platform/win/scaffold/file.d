@@ -14,18 +14,20 @@ import platform.win.main;
 
 import platform.vars.file;
 
+import scaffold.directory;
+
 import core.stream;
 import core.string;
 import core.main;
 import core.definitions;
 
+import io.console;
 import io.directory;
 import io.file;
 
 // OPERATIONS //
 
-bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
-{
+bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath) {
 	String oldPath = new String(oldFullPath);
 	oldPath.appendChar('\0');
 
@@ -36,8 +38,7 @@ bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullP
 	return true;
 }
 
-bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath)
-{
+bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath) {
 	String oldPath = new String(oldFullPath);
 	oldPath.appendChar('\0');
 
@@ -48,8 +49,7 @@ bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullP
 	return true;
 }
 
-bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName)
-{
+bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName) {
 	String old = new String(path);
 	old.appendChar('\0');
 
@@ -74,8 +74,7 @@ bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newNa
 	return true;
 }
 
-bool FileMove(ref String from, ref Directory to)
-{
+bool FileMove(ref String from, ref Directory to) {
 	String old = new String(from);
 	old.appendChar('\0');
 
@@ -103,41 +102,37 @@ bool FileMove(ref String from, ref Directory to)
 
 // FILE //
 
-bool FileOpen(ref FilePlatformVars fileVars, ref String filename)
-{
+bool FileOpen(ref FilePlatformVars fileVars, ref String filename) {
 	String newString = new String(filename);
 	newString.appendChar('\0');
-	fileVars.f = CreateFileW( newString.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,OPEN_ALWAYS,0,null);
+	wchar[] foo = _ConvertFrameworkPath(newString.array);
+	fileVars.f = CreateFileW( foo.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,OPEN_ALWAYS,0,null);
 
 	return (fileVars.f !is null);
 }
 
-bool FileCreate(ref FilePlatformVars fileVars, ref String filename)
-{
+bool FileCreate(ref FilePlatformVars fileVars, ref String filename) {
 	String newString = new String(filename);
 	newString.appendChar('\0');
-	fileVars.f = CreateFileW( newString.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,CREATE_ALWAYS,0,null);
+	wchar[] foo = _ConvertFrameworkPath(newString.array);
+	fileVars.f = CreateFileW( foo.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,CREATE_ALWAYS,0,null);
 
 	return (fileVars.f !is null);
 }
 
-void FileClose(ref FilePlatformVars fileVars)
-{
+void FileClose(ref FilePlatformVars fileVars) {
 	CloseHandle(fileVars.f);
 }
 
-void FileGetSize(ref FilePlatformVars fileVars, ref ulong length)
-{
+void FileGetSize(ref FilePlatformVars fileVars, ref ulong length) {
 	GetFileSizeEx(fileVars.f, cast(PLARGE_INTEGER)&length);
 }
 
-void FileRewindAll(ref FilePlatformVars fileVars)
-{
+void FileRewindAll(ref FilePlatformVars fileVars) {
 	SetFilePointer(fileVars.f, 0, null, FILE_BEGIN);
 }
 
-void FileRewind(ref FilePlatformVars fileVars, ulong amount)
-{
+void FileRewind(ref FilePlatformVars fileVars, ulong amount) {
 	long theamount = cast(long)amount;
 	theamount = -theamount;
 
@@ -147,13 +142,11 @@ void FileRewind(ref FilePlatformVars fileVars, ulong amount)
 	SetFilePointer(fileVars.f, low_word, &high_word, FILE_CURRENT);
 }
 
-void FileSkipAll(ref FilePlatformVars fileVars)
-{
+void FileSkipAll(ref FilePlatformVars fileVars) {
 	SetFilePointer(fileVars.f, 0, null, FILE_END);
 }
 
-void FileSkip(ref FilePlatformVars fileVars, ulong amount)
-{
+void FileSkip(ref FilePlatformVars fileVars, ulong amount) {
 	long theamount = cast(long)amount;
 
 	int low_word = cast(int)(theamount & 0xFFFFFFFF);
@@ -162,15 +155,13 @@ void FileSkip(ref FilePlatformVars fileVars, ulong amount)
 	SetFilePointer(fileVars.f, low_word, &high_word, FILE_CURRENT);
 }
 
-void FileRead(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
-{
+void FileRead(ref FilePlatformVars fileVars, ubyte* buffer, ulong len) {
 	DWORD ret;
 	ulong total_bytes = 0;
 
 	ubyte* curbuffer = buffer;
 
-	while (len > 0xFFFFFFFF)
-	{
+	while (len > 0xFFFFFFFF) {
 		ReadFile(fileVars.f, curbuffer, 0xFFFFFFFF, &ret, null);
 
 		total_bytes += ret;
@@ -182,16 +173,14 @@ void FileRead(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
 	total_bytes += ret;
 }
 
-void FileWrite(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
-{
+void FileWrite(ref FilePlatformVars fileVars, ubyte* buffer, ulong len) {
 	DWORD ret;
 	ulong total_bytes = 0;
 
 	ubyte* curbuffer = buffer;
 
 	// we are given a long for length, windows only has an int function
-	while (len > 0xFFFFFFFF)
-	{
+	while (len > 0xFFFFFFFF) {
 		WriteFile(fileVars.f, curbuffer, 0xFFFFFFFF, &ret, null);
 
 		total_bytes += ret;
@@ -203,8 +192,7 @@ void FileWrite(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
 	total_bytes += ret;
 }
 
-void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len)
-{
+void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len) {
 /*	Console.putln("append");
 	ulong pos = file.getPosition();
 
