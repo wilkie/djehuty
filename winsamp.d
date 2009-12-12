@@ -310,17 +310,15 @@ class MyControl : Widget {
 		size_t o;
 		foreach(size_t i, freq; foobar) {
 			if (i % 8) {
-				int bar_height = cast(int)(2500000 * freq);
+				int bar_height = cast(int)(12000 * freq);
 				//Console.putln(freq, " :: ", bar_height);
-				double curHue;
-				curHue = cast(double)i / cast(double)foobar.length;
-				g.pen = new Pen(Color.fromHSLA(curHue,1.0,0.3,0.75),1.0);
+				//double curHue;
+				//curHue = cast(double)i / cast(double)foobar.length;
+				//g.pen = new Pen(Color.fromHSLA(curHue,1.0,0.3,0.75),1.0);
 				g.drawLine(o, 256-bar_height, o, 256);
 				o++;
 			}
 		}
-		g.drawLine(0,0,300,300);
-		g.drawLine(0,0,250,250);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
