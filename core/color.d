@@ -77,18 +77,12 @@ else {
 }
 
 
-	// a small function to convert an 8bpp value into
-	// the native bits per pixel (which is either 8bpp or 16bpp)
-static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-	static ubyte _8toNativebpp(ubyte comp) {
-		return comp;
-	}
+// a small function to convert an 8bpp value into
+// the native bits per pixel (which is either 8bpp or 16bpp)
+template _8toNativebpp(double comp) {
+	const ColorComponent _8toNativebpp = cast(ColorComponent)(comp * cast(double)((1 << (ColorComponent.sizeof*8)) - 1));
 }
-else { //static if (Colorbpp == Parameter_Colorbpp.Color16bpp)
-	static ushort _8toNativebpp(ubyte comp) {
-		return cast(ushort)(comp * (0x101 * Colorbpp));
-	}
-}
+
 // Section: Types
 
 // Description: This abstracts a color type.  Internally, the structure is different for each platform depending on the native component ordering and the bits per pixel for the platform.
@@ -98,83 +92,87 @@ public:
 	// -- Predefined values
 
 	// Description: Black!
-	static Color Black 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Black 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color Green		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Red		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Blue 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Green		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static Color Red		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static Color Blue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color Magenta 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0x00)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Yellow 	= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0x00)), a: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Cyan 		= { _internal: { components: {r: eval!(_8toNativebpp(0x00)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color Magenta 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static Color Yellow 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static Color Cyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color DarkGray	= { _internal: { components: {r: eval!(_8toNativebpp(0x80)), g: eval!(_8toNativebpp(0x80)), b: eval!(_8toNativebpp(0x80)), a: eval!(_8toNativebpp(0xFF)) } } };
-	static Color Gray 		= { _internal: { components: {r: eval!(_8toNativebpp(0xC0)), g: eval!(_8toNativebpp(0xC0)), b: eval!(_8toNativebpp(0xC0)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color DarkGray	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+	static Color Gray 		= { _internal: { components: {r: _8toNativebpp!(0.75), g: _8toNativebpp!(0.75), b: _8toNativebpp!(0.75), a: _8toNativebpp!(1.0) } } };
 
-	static Color White 		= { _internal: { components: {r: eval!(_8toNativebpp(0xFF)), g: eval!(_8toNativebpp(0xFF)), b: eval!(_8toNativebpp(0xFF)), a: eval!(_8toNativebpp(0xFF)) } } };
+	static Color White 		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
 	// --
 
-	// Description: This function will set the color given the 8-bit red, green, blue, and alpha components.
-	static Color fromRGBA(ubyte r, ubyte g, ubyte b, ubyte a) {
+	// Description: This function will set the color given the red, green, blue, and alpha components.
+	static Color fromRGBA(double r, double g, double b, double a) {
 		Color ret;
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			ret._internal.components.r = r;
-			ret._internal.components.g = g;
-			ret._internal.components.b = b;
-			ret._internal.components.a = a;
-		}
-		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
-			ret._internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.a = (cast(double)a / cast(double)0xFF) * 0xFFFF;
-		}
+		ret.red = r;
+		ret.green = g;
+		ret.blue = b;
+		ret.alpha = a;
 		return ret;
 	}
 
-	// Description: This function will set the color given the 8-bit red, green, and blue components.
-	static Color fromRGB(ubyte r, ubyte g, ubyte b) {
+	// Description: This function will set the color given the red, green, and blue components.
+	static Color fromRGB(double r, double g, double b) {
 		Color ret;
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			ret._internal.components.r = r;
-			ret._internal.components.g = g;
-			ret._internal.components.b = b;
-			ret._internal.components.a = 0xFF;
-		}
-		else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
-			ret._internal.components.r = (cast(double)r / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.g = (cast(double)g / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.b = (cast(double)b / cast(double)0xFF) * 0xFFFF;
-			ret._internal.components.a = 0xFFFF;
-		}
+		ret.red = r;
+		ret.green = g;
+		ret.blue = b;
+		ret.alpha = 1.0;
 		return ret;
 	}
 
-	ubyte blue() {
+	// Description: This function will set the color given the hue, saturation, luminance, and alpha components.
+	static Color fromHSLA(double h, double s, double l, double a) {
+		Color ret;
+		ret.hue = h;
+		ret.sat = s;
+		ret.lum = l;
+		ret.alpha = a;
+		return ret;
+	}
+
+	// Description: This function will set the color given the hue, saturation, and luminance components.
+	static Color fromHSL(ubyte h, ubyte s, ubyte l) {
+		Color ret;
+		ret.hue = h;
+		ret.sat = s;
+		ret.lum = l;
+		ret.alpha = 1.0;
+		return ret;
+	}
+
+	double blue() {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return _internal.components.b;
+			return cast(double)_internal.components.b / cast(double)0xFF;
 		}
 		else {
-			return (cast(double)_internal.components.b / cast(double)0xFFFF) * 0xFF;
+			return cast(double)_internal.components.b / cast(double)0xFFFF;
 		}
 	}
 
-	void blue(ubyte val) {
+	void blue(double val) {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.b = val;
+			_internal.components.b = cast(ubyte)(0xffp0 * val);
 		}
 		else {
-			_internal.components.b = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+			_internal.components.b = cast(ubyte)(0xffffp0 * val);
 		}
 	}
 
-	ubyte green() {
+	double green() {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return _internal.components.g;
+			return cast(double)_internal.components.g / cast(double)0xFF;
 		}
 		else {
-			return (cast(double)_internal.components.g / cast(double)0xFFFF) * 0xFF;
+			return cast(double)_internal.components.g / cast(double)0xFFFF;
 		}
 	}
 
@@ -187,12 +185,21 @@ public:
 		}
 	}
 
-	ubyte red() {
+	void green(double val) {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return _internal.components.r;
+			_internal.components.g = cast(ubyte)(0xffp0 * val);
 		}
 		else {
-			return (cast(double)_internal.components.r / cast(double)0xFFFF) * 0xFF;
+			_internal.components.g = cast(ubyte)(0xffffp0 * val);
+		}
+	}
+
+	double red() {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			return cast(double)_internal.components.r / cast(double)0xFF;
+		}
+		else {
+			return cast(double)_internal.components.r / cast(double)0xFFFF;
 		}
 	}
 
@@ -204,23 +211,83 @@ public:
 			_internal.components.r = (cast(double)val / cast(double)0xFF) * 0xFFFF;
 		}
 	}
-	
-	ubyte alpha() {
+
+	void red(double val) {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return _internal.components.a;
+			_internal.components.r = cast(ubyte)(0xffp0 * val);
 		}
 		else {
-			return (cast(double)_internal.components.a / cast(double)0xFFFF) * 0xFF;
+			_internal.components.r = cast(ubyte)(0xffffp0 * val);
 		}
 	}
 
-	void alpha(ubyte val) {
+	double alpha() {
 		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.a = val;
+			return cast(double)_internal.components.a / cast(double)0xFF;
 		}
 		else {
-			_internal.components.a = (cast(double)val / cast(double)0xFF) * 0xFFFF;
+			return cast(double)_internal.components.a / cast(double)0xFFFF;
 		}
+	}
+
+	void alpha(double val) {
+		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
+			_internal.components.a = cast(ubyte)(0xffp0 * val);
+		}
+		else {
+			_internal.components.a = cast(ubyte)(0xffffp0 * val);
+		}
+	}
+
+	void hue(double val) {
+		if (!_hslValid) {
+			_calculateHSL();
+		}
+		_hue = val;
+		_calculateFromHSL();
+	}
+
+	double hue() {
+		if (_hslValid) {
+			return _hue;
+		}
+		
+		_calculateHSL();
+		return _hue;
+	}
+
+	void sat(double val) {
+		if (!_hslValid) {
+			_calculateHSL();
+		}
+		_sat = val;
+		_calculateFromHSL();
+	}
+
+	double sat() {
+		if (_hslValid) {
+			return _sat;
+		}
+
+		_calculateHSL();
+		return _sat;
+	}
+
+	void lum(double val) {
+		if (!_hslValid) {
+			_calculateHSL();
+		}
+		_lum = val;
+		_calculateFromHSL();
+	}
+
+	double lum() {
+		if (_hslValid) {
+			return _lum;
+		}
+
+		_calculateHSL();
+		return _lum;
 	}
 
 	ColorValue value() {
@@ -236,6 +303,153 @@ private:
 	}
 
 	internal _internal;
+
+	// cache HSL values
+	bool _hslValid;
+	double _hue;
+	double _sat;
+	double _lum;
+
+	void _calculateFromHSL() {
+		if (_sat == 0) {
+			this.red = _lum;
+			this.blue = _lum;
+			this.green = _lum;
+		}
+
+		double tmp1;
+		double tmp2;
+		if (_lum < 0.5) {
+			tmp2 = _lum * (1.0 + _sat);
+		}
+		else {
+			tmp2 = _lum + _sat - (_lum * _sat);
+		}
+
+		tmp1 = (2.0 * _lum) - tmp2;
+
+		double[3] ctmp;
+
+		ctmp[0] = _hue + (1.0/3.0);
+		if (ctmp[0] < 0) {
+			ctmp[0] = ctmp[0] + 1.0;
+		}
+		else if (ctmp[0] > 1) {
+			ctmp[0] = ctmp[0] - 1.0;
+		}
+
+		ctmp[1] = _hue;
+		if (ctmp[1] < 0) {
+			ctmp[1] = ctmp[1] + 1.0;
+		}
+		else if (ctmp[1] > 1) {
+			ctmp[1] = ctmp[1] - 1.0;
+		}
+
+		ctmp[2] = _hue - (1.0/3.0);
+		if (ctmp[2] < 0) {
+			ctmp[2] = ctmp[2] + 1.0;
+		}
+		else if (ctmp[2] > 1) {
+			ctmp[2] = ctmp[2] - 1.0;
+		}
+
+		for(size_t i = 0; i < 3; i++) {
+			if ((6.0 * ctmp[i]) < 1) {
+				ctmp[i] = tmp1 + (tmp2 - tmp1) * 6.0 * ctmp[i];
+			}
+			else if ((2.0 * ctmp[1]) < 1) {
+				ctmp[i] = tmp2;
+			}
+			else if ((3.0 * ctmp[1]) < 1) {
+				ctmp[i] = tmp1 + (tmp2 - tmp1) * ((2.0 / 3.0) - ctmp[i]) * 6.0;
+			}
+			else {
+				ctmp[i] = tmp1;
+			}
+		}
+
+		this.red = ctmp[0];
+		this.green = ctmp[1];
+		this.blue = ctmp[2];
+	}
+
+	void _calculateHSL() {
+		// find min and max values
+
+		double min, max;
+		double r,g,b;
+		r = this.red;
+		g = this.green;
+		b = this.blue;
+
+		uint maxColor;
+
+		if (r<=g && r<=b) {
+			min = r;
+			if (g<b) {
+				max = b;
+				maxColor = 2;
+			}
+			else {
+				max = g;
+				maxColor = 1;
+			}
+		}
+		else if (g<=b && g<=r) {
+			min = g;
+			if (r<b) {
+				max = b;
+				maxColor = 2;
+			}
+			else {
+				max = r;
+				maxColor = 0;
+			}
+		}
+		else {
+			min = b;
+			if (r<g) {
+				max = g;
+				maxColor = 1;
+			}
+			else {
+				max = r;
+				maxColor = 0;
+			}
+		}
+
+		// find luminance
+		_lum = (max + min) * 0.5;
+
+		if (max == min) {
+			_sat = 0;
+			_hue = 0;
+			_hslValid = true;
+			return;
+		}
+
+		// find the saturation
+		if (_lum < 0.5) {
+			_sat = (max - min) / (max + min);
+		}
+		else {
+			_sat = (max - min) / (2.0 - max - min);
+		}
+
+		// find hue
+		if (maxColor == 0) {
+			_hue = (g - b) / (max - min);
+		}
+		else if (maxColor == 1){
+			_hue = 2.0 + (b - r) / (max - min);
+		}
+		else {
+			_hue = 4.0 + (r - g) / (max - min);
+		}
+		_hue /= 6.0;
+		_hslValid = true;
+	}
 }
 
 
