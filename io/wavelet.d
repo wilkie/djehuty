@@ -164,7 +164,7 @@ class Wavelet : Stream {
 			ret[sample] = data / _fmt.numChannels;
 		}
 
-		return ret.FFT();
+		return ret.fft();
 	}
 
 private:
