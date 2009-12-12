@@ -7,7 +7,7 @@
  *
  */
 
-module codecs.image.jpeg;
+module decoders.image.jpeg;
 
 import graphics.bitmap;
 
@@ -15,14 +15,12 @@ import core.string;
 import core.stream;
 import core.endian;
 
-import codecs.image.codec;
-import codecs.codec;
+import decoders.image.decoder;
+import decoders.decoder;
 
-private
-{
+private {
 	// Decoder States
-	enum
-	{
+	enum {
 		JPEG_STATE_INIT_PROGRESS,
 
 		JPEG_STATE_READ_HEADER,
@@ -74,17 +72,15 @@ private
 		JPEG_STATE_READ_BITS,
 	}
 
-	struct HUFFMAN_TABLE
-	{
-		ubyte lengths[16];
-		ubyte data[16][];
-		ubyte data_pos[16];
-		ushort minor_code[16];
-		ushort major_code[16];
+	struct HUFFMAN_TABLE {
+		ubyte[16] lengths;
+		ubyte[][16] data;
+		ubyte[16] data_pos;
+		ushort[16] minor_code;
+		ushort[16] major_code;
 	}
 
-	struct SCAN_COMPONENT_SELECTOR
-	{
+	struct SCAN_COMPONENT_SELECTOR {
 		ubyte Cs;
 		ubyte DC_index;	//dc huffman table index
 		ubyte AC_index;	//ac huffman table index
@@ -97,12 +93,11 @@ private
 		short lastDC;
 	}
 
-	struct JPEG_RENDER_INFO
-	{
-		HUFFMAN_TABLE HT_DC[4];
-		HUFFMAN_TABLE HT_AC[4];
+	struct JPEG_RENDER_INFO {
+		HUFFMAN_TABLE[4] HT_DC;
+		HUFFMAN_TABLE[4] HT_AC;
 
-		ushort quantization_table[4][64];
+		ushort[64][4] quantization_table;
 
 		ubyte Ns;
 
@@ -127,8 +122,7 @@ private
 
 	}
 
-	align(1) struct JFIF_HEADER
-	{
+	align(1) struct JFIF_HEADER {
 		ubyte version_major;
 		ubyte version_minor;
 		ubyte density_unit;
@@ -138,16 +132,14 @@ private
 		ubyte thumb_h;
 	}
 
-	align(1) struct JPEG_SOF
-	{
+	align(1) struct JPEG_SOF {
 		ubyte sample_percision;			// sample percision
 		ushort num_lines;				// number of lines
 		ushort num_samples_per_line; 	// number of samples per line
 		ubyte num_image_components; 	// number of image components per frame
 	}
 
-	align(1) struct JPEG_SOF_COMPONENTS
-	{
+	align(1) struct JPEG_SOF_COMPONENTS {
 		ubyte[255] component_identifier; 			// C(i)
 		ubyte[255] sampling_factor;					// H(i), V(i) - hi 4 bits: horizontal, else: vertical
 		ubyte[255] quantization_table_destination; 	// Tq(i)
@@ -161,22 +153,18 @@ private
 		ubyte num_image_components;
 	}
 
-	align(1) struct JPEG_SOS_COMPONENTS
-	{
+	align(1) struct JPEG_SOS_COMPONENTS {
 		ubyte[255] scan_components;			// C(j)
 		ubyte[255] entropy_table_selector;	// Td(j), Ta(j) - hi 4 bits: DC entropy table, else: AC
 	}
 
-	align(1) struct JPEG_SOS_SELECTOR
-	{
-
+	align(1) struct JPEG_SOS_SELECTOR {
 		ubyte start_spectral_selector;
 		ubyte end_spectral_selector;
 		ubyte successive_approximation;	// Ah, Al - hi 4 bits: high, else: low
 	}
 
-	align(1) struct JFIF_EXT
-	{
+	align(1) struct JFIF_EXT {
 		ubyte ext_code;
 	}
 
@@ -307,16 +295,13 @@ private
 
 // Description: The JPEG Codec
 
-class JPEGCodec : ImageCodec
-{
+class JPEGDecoder : ImageDecoder {
 
-	String name()
-	{
+	String name() {
 		return new String("Joint Picture Experts Group");
 	}
 
-	StreamData decode(Stream stream, ref Bitmap view)
-	{
+	StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
 
@@ -325,17 +310,13 @@ class JPEGCodec : ImageCodec
 		ushort header;
 		ubyte byteCheck;
 
-		for (;;)
-		{
-			switch(decoderState)
-			{
-
+		for (;;) {
+			switch(decoderState) {
 				case JPEG_STATE_READ_BYTE:
 
 					//writefln("jpeg - decode - read byte");
 
-					if (!stream.read(cur_byte))
-					{
+					if (!stream.read(cur_byte)) {
 						return StreamData.Required;
 					}
 
@@ -347,8 +328,7 @@ class JPEGCodec : ImageCodec
 					// check for a FF block
 					// if this is a 0xFF and the next block is a 0x00,
 					// then we use this block, but skip the next byte
-					if (cur_byte != 0xFF)
-					{
+					if (cur_byte != 0xFF) {
 						decoderState = decoderNextState;
 						continue;
 					}
@@ -359,8 +339,7 @@ class JPEGCodec : ImageCodec
 
 					ubyte test_byte;
 
-					if (!stream.read(test_byte))
-					{
+					if (!stream.read(test_byte)) {
 						return StreamData.Required;
 					}
 
@@ -370,8 +349,7 @@ class JPEGCodec : ImageCodec
 					// if this is not a 0x00, then check for the block type
 					// else, this just effectively skips the 0x00
 
-					if (test_byte == 0xD9)
-					{
+					if (test_byte == 0xD9) {
 						// EOI (End Of Image)
 						return StreamData.Accepted;
 					}
@@ -388,17 +366,13 @@ class JPEGCodec : ImageCodec
 					// cur_bit_pos tells us how many bits remain in cur_byte
 					// read what we can until aligned, and then read a byte
 
-					for (; cur_bit_pos < 8 && bits_to_read > 0; cur_bit_pos++, bits_to_read--)
-					{
-						if (first_bit == 0)
-						{
-							if (cur_byte & bit_mask[cur_bit_pos])
-							{
+					for (; cur_bit_pos < 8 && bits_to_read > 0; cur_bit_pos++, bits_to_read--) {
+						if (first_bit == 0) {
+							if (cur_byte & bit_mask[cur_bit_pos]) {
 								bits_read = 0;
 								first_bit = 0x11;
 							}
-							else
-							{
+							else {
 								bits_read = 0xFFFF;
 								first_bit = 0x10;
 							}
@@ -406,26 +380,22 @@ class JPEGCodec : ImageCodec
 
 						bits_read <<= 1;
 
-						if (cur_byte & bit_mask[cur_bit_pos])
-						{
+						if (cur_byte & bit_mask[cur_bit_pos]) {
 							bits_read |= 1;
 						}
 					}
 
-					if (cur_bit_pos == 8)
-					{
+					if (cur_bit_pos == 8) {
 						decoderState = JPEG_STATE_READ_BYTE;
 						decoderNextState = JPEG_STATE_READ_BITS;
 						continue;
 					}
 
-					if (bits_to_read == 0)
-					{
+					if (bits_to_read == 0) {
 						decoderState = decoderNextSubState;
 
 						// is it a negative?
-						if (first_bit == 0x10)
-						{
+						if (first_bit == 0x10) {
 							bits_read += 1; //-bits_read;
 						}
 					}
@@ -440,19 +410,16 @@ class JPEGCodec : ImageCodec
 
 				case JPEG_STATE_READ_HEADER:
 
-					if (!stream.read(header))
-					{
+					if (!stream.read(header)) {
 						return StreamData.Required;
 					}
 
-					if (header == FromBigEndian16(0xFFD8))
-					{
+					if (header == FromBigEndian16(0xFFD8)) {
 						// SOI (Start of Image)
 
 						decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					}
-					else
-					{
+					else {
 						//header not found
 						return StreamData.Invalid;
 					}
@@ -463,8 +430,7 @@ class JPEGCodec : ImageCodec
 					//writeln("jpeg - reading chunk type");
 
 					// get the the block type
-					if (!stream.read(chunkType))
-					{
+					if (!stream.read(chunkType)) {
 						return StreamData.Required;
 					}
 
@@ -481,8 +447,7 @@ class JPEGCodec : ImageCodec
 
 					// get chunk size
 
-					if (!stream.read(chunkLength))
-					{
+					if (!stream.read(chunkLength)) {
 						return StreamData.Required;
 					}
 
@@ -495,9 +460,7 @@ class JPEGCodec : ImageCodec
 					/* follow through */
 
 				case JPEG_STATE_INTERPRET_CHUNK:
-
-					switch(chunkType)
-					{
+					switch(chunkType) {
 						case 0xFFC0: // SOF0	(start of frame 0 - Baseline DCT)
 							decoderState = JPEG_STATE_CHUNK_SOF0;
 							break;
@@ -551,8 +514,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_COM:
 				case JPEG_STATE_SKIP_CHUNK:
 
-					if (!stream.skip(chunkLength))
-					{
+					if (!stream.skip(chunkLength)) {
 						return StreamData.Required;
 					}
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
@@ -563,8 +525,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_SOF0:
 
 					// get information about the frame (dimensions)
-					if (!stream.read(&sof, sof.sizeof))
-					{
+					if (!stream.read(&sof, sof.sizeof)) {
 						return StreamData.Required;
 					}
 
@@ -579,8 +540,7 @@ class JPEGCodec : ImageCodec
 				case JPEG_STATE_CHUNK_SOF_READ_COMPONENTS:
 
 					// read the image components
-					if (stream.remaining < (sof.num_image_components * 3))
-					{
+					if (stream.remaining < (sof.num_image_components * 3)) {
 						return StreamData.Required;
 					}
 
@@ -590,8 +550,7 @@ class JPEGCodec : ImageCodec
 
 					stream.read(bytesRead.ptr, bytesRead.length);
 
-					for (int n=0, a=0; a<sof.num_image_components; a++)
-					{
+					for (int n=0, a=0; a<sof.num_image_components; a++) {
 						sof_comp[a].C = bytesRead[n];
 						n++;
 
@@ -613,8 +572,7 @@ class JPEGCodec : ImageCodec
 						sof_comp[a].lastDC = 0;
 					}
 
-					if (sof.num_image_components == 1)
-					{
+					if (sof.num_image_components == 1) {
 						// monochrome
 						sof_comp[1].C = 2;
 						sof_comp[1].data = new short[64];
@@ -625,21 +583,17 @@ class JPEGCodec : ImageCodec
 
 					//allocate memory for the image
 
-					if (sof.num_samples_per_line % (Hmajor * 8) == 0)
-					{
+					if (sof.num_samples_per_line % (Hmajor * 8) == 0) {
 						actual_image_width = sof.num_samples_per_line;
 					}
-					else
-					{
+					else {
 						actual_image_width = sof.num_samples_per_line + ((Hmajor * 8)-(sof.num_samples_per_line % (Hmajor * 8)));
 					}
 
-					if (sof.num_lines % (Vmajor * 8) == 0)
-					{
+					if (sof.num_lines % (Vmajor * 8) == 0) {
 						actual_image_height = sof.num_lines;
 					}
-					else
-					{
+					else {
 						actual_image_height = sof.num_lines + ((Vmajor * 8)-(sof.num_lines % (Vmajor * 8)));
 					}
 
@@ -660,9 +614,7 @@ class JPEGCodec : ImageCodec
 
 				// SOF2 - start of frame 2
 				case JPEG_STATE_CHUNK_SOF2:
-
-					if (!stream.skip(chunkLength))
-					{
+					if (!stream.skip(chunkLength)) {
 						return StreamData.Required;
 					}
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
@@ -670,17 +622,14 @@ class JPEGCodec : ImageCodec
 
 				// APP0 - JFIF Specifications
 				case JPEG_STATE_CHUNK_APP0:
-
 					// Check for the signature of the APP0 segment
 					char[5] signature;
 
-					if (!stream.read(signature.ptr, signature.length))
-					{
+					if (!stream.read(signature.ptr, signature.length)) {
 						return StreamData.Required;
 					}
 
-					switch (signature)
-					{
+					switch (signature) {
 						case "JFIF\0":
 							decoderState = JPEG_STATE_CHUNK_APP0_JFIF;
 							break;
@@ -709,7 +658,6 @@ class JPEGCodec : ImageCodec
 					continue;
 
 				case JPEG_STATE_CHUNK_APP0_UNKNOWN:
-
 					// skip the unknown app extension
 					if (!stream.skip(chunkLength - 5)) {
 						return StreamData.Required;
@@ -725,19 +673,18 @@ class JPEGCodec : ImageCodec
 
 				// DHT - define huffman tables
 				case JPEG_STATE_CHUNK_DHT:
-
 					ubyte table_id;
 					if (!stream.read(table_id)) {
 						return StreamData.Required;
 					}
 
 					//find what table it should go into
-					if (((table_id & 0x10) >> 4) == 0)
-					{	//DC TABLE
+					if (((table_id & 0x10) >> 4) == 0) {
+						//DC TABLE
 						cur_ht = &HT_DC[table_id & 0x03];
 					}
-					else
-					{	//AC TABLE
+					else {
+						//AC TABLE
 						cur_ht = &HT_AC[table_id & 0x03];
 					}
 
@@ -863,8 +810,7 @@ class JPEGCodec : ImageCodec
 							quantization_table[quantization_destination][n] = bytesRead[n];
 						}
 					}
-					else
-					{
+					else {
 						ushort[64] bytesRead;
 
 						if (!stream.read(bytesRead.ptr, 128)) {
@@ -919,8 +865,7 @@ class JPEGCodec : ImageCodec
 
 					//get scan component selectors
 					int n = 0;
-					for (int a = 0; a < sos.num_image_components; a++)
-					{
+					for (int a = 0; a < sos.num_image_components; a++) {
 						sof_comp[a].Cs = bytesRead[n];
 						n++;
 
@@ -936,8 +881,7 @@ class JPEGCodec : ImageCodec
 					/* follow through */
 
 				case JPEG_STATE_CHUNK_SOS_READ_SELECTOR:
-					if (!stream.read(&sos_sel, sos_sel.sizeof))
-					{
+					if (!stream.read(&sos_sel, sos_sel.sizeof)) {
 						return StreamData.Required;
 					}
 
@@ -1573,7 +1517,7 @@ protected:
 
 	int quantization_destination;
 	int quantization_precision;
-	ushort quantization_table[4][64];
+	ushort[64][4] quantization_table;
 
 	uint actual_image_width;
 	uint actual_image_height;

@@ -1,15 +1,15 @@
 /*
- * codec.d
+ * decoder.d
  *
- * This file implements the abstraction for an binary codec.
+ * This file implements the abstraction for an binary decoder.
  *
  * Author: Dave Wilkinson
  *
  */
 
-module codecs.binary.codec;
+module decoders.binary.decoder;
 
-import codecs.codec;
+import decoders.decoder;
 
 import core.string;
 import core.stream;
@@ -17,14 +17,12 @@ import core.stream;
 // Section: Interfaces
 
 // Description: The interface to a binary codec.
-class BinaryCodec : Codec {
-public:
-
+class BinaryDecoder : Decoder {
 	StreamData decode(Stream stream, Stream toStream) {
 		return StreamData.Invalid;
 	}
 
 	override String name() {
-		return new String("Unknown Binary Codec");
+		return new String("Unknown Binary Decoder");
 	}
 }
