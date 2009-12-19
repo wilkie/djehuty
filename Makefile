@@ -83,6 +83,8 @@ EXAMPLES_TUITETRIS = examples/TuiTetris/app.d examples/TuiTetris/gamewindow.d ex
 
 EXAMPLES_MOREDUCKS = examples/MoreDucks/MoreDucks.d
 
+EXAMPLES_SNAKE = examples/Snake/app.d examples/Snake/constants.d examples/Snake/game.d examples/Snake/posn.d examples/Snake/snake.d examples/Snake/win.d
+
 libdeps_linux: $(OBJS_LINUX)
 	@echo ">> framework compilation complete. <<"
 
@@ -244,6 +246,19 @@ ifeq ($(PLATFORM),WINDOWS)
 	@dmd.exe -w -version=PlatformWindows -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
+endif
+endif
+
+snake: lib
+
+	@echo compiling snake example and linking...
+ifeq (${MY_ARCH},Darwin)
+	#@$(DC) $(LFLAGS_MAC) -o snake $(OBJS_MAC)
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofsnake.exe $(EXAMPLES_SNAKE) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofsnake -d-version=PlatformLinux $(EXAMPLES_SNAKE) $(OBJS_LINUX)
 endif
 endif
 
