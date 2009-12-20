@@ -51,11 +51,11 @@ class Button : Widget {
 	}
 
 	override void onAdd() {
-		_clrNormal = Color.fromRGBA(0x50, 0xd8, 0xee, 0x80);
-		_clrHover = Color.fromRGBA(0x70, 0xf8, 0xff, 0xc0);
+		_clrNormal = Color.fromRGBA(0.2, 0.3, 0.7, 0.5);
+		_clrHover = Color.fromRGBA(0.6, 0.9, 1.0, 0.7);
 
 		_brsh = new Brush(_clrNormal);
-		_pen = new Pen(Color.fromRGBA(0x20, 0xa8, 0xbe, 0xff));
+		_pen = new Pen(Color.fromRGBA(0.1, 0.7, 0.6, 1.0));
 		_font = new Font(FontSans, 8, 800, false, false, false);
 	}
 
@@ -78,7 +78,7 @@ class Button : Widget {
 
 		g.setTextModeTransparent();
 
-		Color textColor = Color.fromRGBA(0x00,0x00,0x00,0xc8);
+		Color textColor = Color.fromRGBA(0.0,0.0,0.0,0.7);
 		g.forecolor = textColor;
 
 		g.drawText(x, y, _value);

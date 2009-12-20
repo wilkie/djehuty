@@ -53,6 +53,7 @@ void drawRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
 }
 
 void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	x++;
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -523,12 +524,7 @@ void setAntialias(ViewPlatformVars* viewVars, bool value) {
 // Brushes
 
 void createBrush(BrushPlatformVars* brush, ref Color clr) {
-	double r = cast(double)clr.red / 255.0;
-	double g = cast(double)clr.green / 255.0;
-	double b = cast(double)clr.blue / 255.0;
-	double a = cast(double)clr.alpha / 255.0;
-
-	brush.handle = Cairo.cairo_pattern_create_rgba(r,g,b,a);
+	brush.handle = Cairo.cairo_pattern_create_rgba(clr.red,clr.green,clr.blue,clr.alpha);
 }
 
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
@@ -549,12 +545,7 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr, double width) {
-	double r = cast(double)clr.red / 255.0;
-	double g = cast(double)clr.green / 255.0;
-	double b = cast(double)clr.blue / 255.0;
-	double a = cast(double)clr.alpha / 255.0;
-
-	pen.handle = Cairo.cairo_pattern_create_rgba(r,g,b,a);
+	pen.handle = Cairo.cairo_pattern_create_rgba(clr.red,clr.green,clr.blue,clr.alpha);
 	pen.width = width;
 }
 
