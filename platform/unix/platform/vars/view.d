@@ -10,11 +10,17 @@
 
 module platform.vars.view;
 
+import platform.vars.brush;
+import platform.vars.pen;
+
 import Cairo = binding.cairo.cairo;
 import Pango = binding.pango.pango;
 import X = binding.x.Xlib;
 
 struct ViewPlatformVars {
+	// antialias
+	bool aa;
+
 	X.Window cur_window;
 
 	X.Pixmap pixmap;
@@ -24,6 +30,9 @@ struct ViewPlatformVars {
 
 	uint curpen;
 	uint curbrush;
+
+	PenPlatformVars curPen;
+	BrushPlatformVars curBrush;
 
 	//text
 	Cairo.cairo_t* cr;
@@ -41,6 +50,7 @@ struct ViewPlatformVars {
 	double textclr_red;
 	double textclr_green;
 	double textclr_blue;
+	double textclr_alpha;
 
 	int isOpaqueRendering;
 

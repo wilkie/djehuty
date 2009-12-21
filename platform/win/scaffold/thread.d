@@ -22,6 +22,7 @@ import platform.win.common;
 import platform.vars.mutex;
 import platform.vars.semaphore;
 import platform.vars.thread;
+import platform.vars.condition;
 
 /*extern(Windows)
 DWORD _win_djehuty_thread_proc(void* udata)
@@ -140,3 +141,19 @@ void MutexUnlock(ref MutexPlatformVars mutVars) {
 }
 
 
+// Conditions
+
+void ConditionInit(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionSignal(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionWait(ref ConditionPlatformVars condVars) {
+}
+
+void ConditionWait(ref ConditionPlatformVars condVars, ref MutexPlatformVars mutVars) {
+}
+
+void ConditionUninit(ref ConditionPlatformVars condVars) {
+}

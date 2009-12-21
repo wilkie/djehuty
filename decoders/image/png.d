@@ -1,4 +1,4 @@
-module codecs.image.png;
+module decoders.image.png;
 
 import graphics.bitmap;
 
@@ -6,28 +6,23 @@ import core.stream;
 import core.string;
 import core.endian;
 
-import codecs.image.codec;
-import codecs.codec;
-import codecs.binary.zlib;
+import decoders.image.decoder;
+import decoders.decoder;
+import decoders.binary.zlib;
 
 import io.console;
 
 // Section: Codecs/Image
 
 // Description: The PNG Codec
-class PNGCodec : ImageCodec
-{
-	override String name()
-	{
+class PNGDecoder : ImageDecoder {
+	override String name() {
 		return new String("Portable Network Graphics");
 	}
 
-	StreamData decode(Stream stream, ref Bitmap view)
-	{
+	StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
-
-		view.alpha = true;
 
 		Stream streamToDecode;
 
@@ -55,10 +50,8 @@ class PNGCodec : ImageCodec
 
 		float a;
 
-		for (;;)
-		{
-			switch(decoderState)
-			{
+		for (;;) {
+			switch(decoderState) {
 			case PNG_STATE_INIT_PROGRESS:
 
 				ptrPos = 0;
@@ -71,8 +64,7 @@ class PNGCodec : ImageCodec
 				// READ HEADERS //
 			case PNG_STATE_INIT:
 
-				if(!(stream.read(&pngHeader, 8)))
-				{
+				if(!(stream.read(&pngHeader, 8))) {
 					return StreamData.Required;
 				}
 
@@ -85,8 +77,7 @@ class PNGCodec : ImageCodec
 					pngHeader[4] == 0x0D &&
 					pngHeader[5] == 0x0A &&
 					pngHeader[6] == 0x1A &&
-					pngHeader[7] == 0x0a))
-				{
+					pngHeader[7] == 0x0a)) {
 					//Header is corrupt
 	//				Console.putln("header corrupt");
 	//				Console.putln("png - header corrupt\n");
@@ -108,16 +99,14 @@ class PNGCodec : ImageCodec
 
 				//Console.putln("png - reading chunk\n");
 
-				if(!(stream.read(&pngChunkHeader, _djehuty_image_png_chunk_header.sizeof)))
-				{
+				if(!(stream.read(&pngChunkHeader, _djehuty_image_png_chunk_header.sizeof))) {
 					return StreamData.Required;
 				}
 
 				pngChunkHeader.pngChunkLength = FromBigEndian32(pngChunkHeader.pngChunkLength);
 	//			Console.putln(toString(pngChunkHeader.pngChunkLength) ~ "\n");
 
-				switch(pngChunkHeader.pngChunkType)
-				{
+				switch(pngChunkHeader.pngChunkType) {
 				case PNG_CHUNK_IHDR:
 
 					//////////Console.putln("png - IHDR\n");
@@ -146,13 +135,11 @@ class PNGCodec : ImageCodec
 					streamToDecode.rewind();
 				//Console.putln("rewound");
 
-					if (zlibDecompressor is null)
-					{
-						zlibDecompressor = new ZLIBCodec();
+					if (zlibDecompressor is null) {
+						zlibDecompressor = new ZLIBDecoder();
 					}
 
-					if (zlibDecompressor.decode(streamToDecode, pngUncompressedData) == StreamData.Complete)
-					{
+					if (zlibDecompressor.decode(streamToDecode, pngUncompressedData) == StreamData.Complete) {
 						//Console.putln("zlib");
 
 						//while (pngUncompressedData.getRemaining())
@@ -179,8 +166,7 @@ class PNGCodec : ImageCodec
 						decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
 					}
-					else
-					{
+					else {
 						//Console.putln("zlib");
 
 						return StreamData.Complete;
@@ -197,25 +183,12 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
-
-
-
-
 				// SKIPS CHUNK AND CRC INFO
 			case PNG_STATE_SKIP_CHUNK:
 
 				//////////Console.putln(("png - skipping chunk of length: ") + toString(pngChunkHeader.pngChunkLength) + ("\n"));
 
-				if(!(stream.skip(pngChunkHeader.pngChunkLength + 4)))
-				{
+				if(!(stream.skip(pngChunkHeader.pngChunkLength + 4))) {
 					return StreamData.Required;
 				}
 
@@ -227,8 +200,7 @@ class PNGCodec : ImageCodec
 
 				//////////Console.putln("png - checking CRC\n");
 
-				if(!(stream.read(&pngChunkCRC, 4)))
-				{
+				if(!(stream.read(&pngChunkCRC, 4))) {
 					return StreamData.Required;
 				}
 
@@ -238,30 +210,7 @@ class PNGCodec : ImageCodec
 				decoderState = PNG_STATE_READ_CHUNK_HEADER;
 				continue;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			case PNG_STATE_READ_IHDR:
-	//				Console.putln("header good");
-
 				if(!(stream.read(&pngIHDR, _djehuty_image_png_ihdr.sizeof))) {
 					return StreamData.Required;
 				}
@@ -276,8 +225,7 @@ class PNGCodec : ImageCodec
 				switch(pngIHDR.pngColorType) {
 					//Greyscale
 				case 0:
-					switch (pngIHDR.pngBitDepth)
-					{
+					switch (pngIHDR.pngBitDepth) {
 					case 1:
 					case 2:
 					case 4:
@@ -309,8 +257,7 @@ class PNGCodec : ImageCodec
 
 					//Indexed-colour
 				case 3:
-					switch (pngIHDR.pngBitDepth)
-					{
+					switch (pngIHDR.pngBitDepth) {
 					case 1:
 					case 2:
 					case 4:
@@ -326,8 +273,7 @@ class PNGCodec : ImageCodec
 
 					//Greyscale with alpha
 				case 4:
-					switch (pngIHDR.pngBitDepth)
-					{
+					switch (pngIHDR.pngBitDepth) {
 					case 8:
 					case 16:
 	//					Console.putln(("png - greyscale with alpha - ") ~ toString(pngIHDR.pngBitDepth) ~ (" bpp\n"));
@@ -341,8 +287,7 @@ class PNGCodec : ImageCodec
 
 					//Truecolour with alpha
 				case 6:
-					switch (pngIHDR.pngBitDepth)
-					{
+					switch (pngIHDR.pngBitDepth) {
 					case 8:
 					case 16:
 	//					Console.putln(("png - truecolour with alpha - ") ~ toString(pngIHDR.pngBitDepth) ~ (" bpp\n"));
@@ -360,20 +305,17 @@ class PNGCodec : ImageCodec
 
 				}
 
-				if (pngIHDR.pngFilterMethod != 0)
-				{
+				if (pngIHDR.pngFilterMethod != 0) {
 					//////Console.putln("png - unsupported filter method\n");
 					return StreamData.Invalid;
 				}
 
-				if (pngIHDR.pngCompressionMethod != 0)
-				{
+				if (pngIHDR.pngCompressionMethod != 0) {
 					//////Console.putln("png - unsupported compression method\n");
 					return StreamData.Invalid;
 				}
 
-				if (pngIHDR.pngInterlaceMethod)
-				{
+				if (pngIHDR.pngInterlaceMethod) {
 					////Console.putln("png - Adam7 interlacing\n");
 
 					// SET UP INTERLACE PASS DIMENSIONS
@@ -404,142 +346,107 @@ class PNGCodec : ImageCodec
 					// 7th pass: ceiling((height - 1) / 2)
 
 					pngInterlaceWidths[0] = cast(uint)(cast(float)pngIHDR.pngWidth / 8);
-					if (pngIHDR.pngWidth % 8)
-					{
+					if (pngIHDR.pngWidth % 8) {
 						pngInterlaceWidths[0]++;
 					}
 
-					if (pngIHDR.pngWidth <= 4)
-					{
+					if (pngIHDR.pngWidth <= 4) {
 						pngInterlaceWidths[1] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceWidths[1] = cast(uint)((cast(float)pngIHDR.pngWidth - 4) / 8);
-						if ((pngIHDR.pngWidth - 4) % 8)
-						{
+						if ((pngIHDR.pngWidth - 4) % 8) {
 							pngInterlaceWidths[1]++;
 						}
 					}
 
 					pngInterlaceWidths[2] = cast(uint)(cast(float)pngIHDR.pngWidth / 4);
-					if (pngIHDR.pngWidth % 4)
-					{
+					if (pngIHDR.pngWidth % 4) {
 						pngInterlaceWidths[2]++;
 					}
 
-					if (pngIHDR.pngWidth <= 2)
-					{
+					if (pngIHDR.pngWidth <= 2) {
 						pngInterlaceWidths[3] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceWidths[3] = cast(uint)((cast(float)pngIHDR.pngWidth - 2) / 4);
-						if ((pngIHDR.pngWidth - 2) % 4)
-						{
+						if ((pngIHDR.pngWidth - 2) % 4) {
 							pngInterlaceWidths[3]++;
 						}
 					}
 
 					pngInterlaceWidths[4] = cast(uint)(cast(float)pngIHDR.pngWidth / 2);
-					if (pngIHDR.pngWidth % 2)
-					{
+					if (pngIHDR.pngWidth % 2) {
 						pngInterlaceWidths[4]++;
 					}
 
-					if (pngIHDR.pngWidth <= 1)
-					{
+					if (pngIHDR.pngWidth <= 1) {
 						pngInterlaceWidths[5] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceWidths[5] = cast(uint)((cast(float)pngIHDR.pngWidth - 1) / 2);
-						if ((pngIHDR.pngWidth - 1) % 2)
-						{
+						if ((pngIHDR.pngWidth - 1) % 2) {
 							pngInterlaceWidths[5]++;
 						}
 					}
 
 					pngInterlaceWidths[6] = pngIHDR.pngWidth;
 
-
-
-
-
-
-
 					pngInterlaceHeights[0] = cast(uint)(cast(float)pngIHDR.pngHeight / 8);
-					if (pngIHDR.pngHeight % 8)
-					{
+					if (pngIHDR.pngHeight % 8) {
 						pngInterlaceHeights[0]++;
 					}
 					pngInterlaceHeights[1] = pngInterlaceHeights[0];
 
-					if (pngIHDR.pngHeight <= 4)
-					{
+					if (pngIHDR.pngHeight <= 4) {
 						pngInterlaceWidths[2] = 0;
 						pngInterlaceHeights[2] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceHeights[2] = cast(uint)((cast(float)pngIHDR.pngHeight - 4) / 8);
-						if ((pngIHDR.pngHeight - 4) % 8)
-						{
+						if ((pngIHDR.pngHeight - 4) % 8) {
 							pngInterlaceHeights[2]++;
 						}
 					}
 
 					pngInterlaceHeights[3] = cast(uint)(cast(float)pngIHDR.pngHeight / 4);
-					if (pngIHDR.pngHeight % 4)
-					{
+					if (pngIHDR.pngHeight % 4) {
 						pngInterlaceHeights[3]++;
 					}
 
-					if (pngIHDR.pngHeight <= 2)
-					{
+					if (pngIHDR.pngHeight <= 2) {
 						pngInterlaceWidths[4] = 0;
 						pngInterlaceHeights[4] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceHeights[4] = cast(uint)((cast(float)pngIHDR.pngHeight - 2) / 4);
-						if ((pngIHDR.pngHeight - 2) % 4)
-						{
+						if ((pngIHDR.pngHeight - 2) % 4) {
 							pngInterlaceHeights[4]++;
 						}
 					}
 
 					pngInterlaceHeights[5] = cast(uint)(cast(float)pngIHDR.pngHeight / 2);
-					if (pngIHDR.pngHeight % 2)
-					{
+					if (pngIHDR.pngHeight % 2) {
 						pngInterlaceHeights[5]++;
 					}
 
-					if (pngIHDR.pngHeight <= 1)
-					{
+					if (pngIHDR.pngHeight <= 1) {
 						pngInterlaceWidths[6] = 0;
 						pngInterlaceHeights[6] = 0;
 					}
-					else
-					{
+					else {
 						pngInterlaceHeights[6] = cast(uint)((cast(float)pngIHDR.pngHeight - 1) / 2);
-						if ((pngIHDR.pngHeight - 1) % 2)
-						{
+						if ((pngIHDR.pngHeight - 1) % 2) {
 							pngInterlaceHeights[6]++;
 						}
 					}
 
-
-
-
-					for (p=0; p < 7; p++)
-					{
+					for (p=0; p < 7; p++) {
 	//					Console.putln(toString(p) + (": ") + toString(pngInterlaceWidths[p]) + (" x ") + toString(pngInterlaceHeights[p]) + ("\n"));
 					}
 
 				}
-				else
-				{
+				else {
 	//				Console.putln("png - no interlacing\n");
 				}
 
@@ -547,12 +454,10 @@ class PNGCodec : ImageCodec
 				pngImageType = (((pngIHDR.pngColorType + 1) << 16) + pngIHDR.pngBitDepth);
 
 				// set the image renderer state in the decoder process //
-				if (pngIHDR.pngInterlaceMethod)
-				{
+				if (pngIHDR.pngInterlaceMethod) {
 					pngRenderState = PNG_STATE_RENDER_INTERLACED_STATE_BASE + pngImageType;
 				}
-				else
-				{
+				else {
 					pngRenderState = PNG_STATE_RENDER_STATE_BASE + pngImageType;
 
 	//			Console.putln("eh!", pngRenderState, PNG_STATE_RENDER_STATE_BASE + PNG_TRUECOLOUR_ALPHA_8BPP);
@@ -563,20 +468,11 @@ class PNGCodec : ImageCodec
 //	printf("type: %d\n", pngIHDR.pngWidth);
 				view.create(pngIHDR.pngWidth, pngIHDR.pngHeight);
 
-
-
-
-
-
 				// CALCULATE THE NUMBER OF BYTES WE WILL BE READING
-				switch(pngIHDR.pngColorType)
-				{
+				switch(pngIHDR.pngColorType) {
 				case 3: // INDEXED_COLOUR (also 1 sample per pixel, samples are indices)
 				case 0: // GREYSCALE (1 sample per pixel)
-
-
-					switch(pngIHDR.pngBitDepth)
-					{
+					switch(pngIHDR.pngBitDepth) {
 						case 1:
 							pngExpectedBytes = 1 + cast(uint)((cast(float)pngIHDR.pngWidth / 8) + 0.5);
 							pngNumSamples = 1;
@@ -604,8 +500,7 @@ class PNGCodec : ImageCodec
 
 				case 2: // TRUE_COLOUR
 
-					switch(pngIHDR.pngBitDepth)
-					{
+					switch(pngIHDR.pngBitDepth) {
 						case 8:
 							pngExpectedBytes = pngIHDR.pngWidth * 3;
 							pngNumSamples = 3;
@@ -618,9 +513,7 @@ class PNGCodec : ImageCodec
 					}
 					break;
 				case 4: // GREYSCALE_ALPHA
-
-					switch(pngIHDR.pngBitDepth)
-					{
+					switch(pngIHDR.pngBitDepth) {
 						case 8:
 							pngExpectedBytes = pngIHDR.pngWidth * 2;
 							pngNumSamples = 2;
@@ -634,8 +527,7 @@ class PNGCodec : ImageCodec
 					break;
 				case 6: // TRUE_COLOUR_ALPHA
 
-					switch(pngIHDR.pngBitDepth)
-					{
+					switch(pngIHDR.pngBitDepth) {
 						case 8:
 							pngExpectedBytes = pngIHDR.pngWidth * 4;
 							pngNumSamples = 4;
@@ -652,12 +544,9 @@ class PNGCodec : ImageCodec
 					default: break;
 				}
 
-
-
 				// INIT DECODER DATA
 
-				for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-				{
+				for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 					////Console.putln(("png - ") + toString(pngIHDR.pngWidth) + (" x ") + toString(pngIHDR.pngHeight) + ("\n"));
 					pngBytes[pngCounter] = new ubyte[pngExpectedBytes];
 					pngBytes[pngCounter][0..pngExpectedBytes] = 0;
@@ -672,20 +561,6 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			case PNG_STATE_READ_PLTE:
 
 				// GET NUMBER OF PALETTE ENTRIES
@@ -695,21 +570,18 @@ class PNGCodec : ImageCodec
 
 				pngPaletteCount = (pngChunkHeader.pngChunkLength % 3);
 
-				if (pngPaletteCount)
-				{
+				if (pngPaletteCount) {
 					//////////Console.putln("png - PLTE - invalid palette chunk\n");
 				}
 
 				pngPaletteCount = pngChunkHeader.pngChunkLength / 3;
 
-				if (pngPaletteCount > 256)
-				{
+				if (pngPaletteCount > 256) {
 					//////////Console.putln("png - PLTE - too many entries in palette\n");
 					return StreamData.Invalid;
 				}
 
-				if (pngPaletteCount == 0)
-				{
+				if (pngPaletteCount == 0) {
 					//////////Console.putln("png - PLTE - empty palette, proceeding anyway\n");
 					decoderState = PNG_STATE_READ_CHUNK_CRC;
 					continue;
@@ -717,32 +589,21 @@ class PNGCodec : ImageCodec
 
 			case PNG_STATE_READ_PLTE_ENTRIES:
 
-				if(!(stream.read(&pngPalette, pngPaletteCount*3)))
-				{
+				if(!(stream.read(&pngPalette, pngPaletteCount*3))) {
 					return StreamData.Required;
 				}
 
 				// build pngPaletteRealized //
-				for (palIndex = 0; palIndex < pngPaletteCount; palIndex++)
-				{
+				for (palIndex = 0; palIndex < pngPaletteCount; palIndex++) {
 					pngPaletteRealized[palIndex] = (0xFF000000) | (pngPalette[palIndex].blue) | (pngPalette[palIndex].green << 8) | (pngPalette[palIndex].red << 16);
 				}
 
-				for ( ; palIndex < 256; palIndex++)
-				{
+				for ( ; palIndex < 256; palIndex++) {
 					pngPaletteRealized[palIndex] = 0;
 				}
 
 				decoderState = PNG_STATE_READ_CHUNK_CRC;
 				continue;
-
-
-
-
-
-
-
-
 
 			case PNG_STATE_READ_IDAT:
 
@@ -754,21 +615,11 @@ class PNGCodec : ImageCodec
 
 				decoderState = PNG_STATE_FILL_IDAT;
 
-
-
-
-
-
-
-
-
-
 			case PNG_STATE_FILL_IDAT:
 	//				Console.putln("fill idat");
 
 	//			if(!(stream.read(streamToDecode, pngChunkHeader.pngChunkLength)))
-				if(!(streamToDecode.append(stream, pngChunkHeader.pngChunkLength)))
-				{
+				if(!(streamToDecode.append(stream, pngChunkHeader.pngChunkLength))) {
 					return StreamData.Required;
 				}
 	//				Console.putln("fill idat");
@@ -846,8 +697,7 @@ class PNGCodec : ImageCodec
 
 	//			pngUncompressedData.rewind();
 
-				if (!(pngUncompressedData.read(&pngFilterType, 1)))
-				{
+				if (!(pngUncompressedData.read(&pngFilterType, 1))) {
 					// need more compress data from IDAT blocks
 					//////////Console.putln("IDAT empty\n");
 					decoderState = PNG_STATE_READ_CHUNK_HEADER;
@@ -856,8 +706,7 @@ class PNGCodec : ImageCodec
 
 				//Console.putln("done filter type");
 
-				switch (pngFilterType)
-				{
+				switch (pngFilterType) {
 				case 0:
 	//				Console.putln("\npng - filter type - none\n");
 					decoderState = PNG_STATE_UNFILTER_NONE;
@@ -892,8 +741,7 @@ class PNGCodec : ImageCodec
 				// set the filter state in the decoder process, should we be interrupted
 				pngFilterState = decoderState;
 
-				for (p = 0; p < pngNumSamples; p++)
-				{
+				for (p = 0; p < pngNumSamples; p++) {
 					pngPriorPixel[p] = 0;
 					pngPriorScannedByte[p] = 0;
 				}
@@ -920,35 +768,29 @@ class PNGCodec : ImageCodec
 
 				// check for decoder termination for the current scanline //
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					// WE ARE DONE
 
-					if (pngIHDR.pngInterlaceMethod)
-					{
+					if (pngIHDR.pngInterlaceMethod) {
 						pngInterlaceCurLine++;
 
-						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass])
-						{
+						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass]) {
 							pngInterlaceCurLine = 0;
 
 							// we are entering a new interlace pass
 							//////Console.putln("png - interlaced - entering new interlace pass\n");
 
 							// reset the prior scanline array
-							for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-							{
+							for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 								pngBytes[pngCounter][0..pngExpectedBytes] = 0;
 							}
 
-							do
-							{
+							do {
 								pngInterlacePass++;
 							} while ((pngInterlacePass < 7) && (pngInterlaceWidths[pngInterlacePass] == 0));
 
 
-							if (pngInterlacePass >= 7)
-							{
+							if (pngInterlacePass >= 7) {
 								// We are done decoding
 
 								view.unlockBuffer();
@@ -958,8 +800,7 @@ class PNGCodec : ImageCodec
 
 							ptrLine = pngInterlaceStartsY[pngInterlacePass];
 						}
-						else
-						{
+						else {
 							ptrLine+=pngInterlaceIncrementsY[pngInterlacePass];
 						}
 
@@ -967,8 +808,7 @@ class PNGCodec : ImageCodec
 
 						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
 					}
-					else
-					{
+					else {
 						ptrPos = 0;
 						ptrLine++;
 					}
@@ -977,8 +817,7 @@ class PNGCodec : ImageCodec
 
 					decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
-					if (ptrLine >= pngIHDR.pngHeight)
-					{
+					if (ptrLine >= pngIHDR.pngHeight) {
 	//					Console.putln("done?\n");
 
 						view.unlockBuffer();
@@ -994,8 +833,7 @@ class PNGCodec : ImageCodec
 
 				// READ IN DECODED BYTE
 
-				if (!(pngUncompressedData.read(&curByte, 1)))
-				{
+				if (!(pngUncompressedData.read(&curByte, 1))) {
 					decoderNextState = decoderState;
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
@@ -1014,8 +852,7 @@ class PNGCodec : ImageCodec
 
 
 				psamp++;
-				if (psamp == pngNumSamples)
-				{
+				if (psamp == pngNumSamples) {
 					nsamp++;
 					psamp = 0;
 	//				Console.putln("renderstate");
@@ -1034,32 +871,26 @@ class PNGCodec : ImageCodec
 
 				// check for decoder termination for the current scanline //
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					// WE ARE DONE
 
-					if (pngIHDR.pngInterlaceMethod)
-					{
-
+					if (pngIHDR.pngInterlaceMethod) {
 						pngInterlaceCurLine++;
 
-						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass])
-						{
+						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass]) {
 							pngInterlaceCurLine = 0;
 
 							// we are entering a new interlace pass
 							//////Console.putln("png - interlaced - entering new interlace pass\n");
 
 							// reset the prior scanline array
-							for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-							{
+							for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 								pngBytes[pngCounter][0..pngExpectedBytes] = 0;
 							}
 
 							pngInterlacePass++;
 
-							if (pngInterlacePass == 7)
-							{
+							if (pngInterlacePass == 7) {
 								// We are done decoding
 
 								view.unlockBuffer();
@@ -1069,8 +900,7 @@ class PNGCodec : ImageCodec
 
 							ptrLine = pngInterlaceStartsY[pngInterlacePass];
 						}
-						else
-						{
+						else {
 							ptrLine+=pngInterlaceIncrementsY[pngInterlacePass];
 						}
 
@@ -1078,8 +908,7 @@ class PNGCodec : ImageCodec
 
 						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
 					}
-					else
-					{
+					else {
 						ptrPos = 0;
 						ptrLine++;
 					}
@@ -1088,9 +917,7 @@ class PNGCodec : ImageCodec
 
 					decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
-					if (ptrLine >= pngIHDR.pngHeight)
-					{
-
+					if (ptrLine >= pngIHDR.pngHeight) {
 						view.unlockBuffer();
 
 						return StreamData.Complete;
@@ -1102,8 +929,7 @@ class PNGCodec : ImageCodec
 
 				// decode a scanline using SUB filter
 
-				if (!(pngUncompressedData.read(&curByte, 1)))
-				{
+				if (!(pngUncompressedData.read(&curByte, 1))) {
 					decoderNextState = decoderState;
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
@@ -1120,8 +946,7 @@ class PNGCodec : ImageCodec
 			//	Console.put(pngCurComponent[psamp], " ");
 
 				psamp++;
-				if (psamp == pngNumSamples)
-				{
+				if (psamp == pngNumSamples) {
 					nsamp++;
 					psamp = 0;
 	//				Console.putln("renderstate");
@@ -1136,32 +961,26 @@ class PNGCodec : ImageCodec
 
 				// check for decoder termination for the current scanline //
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					// WE ARE DONE
 
-					if (pngIHDR.pngInterlaceMethod)
-					{
-
+					if (pngIHDR.pngInterlaceMethod) {
 						pngInterlaceCurLine++;
 
-						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass])
-						{
+						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass]) {
 							pngInterlaceCurLine = 0;
 
 							// we are entering a new interlace pass
 							//////Console.putln("png - interlaced - entering new interlace pass\n");
 
 							// reset the prior scanline array
-							for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-							{
+							for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 								pngBytes[pngCounter][0..pngExpectedBytes] = 0;
 							}
 
 							pngInterlacePass++;
 
-							if (pngInterlacePass == 7)
-							{
+							if (pngInterlacePass == 7) {
 								// We are done decoding
 
 								view.unlockBuffer();
@@ -1171,8 +990,7 @@ class PNGCodec : ImageCodec
 
 							ptrLine = pngInterlaceStartsY[pngInterlacePass];
 						}
-						else
-						{
+						else {
 							ptrLine+=pngInterlaceIncrementsY[pngInterlacePass];
 						}
 
@@ -1180,8 +998,7 @@ class PNGCodec : ImageCodec
 
 						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
 					}
-					else
-					{
+					else {
 						ptrPos = 0;
 						ptrLine++;
 					}
@@ -1190,8 +1007,7 @@ class PNGCodec : ImageCodec
 
 					decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
-					if (ptrLine >= pngIHDR.pngHeight)
-					{
+					if (ptrLine >= pngIHDR.pngHeight) {
 
 						view.unlockBuffer();
 
@@ -1204,8 +1020,7 @@ class PNGCodec : ImageCodec
 
 				// decode a scanline using UP filter
 
-				if (!(pngUncompressedData.read(&curByte, 1)))
-				{
+				if (!(pngUncompressedData.read(&curByte, 1))) {
 					decoderNextState = decoderState;
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
@@ -1226,8 +1041,7 @@ class PNGCodec : ImageCodec
 				pngCurComponent[psamp] = pngBytes[psamp][nsamp];
 
 				psamp++;
-				if (psamp == pngNumSamples)
-				{
+				if (psamp == pngNumSamples) {
 					nsamp++;
 					psamp = 0;
 	//				Console.putln("renderstate");
@@ -1238,35 +1052,29 @@ class PNGCodec : ImageCodec
 				continue;
 
 			case PNG_STATE_UNFILTER_AVERAGE:
-
 				// check for decoder termination for the current scanline //
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					// WE ARE DONE
 
-					if (pngIHDR.pngInterlaceMethod)
-					{
+					if (pngIHDR.pngInterlaceMethod) {
 
 						pngInterlaceCurLine++;
 
-						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass])
-						{
+						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass]) {
 							pngInterlaceCurLine = 0;
 
 							// we are entering a new interlace pass
 							//////Console.putln("png - interlaced - entering new interlace pass\n");
 
 							// reset the prior scanline array
-							for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-							{
+							for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 								pngBytes[pngCounter][0..pngExpectedBytes] = 0;
 							}
 
 							pngInterlacePass++;
 
-							if (pngInterlacePass == 7)
-							{
+							if (pngInterlacePass == 7) {
 								// We are done decoding
 
 								view.unlockBuffer();
@@ -1276,8 +1084,7 @@ class PNGCodec : ImageCodec
 
 							ptrLine = pngInterlaceStartsY[pngInterlacePass];
 						}
-						else
-						{
+						else {
 							ptrLine+=pngInterlaceIncrementsY[pngInterlacePass];
 						}
 
@@ -1285,8 +1092,7 @@ class PNGCodec : ImageCodec
 
 						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
 					}
-					else
-					{
+					else {
 						ptrPos = 0;
 						ptrLine++;
 					}
@@ -1295,8 +1101,7 @@ class PNGCodec : ImageCodec
 
 					decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
-					if (ptrLine >= pngIHDR.pngHeight)
-					{
+					if (ptrLine >= pngIHDR.pngHeight) {
 
 						view.unlockBuffer();
 
@@ -1309,8 +1114,7 @@ class PNGCodec : ImageCodec
 
 				// decode a scanline using AVERAGE filter
 
-				if (!(pngUncompressedData.read(&curByte, 1)))
-				{
+				if (!(pngUncompressedData.read(&curByte, 1))) {
 					decoderNextState = decoderState;
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
@@ -1330,8 +1134,7 @@ class PNGCodec : ImageCodec
 			//	Console.put(pngCurComponent[psamp], " ");
 
 				psamp++;
-				if (psamp == pngNumSamples)
-				{
+				if (psamp == pngNumSamples) {
 					nsamp++;
 					psamp = 0;
 	//				Console.putln("renderstate");
@@ -1347,30 +1150,25 @@ class PNGCodec : ImageCodec
 
 				// READ IN DECODED BYTE
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					// WE ARE DONE
 
-					if (pngIHDR.pngInterlaceMethod)
-					{
+					if (pngIHDR.pngInterlaceMethod) {
 
 						pngInterlaceCurLine++;
 
-						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass])
-						{
+						if (pngInterlaceCurLine == pngInterlaceHeights[pngInterlacePass]) {
 							// we are entering a new interlace pass
 							pngInterlaceCurLine = 0;
 
 							// reset the prior scanline array
-							for ( pngCounter = 0; pngCounter < 8; pngCounter++)
-							{
+							for ( pngCounter = 0; pngCounter < 8; pngCounter++) {
 								pngBytes[pngCounter][0..pngExpectedBytes] = 0;
 							}
 
 							pngInterlacePass++;
 
-							if (pngInterlacePass == 7)
-							{
+							if (pngInterlacePass == 7) {
 								// We are done decoding
 
 								view.unlockBuffer();
@@ -1380,8 +1178,7 @@ class PNGCodec : ImageCodec
 
 							ptrLine = pngInterlaceStartsY[pngInterlacePass];
 						}
-						else
-						{
+						else {
 							ptrLine+=pngInterlaceIncrementsY[pngInterlacePass];
 						}
 
@@ -1389,8 +1186,7 @@ class PNGCodec : ImageCodec
 
 						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
 					}
-					else
-					{
+					else {
 						ptrPos = 0;
 						ptrLine++;
 					}
@@ -1399,8 +1195,7 @@ class PNGCodec : ImageCodec
 
 					decoderState = PNG_STATE_DECODE_READ_FILTER_TYPE;
 
-					if (ptrLine >= pngIHDR.pngHeight)
-					{
+					if (ptrLine >= pngIHDR.pngHeight) {
 
 						view.unlockBuffer();
 
@@ -1411,8 +1206,7 @@ class PNGCodec : ImageCodec
 					continue;
 				}
 
-				if (!(pngUncompressedData.read(&curByte, 1)))
-				{
+				if (!(pngUncompressedData.read(&curByte, 1))) {
 					decoderNextState = decoderState;
 					//////////Console.putln("png - requiring more data in IDAT\n");
 					view.unlockBuffer();
@@ -1428,43 +1222,34 @@ class PNGCodec : ImageCodec
 
 				p = cast(int)pngPriorPixel[psamp] + cast(int)pngPriorScannedByte[psamp] - cast(int)pngPriorScannedComp;
 
-				if (p > cast(int)pngPriorPixel[psamp])
-				{
+				if (p > cast(int)pngPriorPixel[psamp]) {
 					pa = p - cast(int)pngPriorPixel[psamp];
 				}
-				else
-				{
+				else {
 					pa = cast(int)pngPriorPixel[psamp] - p;
 				}
 
-				if (p > cast(int)pngPriorScannedByte[psamp])
-				{
+				if (p > cast(int)pngPriorScannedByte[psamp]) {
 					pb = p - cast(int)pngPriorScannedByte[psamp];
 				}
-				else
-				{
+				else {
 					pb = cast(int)pngPriorScannedByte[psamp] - p;
 				}
 
-				if (p > cast(int)pngPriorScannedComp)
-				{
+				if (p > cast(int)pngPriorScannedComp) {
 					pc = p - cast(int)pngPriorScannedComp;
 				}
-				else
-				{
+				else {
 					pc = cast(int)pngPriorScannedComp - p;
 				}
 
-				if (pa <= pb && pa <= pc)
-				{
+				if (pa <= pb && pa <= pc) {
 					pngPaethPredictor = pngPriorPixel[psamp];
 				}
-				else if (pb <= pc)
-				{
+				else if (pb <= pc) {
 					pngPaethPredictor = pngPriorScannedByte[psamp];
 				}
-				else
-				{
+				else {
 					pngPaethPredictor = pngPriorScannedComp;
 				}
 
@@ -1496,17 +1281,6 @@ class PNGCodec : ImageCodec
 				// go to the next state
 				continue;
 
-
-
-
-
-
-
-
-
-
-
-
 				// RENDER STATES //
 
 			case PNG_STATE_RENDER_STATE_BASE + PNG_GREYSCALE_1BPP:
@@ -1524,8 +1298,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1536,8 +1309,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1548,8 +1320,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1560,8 +1331,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1572,8 +1342,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1584,8 +1353,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1596,8 +1364,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1625,8 +1392,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1637,8 +1403,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1649,8 +1414,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1677,8 +1441,7 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -1758,14 +1521,6 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
 			case PNG_STATE_RENDER_STATE_BASE + PNG_INDEXED_COLOUR_1BPP:
 
 				// GO BACK TO FILTER ANOTHER PIECE OF THE DATA
@@ -1778,8 +1533,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 7;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1787,15 +1541,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 6) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1803,15 +1555,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 5) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1819,15 +1569,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 4) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1835,15 +1583,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 3) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1851,15 +1597,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 2) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1867,15 +1611,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 1) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1883,15 +1625,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1913,8 +1653,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 6;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 	//			Console.putln("1st pixel...\n");
@@ -1925,15 +1664,13 @@ class PNGCodec : ImageCodec
 
 	//			Console.putln("1st pixel!\n");
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 4) & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1945,15 +1682,13 @@ class PNGCodec : ImageCodec
 
 	//			Console.putln("2nd pixel!\n");
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 2) & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1965,15 +1700,13 @@ class PNGCodec : ImageCodec
 
 	//			Console.putln("3rd pixel!\n");
 
-				if (ptrPos >= pngIHDR.pngWidth)
-				{
+				if (ptrPos >= pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -1997,8 +1730,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 4;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2006,15 +1738,13 @@ class PNGCodec : ImageCodec
 				ptr++;
 				ptrPos++;
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 0xF;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2030,8 +1760,7 @@ class PNGCodec : ImageCodec
 
 				decoderState = pngFilterState;
 
-				if (pngCurComponent[0] >= pngPaletteCount)
-				{
+				if (pngCurComponent[0] >= pngPaletteCount) {
 					pngCurComponent[0] = 0;
 				}
 
@@ -2134,23 +1863,7 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				// INTERLACED RENDERING ... THESE ARE SEPARATE STATES //
-
-
 
 			case PNG_STATE_RENDER_INTERLACED_STATE_BASE + PNG_GREYSCALE_1BPP:
 
@@ -2169,8 +1882,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2183,8 +1895,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2197,8 +1908,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2211,8 +1921,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2225,8 +1934,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2239,8 +1947,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2253,8 +1960,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2289,8 +1995,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2303,8 +2008,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2317,8 +2021,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2350,8 +2053,7 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
@@ -2442,14 +2144,6 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
 			case PNG_STATE_RENDER_INTERLACED_STATE_BASE + PNG_INDEXED_COLOUR_1BPP:
 
 				// GO BACK TO FILTER ANOTHER PIECE OF THE DATA
@@ -2460,8 +2154,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 7;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2472,15 +2165,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 6) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2491,15 +2182,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 5) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2510,15 +2199,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 4) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2529,15 +2216,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 3) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2548,15 +2233,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 2) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2567,15 +2250,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 1) & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2586,15 +2267,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 1;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2617,8 +2296,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 6;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2629,15 +2307,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 4) & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2648,15 +2324,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = (pngCurComponent[0] >> 2) & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2667,15 +2341,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 0x3;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2698,8 +2370,7 @@ class PNGCodec : ImageCodec
 
 				pngCurSample = pngCurComponent[0] >> 4;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2710,15 +2381,13 @@ class PNGCodec : ImageCodec
 				ptr += pngInterlaceIncrementsX[pngInterlacePass];
 				ptrPos += pngInterlaceIncrementsX[pngInterlacePass];
 
-				if (ptrPos == pngIHDR.pngWidth)
-				{
+				if (ptrPos == pngIHDR.pngWidth) {
 					continue;
 				}
 
 				pngCurSample = pngCurComponent[0] & 0xF;
 
-				if (pngCurSample >= pngPaletteCount)
-				{
+				if (pngCurSample >= pngPaletteCount) {
 					pngCurSample = 0;
 				}
 
@@ -2737,8 +2406,7 @@ class PNGCodec : ImageCodec
 
 				decoderState = pngFilterState;
 
-				if (pngCurComponent[0] >= pngPaletteCount)
-				{
+				if (pngCurComponent[0] >= pngPaletteCount) {
 					pngCurComponent[0] = 0;
 				}
 
@@ -2870,23 +2538,11 @@ class PNGCodec : ImageCodec
 
 				continue;
 
-
-
-
-
-
-
-
-
 				// DECODE //
 
 			case PNG_STATE_INTERPRET_IDAT:
 
 				continue;
-
-
-
-
 
 				// FINISH //
 
@@ -2895,16 +2551,13 @@ class PNGCodec : ImageCodec
 				decoderState = PNG_STATE_READ_CHUNK_CRC;
 				continue;
 
-
 			default:
 				break;
 			}
 			break;
 		}
-		Console.putln("mreh");
 		return StreamData.Invalid;
 	}
-
 
 private:
 
@@ -2950,7 +2603,7 @@ private:
 	//IDAT
 	//ZLIB, et al
 	Stream pngUncompressedData = null;
-	ZLIBCodec zlibDecompressor = null;
+	ZLIBDecoder zlibDecompressor = null;
 
 	// FOR UNFILTERING
 	ubyte pngFilterType;

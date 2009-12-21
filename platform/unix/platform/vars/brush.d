@@ -10,6 +10,8 @@
 
 module platform.vars.brush;
 
+import Cairo = binding.cairo.cairo;
+
 struct BrushPlatformVars {
-	uint val;
+	Cairo.cairo_pattern_t* handle;
 }

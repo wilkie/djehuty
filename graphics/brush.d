@@ -6,15 +6,27 @@ import Scaffold = scaffold.graphics;
 
 import core.color;
 
+import resource.image;
+
+import graphics.bitmap;
 import graphics.view;
 
 class Brush {
-
-public:
+	this() {
+		this(Color.White);
+	}
 
 	// Constructor
 	this(Color clr) {
 		Scaffold.createBrush(&_pfvars, clr);
+	}
+
+	this(Image image) {
+		this(image.view);
+	}
+
+	this(Bitmap bitmap) {
+		Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
 	}
 
 	// Destructor
@@ -25,7 +37,7 @@ public:
 	// Sets color of a solid brush
 	void setColor(Color clr) {
 	}
-	
+
 	void color(Color clr) {
 		Scaffold.destroyBrush(&_pfvars);
 		Scaffold.createBrush(&_pfvars, clr);
@@ -34,9 +46,27 @@ public:
 		if (_view !is null) {
 			if (_view._locked)
 			{
-				_view._graphics.setBrush(_view._brush);
+				_view._graphics.brush = _view._brush;
 			}
-		}		
+		}
+	}
+
+// Convenient
+
+	static Brush White() {
+		return new Brush(Color.White);
+	}
+
+	static Brush Red() {
+		return new Brush(Color.Red);
+	}
+
+	static Brush Green() {
+		return new Brush(Color.Green);
+	}
+
+	static Brush Blue() {
+		return new Brush(Color.Blue);
 	}
 
 private:

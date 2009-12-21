@@ -64,7 +64,6 @@ class Audio : Dispatcher {
 	}
 
 	this() {
-		_mutex = new Semaphore(1);
 	}
 
 	~this() {
@@ -76,22 +75,19 @@ class Audio : Dispatcher {
 	void openDevice(AudioFormat format) {
 		if (_opened) { return; }
 
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		_opened = true;
-		WaveOpenDevice(this, _pfvars, format);
+		synchronized(this) {
+			_opened = true;
+			WaveOpenDevice(this, _pfvars, format);
+		}
 	}
 
 	// Description: Closes an already opened device, stops playback, and frees any pending buffers.
 	void closeDevice() {
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		if (_opened)
-		{
-			WaveCloseDevice(this, _pfvars);
-			_opened = false;
+		synchronized(this) {
+			if (_opened) {
+				WaveCloseDevice(this, _pfvars);
+				_opened = false;
+			}
 		}
 	}
 
@@ -99,43 +95,38 @@ class Audio : Dispatcher {
 
 	// Description: Sends an audio buffer to the device.  These can be queued, and any number may be sent.
 	void sendBuffer(Stream waveBuffer, bool isLast = false) {
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		if (_opened) {
-			WaveSendBuffer(this, _pfvars, waveBuffer, isLast);
+		synchronized(this) {
+			if (_opened) {
+				WaveSendBuffer(this, _pfvars, waveBuffer, isLast);
+			}
 		}
 	}
 
 	// Description: Resumes a paused device.
 	void resume() {
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		if (_opened) {
-			WaveResume(this, _pfvars);
+		synchronized(this) {
+			if (_opened) {
+				WaveResume(this, _pfvars);
+			}
 		}
 	}
 
 	// Description: Pauses playback of a device.
 	void pause() {
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		if (_opened) {
-			WavePause(this, _pfvars);
+		synchronized(this) {
+			if (_opened) {
+				WavePause(this, _pfvars);
+			}
 		}
 	}
 
 	Time position() {
-		_mutex.down();
-		scope(exit) _mutex.up();
-
-		if (!WaveIsOpen(this, _pfvars)) {
-			Time myTime = Time.init;
-			return myTime;
+		synchronized(this) {
+			if (!WaveIsOpen(this, _pfvars)) {
+				Time myTime = Time.init;
+				return myTime;
+			}
 		}
-
 		return WaveGetPosition(this, _pfvars);
 	}
 
@@ -144,12 +135,10 @@ protected:
 	WavePlatformVars _pfvars;
 
 	bool _opened;
-
-	Semaphore _mutex;
 }
 
 void WaveFireCallback(ref Audio w) {
-	 if (w.responder !is null) {
+	if (w.responder !is null) {
 		w.raiseSignal(Audio.Signal.BufferPlayed);
 	}
 }

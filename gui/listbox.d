@@ -47,15 +47,15 @@ class ListBox : Widget {
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
 		Graphics grp = _view.lockDisplay();
-		grp.setFont(_font);
+		grp.font = _font;
 		grp.measureText(" ", 1, m_entryHeight);
 		_view.unlockDisplay();
 
 		m_clroutline = Color.fromRGB(0x80, 0x80, 0x80);
 		m_clrhighlight = Color.fromRGB(0xdd,0xdd,0xdd);
-		m_clrhighlighttext = Color.fromRGB(0xff,0xff,0xff);
-		m_clrnormal = Color.fromRGB(0,0,0);
-		m_clrbackground = Color.fromRGB(0xff,0xff,0xff);
+		m_clrhighlighttext = Color.White;
+		m_clrnormal = Color.Black;
+		m_clrbackground = Color.White;
 
 		m_first_visible = 0;
 		m_total_visible = 0;
@@ -90,10 +90,10 @@ class ListBox : Widget {
 		brsh = new Brush(m_clrbackground);
 		pen = new Pen(m_clroutline);
 
-		g.setPen(pen);
-		g.setBrush(brsh);
+		g.pen = pen;
+		g.brush = brsh;
 
-		g.drawRect(this.left, this.top, this.right, this.bottom);
+		g.drawRect(this.left, this.top, this.width, this.height);
 
 		rt.left = this.left+1;
 		rt.top = this.top+1;
@@ -103,10 +103,10 @@ class ListBox : Widget {
 		// set text mode to transparent
 		g.setTextModeTransparent();
 
-		g.setTextBackgroundColor(m_clrhighlight);
-		g.setTextColor(m_clrnormal);
+		g.backcolor = m_clrhighlight;
+		g.forecolor = m_clrnormal;
 
-		g.setFont(_font);
+		g.font = _font;
 
 		String data;
 
@@ -116,15 +116,15 @@ class ListBox : Widget {
 			if (i==m_sel_start) {
 				// set text mode to opaque (selection!)
 				g.setTextModeOpaque();
-				g.setTextColor(m_clrhighlighttext);
+				g.forecolor(m_clrhighlighttext);
 
-				g.drawClippedText(rt.left, rt.top, rt, data);
+				g.drawText(rt.left, rt.top, data);
 
-				g.setTextColor(m_clrnormal);
+				g.forecolor(m_clrnormal);
 				g.setTextModeTransparent();
 			}
 			else {
-				g.drawClippedText(rt.left, rt.top, rt, data);
+				g.drawText(rt.left, rt.top, data);
 			}
 
 			rt.top = rt.bottom;
@@ -172,7 +172,7 @@ class ListBox : Widget {
 	}
 
 	// List Methods
-	
+
 	void add(String c) {
 		_list.add(c);
 
@@ -197,10 +197,10 @@ class ListBox : Widget {
 		}
 	}
 
-	void add(ListInterface!(String) list) {
+	void add(Listable!(String) list) {
 		foreach(item; list) {
 			_list.add(item);
-		}	
+		}
 	}
 
 	void addAt(String c, size_t idx) {
@@ -208,7 +208,7 @@ class ListBox : Widget {
 
 		_checkScrollBarStatus();
 	}
-	
+
 	String remove() {
 		String ret = _list.remove();
 
@@ -216,7 +216,7 @@ class ListBox : Widget {
 
 		return ret;
 	}
-	
+
 	String removeAt(size_t idx){
 		String ret = _list.removeAt(idx);
 
@@ -224,65 +224,65 @@ class ListBox : Widget {
 
 		return ret;
 	}
-	
+
 	String peek() {
 		return _list.peek();
 	}
-	
+
 	String peekAt(size_t idx) {
 		return _list.peekAt(idx);
 	}
-	
+
 	void set(String c) {
 		_list.set(c);
 	}
-	
+
 	void apply(String delegate(String) func) {
 		_list.apply(func);
 	}
-	
+
 	bool contains(String c) {
 		return _list.contains(c);
 	}
-	
+
 	bool empty() {
 		return _list.empty();
 	}
-	
+
 	void clear() {
 		_list.clear();
 
 		_checkScrollBarStatus();
 	}
-	
+
 	String[] array() {
 		return _list.array();
 	}
-	
+
 	List!(String) dup() {
 		return _list.dup();
 	}
-	
+
 	List!(String) slice(size_t start, size_t end) {
 		return _list.slice(start, end);
 	}
-	
+
 	List!(String) reverse() {
 		return _list.reverse();
 	}
-	
+
 	size_t length() {
 		return _list.length();
 	}
-	
+
 	String opIndex(size_t i1) {
 		return _list.opIndex(i1);
 	}
-	
+
 	int opApply(int delegate(ref String) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
-	
+
 	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return _list.opApply(loopFunc);
 	}

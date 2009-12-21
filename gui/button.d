@@ -51,24 +51,24 @@ class Button : Widget {
 	}
 
 	override void onAdd() {
-		_clrNormal = Color.fromRGBA(0x50, 0xd8, 0xee, 0x80);
-		_clrHover = Color.fromRGBA(0x70, 0xf8, 0xff, 0xc0);
+		_clrNormal = Color.fromRGBA(0.2, 0.3, 0.7, 0.5);
+		_clrHover = Color.fromRGBA(0.6, 0.9, 1.0, 0.7);
 
 		_brsh = new Brush(_clrNormal);
-		_pen = new Pen(Color.fromRGBA(0x20, 0xa8, 0xbe, 0xff));
+		_pen = new Pen(Color.fromRGBA(0.1, 0.7, 0.6, 1.0));
 		_font = new Font(FontSans, 8, 800, false, false, false);
 	}
 
 	override void onDraw(ref Graphics g) {
-		g.setBrush(_brsh);
-		g.setPen(_pen);
+		g.brush = _brsh;
+		g.pen = _pen;
 
-		g.drawRect(this.left, this.top, this.right, this.bottom);
+		g.drawRect(this.left, this.top, this.width, this.height);
 
 		// Draw the text
 		Size sz;
 
-		g.setFont(_font);
+		g.font = _font;
 		g.measureText(_value, sz);
 
 		int x, y;
@@ -78,7 +78,8 @@ class Button : Widget {
 
 		g.setTextModeTransparent();
 
-		g.setTextColor(Color.fromRGBA(0x00,0x00,0x00,0xc8));
+		Color textColor = Color.fromRGBA(0.0,0.0,0.0,0.7);
+		g.forecolor = textColor;
 
 		g.drawText(x, y, _value);
 	}
@@ -131,7 +132,7 @@ protected:
 	String _value;
 
 private:
-	
+
 	Color _clrNormal;
 	Color _clrHover;
 

@@ -7,12 +7,12 @@
  *
  */
 
-module codecs.binary.yEnc;
+module decoders.binary.yEnc;
 
 import core.endian;
 import core.stream;
 
-import codecs.binary.codec;
+import decoders.binary.decoder;
 
 private {
 
@@ -34,7 +34,7 @@ private {
 // Section: Codecs/Binary
 
 // Description: This represents the yEnc Codec.
-class yEncCodec : BinaryCodec {
+class yEncDecoder : BinaryDecoder {
 
 	StreamData decode(Stream stream, Stream toStream) {
 		ushort chunk;

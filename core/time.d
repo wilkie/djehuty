@@ -1,5 +1,7 @@
 module core.time;
 
+import Scaffold = scaffold.time;
+
 import core.string;
 import core.definitions;
 import core.tostring;
@@ -17,7 +19,7 @@ class Time {
 	this(long ms) {
 		fromMilliseconds(ms);
 	}
-	
+
 	this(uint hour, uint minute, uint second, uint millisecond = 0) {
 		micros = hour;
 		micros *= 60;
@@ -27,6 +29,10 @@ class Time {
 		micros *= 1000;
 		micros += millisecond;
 		micros *= 1000;
+	}
+
+	static Time Now() {
+		return new Time(Scaffold.TimeGet());
 	}
 
 	// Description: The microsecond.

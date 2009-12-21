@@ -7,9 +7,9 @@
  *
  */
 
-module codecs.audio.codec;
+module decoders.audio.decoder;
 
-import codecs.codec;
+import decoders.decoder;
 
 import core.string;
 import core.time;
@@ -22,7 +22,7 @@ import io.console;
 // Section: Interfaces
 
 // Description: The interface to an audio codec.
-abstract class AudioCodec : Codec {
+abstract class AudioDecoder : Decoder {
 public:
 
 	this() {

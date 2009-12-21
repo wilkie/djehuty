@@ -7,15 +7,14 @@
  *
  */
 
-module codecs.binary.deflate;
+module decoders.binary.deflate;
 
 import core.endian;
 import core.stream;
 
-import codecs.binary.codec;
+import decoders.binary.decoder;
 
-private
-{
+private {
 
 	const auto DEFLATE_STATE_INIT							= 0;
 
@@ -200,7 +199,7 @@ private
 // Section: Codecs/Binary
 
 // Description: This represents the DEFLATE Codec.
-class DEFLATECodec : BinaryCodec {
+class DEFLATEDecoder : BinaryDecoder {
 
 	StreamData decode(Stream stream, Stream toStream) {
 		uint counter;

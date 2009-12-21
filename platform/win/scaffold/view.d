@@ -30,31 +30,23 @@ import core.definitions;
 
 import utils.linkedlist;
 
+import io.console;
 
 // views
 void ViewCreate(View view, ViewPlatformVars*viewVars) {
-	HDC dc;
-
-	dc = GetDC(null);
-
+//	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
+	//viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
+	//Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+//	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
+	Console.putln("view create ", view.width, ":", view.height);
 	viewVars.clipRegions = new _clipList();
 
-	viewVars.dc = CreateCompatibleDC(dc);
+	viewVars.length = (view.width() * view.height()) * 4;
 
-	HBITMAP bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
-
-	ReleaseDC(null, dc);
-
-	SelectObject(viewVars.dc, bmp);
-
-	DeleteObject(bmp);
-
-    Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
-/*
 	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
 	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
 	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);*/
+	Console.putln("view create done");
 }
 
 void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {
@@ -75,13 +67,30 @@ void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
 
 void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 	//will set _inited to true:
-	ViewCreate(view, viewVars);
+	HDC dc;
+
+	dc = GetDC(null);
+
+	viewVars.clipRegions = new _clipList();
+
+	viewVars.dc = CreateCompatibleDC(dc);
+
+	HBITMAP bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
+
+	ReleaseDC(null, dc);
+
+	SelectObject(viewVars.dc, bmp);
+
+	DeleteObject(bmp);
+
+    Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
 }
 
 void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 }
 
 void ViewResize(ref View view, ViewPlatformVars*viewVars) {
+	Console.putln("view resize");
 	HDC dc;
 
 	dc = GetDC(null);
@@ -108,8 +117,9 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 	SelectObject(viewVars.dc, bmp);
 
 	DeleteObject(bmp);
+	Console.putln("view done");
 }
-import std.stdio;
+
 void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length) {
     Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
 

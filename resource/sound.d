@@ -24,8 +24,10 @@ import io.audio;
 import io.file;
 import io.console;
 
-import codecs.audio.codec;
-import codecs.audio.all;
+import decoders.audio.decoder;
+import decoders.audio.all;
+
+import math.common;
 
 // Section: Enums
 
@@ -61,7 +63,7 @@ class Sound : Responder {
 		push(wavDevice = new Audio);
 
 		tmr = new Timer();
-		tmr.setInterval(1);
+		tmr.setInterval(250);
 
 		push(tmr);
 
@@ -106,7 +108,7 @@ class Sound : Responder {
 		// Find the correct audio codec for this audio stream
 		ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
 
-		if (ret == StreamData.Invalid) { return ret; }
+		if (ret == StreamData.Invalid || ret == StreamData.Required) { return ret; }
 		Console.putln("dboo");
 		Console.putln("Sound: Codec name: ", _curCodec.name);
 
@@ -116,7 +118,7 @@ class Sound : Responder {
 		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
 
 		Console.putln("Sound : Creating Device");
-		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.openDevice(buffers[0].audioFormat());
 		wavDevice.pause();
 
 		_state = State.Paused;
@@ -157,7 +159,7 @@ class Sound : Responder {
 		}
 
 		wavDevice.resume();
-		//tmr.start();
+		tmr.start();
 
 		_state = State.Playing;
 		raiseSignal(Signal.StateChanged);
@@ -217,13 +219,13 @@ class Sound : Responder {
 
 		_doneBuffering = false;
 
-		wavDevice.openDevice(buffers[0].getAudioFormat());
+		wavDevice.openDevice(buffers[0].audioFormat());
 		wavDevice.pause();
 		_state = State.Paused;
 
 		Time tme;
 		tme.fromMicroseconds(cast(long)toPosition);
-		_curCodec.seek(inStream, buffers[0].getAudioFormat(), wavInfo, tme);
+		_curCodec.seek(inStream, buffers[0].audioFormat(), wavInfo, tme);
 
 		_curCodec.decode(inStream, buffers[0], wavInfo);
 
@@ -245,6 +247,41 @@ class Sound : Responder {
 		return _state;
 	}
 
+	double[] spectrum() {
+		static uint samples = 0;
+		static int lastIndex = -1;
+		static Time last;
+		if (lastIndex == -1) {
+			lastIndex = 0;
+			last = Time.Now();
+		}
+		else if (bufferIndex == lastIndex) {
+			lastIndex = !bufferIndex;
+			samples = 0;
+			last = Time.Now();
+		}
+		else { // bufferIndex != lastIndex
+			Time cur = Time.Now();
+			Time diff = cur - last;
+			last = cur;
+		}
+
+		uint inc = buffers[lastIndex].audioFormat.samplesPerSecond / 20;
+		cdouble[] samps = buffers[lastIndex].fourier(2048, samples);
+		samples += inc;
+
+		double[] ret = new double[samps.length];
+
+		foreach(size_t i, sample; samps) {
+			double re = sample.re * 0.6;
+			double im = sample.im * 0.6;
+			
+			ret[i] = sqrt((re * re) + (im * im));
+		}
+
+		return ret;
+	}
+
 protected:
 
 	Wavelet buffers[2];
@@ -252,7 +289,7 @@ protected:
 
 	ulong curPos;
 
-	AudioCodec _curCodec;
+	AudioDecoder _curCodec;
 	Stream inStream;
 
 	Audio wavDevice;

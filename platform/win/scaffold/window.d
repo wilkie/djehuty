@@ -38,6 +38,8 @@ import opengl.window;
 
 import synch.thread;
 
+import io.console;
+
 // all windows
 void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	windowVars.oldWidth = window.width;
@@ -356,61 +358,24 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 
 // Viewable windows
 void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
-	RECT rt;
-
-	rt.left = 0;
-	rt.top = 0;
-	rt.right = view.width();
-	rt.bottom = view.height();
-
-	//draw background
-	windowVars.brsh = CreateSolidBrush(ColorGetValue(window.color));
-	FillRect(viewVars.dc, &rt, windowVars.brsh);
-	DeleteObject(windowVars.brsh);
-
 	//the starting pen and brush is black and white respectively
-
-	//window->_view._graphics.CreatePen(windowVars.pen, 0);
-
-	windowVars.pen = CreatePen(0,1, 0x00ff00);
-	SelectObject(viewVars.dc, windowVars.pen);
-
-	windowVars.brsh = CreateSolidBrush(0xffffff);
-	SelectObject(viewVars.dc, windowVars.brsh);
-
-	//window->_view._graphics.CreateFont(window->_pfvars.fnt, S("Times New Roman"), 10, 400, false, false, false);
-
-	//window->_view._graphics.UseFont(window->_pfvars.fnt);
-
-	//window->_view._graphics.SetTextModeTransparent();
+	if (viewVars.aa) {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeAntiAlias);
+	}
+	else {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeDefault);
+	}
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
-	//window->_view._graphics.DestroyFont(window->_pfvars.fnt);
-
-	DeleteObject(windowVars.pen);
-	DeleteObject(windowVars.brsh);
-
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
+//	Gdiplus.GpGraphics* g;
+//	Gdiplus.GdipCreateFromHDC(hdc, &g);
+//	Gdiplus.GdipDrawImageI(g, viewVars.image, 0, 0);
 
-/*
-	Gdiplus.GpGraphics* g;
-	Gdiplus.GpPen* pen;
-    Gdiplus.GpSolidFill* brush;
-    Gdiplus.GpSolidFill* brush2;
+	BitBlt(hdc, 0, 0, window.width(), window.height(), viewVars.dc, 0, 0, SRCCOPY);
 
-    Gdiplus.GdipCreateFromHDC( viewVars.dc, &g);
-    Gdiplus.GdipCreateSolidFill(0x800000ff, &brush);
-    Gdiplus.GdipCreateSolidFill(0x80ff0000, &brush2);
-	Gdiplus.GdipCreatePen1(0xff000000, 1.0, Gdiplus.Unit.UnitWorld, &pen);
-	Gdiplus.GdipFillRectangleI(g, brush, 0, 0, window.width-100, window.height-100);
-	Gdiplus.GdipFillRectangleI(g, brush2, 100, 100, window.width-100, window.height-100);
-	Gdiplus.GdipDrawRectangleI(g, pen, 0, 0, window.width, window.height);
-	Gdiplus.GdipDeleteGraphics(g);
-*/
-
-	BitBlt(hdc, 0, 0, view.width(), view.height(), viewVars.dc, 0, 0, SRCCOPY);
 	ReleaseDC(windowVars.hWnd, hdc);
 }
 

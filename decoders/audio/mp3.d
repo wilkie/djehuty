@@ -7,11 +7,10 @@
  *
  */
 
-module codecs.audio.mp3;
+module decoders.audio.mp3;
 
-import codecs.audio.codec;
-
-import codecs.codec;
+import decoders.audio.decoder;
+import decoders.decoder;
 
 import core.stream;
 import core.time;
@@ -50,7 +49,7 @@ template FromBigEndianBitIndex32(uint index)
 	}
 }
 
-class MP3Codec : AudioCodec {
+class MP3Decoder : AudioDecoder {
 
 	String name() {
 		return new String("MPEG Layer 3");
@@ -116,7 +115,7 @@ class MP3Codec : AudioCodec {
 								id3length |= b;
 							}
 
-							//Console.putln("id3 length: ", new String("%x", id3length));
+							Console.putln("id3 length: ", new String("%x", id3length));
 						}
 
 						if (!stream.skip(id3length)) {
@@ -267,7 +266,7 @@ class MP3Codec : AudioCodec {
 					}
 					else
 					{
-						//Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
+						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
 						ubyte curByte;
 
 						// test 5K worth
@@ -2170,7 +2169,7 @@ private:
 	// Index as: huffmanTables[tableIndex][bitlength][value]
 	//           huffmanValues[tableIndex][value]
 	// Both tables correspond in their order.
-	import codecs.audio.mp3Huffman;
+	import decoders.audio.mp3Huffman;
 
 	uint[][] curTable;
 	uint[] curValues;
@@ -2409,7 +2408,7 @@ private:
 		return code;
 	}
 
-	import codecs.audio.mpegCommon;
+	import decoders.audio.mpegCommon;
 
 	bool accepted = false;
 

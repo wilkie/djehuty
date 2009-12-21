@@ -11,8 +11,6 @@
 module scaffold.graphics;
 
 pragma(lib, "gdi32.lib");
-pragma(lib, "msimg32.lib");
-pragma(lib, "advapi32.lib");
 
 import graphics.view;
 
@@ -47,34 +45,63 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
 }
 
-void fillRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	//width--;
+	//height--;
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, width, height);
 }
 
-void strokeRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+void strokeRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	width--;
+	height--;
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
-void drawRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	//Rectangle(viewVars.dc, x, y, x2, y2);
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+void drawRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	width--;
+	height--;
+	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
-void fillOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
+void fillOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	width--;
+	height--;
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, width, height);
 }
 
-void strokeOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {	
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+void strokeOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	width--;
+	height--;
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
-void drawOval(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	//Ellipse(viewVars.dc, x, y, x2, y2);
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, x2-x-1, y2-y-1);
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, x2-x-1, y2-y-1);
+void drawOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	width--;
+	height--;
+	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, width, height);
+}
+
+void drawPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	width--;
+	height--;
+	Gdiplus.GdipFillPieI(viewVars.g, viewVars.curBrush, x, y, width, height, startAngle, sweepAngle);
+	Gdiplus.GdipDrawPieI(viewVars.g, viewVars.curPen, x, y, width, height, startAngle, sweepAngle);
+}
+
+void fillPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	width--;
+	height--;
+	Gdiplus.GdipFillPieI(viewVars.g, viewVars.curBrush, x, y, width, height, startAngle, sweepAngle);
+}
+
+void strokePie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	width--;
+	height--;
+	Gdiplus.GdipDrawPieI(viewVars.g, viewVars.curPen, x, y, width, height, startAngle, sweepAngle);
 }
 
 // Text
@@ -194,7 +221,17 @@ void setTextModeOpaque(ViewPlatformVars* viewVars) {
 	SetBkMode(viewVars.dc, OPAQUE);
 }
 
+// Graphics States
 
+void setAntialias(ViewPlatformVars* viewVars, bool value) {
+	viewVars.aa = value;
+	if (viewVars.aa) {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeAntiAlias);
+	}
+	else {
+		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeDefault);
+	}
+}
 
 
 // Fonts
@@ -299,11 +336,21 @@ void destroyBrush(BrushPlatformVars* brush) {
     Gdiplus.GdipDeleteBrush(brush.handle);
 }
 
+// BitmapBrush
+
+void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSrc) {
+	Gdiplus.GdipCreateTexture(viewVarsSrc.image, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
+}
+
 // Pens
 
-void createPen(PenPlatformVars* pen, ref Color clr) {
-    Gdiplus.GdipCreatePen1(clr.value, 1.0, Gdiplus.Unit.UnitWorld, &pen.handle);
+void createPen(PenPlatformVars* pen, ref Color clr, double width) {
+    Gdiplus.GdipCreatePen1(clr.value, width, Gdiplus.Unit.UnitWorld, &pen.handle);
 	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
+}
+
+void createPenWithBrush(PenPlatformVars* pen, ref BrushPlatformVars brushVars, double width) {
+	Gdiplus.GdipCreatePen2(brushVars.handle, width, Gdiplus.Unit.UnitWorld, &pen.handle);
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
@@ -384,15 +431,15 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 	}
 
 	// compute a platform graphics api version of the region
-	POINT[] pts = new POINT[](rgn.numPoints);
+	POINT[] pts = new POINT[](rgn.length);
 
 	foreach(i, pt; rgn) {
 		pts[i].x = pt.x + x;
 		pts[i].y = pt.y + y;
 	}
-	
+
 	// call the platform to create a region object from the points
-	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.numPoints, ALTERNATE);
+	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.length, ALTERNATE);
 }
 
 void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
@@ -450,8 +497,8 @@ void clipRestore(ViewPlatformVars* viewVars) {
 	}
 }
 
-void clipRect(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	HRGN rgn = CreateRectRgn(x,y,x2,y2);
+void clipRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	HRGN rgn = CreateRectRgn(x,y,width,height);
 
 	ExtSelectClipRgn(viewVars.dc, rgn, RGN_AND);
 

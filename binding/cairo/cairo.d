@@ -404,8 +404,7 @@ void  cairo_set_tolerance(cairo_t *cr, double tolerance);
  * Specifies the type of antialiasing to do when rendering text or shapes.
  **/
 
-enum cairo_antialias_t
-{
+enum cairo_antialias_t {
     CAIRO_ANTIALIAS_DEFAULT,
     CAIRO_ANTIALIAS_NONE,
     CAIRO_ANTIALIAS_GRAY,

@@ -7,6 +7,7 @@
 
 module core.stream;
 
+import core.definitions;
 import core.string;
 
 // TODO: allow ENORMOUS ARRAYS gracefully (> 4GB... switch to a Map)

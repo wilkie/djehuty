@@ -84,7 +84,7 @@ public:
 		_skt = new Socket();
 		_thread = new Thread();
 
-		_thread.setDelegate(&threadProc);
+		_thread.callback = &threadProc;
 	}
 
 	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.

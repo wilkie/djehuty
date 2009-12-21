@@ -20,7 +20,7 @@ import core.string;
 import core.definitions;
 import core.list;
 
-class TuiFileBox : TuiWidget, ListInterface!(String) {
+class TuiFileBox : TuiWidget, Listable!(String) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_path = new Directory();

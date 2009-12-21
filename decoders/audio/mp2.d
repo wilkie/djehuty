@@ -7,10 +7,10 @@
  *
  */
 
-module codecs.audio.mp2;
+module decoders.audio.mp2;
 
-import codecs.audio.codec;
-import codecs.codec;
+import decoders.audio.decoder;
+import decoders.decoder;
 
 import core.stream;
 import core.time;
@@ -24,35 +24,27 @@ import io.console;
 typedef double zerodouble = 0.0;
 
 // 2
-template FromBigEndian(uint input)
-{
-	version (LittleEndian)
-	{
+template FromBigEndian(uint input) {
+	version (LittleEndian) {
 		const auto FromBigEndian = (input >> 24) | ((input >> 8) & 0x0000FF00) | ((input << 8) & 0x00FF0000) | ((input << 24) & 0xFF000000);
 	}
-	else
-	{
+	else {
 		const auto FromBigEndian = input;
 	}
 }
 
-template FromBigEndianBitIndex32(uint index)
-{
-	version (LittleEndian)
-	{
+template FromBigEndianBitIndex32(uint index) {
+	version (LittleEndian) {
 		const auto FromBigEndianBitIndex32 = ((3 - cast(uint)(index/8)) * 8) + (index % 8);
 	}
-	else
-	{
+	else {
 		const auto FromBigEndianBitIndex32 = index;
 	}
 }
 
-private
-{
+private {
 	// for the classes of quantization table
-	struct QuantizationClass
-	{
+	struct QuantizationClass {
 		uint numberOfSteps;
 		double C;
 		double D;
@@ -305,8 +297,7 @@ private
 		[0xFF, 0x7F, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1]		// 8 bits
 	];
 
-	struct MP2HeaderInformation
-	{
+	struct MP2HeaderInformation {
 		uint ID;
 		uint Layer;
 		uint Protected;
@@ -345,19 +336,14 @@ private
 // Section: Codecs/Audio
 
 // Description: This is the MPEG Layer 2 audio codec.
-class MP2Codec : AudioCodec
-{
-	String name()
-	{
+class MP2Decoder : AudioDecoder {
+	String name() {
 		return new String("MPEG Layer 2");
 	}
 
-	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi)
-	{
-		for (;;)
-		{
-			switch (decoderState)
-			{
+	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {
+		for (;;) {
+			switch (decoderState) {
 				case MP2_STATE_INIT:
 					//initial stuff
 
@@ -383,15 +369,13 @@ class MP2Codec : AudioCodec
 
 					bufferSize = samplesLeft * 2;
 
-					if (isSeek && !isSeekBack && (toSeek < (curTime + bufferTime)))
-					{
+					if (isSeek && !isSeekBack && (toSeek < (curTime + bufferTime))) {
 						// seeking
 						Console.putln("seek no more");
 						isSeek = false;
 						return StreamData.Accepted;
 					}
-					else if (isSeek && isSeekBack && (toSeek >= curTime))
-					{
+					else if (isSeek && isSeekBack && (toSeek >= curTime)) {
 						// seeking
 						Console.putln("seek no more");
 						isSeek = false;
@@ -404,8 +388,7 @@ class MP2Codec : AudioCodec
 
 				case MP2_READ_HEADER:
 
-					if (!stream.read(mpeg_header))
-					{
+					if (!stream.read(mpeg_header)) {
 						if (accepted) {
 							return StreamData.Accepted;
 						}
@@ -574,7 +557,7 @@ class MP2Codec : AudioCodec
 						else {
 							decoderState = MP2_READ_AUDIO_DATA;
 						}
-						
+
 						if (!accepted) {
 							if (toBuffer !is null) {
 								if (toBuffer.length() != bufferSize) {
@@ -720,64 +703,53 @@ class MP2Codec : AudioCodec
 					uint tableType;
 					uint sblimit;
 
-					if (header.SamplingFrequency == 0)
-					{
+					if (header.SamplingFrequency == 0) {
 						// 44.1 kHz
 
-						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5)
-						{
+						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else if (header.BitrateIndex >= 6)
-						{
+						else if (header.BitrateIndex >= 6) {
 							// TABLE B
 							tableType = 0;
 							sblimit = 30;
 						}
-						else
-						{
+						else {
 							// TABLE C
 							tableType = 1;
 							sblimit = 8;
 						}
 					}
-					else if (header.SamplingFrequency == 1)
-					{
+					else if (header.SamplingFrequency == 1) {
 						// 48 kHz
 
-						if (header.BitrateIndex >= 3)
-						{
+						if (header.BitrateIndex >= 3) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else
-						{
+						else {
 							// TABLE C
 							tableType = 1;
 							sblimit = 8;
 						}
 					}
-					else
-					{
+					else {
 						// 32 kHz
 
-						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5)
-						{
+						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else if (header.BitrateIndex >= 6)
-						{
+						else if (header.BitrateIndex >= 6) {
 							// TABLE B
 							tableType = 0;
 							sblimit = 30;
 						}
-						else
-						{
+						else {
 							// TABLE D
 							tableType = 1;
 							sblimit = 12;
@@ -786,42 +758,34 @@ class MP2Codec : AudioCodec
 
 					uint sb, channel;
 
-					if (tableType == 0)
-					{
+					if (tableType == 0) {
 						// TABLE A/B
 
 						// length: 4 bits
 						uint idx;
 
-						for ( ; sb < 3; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
+						for ( ; sb < 3; sb++) {
+							for (channel=0; channel<channels; channel++) {
 								idx = readBits(4);
 								allocClass[channel][sb] = cast(QuantizationClass*)&allocationToQuantA1[idx];
 							}
 						}
 
-						for ( ; sb < 11; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
+						for ( ; sb < 11; sb++) {
+							for (channel=0; channel<channels; channel++) {
 								idx = readBits(4);
 								allocClass[channel][sb] = cast(QuantizationClass*)&allocationToQuantA2[idx];
 							}
 						}
 
-						for ( ; sb < 23; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
+						for ( ; sb < 23; sb++) {
+							for (channel=0; channel<channels; channel++) {
 								idx = readBits(3);
 								allocClass[channel][sb] = cast(QuantizationClass*)&allocationToQuantA3[idx];
 							}
 						}
 
-						for ( ; sb < sblimit; sb++)
-						{
+						for ( ; sb < sblimit; sb++) {
 							for (channel=0; channel<channels; channel++)
 							{
 								idx = readBits(2);
@@ -829,25 +793,20 @@ class MP2Codec : AudioCodec
 							}
 						}
 					}
-					else
-					{
+					else {
 						// TABLE C/D
 
 						uint idx;
 
-						for ( ; sb < 2; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
+						for ( ; sb < 2; sb++) {
+							for (channel=0; channel<channels; channel++) {
 								idx = readBits(4);
 								allocClass[channel][sb] = cast(QuantizationClass*)&allocationToQuantC1[idx];
 							}
 						}
 
-						for ( ; sb < sblimit; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
+						for ( ; sb < sblimit; sb++) {
+							for (channel=0; channel<channels; channel++) {
 								idx = readBits(3);
 								allocClass[channel][sb] = cast(QuantizationClass*)&allocationToQuantC1[idx];
 							}
@@ -856,12 +815,9 @@ class MP2Codec : AudioCodec
 
 					// Read Scalefactor Selection Information
 
-					for (sb=0; sb<sblimit; sb++)
-					{
-						for (channel=0; channel<channels; channel++)
-						{
-							if (allocClass[channel][sb].numberOfSteps!=0)
-							{
+					for (sb=0; sb<sblimit; sb++) {
+						for (channel=0; channel<channels; channel++) {
+							if (allocClass[channel][sb].numberOfSteps!=0) {
 								scfsi[channel][sb] = readBits(2);
 							}
 						}
@@ -869,42 +825,33 @@ class MP2Codec : AudioCodec
 
 					// Read Scalefactor Indices
 
-					for (sb=0; sb<sblimit; sb++)
-					{
-						for (channel=0; channel<channels; channel++)
-						{
-							if (allocClass[channel][sb].numberOfSteps!=0)
-							{
-								if (scfsi[channel][sb]==0)
-								{
+					for (sb=0; sb<sblimit; sb++) {
+						for (channel=0; channel<channels; channel++) {
+							if (allocClass[channel][sb].numberOfSteps!=0) {
+								if (scfsi[channel][sb]==0) {
 									scalefactor[channel][0][sb] = readBits(6); 	// 6	bits	uimsbf
 									scalefactor[channel][1][sb] = readBits(6);	// 6	bits	uimsbf
 									scalefactor[channel][2][sb] = readBits(6);  // 6	bits	uimsbf
 								}
-								else if ((scfsi[channel][sb]==1) || (scfsi[channel][sb]==3))
-								{
+								else if ((scfsi[channel][sb]==1) || (scfsi[channel][sb]==3)) {
 									scalefactor[channel][0][sb] = readBits(6); 	// 6	bits	uimsbf
 									scalefactor[channel][2][sb] = readBits(6);	// 6	bits	uimsbf
 
 									// scale factors are paired differently:
-									if (scfsi[channel][sb] == 1)
-									{
+									if (scfsi[channel][sb] == 1) {
 										scalefactor[channel][1][sb] = scalefactor[channel][0][sb];
 									}
-									else
-									{
+									else {
 										scalefactor[channel][1][sb] = scalefactor[channel][2][sb];
 									}
 								}
-								else if (scfsi[channel][sb]==2)
-								{
+								else if (scfsi[channel][sb]==2) {
 									scalefactor[channel][0][sb] = readBits(6);  // 6	bits	uimsbf
 									scalefactor[channel][1][sb] = scalefactor[channel][0][sb];
 									scalefactor[channel][2][sb] = scalefactor[channel][0][sb];
 								}
 							}
-							else
-							{
+							else {
 								scalefactor[channel][0][sb] = 63;
 								scalefactor[channel][1][sb] = 63;
 								scalefactor[channel][2][sb] = 63;
@@ -914,34 +861,26 @@ class MP2Codec : AudioCodec
 
 					uint gr, s;
 
-					for (gr=0; gr<12; gr++)
-					{
-						for (sb=0; sb<sblimit; sb++)
-						{
-							for (channel=0; channel<channels; channel++)
-							{
-								if (allocClass[channel][sb].numberOfSteps!=0)
-								{
-									if (allocClass[channel][sb].grouping)
-									{
+					for (gr=0; gr<12; gr++) {
+						for (sb=0; sb<sblimit; sb++) {
+							for (channel=0; channel<channels; channel++) {
+								if (allocClass[channel][sb].numberOfSteps!=0) {
+									if (allocClass[channel][sb].grouping) {
 										samplecode = readBits(allocClass[channel][sb].bitsPerCodeword);	// 5..10	bits	uimsbf
 											//writeln(samplecode[sb][gr], " bit");
 										assert((allocClass[channel][sb].bitsPerCodeword > 4) && (allocClass[channel][sb].bitsPerCodeword < 11));
 
 										// ungroup
 
-										for (s=0; s<3; s++)
-										{
+										for (s=0; s<3; s++) {
 											sample[channel][s][sb] = samplecode % allocClass[channel][sb].numberOfSteps;
 											samplecode /= allocClass[channel][sb].numberOfSteps;
 
 											// requantize
 										}
 									}
-									else
-									{
-										for (s=0; s<3; s++)
-										{
+									else {
+										for (s=0; s<3; s++) {
 											sample[channel][s][sb] = readBits(allocClass[channel][sb].bitsPerCodeword); // 2..16	bits	uimsbf
 												//writeln(sample[sb][s], " bit");
 											assert((allocClass[channel][sb].bitsPerCodeword > 1) && (allocClass[channel][sb].bitsPerCodeword < 17));
@@ -949,8 +888,7 @@ class MP2Codec : AudioCodec
 										}
 									}
 								}
-								else
-								{
+								else {
 									sample[channel][0][sb] = 0;
 									sample[channel][1][sb] = 0;
 									sample[channel][2][sb] = 0;
@@ -958,10 +896,8 @@ class MP2Codec : AudioCodec
 							}
 						}
 
-						for ( ; sb<32; sb++)
-						{
-							for (s=0; s<3; s++)
-							{
+						for ( ; sb<32; sb++) {
+							for (s=0; s<3; s++) {
 								quantSample[0][s][sb] = 0.0;
 								quantSample[1][s][sb] = 0.0;
 							}
@@ -979,17 +915,14 @@ class MP2Codec : AudioCodec
 									while ((1<<x) < allocClass[channel][sb].numberOfSteps)
 										{ x++; }
 
-									if ((sample[channel][s][sb] >> (x-1)) == 1)
-									{
+									if ((sample[channel][s][sb] >> (x-1)) == 1) {
 										quantSample[channel][s][sb] = 0.0;
 									}
-									else
-									{
+									else {
 										quantSample[channel][s][sb] = -1.0;
 									}
 
-									if (x > 0)
-									{
+									if (x > 0) {
 										quantSample[channel][s][sb] += cast(double)(sample[channel][s][sb] & bitFills[x]) /
 																			cast(double)(1<<x-1);
 									}
@@ -1014,69 +947,57 @@ class MP2Codec : AudioCodec
 
 						int clip;
 
-						for (s=0; s<3; s++)
-						{
+						for (s=0; s<3; s++) {
 							long foo;
 
 							double* bufOffsetPtr;
 							double* bufOffsetPtr2;
 
-							if (channels == 1)
-							{
+							if (channels == 1) {
 								channel = 0;
 
 							    bufOffset[channel] = (bufOffset[channel] - 64) & 0x3ff;
 							    bufOffsetPtr = cast(double*)&BB[channel][bufOffset[channel]];
 
-								for (i=0; i<64; i++)
-								{
+								for (i=0; i<64; i++) {
 									sum = 0;
-									for (k=0; k<32; k++)
-									{
+									for (k=0; k<32; k++) {
 										sum += quantSample[channel][s][k] * nCoefficients[i][k];
 									}
 									bufOffsetPtr[i] = sum;
 								}
 
-								for (j=0; j<32; j++)
-								{
+								for (j=0; j<32; j++) {
 									sum = 0;
-									for (i=0; i<16; i++)
-									{
+									for (i=0; i<16; i++) {
 										k = j + (i << 5);
 
 										sum += windowCoefficients[k] * BB[channel][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[channel]) & 0x3ff];
 									}
 
-							        if(sum > 0)
-							        {
+							        if(sum > 0) {
 										foo = cast(long)(sum * cast(double)32768 + cast(double)0.5);
 							        }
-							        else
-							        {
+							        else {
 										foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
 							        }
 
-									if (foo >= cast(long)32768)
-									{
+									if (foo >= cast(long)32768) {
 										toBuffer.write(cast(short)(32768-1));
 										//++clip;
 									}
-									else if (foo < cast(long)-32768)
-									{
+									else if (foo < cast(long)-32768) {
 										toBuffer.write(cast(short)(-32768));
 										//++clip;
 									}
-									else
-									{
+									else {
 										toBuffer.write(cast(short)foo);
 									}
 
 									//printf("%d\n", foo);
 								}
 							}
-							else
-							{
+							else {
 								// INTERLEAVE CHANNELS!
 
 							    bufOffset[0] = (bufOffset[0] - 64) & 0x3ff;
@@ -1087,12 +1008,10 @@ class MP2Codec : AudioCodec
 
 							    double sum2;
 
-								for (i=0; i<64; i++)
-								{
+								for (i=0; i<64; i++) {
 									sum = 0;
 									sum2 = 0;
-									for (k=0; k<32; k++)
-									{
+									for (k=0; k<32; k++) {
 										sum += quantSample[0][s][k] * nCoefficients[i][k];
 										sum2 += quantSample[1][s][k] * nCoefficients[i][k];
 									}
@@ -1100,63 +1019,51 @@ class MP2Codec : AudioCodec
 									bufOffsetPtr2[i] = sum2;
 								}
 
-								for (j=0; j<32; j++)
-								{
+								for (j=0; j<32; j++) {
 									sum = 0;
 									sum2 = 0;
-									for (i=0; i<16; i++)
-									{
+									for (i=0; i<16; i++) {
 										k = j + (i << 5);
 
 										sum += windowCoefficients[k] * BB[0][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[0]) & 0x3ff];
 										sum2 += windowCoefficients[k] * BB[1][( (k + ( ((i+1)>>1) << 6) ) + bufOffset[1]) & 0x3ff];
 									}
 
-							        if(sum > 0)
-							        {
+							        if(sum > 0) {
 										foo = cast(long)(sum * cast(double)32768 + cast(double)0.5);
 							        }
-							        else
-							        {
+							        else {
 										foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
 							        }
 
-									if (foo >= cast(long)32768)
-									{
+									if (foo >= cast(long)32768) {
 										toBuffer.write(cast(short)(32768-1));
 										//++clip;
 									}
-									else if (foo < cast(long)-32768)
-									{
+									else if (foo < cast(long)-32768) {
 										toBuffer.write(cast(short)(-32768));
 										//++clip;
 									}
-									else
-									{
+									else {
 										toBuffer.write(cast(short)foo);
 									}
 
-							        if(sum2 > 0)
-							        {
+							        if(sum2 > 0) {
 										foo = cast(long)(sum2 * cast(double)32768 + cast(double)0.5);
 							        }
-							        else
-							        {
+							        else {
 										foo = cast(long)(sum2 * cast(double)32768 - cast(double)0.5);
 							        }
 
-									if (foo >= cast(long)32768)
-									{
+									if (foo >= cast(long)32768) {
 										toBuffer.write(cast(short)(32768-1));
 										//++clip;
 									}
-									else if (foo < cast(long)-32768)
-									{
+									else if (foo < cast(long)-32768) {
 										toBuffer.write(cast(short)(-32768));
 										//++clip;
 									}
-									else
-									{
+									else {
 										toBuffer.write(cast(short)foo);
 									}
 								}
@@ -1166,8 +1073,7 @@ class MP2Codec : AudioCodec
 
 					samplesLeft -= (12*32*3*channels);
 
-					if (samplesLeft <= 0)
-					{
+					if (samplesLeft <= 0) {
 						decoderState = MP2_BUFFER_AUDIO;
 						curTime += bufferTime;
 							curTime.toString();
@@ -1176,23 +1082,7 @@ class MP2Codec : AudioCodec
 
 					decoderState = MP2_READ_HEADER;
 
-
 					continue;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 				case MP2_READ_AUDIO_DATA_DUAL_CHANNEL:
 
@@ -1224,64 +1114,53 @@ class MP2Codec : AudioCodec
 					uint tableType;
 					uint sblimit;
 
-					if (header.SamplingFrequency == 0)
-					{
+					if (header.SamplingFrequency == 0) {
 						// 44.1 kHz
 
-						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5)
-						{
+						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else if (header.BitrateIndex >= 6)
-						{
+						else if (header.BitrateIndex >= 6) {
 							// TABLE B
 							tableType = 0;
 							sblimit = 30;
 						}
-						else
-						{
+						else {
 							// TABLE C
 							tableType = 1;
 							sblimit = 8;
 						}
 					}
-					else if (header.SamplingFrequency == 1)
-					{
+					else if (header.SamplingFrequency == 1) {
 						// 48 kHz
 
-						if (header.BitrateIndex >= 3)
-						{
+						if (header.BitrateIndex >= 3) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else
-						{
+						else {
 							// TABLE C
 							tableType = 1;
 							sblimit = 8;
 						}
 					}
-					else
-					{
+					else {
 						// 32 kHz
 
-						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5)
-						{
+						if (header.BitrateIndex >= 3 && header.BitrateIndex <= 5) {
 							// TABLE A
 							tableType = 0;
 							sblimit = 27;
 						}
-						else if (header.BitrateIndex >= 6)
-						{
+						else if (header.BitrateIndex >= 6) {
 							// TABLE B
 							tableType = 0;
 							sblimit = 30;
 						}
-						else
-						{
+						else {
 							// TABLE D
 							tableType = 1;
 							sblimit = 12;
@@ -1290,53 +1169,46 @@ class MP2Codec : AudioCodec
 
 					uint sb;
 
-					if (tableType == 0)
-					{
+					if (tableType == 0) {
 						// TABLE A/B
 
 						// length: 4 bits
 						uint idx;
 
-						for ( ; sb < 3; sb++)
-						{
+						for ( ; sb < 3; sb++) {
 							idx = readBits(4);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantA1[idx];
 							idx = readBits(4);
 							allocClass[1][sb] = cast(QuantizationClass*)&allocationToQuantA1[idx];
 						}
 
-						for ( ; sb < 11; sb++)
-						{
+						for ( ; sb < 11; sb++) {
 							idx = readBits(4);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantA2[idx];
 							idx = readBits(4);
 							allocClass[1][sb] = cast(QuantizationClass*)&allocationToQuantA2[idx];
 						}
 
-						for ( ; sb < 23; sb++)
-						{
+						for ( ; sb < 23; sb++) {
 							idx = readBits(3);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantA3[idx];
 							idx = readBits(3);
 							allocClass[1][sb] = cast(QuantizationClass*)&allocationToQuantA3[idx];
 						}
 
-						for ( ; sb < sblimit; sb++)
-						{
+						for ( ; sb < sblimit; sb++) {
 							idx = readBits(2);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantA4[idx];
 							idx = readBits(2);
 							allocClass[1][sb] = cast(QuantizationClass*)&allocationToQuantA4[idx];
 						}
 					}
-					else
-					{
+					else {
 						// TABLE C/D
 
 						uint idx;
 
-						for ( ; sb < 2; sb++)
-						{
+						for ( ; sb < 2; sb++) {
 							idx = readBits(4);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantC1[idx];
 							idx = readBits(4);
@@ -1344,8 +1216,7 @@ class MP2Codec : AudioCodec
 
 						}
 
-						for ( ; sb < sblimit; sb++)
-						{
+						for ( ; sb < sblimit; sb++) {
 							idx = readBits(3);
 							allocClass[0][sb] = cast(QuantizationClass*)&allocationToQuantC1[idx];
 							idx = readBits(3);
@@ -1353,114 +1224,81 @@ class MP2Codec : AudioCodec
 						}
 					}
 
-
-
-
-
-
-
-
 					// Read Scalefactor Selection Information
 
-					for (sb=0; sb<sblimit; sb++)
-					{
-						if (allocClass[0][sb].numberOfSteps!=0)
-						{
+					for (sb=0; sb<sblimit; sb++) {
+						if (allocClass[0][sb].numberOfSteps!=0) {
 							scfsi[0][sb] = readBits(2);
 						}
 
-						if (allocClass[1][sb].numberOfSteps!=0)
-						{
+						if (allocClass[1][sb].numberOfSteps!=0) {
 							scfsi[1][sb] = readBits(2);
 						}
 					}
 
-
-
-
 					// Read Scalefactor Indices
 
-					for (sb=0; sb<sblimit; sb++)
-					{
-						if (allocClass[0][sb].numberOfSteps!=0)
-						{
-							if (scfsi[0][sb]==0)
-							{
+					for (sb=0; sb<sblimit; sb++) {
+						if (allocClass[0][sb].numberOfSteps!=0) {
+							if (scfsi[0][sb]==0) {
 								scalefactor[0][0][sb] = readBits(6); 	// 6	bits	uimsbf
 								scalefactor[0][1][sb] = readBits(6);	// 6	bits	uimsbf
 								scalefactor[0][2][sb] = readBits(6);  // 6	bits	uimsbf
 							}
-							else if ((scfsi[0][sb]==1) || (scfsi[0][sb]==3))
-							{
+							else if ((scfsi[0][sb]==1) || (scfsi[0][sb]==3)) {
 								scalefactor[0][0][sb] = readBits(6); 	// 6	bits	uimsbf
 								scalefactor[0][2][sb] = readBits(6);	// 6	bits	uimsbf
 
 								// scale factors are paired differently:
-								if (scfsi[0][sb] == 1)
-								{
+								if (scfsi[0][sb] == 1) {
 									scalefactor[0][1][sb] = scalefactor[0][0][sb];
 								}
-								else
-								{
+								else {
 									scalefactor[0][1][sb] = scalefactor[0][2][sb];
 								}
 							}
-							else if (scfsi[0][sb]==2)
-							{
+							else if (scfsi[0][sb]==2) {
 								scalefactor[0][0][sb] = readBits(6);  // 6	bits	uimsbf
 								scalefactor[0][1][sb] = scalefactor[0][0][sb];
 								scalefactor[0][2][sb] = scalefactor[0][0][sb];
 							}
 						}
-						else
-						{
+						else {
 							scalefactor[0][0][sb] = 63;
 							scalefactor[0][1][sb] = 63;
 							scalefactor[0][2][sb] = 63;
 						}
 
-						if (allocClass[1][sb].numberOfSteps!=0)
-						{
-							if (scfsi[1][sb]==0)
-							{
+						if (allocClass[1][sb].numberOfSteps!=0) {
+							if (scfsi[1][sb]==0) {
 								scalefactor[1][0][sb] = readBits(6); 	// 6	bits	uimsbf
 								scalefactor[1][1][sb] = readBits(6);	// 6	bits	uimsbf
 								scalefactor[1][2][sb] = readBits(6);  // 6	bits	uimsbf
 							}
-							else if ((scfsi[1][sb]==1) || (scfsi[1][sb]==3))
-							{
+							else if ((scfsi[1][sb]==1) || (scfsi[1][sb]==3)) {
 								scalefactor[1][0][sb] = readBits(6); 	// 6	bits	uimsbf
 								scalefactor[1][2][sb] = readBits(6);	// 6	bits	uimsbf
 
 								// scale factors are paired differently:
-								if (scfsi[1][sb] == 1)
-								{
+								if (scfsi[1][sb] == 1) {
 									scalefactor[1][1][sb] = scalefactor[1][0][sb];
 								}
-								else
-								{
+								else {
 									scalefactor[1][1][sb] = scalefactor[1][2][sb];
 								}
 							}
-							else if (scfsi[1][sb]==2)
-							{
+							else if (scfsi[1][sb]==2) {
 								scalefactor[1][0][sb] = readBits(6);  // 6	bits	uimsbf
 								scalefactor[1][1][sb] = scalefactor[1][0][sb];
 								scalefactor[1][2][sb] = scalefactor[1][0][sb];
 							}
 						}
-						else
-						{
+						else {
 							scalefactor[1][0][sb] = 63;
 							scalefactor[1][1][sb] = 63;
 							scalefactor[1][2][sb] = 63;
 						}
 					}
-
-
-
-
-
 
 					uint gr, s, base;
 
@@ -1647,18 +1485,15 @@ class MP2Codec : AudioCodec
 										foo = cast(long)(sum * cast(double)32768 - cast(double)0.5);
 							        }
 
-									if (foo >= cast(long)32768)
-									{
+									if (foo >= cast(long)32768) {
 										toBuffer.write(cast(short)(32768-1));
 										//++clip;
 									}
-									else if (foo < cast(long)-32768)
-									{
+									else if (foo < cast(long)-32768) {
 										toBuffer.write(cast(short)(-32768));
 										//++clip;
 									}
-									else
-									{
+									else {
 										toBuffer.write(cast(short)foo);
 									}
 
@@ -1684,12 +1519,6 @@ class MP2Codec : AudioCodec
 
 					continue;
 
-
-
-
-
-
-
 					// -- Default for corrupt files -- //
 
 				default:
@@ -1701,8 +1530,7 @@ class MP2Codec : AudioCodec
 		return StreamData.Invalid;
 	}
 
-	uint readBits(uint bits)
-	{
+	uint readBits(uint bits) {
 		// read a byte, read bits, whatever necessary to get the value
 		//writeln("reading, # bits:", bits, " curbyte:", *curByte);
 
@@ -1719,16 +1547,13 @@ class MP2Codec : AudioCodec
 			return 0;
 		}
 
-		for (;;)
-		{
+		for (;;) {
 			if (bits == 0) { return value; }
 
-			if (bits > 8)
-			{
+			if (bits > 8) {
 				maskbits = 8;
 			}
-			else
-			{
+			else {
 				maskbits = bits;
 			}
 			//writeln("curpos:", curPos, " for bits:", bits, " maskbits:", maskbits);
@@ -1737,12 +1562,10 @@ class MP2Codec : AudioCodec
 
 			shift = ((8-cast(int)curPos) - cast(int)bits);
 
-			if (shift > 0)
-			{
+			if (shift > 0) {
 				curvalue >>= shift;
 			}
-			else if (shift < 0)
-			{
+			else if (shift < 0) {
 				curvalue <<= -shift;
 			}
 
@@ -1754,8 +1577,7 @@ class MP2Codec : AudioCodec
 
 			curPos += maskbits;
 
-			if (curPos >= 8)
-			{
+			if (curPos >= 8) {
 				bits -= (8 - curPos + maskbits);
 				curPos = 0;
 				curByte++;
@@ -1767,30 +1589,25 @@ class MP2Codec : AudioCodec
 
 				//writeln("CURBYTE ** ", *curByte, " ** ");
 			}
-			else
-			{
+			else {
 				break;
 			}
 		}
 		return value;
 	}
 
-	StreamData seek(Stream stream, AudioFormat wf, AudioInfo wi, ref Time amount)
-	{
-		if (decoderState == 0)
-		{
+	StreamData seek(Stream stream, AudioFormat wf, AudioInfo wi, ref Time amount) {
+		if (decoderState == 0) {
 			// not inited?
 			return StreamData.Invalid;
 		}
 
-		if (amount == curTime)
-		{
+		if (amount == curTime) {
 			Console.putln("ON TIME");
 			return StreamData.Accepted;
 		}
 
-		if (amount > curTime)
-		{
+		if (amount > curTime) {
 			Console.putln("WE NEED TO GO AHEAD");
 			// good!
 			// simply find the section we need to be
@@ -1805,8 +1622,7 @@ class MP2Codec : AudioCodec
 			amount.toString();
 			return ret;
 		}
-		else
-		{
+		else {
 			Console.putln("WE NEED TO FALL BEHIND");
 			// for wave files, this is not altogether a bad thing
 			// for other types of files, it might be
@@ -1832,14 +1648,12 @@ class MP2Codec : AudioCodec
 		}
 	}
 
-	Time length(Stream stream, ref AudioFormat wf, ref AudioInfo wi)
-	{
+	Time length(Stream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}
 
-	Time lengthQuick(Stream stream, ref AudioFormat wf, ref AudioInfo wi)
-	{
+	Time lengthQuick(Stream stream, ref AudioFormat wf, ref AudioInfo wi) {
 		Time tme = Time.init;
 		return tme;
 	}
@@ -1899,5 +1713,5 @@ protected:
 	zerodouble BB[2][2*512];
 
 	// Import common lookup tables
-	import codecs.audio.mpegCommon;
+	import decoders.audio.mpegCommon;
 }

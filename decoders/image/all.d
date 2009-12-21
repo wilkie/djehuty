@@ -1,17 +1,17 @@
-module codecs.image.all;
+module decoders.image.all;
 
 import graphics.bitmap;
 
 import core.string;
 import core.stream;
 
-import codecs.codec;
-import codecs.image.codec;
+import decoders.decoder;
+import decoders.image.decoder;
 
-public import codecs.image.png;
-public import codecs.image.bmp;
-public import codecs.image.gif;
-public import codecs.image.jpeg;
+public import decoders.image.png;
+public import decoders.image.bmp;
+public import decoders.image.gif;
+public import decoders.image.jpeg;
 // TIFF
 // TGA
 // JPEG 2000
@@ -19,12 +19,12 @@ public import codecs.image.jpeg;
 // PCX
 // RAW
 
-StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref Bitmap view) {
+StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap view) {
 	StreamData ret;
 
 	ulong pos = stream.position;
 
-	imageCodec = new PNGCodec();
+	imageCodec = new PNGDecoder();
 	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
 	{
 		return ret;
@@ -32,7 +32,7 @@ StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref Bitmap vie
 
 	stream.position = pos;
 
-	imageCodec = new BMPCodec();
+	imageCodec = new BMPDecoder();
 	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
 	{
 		return ret;
@@ -40,7 +40,7 @@ StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref Bitmap vie
 
 	stream.position = pos;
 
-	imageCodec = new GIFCodec();
+	imageCodec = new GIFDecoder();
 	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
 	{
 		return ret;
@@ -48,7 +48,7 @@ StreamData runAllCodecs(ref ImageCodec imageCodec, Stream stream, ref Bitmap vie
 
 	stream.position = pos;
 
-	imageCodec = new JPEGCodec();
+	imageCodec = new JPEGDecoder();
 	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
 	{
 		return ret;

@@ -26,10 +26,7 @@ import io.console;
 // Section: Core/Synchronization
 
 // Description: This class represents a thread.  You can create and override the call function to use, or use a delegate to specify an external function to call.
-class Thread
-{
-
-public:
+class Thread {
 
 	// Description: Will create a normal thread that does not have any external callback functions.
 	this() {
@@ -79,14 +76,14 @@ public:
 
 	// Description: This will allow an arbitrary member function to be used as the execution space.
 	// callback: An address to a member function or a delegate literal.
-	void setDelegate(void delegate(bool) callback) {
+	void callback(void delegate(bool) callback) {
 		_thread_callback = callback;
 		_thread_f_callback = null;
 	}
 
 	// Description: This will allow an arbitrary function to be used as the execution space.
 	// callback: An address to a function or a function literal.
-	void setDelegate(void function(bool) callback) {
+	void callback(void function(bool) callback) {
 		_thread_f_callback = callback;
 		_thread_callback = null;
 	}
@@ -122,8 +119,8 @@ public:
 				stdThread = new overrideThread();
 			}
 
-			stdThread.start();
 			_inited = true;
+			stdThread.start();
 		}
 	}
 

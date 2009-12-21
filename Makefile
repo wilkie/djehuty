@@ -43,14 +43,14 @@ DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d g
 DFILES_UTILS = utils/stack.d utils/linkedlist.d utils/fibonacci.d utils/heap.d
 DFILES_PARSING = parsing/options.d parsing/lexer.d parsing/cfg.d
 DFILES = djehuty.d
-DFILES_BINARY_CODECS = codecs/binary/codec.d codecs/binary/base64.d codecs/binary/yEnc.d codecs/binary/deflate.d codecs/binary/zlib.d
-DFILES_IMAGE_CODECS = codecs/image/codec.d codecs/image/all.d codecs/image/bmp.d codecs/image/png.d codecs/image/gif.d codecs/image/jpeg.d
-DFILES_AUDIO_CODECS = codecs/audio/codec.d codecs/audio/all.d codecs/audio/mp2.d codecs/audio/mp3.d codecs/audio/wav.d codecs/audio/mp3Huffman.d codecs/audio/mpegCommon.d
+DFILES_BINARY_CODECS = decoders/binary/decoder.d decoders/binary/base64.d decoders/binary/yEnc.d decoders/binary/deflate.d decoders/binary/zlib.d
+DFILES_IMAGE_CODECS = decoders/image/decoder.d decoders/image/all.d decoders/image/bmp.d decoders/image/png.d decoders/image/gif.d decoders/image/jpeg.d
+DFILES_AUDIO_CODECS = decoders/audio/decoder.d decoders/audio/all.d decoders/audio/mp2.d decoders/audio/mp3.d decoders/audio/wav.d decoders/audio/mp3Huffman.d decoders/audio/mpegCommon.d
 DFILES_GRAPHICS = graphics/bitmap.d graphics/view.d graphics/graphics.d graphics/convexhull.d graphics/region.d graphics/brush.d graphics/font.d graphics/pen.d
 DFILES_NETWORKING = networking/http.d networking/telnet.d networking/irc.d
 DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d io/socket.d
 DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d resource/menu.d
-DFILES_CODEC = codecs/codec.d
+DFILES_CODEC = decoders/decoder.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d
 DFILES_TUI = tui/filebox.d tui/container.d tui/dialog.d tui/window.d tui/application.d tui/widget.d tui/telnet.d tui/buffer.d tui/vt100.d tui/listbox.d tui/textfield.d tui/label.d tui/textbox.d tui/codebox.d tui/tabbox.d
@@ -61,7 +61,7 @@ DFILES_MATH = math/currency.d math/fixed.d math/integer.d math/common.d math/vec
 DFILES_OPENGL = opengl/window.d opengl/texture.d opengl/light.d
 DFILES_SPECS = specs/test.d
 DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
-DFILES_SYNCH = synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
+DFILES_SYNCH = synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RSC =
 

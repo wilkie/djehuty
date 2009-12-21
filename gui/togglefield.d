@@ -82,7 +82,7 @@ class ToggleField : Widget {
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
-		grp.setFont(_font);
+		grp.font = _font;
 		grp.measureText(_value,_valueBounds);
 
 		_view.unlockDisplay();
@@ -112,10 +112,10 @@ class ToggleField : Widget {
 			brush = new Brush(_clrbackground);
 			pen = new Pen(_clroutline);
 
-			g.setBrush(brush);
-			g.setPen(pen);
+			g.brush = brush;
+			g.pen = pen;
 
-			g.drawRect(chkRect.left, chkRect.top, chkRect.right, chkRect.bottom);
+			g.drawRect(chkRect.left, chkRect.top, chkRect.right-chkRect.left, chkRect.bottom-chkRect.top);
 
 			pen.setColor(_clrhighlight);
 
@@ -169,10 +169,10 @@ class ToggleField : Widget {
 			pen = new Pen(_clroutline);
 			brush = new Brush(_clrbackground);
 
-			g.setBrush(brush);
-			g.setPen(pen);
+			g.brush = brush;
+			g.pen = pen;
 
-			g.drawRect(chkRect.left, chkRect.top, chkRect.right, chkRect.bottom);
+			g.drawRect(chkRect.left, chkRect.top, chkRect.right-chkRect.left, chkRect.bottom-chkRect.top);
 
 			pen.setColor(_clrhighlight);
 
@@ -209,9 +209,9 @@ class ToggleField : Widget {
 		}
 
 		//Draw the text
-		g.setTextColor(_clrforeground);
+		g.forecolor = _clrforeground;
 		g.setTextModeTransparent();
-		g.setFont(_font);
+		g.font = _font;
 		Rect ctrlrt;
 		ctrlrt.left = chkRect.right;
 		ctrlrt.right = this.right;

@@ -8,17 +8,17 @@
  *
  */
 
-module codecs.binary.zlib;
+module decoders.binary.zlib;
 
-import codecs.binary.codec;
-import codecs.binary.deflate;
+import decoders.binary.decoder;
+import decoders.binary.deflate;
 
 import core.stream;
 
 // Section: Codecs/Binary
 
 // Description: This represents the ZLIB Codec.
-class ZLIBCodec : BinaryCodec {
+class ZLIBDecoder : BinaryDecoder {
 	StreamData decode(Stream stream, Stream toStream) {
 		for (;;) {
 			switch (decoderState) {
@@ -109,7 +109,7 @@ class ZLIBCodec : BinaryCodec {
 	//	writeln("zlib deflate");
 
 				if (deflateDecompressor is null) {
-					deflateDecompressor = new DEFLATECodec();
+					deflateDecompressor = new DEFLATEDecoder();
 				}
 
 				if ((ret = deflateDecompressor.decode(stream, toStream)) != StreamData.Required) {
@@ -165,7 +165,7 @@ protected:
 
 
 	// USED WHEN STREAMING THE DECODER
-	DEFLATECodec deflateDecompressor;
+	DEFLATEDecoder deflateDecompressor;
 
 private:
 

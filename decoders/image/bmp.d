@@ -1,19 +1,18 @@
-module codecs.image.bmp;
+module decoders.image.bmp;
 
 import graphics.bitmap;
 
 import core.stream;
 
-import codecs.image.codec;
-import codecs.codec;
+import decoders.image.decoder;
+import decoders.decoder;
 
 import core.string;
 
 // Section: Codecs/Image
 
 // Description: The BMP Codec
-class BMPCodec : ImageCodec
-{
+class BMPDecoder : ImageDecoder {
 	override String name() {
 		return new String("Bitmap");
 	}
@@ -32,8 +31,6 @@ class BMPCodec : ImageCodec
 			switch (decoderState) {
 			case BMP_STATE_INIT:
 				//initial stuff
-
-				view.alpha = false;
 
 				hasMultipleFrames = 0;
 
@@ -1713,7 +1710,7 @@ class BMPCodec : ImageCodec
 			}
 			break;
 		}
-		
+
 		return StreamData.Invalid;
 	}
 

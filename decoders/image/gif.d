@@ -7,15 +7,15 @@
  *
  */
 
-module codecs.image.gif;
+module decoders.image.gif;
 
 import graphics.bitmap;
 
 import core.string;
 import core.stream;
 
-import codecs.image.codec;
-import codecs.codec;
+import decoders.image.decoder;
+import decoders.decoder;
 
 // For debugging
 import io.console;
@@ -116,7 +116,7 @@ private {
 }
 
 // Description: The GIF Codec
-class GIFCodec : ImageCodec {
+class GIFDecoder : ImageDecoder {
 	override String name() {
 		return new String("Graphics Interchange Format");
 	}
@@ -124,8 +124,6 @@ class GIFCodec : ImageCodec {
 	StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
 		bool hasMultipleFrames;
-
-		view.alpha = true;
 
 		// will read headers and such
 
@@ -164,8 +162,6 @@ class GIFCodec : ImageCodec {
 		int ret;
 
 		ret = Decoder(stream, view, imageDesc);
-
-		view.alpha = true;
 
 		if (ret == 2) {
 			// another frame will occur
