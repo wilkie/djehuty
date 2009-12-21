@@ -265,7 +265,7 @@ class List(T) : Listable!(T) {
 	// Properties
 
 	T[] array() {
-		return _data.dup;
+		return _data.dup[0.._count];
 	}
 
 	List!(T) dup() {
