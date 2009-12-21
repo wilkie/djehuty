@@ -8,6 +8,7 @@ import core.color;
 
 import resource.image;
 
+import graphics.gradient;
 import graphics.bitmap;
 import graphics.view;
 
@@ -27,6 +28,10 @@ class Brush {
 
 	this(Bitmap bitmap) {
 		Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
+	}
+
+	this(Gradient gradient) {
+		Scaffold.createGradientBrush(&_pfvars, gradient._points, gradient._clrs);
 	}
 
 	// Destructor

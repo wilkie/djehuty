@@ -21,6 +21,7 @@ public import graphics.brush;
 public import graphics.pen;
 public import graphics.font;
 public import graphics.region;
+public import graphics.gradient;
 
 import platform.vars.view;
 import platform.vars.brush;
