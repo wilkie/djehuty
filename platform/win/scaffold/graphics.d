@@ -342,6 +342,23 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 	Gdiplus.GdipCreateTexture(viewVarsSrc.image, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
 }
 
+// PathBrush
+
+void createGradientBrush(BrushPlatformVars* brush, Coord[] points, Color[] clrs) {
+	Gdiplus.Point[] gdipPoints = new Gdiplus.Point[points.length];
+	foreach(size_t i, point; points) {
+		gdipPoints[i] = Gdiplus.Point(point.x, point.y);
+	}
+	Gdiplus.ARGB[] argbs = new Gdiplus.ARGB[gdipPoints.length];
+	foreach(size_t i, clr; clrs) {
+		argbs[i] = clr.value;
+	}
+	Gdiplus.GdipCreatePathGradientI(gdipPoints.ptr, gdipPoints.length, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
+	INT count = gdipPoints.length;
+	Gdiplus.GdipSetPathGradientSurroundColorsWithCount(brush.handle, argbs.ptr, &count);
+	Gdiplus.GdipScalePathGradientTransform(brush.handle, 100, 100, Gdiplus.MatrixOrder.MatrixOrderPrepend);
+}
+
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr, double width) {
