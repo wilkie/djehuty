@@ -31,7 +31,7 @@ class Brush {
 	}
 
 	this(Gradient gradient) {
-		Scaffold.createGradientBrush(&_pfvars, gradient._points, gradient._clrs);
+		Scaffold.createGradientBrush(&_pfvars, gradient._points, gradient._clrs, gradient._angle, gradient._width);
 	}
 
 	// Destructor

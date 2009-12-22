@@ -13,6 +13,7 @@ _GdipCreateImageAttributes@4 = GdipCreateImageAttributes
 _GdipGetImageGraphicsContext@8 = GdipGetImageGraphicsContext
 _GdipCreateBitmapFromScan0@24 = GdipCreateBitmapFromScan0
 _GdipCreateTexture@12 = GdipCreateTexture
+_GdipCreateLineBrush@24 = GdipCreateLineBrush
 _GdipCreatePathGradientI@16 = GdipCreatePathGradientI
 _GdipCreateStringFormat@12 = GdipCreateStringFormat
 _GdipStringFormatGetGenericDefault@4 = GdipStringFormatGetGenericDefault
