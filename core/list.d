@@ -265,14 +265,13 @@ class List(T) : Listable!(T) {
 	// Properties
 
 	T[] array() {
-		return _data.dup[0.._count];
+		return _data[0.._count].dup;
 	}
 
 	List!(T) dup() {
 		synchronized(this) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[0.._count].dup;
-			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 	
 			return ret;
@@ -283,7 +282,6 @@ class List(T) : Listable!(T) {
 		synchronized(this) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[start..end].dup;
-			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 	
 			return ret;
@@ -295,7 +293,6 @@ class List(T) : Listable!(T) {
 			List!(T) ret = new List!(T);
 	
 			ret._data = _data[0.._count].reverse;
-			ret._data.length = ret._data.length;
 			ret._count = ret._data.length;
 		
 			return ret;
