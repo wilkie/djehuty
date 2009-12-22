@@ -54,14 +54,14 @@ class Random {
 	}
 
 	long next(long max) {
-		if (max < 0) { return 0; }
+		if (max <= 0) { return 0; }
 		return next() % max;
 	}
 
 	long next(long min, long max) {
 		if (max < 0) { return 0; }
 		if (min < 0) { return 0; }
-		if (min > max) { max = min; }
+		if (min >= max) { return min; }
 
 		return (next() % (max - min)) + min;
 	}
