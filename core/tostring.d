@@ -59,14 +59,14 @@ string toStrv(Variadic vars) {
 			}
 			else if (var.type <= Type.Ifloat) {
 				switch(var.type) {
-					case Type.Float:
+					case Type.Ifloat:
 						ret ~= ftoa(var.data.fi.im) ~ "i";
 						break;
-					case Type.Real:
+					case Type.Ireal:
 						ret ~= "{real}";
 						break;
 					default:
-					case Type.Double:
+					case Type.Idouble:
 						ret ~= ftoa(var.data.di.im) ~ "i";
 						break;
 				}
@@ -74,14 +74,14 @@ string toStrv(Variadic vars) {
 			}
 			else if (var.type <= Type.Cfloat) {
 				switch(var.type) {
-					case Type.Float:
+					case Type.Cfloat:
 						ret ~= ctoa(var.data.fc);
 						break;
-					case Type.Real:
+					case Type.Creal:
 						ret ~= "{real}";
 						break;
 					default:
-					case Type.Double:
+					case Type.Cdouble:
 						ret ~= ctoa(var.data.dc);
 						break;
 				}
@@ -242,7 +242,7 @@ string ctoa(cfloat val, uint base = 10) {
 	if (val is cfloat.infinity) {
 		return "inf";
 	}
-	else if (val is cfloat.nan) {
+	else if (val.re !<>= 0.0 && val.im !<>= 0.0) {
 		return "nan";
 	}
 
@@ -253,7 +253,7 @@ string ctoa(cdouble val, uint base = 10) {
 	if (val is cdouble.infinity) {
 		return "inf";
 	}
-	else if (val is cdouble.nan) {
+	else if (val.re !<>= 0.0 && val.im !<>= 0.0) {
 		return "nan";
 	}
 
@@ -272,10 +272,10 @@ string ctoa(creal val, uint base = 10) {
 }
 
 string ftoa(float val, uint base = 10) {
-	if (val is float.infinity) {
+	if (val == float.infinity) {
 		return "inf";
 	}
-	else if (val is float.nan) {
+	else if (val !<>= 0.0) {
 		return "nan";
 	}
 	else if (val == 0.0) {
@@ -362,7 +362,7 @@ string ftoa(double val, uint base = 10, bool doIntPart = true) {
 	if (val is double.infinity) {
 		return "inf";
 	}
-	else if (val is double.nan) {
+	else if (val !<>= 0.0) {
 		return "nan";
 	}
 	else if (val == 0.0) {
@@ -460,13 +460,13 @@ string ftoa(real val, uint base = 10) {
 		if (val is real.infinity) {
 			return "inf";
 		}
-		else if (val is real.nan) {
+		else if (val !<>= 0.0) {
 			return "nan";
 		}
 		else if (val == 0.0) {
 			return "0";
 		}
-	
+
 		long mantissa;
 		long intPart;
 		long fracPart;

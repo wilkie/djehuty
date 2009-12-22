@@ -22,6 +22,7 @@ import platform.vars.region;
 
 import Gdiplus = binding.win32.gdiplus;
 
+import core.tostring;
 import core.string;
 import core.color;
 import core.main;
@@ -34,6 +35,8 @@ import platform.win.main;
 import platform.win.common;
 
 import io.console;
+
+import math.common;
 
 // Shapes
 
@@ -344,7 +347,8 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 
 // PathBrush
 
-void createGradientBrush(BrushPlatformVars* brush, Coord[] points, Color[] clrs) {
+void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs, float angle, float width) {
+/*
 	Gdiplus.Point[] gdipPoints = new Gdiplus.Point[points.length];
 	foreach(size_t i, point; points) {
 		gdipPoints[i] = Gdiplus.Point(point.x, point.y);
@@ -357,6 +361,42 @@ void createGradientBrush(BrushPlatformVars* brush, Coord[] points, Color[] clrs)
 	INT count = gdipPoints.length;
 	Gdiplus.GdipSetPathGradientSurroundColorsWithCount(brush.handle, argbs.ptr, &count);
 	Gdiplus.GdipScalePathGradientTransform(brush.handle, 100, 100, Gdiplus.MatrixOrder.MatrixOrderPrepend);
+*/
+
+	Gdiplus.PointF pt1 = {0.0, 0.0};
+	Gdiplus.PointF pt2 = {width, 0.0};
+	INT clr1 = 0xFF808080;
+	INT clr2 = 0xFFFFFFFF;
+
+	if (points.length == 1) {
+		clr1 = clrs[0].value;
+		clr2 = clrs[0].value;
+	}
+	else if (points.length > 1) {
+		clr1 = clrs[0].value;
+		clr2 = clrs[$-1].value;
+
+		//
+		// use these 1d points and the angle to
+		// get the 2d point...
+		//			it is not magic, it is trig.
+		//
+
+		pt2.X = cos(angle) * width;
+		pt2.Y = sin(angle) * width;
+	}
+	Gdiplus.GdipCreateLineBrush(&pt1, &pt2, clr1, clr2, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
+	if (points.length > 2) {
+		// Interpolate MORE colors!!!
+		Gdiplus.ARGB[] argbs = new Gdiplus.ARGB[points.length];
+		Gdiplus.REAL[] blendPositions = new Gdiplus.REAL[points.length];
+		INT count = clrs.length;
+		for (size_t i = 0; i < count; i++) {
+			argbs[i] = clrs[i].value;
+			blendPositions[i] = points[i];
+		}
+		Gdiplus.GdipSetLinePresetBlend(brush.handle, argbs.ptr, blendPositions.ptr, count);
+	}
 }
 
 // Pens
