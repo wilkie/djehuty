@@ -476,13 +476,9 @@ class LinearGradientBrush : Brush {
                                                        color2.GetValue()));
     }
 
-    Status GetLinearColors(Color[] colors) {
+    Status GetLinearColors(ref Color[] colors) {
         ARGB[2] argb;
 
-        if (colors is null) {
-            return SetStatus(Status.InvalidParameter);
-        }
-        
         colors = new Color[2];
 
         Status status = SetStatus(GdipGetLineColors(cast(GpLineGradient*) nativeBrush, argb.ptr));

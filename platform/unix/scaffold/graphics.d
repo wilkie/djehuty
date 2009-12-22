@@ -542,6 +542,9 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 	Cairo.cairo_pattern_set_extend(brush.handle, Cairo.cairo_extend_t.CAIRO_EXTEND_REPEAT);
 }
 
+void createGradientBrush(BrushPlatformVars* brush, Coord[] points, Color[] clrs) {
+}
+
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr, double width) {

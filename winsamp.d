@@ -312,13 +312,22 @@ class MyControl : Widget {
 			if (i % 8) {
 				int bar_height = cast(int)(12000 * freq);
 				//Console.putln(freq, " :: ", bar_height);
-				//double curHue;
-				//curHue = cast(double)i / cast(double)foobar.length;
-				//g.pen = new Pen(Color.fromHSLA(curHue,1.0,0.3,0.75),1.0);
+	//			double curHue;
+		//		curHue = cast(double)i / cast(double)foobar.length;
+			//	g.pen = new Pen(Color.fromHSLA(curHue,1.0,0.3,0.75),1.0);
 				g.drawLine(o, 256-bar_height, o, 256);
 				o++;
 			}
 		}
+
+		Gradient gr = new Gradient;
+		gr.add(0,0,Color.Red);
+		gr.add(1,0,Color.Black);
+		gr.add(1,1,Color.Green);
+		gr.add(0,1,Color.Blue);
+		Brush boo = new Brush(gr);
+		g.brush = boo;
+		g.drawRect(0,0,100,500);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
