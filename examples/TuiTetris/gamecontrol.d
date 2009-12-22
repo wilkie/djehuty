@@ -95,7 +95,11 @@ class GameControl : TuiWidget {
 
 	bool onSignal(Dispatcher dsp, uint signal) {
 		if (dsp is tmr) {
-			timerProc();
+			if (inited) {
+				timerProc();
+			} else {
+				inited = true;
+			}
 		}
 		return true;
 	}
@@ -185,6 +189,8 @@ protected:
 		drawPiece();
 		lock.up();
 	}
+
+	bool inited;
 
 	Semaphore lock;
 
