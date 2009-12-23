@@ -55,13 +55,16 @@ protected:
 
     TuiPlatformVars _pfvars;
 
+	override void shutdown() {
+		TuiEnd(&_pfvars);
+	}
+
 	override void start() {
 		eventLoop();
 	}
 
 	override void end(uint exitCode) {
 		_running = false;
-		TuiEnd(&_pfvars);
 	}
 
 private:
@@ -99,7 +102,7 @@ private:
 				case TuiEvent.Type.MouseMove:
 					break;
 				case TuiEvent.Type.Close:
-					Djehuty.end(evt.aux);
+					this.exit(evt.aux);
 					break;
 				case TuiEvent.Type.Size:
 					_curConsoleWindow._onResize();

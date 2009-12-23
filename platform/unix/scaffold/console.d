@@ -497,7 +497,7 @@ termios m_term_info_working;
 //signal handler for terminal Size
 
 extern(C) void close_sig_handler(int signal) {
-	Djehuty.end(0);
+//	Djehuty.end(0);
 //	for(int i=0; i<256; i++) {
 //		printf("\x1B[48;5;%dma", i);
 //	}
@@ -537,6 +537,7 @@ extern(C) void size_sig_handler(int signal) {
 }
 
 void ConsoleInit() {
+	printf("\x1B7");
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
 
@@ -547,9 +548,7 @@ void ConsoleInit() {
 }
 
 void ConsoleUninit() {
-	if (ApplicationController.instance.usingCurses) {
-		Curses.endwin();
-	}
+	printf("\x1B[0m");
 }
 
 void ConsoleClear() {

@@ -30,13 +30,19 @@ class Djehuty {
 static:
 public:
 
-	void setApplication(Application application) {
+	void application(Application application) {
 		if (app !is null) {
 			throw new Exception("Application Already Spawned");
 		}
 
 		app = application;
 	}
+
+	Application application() {
+		return app;
+	}
+
+package:
 
 	void start() {
 		// Get default locale
@@ -63,12 +69,6 @@ public:
 		else {
 			app.onPreApplicationStart();
 			app.onApplicationStart();
-			app.run();
-		}
-
-		// If no event controllers are in play, then end
-		if (app.isZombie) {
-			end(0);
 		}
 	}
 
@@ -85,7 +85,6 @@ public:
 		}
 
 		// Reset colors to something sane
-		// XXX: Should reset to the colors used before the application had been executed
 		Console.setColor(fgColor.White, bgColor.Black);
 		if (app !is null) {
 			app.onApplicationEnd();
@@ -93,15 +92,13 @@ public:
 		}
 	}
 
-private:
+	bool _hasStarted = false;
 
-		bool _hasStarted = false;
+	Thread[] _threads;
 
-		Thread[] _threads;
+	Semaphore _threadRegisterSemaphore;
 
-		Semaphore _threadRegisterSemaphore;
-
-		Application app;
+	Application app;
 }
 
 void RegisterThread(ref Thread thread) {
