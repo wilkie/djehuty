@@ -2,6 +2,7 @@ module utils.linkedlist;
 
 import core.list;
 import core.exception;
+import core.tostring;
 
 // Section: Utils
 
@@ -12,7 +13,7 @@ class LinkedList(T) : Listable!(T) {
 
 	// add to the _head
 
-	// Description: Will add the data to the _head of the list.
+	// Description: Will add the data to the head of the list.
 	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
 	void add(T data) {
 		synchronized(this) {
@@ -40,7 +41,7 @@ class LinkedList(T) : Listable!(T) {
 		}
 	}
 
-	// Description: Will add the list to the _head of the list.
+	// Description: Will add the list to the head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
 	void add(Listable!(T) list) {
 		foreach(item; list) {
@@ -118,7 +119,7 @@ class LinkedList(T) : Listable!(T) {
 		
 	// remove the _tail
 
-	// Description: Will remove an item from the _tail of the list, which would remove in a first-in-first-out ordering (FIFO).
+	// Description: Will remove an item from the tail of the list, which would remove in a first-in-first-out ordering (FIFO).
 	// data: Will be set to the data retreived.
 	T remove() {
 		synchronized(this) {
@@ -339,20 +340,20 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApply(int delegate(ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _head;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(curnode.data);
-				curnode = curnode.next;
+				curnode = curnode.prev;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _tail);
 
 			return ret;
 		}
@@ -360,22 +361,22 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApply(int delegate(ref size_t, ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _head;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 			size_t idx;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(idx, curnode.data);
-				curnode = curnode.next;
+				curnode = curnode.prev;
 				idx++;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _tail);
 
 			return ret;
 		}
@@ -383,20 +384,20 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApplyReverse(int delegate(inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _tail;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(curnode.data);
-				curnode = curnode.prev;
+				curnode = curnode.next;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _head);
 
 			return ret;
 		}
@@ -404,22 +405,22 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApplyReverse(int delegate(inout size_t, inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _tail;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 			size_t idx = _count - 1;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(idx, curnode.data);
-				curnode = curnode.prev;
+				curnode = curnode.next;
 				idx--;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _head);
 
 			return ret;
 		}
@@ -427,6 +428,25 @@ class LinkedList(T) : Listable!(T) {
 	
 	size_t length() {
 	   return _count;
+	}
+
+	string toString() {
+		synchronized(this) {
+			LinkedListNode* curnode = _tail;
+
+			if (_count == 0) {
+				return "[]";
+			}
+
+			string str = "[";
+			do {
+				str ~= toStr(curnode.data) ~ ", ";
+				curnode = curnode.prev;
+
+			} while(curnode !is _tail);
+
+			return str[0..$-2] ~ "]";
+		}
 	}
 
 protected:

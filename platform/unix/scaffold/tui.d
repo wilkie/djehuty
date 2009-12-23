@@ -21,6 +21,8 @@ import core.definitions;
 import platform.application;
 
 void TuiStart(TuiPlatformVars* vars) {
+	Curses.savetty();
+
 	ApplicationController app = ApplicationController.instance();
 	app.usingCurses = true;
 	setvbuf (stdout, null, _IONBF, 0);
@@ -52,7 +54,12 @@ void TuiStart(TuiPlatformVars* vars) {
 }
 
 void TuiEnd(TuiPlatformVars* vars) {
-	ConsoleUninit();
+	if (ApplicationController.instance.usingCurses) {
+		ApplicationController.instance.usingCurses = false;
+	}
+	Curses.endwin();
+	Curses.reset_shell_mode();
+	Curses.resetterm();
 }
 
 void TuiNextEvent(TuiEvent* evt, TuiPlatformVars* vars) {

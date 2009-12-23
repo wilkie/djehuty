@@ -47,12 +47,12 @@ class Application : Responder {
 
 	this(String appName) {
 		this._appName = new String(appName);
-		Djehuty.setApplication(this);
+		Djehuty.application = this;
 	}
 
 	this(string appName) {
 		this._appName = new String(appName);
-		Djehuty.setApplication(this);
+		Djehuty.application = this;
 	}
 
 	// Properties //
@@ -89,8 +89,14 @@ class Application : Responder {
 	void run() {
 		static bool _run = false;
 		if (!_run) {
+			Djehuty.start();
 			_run = true;
 			start();
+			
+			// If no event controllers are in play, then end
+			if (isZombie) {
+				exit(0);
+			}
 		}
 	}
 
@@ -112,6 +118,7 @@ class Application : Responder {
 	}
 
 	void exit(uint code) {
+		shutdown();
 		Djehuty.end(code);
 	}
 
@@ -122,6 +129,9 @@ protected:
 	override bool raiseSignal(uint signal) {
 		Debugger.raiseSignal(signal);
 		return false;
+	}
+
+	void shutdown() {
 	}
 
 	void start() {
