@@ -102,13 +102,13 @@ struct Variant {
 					return cast(T)_data.r;
 				}
 				else if (_type == Type.Cfloat) {
-					return cast(T)_data.cf;
+					return cast(T)_data.fc;
 				}
 				else if (_type == Type.Cdouble) {
-					return cast(T)_data.cd;
+					return cast(T)_data.dc;
 				}
 				else if (_type == Type.Creal) {
-					return cast(T)_data.cr;
+					return cast(T)_data.rc;
 				}
 				else if (_type == Type.Int) {
 					return cast(T)_data.i;
