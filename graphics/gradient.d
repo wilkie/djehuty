@@ -23,6 +23,8 @@ class Gradient {
 	this() {
 		_angle = 3.14159265;
 		_width = 50;
+		_origx = 0;
+		_origy = 0;
 	}
 
 	// Description: This will create a linear gradient with a particular width.
@@ -30,13 +32,17 @@ class Gradient {
 	this(float width) {
 		_angle = 3.14159265;
 		_width = width;
+		_origx = 0;
+		_origy = 0;
 	}
 
 	// Description: This will create a linear gradient with a particular width at an angle.
 	// width: The length of the gradient.
 	// angle: The angle at which the gradient is drawn.
-	this(float width, float angle, ...) {
+	this(float x0, float y0, float width, float angle, ...) {
 		_width = width;
+		_origx = x0;
+		_origy = y0;
 		this.angle = angle;
 
 		Variadic vars = new Variadic(_arguments, _argptr);
@@ -126,6 +132,9 @@ class Gradient {
 	}
 
 package:
+
+	float _origx;
+	float _origy;
 
 	float _angle;
 	float _width;

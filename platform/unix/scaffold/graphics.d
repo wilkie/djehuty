@@ -544,13 +544,12 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 	Cairo.cairo_pattern_set_extend(brush.handle, Cairo.cairo_extend_t.CAIRO_EXTEND_REPEAT);
 }
 
-void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs, float angle, float width) {
+void createGradientBrush(BrushPlatformVars* brush, float origx, float origy, float[] points, Color[] clrs, float angle, float width) {
 	double x0, y0, x1, y1;
-	x0 = 0.0;
-	y0 = 0.0;
-	x1 = cos(angle) * width;
-	y1 = sin(angle) * width;
-	printf("%f, %f : %f, %f\n", x0, y0, x1, y1);
+	x0 = origx;
+	y0 = origy;
+	x1 = origx + (cos(angle) * width);
+	y1 = origy + (sin(angle) * width);
 
 	brush.handle = Cairo.cairo_pattern_create_linear(x0, y0, x1, y1);
 	foreach(size_t i, point; points) {

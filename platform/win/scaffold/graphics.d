@@ -347,7 +347,7 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 
 // PathBrush
 
-void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs, float angle, float width) {
+void createGradientBrush(BrushPlatformVars* brush, float origx, float origy, float[] points, Color[] clrs, float angle, float width) {
 /*
 	Gdiplus.Point[] gdipPoints = new Gdiplus.Point[points.length];
 	foreach(size_t i, point; points) {
@@ -363,8 +363,8 @@ void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs,
 	Gdiplus.GdipScalePathGradientTransform(brush.handle, 100, 100, Gdiplus.MatrixOrder.MatrixOrderPrepend);
 */
 
-	Gdiplus.PointF pt1 = {0.0, 0.0};
-	Gdiplus.PointF pt2 = {width, 0.0};
+	Gdiplus.PointF pt1 = {origx + 0.0, origy + 0.0};
+	Gdiplus.PointF pt2 = {origx + width, origy + 0.0};
 	INT clr1 = 0xFF808080;
 	INT clr2 = 0xFFFFFFFF;
 
@@ -382,8 +382,8 @@ void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs,
 		//			it is not magic, it is trig.
 		//
 
-		pt2.X = cos(angle) * width;
-		pt2.Y = sin(angle) * width;
+		pt2.X = origx + (cos(angle) * width);
+		pt2.Y = origy + (sin(angle) * width);
 	}
 	Gdiplus.GdipCreateLineBrush(&pt1, &pt2, clr1, clr2, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
 	if (points.length > 2) {
