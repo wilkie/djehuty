@@ -52,7 +52,7 @@ class Gradient {
 			point = 1.0;
 		}
 
-		foreach(size_t i, pt; points) {
+		foreach(size_t i, pt; _points) {
 			if (pt == point) {
 				_clrs[i] = color;
 				return;
@@ -61,6 +61,24 @@ class Gradient {
 
 		_points ~= point;
 		_clrs ~= color;
+	}
+
+	void remove(float point) {
+		if (point < 0.0) {
+			return;
+		}
+
+		if (point > 1.0) {
+			return;
+		}
+
+		foreach(size_t i, pt; _points) {
+			if (pt == point) {
+				_points = _points[0..i] ~ _points[i+1..$];
+				_clrs = _clrs[0..i] ~ _clrs[i+1..$];
+				return;
+			}
+		}
 	}
 
 	// Description: This will return the current angle represented by this gradient.
