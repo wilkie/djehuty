@@ -36,6 +36,7 @@ import parsing.options;
 
 import io.file;
 
+import utils.linkedlist;
 import utils.heap;
 import utils.fibonacci;
 
@@ -319,11 +320,19 @@ class MyControl : Widget {
 				o++;
 			}
 		}
+		
+		Gradient gr = new Gradient(100, angle);
+		gr.add(0.0, Color.Red);
+		gr.add(1.0, Color.Blue);
+		b = new Brush(gr);
+		g.brush = b;
+		g.drawRect(0,0,100,300);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
 		foobar = snd.spectrum();
 		(cast(Window)responder).redraw();
+		angle += 0.1;
 		return true;
 	}
 
@@ -344,6 +353,7 @@ class MyControl : Widget {
 		tmr.start();
 		return false;
 	}
+	double angle = 0.0;
 	Timer tmr;
 	double[] foobar;
 	Image imgPNG;
@@ -374,7 +384,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	static this() { new MyTApp(); }
+	//static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -762,7 +772,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
