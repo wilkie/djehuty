@@ -77,7 +77,7 @@ class MyOptions : OptionParser {
 
 	void onHelp() {
 		showUsage();
-		Djehuty.end(0);
+		Djehuty.application.exit(0);
 	}
 
 }
@@ -374,7 +374,7 @@ class MyWindow : Window {
 }
 
 class MyTApp :TuiApplication {
-	//static this() { new MyTApp(); }
+	static this() { new MyTApp(); }
 
 	override void onApplicationStart() {
 		tuiwnd = new MyTWindow();
@@ -388,7 +388,7 @@ class MyTApp :TuiApplication {
 
 	override void onApplicationEnd() {
 		Console.setColor(fgColor.BrightWhite, bgColor.Black);
-		Console.clear();
+//		Console.clear();
 		Console.putln("Your app has been ended.");
 		//Console.putln("Go away");
 	}
@@ -762,7 +762,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
+	//static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();

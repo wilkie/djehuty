@@ -110,8 +110,7 @@ int main(char[][] args){
 		}
 
 		ConsoleInit();
-		Djehuty.start();
-
+		Djehuty.application.run();
 		ConsoleUninit();
 	}
 	catch(Object o)	{

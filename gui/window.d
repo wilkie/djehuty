@@ -225,7 +225,7 @@ public:
 			// fights off infection from ZOMBIE PROCESSES!!!
 			if (app.isZombie()) {
 				app.destroyAllWindows();
-				Djehuty.end(0);
+				app.exit(0);
 			}
 		}
 
@@ -996,7 +996,7 @@ protected:
 			if (app.isZombie()) {
 				// just kill the app
 				app.destroyAllWindows();
-				Djehuty.end(0);
+				app.exit(0);
 			}
 		}
 

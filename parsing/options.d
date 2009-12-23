@@ -355,7 +355,7 @@ abstract class OptionParser {
 		_ConsoleIO.Console.putln("Error in syntax for option: -", option);
 		_ConsoleIO.Console.putln();
 		printUsage(option);
-		Djehuty.end(0);
+		Djehuty.application.exit(0);
 	}
 }
 
