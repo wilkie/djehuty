@@ -51,8 +51,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		_moduleCtor();		// call module constructors
 		_moduleUnitTests();	// run unit tests (optional)
 
-		Djehuty.start();
-		
+		Djehuty.application.run();
+
 		app = null;
 	}
 	catch (Object o) {
@@ -62,6 +62,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		result = 0;		// failed
 	}
 
+	// This is a bug in the GC with windows 7... I just don't call it
+	// XXX: Fix when GC is fixed
 	if (windowsVersion != OsVersionWindows7) {
 		gc_term();			// run finalizers; terminate garbage collector
 	}
