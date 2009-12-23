@@ -39,7 +39,8 @@ class Gradient {
 
 	// Description: This will add a point to the gradient and attach a color. Colors are
 	//   interpolated from 0.0 to 1.0 based upon the values given by this function.
-	// point: The placement of the point within the width of the gradient. Possible values 
+	//   Or it will replace the value if it already exists.
+	// point: The placement of the point within the width of the gradient. Possible values
 	//   range from 0.0 to 1.0.
 	// color: The color that will represent this point. Defaults to black.
 	void add(float point, Color color = Color.Black) {
@@ -49,6 +50,13 @@ class Gradient {
 
 		if (point > 1.0) {
 			point = 1.0;
+		}
+
+		foreach(size_t i, pt; points) {
+			if (pt == point) {
+				_clrs[i] = color;
+				return;
+			}
 		}
 
 		_points ~= point;
