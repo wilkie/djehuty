@@ -2,6 +2,7 @@ module utils.linkedlist;
 
 import core.list;
 import core.exception;
+import core.tostring;
 
 // Section: Utils
 
@@ -339,20 +340,20 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApply(int delegate(ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _head;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(curnode.data);
-				curnode = curnode.next;
+				curnode = curnode.prev;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _tail);
 
 			return ret;
 		}
@@ -360,22 +361,22 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApply(int delegate(ref size_t, ref T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _head;
+			LinkedListNode* curnode = _tail;
 
 			int ret;
 			size_t idx;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(idx, curnode.data);
-				curnode = curnode.next;
+				curnode = curnode.prev;
 				idx++;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _tail);
 
 			return ret;
 		}
@@ -383,20 +384,20 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApplyReverse(int delegate(inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _tail;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(curnode.data);
-				curnode = curnode.prev;
+				curnode = curnode.next;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _head);
 
 			return ret;
 		}
@@ -404,22 +405,22 @@ class LinkedList(T) : Listable!(T) {
 
 	int opApplyReverse(int delegate(inout size_t, inout T) loopFunc) {
 		synchronized(this) {
-			LinkedListNode* curnode = _tail;
+			LinkedListNode* curnode = _head;
 
 			int ret;
 			size_t idx = _count - 1;
 
 			if (_count == 0) {
 				return 0;
-			}	
+			}
 
-			while(curnode !is null) {
+			do {
 				ret = loopFunc(idx, curnode.data);
-				curnode = curnode.prev;
+				curnode = curnode.next;
 				idx--;
 
 				if (ret) { break; }
-			}
+			} while(curnode !is _head);
 
 			return ret;
 		}
@@ -427,6 +428,25 @@ class LinkedList(T) : Listable!(T) {
 	
 	size_t length() {
 	   return _count;
+	}
+
+	string toString() {
+		synchronized(this) {
+			LinkedListNode* curnode = _tail;
+
+			if (_count == 0) {
+				return "[]";
+			}
+
+			string str = "[";
+			do {
+				str ~= toStr(curnode.data) ~ ", ";
+				curnode = curnode.prev;
+
+			} while(curnode !is _tail);
+
+			return str[0..$-2] ~ "]";
+		}
 	}
 
 protected:
