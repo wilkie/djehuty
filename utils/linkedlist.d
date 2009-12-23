@@ -3,6 +3,7 @@ module utils.linkedlist;
 import core.list;
 import core.exception;
 import core.tostring;
+import core.definitions;
 
 // Section: Utils
 
