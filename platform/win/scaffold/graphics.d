@@ -347,22 +347,7 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 
 // PathBrush
 
-void createGradientBrush(BrushPlatformVars* brush, float origx, float origy, float[] points, Color[] clrs, float angle, float width) {
-/*
-	Gdiplus.Point[] gdipPoints = new Gdiplus.Point[points.length];
-	foreach(size_t i, point; points) {
-		gdipPoints[i] = Gdiplus.Point(point.x, point.y);
-	}
-	Gdiplus.ARGB[] argbs = new Gdiplus.ARGB[gdipPoints.length];
-	foreach(size_t i, clr; clrs) {
-		argbs[i] = clr.value;
-	}
-	Gdiplus.GdipCreatePathGradientI(gdipPoints.ptr, gdipPoints.length, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
-	INT count = gdipPoints.length;
-	Gdiplus.GdipSetPathGradientSurroundColorsWithCount(brush.handle, argbs.ptr, &count);
-	Gdiplus.GdipScalePathGradientTransform(brush.handle, 100, 100, Gdiplus.MatrixOrder.MatrixOrderPrepend);
-*/
-
+void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, double[] points, Color[] clrs, double angle, double width) {
 	Gdiplus.PointF pt1 = {origx + 0.0, origy + 0.0};
 	Gdiplus.PointF pt2 = {origx + width, origy + 0.0};
 	INT clr1 = 0xFF808080;
