@@ -29,6 +29,8 @@ import platform.vars.font;
 
 import graphics.region;
 
+import math.common;
+
 // Shapes
 
 // Draw a line
@@ -543,6 +545,18 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 }
 
 void createGradientBrush(BrushPlatformVars* brush, float[] points, Color[] clrs, float angle, float width) {
+	double x0, y0, x1, y1;
+	x0 = 0.0;
+	y0 = 0.0;
+	x1 = cos(angle) * width;
+	y1 = sin(angle) * width;
+	printf("%f, %f : %f, %f\n", x0, y0, x1, y1);
+
+	brush.handle = Cairo.cairo_pattern_create_linear(x0, y0, x1, y1);
+	foreach(size_t i, point; points) {
+		Cairo.cairo_pattern_add_color_stop_rgba(brush.handle, point, 
+				clrs[i].red, clrs[i].green, clrs[i].blue, clrs[i].alpha);
+	}
 }
 
 // Pens
