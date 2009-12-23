@@ -12,6 +12,9 @@ module graphics.gradient;
 
 import core.definitions;
 import core.color;
+import core.variant;
+
+import io.console;
 
 // Description: This class represents a linear gradient.
 class Gradient {
@@ -32,9 +35,22 @@ class Gradient {
 	// Description: This will create a linear gradient with a particular width at an angle.
 	// width: The length of the gradient.
 	// angle: The angle at which the gradient is drawn.
-	this(float width, float angle) {
+	this(float width, float angle, ...) {
 		_width = width;
 		this.angle = angle;
+
+		Variadic vars = new Variadic(_arguments, _argptr);
+
+		float pt;
+		foreach(i, item; vars) {
+			if (i % 2 == 0) {
+				pt = item.to!(float);
+			}
+			else {
+				Color clr = item.to!(Color);
+				add(pt, clr);
+			}
+		}
 	}
 
 	// Description: This will add a point to the gradient and attach a color. Colors are
