@@ -400,7 +400,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 	newpath = new String(Unicode.toUtf8(_ConvertFrameworkPath(newpath.array)));
 
 	String[] list;
-/*
+
 	if (newpath == "") {
 		// root directory listing
 		// that is, list the network folder and all drives
@@ -423,7 +423,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 		list ~= new String("network");
 		return list;
 	}
-	else if (path.length >= 8 && path[0..8] == "/network") {
+	/*else if (path.length >= 8 && path[0..8] == "/network") {
 		// Get relative path to /network
 		if (path.length == 8) {
 			return _ReturnNetworkComputers;
@@ -440,7 +440,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 				// Fall through to normal directory listing
 			}
 		}
-	}
+	}*/
 	// regular directory listing
 	DirectoryOpen(dirVars, newpath);
 
@@ -474,6 +474,5 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 	}
 
 	DirectoryClose(dirVars);
-*/
 	return list;
 }

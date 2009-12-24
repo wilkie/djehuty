@@ -26,16 +26,3 @@ private:
 	// tied to a view?
 	package View _view; // will be null if no view is tied with it
 }
-
-
-FontPlatformVars* FontGetPlatformVars(ref Font fnt) {
-	return &fnt._pfvars;
-}
-
-void FontSetView(ref Font fnt, ref View view) {
-	fnt._view = view;
-}
-
-void FontNullView(ref Font fnt) {
-	fnt._view = null;
-}
