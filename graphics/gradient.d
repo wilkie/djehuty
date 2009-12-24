@@ -37,6 +37,8 @@ class Gradient {
 	}
 
 	// Description: This will create a linear gradient with a particular width at an angle.
+	// x0: The horizontal origin of the gradient.
+	// y0: The vertical origin of the gradient.
 	// width: The length of the gradient.
 	// angle: The angle at which the gradient is drawn.
 	this(double x0, double y0, double width, double angle, ...) {
