@@ -3,11 +3,12 @@ module utils.linkedlist;
 import core.list;
 import core.exception;
 import core.tostring;
+import core.definitions;
 
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
-class LinkedList(T) : Listable!(T) {
+class LinkedList(T) : Iterable!(T) {
 	this() {
 	}
 
@@ -43,7 +44,7 @@ class LinkedList(T) : Listable!(T) {
 
 	// Description: Will add the list to the head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
-	void add(Listable!(T) list) {
+	void add(Iterable!(T) list) {
 		foreach(item; list) {
 			add(item);
 		}

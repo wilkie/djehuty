@@ -12,6 +12,9 @@ module graphics.gradient;
 
 import core.definitions;
 import core.color;
+import core.variant;
+
+import io.console;
 
 // Description: This class represents a linear gradient.
 class Gradient {
@@ -20,21 +23,42 @@ class Gradient {
 	this() {
 		_angle = 3.14159265;
 		_width = 50;
+		_origx = 0;
+		_origy = 0;
 	}
 
 	// Description: This will create a linear gradient with a particular width.
 	// width: The length of the gradient.
-	this(float width) {
+	this(double width) {
 		_angle = 3.14159265;
 		_width = width;
+		_origx = 0;
+		_origy = 0;
 	}
 
 	// Description: This will create a linear gradient with a particular width at an angle.
+	// x0: The horizontal origin of the gradient.
+	// y0: The vertical origin of the gradient.
 	// width: The length of the gradient.
 	// angle: The angle at which the gradient is drawn.
-	this(float width, float angle) {
+	this(double x0, double y0, double width, double angle, ...) {
 		_width = width;
+		_origx = x0;
+		_origy = y0;
 		this.angle = angle;
+
+		Variadic vars = new Variadic(_arguments, _argptr);
+
+		float pt;
+		foreach(i, item; vars) {
+			if (i % 2 == 0) {
+				pt = item.to!(double);
+			}
+			else {
+				Color clr = item.to!(Color);
+				add(pt, clr);
+			}
+		}
 	}
 
 	// Description: This will add a point to the gradient and attach a color. Colors are
@@ -43,7 +67,7 @@ class Gradient {
 	// point: The placement of the point within the width of the gradient. Possible values
 	//   range from 0.0 to 1.0.
 	// color: The color that will represent this point. Defaults to black.
-	void add(float point, Color color = Color.Black) {
+	void add(double point, Color color = Color.Black) {
 		if (point < 0.0) {
 			point = 0.0;
 		}
@@ -63,7 +87,7 @@ class Gradient {
 		_clrs ~= color;
 	}
 
-	void remove(float point) {
+	void remove(double point) {
 		if (point < 0.0) {
 			return;
 		}
@@ -83,14 +107,14 @@ class Gradient {
 
 	// Description: This will return the current angle represented by this gradient.
 	// Returns: The angle in radians.
-	float angle() {
+	double angle() {
 		return _angle;
 	}
 
 	// Description: This will set the angle for the gradient.
 	// value: The new angle in radians.
-	void angle(float value) {
-		if (value !<> float.infinity) {
+	void angle(double value) {
+		if (value !<> double.infinity) {
 			value = 0.0;
 		}
 		value %= 2*3.14159265;
@@ -105,14 +129,17 @@ class Gradient {
 
 	// Description: This will return the list of points.
 	// Returns: An array of points where possible values range from 0.0 to 1.0.
-	float[] points() {
+	double[] points() {
 		return _points.dup;
 	}
 
 package:
 
-	float _angle;
-	float _width;
-	float[] _points;
+	double _origx;
+	double _origy;
+
+	double _angle;
+	double _width;
+	double[] _points;
 	Color[] _clrs;
 }

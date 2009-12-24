@@ -70,7 +70,7 @@ class Menu {
 		// platform specific destroy
 		MenuDestroy(&_pfvars);
 	}
-	
+
 	bool isChildOf(Menu mnu) {
 		foreach (parent; _parents) {
 			if (mnu is parent) {
@@ -97,11 +97,11 @@ class Menu {
 	String text() {
 		return _value;
 	}
-	
+
 	String displayText() {
 		return _displayValue;
 	}
-	
+
 	int hintPosition() {
 		return _hintPosition;
 	}
@@ -133,11 +133,11 @@ class Menu {
 
 		MenuAppend(cast(void*)this, &_pfvars, &inMenu._pfvars, inMenu.text, (inMenu.length > 0));
 	}
-	
+
 	Menu opIndex(size_t idx) {
 		return _subitems[idx];
 	}
-	
+
 	int opApply(int delegate(inout Menu) loopFunc) {
 		int ret;
 
@@ -145,10 +145,10 @@ class Menu {
 			ret = loopFunc(_subitems[i]);
 			if (ret) { break; }
 		}
-		
+
 		return ret;
 	}
-	
+
 	int opApply(int delegate(ref uint, ref Menu) loopFunc) {
 		int ret;
 
@@ -156,7 +156,7 @@ class Menu {
 			ret = loopFunc(i, _subitems[i]);
 			if (ret) { break; }
 		}
-		
+
 		return ret;
 	}
 
@@ -251,8 +251,12 @@ protected:
 			ent._updateChild(this);
 		}
 	}
+
+	MenuPlatformVars* platformVars() {
+		return &_pfvars;
+	}
 }
 
-MenuPlatformVars* MenuGetPlatformVars(ref Menu mnu) {
-	return &mnu._pfvars;
+MenuPlatformVars* MenuGetPlatformVars(Menu mnu) {
+	return mnu.platformVars;
 }

@@ -10,7 +10,6 @@ import io.console;
 class FileList {
 	bool fetch(inout String path) {
 		sanitizePath(path);
-
 		if (path.length == 0) { return false; }
 
 		lookForFiles(path);
@@ -65,6 +64,7 @@ protected:
 
 		Directory dir = new Directory(path);
 		auto dirs = dir.list();
+
 		//auto dirs = std.file.listdir(path);
 
 		string ext;

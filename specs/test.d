@@ -2052,6 +2052,355 @@ class UnicodeTester {
 	}
 }
 
+import utils.linkedlist;
+
+class LinkedListTester {
+
+	it creation_should_work_as_expected() {
+		before_creation();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			if(list is null) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it add_should_add_item_to_the_head() {
+		before_add();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item = 42;
+			list.add(item);
+			if(!(list.length == 1)) {
+				return it.doesnt;
+			}
+			if(!(list.peek() == item)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it add_should_an_a_list_to_list() {
+		before_add();
+		try {
+			LinkedList!(int) list1 = new LinkedList!(int)();
+			LinkedList!(int) list2 = new LinkedList!(int)();
+			int item = 33;
+			list2.add(item);
+			list1.add(list2);
+			if(!(list1.length == 1)) {
+				return it.doesnt;
+			}
+			if(!(list1.peek() == item)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it add_should_add_an_array_to_list() {
+		before_add();
+		try {
+			int[3] arr = 1;
+			LinkedList!(int) list = new LinkedList!(int)();
+			list.add(arr);
+			if(!(list.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(list.peek() == arr[2])) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_add() {
+	}
+
+	it peek_should_return_the_head() {
+		before_peek();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item1 = 1;
+			int item2 = 2;
+			int item3 = 3;
+			list.add(item1);
+			list.add(item2);
+			list.add(item3);
+			if(!(list.peek() == item3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it peek_should_return_the_item_at_index() {
+		before_peek();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item1 = 1;
+			int item2 = 2;
+			int item3 = 3;
+			list.add(item1);
+			list.add(item2);
+			list.add(item3);
+			if(!(list.peekAt(0) == item3)) {
+				return it.doesnt;
+			}
+			if(!(list.peekAt(1) == item2)) {
+				return it.doesnt;
+			}
+			if(!(list.peekAt(2) == item1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_peek() {
+	}
+
+	it remove_should_remove_the_tail() {
+		before_remove();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item = 1;
+			list.add(item);
+			if(!(list.remove() == item)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it remove_should_remove_by_data() {
+		before_remove();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item = 1;
+			list.add(item);
+			if(!(list.remove(item) == item)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it remove_should_remove_at_index() {
+		before_remove();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item1 = 1;
+			int item2 = 2;
+			int item3 = 3;
+			list.add(item1);
+			list.add(item2);
+			list.add(item3);
+			if(!(list.removeAt(2) == item1)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 2)) {
+				return it.doesnt;
+			}
+			if(!(list.removeAt(1) == item2)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 1)) {
+				return it.doesnt;
+			}
+			if(!(list.removeAt(0) == item3)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_remove() {
+	}
+
+	it clear_should_work_as_expected() {
+		before_clear();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			list.add(1);
+			list.add(2);
+			list.add(3);
+			list.clear();
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_clear() {
+	}
+
+	it empty_should_work_as_expected() {
+		before_empty();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			if(!(list.empty())) {
+				return it.doesnt;
+			}
+			list.add(1);
+			if(!(!list.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_empty() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		LinkedListTester tester = new LinkedListTester();
+
+		Test test = new Test("LinkedList", "specs/utils/linkedlist.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new LinkedListTester();
+
+		result = tester.creation_should_work_as_expected();
+		test.logResult(result, "creation should work as expected", "7");
+
+		test.logSubset("add");
+
+		tester = new LinkedListTester();
+
+		result = tester.add_should_add_item_to_the_head();
+		test.logResult(result, "add should add item to the head", "15");
+
+		tester = new LinkedListTester();
+
+		result = tester.add_should_an_a_list_to_list();
+		test.logResult(result, "add should an a list to list", "24");
+
+		tester = new LinkedListTester();
+
+		result = tester.add_should_add_an_array_to_list();
+		test.logResult(result, "add should add an array to list", "37");
+
+		test.logSubset("peek");
+
+		tester = new LinkedListTester();
+
+		result = tester.peek_should_return_the_head();
+		test.logResult(result, "peek should return the head", "49");
+
+		tester = new LinkedListTester();
+
+		result = tester.peek_should_return_the_item_at_index();
+		test.logResult(result, "peek should return the item at index", "63");
+
+		test.logSubset("remove");
+
+		tester = new LinkedListTester();
+
+		result = tester.remove_should_remove_the_tail();
+		test.logResult(result, "remove should remove the tail", "81");
+
+		tester = new LinkedListTester();
+
+		result = tester.remove_should_remove_by_data();
+		test.logResult(result, "remove should remove by data", "90");
+
+		tester = new LinkedListTester();
+
+		result = tester.remove_should_remove_at_index();
+		test.logResult(result, "remove should remove at index", "99");
+
+		test.logSubset("clear");
+
+		tester = new LinkedListTester();
+
+		result = tester.clear_should_work_as_expected();
+		test.logResult(result, "clear should work as expected", "120");
+
+		test.logSubset("empty");
+
+		tester = new LinkedListTester();
+
+		result = tester.empty_should_work_as_expected();
+		test.logResult(result, "empty should work as expected", "134");
+
+		test.finish();
+	}
+}
+
 import utils.heap;
 
 import core.random;
@@ -3004,6 +3353,10 @@ class Tests {
 		UnicodeTester.test();
 	}
 
+	static void testLinkedList() {
+		LinkedListTester.test();
+	}
+
 	static void testPriorityQueue() {
 		PriorityQueueTester.test();
 	}
@@ -3025,6 +3378,7 @@ class Tests {
 		testRegex();
 		testString();
 		testUnicode();
+		testLinkedList();
 		testPriorityQueue();
 		testStack();
 		testFibonacciHeap();

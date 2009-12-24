@@ -31,7 +31,7 @@ import io.console;
 // Pass resize events down to current container and ALL containers 
 //   (eventually.. like check the size when containers are switched to reduce overhead)
 
-class TuiTabBox : TuiContainer, Listable!(TuiContainer) {
+class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_tabList = new List!(TuiContainer);

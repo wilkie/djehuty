@@ -23,7 +23,7 @@ import gui.listbox;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, Listable!(String) list = null) {
+	this(int x, int y, int width, int height, Iterable!(String) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
@@ -42,14 +42,14 @@ class ListFieldWindow : Window {
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : Widget, Listable!(String) {
+class ListField : Widget, Iterable!(String) {
 
 	enum Signal : uint {
 		Selected,
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, Listable!(String) list = null) {
+	this(int x, int y, int width, int height, Iterable!(String) list = null) {
 		super(x,y,width,height);
 
 		_list = new List!(String)();
@@ -139,7 +139,7 @@ class ListField : Widget, Listable!(String) {
 		control_listbox.add(data);
 	}
 
-	void add(Listable!(String) list) {
+	void add(Iterable!(String) list) {
 		control_listbox.add(list);
 	}
 
