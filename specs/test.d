@@ -2213,7 +2213,107 @@ class LinkedListTester {
 		return it.does;
 	}
 
+	it remove_should_remove_by_data() {
+		before_remove();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item = 1;
+			list.add(item);
+			if(!(list.remove(item) == item)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it remove_should_remove_at_index() {
+		before_remove();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int item1 = 1;
+			int item2 = 2;
+			int item3 = 3;
+			list.add(item1);
+			list.add(item2);
+			list.add(item3);
+			if(!(list.removeAt(2) == item1)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 2)) {
+				return it.doesnt;
+			}
+			if(!(list.removeAt(1) == item2)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 1)) {
+				return it.doesnt;
+			}
+			if(!(list.removeAt(0) == item3)) {
+				return it.doesnt;
+			}
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
 	done before_remove() {
+	}
+
+	it clear_should_work_as_expected() {
+		before_clear();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			list.add(1);
+			list.add(2);
+			list.add(3);
+			list.clear();
+			if(!(list.length == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_clear() {
+	}
+
+	it empty_should_work_as_expected() {
+		before_empty();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			if(!(list.empty())) {
+				return it.doesnt;
+			}
+			list.add(1);
+			if(!(!list.empty())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_empty() {
 	}
 
 	done before() {
@@ -2272,6 +2372,30 @@ class LinkedListTester {
 
 		result = tester.remove_should_remove_the_tail();
 		test.logResult(result, "remove should remove the tail", "81");
+
+		tester = new LinkedListTester();
+
+		result = tester.remove_should_remove_by_data();
+		test.logResult(result, "remove should remove by data", "90");
+
+		tester = new LinkedListTester();
+
+		result = tester.remove_should_remove_at_index();
+		test.logResult(result, "remove should remove at index", "99");
+
+		test.logSubset("clear");
+
+		tester = new LinkedListTester();
+
+		result = tester.clear_should_work_as_expected();
+		test.logResult(result, "clear should work as expected", "120");
+
+		test.logSubset("empty");
+
+		tester = new LinkedListTester();
+
+		result = tester.empty_should_work_as_expected();
+		test.logResult(result, "empty should work as expected", "134");
 
 		test.finish();
 	}
