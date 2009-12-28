@@ -89,9 +89,9 @@ class Time {
 		micros = ms * 1000;
 	}
 
-	// Description: Will set the time value for all fields with the given milliseconds.
-	void fromMicroseconds(long ms) {
-		micros = ms;
+	// Description: Will set the time value for all fields with the given microseconds.
+	void fromMicroseconds(long us) {
+		micros = us;
 	}
 
 	// comparator functions
