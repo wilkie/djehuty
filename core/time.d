@@ -20,7 +20,7 @@ class Time {
 		fromMilliseconds(ms);
 	}
 
-	this(uint hour, uint minute, uint second, uint millisecond = 0) {
+	this(long hour, long minute, long second, long millisecond = 0) {
 		micros = hour;
 		micros *= 60;
 		micros += minute;
@@ -38,50 +38,50 @@ class Time {
 	// Description: The microsecond.
 	long micros;
 	
-	uint hour() {
-		ulong h,ms,s,m;
+	long hour() {
+		long h, ms, s, m;
 		long tmp = micros;
 
-		ms = (cast(uint)tmp % 1000000) / 1000;
+		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
-		s = cast(uint)tmp % 60;
+		s = tmp % 60;
 		tmp /= 60;
 
-		m = cast(uint)tmp % 60;
+		m = tmp % 60;
 		tmp /= 60;
 
-		return cast(uint)tmp;
+		return tmp;
 	}
 	
-	uint second() {
-		ulong h,ms,s,m;
+	long second() {
+		long h, ms, s, m;
 		long tmp = micros;
 
-		ms = (cast(uint)tmp % 1000000) / 1000;
+		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
-		return cast(uint)tmp % 60;
+		return tmp % 60;
 	}
 
-	uint minute() {
-		ulong h,ms,s,m;
+	long minute() {
+		long h, ms, s, m;
 		long tmp = micros;
 
-		ms = (cast(uint)tmp % 1000000) / 1000;
+		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
-		s = cast(uint)tmp % 60;
+		s = tmp % 60;
 		tmp /= 60;
 
-		return cast(uint)tmp % 60;
+		return tmp % 60;
 	}
 
-	uint millsecond() {
-		ulong h,ms,s,m;
+	long millsecond() {
+		long h, ms, s, m;
 		long tmp = micros;
 
-		return (cast(uint)tmp % 1000000) / 1000;
+		return (tmp % 1000000) / 1000;
 	}
 
 	// Description: Will set the time value for all fields with the given milliseconds.
@@ -106,21 +106,21 @@ class Time {
 	// string functions
 
 	string toString() {
-		ulong h,ms,s,m;
+		long h, ms, s, m;
 		long tmp = micros;
 
 		String str = new String("");
 
-		ms = (cast(uint)tmp % 1000000) / 1000;
+		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
-		s = cast(uint)tmp % 60;
+		s = tmp % 60;
 		tmp /= 60;
 
-		m = cast(uint)tmp % 60;
+		m = tmp % 60;
 		tmp /= 60;
 
-		h = cast(uint)tmp;
+		h = tmp;
 
 		if (h != 0) {
 			str.append(toStr(h, ":"));
