@@ -66,6 +66,12 @@ class Random {
 		return (next() % (max - min)) + min;
 	}
 
+	template choose(T) {
+		T choose(T[] list) {
+			return list[next(list.length)];
+		}
+	}
+
 protected:
 	const auto MODULUS		= 2147483647;
 	const auto MULTIPLIER	= 48271;
