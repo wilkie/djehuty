@@ -77,7 +77,7 @@ class Time {
 		return tmp % 60;
 	}
 
-	long millsecond() {
+	long millisecond() {
 		long h, ms, s, m;
 		long tmp = micros;
 
