@@ -17,19 +17,37 @@ import io.console;
 class TuiWindow : Responder {
 	// Constructor
 
-	this() {		
+	this() {
+		this("TuiWindow");
+	}
+
+	this(bgColor bgClr) {
+		this(bgClr, "TuiWindow");
+	}
+
+	this(bgColor bgClr, String name) {
 		Console.clipRect(0,0,this.width, this.height);
+		_bgClr = bgClr;
 		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer.text = name;
 		_controlContainer._window = this;
 		push(_controlContainer);
 	}
 
-	this(bgColor bgClr) {
+	this(bgColor bgClr, string name) {
+		this(bgClr, new String(name));
+	}
+
+	this(String name) {
 		Console.clipRect(0,0,this.width, this.height);
-		_bgClr = bgClr;
 		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer.text = name;
 		_controlContainer._window = this;
 		push(_controlContainer);
+	}
+
+	this(string name) {
+		this(new String(name));
 	}
 
 	// Events
@@ -263,7 +281,7 @@ class TuiWindow : Responder {
 								redraw();
 		
 								onMenu(selected);
-		
+
 								// Focus on the current widget
 								_controlContainer.onGotFocus();
 							}

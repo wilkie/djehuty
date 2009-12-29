@@ -569,7 +569,7 @@ private:
 	void _position(uint x, uint y) {
 		ConsoleSetPosition(x,y);
 	}
-	
+
 	void _putv(Variadic vars) {
 		_putString(new String(toStrv(vars)));
 	}
@@ -592,52 +592,15 @@ private:
 		uint r;
 		uint b;
 
-		// Clip to the bounds of the screen first
 		ConsoleGetPosition(&x,&y);
 
 		r = x + str.length;
 		b = y + 1;
 
-		/*if ((x >= this.width) || (y >= this.height)) {
-			// Outside bounds of screen completely
-			return;
-		}
-
-		// Do we need to clip the string? (right edge)
-		if (r > this.width) {
-			uint rightPos = r - (this.width);
-			str = str.subString(0, str.length - rightPos);
-			r = x + str.length;
-		}*/
-
+		// Quick out... no clipping region, just draw the string
 		if (_clippingRegions.length == 0) {
 			ConsolePutString(str.toUtf32());
 			return;
-			/*Rect context;
-			Rect rt;
-			rt.left = 1;
-			rt.right = 3;
-			rt.top = 1;
-			rt.bottom = 3;
-			_clippingRegions ~= rt;
-
-			rt.left = 1;
-			rt.right = 3;
-			rt.top = 1;
-			rt.bottom = 3;
-			_clippingRegions ~= rt;
-
-			rt.left = 1;
-			rt.right = 3;
-			rt.top = 1;
-			rt.bottom = 3;
-			_clippingRegions ~= rt;
-
-			rt.left = 1;
-			rt.right = 3;
-			rt.top = 1;
-			rt.bottom = 3;
-			_clippingRegions ~= rt;*/
 		}
 
 		// This will contain lengths of substrings
@@ -648,145 +611,130 @@ private:
 		uint[] formatArray = [str.length, 0];
 
 		foreach(region; _clippingRegions) {
-			if (!(x > region.right || r < region.left || y >= region.bottom || b <= region.top)) {
+			if (x < region.right && r > region.left && y < region.bottom && b > region.top) {
 				// This string clips this clipping rectangle
 				// Grab the substring within the clipping region
-				int start;
-				start = region.left - x;
 
-				if (start < 0) {
-					start = 0;
+				int str_start = 0;
+
+				if (x < region.left) {
+					str_start = region.left - x;
 				}
 
-				int end;
-				end = region.right - x;
+				int str_end;
+				str_end = region.right - x;
 
-				if (end > str.length) {
-					end = str.length;
+				if (str_end > str.length) {
+					str_end = str.length;
 				}
 
-				uint strLength = end - start;
+				uint str_length = str_end - str_start;
 
-				// Find and inject into formatArray
-				uint startPos = 0;
-				uint endPos = 0;
-				uint startIdx = uint.max;
-				uint endIdx = uint.max;
-
-				uint pos;
-				
-				/*ConsolePutString("or[");
-				_putInt(start);
-				ConsolePutString(",");
-				_putInt(end);
-				ConsolePutString("]");*/
-
-				foreach(uint idx, item; formatArray) {
-					if (pos + item > start && startIdx == uint.max) {
-						// Found starting point
-						startPos = pos;
-						startIdx = idx;
-					}
-
-					if (pos + item > end) {
-						endIdx = idx;
-						endPos = pos;
-						break;
-					}
-
-					pos += item;
-				}
-				
-				/*ConsolePutString("fa[");
-				foreach(item; formatArray) {
-					_putInt(item);
-					ConsolePutString(",");
-				}
-				ConsolePutString("]");*/
-
-				if (startIdx == uint.max) {
-					startIdx = 0;
-					startPos = 0;
+				if (str_length == 0) {
+					continue;
 				}
 
-				if (endIdx == uint.max) {
-					endIdx = formatArray.length - 1;
-					endPos = pos;
-				}
+				// We must now go through the format array
+				// Remember, the array is like this: [IN, OUT, IN, OUT, ... ]
+				// where IN means it will be drawn, and OUT means it will not.
 
-				/*ConsolePutString("se[");
-				_putInt(startIdx);
-				ConsolePutString(",");
-				_putInt(startPos);
-				ConsolePutString(",");
-				_putInt(endIdx);
-				ConsolePutString(",");
-				_putInt(endPos);
-				ConsolePutString("]");*/
+				// So, we merely need to loop through the array and find an IN
+				// section that can be updated with respect to this clipped
+				// section, which is represented by str_start to str_end.
 
-				// Add to formatArray
-				uint oldLength = 0;
-				uint newLength = 0;
+				// This string (str_start..str_end) represents a section of the
+				// output that will be clipped.
 
-				if ((startIdx & 1) == 1) {
-					// startIdx represents something that will be outputted
-					if (startIdx == endIdx) {
-						// Already added
-						continue;
-					}
+				// The loop here will update the format array.
 
-					// Expand this set, because we are adding text to be written
-					oldLength = formatArray[startIdx];
-					newLength = end - startPos;
-				}
-				else {
-					// startIdx represents something that will not be outputted
-					if (startIdx == endIdx) {
-						// Substring
-						oldLength = formatArray[startIdx];
-						newLength = start - startPos;
-						uint restLength = oldLength - strLength - newLength;
+				// It first tries to find the first part of the array to mutate,
+				// and then it cascades the effect of the update.
 
-						// Expand current item to represent the substring
-						if (startIdx + 1 < formatArray.length) {
-							formatArray = formatArray[0..startIdx] ~
-							  [newLength, strLength, restLength] ~
-							  formatArray[startIdx+1..$];
+				int pos = 0;
+
+				// Difference is the amount to remove from OUT sections
+				int difference = 0;
+				int newValue;
+				size_t i;
+
+				// Search loop
+				for(i = 0; i < formatArray.length; i++) {
+					if (pos + formatArray[i] > str_start) {
+						if (i % 2 == 0) { // IN
+							// Since this is an IN section, and it clips our region
+							// it needs to have a lower value.
+
+							// This value should be the difference between the start
+							// of the clipped string and the position in the string
+							// that this array element reflects.
+							newValue = str_start - pos;
+
+							// The newValue is lower, so the difference is the amount
+							// to add to the next OUT section to even out the array.
+							difference = formatArray[i] - newValue;
+
+							// Look to see if the entire clipped region is within
+							// this IN section:
+							if (pos + formatArray[i] > str_length) {
+								// This means we will have an IN section left over!
+								uint in_0 = newValue;
+								uint out_0 = str_end - pos;
+								uint in_1 = formatArray[i] - in_0 - out_0;
+								formatArray = formatArray[0..i] ~ [in_0, out_0, in_1] ~ formatArray[i+1..$];
+							}
+							else {
+								// The IN section can simply spill into an OUT section
+
+								i++;
+								if (i < formatArray.length) {
+									formatArray[i] += formatArray[i-1] - newValue;
+								}
+								else {
+									formatArray ~= [formatArray[i-1] - newValue];
+								}
+
+								formatArray[i-1] = newValue;
+							}
+
+							difference = 0;
+
+							// We are done
+							break;
 						}
-						else {
-							formatArray = formatArray[0..startIdx] ~
-							  [newLength, strLength, restLength];
-						}
-						continue;
-					}
+						else { // OUT
+							// Since this is an OUT section, and it clips our region
+							// may need to have a bigger value.
 
-					// Shrink this set, because we are adding text to be written
-					oldLength = formatArray[startIdx];
-					newLength = start + startPos;
+							// The newValue will be the rest of the string.
+							newValue = str_end - pos;
+							if (newValue > formatArray[i]) {
+								// The difference will simply be the amount of characters
+								// that will be clipped that were not reflected in this OUT
+								// entry. They will have to be removed from other array
+								// elements in the update loop.
+								difference = newValue - formatArray[i];
+								formatArray[i] = newValue;
+								i++;
+							}
+							else {
+								difference = 0;
+							}
+							break;
+						}
+					}
+					pos += formatArray[i];
 				}
 
-				if ((endIdx & 1) == 1) {
-					// endIdx represents something that will be outputted
-					uint finalPos = endPos + formatArray[endIdx];
-					uint outLength = finalPos - start;
-					if (endIdx + 1 < formatArray.length) {
-						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, outLength] ~ formatArray[endIdx+1..$];
+				// Update loop, will be starting on an IN section
+				for (; i < formatArray.length && difference > 0; i++) {
+					// Must get difference to zero
+					if (formatArray[i] < difference) {
+						difference -= formatArray[i];
+						formatArray[i] = 0;
 					}
 					else {
-						formatArray = formatArray[0..startIdx] ~ [newLength, strLength, outLength];
-					}
-				}
-				else {
-					// endIdx represents something that will not be outputted
-
-					// shrink endIdx
-					uint oldEndLength = formatArray[endIdx];
-					uint newEndLength = (endPos + oldEndLength) - end;
-					if (endIdx + 1 < formatArray.length) {
-						formatArray = formatArray[0..startIdx] ~ [newLength, newEndLength] ~ formatArray[endIdx+1..$];
-					}
-					else {
-						formatArray = formatArray[0..startIdx] ~ [newLength, newEndLength];
+						formatArray[i] -= difference;
+						difference = 0;
 					}
 				}
 			}
