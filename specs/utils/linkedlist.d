@@ -138,7 +138,52 @@ describe linkedList() {
 
 			list.add(1);
 
-			should(!list.empty());
+			shouldNot(list.empty());
+
+		}
+	}
+
+	describe operations() {
+		it should_peek_at_the_index() {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry = 1;
+			list.add(entry);
+
+			should(list[0] == entry);
+		}
+	}
+
+	describe array() {
+		it should_return_an_array_of_the_list() {
+			LinkedList!(int) list = new LinkedList!(int)();
+			
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+
+			list.add(entry1);
+			list.add(entry2);
+			list.add(entry3);
+
+			int[] listArr = list.array();
+
+			shouldNot(listArr is null);
+			should(listArr[0] == entry1);
+			should(listArr[1] == entry2);
+			should(listArr[2] == entry3);
+		}
+	}
+
+	describe duplication() {
+		it should_work_as_expected() {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry = 1;
+			list.add(entry);
+
+			LinkedList!(int) dupList = list.dup();
+
+			shouldNot(dupList is null);
+			should(dupList.peek() == entry);
 
 		}
 	}
