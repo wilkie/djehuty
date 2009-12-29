@@ -42,6 +42,36 @@ class LinkedList(T) : Iterable!(T) {
 		}
 	}
 
+	template addList(R) {
+		void addList(R list) {
+			synchronized(this) {
+				foreach(item; list) {
+					LinkedListNode* newNode = new LinkedListNode;
+					newNode.data = item;
+
+					if (_head is null) {
+						_head = newNode;
+						_tail = newNode;
+
+						newNode.next = newNode;
+						newNode.prev = newNode;
+					}
+					else {
+						newNode.next = _head;
+						newNode.prev = _tail;
+
+						_head.prev = newNode;
+						_tail.next = newNode;
+
+						_head = newNode;
+					}
+
+					_count++;
+				}
+			}
+		}
+	}
+
 	// Description: Will add the list to the head of the list.
 	// list: The class that interfaces the IList interface. All of the items will be copied over.
 	void add(Iterable!(T) list) {
@@ -448,6 +478,36 @@ class LinkedList(T) : Iterable!(T) {
 
 			return str[0..$-2] ~ "]";
 		}
+	}
+
+	void opCatAssign(T[] list) {
+		addList(list);
+	}
+
+	void opCatAssign(Iterable!(T) list) {
+		addList(list);
+	}
+
+	void opCatAssign(T item) {
+		add(item);
+	}
+
+	Iterable!(T) opCat(T[] list) {
+		LinkedList!(T) ret = this.dup();
+		ret.addList(list);
+		return ret;
+	}
+
+	Iterable!(T) opCat(Iterable!(T) list) {
+		LinkedList!(T) ret = this.dup();
+		ret.addList(list);
+		return ret;
+	}
+
+	Iterable!(T) opCat(T item) {
+		LinkedList!(T) ret = this.dup();
+		ret.add(item);
+		return ret;
 	}
 
 protected:

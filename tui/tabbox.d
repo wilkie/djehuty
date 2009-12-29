@@ -57,15 +57,15 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 				io.console.Console.setColor(_forecolor, _backcolor);
 			}
 			else {
-				io.console.Console.put(item.text);		
+				io.console.Console.put(item.text);
 			}
-			
+
 			io.console.Console.put(" | ");
 		}
-		
+
 		if(!_tabList.empty()) {
 			TuiContainer c = _tabList[_curTab];
-			
+
 			io.console.Console.clipSave();
 			this.widgetClippingContext = c;
 			c.onDraw();
@@ -249,6 +249,38 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 	
 	int opApply(int delegate(ref size_t, ref TuiContainer) loopFunc) {
 		return _tabList.opApply(loopFunc);
+	}
+
+	int opApplyReverse(int delegate(ref TuiContainer) loopFunc) {
+		return _tabList.opApplyReverse(loopFunc);
+	}
+
+	int opApplyReverse(int delegate(ref size_t, ref TuiContainer) loopFunc) {
+		return _tabList.opApplyReverse(loopFunc);
+	}
+
+	void opCatAssign(TuiContainer[] list) {
+		_tabList.opCatAssign(list);
+	}
+
+	void opCatAssign(Iterable!(TuiContainer) list) {
+		_tabList.opCatAssign(list);
+	}
+
+	void opCatAssign(TuiContainer item) {
+		_tabList.opCatAssign(item);
+	}
+
+	Iterable!(TuiContainer) opCat(TuiContainer[] list) {
+		return _tabList.opCat(list);
+	}
+
+	Iterable!(TuiContainer) opCat(Iterable!(TuiContainer) list) {
+		return _tabList.opCat(list);
+	}
+
+	Iterable!(TuiContainer) opCat(TuiContainer item) {
+		return _tabList.opCat(item);
 	}
 	
 	void next() {

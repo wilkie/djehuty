@@ -214,6 +214,38 @@ class ListField : Widget, Iterable!(String) {
 	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return control_listbox.opApply(loopFunc);
 	}
+
+	int opApplyReverse(int delegate(ref String) loopFunc) {
+		return control_listbox.opApplyReverse(loopFunc);
+	}
+
+	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+		return control_listbox.opApplyReverse(loopFunc);
+	}
+
+	void opCatAssign(String[] list) {
+		control_listbox.opCatAssign(list);
+	}
+
+	void opCatAssign(Iterable!(String) list) {
+		control_listbox.opCatAssign(list);
+	}
+
+	void opCatAssign(String item) {
+		control_listbox.opCatAssign(item);
+	}
+
+	Iterable!(String) opCat(String[] list) {
+		return control_listbox.opCat(list);
+	}
+
+	Iterable!(String) opCat(Iterable!(String) list) {
+		return control_listbox.opCat(list);
+	}
+
+	Iterable!(String) opCat(String item) {
+		return control_listbox.opCat(item);
+	}
 protected:
 
 	Font _font;

@@ -212,6 +212,38 @@ class TuiListBox : TuiWidget, Iterable!(String) {
 	int opApply(int delegate(ref size_t, ref String) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
+
+	int opApplyReverse(int delegate(ref String) loopFunc) {
+		return _list.opApplyReverse(loopFunc);
+	}
+
+	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+		return _list.opApplyReverse(loopFunc);
+	}
+
+	void opCatAssign(String[] list) {
+		_list.opCatAssign(list);
+	}
+
+	void opCatAssign(Iterable!(String) list) {
+		_list.opCatAssign(list);
+	}
+
+	void opCatAssign(String item) {
+		_list.opCatAssign(item);
+	}
+
+	Iterable!(String) opCat(String[] list) {
+		return _list.opCat(list);
+	}
+
+	Iterable!(String) opCat(Iterable!(String) list) {
+		return _list.opCat(list);
+	}
+
+	Iterable!(String) opCat(String item) {
+		return _list.opCat(item);
+	}
 	
 	// methods
 
