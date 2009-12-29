@@ -64,6 +64,9 @@ template BaseIterable(T) {
 	}
 }
 
+// Description: This template resolves to the base type for any class that
+//   inherits Iterable or any array. That is int[][] will return int.
+//   And List!(List!(int)) will return int.
 template BaseIterableType(T) {
 	static if (IsIterable!(IterableType!(T))) {
 		alias BaseIterableType!(IterableType!(T)) BaseIterableType;
@@ -73,8 +76,9 @@ template BaseIterableType(T) {
 	}
 }
 
-// Description: This template resolves to the base type for any class that
-//   inherits Iterable or any array.
+// Description: This template resolves to the iterated type for any class that
+//   inherits Iterable or any array. That is int[][] will return int[].
+//   And List!(List!(int)) will return List!(int). int[] will return int.
 template IterableType(T) {
 	static if (IsIterable!(T)) {
 		static if (IsArray!(T)) {
