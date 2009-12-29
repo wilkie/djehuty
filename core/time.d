@@ -122,11 +122,12 @@ class Time {
 
 		h = tmp;
 
-		if (h != 0) {
-			str.append(toStr(h, ":"));
+		if (h < 10) {
+			str.append("0");
 		}
+		str.append(toStr(h, ":"));
 
-		if (m < 10 && h > 0) {
+		if (m < 10) {
 			str.append("0");
 		}
 		str.append(toStr(m, ":"));
