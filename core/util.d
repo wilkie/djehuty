@@ -15,6 +15,14 @@ template IsClass(T) {
 	const bool IsClass = is(T == class);
 }
 
+template IsInterface(T) {
+	const bool IsInterface = is(T == interface);
+}
+
+template IsObject(T) {
+	const bool IsObject = IsClass!(T) || IsInterface!(T);
+}
+
 template IsIntType(T) {
 	const bool IsIntType = IsUnsigned!(T) || IsSigned!(T);
 }
@@ -55,6 +63,45 @@ template IsArray(T) {
 	}
 	else {
 		const bool IsArray = false;
+	}
+}
+
+template SuperClass(T...) {
+	static if (T.length == 0) {
+		alias Object SuperClass;
+	}
+	static if (T.length == 1) {
+		static if (is(T[0] S == super)) {
+			static if (S.length == 1) {
+				alias S[0] SuperClass;
+			}
+			else {
+				alias S[1] SuperClass;
+			}
+		}
+		else {
+			alias T[0] SuperClass;
+		}
+	}
+	else static if (is(T[1] S == super)) {
+		static if (S.length == 1) {
+			alias S[0] SuperClass;
+		}
+		else {
+			alias S[1] SuperClass;
+		}
+	}
+	else {
+		alias T[$-1] SuperClass;
+	}
+}
+
+template ArrayType(T) {
+	static if (is (T U:U[])) {
+		alias U ArrayType;
+	}
+	else {
+		alias T ArrayType;
 	}
 }
 

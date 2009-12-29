@@ -20,14 +20,16 @@ private import io.console;
 
 class TuiContainer : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
+		_name = new String("");
 		super(x,y,width,height);
 	}
-	
+
 	override void onInit() {
 		_inited = true;
 		TuiWidget c = _firstControl;
 
 		if (c is null) { return; }
+
 		do {
 			c =	c._prevControl;
 
@@ -68,13 +70,13 @@ class TuiContainer : TuiWidget {
 		Console.position(0,0);
 
 		TuiWidget c = _firstControl;
-		
+
 		io.console.Console.clipSave();
 
 		if (c !is null) {
 			do {
 				c =	c._prevControl;
-	
+
 				io.console.Console.clipSave();
 				this.widgetClippingContext = c;
 				c.onDraw();
@@ -82,9 +84,8 @@ class TuiContainer : TuiWidget {
 				io.console.Console.clipRect(_base_x + this.left + c.left, _base_y + this.top + c.top, _base_x + this.left + c.left + c.width, _base_y + this.top + c.top + c.height);
 			} while(c !is _firstControl);
 		}
-	
+
 		// Should clear the rest of the space not used by a widget
-		
 		static string spaces = "                                                                                                                  ";
 
 		Console.setColor(bgColor.White);
@@ -102,7 +103,6 @@ class TuiContainer : TuiWidget {
 				numSpaces -= pad;
 			} while (numSpaces > 0)
 		}
-		
 		io.console.Console.clipRestore();
 	}
 
@@ -117,7 +117,7 @@ class TuiContainer : TuiWidget {
 			_focused_control.onKeyChar(chr);
 		}
 	}
-	
+
 	override void onPrimaryMouseDown() {
 		if (_focused_control !is null) {
 			_focused_control.onPrimaryMouseDown();
@@ -288,6 +288,8 @@ protected:
 		// activate the next control
 		TuiWidget curFocus = _focused_control;
 
+		if (curFocus is null) { return; }
+
 		_focused_control.onLostFocus();
 
 		do {
@@ -305,6 +307,8 @@ protected:
 	package void _tabBackward() {
 		// activate the previous control
 		TuiWidget curFocus = _focused_control;
+
+		if (curFocus is null) { return; }
 
 		_focused_control.onLostFocus();
 
