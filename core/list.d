@@ -925,6 +925,7 @@ template takeRight(T) {
 }
 
 template flatten(T) {
+	static assert(IsIterable!(T), "flatten: " ~ T.stringof ~ " is not iterable.");
 	BaseIterableType!(T)[] flatten(T list) {
 		static if (IsIterable!(IterableType!(T))) {
 			// recursive
