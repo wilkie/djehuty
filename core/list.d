@@ -64,6 +64,15 @@ template BaseIterable(T) {
 	}
 }
 
+template BaseIterableType(T) {
+	static if (IsIterable!(IterableType!(T))) {
+		alias BaseIterableType!(IterableType!(T)) BaseIterableType;
+	}
+	else {
+		alias IterableType!(T) BaseIterableType;
+	}
+}
+
 // Description: This template resolves to the base type for any class that
 //   inherits Iterable or any array.
 template IterableType(T) {
@@ -916,20 +925,20 @@ template takeRight(T) {
 }
 
 template flatten(T) {
-	BaseType!(T)[] flatten(T[] list) {
-		static if (IsType!(T)) {
-			// base case
-			BaseType!(T)[] ret;
-			foreach(item; list) {
-				ret ~= item;
+	BaseIterableType!(T)[] flatten(T list) {
+		static if (IsIterable!(IterableType!(T))) {
+			// recursive
+			BaseIterableType!(T)[] ret;
+			foreach(sublist; list) {
+				ret ~= flatten(sublist);
 			}
 			return ret;
 		}
 		else {
-			// recursive
-			BaseType!(T)[] ret;
-			foreach(sublist; list) {
-				ret ~= flatten(sublist);
+			// base case
+			BaseIterableType!(T)[] ret;
+			foreach(item; list) {
+				ret ~= item;
 			}
 			return ret;
 		}

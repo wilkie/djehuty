@@ -404,7 +404,7 @@ class MyConsoleApp : Application {
 
 		List!(List!(int)) megaFoo = new List!(List!(int));
 		List!(int) innerFoo1 = new List!(int)([1,2]);
-		List!(int) innerFoo2 = new List!(int)([3,4]);
+		List!(int) innerFoo2 = new List!(int)([3,4,5]);
 
 		megaFoo.add(innerFoo1);
 		megaFoo.add(innerFoo2);
@@ -420,6 +420,42 @@ class MyConsoleApp : Application {
 		foreach(item; fooret) {
 			Console.putln(":", item);
 		}
+
+		List!(List!(List!(int))) megaMEGAFoo = new List!(List!(List!(int)));
+		List!(List!(int)) inner_A = new List!(List!(int));
+		List!(List!(int)) inner_B = new List!(List!(int));
+		List!(int) inner_A1 = new List!(int);
+		List!(int) inner_A2 = new List!(int);
+		List!(int) inner_A3 = new List!(int);
+		List!(int) inner_B1 = new List!(int);
+		List!(int) inner_B2 = new List!(int);
+		inner_A1.add(0);
+		inner_A1.add(1);
+		inner_A1.add(2);
+		inner_A2.add(3);
+		inner_A2.add(4);
+		inner_A3.add(5);
+		inner_A3.add(6);
+		inner_A3.add(7);
+
+		inner_B1.add(8);
+		inner_B1.add(9);
+		inner_B2.add(10);
+		inner_B2.add(11);
+		inner_B2.add(12);
+		inner_B2.add(13);
+
+		inner_A.add(inner_A1);
+		inner_A.add(inner_A2);
+		inner_A.add(inner_A3);
+		inner_B.add(inner_B1);
+		inner_B.add(inner_B2);
+
+		megaMEGAFoo.add(inner_A);
+		megaMEGAFoo.add(inner_B);
+
+		Console.putln(flatten(megaFoo));
+		Console.putln(flatten(megaMEGAFoo));
 	}
 
 protected:
