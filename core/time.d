@@ -111,6 +111,10 @@ class Time {
 
 		String str = new String("");
 
+		if (tmp < 0) {
+			tmp *= -1;
+		}
+
 		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
@@ -121,6 +125,10 @@ class Time {
 		tmp /= 60;
 
 		h = tmp;
+
+		if (micros < 0) {
+			str.append("-");
+		}
 
 		if (h < 10) {
 			str.append("0");
