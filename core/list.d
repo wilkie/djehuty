@@ -673,7 +673,7 @@ template map(T, R, S) {
 		S[] ret;
 		ret = new S[list.length];
 
-        foreach(uint i, item; list) {
+        foreach(size_t i, R item; list) {
 			ret[i] = func(item);
         }
 
