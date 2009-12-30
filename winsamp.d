@@ -321,12 +321,12 @@ class MyControl : Widget {
 			}
 		}
 		
-		Gradient gr = new Gradient(100, angle);
+		/*Gradient gr = new Gradient(100, angle);
 		gr.add(0.0, Color.Red);
 		gr.add(1.0, Color.Blue);
 		b = new Brush(gr);
 		g.brush = b;
-		g.drawRect(0,0,100,300);
+		g.drawRect(0,0,100,300);*/
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
