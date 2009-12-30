@@ -52,6 +52,7 @@ void TuiStart(TuiPlatformVars* vars) {
 	// Spawn a thread to detect window resizes
 	t = new ResizeThread();
 	t.vars = vars;
+
 	t.start();
 
 	// Set a handler for special signals
@@ -79,6 +80,7 @@ private {
 		}
 
 		void run() {
+
 			// For the window resize detect
 			static int _console_x;
 			static int _console_y;
@@ -87,6 +89,11 @@ private {
 			CONSOLE_SCREEN_BUFFER_INFO cinfo;
 
 			HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+			GetConsoleScreenBufferInfo(hStdout, &cinfo);
+
+			_console_x = cinfo.srWindow.Right - cinfo.srWindow.Left+1;
+			_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
 
 			while(running) {
 				GetConsoleScreenBufferInfo(hStdout, &cinfo);
