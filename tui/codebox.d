@@ -83,32 +83,33 @@ private:
 	void addFormat(uint lineNumber, uint firstPos, uint length, fgColor forecolor, bgColor backcolor) {
 		if (_lines[lineNumber].format is null) {
 			// Simply add
-			_lines[lineNumber].format =
-				[cast(uint)_forecolor, cast(uint)_backcolor, firstPos,
-				 cast(uint)forecolor, backcolor, length,
-				 cast(uint)_forecolor, cast(uint)_backcolor, _lines[lineNumber].value.length - (firstPos + length)];
+			_lines[lineNumber].format = [
+				new LineFormat(cast(uint)_forecolor, cast(uint)_backcolor, firstPos),
+				new LineFormat(cast(uint)forecolor, backcolor, length),
+				new LineFormat(cast(uint)_forecolor, cast(uint)_backcolor, _lines[lineNumber].value.length - (firstPos + length))
+			];
 		}
 		else {
-			uint[] newFormat;
+			LineFormat[] newFormat;
 
 			uint last;
 			uint pos;
 			uint formatIdx;
-			for (uint idx = 2; idx < _lines[lineNumber].format.length; idx += 3) {
-				pos += _lines[lineNumber].format[idx];
+			for (uint idx = 0; idx < _lines[lineNumber].format.length; idx++) {
+				pos += _lines[lineNumber].format[idx].len;
 				if (pos > firstPos) {
-					formatIdx = idx-2;
+					formatIdx = idx;
 					break;
 				}
 				last = pos;
 			}
 
 			// Split format at firstPos
-			newFormat = _lines[lineNumber].format[0..formatIdx+3];
-			newFormat[formatIdx+2] = firstPos - last;
-			newFormat ~= [cast(uint)forecolor, cast(uint)backcolor, length];
-			newFormat ~= _lines[lineNumber].format[formatIdx..formatIdx+3];
-			newFormat[formatIdx+2+6] = pos - (firstPos + length);
+			newFormat = _lines[lineNumber].format[0..formatIdx+1];
+			newFormat[formatIdx+1].len = firstPos - last;
+			newFormat ~= [new LineFormat(cast(uint)forecolor, cast(uint)backcolor, length)];
+			newFormat ~= _lines[lineNumber].format[formatIdx..formatIdx+1];
+			newFormat[formatIdx+2].len = pos - (firstPos + length);
 
 			_lines[lineNumber].format = newFormat;
 		}
