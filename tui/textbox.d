@@ -69,18 +69,18 @@ class TuiTextBox : TuiWidget {
 					_lines[_row].value = _lines[_row].value.subString(1);
 					if (_lines[_row].format !is null) {
 						// The first section has one less length
-						if (_lines[_row].format[0+2] < 2) {
+						if (_lines[_row].format[0].len <= 1) {
 							// The section has been destroyed
-							if (_lines[_row].format.length == 3) {
+							if (_lines[_row].format.length == 1) {
 								_lines[_row].format = null;
 							}
 							else {
-								_lines[_row].format = _lines[_row].format[3..$];
+								_lines[_row].format = _lines[_row].format[1..$];
 							}
 						}
 						else {
 							// Just subtract one
-							_lines[_row].format[0+2]--;
+							_lines[_row].format[0].len--;
 						}
 					}
 				}
@@ -88,19 +88,19 @@ class TuiTextBox : TuiWidget {
 					_lines[_row].value = _lines[_row].value.subString(0, _lines[_row].value.length - 1);
 					// The last section has one less length
 					if (_lines[_row].format !is null) {
-						if (_lines[_row].format[$-1] < 2) {
+						if (_lines[_row].format[$-1].len <= 1) {
 							// The last section has been destroyed
-							if (_lines[_row].format.length == 3) {
+							if (_lines[_row].format.length == 1) {
 								// All sections have been destroyed
 								_lines[_row].format = null;
 							}
 							else {
-								_lines[_row].format = _lines[_row].format[0..$-3];
+								_lines[_row].format = _lines[_row].format[0..$-1];
 							}
 						}
 						else {
 							// Just subtract one
-							_lines[_row].format[$-1]--;
+							_lines[_row].format[$-1].len--;
 						}
 					}
 				}
@@ -108,13 +108,13 @@ class TuiTextBox : TuiWidget {
 					_lines[_row].value = _lines[_row].value.subString(0, _column-1) ~ _lines[_row].value.subString(_column);
 					// Reduce the count of the current format index
 					if (_lines[_row].format !is null) {
-						if (_lines[_row].format[_formatIndex] < 2) {
+						if (_lines[_row].format[_formatIndex].len <= 1) {
 							// This format section has been depleted
-							_lines[_row].format = _lines[_row].format[0.._formatIndex-2] ~ _lines[_row].format[_formatIndex+1..$];
+							_lines[_row].format = _lines[_row].format[0.._formatIndex] ~ _lines[_row].format[_formatIndex+1..$];
 						}
 						else {
 							// Just subtract
-							_lines[_row].format[_formatIndex]--;
+							_lines[_row].format[_formatIndex].len--;
 						}
 					}
 				}
@@ -148,13 +148,13 @@ class TuiTextBox : TuiWidget {
 
 					if (_lines[_row].format !is null) {
 						_formatIndex = calculateFormatIndex(_lines[_row], _column + 1);
-						if (_lines[_row].format[_formatIndex] < 2) {
+						if (_lines[_row].format[_formatIndex].len < 2) {
 							// This format section has been depleted
-							_lines[_row].format = _lines[_row].format[0.._formatIndex-2] ~ _lines[_row].format[_formatIndex+1..$];
+							_lines[_row].format = _lines[_row].format[0.._formatIndex] ~ _lines[_row].format[_formatIndex+1..$];
 						}
 						else {
 							// One fewer character with this format
-							_lines[_row].format[_formatIndex]--;
+							_lines[_row].format[_formatIndex].len--;
 						}
 						_formatIndex = calculateFormatIndex(_lines[_row], _column);
 					}
@@ -308,9 +308,9 @@ class TuiTextBox : TuiWidget {
 					// In the middle of the line; current format may need cutting
 					uint pos = 0;
 					uint last;
-					for (uint i = 2; i <= _formatIndex; i += 3) {
+					for (uint i = 0; i <= _formatIndex; i++) {
 						last = pos;
-						pos += _lines[_row].format[i];
+						pos += _lines[_row].format[i].len;
 					}
 
 					if (_column == pos) {
@@ -318,17 +318,18 @@ class TuiTextBox : TuiWidget {
 						newLine.format = _lines[_row].format[_formatIndex+1..$];
 					} else {
 						// Unclean break
-						newLine.format = _lines[_row].format[_formatIndex-2..$].dup;
+						newLine.format = [_lines[_row].format[_formatIndex].dup];
+						newLine.format ~= _lines[_row].format[_formatIndex+1..$];
 
 						// Determine lengths for the format being cut
-						newLine.format[2] = pos - _column;
-						_lines[_row].format[_formatIndex] = _column - last;
+						newLine.format[0].len = pos - _column;
+						_lines[_row].format[_formatIndex].len = _column - last;
 					}
 
 					_lines[_row].format = _lines[_row].format[0.._formatIndex+1];
 				}
 
-				_formatIndex = 2;
+				_formatIndex = 0;
 			}
 
 			_lines.addAt(newLine, _row+1);
@@ -348,10 +349,10 @@ class TuiTextBox : TuiWidget {
 
 		_lines[_row].value = _lines[_row].value.subString(0, _column) ~ [chr] ~ _lines[_row].value.subString(_column);
 
-		// Increase the count of the current format index
+		// Increase the length of the current format index
 		if (_lines[_row].format !is null) {
 			// Just add
-			_lines[_row].format[_formatIndex]++;
+			_lines[_row].format[_formatIndex].len++;
 		}
 
 		_column++;
@@ -484,9 +485,9 @@ protected:
 		uint[] formatTabExtension;
 		uint curFormat, untilNextFormat;
 
-		if (_lines[lineNumber].format !is null && 0 == _lines[lineNumber].format.length % 3) {
-			formatTabExtension.length = _lines[lineNumber].format.length / 3;
-			untilNextFormat = _lines[lineNumber].format[2];
+		if (_lines[lineNumber].format !is null) {
+			formatTabExtension.length = _lines[lineNumber].format.length;
+			untilNextFormat = _lines[lineNumber].format[0].len;
 		}
 
 		String actualLine = _lines[lineNumber].value;
@@ -496,7 +497,7 @@ protected:
 			for (uint i = 0; i < actualLine.length; i++) {
 				while (curFormat + 1 < formatTabExtension.length && untilNextFormat == 0) {
 					++curFormat;
-					untilNextFormat = _lines[lineNumber].format[curFormat * 3 + 2];
+					untilNextFormat = _lines[lineNumber].format[curFormat].len;
 				}
 				if (curFormat < formatTabExtension.length)
 					untilNextFormat--;
@@ -532,10 +533,10 @@ protected:
 		}
 		else {
 			// Splitting up the line due to formatting
-			for (uint i; i < _lines[lineNumber].format.length; i += 3) {
-				Console.setColor(cast(fgColor)_lines[lineNumber].format[i], cast(bgColor)_lines[lineNumber].format[i+1]);
-				//Console.Console.put("[", _lines[lineNumber].format[i+2], "]");
-				uint formatLength = _lines[lineNumber].format[i+2] + formatTabExtension[i / 3];
+			for (uint i = 0; i < _lines[lineNumber].format.length; i++) {
+				Console.setColor(cast(fgColor)_lines[lineNumber].format[i].fgCol, cast(bgColor)_lines[lineNumber].format[i].bgCol);
+				//Console.Console.put("[", _lines[lineNumber].format[i].length, "]");
+				uint formatLength = _lines[lineNumber].format[i].len + formatTabExtension[i];
 
 				if (formatLength + pos < _firstColumn) {
 					// draw nothing
@@ -677,11 +678,11 @@ protected:
 	// Description: Calculates the formatIndex given a LineInfo and column.
 	// Returns: The calculated formatIndex.
 	int calculateFormatIndex(LineInfo line, int column) {
-		int formatIndex = 2;
+		int formatIndex = 0;
 		if (line.format !is null) {
 			uint pos;
-			for (uint i = 2; i < line.format.length; i += 3) {
-				pos += line.format[i];
+			for (uint i = 0; i < line.format.length; i++) {
+				pos += line.format[i].len;
 				if (pos >= column) {
 					formatIndex = i;
 					break;
@@ -708,12 +709,34 @@ protected:
 		Skip,
 	}
 
+	// The formatting of a line segment
+	static class LineFormat {
+		this () {}
+		this (uint f, uint b, uint l) {
+			fgCol = f;
+			bgCol = b;
+			len = l;
+		}
+
+		LineFormat dup() {
+			return new LineFormat(fgCol, bgCol, len);
+		}
+
+		int opEquals(LineFormat lf) {
+			return cast(int)(this.fgCol == lf.fgCol && this.bgCol == lf.bgCol);
+		}
+
+		uint fgCol;
+		uint bgCol;
+		uint len;
+	}
+
 	// The information about each line
 	class LineInfo {
 		this() {
 		}
 
-		this(String v, uint[] f) {
+		this(String v, LineFormat[] f) {
 			value = v;
 			format = f;
 			this();
@@ -726,18 +749,18 @@ protected:
 		void opCatAssign(LineInfo li) {
 			if (this.format !is null && li.format !is null) {
 				// Merge format lines
-				if (this.format[$-3] == li.format[0] && this.format[$-2] == li.format[1]) {
-					this.format[$-1] += li.format[2];
-					this.format ~= li.format[3..$];
+				if (this.format[$-1] == li.format[0]) {
+					this.format[$-1].len += li.format[0].len;
+					this.format ~= li.format[1..$];
 				} else {
 					this.format ~= li.format;
 				}
 			} else if (this.format !is null) {
 				// Make a format for the 2nd line
-				this.format ~= [cast(uint)_forecolor, cast(uint)_backcolor, li.value.length];
+				this.format ~= [new LineFormat(_forecolor, _backcolor, li.value.length)];
 			} else if (li.format !is null) {
 				// Make a format for the 1st line
-				this.format = [cast(uint)_forecolor, cast(uint)_backcolor, this.value.length] ~ li.format;
+				this.format = [new LineFormat(_forecolor, _backcolor, this.value.length)] ~ li.format;
 			} else {
 				// Ignore formats if none exist
 			}
@@ -752,7 +775,7 @@ protected:
 		}
 
 		String value;
-		uint[] format;
+		LineFormat[] format;
 	}
 
 	// Stores the buffer of lines
