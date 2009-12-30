@@ -139,6 +139,7 @@ describe linkedList() {
 			list.add(1);
 
 			shouldNot(list.empty());
+
 		}
 	}
 
