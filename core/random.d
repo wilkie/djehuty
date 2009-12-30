@@ -16,6 +16,7 @@
 module core.random;
 
 import core.definitions;
+import core.list;
 
 import scaffold.time;
 
@@ -67,8 +68,9 @@ class Random {
 	}
 
 	template choose(T) {
-		T choose(T[] list) {
-			return list[next(list.length)];
+		static assert(IsIterable!(T), "Random.choose: " ~ T.stringof ~ " is not iterable.");
+		IterableType!(T) choose(T list) {
+			return list[cast(size_t)next(list.length)];
 		}
 	}
 

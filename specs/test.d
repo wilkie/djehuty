@@ -3191,23 +3191,8 @@ class FibonacciHeapTester {
 			if(queue.empty()) {
 				return it.doesnt;
 			}
-			queue.remove();
-			if(!(queue.empty())) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it empty_should_be_true_for_a_new_list() {
-		before_empty();
-		try {
-			auto queue = new FibonacciHeap!(int);
-			if(!(queue.empty())) {
+			list.add(1);
+			if(list.empty()) {
 				return it.doesnt;
 			}
 		}
@@ -3219,6 +3204,118 @@ class FibonacciHeapTester {
 	}
 
 	done before_empty() {
+	}
+
+	it operations_should_peek_at_the_index() {
+		before_operations();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry = 1;
+			list.add(entry);
+			if(!(list[0] == entry)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_operations() {
+	}
+
+	it array_should_return_an_array_of_the_list() {
+		before_array();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+			list.add(entry1);
+			list.add(entry2);
+			list.add(entry3);
+			int[] listArr = list.array();
+			if(listArr is null) {
+				return it.doesnt;
+			}
+			if(!(listArr[0] == entry1)) {
+				return it.doesnt;
+			}
+			if(!(listArr[1] == entry2)) {
+				return it.doesnt;
+			}
+			if(!(listArr[2] == entry3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_array() {
+	}
+
+	it duplication_should_work_as_expected() {
+		before_duplication();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry = 1;
+			list.add(entry);
+			LinkedList!(int) dupList = list.dup();
+			if(dupList is null) {
+				return it.doesnt;
+			}
+			if(!(dupList.peek() == entry)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_duplication() {
+	}
+
+	it slicing_should_work_as_expected() {
+		before_slicing();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+			list.add(entry3);
+			list.add(entry2);
+			list.add(entry1);
+			LinkedList!(int) sliceList = list.slice(0,2);
+			if(sliceList is null) {
+				return it.doesnt;
+			}
+			if(!(sliceList.length == 2)) {
+				return it.doesnt;
+			}
+			if(!(sliceList.remove() == entry3)) {
+				return it.doesnt;
+			}
+			if(!(sliceList.remove() == entry2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_slicing() {
 	}
 
 	done before() {
@@ -3303,6 +3400,34 @@ class FibonacciHeapTester {
 
 		result = tester.empty_should_be_true_for_a_new_list();
 		test.logResult(result, "empty should be true for a new list", "130");
+
+		test.logSubset("operations");
+
+		tester = new LinkedListTester();
+
+		result = tester.operations_should_peek_at_the_index();
+		test.logResult(result, "operations should peek at the index", "147");
+
+		test.logSubset("array");
+
+		tester = new LinkedListTester();
+
+		result = tester.array_should_return_an_array_of_the_list();
+		test.logResult(result, "array should return an array of the list", "157");
+
+		test.logSubset("duplication");
+
+		tester = new LinkedListTester();
+
+		result = tester.duplication_should_work_as_expected();
+		test.logResult(result, "duplication should work as expected", "178");
+
+		test.logSubset("slicing");
+
+		tester = new LinkedListTester();
+
+		result = tester.slicing_should_work_as_expected();
+		test.logResult(result, "slicing should work as expected", "192");
 
 		test.finish();
 	}

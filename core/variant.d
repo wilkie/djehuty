@@ -24,7 +24,7 @@ else {
 	public import C = std.c.stdarg;
 }
 
-import std.stdio;
+//import std.stdio;
 
 enum Type {
 

@@ -139,7 +139,6 @@ describe linkedList() {
 			list.add(1);
 
 			shouldNot(list.empty());
-
 		}
 	}
 
@@ -185,6 +184,27 @@ describe linkedList() {
 			shouldNot(dupList is null);
 			should(dupList.peek() == entry);
 
+		}
+	}
+
+	describe slicing() {
+		it should_work_as_expected() {
+			LinkedList!(int) list = new LinkedList!(int)();
+
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+
+			list.add(entry3);
+			list.add(entry2);
+			list.add(entry1);
+
+			LinkedList!(int) sliceList = list.slice(0,2);
+
+			shouldNot(sliceList is null);
+			should(sliceList.length == 2);
+			should(sliceList.remove() == entry3);
+			should(sliceList.remove() == entry2);
 		}
 	}
 }
