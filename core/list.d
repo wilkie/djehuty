@@ -228,7 +228,7 @@ class List(T) : Iterable!(T) {
 				if (idx >= _count) {
 					throw new OutOfBounds(this.classinfo.name);
 				}
-				
+
 				if (_count == 0) {
 					idx = 0;
 				}
@@ -281,7 +281,7 @@ class List(T) : Iterable!(T) {
 			if (this.empty()) {
 				throw new OutOfElements(this.classinfo.name);
 			}
-		
+
 			_count--;
 			scope(exit) _data = _data[0..index] ~ _data[index+1..$];
 			return _data[index];
@@ -293,12 +293,12 @@ class List(T) : Iterable!(T) {
 			if (this.empty()) {
 				throw new OutOfElements(this.classinfo.name);
 			}
-			
+
 			return _data[_count-1];
 		}
 	}
 
-	T peekAt(size_t index) {		
+	T peekAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
 				throw new OutOfBounds(this.classinfo.name);
@@ -313,7 +313,7 @@ class List(T) : Iterable!(T) {
 	}
 
 	template set(R) {
-		void set(R value) {		
+		void set(R value) {
 			synchronized(this) {
 				if (this.empty()) {
 					throw new OutOfElements(this.classinfo.name);
@@ -385,7 +385,7 @@ class List(T) : Iterable!(T) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[0.._count].dup;
 			ret._count = ret._data.length;
-	
+
 			return ret;
 		}
 	}
@@ -395,7 +395,7 @@ class List(T) : Iterable!(T) {
 			List!(T) ret = new List!(T);
 			ret._data = _data[start..end].dup;
 			ret._count = ret._data.length;
-	
+
 			return ret;
 		}
 	}
@@ -406,7 +406,7 @@ class List(T) : Iterable!(T) {
 
 			ret._data = _data[0.._count].reverse;
 			ret._count = ret._data.length;
-		
+
 			return ret;
 		}
 	}

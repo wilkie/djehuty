@@ -76,7 +76,7 @@ class SnakeGame {
 			_food = null;
 			_portal = null;
 
-			_snake.elongate(_rand.next(Growth.Min, Growth.Max));
+			_snake.elongate(cast(uint)_rand.next(Growth.Min, Growth.Max));
 		}
 
 		if (_food is null) {
@@ -107,7 +107,7 @@ private:
 	Posn positionItem() {
 		Posn ret;
 		while (ret is null) {
-			auto r = new Posn(_rand.next(_max_x + 1), _rand.next(_max_y + 1));
+			auto r = new Posn(cast(uint)_rand.next(_max_x + 1), cast(uint)_rand.next(_max_y + 1));
 			if (_snake !is null && _snake == r)
 				continue;
 			if (_food !is null && _food == r)

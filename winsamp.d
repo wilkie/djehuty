@@ -283,7 +283,7 @@ class MyControl : Widget {
 				o++;
 			}
 		}
-		
+
 		b = new Brush(new Gradient(20,0,50, angle, 0.0, Color.Red, 0.5, Color.Green, 1.0, Color.Blue));
 		g.brush = b;
 		g.drawRect(20,0,100,300);

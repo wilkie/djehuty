@@ -335,23 +335,30 @@ class LinkedList(T) : Iterable!(T) {
 		synchronized (this) {
 			LinkedList!(T) ret = new LinkedList!(T);
 
-			LinkedListNode* curnode = _head;
+			LinkedListNode* curnode = _tail;
 
 			if (_count == 0) {
 				return ret;
 			}	
 
 			size_t idx = 0;
-			while(curnode !is null && idx < start) {
-				curnode = curnode.next;
-				idx++;
-			}
 
-			while(curnode !is null && idx < end) {
-				ret.add(curnode.data);
-				curnode = curnode.next;
+			do {
+				if (idx >= start) {
+					break;
+				}
+				curnode = curnode.prev;
 				idx++;
-			}
+			} while (curnode !is _tail);
+
+			do {
+				if (idx >= end) {
+					break;
+				}
+				ret.add(curnode.data);
+				curnode = curnode.prev;
+				idx++;
+			} while (curnode !is _tail);
 
 			return ret;
 		}
