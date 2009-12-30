@@ -456,6 +456,15 @@ class MyConsoleApp : Application {
 
 		Console.putln(flatten(megaFoo));
 		Console.putln(flatten(megaMEGAFoo));
+
+		Random rand = new Random;
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
+		Console.putln(rand.next(-3,2));
 	}
 
 protected:
@@ -479,3 +488,4 @@ class MyApp : GuiApplication {
 private:
 	MyWindow wnd;
 }
+

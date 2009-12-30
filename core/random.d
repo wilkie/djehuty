@@ -60,8 +60,6 @@ class Random {
 	}
 
 	long next(long min, long max) {
-		if (max < 0) { return 0; }
-		if (min < 0) { return 0; }
 		if (min >= max) { return min; }
 
 		return (next() % (max - min)) + min;
