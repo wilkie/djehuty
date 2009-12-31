@@ -13,34 +13,81 @@ import io.console;
 // Description: This struct stores a description of time.
 class Time {
 
+	enum Zone {
+		GMT,
+		ECT,
+		EET,
+		ART,
+		EAT,
+		MET,
+		NET,
+		PLT,
+		IST,
+		BST,
+		VST,
+		CTT,
+		JST,
+		ACT,
+		AET,
+		SST,
+		NST,
+		MIT,
+		HST,
+		AST,
+		PST,
+		PNT,
+		MST,
+		CST,
+		EST,
+		IET,
+		PRT,
+		CNT,
+		AGT,
+		BET,
+		CAT
+	}
+
 	this() {
 	}
 
 	this(long ms) {
-		fromMilliseconds(ms);
+		fromMicroseconds(ms);
 	}
 
-	this(long hour, long minute, long second, long millisecond = 0) {
-		micros = hour;
-		micros *= 60;
-		micros += minute;
-		micros *= 60;
-		micros += second;
-		micros *= 1000;
-		micros += millisecond;
-		micros *= 1000;
+	this(long hour, long minute, long second, long microsecond = 0) {
+		_micros = hour;
+		_micros *= 60;
+		_micros += minute;
+		_micros *= 60;
+		_micros += second;
+		_micros *= 1000000;
+		_micros += microsecond;
 	}
 
 	static Time Now() {
 		return new Time(Scaffold.TimeGet());
 	}
 
-	// Description: The microsecond.
-	long micros;
-	
+	static Time Local() {
+		Time ret = new Time(Scaffold.TimeGet());
+		Time.Zone localtz = Scaffold.TimeZoneGet();
+		
+		switch(localtz) {
+			case Time.Zone.EST:
+				ret._micros -= 5L * 60L * 60L * 1000000L;
+				break;
+			default:
+		}
+
+		// Make sure it is within a day
+		// I am sure this breaks some leap second business
+		ret._micros %= (24L * 60L * 60L * 1000000L);
+		return ret;
+	}
+
 	long hour() {
 		long h, ms, s, m;
-		long tmp = micros;
+		long tmp = _micros;
 
 		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
@@ -56,7 +103,7 @@ class Time {
 	
 	long second() {
 		long h, ms, s, m;
-		long tmp = micros;
+		long tmp = _micros;
 
 		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
@@ -66,7 +113,7 @@ class Time {
 
 	long minute() {
 		long h, ms, s, m;
-		long tmp = micros;
+		long tmp = _micros;
 
 		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
@@ -79,35 +126,43 @@ class Time {
 
 	long millisecond() {
 		long h, ms, s, m;
-		long tmp = micros;
+		long tmp = _micros;
 
 		return (tmp % 1000000) / 1000;
 	}
 
+	long microsecond() {
+		return _micros % 1000000;
+	}
+	
+	long toMicroseconds() {
+		return _micros;
+	}
+
 	// Description: Will set the time value for all fields with the given milliseconds.
 	void fromMilliseconds(long ms) {
-		micros = ms * 1000;
+		_micros = ms * 1000;
 	}
 
 	// Description: Will set the time value for all fields with the given microseconds.
 	void fromMicroseconds(long us) {
-		micros = us;
+		_micros = us;
 	}
 
 	// comparator functions
 	int opCmp(Time o) {
-		return cast(int)(micros - o.micros);
+		return cast(int)(_micros - o._micros);
 	}
 
 	int opEquals(Time o) {
-		return cast(int)(o.micros == micros);
+		return cast(int)(o._micros == _micros);
 	}
 
 	// string functions
 
 	string toString() {
 		long h, ms, s, m;
-		long tmp = micros;
+		long tmp = _micros;
 
 		String str = new String("");
 
@@ -126,7 +181,7 @@ class Time {
 
 		h = tmp;
 
-		if (micros < 0) {
+		if (_micros < 0) {
 			str.append("-");
 		}
 
@@ -159,23 +214,28 @@ class Time {
 	// mathematical functions
 	Time opAdd(Time o) {
 		Time ret = new Time();
-		ret.micros = micros + o.micros;
+		ret._micros = _micros + o._micros;
 
 		return ret;
 	}
 
 	Time opSub(Time o) {
 		Time ret = new Time();
-		ret.micros = micros - o.micros;
+		ret._micros = _micros - o._micros;
 
 		return ret;
 	}
 
 	void opAddAssign(Time o) {
-		micros += o.micros;
+		_micros += o._micros;
 	}
 
 	void opSubAssign(Time o) {
-		micros -= o.micros;
+		_micros -= o._micros;
 	}
+
+protected:
+
+	// Description: The microsecond.
+	long _micros;
 }

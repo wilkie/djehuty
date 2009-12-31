@@ -74,8 +74,8 @@ class Wavelet : Stream {
 		ubyte olddata[] = _data;
 
 
-		newLength = cast(int)((_fmt.averageBytesPerSecond / 1000) * (len.micros / 1000));
-		newStartPos = cast(int)((_fmt.averageBytesPerSecond / 1000) * (start.micros / 1000));
+		newLength = cast(int)((_fmt.averageBytesPerSecond / 1000) * (len.toMicroseconds / 1000));
+		newStartPos = cast(int)((_fmt.averageBytesPerSecond / 1000) * (start.toMicroseconds / 1000));
 
 		_data = new ubyte[newLength];
 		_data[0..$] = olddata[newStartPos..(newStartPos + newLength)];
@@ -106,8 +106,8 @@ class Wavelet : Stream {
 		ubyte olddata[] = _data;
 
 
-		newLength = cast(int)((_fmt.averageBytesPerSecond / 1000) * (len.micros / 1000));
-		newStartPos = cast(int)((_fmt.averageBytesPerSecond / 1000) * (start.micros / 1000));
+		newLength = cast(int)((_fmt.averageBytesPerSecond / 1000) * (len.toMicroseconds / 1000));
+		newStartPos = cast(int)((_fmt.averageBytesPerSecond / 1000) * (start.toMicroseconds / 1000));
 
 		_data = new ubyte[newLength];
 		_data[0..$] = olddata[newStartPos..(newStartPos + newLength)];

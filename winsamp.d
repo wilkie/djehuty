@@ -456,6 +456,9 @@ class MyConsoleApp : Application {
 
 		Console.putln(flatten(megaFoo));
 		Console.putln(flatten(megaMEGAFoo));
+
+		Console.putln(Time.Now());
+		Console.putln(Time.Local());
 	}
 
 protected:

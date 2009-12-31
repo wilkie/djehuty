@@ -10,8 +10,10 @@ module core.system;
 
 import scaffold.system;
 import scaffold.directory;
+import scaffold.time;
 
 import core.locale : LocaleId;
+import core.time;
 
 import io.directory;
 
@@ -115,5 +117,13 @@ class System {
 			LocaleId id() {
 				return SystemGetLocaleId();
 			}
+
+			Time.Zone timezone() {
+				return TimeZoneGet();
+			}
+	}
+
+	long time() {
+		return SystemTimeGet();
 	}
 }

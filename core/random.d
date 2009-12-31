@@ -17,8 +17,7 @@ module core.random;
 
 import core.definitions;
 import core.list;
-
-import scaffold.time;
+import core.system;
 
 // Description: This class represents a Random number generator.
 class Random {
@@ -33,7 +32,7 @@ class Random {
 	// seed: The seem to use with the generator.
 	void seed(long value) {
 		if (value < 0) {
-			value = TimeGet();
+			value = System.time;
 		}
 		_state = value;
 	}
