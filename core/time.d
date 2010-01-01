@@ -9,43 +9,65 @@ import core.tostring;
 import io.console;
 
 // Section: Types
+class TimeZone {
+
+	// Description: This will construct a TimeZone for the current location.
+	this() {
+		this(Scaffold.TimeZoneGet());
+	}
+
+	// Description: This will construct a specific TimeZone for a specific
+	//   timezone name or a string containing a custom timezone.
+	// name: A full name, or "GMT+h:mm" or "GMT-h:mm" where h and mm
+	//   represent the hour and minutes from GMT respectively.
+	this(string name) {
+		_name = name;
+		if (name[0..3] == "GMT") {
+			_gmt = name;
+			string foo = name[3..$];
+			int pos = (new String(foo)).find(":");
+			if (pos < 0) { pos = foo.length; }
+			foo = foo[0..pos];
+			int diff_hr; 
+			if ((new String(foo)).nextInt(diff_hr)) {
+				Console.putln("!!", foo, "##", diff_hr);
+			}
+		}
+		else {
+			switch(name) {
+				case "Eastern Standard Time":
+					_offset_in_minutes = -(5 * 60);
+					break;
+				case "Pacific Standard Time":
+					_offset_in_minutes = -(8 * 60);
+					break;
+				default:
+					break;
+			}
+			int diff_hr = _offset_in_minutes / 60;
+			int diff_min = _offset_in_minutes % 60;
+			_gmt = "GMT" ~ toStr(diff_hr) ~ ":" ~ (diff_min < 10 ? "0" : "") ~ toStr(diff_min);
+			Console.putln(_gmt);
+		}
+	}
+
+	string name() {
+		return _name;
+	}
+
+	string toString() {
+		return "GMT";
+	}
+
+protected:
+
+	string _name = "";
+	string _gmt = "";
+	int _offset_in_minutes;
+}
 
 // Description: This struct stores a description of time.
 class Time {
-
-	enum Zone {
-		GMT,
-		ECT,
-		EET,
-		ART,
-		EAT,
-		MET,
-		NET,
-		PLT,
-		IST,
-		BST,
-		VST,
-		CTT,
-		JST,
-		ACT,
-		AET,
-		SST,
-		NST,
-		MIT,
-		HST,
-		AST,
-		PST,
-		PNT,
-		MST,
-		CST,
-		EST,
-		IET,
-		PRT,
-		CNT,
-		AGT,
-		BET,
-		CAT
-	}
 
 	this() {
 	}
@@ -70,13 +92,12 @@ class Time {
 
 	static Time Local() {
 		Time ret = new Time(Scaffold.TimeGet());
-		Time.Zone localtz = Scaffold.TimeZoneGet();
+		TimeZone localtz = new TimeZone();
 		
-		switch(localtz) {
-			case Time.Zone.EST:
+		switch(0) {
+			default:
 				ret._micros -= 5L * 60L * 60L * 1000000L;
 				break;
-			default:
 		}
 
 		// Make sure it is within a day

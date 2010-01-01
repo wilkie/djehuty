@@ -459,6 +459,14 @@ class MyConsoleApp : Application {
 
 		Console.putln(Time.Now());
 		Console.putln(Time.Local());
+		foobbb(3);
+	}
+
+	void foobbb(...) {
+		Variadic vars = new Variadic(_arguments, _argptr);
+		foreach(arg; vars) {
+			Console.putln(arg);
+		}
 	}
 
 protected:

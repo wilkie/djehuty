@@ -396,7 +396,7 @@ class String {
 	}
 
 	template _nextInt(T) {
-		bool _nextInt(T)(T value) {
+		bool _nextInt(T)(out T value) {
 			int curpos;
 
 			for(curpos=0; curpos<_data.length; curpos++) {
@@ -442,6 +442,13 @@ class String {
 
 			return true;
 		}
+	}
+
+	int parse(...) {
+		Variadic vars = new Variadic(_arguments, _argptr);
+		foreach(arg; vars) {
+		}
+		return 0;
 	}
 
 	// Description: This function will return the next integer value found in the string.

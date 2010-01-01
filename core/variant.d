@@ -14,6 +14,8 @@ import core.tostring;
 import core.definitions;
 import core.unicode;
 
+import tango.io.Stdout;
+
 // Imposed variadic
 version(LDC) {
 	public import ldc.vararg;
@@ -60,6 +62,7 @@ enum Type {
 	// Abstract Data Types
 	Struct,
 	Class,
+	Pointer,
 }
 
 struct Variant {
@@ -161,9 +164,7 @@ struct Variant {
 				if (_data.reference is null) {
 					return "null";
 				}
-				else {
-					return _data.reference.toString();
-				}
+				return _data.reference.toString();
 			case Type.Struct:
 				if (_data.blob is null) {
 					return "null";
@@ -171,13 +172,10 @@ struct Variant {
 				else {
 					TypeInfo_Struct tis = cast(TypeInfo_Struct)_ti;
 					if (tis.xtoString !is null) {
-						string function(void*) XToStringFunc = cast(string function(void*))tis.xtoString;
-//						version(Tango) {
-//							return tis.xtoString();
-//						}
-//						else {
-							return XToStringFunc(_data.blob.ptr);
-//						}
+						string delegate() XToStringFunc;
+						XToStringFunc.ptr = _data.blob.ptr;
+						XToStringFunc.funcptr = cast(string function())tis.xtoString;
+						return XToStringFunc();
 					}
 				}
 				break;
@@ -214,6 +212,8 @@ struct Variant {
 				return toStr(_data.d);
 			case Type.Real:
 				return toStr(_data.r);
+			case Type.Pointer:
+				return "foooo";
 			default:
 				break;
 		}
@@ -444,7 +444,9 @@ protected:
 				Variant sub;
 				for (uint i; i < arr.length; i++) {
 					sub = _variantForTypeInfo(tia.value, arrPtr);
-					va_arg!(void[])(arrPtr);
+					if (arrPtr !is null) {
+						va_arg!(void[])(arrPtr);
+					}
 					ret._data.array[i] = sub;
 				}
 
@@ -455,18 +457,27 @@ protected:
 				break;
 			case "Class":
 				ret._type = Type.Class;
-				ret._data.reference = va_arg!(Object)(ptr);
+				if (ptr !is null) {
+					ret._data.reference = va_arg!(Object)(ptr);
+				}
 				break;
 			case "Struct":
 				ret._type = Type.Struct;
-				ret._data.blob = (cast(ubyte*)ptr)[0..ret._size].dup;
+
+				if (ptr !is null) {
+					ubyte[] foo = new ubyte[ret._size];
+					foo[0..$] = (cast(ubyte*)ptr)[0..ret._size];
+					ret._data.blob = foo;
+				}
 
 				ret._ti = cast(TypeInfo_Struct)_ti;
 				break;
 			case "g":	// byte
 				ret._type = Type.Byte;
 				if (!ret._isArray) {
-					ret._data.b = va_arg!(byte)(ptr);
+					if (ptr !is null) {
+						ret._data.b = va_arg!(byte)(ptr);
+					}
 				}
 				else {
 					byte* arrPtr = cast(byte*)arr.ptr;
@@ -483,7 +494,9 @@ protected:
 			case "h":	// ubyte
 				ret._type = Type.Ubyte;
 				if (!ret._isArray) {
-					ret._data.ub = va_arg!(ubyte)(ptr);
+					if (ptr !is null) {
+						ret._data.ub = va_arg!(ubyte)(ptr);
+					}
 				}
 				else {
 					ubyte* arrPtr = cast(ubyte*)arr.ptr;
@@ -500,7 +513,9 @@ protected:
 			case "s":	// short
 				ret._type = Type.Short;
 				if (!ret._isArray) {
-					ret._data.s = va_arg!(short)(ptr);
+					if (ptr !is null) {
+						ret._data.s = va_arg!(short)(ptr);
+					}
 				}
 				else {
 					short* arrPtr = cast(short*)arr.ptr;
@@ -517,7 +532,9 @@ protected:
 			case "t":	// ushort
 				ret._type = Type.Ushort;
 				if (!ret._isArray) {
-					ret._data.us = va_arg!(ushort)(ptr);
+					if (ptr !is null) {
+						ret._data.us = va_arg!(ushort)(ptr);
+					}
 				}
 				else {
 					ushort* arrPtr = cast(ushort*)arr.ptr;
@@ -534,7 +551,9 @@ protected:
 			case "i":	// int
 				ret._type = Type.Int;
 				if (!ret._isArray) {
-					ret._data.i = va_arg!(int)(ptr);
+					if (ptr !is null) {
+						ret._data.i = va_arg!(int)(ptr);
+					}
 				}
 				else {
 					int* arrPtr = cast(int*)arr.ptr;
@@ -551,7 +570,9 @@ protected:
 			case "k":	// uint
 				ret._type = Type.Uint;
 				if (!ret._isArray) {
-					ret._data.ui = va_arg!(uint)(ptr);
+					if (ptr !is null) {
+						ret._data.ui = va_arg!(uint)(ptr);
+					}
 				}
 				else {
 					uint* arrPtr = cast(uint*)arr.ptr;
@@ -568,7 +589,9 @@ protected:
 			case "l":	// long
 				ret._type = Type.Long;
 				if (!ret._isArray) {
-					ret._data.l = va_arg!(long)(ptr);
+					if (ptr !is null) {
+						ret._data.l = va_arg!(long)(ptr);
+					}
 				}
 				else {
 					long* arrPtr = cast(long*)arr.ptr;
@@ -585,7 +608,9 @@ protected:
 			case "m":	// ulong
 				ret._type = Type.Ulong;
 				if (!ret._isArray) {
-					ret._data.ul = va_arg!(ulong)(ptr);
+					if (ptr !is null) {
+						ret._data.ul = va_arg!(ulong)(ptr);
+					}
 				}
 				else {
 					ulong* arrPtr = cast(ulong*)arr.ptr;
@@ -602,7 +627,9 @@ protected:
 			case "f":	// float
 				ret._type = Type.Float;
 				if (!ret._isArray) {
-					ret._data.f = va_arg!(float)(ptr);
+					if (ptr !is null) {
+						ret._data.f = va_arg!(float)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -618,7 +645,9 @@ protected:
 			case "d":	// double
 				ret._type = Type.Double;
 				if (!ret._isArray) {
-					ret._data.d = va_arg!(double)(ptr);
+					if (ptr !is null) {
+						ret._data.d = va_arg!(double)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -634,7 +663,9 @@ protected:
 			case "e":	// real
 				ret._type = Type.Real;
 				if (!ret._isArray) {
-					ret._data.r = va_arg!(real)(ptr);
+					if (ptr !is null) {
+						ret._data.r = va_arg!(real)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -650,7 +681,9 @@ protected:
 			case "o":	// ifloat
 				ret._type = Type.Ifloat;
 				if (!ret._isArray) {
-					ret._data.fi = va_arg!(ifloat)(ptr);
+					if (ptr !is null) {
+						ret._data.fi = va_arg!(ifloat)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -666,7 +699,9 @@ protected:
 			case "p":	// idouble
 				ret._type = Type.Idouble;
 				if (!ret._isArray) {
-					ret._data.di = va_arg!(idouble)(ptr);
+					if (ptr !is null) {
+						ret._data.di = va_arg!(idouble)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -682,7 +717,9 @@ protected:
 			case "j":	// ireal
 				ret._type = Type.Ireal;
 				if (!ret._isArray) {
-					ret._data.ri = va_arg!(ireal)(ptr);
+					if (ptr !is null) {
+						ret._data.ri = va_arg!(ireal)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -698,7 +735,9 @@ protected:
 			case "a":	// char
 				ret._type = Type.Char;
 				if (!ret._isArray) {
-					ret._data.cc = va_arg!(char)(ptr);
+					if (ptr !is null) {
+						ret._data.cc = va_arg!(char)(ptr);
+					}
 				}
 				else {
 					// string
@@ -708,7 +747,9 @@ protected:
 			case "u":	// wchar
 				ret._type = Type.Wchar;
 				if (!ret._isArray) {
-					ret._data.cw = va_arg!(wchar)(ptr);
+					if (ptr !is null) {
+						ret._data.cw = va_arg!(wchar)(ptr);
+					}
 				}
 				else {
 					// string
@@ -718,7 +759,9 @@ protected:
 			case "w":	// wchar
 				ret._type = Type.Dchar;
 				if (!ret._isArray) {
-					ret._data.cd = va_arg!(dchar)(ptr);
+					if (ptr !is null) {
+						ret._data.cd = va_arg!(dchar)(ptr);
+					}
 				}
 				else {
 					// string
@@ -728,7 +771,9 @@ protected:
 			case "b":	// bool
 				ret._type = Type.Bool;
 				if (!ret._isArray) {
-					ret._data.truth = va_arg!(bool)(ptr);
+					if (ptr !is null) {
+						ret._data.truth = va_arg!(bool)(ptr);
+					}
 				}
 				else {
 					bool* arrPtr = cast(bool*)arr.ptr;
@@ -745,7 +790,9 @@ protected:
 			case "q":	// cfloat
 				ret._type = Type.Cfloat;
 				if (!ret._isArray) {
-					ret._data.fc = va_arg!(cfloat)(ptr);
+					if (ptr !is null) {
+						ret._data.fc = va_arg!(cfloat)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -761,7 +808,9 @@ protected:
 			case "r":	// cdouble
 				ret._type = Type.Cdouble;
 				if (!ret._isArray) {
-					ret._data.dc = va_arg!(cdouble)(ptr);
+					if (ptr !is null) {
+						ret._data.dc = va_arg!(cdouble)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -777,7 +826,9 @@ protected:
 			case "c":	// creal
 				ret._type = Type.Creal;
 				if (!ret._isArray) {
-					ret._data.rc = va_arg!(creal)(ptr);
+					if (ptr !is null) {
+						ret._data.rc = va_arg!(creal)(ptr);
+					}
 				}
 				else {
 					void* arrPtr = cast(void*)arr.ptr;
@@ -788,6 +839,12 @@ protected:
 						val._data.rc = va_arg!(creal)(arrPtr);
 						ret._data.array[i] = val;
 					}
+				}
+				break;
+			case "Pointer":
+				ret._type = Type.Pointer;
+				if (ptr !is null) {
+					va_arg!(void*)(ptr);
 				}
 				break;
 			default:

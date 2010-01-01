@@ -41,6 +41,8 @@ extern(C) tm* localtime_r(time_t* tim, tm* output);
 extern(C) size_t strftime(char*, size_t, char*, tm*);
 extern(C) void* memcpy(void*, void*, size_t);
 
+extern(C) time_t mktime(tm*);
+
 extern(C) void tzset();
 
 extern(C) {
@@ -48,87 +50,65 @@ extern(C) {
 }
 
 }
-
-Time.Zone TimeZoneGet() {
+string TimeZoneGet() {
 	int foo;
 	timeval val;
 	gettimeofday(&val, null);
 
-	tm time_struct;
-	localtime_r(cast(time_t*)&val.tv_sec, &time_struct);
-//	tzset();
+	tm LOCAL;
+	tm GMT;
+	gmtime_r(cast(time_t*)&val.tv_sec, &GMT);
+	localtime_r(cast(time_t*)&val.tv_sec, &LOCAL);
+
+	// Get GMT difference
+	// Which is earliest?
+	time_t gmt_time = mktime(&GMT);
+	time_t local_time = mktime(&LOCAL);
+	
+	time_t diff = local_time - gmt_time;
+	int diff_min = diff % (60*60);
+	int diff_hr = diff / 60 / 60;
+
+	char[] strret = new char[128];
+	strret[0..3] = "GMT";
+	size_t len = sprintf(&strret[3], "%d", diff_hr);
+	strret[3+len] = ':';
+	len+=4;
+	if (diff_min < 10) {
+		strret[len] = '0';
+		len++;
+	}
+	
+	if (diff_min > 0) {
+		len = sprintf(&strret[len], "%d", diff_min);
+	}
+	else {
+		strret[len] = '0';
+		len++;
+	}
+	strret = strret[0..len];
+
 	if (tzname[0] !is null) {
-		size_t len = strlen(tzname[0]);
+		len = strlen(tzname[0]);
 		char[] tzstr = new char[len];
 		tzstr[0..tzstr.length] = tzname[0][0..tzstr.length];
 
 		switch(tzstr[0..len]) {
 			case "EST":
-				return Time.Zone.EST;
-			case "ECT":
-				return Time.Zone.ECT;
-			case "EET":
-				return Time.Zone.EET;
-			case "ART":
-				return Time.Zone.ART;
-			case "EAT":
-				return Time.Zone.EAT;
-			case "MET":
-				return Time.Zone.MET;
-			case "NET":
-				return Time.Zone.NET;
-			case "PLT":
-				return Time.Zone.PLT;
-			case "IST":
-				return Time.Zone.IST;
-			case "BST":
-				return Time.Zone.BST;
-			case "VST":
-				return Time.Zone.VST;
-			case "CTT":
-				return Time.Zone.CTT;
-			case "JST":
-				return Time.Zone.JST;
-			case "ACT":
-				return Time.Zone.ACT;
-			case "AET":
-				return Time.Zone.AET;
-			case "SST":
-				return Time.Zone.SST;
-			case "NST":
-				return Time.Zone.NST;
-			case "MIT":
-				return Time.Zone.MIT;
-			case "HST":
-				return Time.Zone.HST;
-			case "AST":
-				return Time.Zone.AST;
+				if (strret == "GMT-5:00") {
+					//return "Eastern Standard Time";
+				}
+				break;
 			case "PST":
-				return Time.Zone.PST;
-			case "PNT":
-				return Time.Zone.PNT;
-			case "MST":
-				return Time.Zone.MST;
-			case "CST":
-				return Time.Zone.CST;
-			case "IET":
-				return Time.Zone.IET;
-			case "PRT":
-				return Time.Zone.PRT;
-			case "CNT":
-				return Time.Zone.CNT;
-			case "AGT":
-				return Time.Zone.AGT;
-			case "BET":
-				return Time.Zone.BET;
-			case "CAT":
-				return Time.Zone.CAT;
-			case "GMT":
+				if (strret == "GMT-8:00") {
+					return "Pacific Standard Time";
+				}
+				break;
 			default:
-				return Time.Zone.GMT;
+				return strret;
 		}
 	}
-	return Time.Zone.GMT;
+	return strret;
 }
 
 // getting microseconds

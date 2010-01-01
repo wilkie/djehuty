@@ -118,8 +118,8 @@ class System {
 				return SystemGetLocaleId();
 			}
 
-			Time.Zone timezone() {
-				return TimeZoneGet();
+			TimeZone timezone() {
+				return new TimeZone();
 			}
 	}
 
