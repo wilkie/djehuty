@@ -21,7 +21,6 @@ class SnakeWindow : TuiWindow {
 		_timer = new Timer();
 		setSpeed();
 		push(_timer);
-		_timer.start();
 
 		_game = new SnakeGame(this);
 	}
@@ -60,6 +59,7 @@ class SnakeWindow : TuiWindow {
 			Console.position(0, y);
 			Console.put(s);
 		}
+		_timer.start();
 
 		_start_time = Time.Now();
 	}

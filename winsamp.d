@@ -482,3 +482,4 @@ class MyApp : GuiApplication {
 private:
 	MyWindow wnd;
 }
+

@@ -81,7 +81,9 @@ class Time {
 
 		// Make sure it is within a day
 		// I am sure this breaks some leap second business
-		ret._micros %= (24L * 60L * 60L * 1000000L);
+		if (ret._micros < 0) {
+			ret._micros += (24L * 60L * 60L * 1000000L);
+		}
 		return ret;
 	}
 

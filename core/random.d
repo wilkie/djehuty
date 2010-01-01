@@ -24,13 +24,13 @@ class Random {
 
 	// Description: This will set up a new random number generator and will seed it with the given seed.
 	// seed: The seed to use with the generator.
-	this(long seed = -1) {
+	this(int seed = -1) {
 		this.seed(seed);
 	}
 
 	// Description: This will reseed the random number generator.
 	// seed: The seem to use with the generator.
-	void seed(long value) {
+	void seed(int value) {
 		if (value < 0) {
 			value = System.time;
 		}
@@ -39,31 +39,52 @@ class Random {
 
 	// Description: This will retrieve the current state of the generator.
 	// Returns: The state of the generator. (Reseed with this value to continue from the same position)
-	long seed() {
+	int seed() {
 		return _state;
 	}
 
-	double nextDouble() {
-		mutateState();
-		return cast(double)_state / cast(double)MODULUS;
-	}
-
-	long next() {
+	int next() {
 		mutateState();
 		return _state;
 	}
 
-	long next(long max) {
+	int next(int max) {
 		if (max <= 0) { return 0; }
 		return next() % max;
 	}
 
-	long next(long min, long max) {
-		if (max < 0) { return 0; }
-		if (min < 0) { return 0; }
+	int next(int min, int max) {
 		if (min >= max) { return min; }
 
 		return (next() % (max - min)) + min;
+	}
+
+	long nextLong() {
+		return (next() << 32) + next();
+	}
+
+	long nextLong(long max) {
+		if (max <= 0) { return 0; }
+		return nextLong() % max;
+	}
+
+	long nextLong(long min, long max) {
+		if (min >= max) { return min; }
+
+		return (nextLong() % (max - min)) + min;
+	}
+
+	bool nextBoolean() {
+		return (next() % 1) != 0;
+	}
+
+	double nextDouble() {
+		long foo = (cast(long)(next() >> (32-26)) << 27) + cast(long)(next() >> (32-27));
+		return cast(double)foo / cast(double)(1L << 53);
+	}
+
+	float nextFloat() {
+		return cast(float)(next() >> (32-24)) / cast(float)(1 << 24);
 	}
 
 	template choose(T) {
@@ -80,12 +101,12 @@ protected:
 	const auto A256			= 22925;
 	const auto DEFAULT		= 123456789;
 
-	long _state = DEFAULT;
+	int _state = DEFAULT;
 
 	void mutateState() {
-		const long Q = MODULUS / MULTIPLIER;
-		const long R = MODULUS % MULTIPLIER;
-		long t;
+		const int Q = MODULUS / MULTIPLIER;
+		const int R = MODULUS % MULTIPLIER;
+		int t;
 
 		t = MULTIPLIER * (_state % Q) - R * (_state / Q);
 		if (t > 0) {
