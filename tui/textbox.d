@@ -726,7 +726,12 @@ protected:
 		void opCatAssign(LineInfo li) {
 			if (this.format !is null && li.format !is null) {
 				// Merge format lines
-				this.format ~= li.format;
+				if (this.format[$-3] == li.format[0] && this.format[$-2] == li.format[1]) {
+					this.format[$-1] += li.format[2];
+					this.format ~= li.format[3..$];
+				} else {
+					this.format ~= li.format;
+				}
 			} else if (this.format !is null) {
 				// Make a format for the 2nd line
 				this.format ~= [cast(uint)_forecolor, cast(uint)_backcolor, li.value.length];
