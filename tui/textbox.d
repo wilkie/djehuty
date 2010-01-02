@@ -297,48 +297,37 @@ class TuiTextBox : TuiWidget {
 			// Splitting format field
 
 			if (_lines[_row].format !is null) {
-				uint pos;
-				uint last;
-				for (uint i = 2; i < _lines[_row].format.length; i += 3) {
-					pos += _lines[_row].format[i];
-					if (pos >= _column) { break; }
-					last = pos;
-				}
-
-				// Variable 'last' contains the first applied position for the
-				// format specifier.
-
-				if (last == _column) {
-					// Format specifier starts with the caret... it is a clean break
-					if (_formatIndex == 2) {
-						newLine.format = _lines[_row].format;
-						_lines[_row].format = null;
+				if (_column == 0) {
+					// At the beginning of the line; shift the format to the new line
+					newLine.format = _lines[_row].format;
+					_lines[_row].format = null;
+				} else if (_column == _lines[_row].value.length) {
+					// At the end of the line; formats remain unchanged
+					newLine.format = null;
+				} else {
+					// In the middle of the line; current format may need cutting
+					uint pos = 0;
+					uint last;
+					for (uint i = 2; i <= _formatIndex; i += 3) {
+						last = pos;
+						pos += _lines[_row].format[i];
 					}
-					else {
+
+					if (_column == pos) {
+						// Clean break
 						newLine.format = _lines[_row].format[_formatIndex+1..$];
-						_lines[_row].format = _lines[_row].format[0.._formatIndex-2];
-					}
-				}
-				else if (pos == _column) {
-					// Format specifer ends with the caret... another clean break
-					if (_lines[_row].format.length == 3) {
-						newLine.format = null;
-						// old format for the old line does not change
-					}
-					else {
+					} else {
+						// Unclean break
 						newLine.format = _lines[_row].format[_formatIndex-2..$].dup;
-						_lines[_row].format = _lines[_row].format[0.._formatIndex+1];
-						newLine.format[2] = 0;
-					}
-				}
-				else {
-					// No clean break
-					newLine.format = _lines[_row].format[_formatIndex-2..$].dup;
-					_lines[_row].format = _lines[_row].format[0.._formatIndex+1];
 
-					_lines[_row].format[_formatIndex] = _column - last;
-					newLine.format[2] = pos - _column;
+						// Determine lengths for the format being cut
+						newLine.format[2] = pos - _column;
+						_lines[_row].format[_formatIndex] = _column - last;
+					}
+
+					_lines[_row].format = _lines[_row].format[0.._formatIndex+1];
 				}
+
 				_formatIndex = 2;
 			}
 
