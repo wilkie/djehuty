@@ -13,6 +13,7 @@ module scaffold.time;
 import platform.win.common;
 
 import core.date;
+import core.definitions;
 
 // Timing
 
@@ -20,7 +21,15 @@ import core.date;
 
 extern(System) DWORD timeGetTime();
 
-uint TimeGet() {
+string TimeZoneGet() {
+	return "Eastern Standard Time";
+}
+
+long TimeGet() {
+	return 0;
+}
+
+long SystemTimeGet() {
 	return timeGetTime();
 }
 

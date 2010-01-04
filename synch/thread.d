@@ -143,12 +143,12 @@ class Thread {
 		}
 	}
 
-	uint getElapsed() {
+	long getElapsed() {
 		return System.time - time;
 	}
 
-	uint getDelta() {
-		uint oldTime = time;
+	long getDelta() {
+		long oldTime = time;
 		time = System.time;
 
 		return time - oldTime;
@@ -189,8 +189,8 @@ protected:
 
 	bool _inited;
 
-	uint startTime;
-	uint time;
+	long startTime;
+	long time;
 
 	Window wnd;
 

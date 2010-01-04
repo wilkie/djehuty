@@ -23,14 +23,14 @@ class LocaleEnglish_US : LocaleInterface {
 		ret = toStr(hour);
 		ret ~= ":";
 
-		uint min = time.minutes % 60;
+		long min = time.minutes % 60;
 		if (min < 10) {
 			ret ~= "0";
 		}
 		ret ~= toStr(min);
 		ret ~= ":";
 
-		uint sec = time.seconds % 60;
+		long sec = time.seconds % 60;
 		if (sec < 10) {
 			ret ~= "0";
 		}

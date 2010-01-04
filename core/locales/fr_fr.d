@@ -11,7 +11,7 @@ class LocaleFrench_FR : LocaleInterface {
 	string formatTime(Time time) {
 		string ret;
 
-		uint hr, min, sec;
+		long hr, min, sec;
 		hr = time.hours;
 		min = time.minutes % 60;
 		sec = time.seconds % 60;
