@@ -13,13 +13,25 @@ import io.console;
 // Description: This struct stores a description of time.
 class Time {
 
+	// Description: This will construct a Time object that will represent midnight.
 	this() {
 	}
 
-	this(long ms) {
-		fromMicroseconds(ms);
+	// Description: This will construct a Time object that will represent the
+	//   amount of time equal to the number of microseconds given by the
+	//   parameter.
+	// microseconds: The number of microseconds to be represented.
+	this(long microseconds) {
+		_micros = microseconds;
 	}
 
+	// Description: This will construct a Time object that will represent the
+	//   time given by each parameter such that it will represent
+	//   hour:minute:second.microsecond
+	// hour: The hours to be represented by this Time object.
+	// minute: The minutes to be represented by this Time object.
+	// second: The seconds to be represented by this Time object.
+	// microsecond: The microseconds to be represented by this Time object.
 	this(long hour, long minute, long second, long microsecond = 0) {
 		_micros = hour;
 		_micros *= 60;
@@ -30,10 +42,18 @@ class Time {
 		_micros += microsecond;
 	}
 
+	// Description: This will return a Time object that represents the coordinated
+	//   universal time (UTC) assumed by the system.
+	// Returns: A Time class that represents the system's idea of the current universal time.
 	static Time Now() {
 		return new Time(Scaffold.TimeGet());
 	}
 
+	// Description: This will return a Time object that represents the local time
+	//   according to the given TimeZone. If a TimeZone is not given, the local
+	//   time of the current locale is returned.
+	// localTZ: The TimeZone to use to infer the localized time from the UTC.
+	// Returns: A Time class that represents the local time.
 	static Time Local(TimeZone localTZ = null) {
 		Time ret = new Time(Scaffold.TimeGet());
 
@@ -52,70 +72,77 @@ class Time {
 		return ret;
 	}
 
-	long hour() {
+	// Description: This will give the floored number of hours this Time
+	//   object represents.
+	long hours() {
 		long h, ms, s, m;
 		long tmp = _micros;
 
-		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
-
-		s = tmp % 60;
 		tmp /= 60;
-
-		m = tmp % 60;
 		tmp /= 60;
 
 		return tmp;
 	}
+
+	void hours(long value) {
+		_micros = value * 60L * 60L * 1000000L;
+	}
 	
-	long second() {
+	// Description: This will give the floored number of seconds this Time
+	//   object represents.
+	long seconds() {
 		long h, ms, s, m;
 		long tmp = _micros;
 
-		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
 
-		return tmp % 60;
+		return tmp;
 	}
 
-	long minute() {
+	void seconds(long value) {
+		_micros = value * 1000000L;
+	}
+
+	// Description: This will give the floored number of minutes this Time
+	//   object represents.
+	long minutes() {
 		long h, ms, s, m;
 		long tmp = _micros;
 
-		ms = (tmp % 1000000) / 1000;
 		tmp /= 1000000;
-
-		s = tmp % 60;
 		tmp /= 60;
 
-		return tmp % 60;
+		return tmp;
 	}
 
-	long millisecond() {
+	void minutes(long value) {
+		_micros = value * 60L * 1000000L;
+	}
+
+	// Description: This will give the floored number of milliseconds this Time
+	//   object represents.
+	long milliseconds() {
 		long h, ms, s, m;
 		long tmp = _micros;
 
-		return (tmp % 1000000) / 1000;
+		return tmp / 1000;
 	}
 
-	long microsecond() {
-		return _micros % 1000000;
+	void milliseconds(long value) {
+		_micros = value * 1000L;
 	}
-	
-	long toMicroseconds() {
+
+	// Description: This will give the floored number of microseconds this Time
+	//   object represents.
+	long microseconds() {
 		return _micros;
 	}
 
-	// Description: Will set the time value for all fields with the given milliseconds.
-	void fromMilliseconds(long ms) {
-		_micros = ms * 1000;
+	void microseconds(long value) {
+		_micros = value;
 	}
-
-	// Description: Will set the time value for all fields with the given microseconds.
-	void fromMicroseconds(long us) {
-		_micros = us;
-	}
-
+	
 	// comparator functions
 	int opCmp(Time o) {
 		return cast(int)(_micros - o._micros);

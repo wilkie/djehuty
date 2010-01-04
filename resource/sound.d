@@ -192,9 +192,8 @@ class Sound : Responder {
 	// Returns: The total length of the loaded audio.
 	Time totalTime() {
 		Time tme;
-		if (inStream !is null)
-		{
-			tme.fromMilliseconds(cast(long)wavInfo.totalTime);
+		if (inStream !is null) {
+			tme.milliseconds = wavInfo.totalTime;
 		}
 
 		return tme;
@@ -224,12 +223,12 @@ class Sound : Responder {
 		_state = State.Paused;
 
 		Time tme;
-		tme.fromMicroseconds(cast(long)toPosition);
+		tme.microseconds = cast(long)toPosition;
 		_curCodec.seek(inStream, buffers[0].audioFormat(), wavInfo, tme);
 
 		_curCodec.decode(inStream, buffers[0], wavInfo);
 
-		_synch.fromMicroseconds(cast(long)toPosition);
+		_synch.microseconds = cast(long)toPosition;
 
 		buffers[0].crop(tme);
 
