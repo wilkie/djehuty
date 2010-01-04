@@ -16,13 +16,13 @@ describe time() {
 			should(t.microseconds == 0);
 		}
 
-		it should_handle_positive_milliseconds() {
-			auto t = new Time(1234);
+		it should_handle_positive_microseconds() {
+			auto t = new Time(1234000);
 			should(t.microseconds == 1234000);
 		}
 
-		it should_handle_negative_milliseconds() {
-			auto t = new Time(-1234);
+		it should_handle_negative_microseconds() {
+			auto t = new Time(-1234000);
 			should(t.microseconds == -1234000);
 		}
 
@@ -31,14 +31,14 @@ describe time() {
 			should(t.microseconds == 3723000000);
 		}
 
-		it should_handle_hours_minutes_seconds_milliseconds() {
+		it should_handle_hours_minutes_seconds_microseconds() {
 			auto t = new Time(1, 2, 3, 4);
-			should(t.microseconds == 3723004000);
+			should(t.microseconds == 3723000004);
 		}
 
 		it should_handle_negative_everything() {
 			auto t = new Time(-1, -2, -3, -4);
-			should(t.microseconds == -3723004000);
+			should(t.microseconds == -3723000004);
 		}
 	}
 
@@ -56,12 +56,12 @@ describe time() {
 		}
 
 		it should_handle_positive_time() {
-			auto t = new Time(12345678);
+			auto t = new Time(3L * 60L * 60L * 1000000L);
 			should(t.hours == 3);
 		}
 
 		it should_handle_negative_time() {
-			auto t = new Time(-12345678);
+			auto t = new Time(-3L * 60L * 60L * 1000000L);
 			should(t.hours == -3);
 		}
 	}
@@ -73,12 +73,12 @@ describe time() {
 		}
 
 		it should_handle_positive_time() {
-			auto t = new Time(12345678);
+			auto t = new Time(25L * 60L * 1000000L);
 			should(t.minutes == 25);
 		}
 
 		it should_handle_negative_time() {
-			auto t = new Time(-12345678);
+			auto t = new Time(-25L * 60L * 1000000L);
 			should(t.minutes == -25);
 		}
 	}
@@ -90,12 +90,12 @@ describe time() {
 		}
 
 		it should_handle_positive_time() {
-			auto t = new Time(12345678);
+			auto t = new Time(45L * 1000000L);
 			should(t.seconds == 45);
 		}
 
 		it should_handle_negative_time() {
-			auto t = new Time(-12345678);
+			auto t = new Time(-45L * 1000000L);
 			should(t.seconds == -45);
 		}
 	}
@@ -107,12 +107,12 @@ describe time() {
 		}
 
 		it should_handle_positive_time() {
-			auto t = new Time(12345678);
+			auto t = new Time(678L * 1000L);
 			should(t.milliseconds == 678);
 		}
 
 		it should_handle_negative_time() {
-			auto t = new Time(-12345678);
+			auto t = new Time(-678L * 1000L);
 			should(t.milliseconds == -678);
 		}
 
@@ -186,7 +186,7 @@ describe time() {
 		}
 
 		it should_handle_some_milliseconds() {
-			auto t = new Time(123);
+			auto t = new Time(123000);
 			should(t.toString() == "00:00:00.123");
 		}
 
@@ -196,20 +196,20 @@ describe time() {
 		}
 
 		it should_handle_everything() {
-			auto t = new Time(12345678);
+			auto t = new Time(12345678000);
 			should(t.toString() == "03:25:45.678");
 		}
 
 		it should_handle_negative_time() {
-			auto t = new Time(-12345678);
+			auto t = new Time(-12345678000);
 			should(t.toString() == "-03:25:45.678");
 		}
 	}
 
 	describe opAdd() {
 		it should_work() {
-			auto a = new Time(1000);
-			auto b = new Time(234);
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
 			auto c = a + b;
 			should(c.microseconds == 1234000);
 		}
@@ -217,8 +217,8 @@ describe time() {
 
 	describe opSub() {
 		it should_work() {
-			auto a = new Time(234);
-			auto b = new Time(1234);
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
 			auto c = a - b;
 			should(c.microseconds == -1000000);
 		}
@@ -226,8 +226,8 @@ describe time() {
 
 	describe opAddAssign() {
 		it should_work() {
-			auto a = new Time(1000);
-			auto b = new Time(234);
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
 			a += b;
 			should(a.microseconds == 1234000);
 		}
@@ -235,8 +235,8 @@ describe time() {
 
 	describe opSubAssign() {
 		it should_work() {
-			auto a = new Time(234);
-			auto b = new Time(1234);
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
 			a -= b;
 			should(a.microseconds == -1000000);
 		}

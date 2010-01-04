@@ -846,10 +846,10 @@ class TimeTester {
 		return it.does;
 	}
 
-	it creation_should_handle_positive_milliseconds() {
+	it creation_should_handle_positive_microseconds() {
 		before_creation();
 		try {
-			auto t = new Time(1234);
+			auto t = new Time(1234000);
 			if(!(t.microseconds == 1234000)) {
 				return it.doesnt;
 			}
@@ -860,10 +860,10 @@ class TimeTester {
 		return it.does;
 	}
 
-	it creation_should_handle_negative_milliseconds() {
+	it creation_should_handle_negative_microseconds() {
 		before_creation();
 		try {
-			auto t = new Time(-1234);
+			auto t = new Time(-1234000);
 			if(!(t.microseconds == -1234000)) {
 				return it.doesnt;
 			}
@@ -888,11 +888,11 @@ class TimeTester {
 		return it.does;
 	}
 
-	it creation_should_handle_hours_minutes_seconds_milliseconds() {
+	it creation_should_handle_hours_minutes_seconds_microseconds() {
 		before_creation();
 		try {
 			auto t = new Time(1, 2, 3, 4);
-			if(!(t.microseconds == 3723004000)) {
+			if(!(t.microseconds == 3723000004)) {
 				return it.doesnt;
 			}
 		}
@@ -906,7 +906,7 @@ class TimeTester {
 		before_creation();
 		try {
 			auto t = new Time(-1, -2, -3, -4);
-			if(!(t.microseconds == -3723004000)) {
+			if(!(t.microseconds == -3723000004)) {
 				return it.doesnt;
 			}
 		}
@@ -953,7 +953,7 @@ class TimeTester {
 	it hours_should_handle_positive_time() {
 		before_hours();
 		try {
-			auto t = new Time(12345678);
+			auto t = new Time(3L * 60L * 60L * 1000000L);
 			if(!(t.hours == 3)) {
 				return it.doesnt;
 			}
@@ -967,7 +967,7 @@ class TimeTester {
 	it hours_should_handle_negative_time() {
 		before_hours();
 		try {
-			auto t = new Time(-12345678);
+			auto t = new Time(-3L * 60L * 60L * 1000000L);
 			if(!(t.hours == -3)) {
 				return it.doesnt;
 			}
@@ -998,7 +998,7 @@ class TimeTester {
 	it minutes_should_handle_positive_time() {
 		before_minutes();
 		try {
-			auto t = new Time(12345678);
+			auto t = new Time(25L * 60L * 1000000L);
 			if(!(t.minutes == 25)) {
 				return it.doesnt;
 			}
@@ -1012,7 +1012,7 @@ class TimeTester {
 	it minutes_should_handle_negative_time() {
 		before_minutes();
 		try {
-			auto t = new Time(-12345678);
+			auto t = new Time(-25L * 60L * 1000000L);
 			if(!(t.minutes == -25)) {
 				return it.doesnt;
 			}
@@ -1043,7 +1043,7 @@ class TimeTester {
 	it seconds_should_handle_positive_time() {
 		before_seconds();
 		try {
-			auto t = new Time(12345678);
+			auto t = new Time(45L * 1000000L);
 			if(!(t.seconds == 45)) {
 				return it.doesnt;
 			}
@@ -1057,7 +1057,7 @@ class TimeTester {
 	it seconds_should_handle_negative_time() {
 		before_seconds();
 		try {
-			auto t = new Time(-12345678);
+			auto t = new Time(-45L * 1000000L);
 			if(!(t.seconds == -45)) {
 				return it.doesnt;
 			}
@@ -1088,7 +1088,7 @@ class TimeTester {
 	it milliseconds_should_handle_positive_time() {
 		before_milliseconds();
 		try {
-			auto t = new Time(12345678);
+			auto t = new Time(678L * 1000L);
 			if(!(t.milliseconds == 678)) {
 				return it.doesnt;
 			}
@@ -1102,7 +1102,7 @@ class TimeTester {
 	it milliseconds_should_handle_negative_time() {
 		before_milliseconds();
 		try {
-			auto t = new Time(-12345678);
+			auto t = new Time(-678L * 1000L);
 			if(!(t.milliseconds == -678)) {
 				return it.doesnt;
 			}
@@ -1286,7 +1286,7 @@ class TimeTester {
 	it toString_should_handle_some_milliseconds() {
 		before_toString();
 		try {
-			auto t = new Time(123);
+			auto t = new Time(123000);
 			if(!(t.toString() == "00:00:00.123")) {
 				return it.doesnt;
 			}
@@ -1314,7 +1314,7 @@ class TimeTester {
 	it toString_should_handle_everything() {
 		before_toString();
 		try {
-			auto t = new Time(12345678);
+			auto t = new Time(12345678000);
 			if(!(t.toString() == "03:25:45.678")) {
 				return it.doesnt;
 			}
@@ -1328,7 +1328,7 @@ class TimeTester {
 	it toString_should_handle_negative_time() {
 		before_toString();
 		try {
-			auto t = new Time(-12345678);
+			auto t = new Time(-12345678000);
 			if(!(t.toString() == "-03:25:45.678")) {
 				return it.doesnt;
 			}
@@ -1345,8 +1345,8 @@ class TimeTester {
 	it opAdd_should_work() {
 		before_opAdd();
 		try {
-			auto a = new Time(1000);
-			auto b = new Time(234);
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
 			auto c = a + b;
 			if(!(c.microseconds == 1234000)) {
 				return it.doesnt;
@@ -1364,8 +1364,8 @@ class TimeTester {
 	it opSub_should_work() {
 		before_opSub();
 		try {
-			auto a = new Time(234);
-			auto b = new Time(1234);
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
 			auto c = a - b;
 			if(!(c.microseconds == -1000000)) {
 				return it.doesnt;
@@ -1383,8 +1383,8 @@ class TimeTester {
 	it opAddAssign_should_work() {
 		before_opAddAssign();
 		try {
-			auto a = new Time(1000);
-			auto b = new Time(234);
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
 			a += b;
 			if(!(a.microseconds == 1234000)) {
 				return it.doesnt;
@@ -1402,8 +1402,8 @@ class TimeTester {
 	it opSubAssign_should_work() {
 		before_opSubAssign();
 		try {
-			auto a = new Time(234);
-			auto b = new Time(1234);
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
 			a -= b;
 			if(!(a.microseconds == -1000000)) {
 				return it.doesnt;
@@ -1446,13 +1446,13 @@ class TimeTester {
 
 		tester = new TimeTester();
 
-		result = tester.creation_should_handle_positive_milliseconds();
-		test.logResult(result, "creation should handle positive milliseconds", "19");
+		result = tester.creation_should_handle_positive_microseconds();
+		test.logResult(result, "creation should handle positive microseconds", "19");
 
 		tester = new TimeTester();
 
-		result = tester.creation_should_handle_negative_milliseconds();
-		test.logResult(result, "creation should handle negative milliseconds", "24");
+		result = tester.creation_should_handle_negative_microseconds();
+		test.logResult(result, "creation should handle negative microseconds", "24");
 
 		tester = new TimeTester();
 
@@ -1461,8 +1461,8 @@ class TimeTester {
 
 		tester = new TimeTester();
 
-		result = tester.creation_should_handle_hours_minutes_seconds_milliseconds();
-		test.logResult(result, "creation should handle hours minutes seconds milliseconds", "34");
+		result = tester.creation_should_handle_hours_minutes_seconds_microseconds();
+		test.logResult(result, "creation should handle hours minutes seconds microseconds", "34");
 
 		tester = new TimeTester();
 
