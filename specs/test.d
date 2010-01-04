@@ -1,3 +1,4 @@
+
 /*
  * test.d
  *
@@ -374,7 +375,7 @@ class MD5Tester {
 	it hash_should_respect_leading_zeroes() {
 		before_hash();
 		try {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
 			String s = HashMD5.hash("d").getString();
 			if(!(s == "8277e0910d750195b448797616e091ad")) {
 				return it.doesnt;
@@ -389,7 +390,7 @@ class MD5Tester {
 	it hash_should_work_on_byte_arrays() {
 		before_hash();
 		try {
-			// Testing a classic MD5
+			// Testing a classic MD5 
 			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
 			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
 			String a = HashMD5.hash(filea).getString();
@@ -529,6 +530,849 @@ class SHA1Tester {
 
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "19");
+
+		test.finish();
+	}
+}
+
+import core.time;
+
+class TimeTester {
+
+	it creation_should_have_sane_defaults() {
+		before_creation();
+		try {
+			auto t = new Time();
+			if(!(t.micros == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_zero_milliseconds() {
+		before_creation();
+		try {
+			auto t = new Time(0);
+			if(!(t.micros == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_positive_milliseconds() {
+		before_creation();
+		try {
+			auto t = new Time(1234);
+			if(!(t.micros == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_negative_milliseconds() {
+		before_creation();
+		try {
+			auto t = new Time(-1234);
+			if(!(t.micros == -1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_hours_minutes_seconds() {
+		before_creation();
+		try {
+			auto t = new Time(1, 2, 3);
+			if(!(t.micros == 3723000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_hours_minutes_seconds_milliseconds() {
+		before_creation();
+		try {
+			auto t = new Time(1, 2, 3, 4);
+			if(!(t.micros == 3723004000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_negative_everything() {
+		before_creation();
+		try {
+			auto t = new Time(-1, -2, -3, -4);
+			if(!(t.micros == -3723004000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it Now_should_return_a_new_time() {
+		before_Now();
+		try {
+			auto n = Time.Now();
+			if(cast(Time)n is null) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_Now() {
+	}
+
+	it hour_should_handle_zero_time() {
+		before_hour();
+		try {
+			auto t = new Time(0);
+			if(!(t.hour() == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it hour_should_handle_positive_time() {
+		before_hour();
+		try {
+			auto t = new Time(12345678);
+			if(!(t.hour() == 3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it hour_should_handle_negative_time() {
+		before_hour();
+		try {
+			auto t = new Time(-12345678);
+			if(!(t.hour() == -3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_hour() {
+	}
+
+	it minute_should_handle_zero_time() {
+		before_minute();
+		try {
+			auto t = new Time(0);
+			if(!(t.minute() == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it minute_should_handle_positive_time() {
+		before_minute();
+		try {
+			auto t = new Time(12345678);
+			if(!(t.minute() == 25)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it minute_should_handle_negative_time() {
+		before_minute();
+		try {
+			auto t = new Time(-12345678);
+			if(!(t.minute() == -25)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_minute() {
+	}
+
+	it second_should_handle_zero_time() {
+		before_second();
+		try {
+			auto t = new Time(0);
+			if(!(t.second() == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it second_should_handle_positive_time() {
+		before_second();
+		try {
+			auto t = new Time(12345678);
+			if(!(t.second() == 45)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it second_should_handle_negative_time() {
+		before_second();
+		try {
+			auto t = new Time(-12345678);
+			if(!(t.second() == -45)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_second() {
+	}
+
+	it millisecond_should_handle_zero_time() {
+		before_millisecond();
+		try {
+			auto t = new Time(0);
+			if(!(t.millisecond() == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it millisecond_should_handle_positive_time() {
+		before_millisecond();
+		try {
+			auto t = new Time(12345678);
+			if(!(t.millisecond() == 678)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it millisecond_should_handle_negative_time() {
+		before_millisecond();
+		try {
+			auto t = new Time(-12345678);
+			if(!(t.millisecond() == -678)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_millisecond() {
+	}
+
+	it fromMilliseconds_should_handle_zero_milliseconds() {
+		before_fromMilliseconds();
+		try {
+			auto t = new Time();
+			t.fromMilliseconds(0);
+			if(!(t.micros == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it fromMilliseconds_should_handle_positive_milliseconds() {
+		before_fromMilliseconds();
+		try {
+			auto t = new Time();
+			t.fromMilliseconds(1234);
+			if(!(t.micros == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it fromMilliseconds_should_handle_negative_milliseconds() {
+		before_fromMilliseconds();
+		try {
+			auto t = new Time();
+			t.fromMilliseconds(-1234);
+			if(!(t.micros == -1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_fromMilliseconds() {
+	}
+
+	it fromMicroseconds_should_handle_zero_microseconds() {
+		before_fromMicroseconds();
+		try {
+			auto t = new Time();
+			t.fromMicroseconds(0);
+			if(!(t.micros == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it fromMicroseconds_should_handle_positive_microseconds() {
+		before_fromMicroseconds();
+		try {
+			auto t = new Time();
+			t.fromMicroseconds(1234);
+			if(!(t.micros == 1234)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it fromMicroseconds_should_handle_negative_microseconds() {
+		before_fromMicroseconds();
+		try {
+			auto t = new Time();
+			t.fromMicroseconds(-1234);
+			if(!(t.micros == -1234)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_fromMicroseconds() {
+	}
+
+	it comparators_should_handle_equal_times() {
+		before_comparators();
+		try {
+			auto a = new Time(1234);
+			auto b = new Time(1234);
+			if(a < b) {
+				return it.doesnt;
+			}
+			if(!(a == b)) {
+				return it.doesnt;
+			}
+			if(a > b) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it comparators_should_handle_unequal_times() {
+		before_comparators();
+		try {
+			auto a = new Time(-1234);
+			auto b = new Time(1234);
+			if(!(a < b)) {
+				return it.doesnt;
+			}
+			if(a == b) {
+				return it.doesnt;
+			}
+			if(a > b) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_comparators() {
+	}
+
+	it toString_should_handle_zero_time() {
+		before_toString();
+		try {
+			auto t = new Time(0);
+			if(!(t.toString() == "00:00:00.000")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_some_microseconds() {
+		before_toString();
+		try {
+			auto t = new Time();
+			t.fromMicroseconds(123456);
+			if(!(t.toString() == "00:00:00.123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_some_milliseconds() {
+		before_toString();
+		try {
+			auto t = new Time(123);
+			if(!(t.toString() == "00:00:00.123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_hours_minutes_seconds() {
+		before_toString();
+		try {
+			auto t = new Time(10, 2, 30);
+			if(!(t.toString() == "10:02:30.000")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_everything() {
+		before_toString();
+		try {
+			auto t = new Time(12345678);
+			if(!(t.toString() == "03:25:45.678")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_negative_time() {
+		before_toString();
+		try {
+			auto t = new Time(-12345678);
+			if(!(t.toString() == "-03:25:45.678")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_toString() {
+	}
+
+	it opAdd_should_work() {
+		before_opAdd();
+		try {
+			auto a = new Time(1000);
+			auto b = new Time(234);
+			auto c = a + b;
+			if(!(c.micros == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opAdd() {
+	}
+
+	it opSub_should_work() {
+		before_opSub();
+		try {
+			auto a = new Time(234);
+			auto b = new Time(1234);
+			auto c = a - b;
+			if(!(c.micros == -1000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opSub() {
+	}
+
+	it opAddAssign_should_work() {
+		before_opAddAssign();
+		try {
+			auto a = new Time(1000);
+			auto b = new Time(234);
+			a += b;
+			if(!(a.micros == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opAddAssign() {
+	}
+
+	it opSubAssign_should_work() {
+		before_opSubAssign();
+		try {
+			auto a = new Time(234);
+			auto b = new Time(1234);
+			a -= b;
+			if(!(a.micros == -1000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opSubAssign() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		TimeTester tester = new TimeTester();
+
+		Test test = new Test("Time", "specs/core/time.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_have_sane_defaults();
+		test.logResult(result, "creation should have sane defaults", "9");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_zero_milliseconds();
+		test.logResult(result, "creation should handle zero milliseconds", "14");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_positive_milliseconds();
+		test.logResult(result, "creation should handle positive milliseconds", "19");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_negative_milliseconds();
+		test.logResult(result, "creation should handle negative milliseconds", "24");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_hours_minutes_seconds();
+		test.logResult(result, "creation should handle hours minutes seconds", "29");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_hours_minutes_seconds_milliseconds();
+		test.logResult(result, "creation should handle hours minutes seconds milliseconds", "34");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_negative_everything();
+		test.logResult(result, "creation should handle negative everything", "39");
+
+		test.logSubset("Now");
+
+		tester = new TimeTester();
+
+		result = tester.Now_should_return_a_new_time();
+		test.logResult(result, "Now should return a new time", "46");
+
+		test.logSubset("hour");
+
+		tester = new TimeTester();
+
+		result = tester.hour_should_handle_zero_time();
+		test.logResult(result, "hour should handle zero time", "53");
+
+		tester = new TimeTester();
+
+		result = tester.hour_should_handle_positive_time();
+		test.logResult(result, "hour should handle positive time", "58");
+
+		tester = new TimeTester();
+
+		result = tester.hour_should_handle_negative_time();
+		test.logResult(result, "hour should handle negative time", "63");
+
+		test.logSubset("minute");
+
+		tester = new TimeTester();
+
+		result = tester.minute_should_handle_zero_time();
+		test.logResult(result, "minute should handle zero time", "70");
+
+		tester = new TimeTester();
+
+		result = tester.minute_should_handle_positive_time();
+		test.logResult(result, "minute should handle positive time", "75");
+
+		tester = new TimeTester();
+
+		result = tester.minute_should_handle_negative_time();
+		test.logResult(result, "minute should handle negative time", "80");
+
+		test.logSubset("second");
+
+		tester = new TimeTester();
+
+		result = tester.second_should_handle_zero_time();
+		test.logResult(result, "second should handle zero time", "87");
+
+		tester = new TimeTester();
+
+		result = tester.second_should_handle_positive_time();
+		test.logResult(result, "second should handle positive time", "92");
+
+		tester = new TimeTester();
+
+		result = tester.second_should_handle_negative_time();
+		test.logResult(result, "second should handle negative time", "97");
+
+		test.logSubset("millisecond");
+
+		tester = new TimeTester();
+
+		result = tester.millisecond_should_handle_zero_time();
+		test.logResult(result, "millisecond should handle zero time", "104");
+
+		tester = new TimeTester();
+
+		result = tester.millisecond_should_handle_positive_time();
+		test.logResult(result, "millisecond should handle positive time", "109");
+
+		tester = new TimeTester();
+
+		result = tester.millisecond_should_handle_negative_time();
+		test.logResult(result, "millisecond should handle negative time", "114");
+
+		test.logSubset("fromMilliseconds");
+
+		tester = new TimeTester();
+
+		result = tester.fromMilliseconds_should_handle_zero_milliseconds();
+		test.logResult(result, "fromMilliseconds should handle zero milliseconds", "121");
+
+		tester = new TimeTester();
+
+		result = tester.fromMilliseconds_should_handle_positive_milliseconds();
+		test.logResult(result, "fromMilliseconds should handle positive milliseconds", "127");
+
+		tester = new TimeTester();
+
+		result = tester.fromMilliseconds_should_handle_negative_milliseconds();
+		test.logResult(result, "fromMilliseconds should handle negative milliseconds", "133");
+
+		test.logSubset("fromMicroseconds");
+
+		tester = new TimeTester();
+
+		result = tester.fromMicroseconds_should_handle_zero_microseconds();
+		test.logResult(result, "fromMicroseconds should handle zero microseconds", "141");
+
+		tester = new TimeTester();
+
+		result = tester.fromMicroseconds_should_handle_positive_microseconds();
+		test.logResult(result, "fromMicroseconds should handle positive microseconds", "147");
+
+		tester = new TimeTester();
+
+		result = tester.fromMicroseconds_should_handle_negative_microseconds();
+		test.logResult(result, "fromMicroseconds should handle negative microseconds", "153");
+
+		test.logSubset("comparators");
+
+		tester = new TimeTester();
+
+		result = tester.comparators_should_handle_equal_times();
+		test.logResult(result, "comparators should handle equal times", "161");
+
+		tester = new TimeTester();
+
+		result = tester.comparators_should_handle_unequal_times();
+		test.logResult(result, "comparators should handle unequal times", "169");
+
+		test.logSubset("toString");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_zero_time();
+		test.logResult(result, "toString should handle zero time", "179");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_some_microseconds();
+		test.logResult(result, "toString should handle some microseconds", "184");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_some_milliseconds();
+		test.logResult(result, "toString should handle some milliseconds", "190");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_hours_minutes_seconds();
+		test.logResult(result, "toString should handle hours minutes seconds", "195");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_everything();
+		test.logResult(result, "toString should handle everything", "200");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_negative_time();
+		test.logResult(result, "toString should handle negative time", "205");
+
+		test.logSubset("opAdd");
+
+		tester = new TimeTester();
+
+		result = tester.opAdd_should_work();
+		test.logResult(result, "opAdd should work", "212");
+
+		test.logSubset("opSub");
+
+		tester = new TimeTester();
+
+		result = tester.opSub_should_work();
+		test.logResult(result, "opSub should work", "221");
+
+		test.logSubset("opAddAssign");
+
+		tester = new TimeTester();
+
+		result = tester.opAddAssign_should_work();
+		test.logResult(result, "opAddAssign should work", "230");
+
+		test.logSubset("opSubAssign");
+
+		tester = new TimeTester();
+
+		result = tester.opSubAssign_should_work();
+		test.logResult(result, "opSubAssign should work", "239");
 
 		test.finish();
 	}
@@ -2427,6 +3271,43 @@ class LinkedListTester {
 	done before_slicing() {
 	}
 
+	it reverse_should_work_as_expected() {
+		before_reverse();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+			list.add(entry1);
+			list.add(entry2);
+			list.add(entry3);
+			LinkedList!(int) revList = list.reverse();
+			if(revList is null) {
+				return it.doesnt;
+			}
+			if(!(revList.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry1)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry2)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_reverse() {
+	}
+
 	done before() {
 	}
 
@@ -2535,6 +3416,13 @@ class LinkedListTester {
 
 		result = tester.slicing_should_work_as_expected();
 		test.logResult(result, "slicing should work as expected", "192");
+
+		test.logSubset("reverse");
+
+		tester = new LinkedListTester();
+
+		result = tester.reverse_should_work_as_expected();
+		test.logResult(result, "reverse should work as expected", "213");
 
 		test.finish();
 	}
@@ -3480,6 +4368,10 @@ class Tests {
 		SHA1Tester.test();
 	}
 
+	static void testTime() {
+		TimeTester.test();
+	}
+
 	static void testRegex() {
 		RegexTester.test();
 	}
@@ -3514,6 +4406,7 @@ class Tests {
 		testDigest();
 		testMD5();
 		testSHA1();
+		testTime();
 		testRegex();
 		testString();
 		testUnicode();
