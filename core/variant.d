@@ -213,7 +213,7 @@ struct Variant {
 			case Type.Real:
 				return toStr(_data.r);
 			case Type.Pointer:
-				return "foooo";
+				return toStr(_data.pointer.address);
 			default:
 				break;
 		}
@@ -272,6 +272,12 @@ union VariantData {
 	bool truth;
 
 	Variant[] array;
+
+	struct VariantPointerData {
+		void* address;
+		Variant* next;
+	}
+	VariantPointerData pointer;
 }
 
 class Variadic {
@@ -422,7 +428,9 @@ protected:
 			ret._depth++;
 			ret._isArray = true;
 
-			arr = va_arg!(void[])(ptr);
+			if (ptr !is null) {
+				arr = va_arg!(void[])(ptr);
+			}
 			ret._data.array = new Variant[arr.length];
 
 			cmp = cmp[1..$];
@@ -485,8 +493,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Byte;
-						val._data.b = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.b = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -504,8 +514,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Ubyte;
-						val._data.ub = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.ub = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -523,8 +535,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Short;
-						val._data.s = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.s = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -542,8 +556,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Ushort;
-						val._data.us = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.us = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -561,8 +577,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Int;
-						val._data.i = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.i = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -580,8 +598,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Uint;
-						val._data.ui = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.ui = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -599,8 +619,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Long;
-						val._data.l = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.l = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -618,8 +640,10 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Ulong;
-						val._data.ul = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.ul = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -637,7 +661,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Float;
-						val._data.f = va_arg!(float)(arrPtr);
+						if (ptr !is null) {
+							val._data.f = va_arg!(float)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -655,7 +681,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Double;
-						val._data.d = va_arg!(double)(arrPtr);
+						if (ptr !is null) {
+							val._data.d = va_arg!(double)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -673,7 +701,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Real;
-						val._data.r = va_arg!(real)(arrPtr);
+						if (ptr !is null) {
+							val._data.r = va_arg!(real)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -691,7 +721,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Ifloat;
-						val._data.fi = va_arg!(ifloat)(arrPtr);
+						if (ptr !is null) {
+							val._data.fi = va_arg!(ifloat)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -709,7 +741,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Idouble;
-						val._data.di = va_arg!(idouble)(arrPtr);
+						if (ptr !is null) {
+							val._data.di = va_arg!(idouble)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -727,7 +761,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Ireal;
-						val._data.ri = va_arg!(ireal)(arrPtr);
+						if (ptr !is null) {
+							val._data.ri = va_arg!(ireal)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -741,7 +777,9 @@ protected:
 				}
 				else {
 					// string
-					ret._data.cs = (cast(char*)arr.ptr)[0..arr.length];
+					if (ptr !is null) {
+						ret._data.cs = (cast(char*)arr.ptr)[0..arr.length];
+					}
 				}
 				break;
 			case "u":	// wchar
@@ -753,7 +791,9 @@ protected:
 				}
 				else {
 					// string
-					ret._data.ws = (cast(wchar*)arr.ptr)[0..arr.length];
+					if (ptr !is null) {
+						ret._data.ws = (cast(wchar*)arr.ptr)[0..arr.length];
+					}
 				}
 				break;
 			case "w":	// wchar
@@ -765,7 +805,9 @@ protected:
 				}
 				else {
 					// string
-					ret._data.ds = (cast(dchar*)arr.ptr)[0..arr.length];
+					if (ptr !is null) {
+						ret._data.ds = (cast(dchar*)arr.ptr)[0..arr.length];
+					}
 				}
 				break;
 			case "b":	// bool
@@ -781,8 +823,10 @@ protected:
 					for (size_t i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Bool;
-						val._data.truth = *arrPtr;
-						arrPtr++;
+						if (ptr !is null) {
+							val._data.truth = *arrPtr;
+							arrPtr++;
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -800,7 +844,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Cfloat;
-						val._data.fc = va_arg!(cfloat)(arrPtr);
+						if (ptr !is null) {
+							val._data.fc = va_arg!(cfloat)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -818,7 +864,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Cdouble;
-						val._data.dc = va_arg!(cdouble)(arrPtr);
+						if (ptr !is null) {
+							val._data.dc = va_arg!(cdouble)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -836,7 +884,9 @@ protected:
 					for (uint i; i < arr.length; i++) {
 						Variant val;
 						val._type = Type.Creal;
-						val._data.rc = va_arg!(creal)(arrPtr);
+						if (ptr !is null) {
+							val._data.rc = va_arg!(creal)(arrPtr);
+						}
 						ret._data.array[i] = val;
 					}
 				}
@@ -844,8 +894,12 @@ protected:
 			case "Pointer":
 				ret._type = Type.Pointer;
 				if (ptr !is null) {
-					va_arg!(void*)(ptr);
+					ret._data.pointer.address = va_arg!(void*)(ptr);
 				}
+				Variant foo;
+				TypeInfo_Pointer tip = cast(TypeInfo_Pointer)_ti;
+				foo = _variantForTypeInfo(tip.next, null);
+				ret._data.pointer.next = &foo;
 				break;
 			default:
 				break;
