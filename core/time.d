@@ -34,11 +34,15 @@ class Time {
 		return new Time(Scaffold.TimeGet());
 	}
 
-	static Time Local() {
+	static Time Local(TimeZone localTZ = null) {
 		Time ret = new Time(Scaffold.TimeGet());
-		TimeZone localtz = new TimeZone();
+
+		// Get the local timezone if one was not specified.
+		if (localTZ is null) {
+			localTZ = new TimeZone();
+		}
 		
-		ret._micros += localtz.utcOffset;
+		ret._micros += localTZ.utcOffset;
 
 		// Make sure it is within a day
 		// I am sure this breaks some leap second business
