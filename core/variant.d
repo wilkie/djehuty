@@ -14,8 +14,6 @@ import core.tostring;
 import core.definitions;
 import core.unicode;
 
-import tango.io.Stdout;
-
 // Imposed variadic
 version(LDC) {
 	public import ldc.vararg;
