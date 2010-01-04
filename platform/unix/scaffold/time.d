@@ -19,37 +19,36 @@ import core.time;
 
 // Timing
 private {
+	struct tm {
+		int tm_sec;
+		int tm_min;
+		int tm_hour;
+		int tm_mday;
+		int tm_mon;
+		int tm_year;
+		int tm_wday;
+		int tm_yday;
+		int tm_isdst;
+		char* tm_zone;
+		int tm_gmtoff;
+	}
 
-struct tm {
-	int tm_sec;
-	int tm_min;
-	int tm_hour;
-	int tm_mday;
-	int tm_mon;
-	int tm_year;
-	int tm_wday;
-	int tm_yday;
-	int tm_isdst;
-	char* tm_zone;
-	int tm_gmtoff;
+	extern(C) tm* gmtime(time_t* tim);
+	extern(C) tm* gmtime_r(time_t* tim, tm* output);
+	extern(C) tm* localtime(time_t* tim);
+	extern(C) tm* localtime_r(time_t* tim, tm* output);
+	extern(C) size_t strftime(char*, size_t, char*, tm*);
+	extern(C) void* memcpy(void*, void*, size_t);
+
+	extern(C) time_t mktime(tm*);
+
+	extern(C) void tzset();
+
+	extern(C) {
+		extern char* tzname[2];
+	}
 }
 
-extern(C) tm* gmtime(time_t* tim);
-extern(C) tm* gmtime_r(time_t* tim, tm* output);
-extern(C) tm* localtime(time_t* tim);
-extern(C) tm* localtime_r(time_t* tim, tm* output);
-extern(C) size_t strftime(char*, size_t, char*, tm*);
-extern(C) void* memcpy(void*, void*, size_t);
-
-extern(C) time_t mktime(tm*);
-
-extern(C) void tzset();
-
-extern(C) {
-	extern char* tzname[2];
-}
-
-}
 string TimeZoneGet() {
 	int foo;
 	timeval val;
@@ -70,7 +69,7 @@ string TimeZoneGet() {
 	int diff_hr = diff / 60 / 60;
 
 	char[] strret = new char[128];
-	strret[0..3] = "GMT";
+	strret[0..3] = "UTC";
 	size_t len = sprintf(&strret[3], "%d", diff_hr);
 	strret[3+len] = ':';
 	len+=4;
@@ -95,12 +94,12 @@ string TimeZoneGet() {
 
 		switch(tzstr[0..len]) {
 			case "EST":
-				if (strret == "GMT-5:00") {
-					//return "Eastern Standard Time";
+				if (strret == "UTC-5:00") {
+					return "Eastern Standard Time";
 				}
 				break;
 			case "PST":
-				if (strret == "GMT-8:00") {
+				if (strret == "UTC-8:00") {
 					return "Pacific Standard Time";
 				}
 				break;

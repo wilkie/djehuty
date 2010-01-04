@@ -444,13 +444,6 @@ class String {
 		}
 	}
 
-	int parse(...) {
-		Variadic vars = new Variadic(_arguments, _argptr);
-		foreach(arg; vars) {
-		}
-		return 0;
-	}
-
 	// Description: This function will return the next integer value found in the string.
 	bool nextInt(out int value) {
 		return _nextInt!(int)(value);
