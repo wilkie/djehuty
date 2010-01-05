@@ -77,7 +77,7 @@ class WAVDecoder : AudioDecoder {
 
 						// Get Audio Length
 						Console.putln(curChunk.chunkSize, " , ", FMTHeader.avgBytesPerSecond, " = ", (cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond));
-						wi.totalTime = cast(ulong)((cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond) * 1000.0);
+						wi.totalTime = cast(long)((cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond) * 1000.0);
 
 						dataToRead = curChunk.chunkSize;
 						continue;

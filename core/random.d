@@ -17,23 +17,22 @@ module core.random;
 
 import core.definitions;
 import core.list;
-
-import scaffold.time;
+import core.system;
 
 // Description: This class represents a Random number generator.
 class Random {
 
 	// Description: This will set up a new random number generator and will seed it with the given seed.
 	// seed: The seed to use with the generator.
-	this(int seed = -1) {
+	this(int seed = 0) {
 		this.seed(seed);
 	}
 
 	// Description: This will reseed the random number generator.
-	// seed: The seem to use with the generator.
+	// seed: The seed to use with the generator.
 	void seed(int value) {
-		if (value < 0) {
-			value = TimeGet();
+		if (value == 0) {
+			value = cast(int)System.time;
 		}
 		_state = value;
 	}

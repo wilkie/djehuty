@@ -47,7 +47,7 @@ struct AudioFormat {
 struct AudioInfo {
 	// File Information
 
-	ulong totalTime;
+	long totalTime;
 
 	// ID3 Information?
 

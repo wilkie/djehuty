@@ -291,7 +291,7 @@ Time WaveGetPosition(ref Audio wave, ref WavePlatformVars waveVars) {
 	long ret;
 
 	ret = cast(long)((cast(float)mmTime.u.cb / cast(float)waveVars.wfx.nAvgBytesPerSec) * 1000.0);
-	retTime.fromMilliseconds(ret);
+	retTime.milliseconds(ret);
 	return retTime;
 }
 

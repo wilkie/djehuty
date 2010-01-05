@@ -457,14 +457,16 @@ class MyConsoleApp : Application {
 		Console.putln(flatten(megaFoo));
 		Console.putln(flatten(megaMEGAFoo));
 
-		Random rand = new Random;
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
-		Console.putln(rand.next(-3,2));
+		Console.putln(Time.Now());
+		Console.putln(Time.Local());
+		foobbb(3);
+	}
+
+	void foobbb(...) {
+		Variadic vars = new Variadic(_arguments, _argptr);
+		foreach(arg; vars) {
+			Console.putln(arg);
+		}
 	}
 
 protected:

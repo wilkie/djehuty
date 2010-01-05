@@ -396,7 +396,7 @@ class String {
 	}
 
 	template _nextInt(T) {
-		bool _nextInt(T)(T value) {
+		bool _nextInt(T)(out T value) {
 			int curpos;
 
 			for(curpos=0; curpos<_data.length; curpos++) {
