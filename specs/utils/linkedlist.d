@@ -1,4 +1,4 @@
-module spec.utils.linkedlist;
+module specs.utils.linkedlist;
 
 import utils.linkedlist;
 

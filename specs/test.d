@@ -2564,6 +2564,229 @@ class StringTester {
 	}
 }
 
+import core.util;
+
+import utils.stack;
+
+import core.list;
+
+import interfaces.container;
+
+class UtilTester {
+
+	it typeIdentification_should_determine_if_it_is_a_type() {
+		before_typeIdentification();
+		try {
+			if(!(IsType!(int))) {
+				return it.doesnt;
+			}
+			if(IsType!(int[])) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_a_class() {
+		before_typeIdentification();
+		try {
+			if(!(IsClass!(Stack!(int)))) {
+				return it.doesnt;
+			}
+			if(IsClass!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_iterface() {
+		before_typeIdentification();
+		try {
+			if(!(IsInterface!(AbstractContainer))) {
+				return it.doesnt;
+			}
+			if(IsInterface!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_object() {
+		before_typeIdentification();
+		try {
+			if(IsObject!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_int_type() {
+		before_typeIdentification();
+		try {
+			if(!(IsIntType!(int))) {
+				return it.doesnt;
+			}
+			if(!(IsIntType!(uint))) {
+				return it.doesnt;
+			}
+			if(IsIntType!(int[])) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_unsigned() {
+		before_typeIdentification();
+		try {
+			if(!(IsUnsigned!(uint))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ushort))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ulong))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ubyte))) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(int)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(short)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(long)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(byte)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_signed() {
+		before_typeIdentification();
+		try {
+			if(!(IsSigned!(int))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(short))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(long))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(byte))) {
+				return it.doesnt;
+			}
+			if(IsSigned!(uint)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ushort)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ulong)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ubyte)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_typeIdentification() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		UtilTester tester = new UtilTester();
+
+		Test test = new Test("Util", "specs/core/util.d");
+
+		it result;
+
+		test.logSubset("typeIdentification");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_a_type();
+		test.logResult(result, "typeIdentification should determine if it is a type", "10");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_a_class();
+		test.logResult(result, "typeIdentification should determine if it is a class", "15");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_iterface();
+		test.logResult(result, "typeIdentification should determine if it is an iterface", "20");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_object();
+		test.logResult(result, "typeIdentification should determine if it is an object", "25");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_int_type();
+		test.logResult(result, "typeIdentification should determine if it is an int type", "29");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_unsigned();
+		test.logResult(result, "typeIdentification should determine if it is unsigned", "35");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_signed();
+		test.logResult(result, "typeIdentification should determine if it is signed", "47");
+
+		test.finish();
+	}
+}
+
 import core.unicode;
 
 import core.string;
@@ -4403,6 +4626,10 @@ class Tests {
 		StringTester.test();
 	}
 
+	static void testUtil() {
+		UtilTester.test();
+	}
+
 	static void testUnicode() {
 		UnicodeTester.test();
 	}
@@ -4432,6 +4659,7 @@ class Tests {
 		testTime();
 		testRegex();
 		testString();
+		testUtil();
 		testUnicode();
 		testLinkedList();
 		testPriorityQueue();
