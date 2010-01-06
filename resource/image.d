@@ -15,6 +15,7 @@ import core.stream;
 import core.definitions;
 
 import graphics.bitmap;
+import graphics.graphics;
 
 import io.file;
 import io.console;
@@ -101,27 +102,135 @@ public:
 		return _curCodec;
 	}
 
+	uint numFrames() {
+		if (!_hasFrames) {
+			return 1;
+		}
+		return _frameCount;
+	}
+
+	uint frame() {
+		if (!_hasFrames) {
+			return 0;
+		}
+		return _frameIdx;
+	}
+
+	void frame(uint value) {
+		if (!_hasFrames) {
+			return;
+		}
+
+		if (value > this.numFrames) {
+			if (this.numFrames == 0) {
+				value = 0;				
+			}
+			else {
+				value = this.numFrames - 1;
+			}
+		}
+		_frameIdx = value;
+		_view = _frames[_frameIdx];
+		_frameDesc = _frameDescs[_frameIdx];
+	}
+
+	ImageFrameDescription frameDescription() {
+		return _frameDesc;
+	}
+
+	void next() {
+		uint lastFrame = _frameIdx;
+		_frameIdx = (_frameIdx + 1) % this.numFrames;
+		if (lastFrame == _frameIdx) { return; }
+		_frameDesc = _frameDescs[_frameIdx];
+
+		if (_view !is null) {
+			// Update view, if necessary
+			Graphics g = _view.lock;
+			if (_frameDesc.clearFirst) {
+				g.brush = new Brush(_frameDesc.clearColor);
+				g.drawRect(0,0,_view.width,_view.height);
+			}
+			Console.putln("NEXT! ",_frameIdx, " ", _frameDesc.xoffset, ":", _frameDesc.yoffset);
+			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
+			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
+			_view.unlock;
+		}
+		else {
+			_view = _frames[_frameIdx];
+		}
+	}
+
 protected:
 
 	Bitmap _view;
-
-	bool _hasMultipleFrames;
-	ImageFrameDescription _imageFrameDesc;
+	ImageFrameDescription _frameDesc;
 
 	ImageDecoder _curCodec;
+
+	// Information about the frames
+	uint _frameCount;
+	uint _frameIdx;
+
+	// Whether or not this image has frames
+	bool _hasFrames;
+	ImageFrameDescription[] _frameDescs;
+	Bitmap[] _frames;
+
+	Bitmap _curView;
+	ImageFrameDescription _curFrameDesc;
 
 	//Semaphore _loaded;
 
 	StreamData _stream(Stream stream) {
 		StreamData ret = StreamData.Invalid;
 
-		_view = new Bitmap();
-
-		if (_curCodec is null) {
-			ret = runAllDecoders(_curCodec, stream, _view);
+		if (_curView is null) {
+			_curView = new Bitmap();
+			_curFrameDesc = ImageFrameDescription.init;
 		}
-		else {
-			ret = _curCodec.decode(stream, _view);
+
+		if (!_hasFrames) {
+			if (_curCodec is null) {
+				ret = runAllDecoders(_curCodec, stream, _curView);
+			}
+			else {
+				ret = _curCodec.decode(stream, _curView);
+			}
+
+			if (ret == StreamData.Accepted) {
+				// This means the image decoder is indeed the correct choice
+				// and that this image contains multiple frames.
+				_hasFrames = true;		
+			}
+			else if (ret != StreamData.Invalid) {
+				_view = _curView;
+			}
+		}
+
+		if (_hasFrames) {
+			ret = StreamData.Accepted;
+			while(ret == StreamData.Accepted) {
+				if (_curView is null) {
+					_curView = new Bitmap();
+					_curFrameDesc = ImageFrameDescription.init;
+				}
+				ret = _curCodec.decodeFrame(stream, _curView, _curFrameDesc);
+				if (ret == StreamData.Accepted || ret == StreamData.Complete) {
+					// Frame was decoded.
+					_frames ~= _curView;
+					Console.putln("GOT FRAME ", _frames.length);
+					_frameDescs ~= _curFrameDesc;
+					if (_view is null) {
+						_view = new Bitmap(_curView.width, _curView.height);
+						Graphics g = _view.lock();
+						g.drawView(0,0,_curView);
+						_view.unlock();
+					}
+					_curView = null;
+					_frameCount++;
+				}	
+			}
 		}
 
 		return ret;

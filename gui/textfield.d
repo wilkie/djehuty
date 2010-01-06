@@ -46,7 +46,7 @@ public:
 		_clr_outline = Color.DarkGray;
 		_clr_background = Color.White;
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
 		grp.font = (_font);
@@ -61,7 +61,7 @@ public:
 			_value_size.x = 0;
 		}
 
-		_view.unlockDisplay();
+		_view.unlock();
 	}
 
 	void SelectionClear() {
@@ -83,7 +83,7 @@ public:
 		}
 
 		if (mouseProps.leftDown) {
-			Graphics grp = _view.lockDisplay();
+			Graphics grp = _view.lock();
 			//grp.font = (_font);
 
 			uint sel_start = 0;
@@ -123,13 +123,13 @@ public:
 
 			if (_sel_start != sel_start) {
 				_sel_start = sel_start;
-				_view.unlockDisplay();
+				_view.unlock();
 
 				RefreshViewport(sel_start);
 				return true;
 			}
 
-			_view.unlockDisplay();
+			_view.unlock();
 
 			RefreshViewport(sel_start);
 
@@ -148,7 +148,7 @@ public:
 
 		if (x1 < 0) { _caret_pos = 0; return true; }
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 		//grp.font = (_font);
 
 		int x_test;
@@ -197,7 +197,7 @@ public:
 		else {
 		}
 
-		_view.unlockDisplay();
+		_view.unlock();
 		return true;
 	}
 
@@ -254,7 +254,7 @@ public:
 
 						//load the font, and get the size of the text when drawn
 
-						Graphics grp = _view.lockDisplay();
+						Graphics grp = _view.lock();
 						//grp.font = (_font);
 
 						if (_value.length > 0) {
@@ -265,7 +265,7 @@ public:
 							_value_size.x = 0;
 						}
 
-						_view.unlockDisplay();
+						_view.unlock();
 
 						RefreshViewport(_caret_pos);
 
@@ -299,7 +299,7 @@ public:
 
 						//load the font, and get the size of the text when drawn
 
-						Graphics grp = _view.lockDisplay();
+						Graphics grp = _view.lock();
 						//grp.font = (_font);
 
 						if (_value.length > 0)
@@ -312,7 +312,7 @@ public:
 							_value_size.x = 0;
 						}
 
-						_view.unlockDisplay();
+						_view.unlock();
 
 						RefreshViewport(_caret_pos);
 
@@ -361,7 +361,7 @@ public:
 
 		//load the font, and get the size of the text when drawn
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 		//grp.font = (_font);
 
 		if (_value.length > 0) {
@@ -372,7 +372,7 @@ public:
 			_value_size.x = 0;
 		}
 
-		_view.unlockDisplay();
+		_view.unlock();
 
 		RefreshViewport(_caret_pos);
 
@@ -540,7 +540,7 @@ private:
 		int current_movement = 0;
 		uint i;
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 
 		if (onPos > _first_char) {
 			//check to see if it is within the viewable area
@@ -548,7 +548,7 @@ private:
 
 			if ((s.x + 3) < this.width) {
 				//we are good
-				_view.unlockDisplay();
+				_view.unlock();
 				return;
 			}
 			else {
@@ -616,7 +616,7 @@ private:
 			_first_char = i;
 		}
 
-		_view.unlockDisplay();
+		_view.unlock();
 
 	}
 
@@ -651,7 +651,7 @@ private:
 			_caret_pos = _sel_start;
 
 			//load the font, and get the size of the text when drawn
-			Graphics grp = _view.lockDisplay();
+			Graphics grp = _view.lock();
 			//grp.font = (_font);
 
 			if (_value.length) {
@@ -662,7 +662,7 @@ private:
 				_value_size.x = 0;
 			}
 
-			_view.unlockDisplay();
+			_view.unlock();
 		}
 	}
 

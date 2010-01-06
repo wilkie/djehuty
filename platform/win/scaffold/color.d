@@ -20,7 +20,12 @@ void ColorGetSystemColor(ref Color clr, SystemColor sysColorIndex)
 	switch (sysColorIndex)
 	{
 		case SystemColor.Window:
-			ColorSetValue(clr, (GetSysColor(15)));
+			uint clrInt = GetSysColor(15);
+			double r, g, b;
+			clr.red = r / 255.0;
+			clr.blue = b / 255.0;
+			clr.green = g / 255.0;
+			clr.alpha = 1.0;
 			break;
 		default: break;
 	}

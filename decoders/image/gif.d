@@ -13,6 +13,7 @@ import graphics.bitmap;
 
 import core.string;
 import core.stream;
+import core.color;
 
 import decoders.image.decoder;
 import decoders.decoder;
@@ -100,7 +101,7 @@ private {
 	//global constants
 	const int _djehuty_image_gif_size_of_global_color_table_ref[] = [2,4,8,16,32,64,128,256];
 
-	// Decoder States
+	// _decoder States
 	const auto GIF_STATE_INIT						= 0;
 
 	const auto GIF_STATE_READ_HEADERS				= 1;
@@ -121,53 +122,33 @@ class GIFDecoder : ImageDecoder {
 		return new String("Graphics Interchange Format");
 	}
 
-	StreamData decode(Stream stream, ref Bitmap view) {
+	override StreamData decode(Stream stream, ref Bitmap view) {
 		ImageFrameDescription imageDesc;
-		bool hasMultipleFrames;
 
 		// will read headers and such
 
 		StreamData ret = StreamData.Accepted;
 
-		while (ret == StreamData.Accepted) {
+		ret = _decoder(stream, view, imageDesc);
 
-			ret = Decoder(stream, view, imageDesc);
+		if (ret == StreamData.Accepted) {
+			// the image frame will be next
+			// stop, since we got what we needed
+			// which is the first frame
 
-			if (ret == StreamData.Accepted) {
-				// the image frame will be next
-				if (!gifIsFirst) {
-					// stop, since we got what we needed
-					// which is the first frame
-
-					// but this signals that we have more than one frame
-					hasMultipleFrames = 1;
-					return StreamData.Complete;
-				}
-				else {
-					gifIsFirst = 0;
-				}
-			}
+			// but this signals that we have more than one frame
+			return StreamData.Accepted;
 		}
 
-		hasMultipleFrames = 0;
 		return ret;
 	}
 
-	StreamData DecodeFrame(Stream stream, ref Bitmap view) {
-		ImageFrameDescription imageDesc;
-		bool hasMultipleFrames;
-
+	override StreamData decodeFrame(Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
 		// will read headers and such
 
-		int ret;
+		StreamData ret = _decoder(stream, view, imageDesc);
 
-		ret = Decoder(stream, view, imageDesc);
-
-		if (ret == 2) {
-			// another frame will occur
-			return StreamData.Accepted;
-		}
-		else if (ret == 1) {
+		if (ret == StreamData.Complete) {
 			// we are done
 			imageDesc.clearFirst = gifFirstClear;
 			imageDesc.clearColor = gifFirstClearColor;
@@ -176,10 +157,12 @@ class GIFDecoder : ImageDecoder {
 			return StreamData.Complete;
 		}
 
-		return StreamData.Required;
+		return ret;
 	}
 
-	StreamData Decoder(ref Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
+protected:
+
+	StreamData _decoder(ref Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
 		uint q;
 
 		ushort gifCode;
@@ -321,15 +304,20 @@ class GIFDecoder : ImageDecoder {
 								}
 
 								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
-									gifFirstClearColor = 0;
+									gifFirstClearColor = Color.Black;
 								}
 								else {
 									// if TRANSPARENT is set, clear color is transparent
 									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
-										gifFirstClearColor = 0;
+										gifFirstClearColor = Color.Black;
 									}
 									else {
-										gifFirstClearColor = gifGlobalColorTableComputed[gifScreen.gifBackgroundColorIndex];
+										gifFirstClearColor.red =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].red / 255.0;
+										gifFirstClearColor.green =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].green / 255.0;
+										gifFirstClearColor.blue =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].blue / 255.0;
 									}
 								}
 							}
@@ -344,15 +332,20 @@ class GIFDecoder : ImageDecoder {
 								}
 
 								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
-									imageDesc.clearColor = 0;
+									imageDesc.clearColor = Color.Black;
 								}
 								else {
 									// iF TRANSPARENT is set, clear color is transparent
 									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
-										imageDesc.clearColor = 0;
+										imageDesc.clearColor = Color.Black;
 									}
 									else {
-										imageDesc.clearColor = gifGlobalColorTableComputed[gifScreen.gifBackgroundColorIndex];
+										imageDesc.clearColor.red =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].red / 255.0;
+										imageDesc.clearColor.green =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].green / 255.0;
+										imageDesc.clearColor.blue =
+										  cast(double)gifGlobalColorTable[gifScreen.gifBackgroundColorIndex].blue / 255.0;
 									}
 								}
 							}
@@ -541,8 +534,7 @@ class GIFDecoder : ImageDecoder {
 				// BUILD INITIAL LZW DICTIONARY
 
 				//i will iterate through the dictionary
-				for (short i=0; i<gifDictionarySize+2; i++)
-				{
+				for (short i=0; i<gifDictionarySize+2; i++) {
 					gifDictionary[i].code = 0;
 					gifDictionary[i].hops = 0;
 					gifDictionary[i].output = i;
@@ -630,8 +622,7 @@ class GIFDecoder : ImageDecoder {
 
 							break;
 						}
-						else
-						{
+						else {
 							decoderSubState = 2;
 
 							// ... drop through ... //
@@ -968,7 +959,7 @@ class GIFDecoder : ImageDecoder {
 									//change the line
 									ptrPos=0;
 									ptrLine++;
-									InterlaceIncrement();
+									_interlaceIncrement();
 								}
 
 								// READ CODE
@@ -1073,7 +1064,7 @@ class GIFDecoder : ImageDecoder {
 								}
 
 								ptrLine++;
-								InterlaceIncrement();
+								_interlaceIncrement();
 							}
 
 							for (q=0; q<=gifDictionary[lzw_curEntry].hops; q++) {
@@ -1112,7 +1103,7 @@ class GIFDecoder : ImageDecoder {
 									//change the line
 									ptrPos=0;
 									ptrLine++;
-									InterlaceIncrement();
+									_interlaceIncrement();
 								}
 							}
 						}
@@ -1167,7 +1158,7 @@ class GIFDecoder : ImageDecoder {
 									//change the line
 									ptrPos = 0;
 									ptrLine++;
-									InterlaceIncrement();
+									_interlaceIncrement();
 								}
 							}
 						}
@@ -1215,10 +1206,7 @@ class GIFDecoder : ImageDecoder {
 		return StreamData.Invalid;
 	}
 
-protected:
-
-
-	void InterlaceIncrement() {
+	void _interlaceIncrement() {
 		//ptr will be at the end of the current row
 		//essentially in the beginning of the next row
 
@@ -1281,7 +1269,7 @@ protected:
 
 	uint gifFirstTime;
 	uint gifFirstClear;
-	uint gifFirstClearColor;
+	Color gifFirstClearColor;
 
 	uint gifHeadersLoaded;
 

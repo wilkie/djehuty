@@ -78,14 +78,14 @@ class ToggleField : Widget {
 		_clrforeground = Color.fromRGB(0,0,0);
 		_clrbackground = Color.fromRGB(0xff,0xff,0xff);
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 
 		_font = new Font(FontSans, 8, 400, false, false, false);
 
 		grp.font = _font;
 		grp.measureText(_value,_valueBounds);
 
-		_view.unlockDisplay();
+		_view.unlock();
 
 		//FIRE_EVENT(id,EventCreated,0,0);
 	}
@@ -247,24 +247,24 @@ class ToggleField : Widget {
 	}
 
 	override bool onMouseEnter() {
-		Graphics g = _view.lockDisplay();
+		Graphics g = _view.lock();
 
 		_brsh.setColor(Color.White);
 
-		_view.unlockDisplay();
+		_view.unlock();
 
 		return true;
 	}
 
 	override bool onMouseLeave() {
-		Graphics g = _view.lockDisplay();
+		Graphics g = _view.lock();
 
 		Color c;
 		c.fromRGB(0xc8, 0xc8, 0xc8);
 
 		_brsh.setColor(c);
 
-		_view.unlockDisplay();
+		_view.unlock();
 
 		return true;
 	}

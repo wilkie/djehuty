@@ -27,7 +27,12 @@ class Brush {
 	}
 
 	this(Bitmap bitmap) {
-		Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
+		if (bitmap is null) {
+			Scaffold.createBrush(&_pfvars, Color.Black);
+		}
+		else {
+			Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
+		}
 	}
 
 	this(Gradient gradient) {

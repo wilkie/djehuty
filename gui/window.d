@@ -462,7 +462,7 @@ public:
 
 	void onDraw() {
 		if (_view !is null) {
-			Graphics g = _view.lockDisplay();
+			Graphics g = _view.lock();
 
 			WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
@@ -489,7 +489,7 @@ public:
 
 			WindowEndDraw(this, &_pfvars, _view, *_viewVars);
 
-			_view.unlockDisplay();
+			_view.unlock();
 		}
 	}
 

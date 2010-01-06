@@ -28,6 +28,10 @@ class Bitmap : View {
 		_buffer_mutex.init(1);
 	}
 
+	this(int width, int height) {
+		create(width, height);
+	}
+
 	void create(int width, int height) {
 		if (_inited) { destroy(); }
 

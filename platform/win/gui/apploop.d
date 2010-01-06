@@ -668,7 +668,7 @@ static:
 
 				viewW.onDraw();
 
-				view.lockDisplay();
+				view.lock();
 				PAINTSTRUCT ps;
 				HDC dc = BeginPaint(hWnd, &ps);
 
@@ -676,7 +676,7 @@ static:
 
 				EndPaint(hWnd, &ps);
 
-				view.unlockDisplay();
+				view.unlock();
 
 				break;
 

@@ -354,13 +354,19 @@ class Graphics {
 	// y: The y coordinate to place the top-left corner of the image.
 	// view: The view in which to draw.
 	void drawView(int x, int y, View view) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 	// Description: Will draw the cropped image stored by the view object onto the current view object at the coordinate (x,y).
@@ -370,13 +376,18 @@ class Graphics {
 	// viewX: The x coordinate to crop the image.  Everything from this X to X + viewWidth of the view will be drawn.
 	// viewY: The y coordinate to crop the image.  Everything from this Y to Y + viewHeight of the view will be drawn.
 	void drawView(int x, int y, View view, int viewX, int viewY) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 	// Description: Will draw the cropped image stored by the view object onto the current view object at the coordinate (x,y).
@@ -388,13 +399,18 @@ class Graphics {
 	// viewWidth: The width of the region to crop from the source image.
 	// viewHeight: The height of the region to crop from the source image.
 	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 	// Description: Will draw the image stored by the view object onto the current view object at the coordinate (x,y) at an opacity of the fraction given.
@@ -403,13 +419,18 @@ class Graphics {
 	// view: The view in which to draw.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawView(int x, int y, View view, double opacity) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, opacity);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 	// Description: Will draw the cropped image stored by the view object onto the current view object at the coordinate (x,y) at an opacity of the fraction given.
@@ -420,13 +441,18 @@ class Graphics {
 	// viewY: The y coordinate to crop the image.  Everything from this Y to Y + viewHeight of the view will be drawn.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawView(int x, int y, View view, int viewX, int viewY, double opacity) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, opacity);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 	// Description: Will draw the cropped image stored by the view object onto the current view object at the coordinate (x,y) at an opacity of the fraction given.
@@ -439,13 +465,18 @@ class Graphics {
 	// viewHeight: The height of the region to crop from the source image.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawView(int x, int y, View view, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
-		view.lockDisplay();
+		if (view is _view) {
+			// Holy recursion, Batman!
+			// XXX: Exception
+			return;
+		}
+		view.lock();
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
 		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight, opacity);
 
-		view.unlockDisplay();
+		view.unlock();
 	}
 
 // Image Interfacing

@@ -224,7 +224,9 @@ class MyControl : Widget {
 
 	override void onAdd() {
 		imgPNG = new Image("tests/test.png");
-		imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
+		//imgJPEG = new Image("tests/tiles.png"); // jpeg written as png
+		//imgJPEG = new Image("tests/Dog_bounces_trampoline.gif");
+		imgJPEG = new Image("tests/Pillow_pins_kitten.gif");
 
 		//snd = new Sound("tests/begin.mp2");
 		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
@@ -235,7 +237,7 @@ class MyControl : Widget {
 
 	override void onDraw(ref Graphics g) {
 		g.drawImage(this.left,this.top,imgPNG);
-		g.drawImage(this.left,this.top,imgJPEG);
+		g.drawImage(this.left,0,imgJPEG);
 
 		Brush foo = new Brush(Color.fromRGBA(1.0,0,0,0.5));
 		g.brush = foo;
@@ -293,6 +295,7 @@ class MyControl : Widget {
 		foobar = snd.spectrum();
 		(cast(Window)responder).redraw();
 		angle += 0.1;
+		imgJPEG.next;
 		return true;
 	}
 
@@ -324,7 +327,7 @@ class MyControl : Widget {
 
 class MyWindow : Window {
 	this() {
-		super("hey",WindowStyle.Fixed,Color.Red,0,0,2048,330);
+		super("hey",WindowStyle.Fixed,Color.Red,0,0,600,380);
 	}
 
 	override void onAdd() {
@@ -380,7 +383,7 @@ import math.currency;
 import math.integer;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
+	//static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 		int[] foo = [1,2,3];
 
@@ -475,7 +478,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	//static this() { new MyApp(); }
+	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
