@@ -466,9 +466,13 @@ void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor)
 
 	int r, g, b;
 
-	r = ColorGetR(textColor) * 0x101;
+	r = 1;
+	g = 1;
+	b = 1;
+
+	/*r = ColorGetR(textColor) * 0x101;
 	g = ColorGetG(textColor) * 0x101;
-	b = ColorGetB(textColor) * 0x101;
+	b = ColorGetB(textColor) * 0x101;*/
 
 	viewVars.attr_bg = Pango.pango_attr_background_new(r, g, b);
 

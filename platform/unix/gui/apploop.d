@@ -154,12 +154,12 @@ private:
 
 						window.onDraw();
 
-						view.lockDisplay();
+						//view.lockDisplay();
 
 						X.XCopyArea(_pfvars.display, viewVars.pixmap, windowVars.window,
 								viewVars.gc, 0, 0, window.width, window.height, 0, 0);
 
-						view.unlockDisplay();
+						//view.unlockDisplay();
 					}
 					break;
 
