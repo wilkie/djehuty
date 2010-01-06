@@ -10,6 +10,8 @@
 
 module scaffold.time;
 
+pragma(lib, "winmm.lib");
+
 import platform.win.common;
 
 import core.date;
@@ -18,8 +20,6 @@ import core.string;
 import core.tostring;
 
 // Timing
-
-import binding.win32.mmsystem;
 
 import io.console;
 
