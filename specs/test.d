@@ -2631,6 +2631,12 @@ class UtilTester {
 			if(IsObject!(int)) {
 				return it.doesnt;
 			}
+			if(!(IsObject!(Stack!(int)))) {
+				return it.doesnt;
+			}
+			if(!(IsObject!(AbstractContainer))) {
+				return it.doesnt;
+			}
 		}
 		catch(Exception _exception_) {
 			if (_exception_.msg != "Access Violation") { return it.doesnt; }
@@ -2729,6 +2735,106 @@ class UtilTester {
 		return it.does;
 	}
 
+	it typeIdentification_should_determine_if_it_is_float() {
+		before_typeIdentification();
+		try {
+			if(!(IsFloat!(float))) {
+				return it.doesnt;
+			}
+			if(!(IsFloat!(double))) {
+				return it.doesnt;
+			}
+			if(!(IsFloat!(real))) {
+				return it.doesnt;
+			}
+			if(IsFloat!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_complex() {
+		before_typeIdentification();
+		try {
+			if(!(IsComplex!(cfloat))) {
+				return it.doesnt;
+			}
+			if(!(IsComplex!(cdouble))) {
+				return it.doesnt;
+			}
+			if(!(IsComplex!(creal))) {
+				return it.doesnt;
+			}
+			if(IsComplex!(float)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_imaginary() {
+		before_typeIdentification();
+		try {
+			if(!(IsImaginary!(ifloat))) {
+				return it.doesnt;
+			}
+			if(!(IsImaginary!(idouble))) {
+				return it.doesnt;
+			}
+			if(!(IsImaginary!(ireal))) {
+				return it.doesnt;
+			}
+			if(IsImaginary!(float)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_struct() {
+		before_typeIdentification();
+		try {
+			if(IsStruct!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_array() {
+		before_typeIdentification();
+		try {
+			if(!(IsArray!(int[]))) {
+				return it.doesnt;
+			}
+			if(IsArray!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
 	done before_typeIdentification() {
 	}
 
@@ -2771,17 +2877,42 @@ class UtilTester {
 		tester = new UtilTester();
 
 		result = tester.typeIdentification_should_determine_if_it_is_an_int_type();
-		test.logResult(result, "typeIdentification should determine if it is an int type", "29");
+		test.logResult(result, "typeIdentification should determine if it is an int type", "31");
 
 		tester = new UtilTester();
 
 		result = tester.typeIdentification_should_determine_if_it_is_unsigned();
-		test.logResult(result, "typeIdentification should determine if it is unsigned", "35");
+		test.logResult(result, "typeIdentification should determine if it is unsigned", "37");
 
 		tester = new UtilTester();
 
 		result = tester.typeIdentification_should_determine_if_it_is_signed();
-		test.logResult(result, "typeIdentification should determine if it is signed", "47");
+		test.logResult(result, "typeIdentification should determine if it is signed", "49");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_float();
+		test.logResult(result, "typeIdentification should determine if it is float", "61");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_complex();
+		test.logResult(result, "typeIdentification should determine if it is complex", "69");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_imaginary();
+		test.logResult(result, "typeIdentification should determine if it is imaginary", "77");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_struct();
+		test.logResult(result, "typeIdentification should determine if it is struct", "85");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_array();
+		test.logResult(result, "typeIdentification should determine if it is array", "89");
 
 		test.finish();
 	}
