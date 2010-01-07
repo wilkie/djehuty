@@ -46,7 +46,7 @@ else {
 
 
 // variadic
-import core.format;
+import C = binding.c;
 
 const int BUFSIZ = 0x4000; // add (BUFSIZ)
 alias BUFSIZ LUAL_BUFFERSIZE;
@@ -135,9 +135,7 @@ alias LUA_NUMBER lua_Number;
 // type for integer functions
 alias LUA_INTEGER lua_Integer;
 
-template _LUAPrototypes()
-{
-	const char[] _LUAPrototypes = `
+extern(System) {
 
 	// state manipulation
 	lua_State*		lua_newstate(lua_Alloc f, void* ud);
@@ -238,7 +236,6 @@ template _LUAPrototypes()
 	// hack
 	void			lua_setlevel(lua_State* from, lua_State* to);
 
-	`;
 }
 
 // -- DEBUG API -- //
@@ -280,9 +277,7 @@ enum : int {
 // Functions to be called by the debuger in specific events
 typedef void function(lua_State* L, lua_Debug* ar) lua_Hook;
 
-template _LUADebugPrototypes()
-{
-	const char[] _LUADebugPrototypes = `
+extern(System) {
 
 	int				lua_getstack(lua_State *L, int level, lua_Debug *ar);
 	int				lua_getinfo(lua_State *L, char *what, lua_Debug *ar);
@@ -296,7 +291,6 @@ template _LUADebugPrototypes()
 	int				lua_gethookmask(lua_State *L);
 	int				lua_gethookcount(lua_State *L);
 
-	`;
 }
 
 // -- USEFUL MACROS -- //
@@ -368,17 +362,15 @@ void lua_pushliteral(lua_State* L, char* s) {
 	lua_pushlstring(L, s, len);
 }
 
-void lua_setglobal(lua_State* L, char* s)
-{
-	lua_setfield(L, LUA_GLOBALSINDEX, s);
-}
-void lua_getglobal(lua_State* L, char* s)
-{
+void lua_setglobal(lua_State* L, char* s) {
 	lua_setfield(L, LUA_GLOBALSINDEX, s);
 }
 
-char* lua_tostring(lua_State* L, int idx)
-{
+void lua_getglobal(lua_State* L, char* s) {
+	lua_setfield(L, LUA_GLOBALSINDEX, s);
+}
+
+char* lua_tostring(lua_State* L, int idx) {
 	size_t bugger;
 	return lua_tolstring(L, idx, &bugger);
 }
@@ -394,10 +386,7 @@ const char[] LUA_MATHLIBNAME	= "math";
 const char[] LUA_DBLIBNAME		= "debug";
 const char[] LUA_LOADLIBNAME	= "package";
 
-template _LUALIBPrototypes()
-{
-	const char[] _LUALIBPrototypes = `
-
+extern(System) {
 	int	luaopen_base(lua_State *L);
 	int luaopen_table(lua_State *L);
 	int luaopen_io(lua_State *L);
@@ -409,7 +398,6 @@ template _LUALIBPrototypes()
 
 	// open all previous libraries
 	void luaL_openlibs(lua_State *L);
-	`;
 }
 
 // -- LUA AUXILIARY LIB (lauxlib.h) -- //
@@ -419,9 +407,7 @@ struct luaL_Reg {
 	lua_CFunction func;
 }
 
-template _LAUXLIBPrototypes() {
-	const char[] _LAUXLIBPrototypes = `
-
+extern(System) {
 	void		luaI_openlib(lua_State *L, char *libname,
 	                                luaL_Reg *l, int nup);
 	void		luaL_register(lua_State *L, char *libname,
@@ -470,8 +456,6 @@ template _LAUXLIBPrototypes() {
 
 	char*		luaL_findtable(	lua_State *L, int idx,
 								char *fname, int szhint);
-
-	`;
 }
 
 // -- USEFUL MACROS [LAUXLIB] -- //
@@ -547,40 +531,12 @@ char* luaL_addsize(luaL_Buffer* B, int n) {
 	return B.p;
 }
 
-template _LAUXLIBMacroPrototypes()
-{
-	const char[] _LAUXLIBMacroPrototypes = `
-
+extern(System) {
 	void	luaL_buffinit(lua_State *L, luaL_Buffer *B);
 	char*	luaL_prepbuffer(luaL_Buffer *B);
 	void	luaL_addlstring(luaL_Buffer *B, char *s, size_t l);
 	void	luaL_addstring(luaL_Buffer *B, char *s);
 	void	luaL_addvalue(luaL_Buffer *B);
 	void	luaL_pushresult(luaL_Buffer *B);
-
-	`;
 }
 
-// THIS IS AWFULLY DUMB, ISN'T IT?
-version(PlatformWindows)
-{
-extern (Windows):
-
-mixin(_LUAPrototypes!());
-mixin(_LUADebugPrototypes!());
-mixin(_LUALIBPrototypes!());
-mixin(_LAUXLIBPrototypes!());
-mixin(_LAUXLIBMacroPrototypes!());
-
-}
-else
-{
-extern (C):
-
-mixin(_LUAPrototypes!());
-mixin(_LUADebugPrototypes!());
-mixin(_LUALIBPrototypes!());
-mixin(_LAUXLIBPrototypes!());
-mixin(_LAUXLIBMacroPrototypes!());
-
-}

@@ -7,7 +7,6 @@ import tui.container;
 import core.event;
 import core.main;
 import core.definitions;
-import core.format;
 import core.string;
 import core.unicode;
 import core.variant;
@@ -113,7 +112,7 @@ class TuiWidget : Responder {
 	bool isTabStop() {
 		return false;
 	}
-	
+
 	bool isTabUseful() {
 		return false;
 	}
@@ -230,7 +229,7 @@ protected:
 				// We need to set up the current widget that wants to draw so that widgets
 				// above this one are clipped.
 			}
-			
+
 			x += widget._base_x + widget._x;
 			y += widget._base_y + widget._y;
 
@@ -289,7 +288,7 @@ protected:
 			// Get x and y relative to top left of widget
 			uint global_x = widget._base_x + widget._x;
 			uint global_y = widget._base_y + widget._y;
-			
+
 			pos.x = pos.x - global_x;
 			pos.y = pos.y - global_y;
 
