@@ -122,7 +122,7 @@ private:
 
 		String msg;
 
-		uint time = cast(uint)(_end_time - _start_time).second();
+		uint time = cast(uint)(_end_time - _start_time).seconds;
 		uint fps = cast(uint)(1000.0 / _frame_wait * FrameWait.Multiplier * 2 / (SpeedCoef.H + SpeedCoef.V));
 
 		if (time > 0 && this.width > 0 && this.height > 0 && _game !is null) {

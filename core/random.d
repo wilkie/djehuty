@@ -22,19 +22,22 @@ import core.system;
 // Description: This class represents a Random number generator.
 class Random {
 
+	// Description: This will set up a new random number generator and will seed
+	//   with the system time.
+	this() {
+		this.seed();
+	}
+
 	// Description: This will set up a new random number generator and will seed it with the given seed.
 	// seed: The seed to use with the generator.
-	this(int seed = 0) {
+	this(int seed) {
 		this.seed(seed);
 	}
 
 	// Description: This will reseed the random number generator.
 	// seed: The seed to use with the generator.
 	void seed(int value) {
-		if (value == 0) {
-			value = cast(int)System.time;
-		}
-		_state = value;
+		_state = cast(uint)value;
 	}
 
 	// Description: This will retrieve the current state of the generator.
@@ -43,13 +46,12 @@ class Random {
 		return _state;
 	}
 
-	int next() {
+	uint next() {
 		mutateState();
 		return _state;
 	}
 
-	int next(int max) {
-		if (max <= 0) { return 0; }
+	uint next(uint max) {
 		return next() % max;
 	}
 
@@ -59,12 +61,11 @@ class Random {
 		return (next() % (max - min)) + min;
 	}
 
-	long nextLong() {
-		return (next() << 32) + next();
+	ulong nextLong() {
+		return (cast(uint)next() << 32) + cast(uint)next();
 	}
 
-	long nextLong(long max) {
-		if (max <= 0) { return 0; }
+	ulong nextLong(ulong max) {
 		return nextLong() % max;
 	}
 
@@ -101,12 +102,12 @@ protected:
 	const auto A256			= 22925;
 	const auto DEFAULT		= 123456789;
 
-	int _state = DEFAULT;
+	uint _state = DEFAULT;
 
 	void mutateState() {
-		const int Q = MODULUS / MULTIPLIER;
-		const int R = MODULUS % MULTIPLIER;
-		int t;
+		const uint Q = MODULUS / MULTIPLIER;
+		const uint R = MODULUS % MULTIPLIER;
+		uint t;
 
 		t = MULTIPLIER * (_state % Q) - R * (_state / Q);
 		if (t > 0) {
