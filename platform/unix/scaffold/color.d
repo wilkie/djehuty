@@ -21,7 +21,7 @@ void ColorGetSystemColor(ref Color clr, SystemColor sysColorIndex)
 	switch (sysColorIndex)
 	{
 		case SystemColor.Window:
-			ColorSetValue(clr, 0xd8d8d8);
+			//ColorSetValue(clr, 0xd8d8d8);
 			break;
 	}
 }

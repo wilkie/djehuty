@@ -1,4 +1,4 @@
-module spec.utils.linkedlist;
+module specs.utils.linkedlist;
 
 import utils.linkedlist;
 
@@ -228,6 +228,18 @@ describe linkedList() {
 			should(revList.remove() == entry1);
 			should(revList.remove() == entry2);
 			should(revList.remove() == entry3);
+		}
+	}
+	
+	describe string() {
+		it should_work_as_expected {
+			LinkedList!(int) list = new LinkedList!(int)();
+			
+			list.add(1);
+			list.add(2);
+			list.add(3);
+
+			should(list.toString() == "[1, 2, 3]");
 		}
 	}
 }
