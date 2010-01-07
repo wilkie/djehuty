@@ -30,14 +30,14 @@ class Random {
 
 	// Description: This will set up a new random number generator and will seed it with the given seed.
 	// seed: The seed to use with the generator.
-	this(int seed) {
+	this(uint seed) {
 		this.seed(seed);
 	}
 
 	// Description: This will reseed the random number generator.
 	// seed: The seed to use with the generator.
-	void seed(int value) {
-		_state = cast(uint)value;
+	void seed(uint value) {
+		_state = value;
 	}
 
 	// Description: This will retrieve the current state of the generator.
