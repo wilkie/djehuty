@@ -27,7 +27,7 @@ else {
 /* stdarg */
 
 version(Tango) {
-	public import ldc.cstdarg;
+	public import tango.stdc.stdarg;
 	public import tango.stdc.stdio : wchar_t, stdout, _IONBF, _iobuf, FILE, fpos_t;
 
 	extern(C) int printf(char *,...);	///
@@ -43,13 +43,11 @@ else {
 	}
 }
 
-
-
-    const int EOF = -1;
-    const int FOPEN_MAX = 16;
-    const int FILENAME_MAX = 4095;
-    const int TMP_MAX = 238328;
-    const int L_tmpnam = 20;
+const int EOF = -1;
+const int FOPEN_MAX = 16;
+const int FILENAME_MAX = 4095;
+const int TMP_MAX = 238328;
+const int L_tmpnam = 20;
 
 enum { SEEK_SET, SEEK_CUR, SEEK_END }
 
