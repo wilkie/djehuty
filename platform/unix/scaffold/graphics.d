@@ -354,7 +354,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 	Cairo.cairo_rectangle(viewVars.cr, xp1, yp1, xp2, yp2);
 	Cairo.cairo_clip(viewVars.cr);
 
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
+	Cairo.cairo_set_source_rgba(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue, viewVars.textclr_alpha);
 
 	Cairo.cairo_move_to(viewVars.cr, (x), (y));
 
@@ -379,7 +379,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 	Cairo.cairo_rectangle(viewVars.cr, xp1, yp1, xp2, yp2);
 	Cairo.cairo_clip(viewVars.cr);
 
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
+	Cairo.cairo_set_source_rgba(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue, viewVars.textclr_alpha);
 
 	Cairo.cairo_move_to(viewVars.cr, (x), (y));
 
@@ -404,7 +404,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 	Cairo.cairo_rectangle(viewVars.cr, xp1, yp1, xp2, yp2);
 	Cairo.cairo_clip(viewVars.cr);
 
-	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
+	Cairo.cairo_set_source_rgba(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue, viewVars.textclr_alpha);
 
 	Cairo.cairo_move_to(viewVars.cr, (x), (y));
 
@@ -459,20 +459,16 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 }
 
 // Text Colors
-void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor)
-{
+void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
 	// Color is an INT
 	// divide
 
-	int r, g, b;
+	int r, g, b, a;
 
-	r = 1;
-	g = 1;
-	b = 1;
-
-	/*r = ColorGetR(textColor) * 0x101;
-	g = ColorGetG(textColor) * 0x101;
-	b = ColorGetB(textColor) * 0x101;*/
+	r = cast(int)(textColor.red * 0xffffp0);
+	g = cast(int)(textColor.green * 0xffffp0);
+	b = cast(int)(textColor.blue * 0xffffp0);
+	a = cast(int)(textColor.alpha * 0xffffp0);
 
 	viewVars.attr_bg = Pango.pango_attr_background_new(r, g, b);
 
@@ -497,10 +493,10 @@ void setTextColor(ViewPlatformVars* viewVars, ref Color textColor)
 	b = textColor.blue;
 	a = textColor.alpha;
 
-	viewVars.textclr_red = r / 255.0;
-	viewVars.textclr_green = g / 255.0;
-	viewVars.textclr_blue = b / 255.0;
-	viewVars.textclr_alpha = a / 255.0;
+	viewVars.textclr_red = r;
+	viewVars.textclr_green = g;
+	viewVars.textclr_blue = b;
+	viewVars.textclr_alpha = a;
 }
 
 // Text States
