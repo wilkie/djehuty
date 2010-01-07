@@ -25,7 +25,7 @@ class Random {
 	// Description: This will set up a new random number generator and will seed
 	//   with the system time.
 	this() {
-		this.seed();
+		this.seed(System.time);
 	}
 
 	// Description: This will set up a new random number generator and will seed it with the given seed.
