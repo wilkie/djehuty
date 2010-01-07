@@ -553,9 +553,10 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 
 	brush.handle = Cairo.cairo_pattern_create_linear(x0, y0, x1, y1);
 	foreach(size_t i, point; points) {
-		Cairo.cairo_pattern_add_color_stop_rgba(brush.handle, point, 
+		Cairo.cairo_pattern_add_color_stop_rgba(brush.handle, point,
 				clrs[i].red, clrs[i].green, clrs[i].blue, clrs[i].alpha);
 	}
+	Cairo.cairo_pattern_set_extend(brush.handle, Cairo.cairo_extend_t.CAIRO_EXTEND_REPEAT);
 }
 
 // Pens
