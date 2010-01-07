@@ -72,7 +72,7 @@ class Random {
 	long nextLong(long min, long max) {
 		if (min >= max) { return min; }
 
-		return (nextLong() % (max - min)) + min;
+		return cast(long)(nextLong() % (max - min)) + min;
 	}
 
 	bool nextBoolean() {
