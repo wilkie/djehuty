@@ -42,7 +42,7 @@ class Random {
 
 	// Description: This will retrieve the current state of the generator.
 	// Returns: The state of the generator. (Reseed with this value to continue from the same position)
-	int seed() {
+	uint seed() {
 		return _state;
 	}
 
@@ -52,6 +52,8 @@ class Random {
 	}
 
 	uint next(uint max) {
+		if (max == 0) { return 0; }
+
 		return next() % max;
 	}
 
