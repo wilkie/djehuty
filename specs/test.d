@@ -1,3 +1,4 @@
+
 /*
  * test.d
  *
@@ -374,7 +375,7 @@ class MD5Tester {
 	it hash_should_respect_leading_zeroes() {
 		before_hash();
 		try {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
 			String s = HashMD5.hash("d").getString();
 			if(!(s == "8277e0910d750195b448797616e091ad")) {
 				return it.doesnt;
@@ -389,7 +390,7 @@ class MD5Tester {
 	it hash_should_work_on_byte_arrays() {
 		before_hash();
 		try {
-			// Testing a classic MD5
+			// Testing a classic MD5 
 			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
 			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
 			String a = HashMD5.hash(filea).getString();
@@ -529,6 +530,844 @@ class SHA1Tester {
 
 		result = tester.hash_should_hash_the_empty_string();
 		test.logResult(result, "hash should hash the empty string", "19");
+
+		test.finish();
+	}
+}
+
+import core.time;
+
+class TimeTester {
+
+	it creation_should_have_sane_defaults() {
+		before_creation();
+		try {
+			auto t = new Time();
+			if(!(t.microseconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_zero_milliseconds() {
+		before_creation();
+		try {
+			auto t = new Time(0);
+			if(!(t.microseconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_positive_microseconds() {
+		before_creation();
+		try {
+			auto t = new Time(1234000);
+			if(!(t.microseconds == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_negative_microseconds() {
+		before_creation();
+		try {
+			auto t = new Time(-1234000);
+			if(!(t.microseconds == -1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_hours_minutes_seconds() {
+		before_creation();
+		try {
+			auto t = new Time(1, 2, 3);
+			if(!(t.microseconds == 3723000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_hours_minutes_seconds_microseconds() {
+		before_creation();
+		try {
+			auto t = new Time(1, 2, 3, 4);
+			if(!(t.microseconds == 3723000004)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it creation_should_handle_negative_everything() {
+		before_creation();
+		try {
+			auto t = new Time(-1, -2, -3, -4);
+			if(!(t.microseconds == -3723000004)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it Now_should_return_a_new_time() {
+		before_Now();
+		try {
+			auto n = Time.Now();
+			if(cast(Time)n is null) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_Now() {
+	}
+
+	it hours_should_handle_zero_time() {
+		before_hours();
+		try {
+			auto t = new Time(0);
+			if(!(t.hours == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it hours_should_handle_positive_time() {
+		before_hours();
+		try {
+			auto t = new Time(3L * 60L * 60L * 1000000L);
+			if(!(t.hours == 3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it hours_should_handle_negative_time() {
+		before_hours();
+		try {
+			auto t = new Time(-3L * 60L * 60L * 1000000L);
+			if(!(t.hours == -3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_hours() {
+	}
+
+	it minutes_should_handle_zero_time() {
+		before_minutes();
+		try {
+			auto t = new Time(0);
+			if(!(t.minutes == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it minutes_should_handle_positive_time() {
+		before_minutes();
+		try {
+			auto t = new Time(25L * 60L * 1000000L);
+			if(!(t.minutes == 25)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it minutes_should_handle_negative_time() {
+		before_minutes();
+		try {
+			auto t = new Time(-25L * 60L * 1000000L);
+			if(!(t.minutes == -25)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_minutes() {
+	}
+
+	it seconds_should_handle_zero_time() {
+		before_seconds();
+		try {
+			auto t = new Time(0);
+			if(!(t.seconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it seconds_should_handle_positive_time() {
+		before_seconds();
+		try {
+			auto t = new Time(45L * 1000000L);
+			if(!(t.seconds == 45)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it seconds_should_handle_negative_time() {
+		before_seconds();
+		try {
+			auto t = new Time(-45L * 1000000L);
+			if(!(t.seconds == -45)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_seconds() {
+	}
+
+	it milliseconds_should_handle_zero_time() {
+		before_milliseconds();
+		try {
+			auto t = new Time(0);
+			if(!(t.milliseconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it milliseconds_should_handle_positive_time() {
+		before_milliseconds();
+		try {
+			auto t = new Time(678L * 1000L);
+			if(!(t.milliseconds == 678)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it milliseconds_should_handle_negative_time() {
+		before_milliseconds();
+		try {
+			auto t = new Time(-678L * 1000L);
+			if(!(t.milliseconds == -678)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it milliseconds_should_handle_being_set_to_zero_milliseconds() {
+		before_milliseconds();
+		try {
+			auto t = new Time();
+			t.milliseconds = 0;
+			if(!(t.microseconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it milliseconds_should_handle_being_set_to_positive_milliseconds() {
+		before_milliseconds();
+		try {
+			auto t = new Time();
+			t.milliseconds = 1234;
+			if(!(t.microseconds == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it milliseconds_should_handle_being_set_to_negative_milliseconds() {
+		before_milliseconds();
+		try {
+			auto t = new Time();
+			t.milliseconds = -1234;
+			if(!(t.microseconds == -1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_milliseconds() {
+	}
+
+	it microseconds_should_handle_being_set_to_zero_microseconds() {
+		before_microseconds();
+		try {
+			auto t = new Time();
+			t.microseconds = 0;
+			if(!(t.microseconds == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it microseconds_should_handle_being_set_to_positive_microseconds() {
+		before_microseconds();
+		try {
+			auto t = new Time();
+			t.microseconds = 1234;
+			if(!(t.microseconds == 1234)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it microseconds_should_handle_being_set_to_negative_microseconds() {
+		before_microseconds();
+		try {
+			auto t = new Time();
+			t.microseconds(-1234);
+			if(!(t.microseconds == -1234)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_microseconds() {
+	}
+
+	it comparators_should_handle_equal_times() {
+		before_comparators();
+		try {
+			auto a = new Time(1234);
+			auto b = new Time(1234);
+			if(a < b) {
+				return it.doesnt;
+			}
+			if(!(a == b)) {
+				return it.doesnt;
+			}
+			if(a > b) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it comparators_should_handle_unequal_times() {
+		before_comparators();
+		try {
+			auto a = new Time(-1234);
+			auto b = new Time(1234);
+			if(!(a < b)) {
+				return it.doesnt;
+			}
+			if(a == b) {
+				return it.doesnt;
+			}
+			if(a > b) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_comparators() {
+	}
+
+	it toString_should_handle_zero_time() {
+		before_toString();
+		try {
+			auto t = new Time(0);
+			if(!(t.toString() == "00:00:00.000")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_some_microseconds() {
+		before_toString();
+		try {
+			auto t = new Time();
+			t.microseconds = 123456;
+			if(!(t.toString() == "00:00:00.123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_some_milliseconds() {
+		before_toString();
+		try {
+			auto t = new Time(123000);
+			if(!(t.toString() == "00:00:00.123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_hours_minutes_seconds() {
+		before_toString();
+		try {
+			auto t = new Time(10, 2, 30);
+			if(!(t.toString() == "10:02:30.000")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_everything() {
+		before_toString();
+		try {
+			auto t = new Time(12345678000);
+			if(!(t.toString() == "03:25:45.678")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	it toString_should_handle_negative_time() {
+		before_toString();
+		try {
+			auto t = new Time(-12345678000);
+			if(!(t.toString() == "-03:25:45.678")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_toString() {
+	}
+
+	it opAdd_should_work() {
+		before_opAdd();
+		try {
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
+			auto c = a + b;
+			if(!(c.microseconds == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opAdd() {
+	}
+
+	it opSub_should_work() {
+		before_opSub();
+		try {
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
+			auto c = a - b;
+			if(!(c.microseconds == -1000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opSub() {
+	}
+
+	it opAddAssign_should_work() {
+		before_opAddAssign();
+		try {
+			auto a = new Time(1000000);
+			auto b = new Time(234000);
+			a += b;
+			if(!(a.microseconds == 1234000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opAddAssign() {
+	}
+
+	it opSubAssign_should_work() {
+		before_opSubAssign();
+		try {
+			auto a = new Time(234000);
+			auto b = new Time(1234000);
+			a -= b;
+			if(!(a.microseconds == -1000000)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.doesnt;
+		}
+		return it.does;
+	}
+
+	done before_opSubAssign() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		TimeTester tester = new TimeTester();
+
+		Test test = new Test("Time", "specs/core/time.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_have_sane_defaults();
+		test.logResult(result, "creation should have sane defaults", "9");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_zero_milliseconds();
+		test.logResult(result, "creation should handle zero milliseconds", "14");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_positive_microseconds();
+		test.logResult(result, "creation should handle positive microseconds", "19");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_negative_microseconds();
+		test.logResult(result, "creation should handle negative microseconds", "24");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_hours_minutes_seconds();
+		test.logResult(result, "creation should handle hours minutes seconds", "29");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_hours_minutes_seconds_microseconds();
+		test.logResult(result, "creation should handle hours minutes seconds microseconds", "34");
+
+		tester = new TimeTester();
+
+		result = tester.creation_should_handle_negative_everything();
+		test.logResult(result, "creation should handle negative everything", "39");
+
+		test.logSubset("Now");
+
+		tester = new TimeTester();
+
+		result = tester.Now_should_return_a_new_time();
+		test.logResult(result, "Now should return a new time", "46");
+
+		test.logSubset("hours");
+
+		tester = new TimeTester();
+
+		result = tester.hours_should_handle_zero_time();
+		test.logResult(result, "hours should handle zero time", "53");
+
+		tester = new TimeTester();
+
+		result = tester.hours_should_handle_positive_time();
+		test.logResult(result, "hours should handle positive time", "58");
+
+		tester = new TimeTester();
+
+		result = tester.hours_should_handle_negative_time();
+		test.logResult(result, "hours should handle negative time", "63");
+
+		test.logSubset("minutes");
+
+		tester = new TimeTester();
+
+		result = tester.minutes_should_handle_zero_time();
+		test.logResult(result, "minutes should handle zero time", "70");
+
+		tester = new TimeTester();
+
+		result = tester.minutes_should_handle_positive_time();
+		test.logResult(result, "minutes should handle positive time", "75");
+
+		tester = new TimeTester();
+
+		result = tester.minutes_should_handle_negative_time();
+		test.logResult(result, "minutes should handle negative time", "80");
+
+		test.logSubset("seconds");
+
+		tester = new TimeTester();
+
+		result = tester.seconds_should_handle_zero_time();
+		test.logResult(result, "seconds should handle zero time", "87");
+
+		tester = new TimeTester();
+
+		result = tester.seconds_should_handle_positive_time();
+		test.logResult(result, "seconds should handle positive time", "92");
+
+		tester = new TimeTester();
+
+		result = tester.seconds_should_handle_negative_time();
+		test.logResult(result, "seconds should handle negative time", "97");
+
+		test.logSubset("milliseconds");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_zero_time();
+		test.logResult(result, "milliseconds should handle zero time", "104");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_positive_time();
+		test.logResult(result, "milliseconds should handle positive time", "109");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_negative_time();
+		test.logResult(result, "milliseconds should handle negative time", "114");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_being_set_to_zero_milliseconds();
+		test.logResult(result, "milliseconds should handle being set to zero milliseconds", "119");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_being_set_to_positive_milliseconds();
+		test.logResult(result, "milliseconds should handle being set to positive milliseconds", "125");
+
+		tester = new TimeTester();
+
+		result = tester.milliseconds_should_handle_being_set_to_negative_milliseconds();
+		test.logResult(result, "milliseconds should handle being set to negative milliseconds", "131");
+
+		test.logSubset("microseconds");
+
+		tester = new TimeTester();
+
+		result = tester.microseconds_should_handle_being_set_to_zero_microseconds();
+		test.logResult(result, "microseconds should handle being set to zero microseconds", "139");
+
+		tester = new TimeTester();
+
+		result = tester.microseconds_should_handle_being_set_to_positive_microseconds();
+		test.logResult(result, "microseconds should handle being set to positive microseconds", "145");
+
+		tester = new TimeTester();
+
+		result = tester.microseconds_should_handle_being_set_to_negative_microseconds();
+		test.logResult(result, "microseconds should handle being set to negative microseconds", "151");
+
+		test.logSubset("comparators");
+
+		tester = new TimeTester();
+
+		result = tester.comparators_should_handle_equal_times();
+		test.logResult(result, "comparators should handle equal times", "159");
+
+		tester = new TimeTester();
+
+		result = tester.comparators_should_handle_unequal_times();
+		test.logResult(result, "comparators should handle unequal times", "167");
+
+		test.logSubset("toString");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_zero_time();
+		test.logResult(result, "toString should handle zero time", "177");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_some_microseconds();
+		test.logResult(result, "toString should handle some microseconds", "182");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_some_milliseconds();
+		test.logResult(result, "toString should handle some milliseconds", "188");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_hours_minutes_seconds();
+		test.logResult(result, "toString should handle hours minutes seconds", "193");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_everything();
+		test.logResult(result, "toString should handle everything", "198");
+
+		tester = new TimeTester();
+
+		result = tester.toString_should_handle_negative_time();
+		test.logResult(result, "toString should handle negative time", "203");
+
+		test.logSubset("opAdd");
+
+		tester = new TimeTester();
+
+		result = tester.opAdd_should_work();
+		test.logResult(result, "opAdd should work", "210");
+
+		test.logSubset("opSub");
+
+		tester = new TimeTester();
+
+		result = tester.opSub_should_work();
+		test.logResult(result, "opSub should work", "219");
+
+		test.logSubset("opAddAssign");
+
+		tester = new TimeTester();
+
+		result = tester.opAddAssign_should_work();
+		test.logResult(result, "opAddAssign should work", "228");
+
+		test.logSubset("opSubAssign");
+
+		tester = new TimeTester();
+
+		result = tester.opSubAssign_should_work();
+		test.logResult(result, "opSubAssign should work", "237");
 
 		test.finish();
 	}
@@ -1725,6 +2564,360 @@ class StringTester {
 	}
 }
 
+import core.util;
+
+import utils.stack;
+
+import core.list;
+
+import interfaces.container;
+
+class UtilTester {
+
+	it typeIdentification_should_determine_if_it_is_a_type() {
+		before_typeIdentification();
+		try {
+			if(!(IsType!(int))) {
+				return it.doesnt;
+			}
+			if(IsType!(int[])) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_a_class() {
+		before_typeIdentification();
+		try {
+			if(!(IsClass!(Stack!(int)))) {
+				return it.doesnt;
+			}
+			if(IsClass!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_iterface() {
+		before_typeIdentification();
+		try {
+			if(!(IsInterface!(AbstractContainer))) {
+				return it.doesnt;
+			}
+			if(IsInterface!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_object() {
+		before_typeIdentification();
+		try {
+			if(IsObject!(int)) {
+				return it.doesnt;
+			}
+			if(!(IsObject!(Stack!(int)))) {
+				return it.doesnt;
+			}
+			if(!(IsObject!(AbstractContainer))) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_an_int_type() {
+		before_typeIdentification();
+		try {
+			if(!(IsIntType!(int))) {
+				return it.doesnt;
+			}
+			if(!(IsIntType!(uint))) {
+				return it.doesnt;
+			}
+			if(IsIntType!(int[])) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_unsigned() {
+		before_typeIdentification();
+		try {
+			if(!(IsUnsigned!(uint))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ushort))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ulong))) {
+				return it.doesnt;
+			}
+			if(!(IsUnsigned!(ubyte))) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(int)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(short)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(long)) {
+				return it.doesnt;
+			}
+			if(IsUnsigned!(byte)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_signed() {
+		before_typeIdentification();
+		try {
+			if(!(IsSigned!(int))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(short))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(long))) {
+				return it.doesnt;
+			}
+			if(!(IsSigned!(byte))) {
+				return it.doesnt;
+			}
+			if(IsSigned!(uint)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ushort)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ulong)) {
+				return it.doesnt;
+			}
+			if(IsSigned!(ubyte)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_float() {
+		before_typeIdentification();
+		try {
+			if(!(IsFloat!(float))) {
+				return it.doesnt;
+			}
+			if(!(IsFloat!(double))) {
+				return it.doesnt;
+			}
+			if(!(IsFloat!(real))) {
+				return it.doesnt;
+			}
+			if(IsFloat!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_complex() {
+		before_typeIdentification();
+		try {
+			if(!(IsComplex!(cfloat))) {
+				return it.doesnt;
+			}
+			if(!(IsComplex!(cdouble))) {
+				return it.doesnt;
+			}
+			if(!(IsComplex!(creal))) {
+				return it.doesnt;
+			}
+			if(IsComplex!(float)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_imaginary() {
+		before_typeIdentification();
+		try {
+			if(!(IsImaginary!(ifloat))) {
+				return it.doesnt;
+			}
+			if(!(IsImaginary!(idouble))) {
+				return it.doesnt;
+			}
+			if(!(IsImaginary!(ireal))) {
+				return it.doesnt;
+			}
+			if(IsImaginary!(float)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_struct() {
+		before_typeIdentification();
+		try {
+			if(IsStruct!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeIdentification_should_determine_if_it_is_array() {
+		before_typeIdentification();
+		try {
+			if(!(IsArray!(int[]))) {
+				return it.doesnt;
+			}
+			if(IsArray!(int)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_typeIdentification() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		UtilTester tester = new UtilTester();
+
+		Test test = new Test("Util", "specs/core/util.d");
+
+		it result;
+
+		test.logSubset("typeIdentification");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_a_type();
+		test.logResult(result, "typeIdentification should determine if it is a type", "10");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_a_class();
+		test.logResult(result, "typeIdentification should determine if it is a class", "15");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_iterface();
+		test.logResult(result, "typeIdentification should determine if it is an iterface", "20");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_object();
+		test.logResult(result, "typeIdentification should determine if it is an object", "25");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_an_int_type();
+		test.logResult(result, "typeIdentification should determine if it is an int type", "31");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_unsigned();
+		test.logResult(result, "typeIdentification should determine if it is unsigned", "37");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_signed();
+		test.logResult(result, "typeIdentification should determine if it is signed", "49");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_float();
+		test.logResult(result, "typeIdentification should determine if it is float", "61");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_complex();
+		test.logResult(result, "typeIdentification should determine if it is complex", "69");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_imaginary();
+		test.logResult(result, "typeIdentification should determine if it is imaginary", "77");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_struct();
+		test.logResult(result, "typeIdentification should determine if it is struct", "85");
+
+		tester = new UtilTester();
+
+		result = tester.typeIdentification_should_determine_if_it_is_array();
+		test.logResult(result, "typeIdentification should determine if it is array", "89");
+
+		test.finish();
+	}
+}
+
 import core.unicode;
 
 import core.string;
@@ -2427,6 +3620,64 @@ class LinkedListTester {
 	done before_slicing() {
 	}
 
+	it reverse_should_work_as_expected() {
+		before_reverse();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			int entry1 = 1;
+			int entry2 = 2;
+			int entry3 = 3;
+			list.add(entry1);
+			list.add(entry2);
+			list.add(entry3);
+			LinkedList!(int) revList = list.reverse();
+			if(revList is null) {
+				return it.doesnt;
+			}
+			if(!(revList.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry1)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry2)) {
+				return it.doesnt;
+			}
+			if(!(revList.remove() == entry3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_reverse() {
+	}
+
+	it string_should_work_as_expected() {
+		before_string();
+		try {
+			LinkedList!(int) list = new LinkedList!(int)();
+			list.add(1);
+			list.add(2);
+			list.add(3);
+			if(!(list.toString() == "[1, 2, 3]")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_string() {
+	}
+
 	done before() {
 	}
 
@@ -2535,6 +3786,20 @@ class LinkedListTester {
 
 		result = tester.slicing_should_work_as_expected();
 		test.logResult(result, "slicing should work as expected", "192");
+
+		test.logSubset("reverse");
+
+		tester = new LinkedListTester();
+
+		result = tester.reverse_should_work_as_expected();
+		test.logResult(result, "reverse should work as expected", "213");
+
+		test.logSubset("string");
+
+		tester = new LinkedListTester();
+
+		result = tester.string_should_work_as_expected();
+		test.logResult(result, "string should work as expected", "235");
 
 		test.finish();
 	}
@@ -3480,12 +4745,20 @@ class Tests {
 		SHA1Tester.test();
 	}
 
+	static void testTime() {
+		TimeTester.test();
+	}
+
 	static void testRegex() {
 		RegexTester.test();
 	}
 
 	static void testString() {
 		StringTester.test();
+	}
+
+	static void testUtil() {
+		UtilTester.test();
 	}
 
 	static void testUnicode() {
@@ -3514,8 +4787,10 @@ class Tests {
 		testDigest();
 		testMD5();
 		testSHA1();
+		testTime();
 		testRegex();
 		testString();
+		testUtil();
 		testUnicode();
 		testLinkedList();
 		testPriorityQueue();

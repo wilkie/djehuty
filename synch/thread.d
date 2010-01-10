@@ -13,13 +13,13 @@ else {
 import platform.vars.thread;
 
 import scaffold.thread;
-import scaffold.time;
 
 // access to exception handler
 import analyzing.debugger;
 
 // Access to the threads array
 import core.main;
+import core.system;
 
 import io.console;
 
@@ -33,7 +33,7 @@ class Thread {
 		stdThread = new overrideThread();
 		stdThread.thread = this;
 
-		startTime = time = TimeGet();
+		startTime = time = System.time;
 	}
 
 	// Description: Will create a thread using the given delegate as the callback function.
@@ -44,7 +44,7 @@ class Thread {
 		stdThread = new overrideThread();
 		stdThread.thread = this;
 
-		startTime = time = TimeGet();
+		startTime = time = System.time;
 	}
 
 	// Description: Will create a thread using the given function as the callback function.
@@ -113,7 +113,7 @@ class Thread {
 			RegisterThread(this);
 			//ThreadStart(_pfvars, this);
 
-			startTime = time = TimeGet();
+			startTime = time = System.time;
 
 			if (stdThread is null) {
 				stdThread = new overrideThread();
@@ -143,13 +143,13 @@ class Thread {
 		}
 	}
 
-	uint getElapsed() {
-		return TimeGet() - time;
+	long getElapsed() {
+		return System.time - time;
 	}
 
-	uint getDelta() {
-		uint oldTime = time;
-		time = TimeGet();
+	long getDelta() {
+		long oldTime = time;
+		time = System.time;
 
 		return time - oldTime;
 	}
@@ -189,8 +189,8 @@ protected:
 
 	bool _inited;
 
-	uint startTime;
-	uint time;
+	long startTime;
+	long time;
 
 	Window wnd;
 

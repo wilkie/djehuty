@@ -351,7 +351,7 @@ class JPEGDecoder : ImageDecoder {
 
 					if (test_byte == 0xD9) {
 						// EOI (End Of Image)
-						return StreamData.Accepted;
+						return StreamData.Complete;
 					}
 
 					decoderState = decoderNextState;
@@ -1472,7 +1472,7 @@ class JPEGDecoder : ImageDecoder {
 								intermediate_imgPos_Start = null;
 								view.unlockBuffer();
 							}
-							return StreamData.Accepted;
+							return StreamData.Complete;
 						}
 					}
 					else {

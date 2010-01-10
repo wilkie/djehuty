@@ -15,7 +15,6 @@ module core.string;
 
 import core.definitions;
 import core.unicode;
-import core.format;
 import core.variant;
 
 public import core.string;
@@ -356,7 +355,7 @@ class String {
 
 		int startpos;
 		int endpos;
-		
+
 		if (_data.length == 0) {
 			return new String("");
 		}
@@ -390,13 +389,13 @@ class String {
 		if (startpos > endpos) {
 			return new String("");
 		}
-		
+
 		ret._data = _data[startpos..endpos];
 		return ret;
 	}
 
 	template _nextInt(T) {
-		bool _nextInt(T)(T value) {
+		bool _nextInt(T)(out T value) {
 			int curpos;
 
 			for(curpos=0; curpos<_data.length; curpos++) {
@@ -1037,7 +1036,7 @@ class String {
 
 		return ret;
 	}
-	
+
 	int opCmp(Object o) {
 		if (cast(String)o) {
 			String str = cast(String)o;

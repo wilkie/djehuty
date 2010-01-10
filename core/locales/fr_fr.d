@@ -11,19 +11,24 @@ class LocaleFrench_FR : LocaleInterface {
 	string formatTime(Time time) {
 		string ret;
 
-		ret = toStr(time.hour);
+		long hr, min, sec;
+		hr = time.hours;
+		min = time.minutes % 60;
+		sec = time.seconds % 60;
+
+		ret = toStr(hr);
 		ret ~= ":";
 
-		if (time.minute < 10) {
+		if (min < 10) {
 			ret ~= "0";
 		}
-		ret ~= toStr(time.minute);
+		ret ~= toStr(min);
 		ret ~= ":";
 
-		if (time.second < 10) {
+		if (sec < 10) {
 			ret ~= "0";
 		}
-		ret ~= toStr(time.second);
+		ret ~= toStr(sec);
 
 		return ret;
 	}

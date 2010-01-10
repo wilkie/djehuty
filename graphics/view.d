@@ -103,7 +103,7 @@ class View {
 
 	// Description: Will lock the canvas for drawing.
 	// Returns: A Graphics object that will draw to the current view.
-	Graphics lockDisplay() {
+	Graphics lock() {
 		_mutex.down();
 
 		_locked = true;
@@ -111,7 +111,7 @@ class View {
 	}
 
 	// Description: Will unlock a locked canvas.
-	void unlockDisplay() {
+	void unlock() {
 		_locked = false;
 
 		if (_brush !is null) {

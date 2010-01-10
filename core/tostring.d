@@ -7,7 +7,12 @@ string toStrv(Variadic vars) {
 	string ret = "";
 	foreach(var; vars) {
 		if (!var.isArray) {
-			if (var.type < Type.Real) {
+			if (var.type == Type.Pointer) {
+				ulong foo = cast(ulong)var.data.pointer.address;
+				ret ~= "0x" ~ utoa(foo);
+				continue;
+			}
+			else if (var.type < Type.Real) {
 				long val;
 				switch(var.type) {
 					case Type.Byte:

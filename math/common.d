@@ -46,4 +46,4 @@ else {
 	private import Math = std.math;
 }
 
-	alias Math.sqrt sqrt;
+alias Math.sqrt sqrt;

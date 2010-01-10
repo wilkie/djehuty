@@ -1,4 +1,4 @@
-module spec.utils.linkedlist;
+module specs.utils.linkedlist;
 
 import utils.linkedlist;
 
@@ -193,7 +193,7 @@ describe linkedList() {
 			LinkedList!(int) list = new LinkedList!(int)();
 
 			int entry1 = 1;
-			int entry2 = 2;
+			int entry2 = 2; 
 			int entry3 = 3;
 
 			list.add(entry3);
@@ -206,6 +206,40 @@ describe linkedList() {
 			should(sliceList.length == 2);
 			should(sliceList.remove() == entry3);
 			should(sliceList.remove() == entry2);
+		}
+	}
+
+	describe reverse() {
+		it should_work_as_expected {
+			LinkedList!(int) list = new LinkedList!(int)();
+
+			int entry1 = 1;
+			int entry2 = 2; 
+			int entry3 = 3;
+
+			list.add(entry1);
+			list.add(entry2);
+			list.add(entry3);
+
+			LinkedList!(int) revList = list.reverse();
+
+			shouldNot(revList is null);
+			should(revList.length == 3);
+			should(revList.remove() == entry1);
+			should(revList.remove() == entry2);
+			should(revList.remove() == entry3);
+		}
+	}
+	
+	describe string() {
+		it should_work_as_expected {
+			LinkedList!(int) list = new LinkedList!(int)();
+			
+			list.add(1);
+			list.add(2);
+			list.add(3);
+
+			should(list.toString() == "[1, 2, 3]");
 		}
 	}
 }

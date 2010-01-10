@@ -25,32 +25,28 @@ StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap
 	ulong pos = stream.position;
 
 	imageCodec = new PNGDecoder();
-	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
-	{
+	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid) {
 		return ret;
 	}
 
 	stream.position = pos;
 
 	imageCodec = new BMPDecoder();
-	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
-	{
+	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid) {
 		return ret;
 	}
 
 	stream.position = pos;
 
 	imageCodec = new GIFDecoder();
-	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
-	{
+	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid) {
 		return ret;
 	}
 
 	stream.position = pos;
 
 	imageCodec = new JPEGDecoder();
-	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid)
-	{
+	if ((ret = imageCodec.decode(stream, view)) != StreamData.Invalid) {
 		return ret;
 	}
 

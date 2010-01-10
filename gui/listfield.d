@@ -75,11 +75,11 @@ class ListField : Widget, Iterable!(String) {
 			_list = null;
 		}
 
-		Graphics grp = _view.lockDisplay();
+		Graphics grp = _view.lock();
 		_font = new Font(FontSans, 8, 400, false, false, false);
 		grp.font = _font;
 		grp.measureText(" ", 1, m_entryHeight);
-		_view.unlockDisplay();
+		_view.unlock();
 
 		m_clroutline = Color.fromRGB(0x80, 0x80, 0x80);
 		m_clrhighlight = Color.fromRGB(0xdd,0xdd,0xdd);

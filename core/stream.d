@@ -16,15 +16,14 @@ import core.string;
 // Section: Enums
 
 // Description: This enum gives a description of the current stream processing progress for any function that receives its information via a stream.
-enum StreamData : int
-{
+enum StreamData : int {
 	// Description: The stream is invalid.  The primarly reason is that the stream does not represent the expected semantics of the data.  For instance, you gave a BMP file to the PNG decoder, the PNG header would not be present and the stream would be marked invalid.
 	Invalid = -1,
 
 	// Description: The stream is so far valid, and has been partially processed.  The function requires further data to complete.
 	Required,
 
-	// Description: The stream was used and a piece of information has been processed successfully.  There is more units to decode with further calls.  (A frame of animation or a sample of audio are examples)
+	// Description: The stream was used and a piece of information has been processed successfully.  There are more units to decode with further calls.  (A frame of animation or a sample of audio are examples)
 	Accepted,
 
 	// Description: The stream was used and all information was successfully decoded.
@@ -34,8 +33,7 @@ enum StreamData : int
 // Description: This enum gives the possible permission types of the stream.
 
 // As you can see, individual bits indicate access type: read - 1, update - 2, append - 4, allocate - 8
-enum StreamAccess : int
-{
+enum StreamAccess : int {
 	// Description: The stream allows no access to data.
 	NoAccess = 0,
 

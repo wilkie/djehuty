@@ -206,7 +206,7 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 
 // Text Colors
 void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
-	SetBkColor(viewVars.dc, ColorGetValue(textColor));
+	SetBkColor(viewVars.dc, textColor.value);
 }
 
 void setTextColor(ViewPlatformVars* viewVars, ref Color textColor) {
@@ -410,18 +410,30 @@ void destroyPen(PenPlatformVars* pen) {
 // View Interfacing
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	Gdiplus.GdipDrawImageI(viewVars.g, viewVarsSrc.image , x, y);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, srcView.width(), srcView.height(), Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel);
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
@@ -437,6 +449,9 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
@@ -452,6 +467,9 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
+	if (viewVars.image !is null) {
+		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+	}
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 

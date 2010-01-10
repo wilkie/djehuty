@@ -9,7 +9,7 @@ import core.definitions;
 
 class LocaleEnglish_US : LocaleInterface {
 	string formatTime(Time time) {
-		long hour = time.hour;
+		long hour = time.hours;
 
 		bool pm = false;
 
@@ -23,16 +23,18 @@ class LocaleEnglish_US : LocaleInterface {
 		ret = toStr(hour);
 		ret ~= ":";
 
-		if (time.minute < 10) {
+		long min = time.minutes % 60;
+		if (min < 10) {
 			ret ~= "0";
 		}
-		ret ~= toStr(time.minute);
+		ret ~= toStr(min);
 		ret ~= ":";
 
-		if (time.second < 10) {
+		long sec = time.seconds % 60;
+		if (sec < 10) {
 			ret ~= "0";
 		}
-		ret ~= toStr(time.second);
+		ret ~= toStr(sec);
 
 		if (pm) {
 			ret ~= "pm";

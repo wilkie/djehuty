@@ -38,7 +38,6 @@ void ViewCreate(View view, ViewPlatformVars*viewVars) {
 	//viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
 	//Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
 //	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
-	Console.putln("view create ", view.width, ":", view.height);
 	viewVars.clipRegions = new _clipList();
 
 	viewVars.length = (view.width() * view.height()) * 4;
@@ -46,7 +45,6 @@ void ViewCreate(View view, ViewPlatformVars*viewVars) {
 	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
 	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
 	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	Console.putln("view create done");
 }
 
 void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {

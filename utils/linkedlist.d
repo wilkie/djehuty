@@ -366,7 +366,7 @@ class LinkedList(T) : Iterable!(T) {
 
 	LinkedList!(T) reverse() {
 		LinkedList!(T) ret = new LinkedList!(T);
-		foreach_reverse(item; this) {
+		foreach(item; this) {
 			ret.add(item);
 		}
 		return ret;
