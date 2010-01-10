@@ -63,7 +63,7 @@ describe priorityQueue() {
 			should(queue.peek() == min);
 
 			int foo;
-			int last;
+			int last = min;
 
 			while (!queue.empty()) {
 				foo = queue.remove();
