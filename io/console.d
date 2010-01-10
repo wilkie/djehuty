@@ -6,7 +6,6 @@ import synch.mutex;
 
 import core.string;
 import core.tostring;
-import core.format;
 import core.unicode;
 import core.definitions;
 import core.variant;
@@ -326,7 +325,7 @@ static:
 		_putv(vars);
 		_putChar('\n');
 	}
-	
+
 	void putStringAt(uint x, uint y, String str) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
@@ -341,10 +340,10 @@ static:
 
 		_putString(str);
 	}
-	
+
 	void putAt(uint x, uint y, ...) {
 		Variadic vars = new Variadic(_arguments, _argptr);
-		
+
 		putAtv(x, y, vars);
 	}
 
@@ -565,7 +564,7 @@ private:
 
 	Rect[] _clippingRegions;
 	Rect[][] _clippingStack;
-	
+
 	void _position(uint x, uint y) {
 		ConsoleSetPosition(x,y);
 	}

@@ -8,7 +8,7 @@ DFLAGS =
 # can be changed
 PLATFORM = WINDOWS
 
-LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua -L-lncurses -J./tests
+LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -L-lncurses -J./tests
 LFLAGS_MAC = -Iplatform/osx -lobjc -framework Cocoa -framework Foundation
 LFLAGS_WIN = -Iplatform/win
 
@@ -38,7 +38,7 @@ DFILES_PLATFORM_WIN = binding/win32/gdipluscolormatrix.d binding/win32/gdiplusin
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
 DFILES_ANALYZING = analyzing/debugger.d
-DFILES_CORE = core/tostring.d core/locales/en_us.d core/locales/fr_fr.d core/date.d core/locale.d core/variant.d core/list.d core/exception.d core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/definitions.d core/application.d core/format.d core/time.d core/timezone.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d
+DFILES_CORE = core/tostring.d core/locales/en_us.d core/locales/fr_fr.d core/date.d core/locale.d core/variant.d core/list.d core/exception.d core/event.d core/library.d core/system.d core/random.d core/regex.d core/arguments.d core/definitions.d core/application.d core/time.d core/timezone.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d
 DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
 DFILES_UTILS = utils/stack.d utils/linkedlist.d utils/fibonacci.d utils/heap.d
 DFILES_PARSING = parsing/options.d parsing/lexer.d parsing/cfg.d

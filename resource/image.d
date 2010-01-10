@@ -28,10 +28,10 @@ import decoders.image.all;
 
 // Section: Core/Resources
 
-// Description: This class will wrap a DIB view object and load into this view an image file as long as it has a decoder.  So far, I have BMP, PNG, and GIF (animated as well).  Animated Images are supported, but you will have to load them a frame at a time.
+// Description: This class will wrap a DIB view object and load into this view an image file
+//   as long as it has a decoder.  So far, I have BMP, PNG, and GIF (animated as well).  Animated
+//   Images are supported, but you will have to load them a frame at a time.
 class Image {
-public:
-
 	this() {
 		//_loaded = new Semaphore();
 		//_loaded.init(1);
@@ -45,7 +45,9 @@ public:
 		load(filename);
 	}
 
-	// Description: Will load the image.  It will throw the file to all the available decoders with a preference to the ones that match the file extension.  When the decoder accepts the file, it will return true, otherwise on error it will return false.
+	// Description: Will load the image.  It will throw the file to all the available decoders
+	//   with a preference to the ones that match the file extension.  When the decoder accepts
+	//   the file, it will return true, otherwise on error it will return false.
 	// filename: The filename to open as an image.
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(String filename) {
@@ -58,7 +60,9 @@ public:
 		return _stream(f) == StreamData.Accepted;
 	}
 
-	// Description: Will load the image.  It will throw the file to all the available decoders with a preference to the ones that match the file extension.  When the decoder accepts the file, it will return true, otherwise on error it will return false.
+	// Description: Will load the image.  It will throw the file to all the available decoders
+	//   with a preference to the ones that match the file extension.  When the decoder accepts
+	//   the file, it will return true, otherwise on error it will return false.
 	// filename: The filename to open as an image.
 	// Returns: Will return true when the file is accepted and the image is loaded.
 	bool load(string filename) {
@@ -71,9 +75,15 @@ public:
 		return _stream(f) == StreamData.Accepted;
 	}
 
-	// Description: Will load the image from a valid stream.  Use this to open an image from within a file or from a network socket.  The decoders support progressive images already and are developed with this in mind.  You do not need to send a complete stream as images can be rendered by chunks.  The function will return information on the stream's acceptance.
+	// Description: Will load the image from a valid stream.  Use this to open an image from within
+	//   a file or from a network socket.  The decoders support progressive images already and are
+	//   developed with this in mind.  You do not need to send a complete stream as images can be
+	//   rendered by chunks.  The function will return information on the stream's acceptance.
 	// stream: The stream to read as an image.
-	// Returns: Describes the current state of the stream decoding.  If it is StreamData.Invalid, then the stream cannot be decoded.  If it is StreamData.Required, then more data is required to render the stream, and only a partial image is available.  If it is StreamData.Accepted, then the stream has been decoded successfully and the image is available.
+	// Returns: Describes the current state of the stream decoding.  If it is StreamData.Invalid,
+	//   then the stream cannot be decoded.  If it is StreamData.Required, then more data is required
+	//   to render the stream, and only a partial image is available.  If it is StreamData.Accepted,
+	//   then the stream has been decoded successfully and the image is available.
 	StreamData load(Stream stream) {
 		return _stream(stream);
 	}
@@ -91,7 +101,7 @@ public:
 	}
 
 	// Description: This function will return the view object associated with this image.
-	// Returns: A View object.
+	// Returns: The view that can be manipulated.
 	Bitmap view() {
 		return _view;
 	}
@@ -123,7 +133,7 @@ public:
 
 		if (value > this.numFrames) {
 			if (this.numFrames == 0) {
-				value = 0;				
+				value = 0;
 			}
 			else {
 				value = this.numFrames - 1;
@@ -151,7 +161,6 @@ public:
 				g.brush = new Brush(_frameDesc.clearColor);
 				g.drawRect(0,0,_view.width,_view.height);
 			}
-			Console.putln("NEXT! ",_frameIdx, " ", _frameDesc.xoffset, ":", _frameDesc.yoffset);
 			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
 			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
 			_view.unlock;
@@ -219,7 +228,6 @@ protected:
 				if (ret == StreamData.Accepted || ret == StreamData.Complete) {
 					// Frame was decoded.
 					_frames ~= _curView;
-					Console.putln("GOT FRAME ", _frames.length);
 					_frameDescs ~= _curFrameDesc;
 					if (_view is null) {
 						_view = new Bitmap(_curView.width, _curView.height);
