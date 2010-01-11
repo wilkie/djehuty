@@ -18,19 +18,34 @@ import core.exception;
 
 // Description: This template resolves to true when the type T is
 //   either an array or a class that inherits from Iterable.
+template IsIterableImpl(int idx = 0, Base, T...) {
+	static if (idx == T.length) {
+		// Go to the base class and start over...
+		const bool IsIterableImpl = IsIterable!(Super!(Base));
+	}
+	else static if (IsInterface!(T[idx])) {
+		// Check each interface for whether it is Iterable
+		static if (T[idx].stringof == "Iterable") {
+			const bool IsIterableImpl = true;
+		}
+		else {
+			const bool IsIterableImpl = IsIterableImpl!(idx+1, Base, T);
+		}
+	}
+	else {
+		// Well... this doesn't make sense... give up!
+		const bool IsIterableImpl = false;
+	}
+}
+
 template IsIterable(T) {
 	static if (IsArray!(T)) {
 		// T is an array, so it is iterable
 		const bool IsIterable = true;
 	}
-	else static if (IsClass!(T)) {
-		// Check for whether or not Iterable!() is inherited by this class
-		static if (is(T == Object)) {
-			const bool IsIterable = false;
-		}
-		else {
-			const bool IsIterable = IsIterable!(SuperClass!(T));
-		}
+	else static if (is(T == Object)) {
+		// Cannot be iterable if T is Object
+		const bool IsIterable = false;
 	}
 	else static if (IsInterface!(T)) {
 		static if (T.stringof == "Iterable") {
@@ -40,8 +55,12 @@ template IsIterable(T) {
 			const bool IsIterable = false;
 		}
 	}
+	else static if (IsClass!(T)) {
+		// It is some class... we should read its interfaces
+		const bool IsIterable = IsIterableImpl!(0, T, Interfaces!(T));
+	}
 	else {
-		// Otherwise, it is not iterable
+		// It is some other type...
 		const bool IsIterable = false;
 	}
 }
@@ -53,7 +72,7 @@ template BaseIterable(T) {
 			alias T BaseIterable;
 		}
 		else {
-			alias BaseIterable!(SuperClass!(T)) BaseIterable;
+			alias BaseIterable!(Super!(T)) BaseIterable;
 		}
 	}
 	static if (IsInterface!(T)) {
