@@ -2574,8 +2574,8 @@ import interfaces.container;
 
 class UtilTester {
 
-	it typeIdentification_should_determine_if_it_is_a_type() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_a_type() {
+		before_typeTemplates();
 		try {
 			if(!(IsType!(int))) {
 				return it.doesnt;
@@ -2591,8 +2591,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_a_class() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_a_class() {
+		before_typeTemplates();
 		try {
 			if(!(IsClass!(Stack!(int)))) {
 				return it.doesnt;
@@ -2608,8 +2608,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_an_iterface() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_an_iterface() {
+		before_typeTemplates();
 		try {
 			if(!(IsInterface!(AbstractContainer))) {
 				return it.doesnt;
@@ -2625,8 +2625,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_an_object() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_an_object() {
+		before_typeTemplates();
 		try {
 			if(IsObject!(int)) {
 				return it.doesnt;
@@ -2645,8 +2645,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_an_int_type() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_an_int_type() {
+		before_typeTemplates();
 		try {
 			if(!(IsIntType!(int))) {
 				return it.doesnt;
@@ -2665,8 +2665,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_unsigned() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_unsigned() {
+		before_typeTemplates();
 		try {
 			if(!(IsUnsigned!(uint))) {
 				return it.doesnt;
@@ -2700,8 +2700,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_signed() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_signed() {
+		before_typeTemplates();
 		try {
 			if(!(IsSigned!(int))) {
 				return it.doesnt;
@@ -2735,8 +2735,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_float() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_float() {
+		before_typeTemplates();
 		try {
 			if(!(IsFloat!(float))) {
 				return it.doesnt;
@@ -2758,8 +2758,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_complex() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_complex() {
+		before_typeTemplates();
 		try {
 			if(!(IsComplex!(cfloat))) {
 				return it.doesnt;
@@ -2781,8 +2781,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_imaginary() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_imaginary() {
+		before_typeTemplates();
 		try {
 			if(!(IsImaginary!(ifloat))) {
 				return it.doesnt;
@@ -2804,8 +2804,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_struct() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_struct() {
+		before_typeTemplates();
 		try {
 			if(IsStruct!(int)) {
 				return it.doesnt;
@@ -2818,8 +2818,8 @@ class UtilTester {
 		return it.does;
 	}
 
-	it typeIdentification_should_determine_if_it_is_array() {
-		before_typeIdentification();
+	it typeTemplates_should_determine_if_it_is_array() {
+		before_typeTemplates();
 		try {
 			if(!(IsArray!(int[]))) {
 				return it.doesnt;
@@ -2835,7 +2835,165 @@ class UtilTester {
 		return it.does;
 	}
 
-	done before_typeIdentification() {
+	it typeTemplates_should_determine_the_superclass() {
+		before_typeTemplates();
+		try {
+			class A{}
+			class B : A {}
+			class C : B {}
+			if(!(Super!(B).stringof == "A")) {
+				return it.doesnt;
+			}
+			if(!(Super!(C).stringof == "B")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeTemplates_should_determine_the_interfaces() {
+		before_typeTemplates();
+		try {
+			class A {}
+			interface E {}
+			interface F {}
+			interface G {}
+			class B : A,G {}
+			class C : B,E,F {}
+			if(!(Interfaces!(C).stringof == "(E, F)")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it typeTemplates_should_determine_the_arraytype() {
+		before_typeTemplates();
+		try {
+			if(!(ArrayType!(int[]).stringof == "int")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_typeTemplates() {
+	}
+
+	it stringTemplates_should_capitalize_a_string() {
+		before_stringTemplates();
+		try {
+			if(!(Capitalize!("string") == "String")) {
+				return it.doesnt;
+			}
+			if(!(Capitalize!("String") == "String")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it stringTemplates_should_trim_whitespace_from_the_left() {
+		before_stringTemplates();
+		try {
+			if(!(TrimL!("string") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("   string") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("string   ") == "string   ")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("   string   ") == "string   ")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("\t\n\rstring") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("string\t\n\r") == "string\t\n\r")) {
+				return it.doesnt;
+			}
+			if(!(TrimL!("\t\n\rstring\t\n\r") == "string\t\n\r")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it stringTemplates_should_trim_whitespace_from_the_right() {
+		before_stringTemplates();
+		try {
+			if(!(TrimR!("string") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("   string") == "   string")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("string   ") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("   string   ") == "   string")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("\t\n\rstring") == "\t\n\rstring")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("string\t\n\r") == "string")) {
+				return it.doesnt;
+			}
+			if(!(TrimR!("\t\n\rstring\t\n\r") == "\t\n\rstring")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it stringTemplates_should_remove_spaces() {
+		before_stringTemplates();
+		try {
+			if(!(RemoveSpaces!("string") == "string")) {
+				return it.doesnt;
+			}
+			if(!(RemoveSpaces!(" s t r i n g ") == "string")) {
+				return it.doesnt;
+			}
+			if(!(RemoveSpaces!("\ts\nt\rr\ti\nn\rg") == "string")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_stringTemplates() {
 	}
 
 	done before() {
@@ -2852,67 +3010,104 @@ class UtilTester {
 
 		it result;
 
-		test.logSubset("typeIdentification");
+		test.logSubset("typeTemplates");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_a_type();
-		test.logResult(result, "typeIdentification should determine if it is a type", "10");
+		result = tester.typeTemplates_should_determine_if_it_is_a_type();
+		test.logResult(result, "typeTemplates should determine if it is a type", "10");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_a_class();
-		test.logResult(result, "typeIdentification should determine if it is a class", "15");
+		result = tester.typeTemplates_should_determine_if_it_is_a_class();
+		test.logResult(result, "typeTemplates should determine if it is a class", "15");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_an_iterface();
-		test.logResult(result, "typeIdentification should determine if it is an iterface", "20");
+		result = tester.typeTemplates_should_determine_if_it_is_an_iterface();
+		test.logResult(result, "typeTemplates should determine if it is an iterface", "20");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_an_object();
-		test.logResult(result, "typeIdentification should determine if it is an object", "25");
+		result = tester.typeTemplates_should_determine_if_it_is_an_object();
+		test.logResult(result, "typeTemplates should determine if it is an object", "25");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_an_int_type();
-		test.logResult(result, "typeIdentification should determine if it is an int type", "31");
+		result = tester.typeTemplates_should_determine_if_it_is_an_int_type();
+		test.logResult(result, "typeTemplates should determine if it is an int type", "31");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_unsigned();
-		test.logResult(result, "typeIdentification should determine if it is unsigned", "37");
+		result = tester.typeTemplates_should_determine_if_it_is_unsigned();
+		test.logResult(result, "typeTemplates should determine if it is unsigned", "37");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_signed();
-		test.logResult(result, "typeIdentification should determine if it is signed", "49");
+		result = tester.typeTemplates_should_determine_if_it_is_signed();
+		test.logResult(result, "typeTemplates should determine if it is signed", "49");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_float();
-		test.logResult(result, "typeIdentification should determine if it is float", "61");
+		result = tester.typeTemplates_should_determine_if_it_is_float();
+		test.logResult(result, "typeTemplates should determine if it is float", "61");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_complex();
-		test.logResult(result, "typeIdentification should determine if it is complex", "69");
+		result = tester.typeTemplates_should_determine_if_it_is_complex();
+		test.logResult(result, "typeTemplates should determine if it is complex", "69");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_imaginary();
-		test.logResult(result, "typeIdentification should determine if it is imaginary", "77");
+		result = tester.typeTemplates_should_determine_if_it_is_imaginary();
+		test.logResult(result, "typeTemplates should determine if it is imaginary", "77");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_struct();
-		test.logResult(result, "typeIdentification should determine if it is struct", "85");
+		result = tester.typeTemplates_should_determine_if_it_is_struct();
+		test.logResult(result, "typeTemplates should determine if it is struct", "85");
 
 		tester = new UtilTester();
 
-		result = tester.typeIdentification_should_determine_if_it_is_array();
-		test.logResult(result, "typeIdentification should determine if it is array", "89");
+		result = tester.typeTemplates_should_determine_if_it_is_array();
+		test.logResult(result, "typeTemplates should determine if it is array", "89");
+
+		tester = new UtilTester();
+
+		result = tester.typeTemplates_should_determine_the_superclass();
+		test.logResult(result, "typeTemplates should determine the superclass", "94");
+
+		tester = new UtilTester();
+
+		result = tester.typeTemplates_should_determine_the_interfaces();
+		test.logResult(result, "typeTemplates should determine the interfaces", "103");
+
+		tester = new UtilTester();
+
+		result = tester.typeTemplates_should_determine_the_arraytype();
+		test.logResult(result, "typeTemplates should determine the arraytype", "114");
+
+		test.logSubset("stringTemplates");
+
+		tester = new UtilTester();
+
+		result = tester.stringTemplates_should_capitalize_a_string();
+		test.logResult(result, "stringTemplates should capitalize a string", "120");
+
+		tester = new UtilTester();
+
+		result = tester.stringTemplates_should_trim_whitespace_from_the_left();
+		test.logResult(result, "stringTemplates should trim whitespace from the left", "125");
+
+		tester = new UtilTester();
+
+		result = tester.stringTemplates_should_trim_whitespace_from_the_right();
+		test.logResult(result, "stringTemplates should trim whitespace from the right", "136");
+
+		tester = new UtilTester();
+
+		result = tester.stringTemplates_should_remove_spaces();
+		test.logResult(result, "stringTemplates should remove spaces", "147");
 
 		test.finish();
 	}
