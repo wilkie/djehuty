@@ -68,6 +68,8 @@ class Random {
 	}
 
 	ulong nextLong(ulong max) {
+		if (max == 0) { return 0; }
+
 		return nextLong() % max;
 	}
 
@@ -78,7 +80,7 @@ class Random {
 	}
 
 	bool nextBoolean() {
-		return (next() % 1) != 0;
+		return (next() % 2) == 0;
 	}
 
 	double nextDouble() {
