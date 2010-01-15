@@ -773,7 +773,7 @@ template foldr(T, R, S) {
 template member(T, S) {
 	static assert(IsIterable!(T), "member: " ~ T.stringof ~ " is not iterable.");
 	T member(S value, T list) {
-		foreach(uint i, item; list) {
+		foreach(size_t i, S item; list) {
 			if (value == item) {
 				return cast(T)(list[i..list.length]);
 			}
