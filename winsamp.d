@@ -485,6 +485,8 @@ class MyApp : GuiApplication {
 	override void onApplicationStart() {
 		wnd = new MyWindow();
 		wnd.visible = true;
+		Date d = new Date();
+		Console.putln(d);
 
 		push(wnd);
 	}

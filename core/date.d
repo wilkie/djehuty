@@ -102,6 +102,8 @@ class Date {
 			case Month.December:
 				monthNum = 5;
 				break;
+			default: 
+				break;
 		}
 
 		int dayNum = (yearNum + yearDigitNum + leapYearNum + monthNum + _day)%7;
@@ -115,15 +117,17 @@ class Date {
 				return Day.Tuesday;
 			case 3:
 				return Day.Wednesday;
-			case 4: 
+			case 4:
 				return Day.Thursday;
 			case 5:
 				return Day.Friday;
 			case 6:
 				return Day.Saturday;
+			default:
+				break;
 		}
 
-
+		assert(0, "Error: Unable to determine the day of week");
 	}
 
 	Month month() {
