@@ -68,7 +68,7 @@ class Date {
 			yearNum = 6;
 		}
 		else {
-			// exception for now until I figure out the better way
+			// year with unknown value
 		}
 		
 		int yearDigitNum = (_year%100);
@@ -121,11 +121,9 @@ class Date {
 				return Day.Friday;
 			case 6:
 				return Day.Saturday;
-			default:
-				// exception
 		}
 
-		return Day.Friday;
+
 	}
 
 	Month month() {
