@@ -3439,6 +3439,248 @@ class UnicodeTester {
 	}
 }
 
+import core.date;
+
+class DateTester {
+
+	it creation_should_create_with_no_date_given() {
+		before_creation();
+		try {
+			Date d = new Date();
+			if(d is null) {
+				return it.doesnt;
+			}
+			if(!(d.year == 2010)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it creation_should_create_given_date() {
+		before_creation();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			if(d is null) {
+				return it.doesnt;
+			}
+			if(!(d.month() == Month.January)) {
+				return it.doesnt;
+			}
+			if(!(d.year() == 2010)) {
+				return it.doesnt;
+			}
+			if(!(d.day() == 1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it dayOfWeek_should_return_the_day_of_the_week() {
+		before_dayOfWeek();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			if(!(d.dayOfWeek() == Day.Friday)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_dayOfWeek() {
+	}
+
+	it monthMethods_should_return_the_month_value() {
+		before_monthMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			if(!(d.month() == Month.January)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it monthMethods_should_set_the_month_value() {
+		before_monthMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			d.month(Month.March);
+			if(!(d.month() == Month.March)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_monthMethods() {
+	}
+
+	it dayMethods_should_return_the_day_value() {
+		before_dayMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			if(!(d.day() == 1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it dayMethods_should_set_the_day_value() {
+		before_dayMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			d.day(21);
+			if(!(d.day() == 21)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_dayMethods() {
+	}
+
+	it yearMethods_should_return_the_year_value() {
+		before_yearMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			if(!(d.year() == 2010)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it yearMethods_should_set_the_year_value() {
+		before_yearMethods();
+		try {
+			Date d = new Date(Month.January, 1, 2010);
+			d.year(2011);
+			if(!(d.year() == 2011)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_yearMethods() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		DateTester tester = new DateTester();
+
+		Test test = new Test("Date", "specs/core/date.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new DateTester();
+
+		result = tester.creation_should_create_with_no_date_given();
+		test.logResult(result, "creation should create with no date given", "7");
+
+		tester = new DateTester();
+
+		result = tester.creation_should_create_given_date();
+		test.logResult(result, "creation should create given date", "12");
+
+		test.logSubset("dayOfWeek");
+
+		tester = new DateTester();
+
+		result = tester.dayOfWeek_should_return_the_day_of_the_week();
+		test.logResult(result, "dayOfWeek should return the day of the week", "22");
+
+		test.logSubset("monthMethods");
+
+		tester = new DateTester();
+
+		result = tester.monthMethods_should_return_the_month_value();
+		test.logResult(result, "monthMethods should return the month value", "29");
+
+		tester = new DateTester();
+
+		result = tester.monthMethods_should_set_the_month_value();
+		test.logResult(result, "monthMethods should set the month value", "34");
+
+		test.logSubset("dayMethods");
+
+		tester = new DateTester();
+
+		result = tester.dayMethods_should_return_the_day_value();
+		test.logResult(result, "dayMethods should return the day value", "42");
+
+		tester = new DateTester();
+
+		result = tester.dayMethods_should_set_the_day_value();
+		test.logResult(result, "dayMethods should set the day value", "47");
+
+		test.logSubset("yearMethods");
+
+		tester = new DateTester();
+
+		result = tester.yearMethods_should_return_the_year_value();
+		test.logResult(result, "yearMethods should return the year value", "55");
+
+		tester = new DateTester();
+
+		result = tester.yearMethods_should_set_the_year_value();
+		test.logResult(result, "yearMethods should set the year value", "60");
+
+		test.finish();
+	}
+}
+
 import utils.linkedlist;
 
 class LinkedListTester {
@@ -4113,7 +4355,7 @@ class PriorityQueueTester {
 				return it.doesnt;
 			}
 			int foo;
-			int last;
+			int last = min;
 			while (!queue.empty()) {
 			foo = queue.remove();
 			if(!(foo >= last)) {
@@ -4960,6 +5202,10 @@ class Tests {
 		UnicodeTester.test();
 	}
 
+	static void testDate() {
+		DateTester.test();
+	}
+
 	static void testLinkedList() {
 		LinkedListTester.test();
 	}
@@ -4987,6 +5233,7 @@ class Tests {
 		testString();
 		testUtil();
 		testUnicode();
+		testDate();
 		testLinkedList();
 		testPriorityQueue();
 		testStack();
