@@ -35,8 +35,12 @@ enum Day {
 import scaffold.time;
 
 import core.string;
+import core.time;
+import core.timezone;
 import core.definitions;
 import core.locale;
+
+import core.timezone;
 
 class Date {
 
@@ -48,6 +52,19 @@ class Date {
 		_month = month;
 		_day = day;
 		_year = year;
+	}
+
+	bool isLeapYear() {
+		if (_year % 400 == 0) {
+			return true;
+		}
+		else if (_year % 100 == 0) {
+			return false;
+		}
+		else if (_year % 4 == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	Day dayOfWeek() {
@@ -156,6 +173,56 @@ class Date {
 
 	static Date Now() {
 		return new Date();
+	}
+
+	static Date Local(TimeZone localTZ = null) {
+		Date ret = new Date();
+
+		if (localTZ is null) {
+			localTZ = new TimeZone();
+		}
+
+		Time time = Time.Now();
+		long micros = time.microseconds;
+		micros += localTZ.utcOffset;
+		if (micros < 0) {
+			// subtract a day
+			if (ret._day == 1) {
+				if (ret._month == Month.January) {
+					ret._year--;
+					ret._month = Month.December;
+				}
+				else {
+					ret._month--;
+				}
+				switch (ret._month) {
+					case Month.January:
+					case Month.March:
+					case Month.May:
+					case Month.July:
+					case Month.August:
+					case Month.October:
+					case Month.December:
+						ret._day = 31;
+						break;
+					case Month.February:
+						if (ret.isLeapYear) {
+							ret._day = 29;
+						}
+						else {
+							ret._day = 28;
+						}
+						break;
+					default:
+						ret._day = 30;
+						break;
+				}
+			}
+			else {
+				ret._day--;
+			}
+		}
+		return ret;
 	}
 
 	string toString() {
