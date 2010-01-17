@@ -148,7 +148,13 @@ float gettimeofday_difference(timeval *b, timeval *a) {
 }
 
 void DateGet(out Month month, out uint day, out uint year) {
-	month = cast(Month)0;
-	day = 0;
-	year = 0;
+	timeval val;
+	gettimeofday(&val, null);
+
+	tm time_struct;
+	gmtime_r(cast(time_t*)&val.tv_sec, &time_struct);
+
+	month = cast(Month)time_struct.tm_mon;
+	day = time_struct.tm_mday;
+	year = time_struct.tm_year + 1900;
 }

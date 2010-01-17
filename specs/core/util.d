@@ -6,7 +6,7 @@ import core.list;
 import interfaces.container;
 
 describe util() {
-	describe typeIdentification() {
+	describe typeTemplates() {
 		it should_determine_if_it_is_a_type () {
 			should(IsType!(int));
 			shouldNot(IsType!(int[]));
@@ -90,7 +90,64 @@ describe util() {
 			should(IsArray!(int[]));
 			shouldNot(IsArray!(int));
 		}
+		
+		it should_determine_the_superclass {
+			class A{}
+			class B : A {}
+			class C : B {}
 
+			should(Super!(B).stringof == "A");
+			should(Super!(C).stringof == "B");
+		}
+
+		it should_determine_the_interfaces {
+			class A {}
+			interface E {}
+			interface F {}
+			interface G {}
+			class B : A,G {}
+			class C : B,E,F {}
+
+			should(Interfaces!(C).stringof == "(E, F)");
+		}
+
+		it should_determine_the_arraytype {
+			should(ArrayType!(int[]).stringof == "int");
+		}
 	}
 
+	describe stringTemplates {
+		it should_capitalize_a_string {
+			should(Capitalize!("string") == "String");
+			should(Capitalize!("String") == "String");
+		}
+
+		it should_trim_whitespace_from_the_left {
+			should(TrimL!("string") == "string");
+			should(TrimL!("   string") == "string");
+			should(TrimL!("string   ") == "string   ");
+			should(TrimL!("   string   ") == "string   ");
+
+			should(TrimL!("\t\n\rstring") == "string");
+			should(TrimL!("string\t\n\r") == "string\t\n\r");
+			should(TrimL!("\t\n\rstring\t\n\r") == "string\t\n\r");
+		}
+
+		it should_trim_whitespace_from_the_right {
+			should(TrimR!("string") == "string");
+			should(TrimR!("   string") == "   string");
+			should(TrimR!("string   ") == "string");
+			should(TrimR!("   string   ") == "   string");
+
+			should(TrimR!("\t\n\rstring") == "\t\n\rstring");
+			should(TrimR!("string\t\n\r") == "string");
+			should(TrimR!("\t\n\rstring\t\n\r") == "\t\n\rstring");
+		}
+
+		it should_remove_spaces {
+			should(RemoveSpaces!("string") == "string");
+			should(RemoveSpaces!(" s t r i n g ") == "string");
+			should(RemoveSpaces!("\ts\nt\rr\ti\nn\rg") == "string");
+		}
+	}
 }
