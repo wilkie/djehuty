@@ -13,76 +13,35 @@ module core.exception;
 import core.string;
 import core.definitions;
 
+template CustomException(char[] name, char[] error, char[] error_more) {
+	const char[] CustomException = `
+		class `~name~` : Exception {
+			this() {
+				super("`~error~`");
+			}
+
+			this(String msg) {
+				super("`~error~error_more~`" ~ msg.toString());
+			}
+
+			this(string msg) {
+				super("`~error~error_more~`" ~ msg);
+			}
+		}
+	`;
+}
+
 // Exceptions for file IO
 
-class FileNotFound : Exception {
-	this() {
-		super("File Not Found");
-	}
+mixin(CustomException!("FileNotFound", "File Not Found", ": "));
 
-	this(String path) {
-		super("File Not Found: " ~ path.toString());
-	}
-
-	this(string path) {
-		super("File Not Found: " ~ path);
-	}
-}
-
-class DirectoryNotFound : Exception {
-	this() {
-		super("Directory Not Found");
-	}
-
-	this(String path) {
-		super("Directory Not Found: " ~ path.toString());
-	}
-
-	this(string path) {
-		super("Directory Not Found: " ~ path);
-	}
-}
+mixin(CustomException!("DirectoryNotFound", "Directory Not Found", ": "));
 
 // Exceptions for data structures
 
-class OutOfElements : Exception {
-	this() {
-		super("Out of Elements");
-	}
+mixin(CustomException!("OutOfElements", "Out of Elements", " in "));
 
-	this(String classname) {
-		super("Out of Elements in " ~ classname.toString());
-	}
+mixin(CustomException!("OutOfBounds", "Out of Bounds", " in "));
 
-	this(string classname) {
-		super("Out of Elements in " ~ classname);
-	}
-}
+mixin(CustomException!("ElementNotFound", "Element Not Found", " in "));
 
-class OutOfBounds : Exception {
-	this() {
-		super("Out of Bounds");
-	}
-
-	this(String classname) {
-		super("Out of Bounds in " ~ classname.toString());
-	}
-
-	this(string classname) {
-		super("Out of Bounds in " ~ classname);
-	}
-}
-
-class ElementNotFound : Exception {
-	this() {
-		super("Element Not Found");
-	}
-
-	this(String classname) {
-		super("Element Not Found in " ~ classname.toString());
-	}
-
-	this(string classname) {
-		super("Element Not Found in " ~ classname);
-	}
-}
