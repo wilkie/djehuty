@@ -485,8 +485,11 @@ class MyApp : GuiApplication {
 	override void onApplicationStart() {
 		wnd = new MyWindow();
 		wnd.visible = true;
-		Date d = new Date();
+		Date d = Date.Local();
+
+		Locale.id = LocaleId.French_FR;
 		Console.putln(d);
+		Console.putln(d.dayOfWeek);
 
 		push(wnd);
 	}
