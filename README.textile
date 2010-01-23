@@ -2,59 +2,59 @@ h1. Djehuty
 
 h2. A Framework Built on a Philosophy
 
- It is our belief that the importance lies not in the implementations of
- software, but rather the eventual usage of that software. If premature
- optimization is an evil of our trade, and since implementations once
- verified for correctness are merely useful for profiling, then premature
- implementation is just as evil.
+	It is our belief that the importance lies not in the implementations of
+	software, but rather the eventual usage of that software. If premature
+	optimization is an evil of our trade, and since implementations once
+	verified for correctness are merely useful for profiling, then premature
+	implementation is just as evil.
 
- The proof of this is rather intuitive, and we will leave the exercise to
- the reader. A piece of this proof, however, is better said than left unknown.
- This is the fact that developers see the benefit in forking implementations.
- This will remain true. When implementations are forked, it is necessary to
- also fork the tests. Yet if one was going to code a new implementation of
- a procedure, why would they fork the implementations and not simply fork
- the tests? All implementations are rooted at a single set of tests.
+	The proof of this is rather intuitive, and we will leave the exercise to
+	the reader. A piece of this proof, however, is better said than left unknown.
+	This is the fact that developers see the benefit in forking implementations.
+	This will remain true. When implementations are forked, it is necessary to
+	also fork the tests. Yet if one was going to code a new implementation of
+	a procedure, why would they fork the implementations and not simply fork
+	the tests? All implementations are rooted at a single set of tests.
 
- Furthermore, any implementation must be verifiable with the same tests. This
- implies that any implementation must share an interface. An interface, as
- defined here, is the view of the implementation seen by the user that
- provides expected public behaviors. The view of the implementation is known
- via the interface, and the public behavior is known via the test.
+	Furthermore, any implementation must be verifiable with the same tests. This
+	implies that any implementation must share an interface. An interface, as
+	defined here, is the view of the implementation seen by the user that
+	provides expected public behaviors. The view of the implementation is known
+	via the interface, and the public behavior is known via the test.
 
- Why is this important? It makes software engineering trivial. With the
- dependencies in place as described in the above paragraph, we know the
- order to produce any implementation. The correct development path is Tests
- then Interfaces then Implementations, where one will reuse as much to the
- left as possible. For any implementation, there is only one interface and
- one set of tests.
+	Why is this important? It makes software engineering trivial. With the
+	dependencies in place as described in the above paragraph, we know the
+	order to produce any implementation. The correct development path is Tests
+	then Interfaces then Implementations, where one will reuse as much to the
+	left as possible. For any implementation, there is only one interface and
+	one set of tests.
 
- When one writes a new piece of code, it must ask itself whether or not it is
- an implementation of an interface that already exists. If so, it will simply
- fork this interface and the tests and watch them fail. The developer will
- call it a day when the tests succeed. After this, two implementations may
- be profiled against one another.
+	When one writes a new piece of code, it must ask itself whether or not it is
+	an implementation of an interface that already exists. If so, it will simply
+	fork this interface and the tests and watch them fail. The developer will
+	call it a day when the tests succeed. After this, two implementations may
+	be profiled against one another.
 
- If an interface does not exist, a developer will write the tests. This is a 
- good practice for many reasons. It will allow the developer to consider
- first the public behaviors of the implementation. These will suggest what needs
- to be hidden or revealed to the user. Knowing this will lend itself to
- developing the interface. At first the tests will fail. After the interface is
- written, the tests will fail, but they will be complete. Only the behavior
- is incorrect. After this point, it is the same as if the tests were forked.
- The developer will write the implementation until the tests succeed.
+	If an interface does not exist, a developer will write the tests. This is a 
+	good practice for many reasons. It will allow the developer to consider
+	first the public behaviors of the implementation. These will suggest what needs
+	to be hidden or revealed to the user. Knowing this will lend itself to
+	developing the interface. At first the tests will fail. After the interface is
+	written, the tests will fail, but they will be complete. Only the behavior
+	is incorrect. After this point, it is the same as if the tests were forked.
+	The developer will write the implementation until the tests succeed.
 
- Overall, this style of development will lead to a completely verifiable and
- extensible system. Implementations can be switched out either statically or
- dynamically with regard to profiling considerations or size considerations.
- This can happen without any further development concerns of the user. Also,
- there will be no concern over whether or not one implementation will alter
- the behavior of another. Each implementation will be equivalent in that
- their behaviors will be consistant.
+	Overall, this style of development will lead to a completely verifiable and
+	extensible system. Implementations can be switched out either statically or
+	dynamically with regard to profiling considerations or size considerations.
+	This can happen without any further development concerns of the user. Also,
+	there will be no concern over whether or not one implementation will alter
+	the behavior of another. Each implementation will be equivalent in that
+	their behaviors will be consistant.
 
- The Djehuty Framework is then not primarily concerned with being a set
- of libraries or a standard library. It is concerned with being a set of
- tests and interfaces. It is the goal of this project to allow innovation
- without headache and the ease of deployment, verifiability, and consistency
- in the realm of software development.
+	The Djehuty Framework is then not primarily concerned with being a set
+	of libraries or a standard library. It is concerned with being a set of
+	tests and interfaces. It is the goal of this project to allow innovation
+	without headache and the ease of deployment, verifiability, and consistency
+	in the realm of software development.
 
