@@ -169,8 +169,19 @@ describe random() {
 	}
 
 	describe choose() {
-		// TODO: Test needed for choosing from something not iterable.
-		// TODO: Test needed for choosing from an empty list.
+		it should_fail_on_empty_array() {
+			auto r = new Random();
+
+			shouldThrow();
+			r.choose([]);
+		}
+
+		it should_fail_on_empty_list() {
+			auto r = new Random();
+
+			shouldThrow();
+			r.choose(new List!(uint));
+		}
 
 		it should_return_the_item_given_one() {
 			auto r = new Random();
