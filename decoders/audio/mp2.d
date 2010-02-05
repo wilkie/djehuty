@@ -15,6 +15,7 @@ import decoders.decoder;
 import core.stream;
 import core.time;
 import core.string;
+import core.definitions;
 
 import io.wavelet;
 import io.audio;
@@ -337,8 +338,12 @@ private {
 
 // Description: This is the MPEG Layer 2 audio codec.
 class MP2Decoder : AudioDecoder {
-	String name() {
-		return new String("MPEG Layer 2");
+	override string name() {
+		return "MPEG Layer 2";
+	}
+
+	override string extension() {
+		return "mp2";
 	}
 
 	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {

@@ -54,6 +54,55 @@ template RunCodec(string codec) {
 	`;
 }
 
+template MixinType(string typename) {
+	const char[] MixinType = "alias " ~ typename ~ " ToType;";
+}
+
+template ToType(string typename) {
+	mixin(MixinType!(typename));
+}
+
+template TestCodec(string codec) {
+	AudioDecoder TestCodec(string extension) {
+		AudioDecoder ret = new ToType!(codec ~ "Decoder");
+		if (ret.extension == extension) {
+			return ret;
+		}
+		return null;
+	}
+}
+
+AudioDecoder findBestCodec(string extension) {
+	AudioDecoder ret;
+	version(NoWaveAudio) {
+	}
+	else {
+		ret = TestCodec!("WAV")(extension);
+		if (ret !is null) {
+			return ret;
+		}
+	}
+
+	version(NoMp2Audio) {
+	}
+	else {
+		ret = TestCodec!("MP2")(extension);
+		if (ret !is null) {
+			return ret;
+		}
+	}
+
+	version(NoMp3Audio) {
+	}
+	else {
+		ret = TestCodec!("MP3")(extension);
+		if (ret !is null) {
+			return ret;
+		}
+	}
+	return null;
+}
+
 StreamData runAllCodecs(ref AudioDecoder audioCodec, Stream stream, Wavelet buffer, ref AudioInfo wf) {
 	StreamData ret;
 	ulong pos;

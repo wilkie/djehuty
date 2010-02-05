@@ -15,6 +15,7 @@ import decoders.decoder;
 import core.stream;
 import core.time;
 import core.string;
+import core.definitions;
 
 import io.wavelet;
 import io.audio;
@@ -25,35 +26,35 @@ import math.common;
 // initialize the array to zero
 typedef double zerodouble = 0.0;
 
-template FromBigEndian(uint input)
-{
-	version (LittleEndian)
-	{
+template FromBigEndian(uint input) {
+	version (LittleEndian) {
 		const auto FromBigEndian = (input >> 24) | ((input >> 8) & 0x0000FF00) | ((input << 8) & 0x00FF0000) | ((input << 24) & 0xFF000000);
 	}
-	else
-	{
+	else {
 		const auto FromBigEndian = input;
 	}
 }
 
-template FromBigEndianBitIndex32(uint index)
-{
-	version (LittleEndian)
-	{
+template FromBigEndianBitIndex32(uint index) {
+	version (LittleEndian) {
 		const auto FromBigEndianBitIndex32 = ((3 - cast(uint)(index/8)) * 8) + (index % 8);
 	}
-	else
-	{
+	else {
 		const auto FromBigEndianBitIndex32 = index;
 	}
 }
 
 class MP3Decoder : AudioDecoder {
 
-	String name() {
-		return new String("MPEG Layer 3");
+	string name() {
+		return "MPEG Layer 3";
 	}
+
+	string extension() {
+		return "mp3";
+	}
+
+	bool firstTime = true;
 
 	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {
 		for(;;) {
@@ -72,6 +73,13 @@ class MP3Decoder : AudioDecoder {
 				case MP3_BUFFER_AUDIO:
 
 					samplesLeft = 1728 * NUM_BLOCKS;
+
+					if (toBuffer !is null) {
+						samplesLeft = cast(int)(toBuffer.length() / 1728) * 1728;
+						samplesLeft += 1728;
+						bufferSize = samplesLeft;
+					}
+
 					bufferSize = samplesLeft;
 
 					decoderState = MP3_READ_HEADER;
@@ -115,7 +123,7 @@ class MP3Decoder : AudioDecoder {
 								id3length |= b;
 							}
 
-							Console.putln("id3 length: ", new String("%x", id3length));
+							//Console.putln("id3 length: ", new String("%x", id3length));
 						}
 
 						if (!stream.skip(id3length)) {
@@ -249,13 +257,14 @@ class MP3Decoder : AudioDecoder {
 							if (toBuffer !is null) {
 								if (toBuffer.length() != bufferSize) {
 									//Console.putln("resize ", bufferSize, " from ", toBuffer.length());
-									toBuffer.resize(bufferSize);
+									//toBuffer.resize(bufferSize);
 									//Console.putln("resize ", bufferSize, " from ", toBuffer.length());
 								}
 								toBuffer.rewind();
 							}
 
 							if (toBuffer is null && isSeek == false) {
+								decoderState = MP3_READ_AUDIO_DATA_PREAMBLE;
 								return StreamData.Accepted;
 							}
 						}
@@ -264,20 +273,18 @@ class MP3Decoder : AudioDecoder {
 
 						continue;
 					}
-					else
-					{
+					else {
 						Console.putln("cur test ", mpeg_header & MPEG_SYNC_BITS, " @ ", stream.position - 4);
 						ubyte curByte;
 
-						// test 5K worth
+						// test 15K worth
 						syncAmount++;
 
 						if (syncAmount == 1024*15) {
 							return StreamData.Invalid;
 						}
 
-						if (!stream.read(curByte))
-						{
+						if (!stream.read(curByte)) {
 							return StreamData.Required;
 						}
 
@@ -296,10 +303,22 @@ class MP3Decoder : AudioDecoder {
 					decoderState = MP3_READ_AUDIO_DATA;
 
 					continue;
-					
+				
+				case MP3_READ_AUDIO_DATA_PREAMBLE:
+				
+					if (toBuffer !is null) {
+						samplesLeft = cast(int)(toBuffer.length() / 1728) * 1728;
+						samplesLeft += 1728;
+						bufferSize = samplesLeft;
+					}
+
+					decoderState = MP3_READ_AUDIO_DATA;
+
+					/* FOLLOW THROUGH */
+
 				case MP3_READ_AUDIO_DATA:
 				//	Console.putln("pos: ", new String("%x", stream.position));
-					
+
 					// curByte is currently at the end of the last frame (supposedly)
 					// main_data_end depicts the end of the data frame
 
@@ -963,7 +982,7 @@ static bool output = false;
 				if (switch_point[gr][ch] == 0) {
 					for (uint j = 0; j < 3; j++) {
 						int scalefactorCount = -1;
-						
+
 						for (scalefactorBand = 12; scalefactorBand >= 0; scalefactorBand--) {
 							int lines = sfindex_short[header.SamplingFrequency][scalefactorBand + 1]
 								- sfindex_short[header.SamplingFrequency][scalefactorBand];
@@ -1753,7 +1772,7 @@ static bool output = false;
 	ushort crc;
 
 	// the number of samples left to decode
-	uint samplesLeft;
+	int samplesLeft;
 
 	// the buffer size and information
 	uint bufferSize;
@@ -2069,6 +2088,7 @@ private:
 		MP3_AMBIGUOUS_SYNC,
 		MP3_READ_CRC,
 		MP3_READ_AUDIO_DATA,
+		MP3_READ_AUDIO_DATA_PREAMBLE,
 		MP3_READ_AUDIO_DATA_SINGLE_CHANNEL,
 		MP3_READ_AUDIO_DATA_SCALE_FACTORS,
 		MP3_READ_AUDIO_DATA_JOINT_STEREO,
@@ -2414,4 +2434,6 @@ private:
 
 	// number of blocks (of 1728 samples) to buffer
 	const auto NUM_BLOCKS = 40;
+	
+	Wavelet tempBuffer;
 }

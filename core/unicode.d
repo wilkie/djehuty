@@ -94,19 +94,15 @@ private bool isLegalUTF8(char* source, int length) {
 // For efficiency, we have full
 // control of the buffer length.
 
-struct Unicode
-{
+struct Unicode {
 static:
 
-	string toUtf8(string src)
-	{
+	string toUtf8(string src) {
 		return cast(string)src.dup;
 	}
 
-	string toUtf8(wstring src)
-	{
-		if (src.length == 0)
-		{
+	string toUtf8(wstring src) {
+		if (src.length == 0) {
 			return cast(string)"";
 		}
 
@@ -125,24 +121,20 @@ static:
 
 		dchar ch;
 
-		while(source !is sourceEnd)
-		{
+		while(source !is sourceEnd) {
 
 			ch = *source++;
 
 			// If we have a surrogate pair, we convert to UTF-32
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-			{
+			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
 				dchar ch2 = cast(dchar)*source;
 
 				/* If it's a low surrogate, convert to UTF32. */
-				if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)
-				{
+				if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END) {
 					ch = ((ch - UNI_SUR_HIGH_START) << 10) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 					source++;
 				}
-				else
-				{
+				else {
 					// unpaired high surrogate
 					// illegal
 
@@ -151,8 +143,7 @@ static:
 					break;
 				}
 			}
-			else if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END)
-			{
+			else if (ch >= UNI_SUR_LOW_START && ch <= UNI_SUR_LOW_END) {
 				// illegal
 
 				// TODO: do not break, just add a character and continue to produce valid string
@@ -164,20 +155,16 @@ static:
 			if (ch < cast(dchar)0x80) {
 				bytesToWrite = 1;
 			}
-			else if (ch < cast(dchar)0x800)
-			{
+			else if (ch < cast(dchar)0x800) {
 				bytesToWrite = 2;
 			}
-			else if (ch < cast(dchar)0x10000)
-			{
+			else if (ch < cast(dchar)0x10000) {
 				bytesToWrite = 3;
 			}
-			else if (ch < cast(dchar)0x110000)
-			{
+			else if (ch < cast(dchar)0x110000) {
 				bytesToWrite = 4;
 			}
-			else
-			{
+			else {
 				bytesToWrite = 3;
 				ch = UNI_REPLACEMENT_CHAR;
 			}
@@ -199,10 +186,8 @@ static:
 //		return "";
 	}
 
-	string toUtf8(dstring src)
-	{
-		if (src is null || src.length == 0)
-		{
+	string toUtf8(dstring src) {
+		if (src is null || src.length == 0) {
 			return cast(string)"";
 		}
 
@@ -231,24 +216,19 @@ static:
 			 * illegally large UTF32 things (> Plane 17) into replacement chars.
 			 */
 
-			if (ch < cast(dchar)0x80)
-			{
+			if (ch < cast(dchar)0x80) {
 				bytesToWrite = 1;
 			}
-			else if (ch < cast(dchar)0x800)
-			{
+			else if (ch < cast(dchar)0x800) {
 				bytesToWrite = 2;
 			}
-			else if (ch < cast(dchar)0x10000)
-			{
+			else if (ch < cast(dchar)0x10000) {
 				bytesToWrite = 3;
 			}
-			else if (ch <= UNI_MAX_LEGAL_UTF32)
-			{
+			else if (ch <= UNI_MAX_LEGAL_UTF32) {
 				bytesToWrite = 4;
 			}
-			else
-			{
+			else {
 				bytesToWrite = 3;
 				ch = UNI_REPLACEMENT_CHAR;
 			}
@@ -272,10 +252,8 @@ static:
 		return ret;
 	}
 
-	wstring toUtf16(string src)
-	{
-		if (src.length == 0)
-		{
+	wstring toUtf16(string src) {
+		if (src.length == 0) {
 			return cast(wstring)"";
 		}
 
@@ -289,8 +267,7 @@ static:
 
 		dchar ch;
 
-		while (source < sourceEnd)
-		{
+		while (source < sourceEnd) {
 			ch = 0;
 
 			ushort extraBytesToRead = trailingBytesForUTF8[*source];
@@ -318,23 +295,19 @@ static:
 
 			if (ch <= UNI_MAX_BMP) { /* Target is a character <= 0xFFFF */
 				/* UTF-16 surrogate values are illegal in UTF-32 */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
 					// illegal
 					*target++ = UNI_REPLACEMENT_CHAR;
 				}
-				else
-				{
+				else {
 					*target++ = cast(wchar)ch; /* normal case */
 				}
 			}
-			else if (ch > UNI_MAX_UTF16)
-			{
+			else if (ch > UNI_MAX_UTF16) {
 				// illegal
 				*target++ = UNI_REPLACEMENT_CHAR;
 			}
-			else
-			{
+			else {
 				/* target is a character in range 0xFFFF - 0x10FFFF. */
 
 				ch -= halfBase;
@@ -346,15 +319,12 @@ static:
 		return cast(wstring)container[0..target - container.ptr];
 	}
 
-	wstring toUtf16(wstring src)
-	{
+	wstring toUtf16(wstring src) {
 		return cast(wstring)src.dup;
 	}
 
-	wstring toUtf16(dstring src)
-	{
-		if (src.length == 0)
-		{
+	wstring toUtf16(dstring src) {
+		if (src.length == 0) {
 			return cast(wstring)"";
 		}
 
@@ -370,26 +340,21 @@ static:
 
 		while (source < sourceEnd) {
 			ch = *source++;
-			if (ch <= UNI_MAX_BMP)
-			{
+			if (ch <= UNI_MAX_BMP) {
 				/* Target is a character <= 0xFFFF */
 
 				/* UTF-16 surrogate values are illegal in UTF-32; 0xffff or 0xfffe are both reserved values */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
 					*target++ = UNI_REPLACEMENT_CHAR;
 				}
-				else
-				{
+				else {
 					*target++ = cast(wchar)ch; /* normal case */
 				}
 			}
-			else if (ch > UNI_MAX_LEGAL_UTF32)
-			{
+			else if (ch > UNI_MAX_LEGAL_UTF32) {
 				*target++ = UNI_REPLACEMENT_CHAR;
 			}
-			else
-			{
+			else {
 				/* target is a character in range 0xFFFF - 0x10FFFF. */
 				ch -= halfBase;
 				*target++ = cast(wchar)((ch >> halfShift) + UNI_SUR_HIGH_START);
@@ -400,10 +365,8 @@ static:
 		return cast(wstring)container[0..target - container.ptr];
 	}
 
-	dstring toUtf32(string src)
-	{
-		if (src.length == 0)
-		{
+	dstring toUtf32(string src) {
+		if (src.length == 0) {
 			return cast(dstring)"";
 		}
 
@@ -453,17 +416,14 @@ static:
 				 * UTF-16 surrogate values are illegal in UTF-32, and anything
 				 * over Plane 17 (> 0x10FFFF) is illegal.
 				 */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
 					*target++ = UNI_REPLACEMENT_CHAR;
 				}
-				else
-				{
+				else {
 					*target++ = ch;
 				}
 			}
-			else
-			{
+			else {
 				/* i.e., ch > UNI_MAX_LEGAL_UTF32 */
 				// sourceIllegal
 				*target++ = UNI_REPLACEMENT_CHAR;
@@ -473,10 +433,8 @@ static:
 		return cast(dstring)container[0..target - container.ptr];
 	}
 
-	dstring toUtf32(wstring src)
-	{
-		if (src.length == 0)
-		{
+	dstring toUtf32(wstring src) {
+		if (src.length == 0) {
 			return cast(dstring)"";
 		}
 
@@ -493,21 +451,18 @@ static:
 		while (source < sourceEnd) {
 			ch = *source++;
 			/* If we have a surrogate pair, convert to UTF32 first. */
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-			{
+			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
 				/* If the 16 bits following the high surrogate are in the source buffer... */
-				if (source < sourceEnd)
-				{
+				if (source < sourceEnd) {
 					ch2 = *source;
 					/* If it's a low surrogate, convert to UTF32. */
-					if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)
-					{
+					if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END) {
 						ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 						source++;
 					}
 				}
-				else
-				{ /* We don't have the 16 bits following the high surrogate. */
+				else {
+					/* We don't have the 16 bits following the high surrogate. */
 					//--source; /* return to the high surrogate */
 					// sourceExhausted
 					break;
@@ -520,133 +475,55 @@ static:
 		return cast(dstring)container[0..target - container.ptr];
 	}
 
-	dstring toUtf32(dstring src)
-	{
+	dstring toUtf32(dstring src) {
 		return cast(dstring)src.dup;
 	}
 
-	Char[] toNative(string src)
-	{
-		static if (Char.sizeof == dchar.sizeof)
-		{
+	Char[] toNative(string src) {
+		static if (Char.sizeof == dchar.sizeof) {
 			return cast(Char[])toUtf32(src);
 		}
-		else static if (Char.sizeof == wchar.sizeof)
-		{
+		else static if (Char.sizeof == wchar.sizeof) {
 			return cast(Char[])toUtf16(src);
 		}
-		else
-		{
+		else {
 			return cast(Char[])toUtf8(src);
 		}
 	}
 
-	Char[] toNative(wstring src)
-	{
-		static if (Char.sizeof == dchar.sizeof)
-		{
+	Char[] toNative(wstring src) {
+		static if (Char.sizeof == dchar.sizeof) {
 			return cast(Char[])toUtf32(src);
 		}
-		else static if (Char.sizeof == wchar.sizeof)
-		{
+		else static if (Char.sizeof == wchar.sizeof) {
 			return cast(Char[])toUtf16(src);
 		}
-		else
-		{
+		else {
 			return cast(Char[])toUtf8(src);
 		}
 	}
 
-	Char[] toNative(dstring src)
-	{
-		static if (Char.sizeof == dchar.sizeof)
-		{
+	Char[] toNative(dstring src) {
+		static if (Char.sizeof == dchar.sizeof) {
 			return cast(Char[])toUtf32(src);
 		}
-		else static if (Char.sizeof == wchar.sizeof)
-		{
+		else static if (Char.sizeof == wchar.sizeof) {
 			return cast(Char[])toUtf16(src);
 		}
-		else
-		{
+		else {
 			return cast(Char[])toUtf8(src);
 		}
 	}
-
-
-
 
 	// character conversions
-	dchar toUtf32Char(string src)
-	{
+	dchar toUtf32Char(string src) {
 		// grab the first character,
 		// convert it to a UTF-32 character,
 		// and then return
 		return toUtf32(src)[0];
-
-		/+dchar[] container = new dchar[src.length];
-
-		char* source = src.ptr;
-		char* sourceEnd = &src[$-1] + 1;
-
-		dchar* target = container.ptr;
-		dchar* targetEnd = &container[$-1] + 1;
-
-		ushort extraBytesToRead;
-
-		dchar ch;
-
-		extraBytesToRead = trailingBytesForUTF8[*source];
-
-		if (source + extraBytesToRead >= sourceEnd) {
-			// sourceExhausted
-			return UNI_REPLACEMENT_CHAR;
-		}
-
-		if (!isLegalUTF8(source, extraBytesToRead+1)) {
-			// sourceIllegal
-			return UNI_REPLACEMENT_CHAR;
-		}
-
-		/*
-		 * The cases all fall through. See "Note A" below.
-		 */
-		switch (extraBytesToRead) {
-			case 5: ch += *source++; ch <<= 6;
-			case 4: ch += *source++; ch <<= 6;
-			case 3: ch += *source++; ch <<= 6;
-			case 2: ch += *source++; ch <<= 6;
-			case 1: ch += *source++; ch <<= 6;
-			case 0: ch += *source++;
-			default: break;
-		}
-
-		ch -= offsetsFromUTF8[extraBytesToRead];
-
-		if (ch <= UNI_MAX_LEGAL_UTF32) {
-			/*
-			 * UTF-16 surrogate values are illegal in UTF-32, and anything
-			 * over Plane 17 (> 0x10FFFF) is illegal.
-			 */
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-			{
-				return UNI_REPLACEMENT_CHAR;
-			}
-			// else: found a valid character
-		}
-		else
-		{
-			/* i.e., ch > UNI_MAX_LEGAL_UTF32 */
-			// sourceIllegal
-			return UNI_REPLACEMENT_CHAR;
-		}
-
-		return ch;
-		+/
 	}
 
-	dchar toUtf32Char(wstring src)
-	{
+	dchar toUtf32Char(wstring src) {
 		// grab the first character,
 		// convert it to a UTF-32 character,
 		// and then return
@@ -658,25 +535,20 @@ static:
 
 		ch = *source++;
 		/* If we have a surrogate pair, convert to UTF32 first. */
-		if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-		{
+		if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
 			/* If the 16 bits following the high surrogate are in the source buffer... */
-			if (source < sourceEnd)
-			{
+			if (source < sourceEnd) {
 				ch2 = *source;
 				/* If it's a low surrogate, convert to UTF32. */
-				if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)
-				{
+				if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END) {
 					ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 					// found a valid character
 				}
-				else
-				{
+				else {
 					return UNI_REPLACEMENT_CHAR;
 				}
 			}
-			else
-			{
+			else {
 				/* We don't have the 16 bits following the high surrogate. */
 				// sourceExhausted
 				return UNI_REPLACEMENT_CHAR;
@@ -687,8 +559,7 @@ static:
 		return ch;
 	}
 
-	dchar toUtf32Char(dstring src)
-	{
+	dchar toUtf32Char(dstring src) {
 		// Useless function
 
 		return src[0];
@@ -699,8 +570,7 @@ static:
 
 
 
-	bool isDeadChar(dchar chr)
-	{
+	bool isDeadChar(dchar chr) {
 		// if it is a dead character
 		return ((
 			(chr >= 0x300 && chr <= 0x36F) ||		// Combining Diacritical Marks
@@ -710,30 +580,15 @@ static:
 			));
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// character conversions
-	dchar[] toUtf32Chars(string src)
-	{
+	dchar[] toUtf32Chars(string src) {
 		// grab the first character,
 		// convert it to a UTF-32 character,
 		// and then return
 
 		dchar[] container;
 
-		if (src.length == 0)
-		{
+		if (src.length == 0) {
 			return [];
 		}
 
@@ -744,16 +599,14 @@ static:
 
 		dchar ch;
 
-		while (source < sourceEnd)
-		{
+		while (source < sourceEnd) {
 			ch = 0;
 
 			extraBytesToRead = trailingBytesForUTF8[*source];
 
 			if (source + extraBytesToRead >= sourceEnd) {
 				// sourceExhausted
-				if (container.length == 0)
-				{
+				if (container.length == 0) {
 					container ~=  UNI_REPLACEMENT_CHAR;
 				}
 				return container;
@@ -761,8 +614,7 @@ static:
 
 			if (!isLegalUTF8(source, extraBytesToRead+1)) {
 				// sourceIllegal
-				if (container.length == 0)
-				{
+				if (container.length == 0) {
 					container ~=  UNI_REPLACEMENT_CHAR;
 				}
 				return container;
@@ -788,31 +640,25 @@ static:
 				 * UTF-16 surrogate values are illegal in UTF-32, and anything
 				 * over Plane 17 (> 0x10FFFF) is illegal.
 				 */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
-					if (container.length == 0)
-					{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
+					if (container.length == 0) {
 						container ~=  UNI_REPLACEMENT_CHAR;
 					}
 					return container;
 				}
 				// else: found a valid character
 			}
-			else
-			{
+			else {
 				/* i.e., ch > UNI_MAX_LEGAL_UTF32 */
 				// sourceIllegal
-				if (container.length == 0)
-				{
+				if (container.length == 0) {
 					container ~=  UNI_REPLACEMENT_CHAR;
 				}
 				return container;
 			}
 
-			if (container.length > 0)
-			{
-				if (!isDeadChar(ch))
-				{
+			if (container.length > 0) {
+				if (!isDeadChar(ch)) {
 					break;
 				}
 			}
@@ -822,15 +668,13 @@ static:
 		return container;
 	}
 
-	dchar[] toUtf32Chars(wstring src)
-	{
+	dchar[] toUtf32Chars(wstring src) {
 		// grab the first character,
 		// convert it to a UTF-32 character,
 		// and then return
 		dchar[] container;
 
-		if (src.length == 0)
-		{
+		if (src.length == 0) {
 			return [];
 		}
 
@@ -839,30 +683,24 @@ static:
 
 		dchar ch, ch2;
 
-		while(source < sourceEnd)
-		{
+		while(source < sourceEnd) {
 			ch = *source++;
 			/* If we have a surrogate pair, convert to UTF32 first. */
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-			{
+			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
 				/* If the 16 bits following the high surrogate are in the source buffer... */
-				if (source < sourceEnd)
-				{
+				if (source < sourceEnd) {
 					ch2 = *source;
 					/* If it's a low surrogate, convert to UTF32. */
-					if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)
-					{
+					if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END) {
 						ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 						// found a valid character
 					}
-					else
-					{
+					else {
 						container ~= UNI_REPLACEMENT_CHAR;
 						return container;
 					}
 				}
-				else
-				{
+				else {
 					/* We don't have the 16 bits following the high surrogate. */
 					// sourceExhausted
 					container ~= UNI_REPLACEMENT_CHAR;
@@ -870,19 +708,15 @@ static:
 				}
 			}
 			// else: found a valid character
-			if (container.length > 0)
-			{
-				if (isDeadChar(ch))
-				{
+			if (container.length > 0) {
+				if (isDeadChar(ch)) {
 					container ~= ch;
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
-			else
-			{
+			else {
 				container ~= ch;
 			}
 		}
@@ -890,25 +724,20 @@ static:
 		return container;
 	}
 
-	dchar[] toUtf32Chars(dstring src)
-	{
+	dchar[] toUtf32Chars(dstring src) {
 		dchar[] container;
 
-		if (src.length == 0)
-		{
+		if (src.length == 0) {
 			return [];
 		}
 
 		container ~= src[0];
 
-		foreach(s; src[1..$])
-		{
-			if (isDeadChar(s))
-			{
+		foreach(s; src[1..$]) {
+			if (isDeadChar(s)) {
 				container ~= s;
 			}
-			else
-			{
+			else {
 				break;
 			}
 		}
@@ -919,12 +748,10 @@ static:
 
 
 
-	wchar[] toUtf16Chars(dstring src)
-	{
+	wchar[] toUtf16Chars(dstring src) {
 		wchar[] container;
 
-		if (src.length == 0)
-		{
+		if (src.length == 0) {
 			return cast(wchar[])container;
 		}
 
@@ -935,42 +762,33 @@ static:
 
 		while (source < sourceEnd) {
 			ch = *source++;
-			if (ch <= UNI_MAX_BMP)
-			{
+			if (ch <= UNI_MAX_BMP) {
 				/* Target is a character <= 0xFFFF */
 
 				/* UTF-16 surrogate values are illegal in UTF-32; 0xffff or 0xfffe are both reserved values */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
-					if (container.length == 0)
-					{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
+					if (container.length == 0) {
 						container ~= UNI_REPLACEMENT_CHAR;
 					}
 					return cast(wchar[])container;
 				}
-				else
-				{
-					if (container.length > 0 && !isDeadChar(ch))
-					{
+				else {
+					if (container.length > 0 && !isDeadChar(ch)) {
 						break;
 					}
 					container ~= cast(wchar)ch; /* normal case */
 				}
 			}
-			else if (ch > UNI_MAX_LEGAL_UTF32)
-			{
-				if (container.length == 0)
-				{
+			else if (ch > UNI_MAX_LEGAL_UTF32) {
+				if (container.length == 0) {
 					container ~= UNI_REPLACEMENT_CHAR;
 				}
 				return cast(wchar[])container;
 			}
-			else
-			{
+			else {
 				/* target is a character in range 0xFFFF - 0x10FFFF. */
 				ch -= halfBase;
-				if (container.length > 0 && !isDeadChar(ch))
-				{
+				if (container.length > 0 && !isDeadChar(ch)) {
 					break;
 				}
 				container ~= cast(wchar)((ch >> halfShift) + UNI_SUR_HIGH_START);
@@ -981,15 +799,10 @@ static:
 		return cast(wchar[])container;
 	}
 
-
-
-
-	char[] toUtf8Chars(dstring src)
-	{
+	char[] toUtf8Chars(dstring src) {
 		char[] container;
 
-		if (src.length == 0)
-		{
+		if (src.length == 0) {
 			return [];
 		}
 
@@ -1001,14 +814,9 @@ static:
 		return cast(char[])container;
 	}
 
-
-
-
 	// string length stuffs
-	uint utflen(string src)
-	{
-		if (src.length == 0)
-		{
+	uint utflen(string src) {
+		if (src.length == 0) {
 			return 0;
 		}
 
@@ -1055,21 +863,18 @@ static:
 				 * UTF-16 surrogate values are illegal in UTF-32, and anything
 				 * over Plane 17 (> 0x10FFFF) is illegal.
 				 */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
 					ch = UNI_REPLACEMENT_CHAR;
 				}
 			}
-			else
-			{
+			else {
 				/* i.e., ch > UNI_MAX_LEGAL_UTF32 */
 				// sourceIllegal
 				ch = UNI_REPLACEMENT_CHAR;
 			}
 
 			// if it is not a dead character
-			if (!isDeadChar(ch))
-			{
+			if (!isDeadChar(ch)) {
 				// it is a valid character
 				len++;
 			}
@@ -1078,10 +883,8 @@ static:
 		return len;
 	}
 
-	uint utflen(wstring src)
-	{
-		if (src.length == 0)
-		{
+	uint utflen(wstring src) {
+		if (src.length == 0) {
 			return 0;
 		}
 
@@ -1092,34 +895,27 @@ static:
 
 		dchar ch, ch2;
 
-		while(source < sourceEnd)
-		{
+		while(source < sourceEnd) {
 			ch = *source++;
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-			{
-				if (source < sourceEnd)
-				{
+			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
+				if (source < sourceEnd) {
 					ch2 = *source;
-					if (!(ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END))
-					{
+					if (!(ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)) {
 						// invalid surrogate
 						source--;
 						ch = UNI_REPLACEMENT_CHAR;
 					}
-					else
-					{
+					else {
 						ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 					}
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
 
 			// if it is not a dead character
-			if (!isDeadChar(ch))
-			{
+			if (!isDeadChar(ch)) {
 				// it is a valid character
 				len++;
 			}
@@ -1128,20 +924,16 @@ static:
 		return len;
 	}
 
-	uint utflen(dstring src)
-	{
-		if (src.length == 0)
-		{
+	uint utflen(dstring src) {
+		if (src.length == 0) {
 			return 0;
 		}
 
 		uint len;
 
-		for (int i=0; i<src.length; i++)
-		{
+		for (int i=0; i<src.length; i++) {
 			// if it is not a dead character
-			if (!isDeadChar(src[i]))
-			{
+			if (!isDeadChar(src[i])) {
 				// it is a valid character
 				len++;
 			}
@@ -1152,10 +944,8 @@ static:
 
 	// Unicode Indices
 
-	uint[] calcIndices(string src)
-	{
-		if (src is null || src == "")
-		{
+	uint[] calcIndices(string src) {
+		if (src is null || src == "") {
 			return [];
 		}
 
@@ -1206,21 +996,18 @@ static:
 				 * UTF-16 surrogate values are illegal in UTF-32, and anything
 				 * over Plane 17 (> 0x10FFFF) is illegal.
 				 */
-				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END)
-				{
+				if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
 					ch = UNI_REPLACEMENT_CHAR;
 				}
 			}
-			else
-			{
+			else {
 				/* i.e., ch > UNI_MAX_LEGAL_UTF32 */
 				// sourceIllegal
 				ch = UNI_REPLACEMENT_CHAR;
 			}
 
 			// if it is not a dead character
-			if (!isDeadChar(ch))
-			{
+			if (!isDeadChar(ch)) {
 				// it is a valid character
 				*retPtr++ = i;
 				len++;
@@ -1232,10 +1019,8 @@ static:
 		return ret[0..len];
 	}
 
-	uint[] calcIndices(wstring src)
-	{
-		if (src is null || src == "")
-		{
+	uint[] calcIndices(wstring src) {
+		if (src is null || src == "") {
 			return [];
 		}
 
@@ -1251,37 +1036,30 @@ static:
 
 		dchar ch, ch2;
 
-		while(source < sourceEnd)
-		{
+		while(source < sourceEnd) {
 			ch = *source++;
 			mv++;
-			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END)
-			{
-				if (source < sourceEnd)
-				{
+			if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
+				if (source < sourceEnd) {
 					ch2 = *source++;
 					mv++;
-					if (!(ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END))
-					{
+					if (!(ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END)) {
 						// invalid surrogate
 						mv--;
 						source--;
 						ch = UNI_REPLACEMENT_CHAR;
 					}
-					else
-					{
+					else {
 						ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
 					}
 				}
-				else
-				{
+				else {
 					break;
 				}
 			}
 
 			// if it is not a dead character
-			if (!isDeadChar(ch))
-			{
+			if (!isDeadChar(ch)) {
 				// it is a valid character
 				*retPtr++ = i;
 				len++;
@@ -1294,10 +1072,8 @@ static:
 		return ret[0..len];
 	}
 
-	uint[] calcIndices(dstring src)
-	{
-		if (src is null || src == "")
-		{
+	uint[] calcIndices(dstring src) {
+		if (src is null || src == "") {
 			return [];
 		}
 
@@ -1305,11 +1081,9 @@ static:
 
 		uint len;
 
-		for (int i=0; i<src.length; i++)
-		{
+		for (int i=0; i<src.length; i++) {
 			// if it is not a dead character
-			if (!isDeadChar(src[i]))
-			{
+			if (!isDeadChar(src[i])) {
 				// it is a valid character
 				ret[len] = i;
 				len++;
@@ -1320,10 +1094,8 @@ static:
 	}
 
 
-	dchar fromCP866(char chr)
-	{
-		if (chr < 0x80)
-		{
+	dchar fromCP866(char chr) {
+		if (chr < 0x80) {
 			return cast(dchar)chr;
 		}
 
@@ -1348,5 +1120,4 @@ private:
 		0x0401, 0x0451, 0x0404, 0x0454, 0x0407, 0x0457, 0x040E, 0x045E, 0x00B0, 0x2219, 0x00B7, 0x221A, 0x2116, 0x00A4, 0x25A0, 0x00A0,
 
 	];
-
 }

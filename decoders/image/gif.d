@@ -14,6 +14,7 @@ import graphics.bitmap;
 import core.string;
 import core.stream;
 import core.color;
+import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
@@ -118,8 +119,8 @@ private {
 
 // Description: The GIF Codec
 class GIFDecoder : ImageDecoder {
-	override String name() {
-		return new String("Graphics Interchange Format");
+	override string name() {
+		return "Graphics Interchange Format";
 	}
 
 	override StreamData decode(Stream stream, ref Bitmap view) {

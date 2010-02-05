@@ -19,6 +19,7 @@ import decoders.decoder;
 import core.stream;
 import core.time;
 import core.string;
+import core.definitions;
 
 import io.wavelet;
 import io.audio;
@@ -29,8 +30,12 @@ import io.console;
 // Description: This is the Microsoft Wave file codec.
 class WAVDecoder : AudioDecoder {
 
-	String name() {
-		return new String("Microsoft Wave");
+	override string name() {
+		return "Microsoft Wave";
+	}
+
+	override string extension() {
+		return "wav;wave";
 	}
 
 	StreamData decode(Stream stream, Wavelet toBuffer, ref AudioInfo wi) {
@@ -76,7 +81,7 @@ class WAVDecoder : AudioDecoder {
 						decoderState = WAVE_STATE_CHUNK_DATA;
 
 						// Get Audio Length
-						Console.putln(curChunk.chunkSize, " , ", FMTHeader.avgBytesPerSecond, " = ", (cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond));
+						//Console.putln(curChunk.chunkSize, " , ", FMTHeader.avgBytesPerSecond, " = ", (cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond));
 						wi.totalTime = cast(long)((cast(float)curChunk.chunkSize / cast(float)FMTHeader.avgBytesPerSecond) * 1000.0);
 
 						dataToRead = curChunk.chunkSize;
@@ -190,8 +195,8 @@ class WAVDecoder : AudioDecoder {
 									// allocate
 									//  (this may look redundant, but this may occur
 									//   when there is only one chunk in the file)
-									Console.putln("Audio Codec : Resizing : " , toBuffer.length(), " : ", dataToRead);
-									toBuffer.resize(dataToRead);
+//									Console.putln("Audio Codec : Resizing : " , toBuffer.length(), " : ", dataToRead);
+//									toBuffer.resize(dataToRead);
 								}
 								toBuffer.rewind();
 
@@ -226,8 +231,8 @@ class WAVDecoder : AudioDecoder {
 								toBuffer.setAudioFormat(wf);
 								if (toBuffer.length() != bufferSize) {
 									// allocate
-									Console.putln("Audio Codec : Resizing : " , toBuffer.length(), " : ", bufferSize);
-									toBuffer.resize(bufferSize);
+//									Console.putln("Audio Codec : Resizing : " , toBuffer.length(), " : ", bufferSize);
+//									toBuffer.resize(bufferSize);
 								}
 								toBuffer.rewind();
 								//writeln("Audio Codec : Appending ", bufferSize, " bytes");
@@ -292,6 +297,7 @@ class WAVDecoder : AudioDecoder {
 
 						// Output for sanity check
 
+						/*
 						Console.putln("  Comression Code: ", wf.compressionType);
 						Console.putln("  Sample Frequency: ", wf.samplesPerSecond);
 						Console.putln("  Average Bytes Per Second: ", wf.averageBytesPerSecond);
@@ -300,6 +306,7 @@ class WAVDecoder : AudioDecoder {
 						Console.putln("  Block Align: ", wf.blockAlign );
 
 						Console.putln("");
+						*/
 
 						bufferTime = new Time(2000000);
 

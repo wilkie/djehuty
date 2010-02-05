@@ -5,6 +5,7 @@ import graphics.bitmap;
 import core.string;
 import core.stream;
 import core.color;
+import core.definitions;
 
 import decoders.decoder;
 
@@ -26,7 +27,7 @@ public:
 		return StreamData.Invalid;
 	}
 
-	override String name() {
-		return new String("Unknown Image Decoder");
+	override string name() {
+		return "Unknown Image Decoder";
 	}
 }
