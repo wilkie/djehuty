@@ -1,6 +1,7 @@
 module test;
 
 import gui.button;
+import core.definitions;
 
 abstract class A {
 }

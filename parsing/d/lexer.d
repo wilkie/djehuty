@@ -6,6 +6,7 @@ import parsing.lexer;
 import parsing.d.tokens;
 
 import core.stream;
+import core.definitions;
 
 import io.console;
 

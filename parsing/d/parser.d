@@ -25,7 +25,6 @@ import core.stream;
 
 import io.console;
 
-
 class DParser : Parser {
 	this(Stream stream) {
 		super(stream);
