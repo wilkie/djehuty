@@ -14,6 +14,7 @@ import decoders.decoder;
 import core.string;
 import core.time;
 import core.stream;
+import core.definitions;
 
 import io.audio;
 import io.wavelet;
@@ -37,8 +38,12 @@ public:
 		return StreamData.Invalid;
 	}
 
-	override String name() {
-		return new String("Unknown Audio Codec");
+	override string name() {
+		return "Unknown Audio Codec";
+	}
+
+	string extension() {
+		return "";
 	}
 
 	Time getCurrentTime() {

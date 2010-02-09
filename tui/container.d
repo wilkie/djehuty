@@ -40,7 +40,7 @@ class TuiContainer : TuiWidget {
 	}
 
 	override void onGotFocus() {
-		if (_focused_control is null) {
+		if (_focusedControl is null) {
 			TuiWidget c = _firstControl;
 
 			if (c is null) { return; }
@@ -48,20 +48,20 @@ class TuiContainer : TuiWidget {
 			do {
 				c = c._prevControl;
 				if (c.isTabStop()) {
-					_focused_control = c;
-					_focused_control.onGotFocus();
+					_focusedControl = c;
+					_focusedControl.onGotFocus();
 					break;
 				}
 			} while (c !is _firstControl);
 		}
 		else {
-			_focused_control.onGotFocus();
+			_focusedControl.onGotFocus();
 		}
 	}
 
 	override void onLostFocus() {
-		if (_focused_control !is null) {
-			_focused_control.onLostFocus();
+		if (_focusedControl !is null) {
+			_focusedControl.onLostFocus();
 		}
 	}
 
@@ -107,68 +107,68 @@ class TuiContainer : TuiWidget {
 	}
 
 	override void onKeyDown(Key key) {
-		if (_focused_control !is null) {
-			_focused_control.onKeyDown(key);
+		if (_focusedControl !is null) {
+			_focusedControl.onKeyDown(key);
 		}
 	}
 
 	override void onKeyChar(dchar chr) {
-		if (_focused_control !is null) {
-			_focused_control.onKeyChar(chr);
+		if (_focusedControl !is null) {
+			_focusedControl.onKeyChar(chr);
 		}
 	}
 
 	override void onPrimaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onPrimaryMouseDown();
+		if (_focusedControl !is null) {
+			_focusedControl.onPrimaryMouseDown();
 		}
 	}
 
 	override void onSecondaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onSecondaryMouseDown();
+		if (_focusedControl !is null) {
+			_focusedControl.onSecondaryMouseDown();
 		}
 	}
 	
 	override void onTertiaryMouseDown() {
-		if (_focused_control !is null) {
-			_focused_control.onTertiaryMouseDown();
+		if (_focusedControl !is null) {
+			_focusedControl.onTertiaryMouseDown();
 		}
 	}
 	
 	override void onPrimaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onPrimaryMouseUp();
+		if (_focusedControl !is null) {
+			_focusedControl.onPrimaryMouseUp();
 		}
 	}
 
 	override void onSecondaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onSecondaryMouseUp();
+		if (_focusedControl !is null) {
+			_focusedControl.onSecondaryMouseUp();
 		}
 	}
 
 	override void onTertiaryMouseUp() {
-		if (_focused_control !is null) {
-			_focused_control.onTertiaryMouseUp();
+		if (_focusedControl !is null) {
+			_focusedControl.onTertiaryMouseUp();
 		}
 	}
 	
 	override void onMouseWheelY(int amount) {
-		if (_focused_control !is null) {
-			_focused_control.onMouseWheelY(amount);
+		if (_focusedControl !is null) {
+			_focusedControl.onMouseWheelY(amount);
 		}
 	}
 	
 	override void onMouseWheelX(int amount) {
-		if (_focused_control !is null) {
-			_focused_control.onMouseWheelX(amount);
+		if (_focusedControl !is null) {
+			_focusedControl.onMouseWheelX(amount);
 		}
 	}
 
 	override void onMouseMove() {
-		if (_focused_control !is null) {
-			_focused_control.onMouseMove();
+		if (_focusedControl !is null) {
+			_focusedControl.onMouseMove();
 		}
 	}
 
@@ -256,7 +256,7 @@ protected:
 	TuiWidget _lastControl;		//tail
 
 	// currently focused control
-	TuiWidget _focused_control;
+	TuiWidget _focusedControl;
 
 	uint _numControls;
 
@@ -286,41 +286,41 @@ protected:
 
 	package void _tabForward() {
 		// activate the next control
-		TuiWidget curFocus = _focused_control;
+		TuiWidget curFocus = _focusedControl;
 
 		if (curFocus is null) { return; }
 
-		_focused_control.onLostFocus();
+		_focusedControl.onLostFocus();
 
 		do {
-			_focused_control = _focused_control._prevControl;
-			if (_focused_control is _firstControl && _owner !is null) {
+			_focusedControl = _focusedControl._prevControl;
+			if (_focusedControl is _firstControl && _owner !is null) {
 				_owner._tabForward();
 			}
-			if (_focused_control.isTabStop()) {
-				_focused_control.onGotFocus();
+			if (_focusedControl.isTabStop()) {
+				_focusedControl.onGotFocus();
 				break;
 			}
-		} while (_focused_control !is curFocus);
+		} while (_focusedControl !is curFocus);
 	}
 
 	package void _tabBackward() {
 		// activate the previous control
-		TuiWidget curFocus = _focused_control;
+		TuiWidget curFocus = _focusedControl;
 
 		if (curFocus is null) { return; }
 
-		_focused_control.onLostFocus();
+		_focusedControl.onLostFocus();
 
 		do {
-			_focused_control = _focused_control._nextControl;
-			if (_focused_control is _firstControl && _owner !is null) {
+			_focusedControl = _focusedControl._nextControl;
+			if (_focusedControl is _firstControl && _owner !is null) {
 				_owner._tabBackward();
 			}
-			if (_focused_control.isTabStop()) {
-				_focused_control.onGotFocus();
+			if (_focusedControl.isTabStop()) {
+				_focusedControl.onGotFocus();
 				break;
 			}
-		} while (_focused_control !is curFocus);
+		} while (_focusedControl !is curFocus);
 	}
 }

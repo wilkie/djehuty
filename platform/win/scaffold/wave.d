@@ -33,7 +33,7 @@ extern(Windows)
 DWORD waveOutThread(void* udata) {
 	WavePlatformVars* waveVars = cast(WavePlatformVars*)udata;
 
-	Console.putln("running!");
+//	Console.putln("running!");
 
 	for (;;) {
 		//Console.putln("Work Thread : Wait");
@@ -140,7 +140,8 @@ void WaveOpenDevice(ref Audio wave, ref WavePlatformVars waveVars, ref AudioForm
 
 	// opening a wave device, passing the Audio class to the callback routine
 	if (true) {
-		Console.putln("ERROR: cannot open wave device", " : ", waveOutOpen(&waveVars.waveOut, WAVE_MAPPER, &waveVars.wfx, cast(DWORD_PTR)&waveOutProc, cast(DWORD)&waveVars, CALLBACK_FUNCTION));
+//		Console.putln("ERROR: cannot open wave device", " : ", 
+		waveOutOpen(&waveVars.waveOut, WAVE_MAPPER, &waveVars.wfx, cast(DWORD_PTR)&waveOutProc, cast(DWORD)&waveVars, CALLBACK_FUNCTION);
 	}
 }
 

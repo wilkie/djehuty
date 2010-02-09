@@ -81,6 +81,150 @@ struct Variant {
 		return _data;
 	}
 
+	void data(byte from) {
+		_type = Type.Byte;
+		_data.b = from;
+		_isArray = false;
+	}
+
+	void data(ubyte from) {
+		_type = Type.Ubyte;
+		_data.ub = from;
+		_isArray = false;
+	}
+
+	void data(short from) {
+		_type = Type.Short;
+		_data.s = from;
+		_isArray = false;
+	}
+
+	void data(ushort from) {
+		_type = Type.Ushort;
+		_data.us = from;
+		_isArray = false;
+	}
+
+	void data(int from) {
+		_type = Type.Int;
+		_data.i = from;
+		_isArray = false;
+	}
+
+	void data(uint from) {
+		_type = Type.Uint;
+		_data.ui = from;
+		_isArray = false;
+	}
+
+	void data(long from) {
+		_type = Type.Long;
+		_data.l = from;
+		_isArray = false;
+	}
+
+	void data(ulong from) {
+		_type = Type.Ulong;
+		_data.ul = from;
+		_isArray = false;
+	}
+
+	void data(float from) {
+		_type = Type.Float;
+		_data.f = from;
+		_isArray = false;
+	}
+
+	void data(double from) {
+		_type = Type.Double;
+		_data.d = from;
+		_isArray = false;
+	}
+
+	void data(real from) {
+		_type = Type.Real;
+		_data.r = from;
+		_isArray = false;
+	}
+
+	void data(ifloat from) {
+		_type = Type.Ifloat;
+		_data.fi = from;
+		_isArray = false;
+	}
+
+	void data(idouble from) {
+		_type = Type.Idouble;
+		_data.di = from;
+		_isArray = false;
+	}
+
+	void data(ireal from) {
+		_type = Type.Ireal;
+		_data.ri = from;
+		_isArray = false;
+	}
+
+	void data(cfloat from) {
+		_type = Type.Cfloat;
+		_data.fc = from;
+		_isArray = false;
+	}
+
+	void data(cdouble from) {
+		_type = Type.Cdouble;
+		_data.dc = from;
+		_isArray = false;
+	}
+
+	void data(creal from) {
+		_type = Type.Creal;
+		_data.rc = from;
+		_isArray = false;
+	}
+
+	void data(char from) {
+		_type = Type.Char;
+		_data.cc = from;
+		_isArray = false;
+	}
+
+	void data(wchar from) {
+		_type = Type.Wchar;
+		_data.cw = from;
+		_isArray = false;
+	}
+
+	void data(dchar from) {
+		_type = Type.Dchar;
+		_data.cd = from;
+		_isArray = false;
+	}
+
+	void data(string from) {
+		_type = Type.Char;
+		_data.cs = from.dup;
+		_isArray = true;
+	}
+
+	void data(wstring from) {
+		_type = Type.Wchar;
+		_data.ws = from.dup;
+		_isArray = true;
+	}
+
+	void data(dstring from) {
+		_type = Type.Dchar;
+		_data.ds = from.dup;
+		_isArray = true;
+	}
+
+	void data(Object from) {
+		_type = Type.Class;
+		_data.reference = from;
+		_isArray = false;
+	}
+
 	template to(T) {
 		T to() {
 			static if (is(T == struct) || is(T == union)) {

@@ -14,6 +14,7 @@ import decoders.binary.decoder;
 import decoders.binary.deflate;
 
 import core.stream;
+import core.definitions;
 
 // Section: Codecs/Binary
 

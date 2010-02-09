@@ -11,6 +11,7 @@ module decoders.binary.yEnc;
 
 import core.endian;
 import core.stream;
+import core.definitions;
 
 import decoders.binary.decoder;
 

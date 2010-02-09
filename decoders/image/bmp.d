@@ -3,18 +3,19 @@ module decoders.image.bmp;
 import graphics.bitmap;
 
 import core.stream;
+import core.string;
+import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
 
-import core.string;
 
 // Section: Codecs/Image
 
 // Description: The BMP Codec
 class BMPDecoder : ImageDecoder {
-	override String name() {
-		return new String("Bitmap");
+	override string name() {
+		return "Bitmap";
 	}
 
 	StreamData decode(Stream stream, ref Bitmap view) {

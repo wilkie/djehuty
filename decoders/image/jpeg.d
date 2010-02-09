@@ -14,6 +14,7 @@ import graphics.bitmap;
 import core.string;
 import core.stream;
 import core.endian;
+import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
@@ -297,8 +298,8 @@ private {
 
 class JPEGDecoder : ImageDecoder {
 
-	String name() {
-		return new String("Joint Picture Experts Group");
+	override string name() {
+		return "Joint Picture Experts Group";
 	}
 
 	StreamData decode(Stream stream, ref Bitmap view) {
