@@ -1,111 +1,89 @@
 module parsing.ast;
 
 import core.string;
+import core.definitions;
+import core.variant;
+import core.tostring;
 
 import io.console;
 
 class AbstractSyntaxTree {
-	this(AbstractSyntaxTree left, AbstractSyntaxTree right) {
-		children[0] = left;
-		children[1] = right;
+	this(uint type, AbstractSyntaxTree left, AbstractSyntaxTree right) {
+		_children[0] = left;
+		_children[1] = right;
 	}
 
-	void left(AbstractSyntaxTree left) {
-		children[0] = left;
+	this(uint type, AbstractSyntaxTree left, AbstractSyntaxTree right, Variant value) {
+		this(type, left, right);
+		_value = value;
 	}
 
-	void right(AbstractSyntaxTree right) {
-		children[1] = right;
+	void type(uint value) {
+		_type = type;
+	}
+
+	uint type() {
+		return _type;
+	}
+
+	void value(Variant val) {
+		_value = value;
+	}
+
+	Variant value() {
+		return value;
+	}
+
+	void left(AbstractSyntaxTree ast) {
+		_children[0] = ast;
 	}
 
 	AbstractSyntaxTree left() {
-		return children[0];
+		return _children[0];
+	}
+
+	void right(AbstractSyntaxTree ast) {
+		_children[1] = ast;
 	}
 
 	AbstractSyntaxTree right() {
-		return children[1];
+		return _children[1];
 	}
 
-	void value(ulong val) {
-		data.type = ValueType.Unsigned;
-		data.value.unsigned = val;
-	}
-
-	void value(String s) {
-		data.type = ValueType.String;
-		data.value.str = new String(s);
-	}
-
-	void hint(String s) {
-		data.type = ValueType.Hint;
-		data.value.str = new String(s);
-	}
-
-	void name(String s) {
-		data.type = ValueType.Name;
-		data.value.str = new String(s);
-	}
-
-	void walk(uint depth = 0) {
-		static char[] spaces = "`---------------------------------------------------------------------------";
-		if (data.type == ValueType.Hint) {
-			// *** Console.putln(...);
-			Console.putln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
-			//writefln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
-		}
-		else if (data.type == ValueType.Name) {
-			// *** Console.putln(...);
-			Console.putln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
-			//writefln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
-		}
-		else {
-			// *** Console.putln(...);
-			Console.putln(spaces[0..depth*2], "\"", data.value.str.replace('\n', ' '), "\" [", left, ", ", right, "]");
-			//writefln(spaces[0..depth*2], "\"", replace(data.value.str.array, "\n", " "), "\" [", left, ", ", right, "]");
-		}
-		if (left !is null) { left.walk(depth+1); }
-		if (right !is null) { right.walk(depth+1); }
-	}
-
-	enum ValueType {
-		Unsigned,
-		Signed,
-		Object,
-		Pointer,
-		String,
-		Hint,
-		Name
-	}
-
-	ValueType valueType() {
-		return data.type;
-	}
-
-	void getValue(out String value) {
-		value = new String(data.value.str);
-	}
-
-	void getValue(out ulong value) {
-		value = data.value.unsigned;
+	string toString() {
+		string ret = "";
+		int depth = 0;
+		_innerToString(depth, ret);
+		return ret;
 	}
 
 protected:
+	AbstractSyntaxTree[2] _children;
+	uint _type;
+	Variant _value;
 
-	AbstractSyntaxTree children[2];
-
-	union valueHolder {
-		ValueType type;
-		values value;
+private:
+	void _innerToString(ref int depth, ref string foo) {
+		string add = "[" ~ toStr(_type) ~ "]=" ~ toStr(_value) ~ "->";
+		foo ~= add;
+		depth += add.length;
+		if (_children[0] is null) {
+			foo ~= "{null}";
+		}
+		else {
+			_children[0]._innerToString(depth, foo);
+		}
+		foo ~= "\n";
+		for(size_t i; i < depth-2; i++) {
+			foo ~= " ";
+		}
+		foo ~= "->";
+		if (_children[1] is null) {
+			foo ~= "{null}";
+		}
+		else {
+			_children[1]._innerToString(depth, foo);
+		}
+		depth -= add.length;
 	}
-
-	struct values {
-		ulong unsigned;
-		long signed;
-		Object object;
-		void* pointer;
-		String str;
-		String hint;
-	}
-
-	valueHolder data;
 }

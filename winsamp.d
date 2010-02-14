@@ -481,15 +481,9 @@ class MyConsoleApp : Application {
 		foobbb(3);
 		
 		DParser parser = new DParser(File.open("tests/test.d"));
-		parser.parse();
-		
-		Console.putln(0xff.3p3);
-		Console.putln(0.3e3);
-		
-		int[] d = [1,2,3];
-		Console.putln("hello world".utflen());
-		Console.putln("hello world".charAt(2));
-		Console.putln("hello world".slice(1,3));
+		auto ast = parser.parse();
+		Console.putln();
+		Console.putln(ast);
 	}
 
 	void foobbb(...) {

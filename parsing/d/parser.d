@@ -12,16 +12,17 @@ module parsing.d.parser;
 
 import parsing.d.lexer;
 import parsing.d.tokens;
+import parsing.d.nodes;
+
+import parsing.d.moduleunit;
 
 import parsing.token;
 import parsing.ast;
 import parsing.lexer;
 import parsing.parser;
+import parsing.parseunit;
 
-import core.string;
-import core.stream;
-import core.variant;
-import core.stream;
+import djehuty;
 
 import io.console;
 
@@ -32,13 +33,8 @@ class DParser : Parser {
 	}
 
 	override AbstractSyntaxTree parse() {
-		// Feed some bits to the D Lexer
-		foreach(token; _lexer) {
-			// Interpret Token
-			Console.put(token.type, " ");
-		}
-
-		return null;
+		ParseUnit parseUnit = new ModuleUnit(_lexer);
+		return parseUnit.parse();
 	}
 
 private:

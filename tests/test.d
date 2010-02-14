@@ -21,7 +21,7 @@ public:
 		return 0;
 	}
 
-	static string bar = `lol
+	string bar = `lol
 line
 lol`;
 

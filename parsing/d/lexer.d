@@ -8,108 +8,52 @@ import parsing.d.tokens;
 import core.stream;
 import core.definitions;
 
+import utils.stack;
+
 import io.console;
 
 class DLexer : Lexer {
 
 	this(Stream stream) {
 		super(stream);
+		_bank = new Stack!(Token);
 		_stream = stream;
 	}
 
-	int opApply(int delegate(ref Token) loopbody) {
-		int ret;
+	void push(Token token) {
+		_bank.push(token);
+	}
 
-		// hand written lexer follows
-
-		// Describe the number lexer states
-		enum LexerState : uint {
-			Normal,
-			String,
-			Comment,
-			Identifier,
-			Integer,
-			FloatingPoint
+	Token pop() {
+		if (!_bank.empty) {
+			return _bank.pop();
 		}
-
-		LexerState state;
-		bool inEscape;
-
-		// Describe the string lexer states
-		enum StringType : uint {
-			DoubleQuote,		// "..."
-			WhatYouSeeQuote,	// `...`
-			RawWhatYouSeeQuote,	// r"..."
-			Character,			// '.'
-		}
-
-		StringType inStringType;
-
-		// Describe the comment lexer states
-		enum CommentType : uint {
-			BlockComment,
-			LineComment,
-			NestedComment
-		}
-
-		CommentType inCommentType;
-		string cur_string;
+		Token current;
+		current.line = _lineNumber;
+		current.column = _pos + 1;
 
 		// will give us a string for the line of utf8 characters.
-		foreach(size_t lineNumber, string line; _stream) {
+		for(;;) {
+			if (_line is null || _pos == _line.length) {
+				if(!_stream.readLine(_line)) {
+					return Token.init;
+				}
+				_lineNumber++;
+				_pos = 0;
+				current.line++;
+				current.column = 1;
+			}
+
 			// now break up the line into tokens
 			// the return for the line is whitespace, and can be ignored
 
-			static const DToken[] tokenMapping = [
-				'!':DToken.Bang,
-				':':DToken.Colon,
-				';':DToken.Semicolon,
-				'.':DToken.Dot,
-				',':DToken.Comma,
-				'(':DToken.LeftParen,
-				')':DToken.RightParen,
-				'{':DToken.LeftCurly,
-				'}':DToken.RightCurly,
-				'[':DToken.LeftBracket,
-				']':DToken.RightBracket,
-				'<':DToken.LessThan,
-				'>':DToken.GreaterThan,
-				'=':DToken.Assign,
-				'+':DToken.Add,
-				'-':DToken.Sub,
-				'~':DToken.Cat,
-				'*':DToken.Mul,
-				'/':DToken.Div,
-				'^':DToken.Xor,
-				'|':DToken.Or,
-				'&':DToken.And,
-				'%':DToken.Mod,
-			];
-
-			Token current;
-			int cur_base;
-			ulong cur_integer;
-			bool cur_integer_signed;
-			ulong cur_decimal;
-			ulong cur_exponent;
-			ulong cur_denominator;
-			bool inDecimal;
-			bool inExponent;
-
-			int submitToken() {
-				if (current.type != DToken.Invalid) {
-					if (loopbody(current)) { return 1; };
-					current = current.init;
-				}
-				return 0;
-			}
-
-			foreach(size_t columnNumber, chr; line) {
+			for(; _pos < _line.length; _pos++) {
+				char chr = _line[_pos];
 				switch (state) {
 					default:
 						// error
-						_error(lineNumber, columnNumber, "error");
-						return 1;
+						_error("error");
+						return Token.init;
 
 					case LexerState.Normal:
 						if (tokenMapping[chr] != DToken.Invalid) {
@@ -371,8 +315,8 @@ class DLexer : Lexer {
 									break;
 								default:
 									// Token Error
-									_error(lineNumber, columnNumber, "Unknown operator.");
-									return 1;
+									_error("Unknown operator.");
+									return Token.init;
 							}
 							
 							continue;
@@ -385,27 +329,40 @@ class DLexer : Lexer {
 							state = LexerState.String;
 							inStringType = StringType.Character;
 							cur_string = "";
-							if (submitToken()) { return 1; }
+							if (current.type != DToken.Invalid) {
+								_pos++;
+								return current;
+							}
 							continue;
 						}
 						else if (chr == '"') {
 							state = LexerState.String;
 							inStringType = StringType.DoubleQuote;
 							cur_string = "";
-							if (submitToken()) { return 1; }
+							if (current.type != DToken.Invalid) {
+								_pos++;
+								return current;
+							}
 							continue;
 						}
 						else if (chr == '`') {
 							state = LexerState.String;
 							inStringType = StringType.WhatYouSeeQuote;
 							cur_string = "";
-							if (submitToken()) { return 1; }
+							if (current.type != DToken.Invalid) {
+								_pos++;
+								return current;
+							}
 							continue;
 						}
 
 						// Whitespace
 						else if (chr == ' ' || chr == '\t') {
-							if (submitToken()) { return 1; }
+							if (current.type != DToken.Invalid) {
+								_pos++;
+								return current;
+							}
+							current.column++;
 							continue;
 						}
 
@@ -413,7 +370,9 @@ class DLexer : Lexer {
 						else if ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z') || chr == '_') {
 							state = LexerState.Identifier;
 							cur_string = "";
-							if (submitToken()) { return 1; }
+							if (current.type != DToken.Invalid) {
+								return current;
+							}
 							goto case LexerState.Identifier;
 						}
 
@@ -437,7 +396,9 @@ class DLexer : Lexer {
 							else {
 								state = LexerState.Integer;
 
-								if (submitToken()) { return 1; }
+								if (current.type != DToken.Invalid) {
+									return current;
+								}
 								goto case LexerState.Integer;
 							}
 						}
@@ -473,8 +434,8 @@ class DLexer : Lexer {
 								state = LexerState.Normal;
 								Console.put('%', '"', cur_string, '"', '%');
 								current.type = DToken.StringLiteral;
-								if (submitToken()) { return 1; }
-								continue;
+								_pos++;
+								return current;
 							}
 						}
 						else if (inStringType == StringType.RawWhatYouSeeQuote) {
@@ -482,8 +443,8 @@ class DLexer : Lexer {
 								state = LexerState.Normal;
 								Console.put('%', '\'', cur_string, '\'', '%');
 								current.type = DToken.StringLiteral;
-								if (submitToken()) { return 1; }
-								continue;
+								_pos++;
+								return current;
 							}
 						}
 						else if (inStringType == StringType.WhatYouSeeQuote) {
@@ -491,8 +452,8 @@ class DLexer : Lexer {
 								state = LexerState.Normal;
 								Console.put('%', '`', cur_string, '`', '%');
 								current.type = DToken.StringLiteral;
-								if (submitToken()) { return 1; }
-								continue;
+								_pos++;
+								return current;
 							}
 						}
 						else { // StringType.Character
@@ -504,8 +465,8 @@ class DLexer : Lexer {
 								state = LexerState.Normal;
 								Console.put('*', '\'', cur_string, '\'', '*');
 								current.type = DToken.CharacterLiteral;
-								if (submitToken()) { return 1; }
-								continue;
+								_pos++;
+								return current;
 							}
 						}
 
@@ -552,8 +513,9 @@ class DLexer : Lexer {
 								Console.put('"', cur_string, '"');
 							}
 							state = LexerState.Normal;
-							if (submitToken()) { return 1; }
-
+							if (current.type != DToken.Invalid) {
+								return current;
+							}
 							goto case LexerState.Normal;
 						}
 						cur_string ~= chr;
@@ -567,12 +529,12 @@ class DLexer : Lexer {
 								cur_base = 10;
 							}
 							else if (cur_base == 2) {
-								_error(lineNumber, columnNumber, "Cannot have binary floating point literals");
-								return 1;
+								_error("Cannot have binary floating point literals");
+								return Token.init;
 							}
 							else if (cur_base == 8) {
-								_error(lineNumber, columnNumber, "Cannot have octal floating point literals");
-								return 1;
+								_error("Cannot have octal floating point literals");
+								return Token.init;
 							}
 
 							// Reset this just in case, it will get interpreted
@@ -613,8 +575,8 @@ class DLexer : Lexer {
 							}
 							// Cannot be any other value
 							else {
-								_error(lineNumber, columnNumber, "Integer literal expected.");
-								return 1;
+								_error("Integer literal expected.");
+								return Token.init;
 							}
 						}
 						else if (cur_base == -1) {
@@ -636,9 +598,8 @@ class DLexer : Lexer {
 								// 0 ?
 								current.type = DToken.IntegerLiteral;
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 						}
 						else if (cur_base == 16) {
@@ -648,9 +609,8 @@ class DLexer : Lexer {
 
 								Console.put("int:", cur_integer, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else {
 								cur_integer *= cur_base;
@@ -672,9 +632,8 @@ class DLexer : Lexer {
 
 								Console.put("int:", cur_integer, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else {
 								cur_integer *= cur_base;
@@ -683,8 +642,8 @@ class DLexer : Lexer {
 						}
 						else if (cur_base == 8) {
 							if (chr >= '8' && chr <= '9') {
-								_error(lineNumber, columnNumber, "Digits higher than 7 in an octal integer literal are invalid.");
-								return 1;
+								_error("Digits higher than 7 in an octal integer literal are invalid.");
+								return Token.init;
 							}
 							else if (chr < '0' || chr > '7') {
 								current.type = DToken.IntegerLiteral;
@@ -692,9 +651,8 @@ class DLexer : Lexer {
 
 								Console.put("int:", cur_integer, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else {
 								cur_integer *= cur_base;
@@ -708,9 +666,8 @@ class DLexer : Lexer {
 
 								Console.put("int:", cur_integer, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else {
 								cur_integer *= cur_base;
@@ -726,11 +683,11 @@ class DLexer : Lexer {
 						else if (chr == '.' && (cur_base == 10 || cur_base == 16)) {
 							// We are now parsing the decimal portion
 							if (inDecimal) {
-								_error(lineNumber, columnNumber, "Only one decimal point is allowed per floating point literal.");
-								return 1;
+								_error("Only one decimal point is allowed per floating point literal.");
+								return Token.init;
 							}
 							else if (inExponent) {
-								_error(lineNumber, columnNumber, "Cannot put a decimal point after an exponent in a floating point literal.");
+								_error("Cannot put a decimal point after an exponent in a floating point literal.");
 							}
 							inDecimal = true;
 						}
@@ -748,13 +705,13 @@ class DLexer : Lexer {
 						}
 						else if (cur_base == 10) {
 							if (chr == 'p' || chr == 'P') {
-								_error(lineNumber, columnNumber, "Cannot have a hexidecimal exponent in a non-hexidecimal floating point literal.");
-								return 1;
+								_error("Cannot have a hexidecimal exponent in a non-hexidecimal floating point literal.");
+								return Token.init;
 							}
 							else if (chr < '0' || chr > '9') {
 								if (inExponent && cur_exponent == -1) {
-									_error(lineNumber, columnNumber, "You need to specify a value for the exponent part of the floating point literal.");
-									return 1;
+									_error("You need to specify a value for the exponent part of the floating point literal.");
+									return Token.init;
 								}
 								current.type = DToken.FloatingPointLiteral;
 								double value = cast(double)cur_integer + (cast(double)cur_decimal / cast(double)cur_denominator);
@@ -766,9 +723,8 @@ class DLexer : Lexer {
 								current.value.data = value;
 								Console.put("fp:", cur_integer, ".", cur_decimal,"e", cur_exponent, "=", value, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else if (inExponent) {
 								if (cur_exponent == -1) {
@@ -786,12 +742,12 @@ class DLexer : Lexer {
 						else { // cur_base == 16
 							if ((chr < '0' || chr > '9') && (chr < 'a' || chr > 'f') && (chr < 'A' || chr > 'F')) {
 								if (inDecimal && !inExponent) {
-									_error(lineNumber, columnNumber, "You need to provide an exponent with the decimal portion of a hexidecimal floating point number. Ex: 0xff.3p2");
-									return 1;
+									_error("You need to provide an exponent with the decimal portion of a hexidecimal floating point number. Ex: 0xff.3p2");
+									return Token.init;
 								}
 								if (inExponent && cur_exponent == -1) {
-									_error(lineNumber, columnNumber, "You need to specify a value for the exponent part of the floating point literal.");
-									return 1;
+									_error("You need to specify a value for the exponent part of the floating point literal.");
+									return Token.init;
 								}
 								current.type = DToken.FloatingPointLiteral;
 								double value = cast(double)cur_integer + (cast(double)cur_decimal / cast(double)cur_denominator);
@@ -803,9 +759,8 @@ class DLexer : Lexer {
 								current.value.data = value;
 								Console.put("fp:", cur_integer, ".", cur_decimal,"e", cur_exponent, "=", value, " ");
 
-								if (submitToken()) { return 1; }
 								state = LexerState.Normal;
-								goto case LexerState.Normal;
+								return current;
 							}
 							else if (inExponent) {
 								if (cur_exponent == -1) {
@@ -840,17 +795,34 @@ class DLexer : Lexer {
 				}
 			}
 
-			if (submitToken()) { return 1; }
+			if (current.type != DToken.Invalid) {
+				return current;
+			}
+			current.line++;
+			current.column = 1;
+
 			if (state != LexerState.String) {
 				state = LexerState.Normal;
 				Console.putln();
 			}
 			else {
 				if (inStringType == StringType.Character) {
-					_error(lineNumber, 0, "Unmatched character literal.");
-					return 1;
+					_error("Unmatched character literal.");
+					return Token.init;
 				}
 				cur_string ~= '\n';
+			}
+		}
+
+	}
+
+	int opApply(int delegate(ref Token) loopbody) {
+		int ret;
+
+		Token foo;
+		while((foo = this.pop()).type != DToken.Invalid) {
+			if ((ret = loopbody(foo)) > 0) {
+				return 1;
 			}
 		}
 
@@ -859,12 +831,85 @@ class DLexer : Lexer {
 
 private:
 
-	void _error(size_t lineNumber, size_t columnNumber, string msg) {
+	void _error(string msg) {
 		Console.putln();
 		Console.setColor(fgColor.Red);
-		Console.putln("Lexer: file.d @ ", lineNumber+1, ":", columnNumber+1, " - ", msg);
+		Console.putln("Lexical Error: file.d @ ", _lineNumber+1, ":", _pos+1, " - ", msg);
 		Console.putln();
 	}
 
+	// Describe the number lexer states
+	enum LexerState : uint {
+		Normal,
+		String,
+		Comment,
+		Identifier,
+		Integer,
+		FloatingPoint
+	}
+
+	LexerState state;
+	bool inEscape;
+
+	// Describe the string lexer states
+	enum StringType : uint {
+		DoubleQuote,		// "..."
+		WhatYouSeeQuote,	// `...`
+		RawWhatYouSeeQuote,	// r"..."
+		Character,			// '.'
+	}
+
+	StringType inStringType;
+
+	// Describe the comment lexer states
+	enum CommentType : uint {
+		BlockComment,
+		LineComment,
+		NestedComment
+	}
+
+	CommentType inCommentType;
+	string cur_string;
+
 	Stream _stream;
+	string _line;
+	size_t _lineNumber;
+	size_t _pos;
+
+	static const DToken[] tokenMapping = [
+		'!':DToken.Bang,
+		':':DToken.Colon,
+		';':DToken.Semicolon,
+		'.':DToken.Dot,
+		',':DToken.Comma,
+		'(':DToken.LeftParen,
+		')':DToken.RightParen,
+		'{':DToken.LeftCurly,
+		'}':DToken.RightCurly,
+		'[':DToken.LeftBracket,
+		']':DToken.RightBracket,
+		'<':DToken.LessThan,
+		'>':DToken.GreaterThan,
+		'=':DToken.Assign,
+		'+':DToken.Add,
+		'-':DToken.Sub,
+		'~':DToken.Cat,
+		'*':DToken.Mul,
+		'/':DToken.Div,
+		'^':DToken.Xor,
+		'|':DToken.Or,
+		'&':DToken.And,
+		'%':DToken.Mod,
+		];
+
+	int cur_base;
+	ulong cur_integer;
+	bool cur_integer_signed;
+	ulong cur_decimal;
+	ulong cur_exponent;
+	ulong cur_denominator;
+	bool inDecimal;
+	bool inExponent;
+
+	Stack!(Token) _bank;
 }
