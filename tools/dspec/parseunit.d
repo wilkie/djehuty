@@ -9,15 +9,12 @@ import core.definitions;
 
 import io.console;
 
-class ParseUnit
-{
-	final void attachFeeder(Feeder feed)
-	{
+class ParseUnit {
+	final void attachFeeder(Feeder feed) {
 		feeder = feed;
 	}
 
-	final AST parse()
-	{
+	final AST parse() {
 		// get class name
 		ClassInfo ci = this.classinfo;
 		String className = new String(ci.name);
@@ -28,18 +25,15 @@ class ParseUnit
 		parseTree = original;
 
 		int pos = className.findReverse(new String("."));
-		if (pos > 0)
-		{
+		if (pos > 0) {
 			className = new String(className[pos+1..className.length]);
 		}
 		//Console.putln("CLASS: ", className.array);
 
 		parseTree.name = className;
 
-		for(;;)
-		{
-			if (tokens is null)
-			{
+		for(;;) {
+			if (tokens is null) {
 				tokens = feeder.feed();
 				idx = 0;
 
@@ -48,15 +42,12 @@ class ParseUnit
 				}
 			}
 
-			for( ; idx < tokens.length ; idx++)
-			{
+			for( ; idx < tokens.length ; idx++) {
 				currentToken = tokens[idx];
-				if (currentToken.toString in parseFunctions)
-				{
+				if (currentToken.toString in parseFunctions) {
 					parseFunctions[currentToken.toString]();
 				}
-				else
-				{
+				else {
 					parseDefault();
 				}
 
@@ -72,18 +63,15 @@ class ParseUnit
 		return original;
 	}
 	
-	void progressTree(AST right)
-	{
-		if (parseTree.right !is null && parseTree.left is null)
-		{
+	void progressTree(AST right) {
+		if (parseTree.right !is null && parseTree.left is null) {
 			parseTree.left = new AST(null, null);
 			parseTree = parseTree.left;
 		}
 				
 		parseTree.right = right;
 
-		if (parseTree !is original && right !is null && right.valueType == AST.ValueType.Name)
-		{
+		if (parseTree !is original && right !is null && right.valueType == AST.ValueType.Name) {
 			String val;
 			right.getValue(val);
 			parseTree.hint = val;
@@ -111,29 +99,24 @@ protected:
 	
 	String currentToken;
 	
-	AST newParseUnit(ParseUnit newUnit)
-	{
+	AST newParseUnit(ParseUnit newUnit) {
 		parseUnit = newUnit;
 		return parseUnit.parse();
 	}
 	
-	void done()
-	{
+	void done() {
 		iAmDone = true;
 	}
 	
-	void registerToken(String token, ParseFunction func)
-	{
+	void registerToken(String token, ParseFunction func) {
 		parseFunctions[token.toString] = func;
 	}
 	
-	void registerToken(string token, ParseFunction func)
-	{
+	void registerToken(string token, ParseFunction func) {
 		parseFunctions[token] = func;
 	}
 	
-	void parseDefault()
-	{
+	void parseDefault() {
 		return;
 	}
 }

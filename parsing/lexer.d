@@ -8,9 +8,11 @@ abstract class Lexer {
 	this(Stream stream) {
 	}
 
-	Token nextToken(Stream stream) {
-		Token ret;
-		return ret;
+	void push(Token token) {
+	}
+
+	Token pop() {
+		return Token.init;
 	}
 
 //	int opApply(int delegate(ref Token) loopbody) {
