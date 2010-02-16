@@ -814,6 +814,7 @@ class DLexer : Lexer {
 			}
 		}
 
+		return Token.init;
 	}
 
 	int opApply(int delegate(ref Token) loopbody) {

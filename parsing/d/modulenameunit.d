@@ -33,7 +33,6 @@ class ModuleNameUnit : ParseUnit {
 			case DToken.Semicolon:
 				makeNode(DNode.ModuleName, null, cur_string);
 				return false;
-				break;
 			case DToken.Identifier:
 				if (cur_string.length > 0 && cur_string[$-1] != '.') {
 					error("Expected '.' or ';', found identifier in module name.");
