@@ -33,7 +33,7 @@ protected:
 					error("Module declaration should be the first line.");
 				}
 				else {
-					makeNode(DNodes.Module, new ModuleNameUnit, "Module");
+					makeNode(DNode.Module, new ModuleNameUnit, "Module");
 				}
 				break;
 			default:
