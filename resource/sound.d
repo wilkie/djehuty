@@ -87,6 +87,7 @@ class Sound : Responder {
 	// Description: This function will load the file using the filename passed, stopping and unloading any current audio playback.
 	// filename: The string containing the filename of the audio file to load.
 	bool load(string filename) {
+		_name = filename.dup;
 		load(File.open(filename));
 
 		return false;
@@ -103,28 +104,44 @@ class Sound : Responder {
 
 		inStream = stream;
 
-		StreamData ret;
+		StreamData ret = StreamData.Invalid;
+
+		if (_name !is null) {
+			// get extension
+			String name = new String(_name);
+			int pos = name.findReverse(new String("."));
+			String extension = name.subString(pos+1);
+			_curCodec = findBestCodec(extension.toString);
+			if (_curCodec !is null) {
+				ret = _curCodec.decode(inStream, cast(Wavelet)null, wavInfo);
+			}
+		}
 
 		// Find the correct audio codec for this audio stream
-		ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
+		if (ret == StreamData.Invalid) {
+			ret = runAllCodecs(_curCodec, inStream, cast(Wavelet)null, wavInfo);
+		}
 
 		if (ret == StreamData.Invalid || ret == StreamData.Required) { return ret; }
-		Console.putln("dboo");
-		Console.putln("Sound: Codec name: ", _curCodec.name);
+//		Console.putln("Sound: Codec name: ", _curCodec.name);
 
-		Console.putln("Sound: Audio File Loaded : Length: ", wavInfo.totalTime);
+//		Console.putln("Sound: Audio File Loaded : Length: ", wavInfo.totalTime);
 		//getTotalTimeString();
 
+		buffers[0].resize(1728 * 22);
+//		Console.putln("Size: ", buffers[0].length);
 		ret = _curCodec.decode(inStream, buffers[0], wavInfo);
 
-		Console.putln("Sound : Creating Device");
+//		Console.putln("Sound : Creating Device");
+//		Console.putln("Sound : Opening");
 		wavDevice.openDevice(buffers[0].audioFormat());
 		wavDevice.pause();
+//		Console.putln("Sound : Opened");
 
 		_state = State.Paused;
 
 		if (ret == StreamData.Complete) {
-			Console.putln("Sound : Decoded Last Buffer");
+			//Console.putln("Sound : Decoded Last Buffer");
 			wavDevice.sendBuffer(buffers[0], true);
 
 			_doneBuffering = true;
@@ -132,7 +149,7 @@ class Sound : Responder {
 			return ret;
 		}
 		else {
-			Console.putln("Sound : Sending Buffer");
+			//Console.putln("Sound : Sending Buffer");
 			wavDevice.sendBuffer(buffers[0]);
 		}
 
@@ -141,8 +158,6 @@ class Sound : Responder {
 		_audioLoader = new Thread();
 		_audioLoader.setDelegate(&_bufferCallback);
 		_audioLoader.start(); */
-
-		_bufferCallback();
 
 		return ret;
 	}
@@ -159,6 +174,7 @@ class Sound : Responder {
 		}
 
 		wavDevice.resume();
+		_bufferCallback();
 		tmr.start();
 
 		_state = State.Playing;
@@ -297,6 +313,8 @@ protected:
 
 	State _state;
 
+	string _name;
+
 	// the time that the audio device has is the amount of data
 	// that has been fed to the audio device
 
@@ -314,18 +332,19 @@ protected:
 		//	Console.putln("Callback");
 		if (_state == State.Stopped) { return; }
 		if (_doneBuffering) {
-			Console.putln("Done");
+			//Console.putln("Done");
 			_state = State.Stopped;
 			raiseSignal(Signal.StateChanged);
 			return;
 		}
 
 		buffers[bufferIndex].rewind();
+		buffers[bufferIndex].resize(1728 * 40);
 		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
 
 		// send the next buffer
 		if (ret == StreamData.Complete) {
-			Console.putln("Sound : Decoded Last Buffer");
+			//Console.putln("Sound : Decoded Last Buffer");
 			wavDevice.sendBuffer(buffers[bufferIndex], true);
 
 			_doneBuffering = true;

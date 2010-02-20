@@ -11,6 +11,7 @@ module decoders.binary.base64;
 
 import core.endian;
 import core.stream;
+import core.definitions;
 
 import decoders.binary.decoder;
 

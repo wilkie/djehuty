@@ -11,11 +11,12 @@ module decoders.decoder;
 
 import core.time;
 import core.string;
+import core.definitions;
 
 // Description: Base class for all codecs
 class Decoder {
-	String name() {
-		return new String("Unknown Codec");
+	string name() {
+		return "Unknown Codec";
 	}
 
 protected:

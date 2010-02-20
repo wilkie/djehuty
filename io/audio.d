@@ -73,10 +73,20 @@ class Audio : Dispatcher {
 	// Description: Opens an audio device with the format given.  The format describes the representation of the audio stream.
 	// format: The format of the audio stream that will indicate the representation of any audio buffers passed to the device.
 	void openDevice(AudioFormat format) {
-		if (_opened) { return; }
+		if (_opened) {
+			// reopen
+			synchronized(this) {
+				if (_format == format) {
+					_format = format;
+					WaveOpenDevice(this, _pfvars, format);
+				}
+			}
+			return;
+		}
 
 		synchronized(this) {
 			_opened = true;
+			_format = format;
 			WaveOpenDevice(this, _pfvars, format);
 		}
 	}
@@ -133,6 +143,7 @@ class Audio : Dispatcher {
 protected:
 
 	WavePlatformVars _pfvars;
+	AudioFormat _format;
 
 	bool _opened;
 }
