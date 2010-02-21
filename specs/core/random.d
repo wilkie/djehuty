@@ -173,7 +173,7 @@ describe random() {
 			auto r = new Random();
 
 			shouldThrow();
-			r.choose([]);
+			r.choose(cast(uint[])[]);
 		}
 
 		it should_fail_on_empty_list() {

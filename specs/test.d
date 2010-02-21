@@ -2564,6 +2564,49 @@ class StringTester {
 	}
 }
 
+import core.application;
+
+class ApplicationTester {
+
+	it creation_should_throw_exception_when_not_inherited() {
+		before_creation();
+		try {
+			Application app = new Application();
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		ApplicationTester tester = new ApplicationTester();
+
+		Test test = new Test("Application", "specs/core/application.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new ApplicationTester();
+
+		result = tester.creation_should_throw_exception_when_not_inherited();
+		test.logResult(result, "creation should throw exception when not inherited", "8");
+
+		test.finish();
+	}
+}
+
 import core.util;
 
 import utils.stack;
@@ -2585,7 +2628,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2602,7 +2644,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2619,7 +2660,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2639,7 +2679,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2659,7 +2698,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2694,7 +2732,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2729,7 +2766,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2752,7 +2788,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2775,7 +2810,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2798,7 +2832,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2812,7 +2845,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2829,7 +2861,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2849,7 +2880,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2869,7 +2899,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2883,7 +2912,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2903,7 +2931,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2935,7 +2962,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2967,7 +2993,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2987,7 +3012,6 @@ class UtilTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3113,6 +3137,598 @@ class UtilTester {
 	}
 }
 
+import core.random;
+
+class RandomTester {
+
+	const uint SEED = 12345678;
+	const uint REPEATS = 10000000;
+
+	it creation_should_have_sane_defaults() {
+		before_creation();
+		try {
+			auto r = new Random();
+			if(!(r.seed >= 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it creation_should_not_reuse_a_seed() {
+		before_creation();
+		try {
+			auto a = new Random();
+			auto b = new Random();
+			if(a.seed == b.seed) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it creation_should_use_the_given_seed() {
+		before_creation();
+		try {
+			auto r = new Random(SEED);
+			if(!(r.seed == SEED)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_creation() {
+	}
+
+	it state_should_be_reproducible() {
+		before_state();
+		try {
+			auto a = new Random(SEED);
+			auto b = new Random(SEED);
+			if(!(a.next() == b.next())) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_state() {
+	}
+
+	it seed_should_set_and_get_the_seed() {
+		before_seed();
+		try {
+			auto r = new Random();
+			r.seed = SEED;
+			if(!(r.seed == SEED)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_seed() {
+	}
+
+	// TODO: Statistical tests should be implemented for all the "next" methods.
+
+	it next_should_not_be_stuck() {
+		before_next();
+		try {
+			auto r = new Random();
+			if(r.next() == r.next()) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it next_should_return_zero_if_upper_bound_is_zero() {
+		before_next();
+		try {
+			auto r = new Random();
+			if(!(r.next(0) == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it next_should_return_a_nonnegative_value_less_than_upper_bound() {
+		before_next();
+		try {
+			auto r = new Random();
+			uint v;
+			uint upper = 1;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.next(upper);
+			if(!(v >= 0)) {
+				return it.doesnt;
+			}
+			if(!(v < upper)) {
+				return it.doesnt;
+			}
+			upper += i;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it next_should_return_greatest_bound_if_bounds_overlap() {
+		before_next();
+		try {
+			auto r = new Random();
+			if(!(r.next(0, 0) == 0)) {
+				return it.doesnt;
+			}
+			if(!(r.next(123, 123) == 123)) {
+				return it.doesnt;
+			}
+			if(!(r.next(-123, -123) == -123)) {
+				return it.doesnt;
+			}
+			if(!(r.next(123, -123) == 123)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it next_should_return_a_value_within_bounds() {
+		before_next();
+		try {
+			auto r = new Random();
+			int v;
+			int lower = 0;
+			int upper = 1;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.next(lower, upper);
+			if(!(v >= lower)) {
+				return it.doesnt;
+			}
+			if(!(v < upper)) {
+				return it.doesnt;
+			}
+			lower -= 12;
+			upper += 3;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_next() {
+	}
+
+	it nextLong_should_not_be_stuck() {
+		before_nextLong();
+		try {
+			auto r = new Random();
+			if(r.nextLong() == r.nextLong()) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextLong_should_return_zero_if_upper_bound_is_zero() {
+		before_nextLong();
+		try {
+			auto r = new Random();
+			if(!(r.nextLong(0) == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextLong_should_return_a_nonnegative_value_less_than_upper_bound() {
+		before_nextLong();
+		try {
+			auto r = new Random();
+			ulong v;
+			ulong upper = 1;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.nextLong(upper);
+			if(!(v >= 0)) {
+				return it.doesnt;
+			}
+			if(!(v < upper)) {
+				return it.doesnt;
+			}
+			upper += i;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextLong_should_return_greatest_bound_if_bounds_overlap() {
+		before_nextLong();
+		try {
+			auto r = new Random();
+			if(!(r.nextLong(0, 0) == 0)) {
+				return it.doesnt;
+			}
+			if(!(r.nextLong(123, 123) == 123)) {
+				return it.doesnt;
+			}
+			if(!(r.nextLong(-123, -123) == -123)) {
+				return it.doesnt;
+			}
+			if(!(r.nextLong(123, -123) == 123)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextLong_should_return_a_value_within_bounds() {
+		before_nextLong();
+		try {
+			auto r = new Random();
+			long v;
+			long lower = 0;
+			long upper = 1;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.nextLong(lower, upper);
+			if(!(v >= lower)) {
+				return it.doesnt;
+			}
+			if(!(v < upper)) {
+				return it.doesnt;
+			}
+			lower -= i;
+			upper += 2*i;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_nextLong() {
+	}
+
+	it nextBoolean_should_return_a_boolean() {
+		before_nextBoolean();
+		try {
+			auto r = new Random();
+			bool to_be = r.nextBoolean();
+			if(!(to_be || !to_be)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_nextBoolean() {
+	}
+
+	it nextDouble_should_return_a_value_between_0_and_1() {
+		before_nextDouble();
+		try {
+			auto r = new Random();
+			double v;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.nextDouble();
+			if(!(v >= 0.0)) {
+				return it.doesnt;
+			}
+			if(!(v <= 1.0)) {
+				return it.doesnt;
+			}
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_nextDouble() {
+	}
+
+	it nextFloat_should_return_a_value_between_0_and_1() {
+		before_nextFloat();
+		try {
+			auto r = new Random();
+			double v;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.nextFloat();
+			if(!(v >= 0.0)) {
+				return it.doesnt;
+			}
+			if(!(v <= 1.0)) {
+				return it.doesnt;
+			}
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_nextFloat() {
+	}
+
+	it choose_should_fail_on_empty_array() {
+		before_choose();
+		try {
+			auto r = new Random();
+			r.choose(cast(uint[])[]);
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it choose_should_fail_on_empty_list() {
+		before_choose();
+		try {
+			auto r = new Random();
+			r.choose(new List!(uint));
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it choose_should_return_the_item_given_one() {
+		before_choose();
+		try {
+			auto r = new Random();
+			uint[] arr = [1234];
+			if(!(r.choose(arr) == 1234)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it choose_should_work_for_arrays() {
+		before_choose();
+		try {
+			auto r = new Random();
+			uint[] arr = [2, 5, 6, 9, 10, 13];
+			uint v;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.choose(arr);
+			if(member(v, arr) is null) {
+				return it.doesnt;
+			}
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it choose_should_work_for_lists() {
+		before_choose();
+		try {
+			auto r = new Random();
+			List!(char) lst = new List!(char)(['a', 'e', 'i', 'o', 'u']);
+			char v;
+			for (uint i = 0; i < REPEATS; i++) {
+			v = r.choose(lst);
+			if(member(v, lst) is null) {
+				return it.doesnt;
+			}
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_choose() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		RandomTester tester = new RandomTester();
+
+		Test test = new Test("Random", "specs/core/random.d");
+
+		it result;
+
+		test.logSubset("creation");
+
+		tester = new RandomTester();
+
+		result = tester.creation_should_have_sane_defaults();
+		test.logResult(result, "creation should have sane defaults", "12");
+
+		tester = new RandomTester();
+
+		result = tester.creation_should_not_reuse_a_seed();
+		test.logResult(result, "creation should not reuse a seed", "17");
+
+		tester = new RandomTester();
+
+		result = tester.creation_should_use_the_given_seed();
+		test.logResult(result, "creation should use the given seed", "23");
+
+		test.logSubset("state");
+
+		tester = new RandomTester();
+
+		result = tester.state_should_be_reproducible();
+		test.logResult(result, "state should be reproducible", "30");
+
+		test.logSubset("seed");
+
+		tester = new RandomTester();
+
+		result = tester.seed_should_set_and_get_the_seed();
+		test.logResult(result, "seed should set and get the seed", "38");
+
+		test.logSubset("next");
+
+		tester = new RandomTester();
+
+		result = tester.next_should_not_be_stuck();
+		test.logResult(result, "next should not be stuck", "48");
+
+		tester = new RandomTester();
+
+		result = tester.next_should_return_zero_if_upper_bound_is_zero();
+		test.logResult(result, "next should return zero if upper bound is zero", "53");
+
+		tester = new RandomTester();
+
+		result = tester.next_should_return_a_nonnegative_value_less_than_upper_bound();
+		test.logResult(result, "next should return a nonnegative value less than upper bound", "58");
+
+		tester = new RandomTester();
+
+		result = tester.next_should_return_greatest_bound_if_bounds_overlap();
+		test.logResult(result, "next should return greatest bound if bounds overlap", "70");
+
+		tester = new RandomTester();
+
+		result = tester.next_should_return_a_value_within_bounds();
+		test.logResult(result, "next should return a value within bounds", "78");
+
+		test.logSubset("nextLong");
+
+		tester = new RandomTester();
+
+		result = tester.nextLong_should_not_be_stuck();
+		test.logResult(result, "nextLong should not be stuck", "94");
+
+		tester = new RandomTester();
+
+		result = tester.nextLong_should_return_zero_if_upper_bound_is_zero();
+		test.logResult(result, "nextLong should return zero if upper bound is zero", "99");
+
+		tester = new RandomTester();
+
+		result = tester.nextLong_should_return_a_nonnegative_value_less_than_upper_bound();
+		test.logResult(result, "nextLong should return a nonnegative value less than upper bound", "104");
+
+		tester = new RandomTester();
+
+		result = tester.nextLong_should_return_greatest_bound_if_bounds_overlap();
+		test.logResult(result, "nextLong should return greatest bound if bounds overlap", "116");
+
+		tester = new RandomTester();
+
+		result = tester.nextLong_should_return_a_value_within_bounds();
+		test.logResult(result, "nextLong should return a value within bounds", "124");
+
+		test.logSubset("nextBoolean");
+
+		tester = new RandomTester();
+
+		result = tester.nextBoolean_should_return_a_boolean();
+		test.logResult(result, "nextBoolean should return a boolean", "140");
+
+		test.logSubset("nextDouble");
+
+		tester = new RandomTester();
+
+		result = tester.nextDouble_should_return_a_value_between_0_and_1();
+		test.logResult(result, "nextDouble should return a value between 0 and 1", "148");
+
+		test.logSubset("nextFloat");
+
+		tester = new RandomTester();
+
+		result = tester.nextFloat_should_return_a_value_between_0_and_1();
+		test.logResult(result, "nextFloat should return a value between 0 and 1", "160");
+
+		test.logSubset("choose");
+
+		tester = new RandomTester();
+
+		result = tester.choose_should_fail_on_empty_array();
+		test.logResult(result, "choose should fail on empty array", "172");
+
+		tester = new RandomTester();
+
+		result = tester.choose_should_fail_on_empty_list();
+		test.logResult(result, "choose should fail on empty list", "179");
+
+		tester = new RandomTester();
+
+		result = tester.choose_should_return_the_item_given_one();
+		test.logResult(result, "choose should return the item given one", "186");
+
+		tester = new RandomTester();
+
+		result = tester.choose_should_work_for_arrays();
+		test.logResult(result, "choose should work for arrays", "192");
+
+		tester = new RandomTester();
+
+		result = tester.choose_should_work_for_lists();
+		test.logResult(result, "choose should work for lists", "202");
+
+		test.finish();
+	}
+}
+
 import core.unicode;
 
 import core.string;
@@ -3139,7 +3755,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3155,7 +3770,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3170,7 +3784,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3185,7 +3798,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3200,7 +3812,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3215,7 +3826,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3230,7 +3840,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3245,7 +3854,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3263,7 +3871,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3278,7 +3885,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3293,7 +3899,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3308,7 +3913,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3323,7 +3927,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3338,7 +3941,6 @@ class UnicodeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3439,11 +4041,313 @@ class UnicodeTester {
 	}
 }
 
+import core.exception;
+
+class ExceptionTester {
+
+	it FileNotFound_should_work_with_no_explanation() {
+		before_FileNotFound();
+		try {
+			throw new FileNotFound();
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "File Not Found") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it FileNotFound_should_work_with_string_object() {
+		before_FileNotFound();
+		try {
+			throw new FileNotFound(new String("some_file"));
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "File Not Found: some_file") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it FileNotFound_should_work_with_plain_string() {
+		before_FileNotFound();
+		try {
+			throw new FileNotFound("some_file");
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "File Not Found: some_file") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_FileNotFound() {
+	}
+
+	it DirectoryNotFound_should_work_with_no_explanation() {
+		before_DirectoryNotFound();
+		try {
+			throw new DirectoryNotFound();
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Directory Not Found") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it DirectoryNotFound_should_work_with_string_object() {
+		before_DirectoryNotFound();
+		try {
+			throw new DirectoryNotFound(new String("some_dir"));
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Directory Not Found: some_dir") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it DirectoryNotFound_should_work_with_plain_string() {
+		before_DirectoryNotFound();
+		try {
+			throw new DirectoryNotFound("some_dir");
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Directory Not Found: some_dir") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_DirectoryNotFound() {
+	}
+
+	it OutOfElements_should_work_with_no_explanation() {
+		before_OutOfElements();
+		try {
+			throw new OutOfElements();
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Elements") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it OutOfElements_should_work_with_string_object() {
+		before_OutOfElements();
+		try {
+			throw new OutOfElements(new String("SomeClass"));
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Elements in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it OutOfElements_should_work_with_plain_string() {
+		before_OutOfElements();
+		try {
+			throw new OutOfElements("SomeClass");
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Elements in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_OutOfElements() {
+	}
+
+	it OutOfBounds_should_work_with_no_explanation() {
+		before_OutOfBounds();
+		try {
+			throw new OutOfBounds();
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Bounds") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it OutOfBounds_should_work_with_string_object() {
+		before_OutOfBounds();
+		try {
+			throw new OutOfBounds(new String("SomeClass"));
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Bounds in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it OutOfBounds_should_work_with_plain_string() {
+		before_OutOfBounds();
+		try {
+			throw new OutOfBounds("SomeClass");
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Out of Bounds in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_OutOfBounds() {
+	}
+
+	it ElementNotFound_should_work_with_no_explanation() {
+		before_ElementNotFound();
+		try {
+			throw new ElementNotFound();
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it ElementNotFound_should_work_with_string_object() {
+		before_ElementNotFound();
+		try {
+			throw new ElementNotFound(new String("SomeClass"));
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it ElementNotFound_should_work_with_plain_string() {
+		before_ElementNotFound();
+		try {
+			throw new ElementNotFound("SomeClass");
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_ElementNotFound() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		ExceptionTester tester = new ExceptionTester();
+
+		Test test = new Test("Exception", "specs/core/exception.d");
+
+		it result;
+
+		test.logSubset("FileNotFound");
+
+		tester = new ExceptionTester();
+
+		result = tester.FileNotFound_should_work_with_no_explanation();
+		test.logResult(result, "FileNotFound should work with no explanation", "9");
+
+		tester = new ExceptionTester();
+
+		result = tester.FileNotFound_should_work_with_string_object();
+		test.logResult(result, "FileNotFound should work with string object", "14");
+
+		tester = new ExceptionTester();
+
+		result = tester.FileNotFound_should_work_with_plain_string();
+		test.logResult(result, "FileNotFound should work with plain string", "19");
+
+		test.logSubset("DirectoryNotFound");
+
+		tester = new ExceptionTester();
+
+		result = tester.DirectoryNotFound_should_work_with_no_explanation();
+		test.logResult(result, "DirectoryNotFound should work with no explanation", "26");
+
+		tester = new ExceptionTester();
+
+		result = tester.DirectoryNotFound_should_work_with_string_object();
+		test.logResult(result, "DirectoryNotFound should work with string object", "31");
+
+		tester = new ExceptionTester();
+
+		result = tester.DirectoryNotFound_should_work_with_plain_string();
+		test.logResult(result, "DirectoryNotFound should work with plain string", "36");
+
+		test.logSubset("OutOfElements");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfElements_should_work_with_no_explanation();
+		test.logResult(result, "OutOfElements should work with no explanation", "43");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfElements_should_work_with_string_object();
+		test.logResult(result, "OutOfElements should work with string object", "48");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfElements_should_work_with_plain_string();
+		test.logResult(result, "OutOfElements should work with plain string", "53");
+
+		test.logSubset("OutOfBounds");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfBounds_should_work_with_no_explanation();
+		test.logResult(result, "OutOfBounds should work with no explanation", "60");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfBounds_should_work_with_string_object();
+		test.logResult(result, "OutOfBounds should work with string object", "65");
+
+		tester = new ExceptionTester();
+
+		result = tester.OutOfBounds_should_work_with_plain_string();
+		test.logResult(result, "OutOfBounds should work with plain string", "70");
+
+		test.logSubset("ElementNotFound");
+
+		tester = new ExceptionTester();
+
+		result = tester.ElementNotFound_should_work_with_no_explanation();
+		test.logResult(result, "ElementNotFound should work with no explanation", "77");
+
+		tester = new ExceptionTester();
+
+		result = tester.ElementNotFound_should_work_with_string_object();
+		test.logResult(result, "ElementNotFound should work with string object", "82");
+
+		tester = new ExceptionTester();
+
+		result = tester.ElementNotFound_should_work_with_plain_string();
+		test.logResult(result, "ElementNotFound should work with plain string", "87");
+
+		test.finish();
+	}
+}
+
 import core.date;
 
 class DateTester {
 
-	it creation_should_create_with_no_date_given() {
+	it creation_should_create_with_current_date() {
 		before_creation();
 		try {
 			Date d = new Date();
@@ -3455,7 +4359,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3479,7 +4383,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3497,7 +4401,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3515,7 +4419,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3531,7 +4435,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3549,7 +4453,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3565,7 +4469,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3583,7 +4487,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3599,7 +4503,7 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3626,8 +4530,8 @@ class DateTester {
 
 		tester = new DateTester();
 
-		result = tester.creation_should_create_with_no_date_given();
-		test.logResult(result, "creation should create with no date given", "7");
+		result = tester.creation_should_create_with_current_date();
+		test.logResult(result, "creation should create with current date", "7");
 
 		tester = new DateTester();
 
@@ -3697,7 +4601,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3720,7 +4624,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3742,7 +4646,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3762,7 +4666,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3786,7 +4690,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3813,7 +4717,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3836,7 +4740,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3856,7 +4760,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3892,7 +4796,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3914,7 +4818,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3936,7 +4840,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3956,7 +4860,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3990,7 +4894,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4014,7 +4918,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4048,7 +4952,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4085,7 +4989,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4106,7 +5010,7 @@ class LinkedListTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4260,7 +5164,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4283,7 +5187,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4307,7 +5211,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4328,7 +5232,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4365,7 +5269,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4389,7 +5293,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4410,7 +5314,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4431,7 +5335,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4462,7 +5366,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4485,7 +5389,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4500,7 +5404,7 @@ class PriorityQueueTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4612,7 +5516,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4630,7 +5534,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4649,7 +5553,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4674,7 +5578,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4716,7 +5620,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4739,7 +5643,7 @@ class StackTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4824,7 +5728,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4847,7 +5751,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4871,7 +5775,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4892,7 +5796,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4929,7 +5833,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4953,7 +5857,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4974,7 +5878,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -4995,7 +5899,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -5026,7 +5930,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -5049,7 +5953,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -5064,7 +5968,7 @@ class FibonacciHeapTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -5194,12 +6098,24 @@ class Tests {
 		StringTester.test();
 	}
 
+	static void testApplication() {
+		ApplicationTester.test();
+	}
+
 	static void testUtil() {
 		UtilTester.test();
 	}
 
+	static void testRandom() {
+		RandomTester.test();
+	}
+
 	static void testUnicode() {
 		UnicodeTester.test();
+	}
+
+	static void testException() {
+		ExceptionTester.test();
 	}
 
 	static void testDate() {
@@ -5231,8 +6147,11 @@ class Tests {
 		testTime();
 		testRegex();
 		testString();
+		testApplication();
 		testUtil();
+		testRandom();
 		testUnicode();
+		testException();
 		testDate();
 		testLinkedList();
 		testPriorityQueue();

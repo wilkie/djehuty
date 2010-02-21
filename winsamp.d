@@ -402,7 +402,7 @@ class MyConsoleApp : Application {
 	static this() { "helloworld".utflen(); "hello".charAt(1); new MyConsoleApp(); }
 	override void onApplicationStart() {
 		int[] foo = [1,2,3];
-
+		
 		//auto res = count((int a){ return a < 3; }, foo);
 
 		List!(int) foo2 = new List!(int);
