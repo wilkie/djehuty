@@ -2568,10 +2568,11 @@ import core.application;
 
 class ApplicationTester {
 
-	it creation_should_throw_exception_when_not_inherited() {
+	it creation_should_not_create_inside_another_application() {
 		before_creation();
 		try {
-			Application app = new Application();
+			class MyApplication : Application {}
+			MyApplication app = new MyApplication();
 		}
 		catch(Exception _exception_) {
 			return it.does;
@@ -2600,8 +2601,8 @@ class ApplicationTester {
 
 		tester = new ApplicationTester();
 
-		result = tester.creation_should_throw_exception_when_not_inherited();
-		test.logResult(result, "creation should throw exception when not inherited", "8");
+		result = tester.creation_should_not_create_inside_another_application();
+		test.logResult(result, "creation should not create inside another application", "8");
 
 		test.finish();
 	}
