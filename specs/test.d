@@ -2583,6 +2583,22 @@ class ApplicationTester {
 	done before_creation() {
 	}
 
+	it name_should_get_the_name() {
+		before_name();
+		try {
+			if(!(Djehuty.application().name() == "DjehutyTester")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_name() {
+	}
+
 	done before() {
 	}
 
@@ -2603,6 +2619,13 @@ class ApplicationTester {
 
 		result = tester.creation_should_not_create_inside_another_application();
 		test.logResult(result, "creation should not create inside another application", "8");
+
+		test.logSubset("name");
+
+		tester = new ApplicationTester();
+
+		result = tester.name_should_get_the_name();
+		test.logResult(result, "name should get the name", "16");
 
 		test.finish();
 	}

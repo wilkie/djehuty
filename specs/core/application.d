@@ -11,4 +11,10 @@ describe application() {
 			MyApplication app = new MyApplication();
 		 }
 	}
+
+	describe name() {
+		it should_get_the_name {
+			should(Djehuty.application().name() == "DjehutyTester");
+		}
+	}
 }
