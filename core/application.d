@@ -25,7 +25,7 @@ import io.console;
 import analyzing.debugger;
 
 // Description: This class represents the application instance.
-class Application : Responder {
+abstract class Application : Responder {
 
 	this() {
 		// go by classinfo to the application name
@@ -36,10 +36,6 @@ class Application : Responder {
 
 		if (pos > -1) {
 			className = className.subString(pos+1);
-		}
-
-		if (className == "Application") {
-			throw new Exception("Must inherit new instance of Application");
 		}
 
 		this(className);
