@@ -68,7 +68,6 @@ class GuiApplicationController {
 
 	void end(uint code) {
 		_pfvars.running = false;
-		X.XCloseDisplay(_pfvars.display);
 	}
 
 private:
@@ -429,5 +428,6 @@ private:
 					break;
 			}
 		}
+		X.XCloseDisplay(_pfvars.display);
 	}
 }
