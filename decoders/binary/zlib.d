@@ -17,6 +17,12 @@ import core.stream;
 import core.definitions;
 
 // Section: Codecs/Binary
+private {
+	align(1) struct _zlib_cmf_flg_header {
+		ubyte zlibCMF;
+		ubyte zlibFLG;
+	}
+}
 
 // Description: This represents the ZLIB Codec.
 class ZLIBDecoder : BinaryDecoder {
@@ -176,8 +182,4 @@ private:
 	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
 	const auto ZLIB_STATE_READ_ADLER32				= 3;
 
-	align(1) struct _zlib_cmf_flg_header {
-		ubyte zlibCMF;
-		ubyte zlibFLG;
-	}
 }

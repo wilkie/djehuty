@@ -44,6 +44,30 @@ template FromBigEndianBitIndex32(uint index) {
 	}
 }
 
+private {
+	align(1) struct MP3HeaderInformation {
+		uint ID;
+		uint Layer;
+		uint Protected;
+		uint BitrateIndex;
+		uint SamplingFrequency;
+		uint Padding;
+		uint Private;
+		uint Mode;
+		uint ModeExtension;
+		uint Copyright;
+		uint Original;
+		uint Emphasis;
+	}
+
+	align(1) struct ID3HeaderInformation {
+		ubyte[3] signature;
+		ubyte[2] ver;
+		ubyte flags;
+		ubyte[4] len;
+	}
+}
+
 class MP3Decoder : AudioDecoder {
 
 	string name() {
@@ -2092,28 +2116,6 @@ private:
 		MP3_READ_AUDIO_DATA_SINGLE_CHANNEL,
 		MP3_READ_AUDIO_DATA_SCALE_FACTORS,
 		MP3_READ_AUDIO_DATA_JOINT_STEREO,
-	}
-
-	align(1) struct MP3HeaderInformation {
-		uint ID;
-		uint Layer;
-		uint Protected;
-		uint BitrateIndex;
-		uint SamplingFrequency;
-		uint Padding;
-		uint Private;
-		uint Mode;
-		uint ModeExtension;
-		uint Copyright;
-		uint Original;
-		uint Emphasis;
-	}
-
-	align(1) struct ID3HeaderInformation {
-		ubyte[3] signature;
-		ubyte[2] ver;
-		ubyte flags;
-		ubyte[4] len;
 	}
 
 	const auto MPEG_SYNC_BITS 		= FromBigEndian!(0xFFF00000);
