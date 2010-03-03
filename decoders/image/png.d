@@ -5,6 +5,7 @@ import graphics.bitmap;
 import core.stream;
 import core.string;
 import core.endian;
+import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
@@ -16,8 +17,8 @@ import io.console;
 
 // Description: The PNG Codec
 class PNGDecoder : ImageDecoder {
-	override String name() {
-		return new String("Portable Network Graphics");
+	override string name() {
+		return "Portable Network Graphics";
 	}
 
 	StreamData decode(Stream stream, ref Bitmap view) {

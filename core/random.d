@@ -94,6 +94,7 @@ class Random {
 
 	template choose(T) {
 		static assert(IsIterable!(T), "Random.choose: " ~ T.stringof ~ " is not iterable.");
+		static assert(!is(IterableType!(T) == void), "Random.choose: cannot iterate a void array.");
 		IterableType!(T) choose(T list) {
 			return list[cast(size_t)next(list.length)];
 		}

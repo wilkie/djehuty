@@ -3,18 +3,73 @@ module decoders.image.bmp;
 import graphics.bitmap;
 
 import core.stream;
+import core.string;
+import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
 
-import core.string;
 
 // Section: Codecs/Image
 
+private {
+	align(2) struct _djehuty_image_bitmap_file_header {
+		ushort bfType;
+		uint bfSize;
+		ushort bfReserved1;
+		ushort bfReserved2;
+		uint bfOffBits;
+	}
+
+	align(2) struct _djehuty_image_bitmap_info_header {
+		uint  biWidth;
+		int  biHeight;
+		ushort biPlanes;
+		ushort biBitCount;
+		uint biCompression;
+		uint biSizeImage;
+		int  biXPelsPerMeter;
+		int  biYPelsPerMeter;
+		uint biClrUsed;
+		uint biClrImportant;
+	}
+
+	align(2) struct _djehuty_image_os2_1_bitmap_info_header {
+		ushort  biWidth;
+		ushort  biHeight;
+		ushort  biPlanes;
+		ushort  biBitCount;
+	}
+
+	align(2) struct _djehuty_image_os2_2_bitmap_info_header {
+		uint  biWidth;
+		uint  biHeight;
+		ushort  biPlanes;
+		ushort  biBitCount;
+		uint  biCompression;
+		uint  biSizeImage;
+		uint  biXPelsPerMeter;
+		uint  biYPelsPerMeter;
+		uint  biClrUsed;
+		uint  biClrImportant;
+
+		/* extended os2 2.x stuff */
+
+		ushort  usUnits;
+		ushort  usReserved;
+		ushort  usRecording;
+		ushort  usRendering;
+		uint   cSize1;
+		uint   cSize2;
+		uint   ulColorEncoding;
+		uint   ulIdentifier;
+	}
+}
+
 // Description: The BMP Codec
 class BMPDecoder : ImageDecoder {
-	override String name() {
-		return new String("Bitmap");
+	override string name() {
+		return "Bitmap";
 	}
 
 	StreamData decode(Stream stream, ref Bitmap view) {
@@ -1746,59 +1801,6 @@ protected:
 	ulong fileSize;
 
 private:
-
-	align(2) struct _djehuty_image_bitmap_file_header {
-		ushort bfType;
-		uint bfSize;
-		ushort bfReserved1;
-		ushort bfReserved2;
-		uint bfOffBits;
-	}
-
-	align(2) struct _djehuty_image_bitmap_info_header {
-		uint  biWidth;
-		int  biHeight;
-		ushort biPlanes;
-		ushort biBitCount;
-		uint biCompression;
-		uint biSizeImage;
-		int  biXPelsPerMeter;
-		int  biYPelsPerMeter;
-		uint biClrUsed;
-		uint biClrImportant;
-	}
-
-	align(2) struct _djehuty_image_os2_1_bitmap_info_header {
-		ushort  biWidth;
-		ushort  biHeight;
-		ushort  biPlanes;
-		ushort  biBitCount;
-	}
-
-	align(2) struct _djehuty_image_os2_2_bitmap_info_header {
-		uint  biWidth;
-		uint  biHeight;
-		ushort  biPlanes;
-		ushort  biBitCount;
-		uint  biCompression;
-		uint  biSizeImage;
-		uint  biXPelsPerMeter;
-		uint  biYPelsPerMeter;
-		uint  biClrUsed;
-		uint  biClrImportant;
-
-		/* extended os2 2.x stuff */
-
-		ushort  usUnits;
-		ushort  usReserved;
-		ushort  usRecording;
-		ushort  usRendering;
-		uint   cSize1;
-		uint   cSize2;
-		uint   ulColorEncoding;
-		uint   ulIdentifier;
-	}
-
 	static const auto BMP_STATE_INIT						= 0;
 
 	static const auto BMP_STATE_READ_HEADERS				= 1;

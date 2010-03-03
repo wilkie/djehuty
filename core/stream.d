@@ -775,6 +775,20 @@ public:
 		return false;
 	}
 
+	int opApply(int delegate(ref size_t, ref string) loopFunc) {
+		string nextLine;
+		int ret;
+		size_t cnt = 0;
+		while(readLine(nextLine)) {
+			ret = loopFunc(cnt, nextLine);
+			cnt++;
+
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
 	int opApply(int delegate(ref string) loopFunc) {
 		string nextLine;
 		int ret;

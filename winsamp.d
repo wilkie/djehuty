@@ -232,7 +232,6 @@ class MyControl : Widget {
 
 		//snd = new Sound("tests/begin.mp2");
 		//snd = new Sound("tests/01 Block Shaped Heart.mp3");
-		snd = new Sound("tests/fazed.dreamer.mp3");
 //		snd = new Sound("tests/sine_440.wav");
 		//snd = new Sound("tests/sine_220.wav");
 	}
@@ -314,6 +313,8 @@ class MyControl : Widget {
 		for (size_t i = 0; i < 8; i++) {
 			Console.putln(ret[i]);
 		}*/
+		//snd = new Sound("tests/fazed.dreamer.mp3");
+		snd = new Sound("tests/sine_440.wav");
 		snd.play();
 		tmr.start();
 		return false;
@@ -344,7 +345,7 @@ class MyWindow : Window {
 
 		cdouble aah = 1.0 + 0.0i;
 		double ah = cast(double)aah;
-		Console.putln(ah);
+		//Console.putln(ah);
 	}
 }
 
@@ -383,12 +384,25 @@ else {
 import math.fixed;
 import math.currency;
 import math.integer;
+import parsing.d.parser;
+
+uint utflen(char[] str) {
+	return Unicode.utflen(str);
+}
+
+char charAt(char[] str, uint i) {
+	return str[i];
+}
+
+string slice(string str, uint i, uint j) {
+	return str[i..j];
+}
 
 class MyConsoleApp : Application {
-	//static this() { new MyConsoleApp(); }
+	static this() { "helloworld".utflen(); "hello".charAt(1); new MyConsoleApp(); }
 	override void onApplicationStart() {
 		int[] foo = [1,2,3];
-
+		
 		//auto res = count((int a){ return a < 3; }, foo);
 
 		List!(int) foo2 = new List!(int);
@@ -465,6 +479,11 @@ class MyConsoleApp : Application {
 		Console.putln(Time.Now());
 		Console.putln(Time.Local());
 		foobbb(3);
+		
+		DParser parser = new DParser(File.open("tests/test.d"));
+		auto ast = parser.parse();
+		Console.putln();
+		Console.putln(ast);
 	}
 
 	void foobbb(...) {
@@ -480,7 +499,7 @@ protected:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
+	//static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
@@ -488,8 +507,8 @@ class MyApp : GuiApplication {
 		Date d = Date.Local();
 
 		Locale.id = LocaleId.French_FR;
-		Console.putln(d);
-		Console.putln(d.dayOfWeek);
+		//Console.putln(d);
+		//Console.putln(d.dayOfWeek);
 
 		push(wnd);
 	}

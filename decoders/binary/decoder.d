@@ -13,6 +13,7 @@ import decoders.decoder;
 
 import core.string;
 import core.stream;
+import core.definitions;
 
 // Section: Interfaces
 
@@ -22,7 +23,7 @@ class BinaryDecoder : Decoder {
 		return StreamData.Invalid;
 	}
 
-	override String name() {
-		return new String("Unknown Binary Decoder");
+	override string name() {
+		return "Unknown Binary Decoder";
 	}
 }
