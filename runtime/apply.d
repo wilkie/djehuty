@@ -6,9 +6,9 @@
  *
  */
 
-module mindrt.array;
+module runtime.array;
 
-import mindrt.common;
+import runtime.common;
 
 extern(C):
 
