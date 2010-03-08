@@ -46,6 +46,365 @@ template FromBigEndianBitIndex32(uint index) {
 
 class MP3Decoder : AudioDecoder {
 
+private:
+
+	enum : uint {
+		MP3_STATE_INIT,
+		MP3_BUFFER_AUDIO,
+		MP3_READ_HEADER,
+		MP3_AMBIGUOUS_SYNC,
+		MP3_READ_CRC,
+		MP3_READ_AUDIO_DATA,
+		MP3_READ_AUDIO_DATA_PREAMBLE,
+		MP3_READ_AUDIO_DATA_SINGLE_CHANNEL,
+		MP3_READ_AUDIO_DATA_SCALE_FACTORS,
+		MP3_READ_AUDIO_DATA_JOINT_STEREO,
+	}
+
+	align(1) struct MP3HeaderInformation {
+		uint ID;
+		uint Layer;
+		uint Protected;
+		uint BitrateIndex;
+		uint SamplingFrequency;
+		uint Padding;
+		uint Private;
+		uint Mode;
+		uint ModeExtension;
+		uint Copyright;
+		uint Original;
+		uint Emphasis;
+	}
+
+	align(1) struct ID3HeaderInformation {
+		ubyte[3] signature;
+		ubyte[2] ver;
+		ubyte flags;
+		ubyte[4] len;
+	}
+
+	const auto MPEG_SYNC_BITS 		= FromBigEndian!(0xFFF00000);
+	const auto MPEG_ID_BIT    		= FromBigEndian!(0x00080000);
+	const auto MPEG_LAYER			= FromBigEndian!(0x00060000);
+	const auto MPEG_LAYER_SHIFT				= FromBigEndianBitIndex32!(17);
+	const auto MPEG_PROTECTION_BIT	= FromBigEndian!(0x00010000);
+	const auto MPEG_BITRATE_INDEX	= FromBigEndian!(0x0000F000);
+	const auto MPEG_BITRATE_INDEX_SHIFT 	= FromBigEndianBitIndex32!(12);
+	const auto MPEG_SAMPLING_FREQ	= FromBigEndian!(0x00000C00);
+	const auto MPEG_SAMPLING_FREQ_SHIFT 	= FromBigEndianBitIndex32!(10);
+	const auto MPEG_PADDING_BIT		= FromBigEndian!(0x00000200);
+	const auto MPEG_PRIVATE_BIT		= FromBigEndian!(0x00000100);
+	const auto MPEG_MODE			= FromBigEndian!(0x000000C0);
+	const auto MPEG_MODE_SHIFT				= FromBigEndianBitIndex32!(6);
+	const auto MPEG_MODE_EXTENSION	= FromBigEndian!(0x00000030);
+	const auto MPEG_MODE_EXTENSION_SHIFT 	= FromBigEndianBitIndex32!(4);
+	const auto MPEG_COPYRIGHT		= FromBigEndian!(0x00000008);
+	const auto MPEG_ORIGINAL		= FromBigEndian!(0x00000004);
+	const auto MPEG_EMPHASIS		= FromBigEndian!(0x00000003);
+	const auto MPEG_EMPHASIS_SHIFT = 0;
+
+	// modes
+
+	const auto MPEG_MODE_STEREO			= 0;
+	const auto MPEG_MODE_JOINT_STEREO	= 1;
+	const auto MPEG_MODE_DUAL_CHANNEL	= 2;
+	const auto MPEG_MODE_SINGLE_CHANNEL = 3;
+
+	const uint byteMasks[9][] = [
+		[0x00, 0x00, 0x00, 0x00, 0x0, 0x0, 0x0, 0x0],		// 0 bit
+		[0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1],		// 1 bit
+		[0xC0, 0x60, 0x30, 0x18, 0xC, 0x6, 0x3, 0x1],		// 2 bits
+		[0xE0, 0x70, 0x38, 0x1C, 0xE, 0x7, 0x3, 0x1],		// 3 bits
+		[0xF0, 0x78, 0x3C, 0x1E, 0xF, 0x7, 0x3, 0x1],		// 4 bits
+		[0xF8, 0x7C, 0x3E, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 5 bits
+		[0xFC, 0x7E, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 6 bits
+		[0xFE, 0x7F, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 7 bits
+		[0xFF, 0x7F, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1]		// 8 bits
+	];
+
+	// layer 3 bit rates (MPEG-1)
+	const uint[] bitRates = [ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 ]; // the first entry is the 'free' bitrate
+	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
+
+	// Scalefactor Band Indices
+	const uint[23][3] sfindex_long = [
+		// 44.1
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342, 418, 576],
+		// 48.0
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330, 384, 576],
+		// 32.0
+		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448, 550, 576]
+	];
+
+	const uint[14][3] sfindex_short = [
+		// 44.1
+		[0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192],
+		// 48.0
+		[0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192],
+		// 32.0
+		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192]
+	];
+	
+	// Synthesis Filter Working Area:
+	int bufOffset[2] = [64,64];
+	zerodouble BB[2][2*512];
+
+	// Static Huffman tables
+
+	// Imports huffmanTables[][][] and huffmanValues[][]
+	// These are in an array from 0 - 16 and then table 24 being 17
+	// Index as: huffmanTables[tableIndex][bitlength][value]
+	//           huffmanValues[tableIndex][value]
+	// Both tables correspond in their order.
+	import decoders.audio.mp3Huffman;
+
+	uint[][] curTable;
+	uint[] curValues;
+	uint linbits;
+
+	// Select the table to use for decoding and reset state.
+	void initializeHuffman(uint region, uint gr, uint ch) {
+		uint tableIndex = table_select[region][gr][ch];
+		
+		switch (tableIndex) {
+
+			case 16:
+				linbits = 1;
+				break;
+
+			case 17:
+				linbits = 2;
+				break;
+
+			case 18:
+				linbits = 3;
+				break;
+
+			case 24:
+			case 19:
+				linbits = 4;
+				break;
+				
+			case 25:
+				linbits = 5;
+				break;
+
+			case 26:
+			case 20:
+				linbits = 6;
+				break;
+
+			case 27:
+				linbits = 7;
+				break;
+
+			case 28:
+			case 21:
+				linbits = 8;
+				break;
+
+			case 29:
+				linbits = 9;
+				break;
+
+			case 22:
+				linbits = 10;
+				break;
+
+			case 30:
+				linbits = 11;
+				break;
+
+			case 31:
+			case 23:
+				linbits = 13;
+				break;
+
+			default:
+				linbits = 0;
+				break;
+		}
+
+		if (tableIndex >= 24) {
+			tableIndex = 17;
+		}
+		else if (tableIndex >= 16) {
+			tableIndex = 16;
+		}
+
+		// XXX: This silliness is due to a compiler bug in DMD 1.046
+		if (tableIndex == 17) {
+			curTable = huffmanTable24;
+		}
+		else {
+			curTable = huffmanTables[tableIndex];
+		}
+		curValues = huffmanValues[tableIndex];
+	}
+
+	int[] readCode() {
+		uint code;
+		uint bitlength;
+		uint valoffset;
+
+		for(;;) {
+			code <<= 1;
+			code |= readBits(1);
+			
+			if (bitlength > curTable.length) {
+				break;
+			}
+
+			foreach(uint i, foo; curTable[bitlength]) {
+				if (foo == code) {
+					// found code
+
+					// get value offset
+					valoffset += i;
+					valoffset *= 2;
+
+     				int[] values = [curValues[valoffset], curValues[valoffset+1]];
+     			//	Console.putln("b:", values[0], " ", values[1]);
+
+					// read linbits (x)
+					if (linbits > 0 && values[0] == 15) {
+						values[0] += readBits(linbits);
+					}
+
+					if (values[0] > 0) {
+						if (readBits(1) == 1) {
+							values[0] = -values[0];
+						}
+					}
+
+					if (linbits > 0 && values[1] == 15) {
+						values[1] += readBits(linbits);
+					}
+
+					if (values[1] > 0) {
+						if (readBits(1) == 1) {
+							values[1] = -values[1];
+						}
+					}
+
+     				//Console.putln("a:", values[0], " ", values[1]);
+					return values;
+				}
+			}
+
+			valoffset += curTable[bitlength].length;
+			bitlength++;
+			if (bitlength >= curTable.length) {
+				return [128, 128];
+			}
+		}
+
+		return [128, 128];
+	}
+
+	uint curCountTable;
+
+	void initializeQuantizationHuffman(uint gr, uint ch) {
+		curCountTable = count1table_select[gr][ch];
+	}
+
+	int[] readQuantizationCode() {
+		uint code = decodeQuantization();
+
+		int v = ((code >> 3) & 1);
+		int w = ((code >> 2) & 1);
+		int x = ((code >> 1) & 1);
+		int y = (code & 1);
+
+		// Get Sign Bits (for non-zero values)
+
+		if (v > 0 && readBits(1) == 1) {
+			v = -v;
+		}
+
+		if (w > 0 && readBits(1) == 1) {
+			w = -w;
+		}
+
+		if (x > 0 && readBits(1) == 1) {
+			x = -x;
+		}
+
+		if (y > 0 && readBits(1) == 1) {
+			y = -y;
+		}
+
+	//	Console.putln("v: ", v, " w: ", w, " x: ", x , " y: ",y );
+
+		return [v,w,x,y];
+	}
+
+	uint decodeQuantization() {
+		uint code;
+
+		if (curCountTable == 1) {
+			// Quantization Huffman Table B is trivial...
+			// It is simply the bitwise negation of 4 bits from the stream.
+			// code = ~readBits(4);
+			code = readBits(4);
+			code = ~code;
+		}
+		else {
+			// Quantization Huffman Table A is the only case,
+			// so it is written here by hand:
+
+			// state 1
+			code = readBits(1);
+
+			if (code == 0b1) {
+				return 0b0000;
+			}
+
+			// state 2
+			code = readBits(3);
+
+			if (code >= 0b0100 && code <= 0b0111) {
+				uint idx = code - 0b0100;
+				const uint[] stage2_values = [0b0010, 0b0101, 0b0110, 0b0111];
+				return stage2_values[idx];
+			}
+
+			// state 3
+			code <<= 1;
+			code |= readBits(1);
+
+			if (code >= 0b00011 && code <= 0b00111) {
+				uint idx = code - 0b00011;
+				const uint[] stage3_values = [0b1001, 0b0110, 0b0011, 0b1010, 0b1100];
+				return stage3_values[idx];
+			}
+
+			// state 4
+			code <<= 1;
+			code |= readBits(1);
+
+			if (code <= 0b000101) {
+				const uint[] stage4_values = [0b1011, 0b1111, 0b1101, 0b1110, 0b0111, 0b0101];
+				return stage4_values[code];
+			}
+
+			// invalid code;
+			code = 0;
+		}
+
+		return code;
+	}
+
+	import decoders.audio.mpegCommon;
+
+	bool accepted = false;
+
+	// number of blocks (of 1728 samples) to buffer
+	const auto NUM_BLOCKS = 40;
+	
+	Wavelet tempBuffer;
+
+public:
 	string name() {
 		return "MPEG Layer 3";
 	}
@@ -2078,362 +2437,4 @@ static bool output = false;
 	}
 
 	ScaleFactor[2][2] scalefac;
-
-private:
-
-	enum : uint {
-		MP3_STATE_INIT,
-		MP3_BUFFER_AUDIO,
-		MP3_READ_HEADER,
-		MP3_AMBIGUOUS_SYNC,
-		MP3_READ_CRC,
-		MP3_READ_AUDIO_DATA,
-		MP3_READ_AUDIO_DATA_PREAMBLE,
-		MP3_READ_AUDIO_DATA_SINGLE_CHANNEL,
-		MP3_READ_AUDIO_DATA_SCALE_FACTORS,
-		MP3_READ_AUDIO_DATA_JOINT_STEREO,
-	}
-
-	align(1) struct MP3HeaderInformation {
-		uint ID;
-		uint Layer;
-		uint Protected;
-		uint BitrateIndex;
-		uint SamplingFrequency;
-		uint Padding;
-		uint Private;
-		uint Mode;
-		uint ModeExtension;
-		uint Copyright;
-		uint Original;
-		uint Emphasis;
-	}
-
-	align(1) struct ID3HeaderInformation {
-		ubyte[3] signature;
-		ubyte[2] ver;
-		ubyte flags;
-		ubyte[4] len;
-	}
-
-	const auto MPEG_SYNC_BITS 		= FromBigEndian!(0xFFF00000);
-	const auto MPEG_ID_BIT    		= FromBigEndian!(0x00080000);
-	const auto MPEG_LAYER			= FromBigEndian!(0x00060000);
-	const auto MPEG_LAYER_SHIFT				= FromBigEndianBitIndex32!(17);
-	const auto MPEG_PROTECTION_BIT	= FromBigEndian!(0x00010000);
-	const auto MPEG_BITRATE_INDEX	= FromBigEndian!(0x0000F000);
-	const auto MPEG_BITRATE_INDEX_SHIFT 	= FromBigEndianBitIndex32!(12);
-	const auto MPEG_SAMPLING_FREQ	= FromBigEndian!(0x00000C00);
-	const auto MPEG_SAMPLING_FREQ_SHIFT 	= FromBigEndianBitIndex32!(10);
-	const auto MPEG_PADDING_BIT		= FromBigEndian!(0x00000200);
-	const auto MPEG_PRIVATE_BIT		= FromBigEndian!(0x00000100);
-	const auto MPEG_MODE			= FromBigEndian!(0x000000C0);
-	const auto MPEG_MODE_SHIFT				= FromBigEndianBitIndex32!(6);
-	const auto MPEG_MODE_EXTENSION	= FromBigEndian!(0x00000030);
-	const auto MPEG_MODE_EXTENSION_SHIFT 	= FromBigEndianBitIndex32!(4);
-	const auto MPEG_COPYRIGHT		= FromBigEndian!(0x00000008);
-	const auto MPEG_ORIGINAL		= FromBigEndian!(0x00000004);
-	const auto MPEG_EMPHASIS		= FromBigEndian!(0x00000003);
-	const auto MPEG_EMPHASIS_SHIFT = 0;
-
-	// modes
-
-	const auto MPEG_MODE_STEREO			= 0;
-	const auto MPEG_MODE_JOINT_STEREO	= 1;
-	const auto MPEG_MODE_DUAL_CHANNEL	= 2;
-	const auto MPEG_MODE_SINGLE_CHANNEL = 3;
-
-	const uint byteMasks[9][] = [
-		[0x00, 0x00, 0x00, 0x00, 0x0, 0x0, 0x0, 0x0],		// 0 bit
-		[0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1],		// 1 bit
-		[0xC0, 0x60, 0x30, 0x18, 0xC, 0x6, 0x3, 0x1],		// 2 bits
-		[0xE0, 0x70, 0x38, 0x1C, 0xE, 0x7, 0x3, 0x1],		// 3 bits
-		[0xF0, 0x78, 0x3C, 0x1E, 0xF, 0x7, 0x3, 0x1],		// 4 bits
-		[0xF8, 0x7C, 0x3E, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 5 bits
-		[0xFC, 0x7E, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 6 bits
-		[0xFE, 0x7F, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1],		// 7 bits
-		[0xFF, 0x7F, 0x3F, 0x1F, 0xF, 0x7, 0x3, 0x1]		// 8 bits
-	];
-
-	// layer 3 bit rates (MPEG-1)
-	const uint[] bitRates = [ 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 ]; // the first entry is the 'free' bitrate
-	const double[] samplingFrequencies = [ 44.1, 48.0, 32.0, 1.0 ]; // the final entry is reserved, but set to 1.0 due to being used in division
-
-	// Scalefactor Band Indices
-	const uint[23][3] sfindex_long = [
-		// 44.1
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342, 418, 576],
-		// 48.0
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330, 384, 576],
-		// 32.0
-		[0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448, 550, 576]
-	];
-
-	const uint[14][3] sfindex_short = [
-		// 44.1
-		[0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192],
-		// 48.0
-		[0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192],
-		// 32.0
-		[0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192]
-	];
-	
-	// Synthesis Filter Working Area:
-	int bufOffset[2] = [64,64];
-	zerodouble BB[2][2*512];
-
-	// Static Huffman tables
-
-	// Imports huffmanTables[][][] and huffmanValues[][]
-	// These are in an array from 0 - 16 and then table 24 being 17
-	// Index as: huffmanTables[tableIndex][bitlength][value]
-	//           huffmanValues[tableIndex][value]
-	// Both tables correspond in their order.
-	import decoders.audio.mp3Huffman;
-
-	uint[][] curTable;
-	uint[] curValues;
-	uint linbits;
-
-	// Select the table to use for decoding and reset state.
-	void initializeHuffman(uint region, uint gr, uint ch) {
-		uint tableIndex = table_select[region][gr][ch];
-		
-		switch (tableIndex) {
-
-			case 16:
-				linbits = 1;
-				break;
-
-			case 17:
-				linbits = 2;
-				break;
-
-			case 18:
-				linbits = 3;
-				break;
-
-			case 24:
-			case 19:
-				linbits = 4;
-				break;
-				
-			case 25:
-				linbits = 5;
-				break;
-
-			case 26:
-			case 20:
-				linbits = 6;
-				break;
-
-			case 27:
-				linbits = 7;
-				break;
-
-			case 28:
-			case 21:
-				linbits = 8;
-				break;
-
-			case 29:
-				linbits = 9;
-				break;
-
-			case 22:
-				linbits = 10;
-				break;
-
-			case 30:
-				linbits = 11;
-				break;
-
-			case 31:
-			case 23:
-				linbits = 13;
-				break;
-
-			default:
-				linbits = 0;
-				break;
-		}
-
-		if (tableIndex >= 24) {
-			tableIndex = 17;
-		}
-		else if (tableIndex >= 16) {
-			tableIndex = 16;
-		}
-
-		// XXX: This silliness is due to a compiler bug in DMD 1.046
-		if (tableIndex == 17) {
-			curTable = huffmanTable24;
-		}
-		else {
-			curTable = huffmanTables[tableIndex];
-		}
-		curValues = huffmanValues[tableIndex];
-	}
-
-	int[] readCode() {
-		uint code;
-		uint bitlength;
-		uint valoffset;
-
-		for(;;) {
-			code <<= 1;
-			code |= readBits(1);
-			
-			if (bitlength > curTable.length) {
-				break;
-			}
-
-			foreach(uint i, foo; curTable[bitlength]) {
-				if (foo == code) {
-					// found code
-
-					// get value offset
-					valoffset += i;
-					valoffset *= 2;
-
-     				int[] values = [curValues[valoffset], curValues[valoffset+1]];
-     			//	Console.putln("b:", values[0], " ", values[1]);
-
-					// read linbits (x)
-					if (linbits > 0 && values[0] == 15) {
-						values[0] += readBits(linbits);
-					}
-
-					if (values[0] > 0) {
-						if (readBits(1) == 1) {
-							values[0] = -values[0];
-						}
-					}
-
-					if (linbits > 0 && values[1] == 15) {
-						values[1] += readBits(linbits);
-					}
-
-					if (values[1] > 0) {
-						if (readBits(1) == 1) {
-							values[1] = -values[1];
-						}
-					}
-
-     				//Console.putln("a:", values[0], " ", values[1]);
-					return values;
-				}
-			}
-
-			valoffset += curTable[bitlength].length;
-			bitlength++;
-			if (bitlength >= curTable.length) {
-				return [128, 128];
-			}
-		}
-
-		return [128, 128];
-	}
-
-	uint curCountTable;
-
-	void initializeQuantizationHuffman(uint gr, uint ch) {
-		curCountTable = count1table_select[gr][ch];
-	}
-
-	int[] readQuantizationCode() {
-		uint code = decodeQuantization();
-
-		int v = ((code >> 3) & 1);
-		int w = ((code >> 2) & 1);
-		int x = ((code >> 1) & 1);
-		int y = (code & 1);
-
-		// Get Sign Bits (for non-zero values)
-
-		if (v > 0 && readBits(1) == 1) {
-			v = -v;
-		}
-
-		if (w > 0 && readBits(1) == 1) {
-			w = -w;
-		}
-
-		if (x > 0 && readBits(1) == 1) {
-			x = -x;
-		}
-
-		if (y > 0 && readBits(1) == 1) {
-			y = -y;
-		}
-
-	//	Console.putln("v: ", v, " w: ", w, " x: ", x , " y: ",y );
-
-		return [v,w,x,y];
-	}
-
-	uint decodeQuantization() {
-		uint code;
-
-		if (curCountTable == 1) {
-			// Quantization Huffman Table B is trivial...
-			// It is simply the bitwise negation of 4 bits from the stream.
-			// code = ~readBits(4);
-			code = readBits(4);
-			code = ~code;
-		}
-		else {
-			// Quantization Huffman Table A is the only case,
-			// so it is written here by hand:
-
-			// state 1
-			code = readBits(1);
-
-			if (code == 0b1) {
-				return 0b0000;
-			}
-
-			// state 2
-			code = readBits(3);
-
-			if (code >= 0b0100 && code <= 0b0111) {
-				uint idx = code - 0b0100;
-				const uint[] stage2_values = [0b0010, 0b0101, 0b0110, 0b0111];
-				return stage2_values[idx];
-			}
-
-			// state 3
-			code <<= 1;
-			code |= readBits(1);
-
-			if (code >= 0b00011 && code <= 0b00111) {
-				uint idx = code - 0b00011;
-				const uint[] stage3_values = [0b1001, 0b0110, 0b0011, 0b1010, 0b1100];
-				return stage3_values[idx];
-			}
-
-			// state 4
-			code <<= 1;
-			code |= readBits(1);
-
-			if (code <= 0b000101) {
-				const uint[] stage4_values = [0b1011, 0b1111, 0b1101, 0b1110, 0b0111, 0b0101];
-				return stage4_values[code];
-			}
-
-			// invalid code;
-			code = 0;
-		}
-
-		return code;
-	}
-
-	import decoders.audio.mpegCommon;
-
-	bool accepted = false;
-
-	// number of blocks (of 1728 samples) to buffer
-	const auto NUM_BLOCKS = 40;
-	
-	Wavelet tempBuffer;
 }

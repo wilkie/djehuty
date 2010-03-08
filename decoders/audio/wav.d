@@ -390,22 +390,6 @@ class WAVDecoder : AudioDecoder {
 		return tme;
 	}
 
-protected:
-
-	_djehuty_wave_riff_header RIFFHeader;
-	_djehuty_wave_format_chunk FMTHeader;
-
-
-	_djehuty_wave_chunk_header curChunk;
-
-	bool formatHeaderFound = false;
-	uint dataToRead = 0;
-
-	AudioDecoder embeddedCodec;
-
-	AudioFormat wf;
-	Time bufferTime;
-
 private:
 
 	align(2) struct _djehuty_wave_riff_header {
@@ -436,4 +420,20 @@ private:
 
 	const auto WAVE_STATE_CHUNK_FMT		= 4;
 	const auto WAVE_STATE_CHUNK_DATA	= 5;
+
+protected:
+
+	_djehuty_wave_riff_header RIFFHeader;
+	_djehuty_wave_format_chunk FMTHeader;
+
+
+	_djehuty_wave_chunk_header curChunk;
+
+	bool formatHeaderFound = false;
+	uint dataToRead = 0;
+
+	AudioDecoder embeddedCodec;
+
+	AudioFormat wf;
+	Time bufferTime;
 }
