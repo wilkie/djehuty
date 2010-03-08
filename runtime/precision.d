@@ -12,7 +12,7 @@
  *
  */
 
-module mindrt.precision;
+module runtime.precision;
 
 /*-
  * Copyright (c) 1992, 1993

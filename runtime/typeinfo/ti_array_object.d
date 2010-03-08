@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_object;
+module runtime.typeinfo.ti_array_object;
 
 class TypeInfo_AC : TypeInfo {
 	hash_t getHash(void *p) {

@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.error;
+module runtime.error;
 
-import mindrt.exception;
+import runtime.exception;
 
 // Description: This is for a non irrecoverable failure.
 class Error : Exception {

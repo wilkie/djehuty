@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_creal;
+module runtime.typeinfo.ti_array_creal;
 
-import mindrt.typeinfo.ti_creal;
+import runtime.typeinfo.ti_creal;
 
 class TypeInfo_Ac : TypeInfo {
 	char[] toString() {

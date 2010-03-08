@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_dchar;
+module runtime.typeinfo.ti_array_dchar;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Aw : ArrayInfo!("dchar") { }

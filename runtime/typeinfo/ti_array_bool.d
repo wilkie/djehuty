@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_bool;
+module runtime.typeinfo.ti_array_bool;
 
-import mindrt.typeinfo.ti_array_ubyte;
+import runtime.typeinfo.ti_array_ubyte;
 
 class TypeInfo_Ab : TypeInfo_Ah {
 	char[] toString() {

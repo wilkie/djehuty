@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_cdouble;
+module runtime.typeinfo.ti_cdouble;
 
 class TypeInfo_r : TypeInfo {
     char[] toString() {

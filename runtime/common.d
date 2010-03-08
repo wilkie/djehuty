@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.common;
+module runtime.common;
 
 extern(C):
 

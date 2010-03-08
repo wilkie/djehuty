@@ -6,9 +6,9 @@
  *
  */
 
-module mindrt.unwind;
+module runtime.unwind;
 
-import mindrt.common;
+import runtime.common;
 
 extern(C):
 

@@ -5,7 +5,7 @@
  *
  */
 
-module std.typeinfo.ti_short;
+module runtime.typeinfo.ti_short;
 
 class TypeInfo_s : TypeInfo {
 	char[] toString() {

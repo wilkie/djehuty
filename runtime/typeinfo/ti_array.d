@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array;
+module runtime.typeinfo.ti_array;
 
-import mindrt.util;
+import runtime.util;
 
 class ArrayInfo(char[] TYPE) : TypeInfo {
 	mixin("alias " ~ TYPE ~ " T;");

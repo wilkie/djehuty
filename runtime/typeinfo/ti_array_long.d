@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_long;
+module runtime.typeinfo.ti_array_long;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Al : ArrayInfo!("long") { }

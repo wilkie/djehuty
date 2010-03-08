@@ -6,7 +6,7 @@
  *
  */
 
-module mindrt.util;
+module runtime.util;
 
 version(LDC) {
 	private import ldc.intrinsics;

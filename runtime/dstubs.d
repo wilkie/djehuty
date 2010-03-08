@@ -5,11 +5,11 @@
  *
  */
 
-module mindrt.dstubs;
+module runtime.dstubs;
 
-import mindrt.dstatic;
-import mindrt.exception;
-import mindrt.common;
+import runtime.dstatic;
+import runtime.exception;
+import runtime.common;
 
 extern(C):
 

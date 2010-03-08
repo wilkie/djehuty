@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_uint;
+module runtime.typeinfo.ti_array_uint;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Ak : ArrayInfo!("uint") { }

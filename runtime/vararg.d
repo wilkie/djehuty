@@ -5,6 +5,6 @@
  *
  */
 
-module mindrt.vararg;
+module runtime.vararg;
 
 

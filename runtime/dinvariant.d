@@ -6,7 +6,7 @@
  *
  */
 
-module mindrt.dinvariant;
+module runtime.dinvariant;
 
 extern(C):
 

@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_void;
+module runtime.typeinfo.ti_void;
 
 class TypeInfo_v : TypeInfo {
 	char[] toString() {

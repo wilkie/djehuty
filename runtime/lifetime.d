@@ -5,11 +5,11 @@
  *
  */
 
-module mindrt.lifetime;
+module runtime.lifetime;
 
-import mindrt.common;
-import mindrt.exception;
-import mindrt.gc;
+import runtime.common;
+import runtime.exception;
+import runtime.gc;
 
 extern(C):
 

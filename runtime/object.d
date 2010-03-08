@@ -8,11 +8,11 @@
 module object;
 
 // Imports necessary routines used by the runtime
-import mindrt.util;
-import mindrt.dstatic;
-import mindrt.dstubs;
-import mindrt.exception;
-import mindrt.error;
+import runtime.util;
+import runtime.dstatic;
+import runtime.dstubs;
+import runtime.exception;
+import runtime.error;
 
 //import std.moduleinit;
 

@@ -5,10 +5,10 @@
  *
  */
 
-module mindrt.dstatic;
+module runtime.dstatic;
 
-import mindrt.util;
-import mindrt.common;
+import runtime.util;
+import runtime.common;
 
 extern(C):
 

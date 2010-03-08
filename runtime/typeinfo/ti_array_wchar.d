@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_wchar;
+module runtime.typeinfo.ti_array_wchar;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Au : ArrayInfo!("wchar") { }

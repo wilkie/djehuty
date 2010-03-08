@@ -6,9 +6,9 @@
  *
  */
 
-module mindrt.assocarray;
+module runtime.assocarray;
 
-import mindrt.common;
+import runtime.common;
 
 extern(C):
 

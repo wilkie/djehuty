@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_byte;
+module runtime.typeinfo.ti_byte;
 
 // byte
 

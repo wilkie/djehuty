@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_double;
+module runtime.typeinfo.ti_double;
 
-import mindrt.util;
+import runtime.util;
 
 class TypeInfo_d : TypeInfo {
 	char[] toString() {

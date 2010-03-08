@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_ulong;
+module runtime.typeinfo.ti_ulong;
 
 class TypeInfo_m : TypeInfo {
 	char[] toString() {

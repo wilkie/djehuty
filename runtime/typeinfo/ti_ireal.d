@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_ireal;
+module runtime.typeinfo.ti_ireal;
 
-import mindrt.typeinfo.ti_real;
+import runtime.typeinfo.ti_real;
 
 class TypeInfo_j : TypeInfo_e {
     char[] toString() {

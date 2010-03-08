@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_ifloat;
+module runtime.typeinfo.ti_array_ifloat;
 
-import mindrt.typeinfo.ti_array_float;
+import runtime.typeinfo.ti_array_float;
 
 class TypeInfo_Ao : TypeInfo_Af {
 	char[] toString() {

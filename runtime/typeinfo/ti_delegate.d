@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_delegate;
+module runtime.typeinfo.ti_delegate;
 
 class TypeInfo_D : TypeInfo {
 	hash_t getHash(void *p) {

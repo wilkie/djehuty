@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.exception;
+module runtime.exception;
 
 // Description: This class represents a recoverable failure.
 class Exception : Object {

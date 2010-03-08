@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_ushort;
+module runtime.typeinfo.ti_array_ushort;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_At : ArrayInfo!("ushort") { }

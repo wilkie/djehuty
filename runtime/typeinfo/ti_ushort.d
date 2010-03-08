@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_ushort;
+module runtime.typeinfo.ti_ushort;
 
 class TypeInfo_t : TypeInfo {
 	char[] toString() {

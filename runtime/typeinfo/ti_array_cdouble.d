@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_cdouble;
+module runtime.typeinfo.ti_array_cdouble;
 
-import mindrt.typeinfo.ti_cdouble;
+import runtime.typeinfo.ti_cdouble;
 
 class TypeInfo_Ar : TypeInfo {
 	char[] toString() { return "cdouble[]"; }

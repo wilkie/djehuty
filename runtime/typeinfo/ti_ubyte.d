@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_ubyte;
+module runtime.typeinfo.ti_ubyte;
 
 class TypeInfo_h : TypeInfo {
 	char[] toString() {

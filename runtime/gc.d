@@ -6,7 +6,7 @@
  *
  */
 
-module mindrt.gc;
+module runtime.gc;
 
 void gc_init() {
 }

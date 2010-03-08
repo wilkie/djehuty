@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_int;
+module runtime.typeinfo.ti_array_int;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Ai : ArrayInfo!("int") { }

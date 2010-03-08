@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_real;
+module runtime.typeinfo.ti_real;
 
-import mindrt.util;
+import runtime.util;
 
 class TypeInfo_e : TypeInfo {
 	char[] toString() { return "real"; }

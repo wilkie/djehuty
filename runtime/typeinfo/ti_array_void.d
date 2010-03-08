@@ -5,9 +5,9 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_void;
+module runtime.typeinfo.ti_array_void;
 
-import mindrt.typeinfo.ti_array_ubyte;
+import runtime.typeinfo.ti_array_ubyte;
 
 class TypeInfo_Av : TypeInfo_Ah {
 	char[] toString() {

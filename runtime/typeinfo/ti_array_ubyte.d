@@ -5,8 +5,8 @@
  *
  */
 
-module mindrt.typeinfo.ti_array_ubyte;
+module runtime.typeinfo.ti_array_ubyte;
 
-import mindrt.typeinfo.ti_array;
+import runtime.typeinfo.ti_array;
 
 class TypeInfo_Ah : ArrayInfo!("ubyte") { }

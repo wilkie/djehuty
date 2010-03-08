@@ -7,7 +7,7 @@
 
 // dchar
 
-module mindrt.d.typeinfo.ti_dchar;
+module runtime.d.typeinfo.ti_dchar;
 
 class TypeInfo_w : TypeInfo {
 	char[] toString() {

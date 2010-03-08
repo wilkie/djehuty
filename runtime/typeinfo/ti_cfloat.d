@@ -5,7 +5,7 @@
  *
  */
 
-module mindrt.typeinfo.ti_cfloat;
+module runtime.typeinfo.ti_cfloat;
 
 class TypeInfo_q : TypeInfo {
 	char[] toString() {
