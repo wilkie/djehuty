@@ -168,10 +168,3 @@ int _aApplyRdw2(dchar[] aa, array_dg2_t dg) {
 	return 0;
 }
 
-char[] _adSortChar(char[] a) {
-	return null;
-}
-
-wchar[] _adSortWchar(wchar[] a) {
-	return null;
-}
