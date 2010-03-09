@@ -1,12 +1,12 @@
 /*
- * dinvariant.d
+ * classinvariant.d
  *
  * This module implements the runtime calls that will execute invariant blocks
  * (contracts) within class definitions.
  *
  */
 
-module runtime.dinvariant;
+module runtime.classinvariant;
 
 extern(C):
 
