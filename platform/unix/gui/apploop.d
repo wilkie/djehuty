@@ -34,7 +34,7 @@ class GuiApplicationController {
 	// The initial entry for the gui application
 	this() {
 		// this code is executed at initialization of the application
-		X.XInitThreads();
+		auto foo = X.XInitThreads();
 		_pfvars.running = true;
 
 		//ATTEMPT TO USE GTK
@@ -89,11 +89,14 @@ private:
 
 		GuiApplication app = cast(GuiApplication)Djehuty.app;
 
+		X.XLockDisplay(_pfvars.display);
 		while(_pfvars.running) {
 
 			// will block until an event is received
 
+			X.XUnlockDisplay(_pfvars.display);
 			X.XNextEvent(_pfvars.display, &event);
+			X.XLockDisplay(_pfvars.display);
 
 			// Find which window spawned this event
 
@@ -112,9 +115,7 @@ private:
 			}
 
 			if (window is null) {
-				printf("FUDGE\n");
 				if (event.type == X.EventType.CreateNotify) {
-					printf("CREATE\n");
 				}
 				if (event.type == X.EventType.ReparentNotify) {
 				}
@@ -146,7 +147,6 @@ private:
 				// Expose
 
 				case X.EventType.Expose:
-
 					if (event.xexpose.count == 0) {
 						View view = window._view;
 						ViewPlatformVars* viewVars = window._viewVars;

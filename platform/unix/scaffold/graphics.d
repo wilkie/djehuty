@@ -31,10 +31,13 @@ import graphics.region;
 
 import math.common;
 
+import binding.c;
+
 // Shapes
 
 // Draw a line
 void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
+	printf("drawLine\n");
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curPen.handle);
 	Cairo.cairo_set_line_width(viewVars.cr, viewVars.curPen.width);
 	Cairo.cairo_move_to(viewVars.cr, x, y);
@@ -44,6 +47,7 @@ void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
 void drawRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("drawRect\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -55,6 +59,7 @@ void drawRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
 }
 
 void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("fillRect\n");
 	x++;
 	width--;
 	height--;
@@ -64,6 +69,7 @@ void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
 }
 
 void strokeRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("strokeRect\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curPen.handle);
@@ -74,6 +80,7 @@ void strokeRect(ViewPlatformVars* viewVars, int x, int y, int width, int height)
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
 void drawOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("drawOval\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -93,6 +100,7 @@ void drawOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
 }
 
 void fillOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("fillOval\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -109,6 +117,7 @@ void fillOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
 }
 
 void strokeOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+	printf("strokeOval\n");
 	width--;
 	height--;
 	Cairo.cairo_save(viewVars.cr);
@@ -126,6 +135,7 @@ void strokeOval(ViewPlatformVars* viewVars, int x, int y, int width, int height)
 }
 
 void drawPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	printf("drawPie\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -151,6 +161,7 @@ void drawPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, do
 }
 
 void fillPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	printf("fillPie\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curBrush.handle);
@@ -173,6 +184,7 @@ void fillPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, do
 }
 
 void strokePie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
+	printf("strokePie\n");
 	width--;
 	height--;
 	Cairo.cairo_set_source(viewVars.cr, viewVars.curPen.handle);
@@ -200,6 +212,7 @@ void strokePie(ViewPlatformVars* viewVars, int x, int y, int width, int height, 
 
 //void createFont(ViewPlatformVars* viewVars, out Font font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
 void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
+	printf("createFont\n");
 	font.pangoFont = Pango.pango_font_description_new();
 
 	String fontnamestr = new String(fontname);
@@ -220,6 +233,7 @@ void createFont(FontPlatformVars* font, string fontname, int fontsize, int weigh
 
 //void createFont(ViewPlatformVars* viewVars, out Font font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru)
 void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
+	printf("createFont\n");
 	font.pangoFont = Pango.pango_font_description_new();
 
 	fontname = new String(fontname);
@@ -240,11 +254,13 @@ void createFont(FontPlatformVars* font, String fontname, int fontsize, int weigh
 
 void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font)
 {
+	printf("setFont\n");
 	Pango.pango_layout_set_font_description(viewVars.layout, font.pangoFont);
 }
 
 void destroyFont(FontPlatformVars* font)
 {
+	printf("destroyFont\n");
 	Pango.pango_font_description_free(font.pangoFont);
 }
 
@@ -253,6 +269,7 @@ void destroyFont(FontPlatformVars* font)
 // Text
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str)
 {
+	printf("drawText\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, str.length);
 
 	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
@@ -264,6 +281,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str)
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str)
 {
+	printf("drawText\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, str.length);
 
 	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
@@ -275,6 +293,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, string str)
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length)
 {
+	printf("drawText\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
 	Cairo.cairo_set_source_rgb(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue);
@@ -286,6 +305,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length)
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length)
 {
+	printf("drawText\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
 	Cairo.cairo_set_source_rgba(viewVars.cr, viewVars.textclr_red, viewVars.textclr_green, viewVars.textclr_blue, viewVars.textclr_alpha);
@@ -298,6 +318,7 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length)
 // Clipped Text
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str)
 {
+	printf("drawclipped\n");
 //		drawText(x,y,str);
 
 	/*
@@ -340,6 +361,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str)
 {
+	printf("drawclipped\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, str.length);
 
 	double xp1,yp1,xp2,yp2;
@@ -365,6 +387,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str, uint length)
 {
+	printf("drawclipped\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
 	double xp1,yp1,xp2,yp2;
@@ -390,6 +413,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, Stri
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str, uint length)
 {
+	printf("drawclipped\n");
 	Pango.pango_layout_set_text(viewVars.layout, str.ptr, length);
 
 	double xp1,yp1,xp2,yp2;
@@ -416,6 +440,7 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 // Text Measurement
 void measureText(ViewPlatformVars* viewVars, String str, out Size sz)
 {
+	printf("measureText\n");
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, str.length);
 
@@ -427,6 +452,7 @@ void measureText(ViewPlatformVars* viewVars, String str, out Size sz)
 
 void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size sz)
 {
+	printf("measureText\n");
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, length);
 
@@ -438,6 +464,7 @@ void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size s
 
 void measureText(ViewPlatformVars* viewVars, string str, out Size sz)
 {
+	printf("measureText\n");
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, str.length);
 
@@ -449,6 +476,7 @@ void measureText(ViewPlatformVars* viewVars, string str, out Size sz)
 
 void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size sz)
 {
+	printf("measureText\n");
 	Pango.pango_layout_set_text(viewVars.layout,
 		str.ptr, length);
 
@@ -460,6 +488,7 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 
 // Text Colors
 void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
+	printf("textBGColor\n");
 	// Color is an INT
 	// divide
 
@@ -483,6 +512,7 @@ void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
 
 void setTextColor(ViewPlatformVars* viewVars, ref Color textColor)
 {
+	printf("textColor\n");
 	// Color is an INT
 	// divide
 
@@ -503,17 +533,20 @@ void setTextColor(ViewPlatformVars* viewVars, ref Color textColor)
 
 void setTextModeTransparent(ViewPlatformVars* viewVars)
 {
+	printf("textModeTP\n");
 	Pango.pango_layout_set_attributes(viewVars.layout, viewVars.attr_list_transparent);
 }
 
 void setTextModeOpaque(ViewPlatformVars* viewVars)
 {
+	printf("textModeOP\n");
 	Pango.pango_layout_set_attributes(viewVars.layout, viewVars.attr_list_opaque);
 }
 
 // Graphics States
 
 void setAntialias(ViewPlatformVars* viewVars, bool value) {
+	printf("antialilas\n");
 	viewVars.aa = value;
 	if (viewVars.aa) {
 		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_DEFAULT);
@@ -526,25 +559,30 @@ void setAntialias(ViewPlatformVars* viewVars, bool value) {
 // Brushes
 
 void createBrush(BrushPlatformVars* brush, ref Color clr) {
+	printf("createBrush\n");
 	brush.handle = Cairo.cairo_pattern_create_rgba(clr.red,clr.green,clr.blue,clr.alpha);
 }
 
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
+	printf("setBrush\n");
 	viewVars.curBrush = *brush;
 }
 
 void destroyBrush(BrushPlatformVars* brush) {
+	printf("destroyBrush\n");
 	Cairo.cairo_pattern_destroy(brush.handle);
 }
 
 // BitmapBrush
 
 void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSrc) {
+	printf("createBitmapBrush\n");
 	brush.handle = Cairo.cairo_pattern_create_for_surface(viewVarsSrc.surface);
 	Cairo.cairo_pattern_set_extend(brush.handle, Cairo.cairo_extend_t.CAIRO_EXTEND_REPEAT);
 }
 
 void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, double[] points, Color[] clrs, double angle, double width) {
+	printf("createGradientBrush\n");
 	double x0, y0, x1, y1;
 	x0 = origx;
 	y0 = origy;
@@ -562,31 +600,38 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 // Pens
 
 void createPen(PenPlatformVars* pen, ref Color clr, double width) {
+	printf("createPen\n");
 	pen.handle = Cairo.cairo_pattern_create_rgba(clr.red,clr.green,clr.blue,clr.alpha);
 	pen.width = width;
 }
 
 void createPenWithBrush(PenPlatformVars* pen, ref BrushPlatformVars brush, double width) {
+	printf("createPenWithBrush\n");
 	pen.handle = Cairo.cairo_pattern_reference(brush.handle);
 	pen.width = width;
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {
+	printf("penBrush\n");
 	viewVars.curPen = *pen;
 }
 
 void destroyPen(PenPlatformVars* pen) {
+	printf("destroyPen\n");
 	Cairo.cairo_pattern_destroy(pen.handle);
 }
 
 // View Interfacing
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
+	printf("drawView !!!!!!\n");
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x, y);
 	Cairo.cairo_paint(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
+	printf("drawView !!!!!\n");
 	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
@@ -597,9 +642,11 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
 	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
+	printf("drawView !!!!\n");
 	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
@@ -610,16 +657,20 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Cairo.cairo_rectangle(viewVars.cr, x1, y1, x2, y2);
 	Cairo.cairo_restore(viewVars.cr);
 	Cairo.cairo_fill(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
+	printf("drawView !!!\n");
 	Cairo.cairo_save(viewVars.cr);
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x, y);
 	Cairo.cairo_paint_with_alpha(viewVars.cr, opacity);
 	Cairo.cairo_restore(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
+	printf("drawView !!\n");
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
 	x1 = x;
@@ -631,9 +682,11 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Cairo.cairo_clip(viewVars.cr);
 	Cairo.cairo_paint_with_alpha(viewVars.cr, opacity);
 	Cairo.cairo_restore(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
+	printf("drawView !\n");
 	Cairo.cairo_set_source_surface(viewVars.cr, viewVarsSrc.surface, x - viewX, y - viewY);
 	double x1,y1,x2,y2;
 	x1 = x;
@@ -645,6 +698,7 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Cairo.cairo_clip(viewVars.cr);
 	Cairo.cairo_paint_with_alpha(viewVars.cr, opacity);
 	Cairo.cairo_restore(viewVars.cr);
+	printf("drawView done\n");
 }
 
 void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
