@@ -1,5 +1,5 @@
 /*
- * modulenameunit.d
+ * moduledeclunit.d
  *
  * This module parses out the 'identifier.foo.bar' stuff out of a module
  * or import statement.
@@ -9,7 +9,7 @@
  *
  */
 
-module parsing.d.modulenameunit;
+module parsing.d.moduledeclunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -19,7 +19,7 @@ import parsing.d.nodes;
 
 import djehuty;
 
-class ModuleNameUnit : ParseUnit {
+class ModuleDeclUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 			case DToken.Dot:

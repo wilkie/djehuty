@@ -12,7 +12,6 @@ import parsing.d.tokens;
 import parsing.d.nodes;
 
 import parsing.d.staticunit;
-import parsing.d.modulenameunit;
 
 import djehuty;
 

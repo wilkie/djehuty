@@ -16,7 +16,7 @@ import parsing.token;
 
 import parsing.d.nodes;
 import parsing.d.tokens;
-import parsing.d.modulenameunit;
+import parsing.d.moduledeclunit;
 import parsing.d.declarationunit;
 
 class ModuleUnit : ParseUnit {
@@ -33,7 +33,7 @@ protected:
 					error("Module declaration should be the first line.");
 				}
 				else {
-					makeNode(DNode.Module, new ModuleNameUnit, "Module");
+					makeNode(DNode.Module, new ModuleDeclUnit, "Module");
 				}
 				break;
 			default:

@@ -73,7 +73,6 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
 	return null;
 }
 
-import io.console;
 LocaleId SystemGetLocaleId() {
 	char* res = getenv("LANG\0"c.ptr);
 	string locale = cast(char[])res[0..strlen(res)];

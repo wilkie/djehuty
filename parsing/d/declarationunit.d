@@ -12,7 +12,7 @@ import parsing.d.tokens;
 import parsing.d.nodes;
 
 import parsing.d.staticunit;
-import parsing.d.modulenameunit;
+import parsing.d.moduledeclunit;
 import parsing.d.typedeclarationunit;
 
 import djehuty;
@@ -39,7 +39,7 @@ class DeclarationUnit : ParseUnit {
 				break;
 			case DToken.Import:
 				Console.putln("IMPORT");
-				makeNode(DNode.Import, new ModuleNameUnit, "Import");
+				makeNode(DNode.Import, new ModuleDeclUnit, "Import");
 				break;
 			default:
 				// type declaration

@@ -23,8 +23,6 @@ import io.directory;
 
 // Description: This class wraps common file operations within the context of a Stream.
 class File : Stream {
-public:
-
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(String filename) {
@@ -70,7 +68,7 @@ public:
 		if (!r) {
 			return null;
 		}
-	
+
 		FileGetSize(foo._pfvars, foo._length);
 		foo._inited = true;
 
@@ -100,15 +98,15 @@ public:
 	// Core Functionality
 
 	// Description: Will close the file.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
-    void close() {
+	void close() {
 		if (_inited) {
-	        FileClose(_pfvars);
-	        _inited = false;
-	        _name = null;
-	    }
-    }
+			FileClose(_pfvars);
+			_inited = false;
+			_name = null;
+		}
+	}
 
-    // read
+	// read
 	override bool read(void* buffer, uint len) {
 		if (_curpos + len > _length) {
 			return false;
@@ -157,14 +155,14 @@ public:
 		return len;
 	}
 
-    // Console.put
+	// Console.put
 
 	override bool write(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
 
 		//if (_curpos + len > _length)
 		//{
-			// TODO: throw permission exception
+		// TODO: throw permission exception
 		//	return false;
 		//}
 
@@ -185,7 +183,7 @@ public:
 
 		//if (_curpos + len > _length)
 		//{
-			// TODO: throw permission exception
+		// TODO: throw permission exception
 		//	return false;
 		//}
 
@@ -197,7 +195,7 @@ public:
 		return true;
 	}
 
-    // append
+	// append
 
 	override bool append(ubyte* bytes, uint len) {
 		if (len <= 0) { return false;}
@@ -288,13 +286,13 @@ public:
 
 	// Description: Will return the String representing the filename currently open, or null for when there is no open file.
 	// Returns: The string representing the filename of this class.
-    String name() {
+	String name() {
 		if (_inited) {
-	        return new String(_name);
-	    }
+			return new String(_name);
+		}
 
-	    return null;
-    }
+		return null;
+	}
 
 	override bool duplicate(ulong distanceBehind, uint amount) {
 		if (amount <= 0) { return false; }
@@ -334,8 +332,8 @@ public:
 
 	Directory path() {
 		if (_inited) {
-	        return _path;
-	    }
+			return _path;
+		}
 
 		return null;
 	}
@@ -396,14 +394,14 @@ public:
 
 			if (ret) { break; }
 		}
-		
+
 		return ret;
 	}
 
-protected:
+	protected:
 
-    bool _inited = false;
-    FilePlatformVars _pfvars;
+	bool _inited = false;
+	FilePlatformVars _pfvars;
 
 	Directory _path;
 	String _name;
