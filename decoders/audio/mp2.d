@@ -356,8 +356,7 @@ class MP2Decoder : AudioDecoder {
 
 					posOfFirstFrame = cast(long)stream.position;
 
-					SeekPointer sptr;
-					sptr.streamPosition = stream.position();
+					SeekPointer sptr = {Time.init, posOfFirstFrame, null};
 					seekLUT ~= sptr;
 
 					// *** fall through *** //
