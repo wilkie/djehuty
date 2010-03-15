@@ -15,6 +15,7 @@ import parsing.d.moduledeclunit;
 import parsing.d.importdeclunit;
 import parsing.d.staticunit;
 import parsing.d.versionunit;
+import parsing.d.debugunit;
 import parsing.d.declarationunit;
 import parsing.d.typedeclarationunit;
 import parsing.d.enumdeclunit;
@@ -115,6 +116,7 @@ protected:
 
 			// Debug Block
 			case DToken.Debug:
+				auto tree = expand!(DebugUnit)();
 				break;
 
 			// Unittest Block

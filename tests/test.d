@@ -20,6 +20,16 @@ version(FooBarDeluxe) {
 
 version = ReleaseFoo;
 
+debug(FooFooBunny) {
+}
+
+debug(FooFooBunnyEars):
+
+debug {
+}
+
+debug:
+
 class FooClass {
 	this() {
 	}
