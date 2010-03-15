@@ -40,7 +40,7 @@ class FooClass {
 	~this() {
 	}
 
-	this() {
+	this(int a) {
 	}
 
 	interface FooBarInterface {
