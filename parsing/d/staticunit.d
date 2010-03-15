@@ -11,6 +11,8 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
+import parsing.d.staticifunit;
+
 import djehuty;
 
 class StaticUnit : ParseUnit {
@@ -19,6 +21,7 @@ class StaticUnit : ParseUnit {
 			case DToken.If:
 				// Static If (Compile-time condition)
 				// static if ...
+				auto tree = expand!(StaticIfUnit)();
 				break;
 			case DToken.Assert:
 				// Static Assert (Compile-time assert)

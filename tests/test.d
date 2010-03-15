@@ -15,6 +15,11 @@ struct FooStruct {
 	}
 }
 
+version(FooBarDeluxe) {
+}
+
+version = ReleaseFoo;
+
 class FooClass {
 	this() {
 	}

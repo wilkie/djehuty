@@ -14,6 +14,7 @@ import parsing.d.tokens;
 import parsing.d.moduledeclunit;
 import parsing.d.importdeclunit;
 import parsing.d.staticunit;
+import parsing.d.versionunit;
 import parsing.d.declarationunit;
 import parsing.d.typedeclarationunit;
 import parsing.d.enumdeclunit;
@@ -109,6 +110,7 @@ protected:
 
 			// Version Block
 			case DToken.Version:
+				auto tree = expand!(VersionUnit)();
 				break;
 
 			// Debug Block
