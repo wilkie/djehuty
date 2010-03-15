@@ -34,13 +34,13 @@ unittest {
 }
 
 class FooClass {
-	this() {
+	this(...) {
 	}
 
 	~this() {
 	}
 
-	this(int a) {
+	this(int a, int b) {
 	}
 
 	interface FooBarInterface {

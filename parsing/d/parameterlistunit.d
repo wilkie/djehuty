@@ -13,7 +13,7 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
-import parsing.d.parameterlistunit;
+import parsing.d.parameterunit;
 import parsing.d.functionbodyunit;
 import parsing.d.declaratorunit;
 
@@ -25,42 +25,46 @@ class ParameterListUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 
-			// Default Initializers
-			case DToken.Assign:
-				if (this.state != 1) {
-					// Error: We don't have a declarator!
-					// TODO:
-				}
-				// TODO:
-				// auto tree = expand!(DefaultInitializerUnit)();
-
+			case DToken.RightParen:
 				// Done.
 				return false;
+				break;
 
-			// Figure out the specifier.
-			case DToken.In:
-			case DToken.Out:
-			case DToken.Ref:
-			case DToken.Lazy:
-				if (this.state >= 1) {
-					// Error: Already have an in, out, ref, or lazy specifier.
+			case DToken.Variadic:
+				if (this.state == 2) {
+					// Error: Have two variadics?!
+					// TODO: One too many variadics.
+				}
+				// We have a variadic!
+				this.state = 2;
+				break;
+
+			case DToken.Comma:
+				if (this.state == 0) {
+					// Error: Expected a parameter!
+					// TODO: Probably accidently removed a parameter without removing the comma.
+				}
+
+				// Get Parameter
+				this.state = 0;
+				break;
+
+			default:
+				if (this.state == 0) {
+					// Look for a parameter
+					lexer.push(current);
+					auto tree = expand!(ParameterUnit)();
+					this.state = 1;
+				}
+				else if (this.state == 2) {
+					// Error: Parameter after variadic?
+					// TODO: Forgot comma.
+				}
+				else {
+					// Error: otherwise
 					// TODO:
 				}
 
-				// Specifier.
-
-				// Fall through to hit the declarator call
-
-			default:
-				if (this.state == 1) {
-					// Failed to find an equals, so we must be done.
-					return false;
-				}
-				else if (this.state == 0) {
-					// Hopefully this is a Declarator
-					auto tree = expand!(DeclaratorUnit)();
-					this.state = 1;
-				}
 				break;
 		}
 		return true;
