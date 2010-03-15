@@ -36,6 +36,7 @@ class StaticUnit : ParseUnit {
 				// static ~ this ...
 				break;
 			default:
+				// Attribute Specifier
 				// static Type
 				break;
 		}

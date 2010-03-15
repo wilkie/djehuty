@@ -5,19 +5,13 @@ import parsing.lexer;
 import parsing.token;
 
 import core.string;
+import core.tostring;
 import core.variant;
 import core.definitions;
 
 import io.console;
 
 class ParseUnit {
-	this() {
-	}
-
-	this(Lexer lexer) {
-		_lexer = lexer;
-	}
-
 	final AbstractSyntaxTree parse() {
 		// get class name
 		ClassInfo ci = this.classinfo;
@@ -29,85 +23,117 @@ class ParseUnit {
 		}
 
 		// Go through every token...
-		while((current = _lexer.pop()).type != 0) {
+
+		// Starting with the first
+		current = _lexer.pop();
+
+		if (current.type == 0) {
+			return _root;
+		}
+
+		// get position in lexer
+		_firstLine = current.line;
+		_firstColumn = current.column;
+
+		do {
+//			Console.putln("T: ", current.type, " ", current.value);
 			if (!tokenFound(current)) {
 				break;
 			}
 			if (_error) {
 				break;
 			}
-		}
+
+			_lastLine = current.lineEnd;
+			_lastColumn = current.columnEnd;
+		} while((current = _lexer.pop()).type != 0);
 
 		// Return resulting parse tree...
 		return _root;
 	}
 
-	final void makeNode(uint type, ParseUnit unit, ...) {
-		Variadic v = new Variadic(_arguments, _argptr);
-		AbstractSyntaxTree ast = null;
-		if (unit !is null) {
-			unit._lexer = _lexer;
-			ast = unit.parse();
+	template expand(T) {
+		AbstractSyntaxTree expand() {
+			auto machine = new T();
+			machine.lexer = _lexer;
+			return machine.parse();
 		}
-		_makeNodev(type, ast, v);	
 	}
 
-	final void makeNode(ParseUnit unit) {
-		if (unit !is null) {
-			unit._lexer = _lexer;
-			unit.parse();
-			if (_tree is null) {
-				_tree = unit._root;
-			}
-			else {
-				_tree.left = unit._root;
-				_tree = _tree.left;
-			}
-			if (_root is null) {
-				_root = _tree;
-			}
-		}
+	Lexer lexer() {
+		return _lexer;
+	}
+
+	void lexer(Lexer val) {
+		_lexer = val;
 	}
 
 protected:
 
-	final void error(string msg) {
-		Console.putln("Syntax Error: file.d @ ", current.line, ":", current.column, " - ", msg);
-		_error = true;
+	uint state() {
+		return _state;
 	}
 
-	final void _makeNodev(uint type, AbstractSyntaxTree ast, Variadic vars) {
-		if (vars.length == 0) {
-			if (_tree is null) {
-				_tree = new AbstractSyntaxTree(type, null, ast);
-			}
-			else {
-				_tree.left = new AbstractSyntaxTree(type, null, ast);
-				_tree = _tree.left;
-			}
-		}
-		else {
-			Variant value = vars[0];
-			if (_tree is null) {
-				_tree = new AbstractSyntaxTree(type, null, ast, value);
-			}
-			else {
-				_tree.left = new AbstractSyntaxTree(type, null, ast, value);
-				_tree = _tree.left;
-			}
-		}
-		if (_root is null) {
-			_root = _tree;
-		}
+	void state(uint value) {
+		_state = value;
+	}
+
+	AbstractSyntaxTree root() {
+		return _root;
+	}
+
+	final void errorAtStart(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, _firstLine, _firstColumn);
+	}
+
+	final void errorAtPrevious(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, _lastLine, _lastColumn);
+	}
+
+	final void error(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, current.line, current.column);
 	}
 
 	bool tokenFound(Token token) {
 		return true;
 	}
 
+private:
+	uint _firstLine;
+	uint _firstColumn;
+
+	uint _lastLine;
+	uint _lastColumn;
+
+	uint _state;
+
 	Lexer _lexer;
 	AbstractSyntaxTree _tree;
 	AbstractSyntaxTree _root;
 	static bool _error;
 	Token current;
+
+	void _printerror(string msg, string desc, string[] usages, uint line, uint column) {
+		Console.setColor(fgColor.Red);
+		Console.putln("Syntax Error: file.d");
+		Console.putln("   Line: ", line, ": ", _lexer.line(line));
+		uint position = column;
+		position = position + toStr(line).length + 10;
+		for (uint i; i < position; i++) {
+			Console.put(" ");
+		}
+		Console.putln("^");
+		Console.setColor(fgColor.White);
+		Console.putln(" Reason: ", msg);
+		if (desc !is null) {
+			Console.putln("   Hint: ", desc);
+		}
+		if (usages !is null) {
+			Console.putln("  Usage: ", usages[0]);
+			foreach(usage; usages[1..$]) {
+				Console.putln("         ", usage);
+			}
+		}
+		_error = true;
+	}
 }

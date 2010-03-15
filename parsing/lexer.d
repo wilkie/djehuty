@@ -3,6 +3,7 @@ module parsing.lexer;
 import parsing.token;
 
 import core.stream;
+import core.definitions;
 
 abstract class Lexer {
 	this(Stream stream) {
@@ -15,7 +16,11 @@ abstract class Lexer {
 		return Token.init;
 	}
 
-//	int opApply(int delegate(ref Token) loopbody) {
-//		return 1;
-//	}
+	string line() {
+		return "";
+	}
+
+	string line(uint idx) {
+		return "";
+	}
 }

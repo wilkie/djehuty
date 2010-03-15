@@ -16,29 +16,37 @@ import parsing.token;
 
 import parsing.d.nodes;
 import parsing.d.tokens;
+
 import parsing.d.moduledeclunit;
 import parsing.d.declarationunit;
 
-class ModuleUnit : ParseUnit {
-	this(Lexer lexer) {
-		super(lexer);
-	}
+import io.console;
 
+class ModuleUnit : ParseUnit {
 protected:
 
 	override bool tokenFound(Token current) {
+
+		// This parsing unit searches for declarations.
+
 		switch (current.type) {
+
+			// Module Declaration
 			case DToken.Module:
-				if (_root !is null) {
-					error("Module declaration should be the first line.");
+				
+				if (root !is null) {
+					// Error: The module declaration is found, 
+					// but it is not at the root of the parse tree.
+					error("Module declaration should be on one of the first lines of the file.");
 				}
 				else {
-					makeNode(DNode.Module, new ModuleDeclUnit, "Module");
+					auto tree = expand!(ModuleDeclUnit)();
 				}
 				break;
+
 			default:
-				_lexer.push(current);
-				makeNode(new DeclarationUnit);
+				lexer.push(current);
+				auto tree = expand!(DeclarationUnit)();
 				break;
 		}
 		return true;

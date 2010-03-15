@@ -1,15 +1,12 @@
 /*
- * moduledeclunit.d
+ * importdeclunit.d
  *
- * This module parses out the 'identifier.foo.bar' stuff out of a module
- * or import statement.
- *
- * Author: Dave Wilkinson
- * Originated: February 6th, 2010
+ * This module parses out the package and module name foo
+ * out of an import declaration.
  *
  */
 
-module parsing.d.moduledeclunit;
+module parsing.d.importdeclunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -21,7 +18,7 @@ import io.console;
 
 import djehuty;
 
-class ModuleDeclUnit : ParseUnit {
+class ImportDeclUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 			case DToken.Dot:
@@ -37,14 +34,13 @@ class ModuleDeclUnit : ParseUnit {
 					cur_string ~= ".";
 				}
 				break;
-			case DToken.Semicolon:
 
+			case DToken.Semicolon:
 				// End of declaration
-				Console.putln("Module: ", cur_string);
+				Console.putln("Import: ", cur_string);
 				return false;
 
 			case DToken.Identifier:
-
 				if (cur_string.length > 0 && cur_string[$-1] != '.') {
 
 					// Error: Found an identifier and then another identifier. Probably
@@ -55,10 +51,8 @@ class ModuleDeclUnit : ParseUnit {
 
 				}
 				else {
-
 					// Add the package or module name to the overall value.
 					cur_string ~= toStr(current.value);
-
 				}
 
 				break;
@@ -85,9 +79,14 @@ class ModuleDeclUnit : ParseUnit {
 		}
 		return true;
 	}
+
 protected:
 	string cur_string = "";
 
-	static const string _common_error_msg = "The module declaration is not formed correctly.";
-	static const string[] _common_error_usages = ["module package.file;"];
+	static const string _common_error_msg = "The import declaration is not formed correctly.";
+	static const string[] _common_error_usages = [
+		"import package.file;",
+		"import MyAlias = package.file;",
+		"import MyFoo = package.file : Foo;"
+	];
 }

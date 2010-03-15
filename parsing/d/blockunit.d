@@ -22,7 +22,6 @@ class BlockUnit : ParseUnit {
 				}
 				else {
 					// Good... look for a declaration
-					makeNode(DNode.Block, new DeclarationUnit, "Body");
 					leftFound = true;
 				}
 				break;
@@ -34,8 +33,7 @@ class BlockUnit : ParseUnit {
 				return false;
 			default:
 				// We can look for a simple declaration
-				_lexer.push(current);
-				makeNode(new DeclarationUnit);
+				lexer.push(current);
 				break;
 		}
 		return true;
