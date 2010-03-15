@@ -30,6 +30,9 @@ debug {
 
 debug:
 
+unittest {
+}
+
 class FooClass {
 	this() {
 	}

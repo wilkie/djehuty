@@ -15,6 +15,7 @@ import parsing.d.moduledeclunit;
 import parsing.d.importdeclunit;
 import parsing.d.staticunit;
 import parsing.d.versionunit;
+import parsing.d.unittestunit;
 import parsing.d.debugunit;
 import parsing.d.declarationunit;
 import parsing.d.typedeclarationunit;
@@ -121,6 +122,7 @@ protected:
 
 			// Unittest Block
 			case DToken.Unittest:
+				auto tree = expand!(UnittestUnit)();
 				break;
 
 			// Typedef Declaration

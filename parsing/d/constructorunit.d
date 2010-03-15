@@ -79,6 +79,7 @@ class ConstructorUnit : ParseUnit {
 				}
 
 				// Function body!
+				lexer.push(current);
 				auto tree = expand!(FunctionBodyUnit)();
 
 				Console.putln("Constructor");

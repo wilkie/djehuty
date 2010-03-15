@@ -24,10 +24,27 @@ class FunctionBodyUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 
+			// We always look FIRST for a left curly brace
+			case DToken.LeftCurly:
+				if (this.state % 2 == 1) {
+					// Error: Left curly already found.
+					// TODO:
+				}
+				this.state = this.state + 1;
+				break;
+
 			// We are always looking for the end of the block.
 			case DToken.RightCurly:
-				// Done.
-				return false;
+				if (this.state % 2 == 0) {
+					// Error: Left curly not found!
+					// TODO:
+				}
+				this.state = this.state - 1;
+
+				if (this.state == 0) {
+					// Done.
+					return false;
+				}
 
 			// TODO: in, out, body, blockstatement foo
 
