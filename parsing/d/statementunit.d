@@ -19,7 +19,10 @@ import parsing.d.switchstmtunit;
 import parsing.d.casestmtunit;
 import parsing.d.defaultstmtunit;
 import parsing.d.breakstmtunit;
+import parsing.d.gotostmtunit;
 import parsing.d.continuestmtunit;
+import parsing.d.returnstmtunit;
+import parsing.d.volatilestmtunit;
 
 import io.console;
 
@@ -73,6 +76,8 @@ class StatementUnit : ParseUnit {
 			case DToken.Synchronized:
 				break;
 			case DToken.Volatile:
+				Console.putln("Volatile: ");
+				auto tree = expand!(VolatileStmtUnit)();
 				break;
 			case DToken.Case:
 				auto tree = expand!(CaseStmtUnit)();
@@ -90,8 +95,11 @@ class StatementUnit : ParseUnit {
 				auto tree = expand!(BreakStmtUnit)();
 				break;
 			case DToken.Goto:
+				auto tree = expand!(GotoStmtUnit)();
 				break;
 			case DToken.Return:
+				Console.putln("Return: ");
+				auto tree = expand!(ReturnStmtUnit)();
 				break;
 			case DToken.Throw:
 				break;

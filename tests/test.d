@@ -46,6 +46,10 @@ class FooClass {
 
 	this(int a, int b) {
 		switch(5) {
+			case 4:
+				goto default;
+				goto case 3;
+				goto foo;
 			case 6:
 				break;
 			case 7:
@@ -53,6 +57,10 @@ class FooClass {
 			default:
 				continue;
 		}
+		return 4;
+		return;
+		volatile;
+		volatile switch(3) { case 4: }
 	}
 
 	interface FooBarInterface {
