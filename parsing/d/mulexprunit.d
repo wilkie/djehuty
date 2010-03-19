@@ -22,9 +22,25 @@ import djehuty;
 class MulExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
+			case DToken.Mul:
+			case DToken.Div:
+			case DToken.Mod:
+				if (this.state == 1) {
+					Console.putln("MUL");
+					this.state = 0;
+					break;
+				}
+
+				// Fall through
+
 			default:
 				lexer.push(current);
+				if (this.state == 1) {
+					// Done.
+					return false;
+				}
 				auto tree = expand!(UnaryExprUnit)();
+				this.state = 1;
 				break;
 		}
 		return true;

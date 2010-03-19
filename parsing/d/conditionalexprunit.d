@@ -25,7 +25,7 @@ class ConditionalExprUnit : ParseUnit {
 			default:
 				lexer.push(current);
 				auto tree = expand!(LogicalOrExprUnit)();
-				break;
+				return false;
 		}
 		return true;
 	}

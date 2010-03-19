@@ -22,9 +22,51 @@ import djehuty;
 class CmpExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
+			case DToken.Bang: // !
+				// look for is
+				Token foo = lexer.pop();
+				if (foo.type == DToken.Is) {
+					// !is
+					Console.putln("!is");
+					this.state = 2;
+				}
+				break;
+
+			case DToken.Equals:						 // ==
+			case DToken.NotEquals:					 // !=
+			case DToken.LessThan:					 // <
+			case DToken.NotLessThan:				 // !<
+			case DToken.GreaterThan:				 // >
+			case DToken.NotGreaterThan:				 // !>
+			case DToken.LessThanEqual:				 // <=
+			case DToken.NotLessThanEqual:			 // !<=
+			case DToken.GreaterThanEqual:			 // >=
+			case DToken.NotGreaterThanEqual:		 // !>=
+			case DToken.LessThanGreaterThan:		 // <>
+			case DToken.NotLessThanGreaterThan:		 // !<>
+			case DToken.LessThanGreaterThanEqual:	 // <>=
+			case DToken.NotLessThanGreaterThanEqual: // !<>=
+			case DToken.Is:							 // is
+			case DToken.In:							 // in
+
+				if (this.state == 1) {
+					// ==
+					this.state = 2;
+				}
+				break;
 			default:
 				lexer.push(current);
+				if (this.state == 1) {
+					// Done.
+					return false;
+				}
+
 				auto tree = expand!(ShiftExprUnit)();
+				if (this.state == 2) {
+					// Done.
+					return false;
+				}
+				this.state = 1;
 				break;
 		}
 		return true;

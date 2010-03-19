@@ -1,5 +1,7 @@
 module test.foo;
 
+pragma(msg);
+
 int b[][][][][];
 int ((((q))))[][];
 int a;
@@ -35,12 +37,22 @@ unittest {
 
 class FooClass {
 	this(...) {
+		for ( ; 2+3*5 ; ) {
+		}
 	}
 
 	~this() {
 	}
 
 	this(int a, int b) {
+		switch(5) {
+			case 6:
+				break;
+			case 7:
+				break foo;
+			default:
+				continue;
+		}
 	}
 
 	interface FooBarInterface {

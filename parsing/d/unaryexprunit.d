@@ -13,6 +13,8 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
+import parsing.d.postfixexprunit;
+
 import io.console;
 
 import djehuty;
@@ -21,7 +23,9 @@ class UnaryExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 			default:
-				break;
+				lexer.push(current);
+				auto tree = expand!(PostFixExprUnit)();
+				return false;
 		}
 		return true;
 	}

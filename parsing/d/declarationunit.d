@@ -25,6 +25,7 @@ import parsing.d.classdeclunit;
 import parsing.d.interfacedeclunit;
 import parsing.d.constructorunit;
 import parsing.d.destructorunit;
+import parsing.d.pragmastmtunit;
 
 import io.console;
 
@@ -58,7 +59,10 @@ protected:
 			case DToken.Export:
 			case DToken.Extern:
 			case DToken.Align:
+				break;
+
 			case DToken.Pragma:
+				auto tree = expand!(PragmaStmtUnit)();
 				break;
 
 			// Static

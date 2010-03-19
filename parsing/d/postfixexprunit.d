@@ -17,12 +17,15 @@ import io.console;
 
 import djehuty;
 
-class ExpressionUnit : ParseUnit {
+class PostFixExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
-			case DToken.Dot:
-				break;
-
+			case DToken.Null:
+			case DToken.True:
+			case DToken.False:
+			case DToken.IntegerLiteral:
+				Console.putln("Expression: ", current.value);
+				return false;	
 			default:
 				break;
 		}

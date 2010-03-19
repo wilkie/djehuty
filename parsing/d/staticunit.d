@@ -12,6 +12,7 @@ import parsing.d.tokens;
 import parsing.d.nodes;
 
 import parsing.d.staticifunit;
+import parsing.d.staticassertunit;
 
 import djehuty;
 
@@ -27,6 +28,7 @@ class StaticUnit : ParseUnit {
 				// Static Assert (Compile-time assert)
 
 				// static assert ...
+				auto tree = expand!(StaticAssertUnit)();
 				break;
 			case DToken.This:
 				// Static Constructor

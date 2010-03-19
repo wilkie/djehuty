@@ -15,6 +15,7 @@ import parsing.d.nodes;
 
 import parsing.d.parameterlistunit;
 import parsing.d.functionbodyunit;
+import parsing.d.statementunit;
 
 import io.console;
 
@@ -47,8 +48,18 @@ class FunctionBodyUnit : ParseUnit {
 				}
 
 			// TODO: in, out, body, blockstatement foo
+			case DToken.In:
+				break;
+			case DToken.Out:
+				break;
+			case DToken.Body:
+				break;
 
 			default:
+				lexer.push(current);
+				if (this.state % 2 == 0) {
+				}
+				auto tree = expand!(StatementUnit)();
 				break;
 		}
 		return true;

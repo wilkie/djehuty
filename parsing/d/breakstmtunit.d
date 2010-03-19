@@ -5,7 +5,7 @@
  *
  */
 
-module parsing.d.expressionunit;
+module parsing.d.breakstmtunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -13,19 +13,29 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
-import parsing.d.assignexprunit;
-
 import io.console;
 
 import djehuty;
 
-class ExpressionUnit : ParseUnit {
+class BreakStmtUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
-			default:
-				lexer.push(current);
-				auto tree = expand!(AssignExprUnit)();
+			case DToken.Semicolon:
+				// Done.
+				putln("Break: ", cur_string);
 				return false;
+			case DToken.Identifier:
+				if (this.state == 1) {
+					// Error: More than one identifier?!?!
+					// TODO:
+				}
+				this.state = 1;
+				cur_string = current.value.toString();
+				break;
+			default:
+				// Error:
+				// TODO:
+				break;
 		}
 		return true;
 	}

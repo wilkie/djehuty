@@ -23,8 +23,9 @@ class AssignExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
 			default:
+				lexer.push(current);
 				auto tree = expand!(ConditionalExprUnit)();
-				break;
+				return false;
 		}
 		return true;
 	}

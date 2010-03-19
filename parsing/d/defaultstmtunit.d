@@ -5,7 +5,7 @@
  *
  */
 
-module parsing.d.expressionunit;
+module parsing.d.defaultstmtunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -13,19 +13,21 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
-import parsing.d.assignexprunit;
-
 import io.console;
 
 import djehuty;
 
-class ExpressionUnit : ParseUnit {
+class DefaultStmtUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
-			default:
-				lexer.push(current);
-				auto tree = expand!(AssignExprUnit)();
+			case DToken.Colon:
+				Console.putln("Default:");
+				// Done.
 				return false;
+			default:
+				// Error: Default does not allow expressions
+				// TODO:
+				break;
 		}
 		return true;
 	}

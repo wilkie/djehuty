@@ -22,9 +22,24 @@ import djehuty;
 class LogicalAndExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
+			case DToken.LogicalAnd:
+				if (this.state == 1) {
+					Console.putln("ANDAND");
+					this.state = 0;
+					break;
+				}
+
+				// Fall through
+				goto default;
+
 			default:
 				lexer.push(current);
+				if (this.state == 1) {
+					// Done.
+					return false;
+				}
 				auto tree = expand!(OrExprUnit)();
+				this.state = 1;
 				break;
 		}
 		return true;

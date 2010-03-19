@@ -5,7 +5,7 @@
  *
  */
 
-module parsing.d.expressionunit;
+module parsing.d.casestmtunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -13,19 +13,34 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
-import parsing.d.assignexprunit;
+import parsing.d.expressionunit;
 
 import io.console;
 
 import djehuty;
 
-class ExpressionUnit : ParseUnit {
+class CaseStmtUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
+			case DToken.Colon:
+				if (this.state == 0) {
+					// Error:
+					// we have 'case: '
+					// TODO:
+				}
+
+				// Done.
+				return false;
 			default:
 				lexer.push(current);
-				auto tree = expand!(AssignExprUnit)();
-				return false;
+				if (this.state == 1) {
+					// Error: Multiple expressions
+					// TODO:
+				}
+				Console.putln("Case: ");
+				auto tree = expand!(ExpressionUnit)();
+				this.state = 1;
+				break;
 		}
 		return true;
 	}

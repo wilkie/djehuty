@@ -22,9 +22,24 @@ import djehuty;
 class AndExprUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
+			case DToken.And:
+				if (this.state == 1) {
+					Console.putln("AND");
+					this.state = 0;
+					break;
+				}
+
+				// Fall through
+				goto default;
+
 			default:
 				lexer.push(current);
+				if (this.state == 1) {
+					// Done.
+					return false;
+				}
 				auto tree = expand!(CmpExprUnit)();
+				this.state = 1;
 				break;
 		}
 		return true;
