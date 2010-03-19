@@ -1,4 +1,4 @@
-module parseunit;
+module parsing.parseunit;
 
 import parsing.ast;
 import parsing.lexer;

@@ -39,7 +39,7 @@ class Opts : OptionParser {
 
 	void onHelp() {
 		showUsage();
-		Djehuty.end(0);
+		Djehuty.application.exit(0);
 	}
 
 	string path() {
