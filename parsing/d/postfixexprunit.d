@@ -26,8 +26,22 @@ class PostFixExprUnit : ParseUnit {
 			case DToken.True:
 			case DToken.False:
 			case DToken.IntegerLiteral:
+			case DToken.Dollar:
+			case DToken.FloatingPointLiteral:
 				Console.putln("Expression: ", current.value);
 				return false;	
+			case DToken.Mixin:
+				// TODO: MixinExprUnit
+//				auto tree = expand!(MixinExprUnit)();
+				break;
+			case DToken.Assert:
+				// TODO: AssertExprUnit
+//				auto tree = expand!(AssertExprUnit)();
+				break;
+			case DToken.Is:
+				// TODO: IsExprUnit
+//				auto tree = expand!(IsExprUnit)();
+				break;
 			default:
 				lexer.push(current);
 				auto tree = expand!(PostFixExprListUnit)();
