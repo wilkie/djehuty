@@ -23,6 +23,7 @@ import parsing.d.gotostmtunit;
 import parsing.d.continuestmtunit;
 import parsing.d.returnstmtunit;
 import parsing.d.volatilestmtunit;
+import parsing.d.throwstmtunit;
 
 import io.console;
 
@@ -102,6 +103,8 @@ class StatementUnit : ParseUnit {
 				auto tree = expand!(ReturnStmtUnit)();
 				break;
 			case DToken.Throw:
+				Console.putln("Throw: ");
+				auto tree = expand!(ThrowStmtUnit)();
 				break;
 			case DToken.Scope:
 				break;

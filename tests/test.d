@@ -61,6 +61,7 @@ class FooClass {
 		return;
 		volatile;
 		volatile switch(3) { case 4: }
+		throw null;
 	}
 
 	interface FooBarInterface {
