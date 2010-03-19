@@ -45,7 +45,7 @@ class FooClass {
 	}
 
 	this(int a, int b) {
-		switch(5) {
+		switch("fudge") {
 			case 4:
 				goto default;
 				goto case 3;
@@ -62,6 +62,7 @@ class FooClass {
 		volatile;
 		volatile switch(3) { case 4: }
 		throw null;
+		pragma(msg);
 	}
 
 	interface FooBarInterface {

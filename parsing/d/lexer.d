@@ -471,6 +471,9 @@ class DLexer : Lexer {
 								current.type = DToken.StringLiteral;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value.data = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -481,6 +484,9 @@ class DLexer : Lexer {
 								current.type = DToken.StringLiteral;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value.data = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -491,6 +497,9 @@ class DLexer : Lexer {
 								current.type = DToken.StringLiteral;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value.data = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -505,6 +514,9 @@ class DLexer : Lexer {
 								current.type = DToken.CharacterLiteral;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value.data = cur_string;
+								}
 								_pos++;
 								return current;
 							}

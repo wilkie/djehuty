@@ -5,7 +5,7 @@
  *
  */
 
-module parsing.d.postfixexprunit;
+module parsing.d.postfixexprlistunit;
 
 import parsing.parseunit;
 import parsing.token;
@@ -13,24 +13,18 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
-import parsing.d.postfixexprlistunit;
+import parsing.d.primaryexprunit;
 
 import io.console;
 
 import djehuty;
 
-class PostFixExprUnit : ParseUnit {
+class PostFixExprListUnit : ParseUnit {
 	override bool tokenFound(Token current) {
 		switch (current.type) {
-			case DToken.Null:
-			case DToken.True:
-			case DToken.False:
-			case DToken.IntegerLiteral:
-				Console.putln("Expression: ", current.value);
-				return false;	
 			default:
 				lexer.push(current);
-				auto tree = expand!(PostFixExprListUnit)();
+				auto tree = expand!(PrimaryExprUnit)();
 				return false;
 		}
 		return true;

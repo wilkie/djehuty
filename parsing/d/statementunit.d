@@ -24,6 +24,7 @@ import parsing.d.continuestmtunit;
 import parsing.d.returnstmtunit;
 import parsing.d.volatilestmtunit;
 import parsing.d.throwstmtunit;
+import parsing.d.pragmastmtunit;
 
 import io.console;
 
@@ -111,6 +112,7 @@ class StatementUnit : ParseUnit {
 			case DToken.Try:
 				break;
 			case DToken.Pragma:
+				auto tree = expand!(PragmaStmtUnit)();
 				break;
 
 			// EWWW cases
