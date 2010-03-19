@@ -753,3 +753,6 @@ private:
 		}
 	}
 }
+
+alias Console.put put;
+alias Console.putln putln;

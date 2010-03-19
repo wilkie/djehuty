@@ -33,7 +33,8 @@ class DParser : Parser {
 	}
 
 	override AbstractSyntaxTree parse() {
-		ParseUnit parseUnit = new ModuleUnit(_lexer);
+		ParseUnit parseUnit = new ModuleUnit();
+		parseUnit.lexer = _lexer;
 		return parseUnit.parse();
 	}
 
