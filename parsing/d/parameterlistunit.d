@@ -28,7 +28,6 @@ class ParameterListUnit : ParseUnit {
 			case DToken.RightParen:
 				// Done.
 				return false;
-				break;
 
 			case DToken.Variadic:
 				if (this.state == 2) {

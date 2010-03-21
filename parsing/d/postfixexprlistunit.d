@@ -25,9 +25,8 @@ class PostFixExprListUnit : ParseUnit {
 			default:
 				lexer.push(current);
 				auto tree = expand!(PrimaryExprUnit)();
-				return false;
 		}
-		return true;
+				return false;
 	}
 
 protected:

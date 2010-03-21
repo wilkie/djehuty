@@ -44,14 +44,14 @@ class DeclaratorSuffixUnit : ParseUnit {
 					case DToken.RightParen:
 						// Done
 						Console.putln("()");
-						return false;
+						break;
 					default:
 						// This is a parameter list
 						// XXX:
 //						auto tree = expand!(ParameterList)();
-						return false;
+						break;
 				}
-				break;
+				return false;
 
 			case 2:
 				// We have found a [ so we are searching for
