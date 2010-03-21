@@ -231,12 +231,6 @@ protected:
 
 				return;
 			}
-
-			bool isSelf()
-			{
-				// TODO: IMPLEMENT
-				return false;
-			}
 		}
 	}
 	else
