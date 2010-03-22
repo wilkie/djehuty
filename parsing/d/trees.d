@@ -2,6 +2,8 @@ module parsing.d.trees;
 
 import parsing.ast;
 
+import djehuty;
+
 import io.console;
 
 class Import : AbstractSyntaxTree {
