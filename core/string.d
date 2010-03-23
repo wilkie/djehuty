@@ -1157,3 +1157,111 @@ string trim(string chrs) {
 
 	return chrs[idx_s..idx_e].dup;
 }
+
+string[] split(string input, string delims) {
+	string[] retstring;
+	size_t last;
+
+	foreach(size_t i, char c; input) {
+		foreach(char d; delims) {
+			if (c == d) {
+				retstring ~= input[last..i];
+				last = i+1;
+			}
+		}
+	}
+	retstring ~= input[last..$];
+
+	return retstring;
+}
+
+string[] split(string input, char delim) {
+	string[] retstring;
+	size_t last;
+
+	foreach(size_t i, char c; input) {
+		if (c == delim) {
+			retstring ~= input[last..i];
+			last = i+1;
+		}
+	}
+	retstring ~= input[last..$];
+
+	return retstring;
+}
+
+template _nextInt(T) {
+	bool _nextInt(T)(string str, out T value) {
+		int curpos;
+
+		for(curpos=0; curpos<str.length; curpos++) {
+			if (str[curpos] != ' ' &&
+					str[curpos] != '\t' &&
+					str[curpos] != '\r' &&
+					str[curpos] != '\n') {
+
+				break;
+			}
+		}
+
+		bool negative = false;
+
+		if (str[curpos] == '-') {
+			negative = true;
+			curpos++;
+			if (curpos == str.length) { return false; }
+		}
+
+		if (str[curpos] < '0' ||
+				str[curpos] > '9') {
+
+			return false;
+		}
+
+		long tmpval = 0;
+
+		for (;curpos<str.length;curpos++) {
+			if (str[curpos] < '0' ||
+					str[curpos] > '9') {
+
+				break;
+			}
+
+			tmpval *= 10;
+			tmpval += cast(long)(str[curpos] - '0');
+		}
+
+		if (negative) { tmpval = -tmpval; }
+
+		value = cast(T)tmpval;
+
+		return true;
+	}
+}
+
+// Description: This function will return the next integer value found in the string.
+bool nextInt(string str, out int value) {
+	return _nextInt!(int)(str, value);
+}
+
+bool nextInt(string str, out uint value) {
+	return _nextInt!(uint)(str, value);
+}
+
+bool nextInt(string str, out long value) {
+	return _nextInt!(long)(str, value);
+}
+
+bool nextInt(string str, out ulong value) {
+	return _nextInt!(ulong)(str, value);
+}
+
+bool nextInt(string str, out short value) {
+	return _nextInt!(short)(str, value);
+}
+
+bool nextInt(string str, out ushort value) {
+	return _nextInt!(ushort)(str, value);
+}
+
+

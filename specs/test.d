@@ -6,7 +6,7 @@
  *
  */
 
-/+module specs.test;
+module specs.test;
 
 import testing.logic;
 
@@ -6804,6 +6804,8 @@ class Tests
 		Test.done();
 	}
 }
+
+
 
  testApplication() {
 		ApplicationTester.test();
