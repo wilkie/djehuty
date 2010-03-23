@@ -156,6 +156,7 @@ class FtpClient : Dispatcher {
 		_datamode = Data_Mode.GetFile;
 		_filename = local_dest ~ file;
 
+		send_Command("TYPE I");
 		send_Command("CWD " ~ spath);
 		send_Command("RETR " ~ file);
 		
@@ -169,6 +170,7 @@ class FtpClient : Dispatcher {
 		_datamode = Data_Mode.SendFile;
 		_filename = user_path ~ file;
 
+		send_Command("TYPE I");
 		send_Command("CWD " ~ server_path);
 		send_Command("STOR " ~ file);
 		
@@ -180,7 +182,10 @@ class FtpClient : Dispatcher {
 
 	void list_files()
 	{
+		_datamode = Data_Mode.PrintFile;
+
 		send_Command("LIST");
+		open_dataconnect(_host,_dataport);
 	}
 
 	void switch_to_passive()
@@ -237,6 +242,7 @@ protected:
 			{
 				case Code.OK:// 200
 					raiseSignal(Signal.OK);
+					_busy.up();
 					break; 
 				case Code.SRNU: // 220
 					//enter username 
@@ -313,7 +319,8 @@ protected:
 		string response;
 		ulong check;
 		File f;
-	
+		Stream s;
+
 		switch (_datamode)
 		{
 			case Data_Mode.GetFile:
@@ -330,7 +337,14 @@ protected:
 				f.close();
 			break;
 			case Data_Mode.PrintFile:
-			
+				s = new Stream();
+				do {
+					check = _dskt.readAny(s,100);
+				}while(check != 0);
+				s.rewind();
+				while (s.readLine(response)) {
+					Console.putln(response);
+				}
 
 			break;
 
