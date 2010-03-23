@@ -1,5 +1,7 @@
 module test.foo;
 
+import foo;
+
 pragma(msg);
 
 int b[][][][][];
