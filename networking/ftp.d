@@ -159,7 +159,6 @@ class FtpClient : Dispatcher {
 		send_Command("CWD " ~ spath);
 		send_Command("RETR " ~ file);
 		
-				
 		open_dataconnect(_host,_dataport);
 
 		return true;
@@ -172,7 +171,6 @@ class FtpClient : Dispatcher {
 
 		send_Command("CWD " ~ server_path);
 		send_Command("STOR " ~ file);
-		
 		
 		open_dataconnect(_host,_dataport);
 	
@@ -204,8 +202,6 @@ class FtpClient : Dispatcher {
 	bool close(){
 		_busy.down();
 		_cskt.close();
-		_cthread.stop();
-		_busy.up();
 		return true;
 	}
 
@@ -217,14 +213,18 @@ protected:
 	void cthreadProc(bool pleaseStop){
 
 		if (pleaseStop) {
-			close();
 			return;
 		}
 	
 		string response;
 		while (!pleaseStop) {
 			
-			_cskt.readLine(response);
+	//			Console.putln("bleh");
+			if (!_cskt.readLine(response)) {
+	//			Console.putln("foo?!");
+				break;
+			}
+	//			Console.putln("bleh!");
 	
 			Console.putln(response);		
 			
@@ -259,12 +259,12 @@ protected:
 					Console.putln("Starting Data Transfer ...");
 					//get size of file
 					
-					_busy.down();
-					
-					_dskt.close();
 					break; 
 				case Code.CDC: // 226
 					//transfer complete
+					_dskt.close();
+		_busy.up();
+//		Console.putln("transfer complete");
 					break; 
 				case Code.PASS: //227
 					//break apart and determine port
@@ -299,6 +299,7 @@ protected:
 
 		}
 
+//		Console.putln("cthread stopped");
 
 
 	}
@@ -306,7 +307,6 @@ protected:
 	//Description: data connection thread
 	void dthreadProc(bool pleaseStop) {
 		if (pleaseStop)	{
-			close();
 			return;
 		}
 	
@@ -321,7 +321,7 @@ protected:
 				f = new File(_filename);
 				do {
 					check = _dskt.readAny(f,100);
-				}while(check);
+				}while(check != 0);
 				f.close();
 			break;
 			case Data_Mode.SendFile:	
@@ -341,11 +341,8 @@ protected:
 
 		_dskt.close();
 
-		_busy.up();
 		//done transfer close connection 
 	}
-
-
 
 	Socket _cskt;
 	Socket _dskt;
