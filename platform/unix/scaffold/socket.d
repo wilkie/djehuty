@@ -114,7 +114,7 @@ bool SocketRead(ref SocketPlatformVars sockVars, ubyte* buffer, ulong len)
 	ulong amt = len;
 
 	int cur_amt;
-
+	Console.putln("chillin in here");
 	ubyte* cur = buffer;
 
 	while (progress < len)

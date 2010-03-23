@@ -18,8 +18,6 @@ import io.file;
 import synch.thread;
 import synch.semaphore;
 
-import core.regex;
-
 private {
 	enum Code {
 		RMR = 110,                          //Restart marker reply
@@ -206,6 +204,7 @@ class FtpClient : Dispatcher {
 		_cskt.close();
 		_cthread.stop();
 		_busy.up();
+		Console.putln("got here");
 		return true;
 	}
 
@@ -220,12 +219,16 @@ protected:
 			close();
 			return;
 		}
-	
+		bool check;
 		string response;
 		while (1) {
-			
-			_cskt.readLine(response);
-	
+			Console.putln("here is good");	
+			if (!_cskt.readLine(response)&&_cskt.port())
+			{
+				Console.putln("hello?");
+				break;	
+			}
+			Console.putln("here is bad");
 			Console.putln(response);		
 			
 			ushort code;
@@ -295,7 +298,7 @@ protected:
 					break;
 			}
 
-
+		Console.putln("woo");
 
 		}
 
