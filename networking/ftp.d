@@ -144,7 +144,7 @@ class FtpClient : Dispatcher {
 		data_connect = _dskt.connect(host,port);
 
 		if (data_connect){
-			_dthread.start();
+			_dthread.run();
 		}
 		
 		return data_connect;
@@ -153,13 +153,14 @@ class FtpClient : Dispatcher {
 	
 	bool get_file(string spath,string file, string local_dest)
 	{
-		_datamode = Data_Mode.GetFile;
-		_filename = local_dest ~ file;
-
+		send_Command("PASV");
 		send_Command("TYPE I");
 		send_Command("CWD " ~ spath);
 		send_Command("RETR " ~ file);
 		
+		_datamode = Data_Mode.GetFile;
+		_filename = local_dest ~ file;
+
 		open_dataconnect(_host,_dataport);
 
 		return true;
@@ -167,12 +168,13 @@ class FtpClient : Dispatcher {
 
 	bool send_file(string server_path,string file, string user_path)
 	{
-		_datamode = Data_Mode.SendFile;
-		_filename = user_path ~ file;
-
+		send_Command("PASV");
 		send_Command("TYPE I");
 		send_Command("CWD " ~ server_path);
 		send_Command("STOR " ~ file);
+	
+		_datamode = Data_Mode.SendFile;
+		_filename = user_path ~ file;
 		
 		open_dataconnect(_host,_dataport);
 	
@@ -182,9 +184,11 @@ class FtpClient : Dispatcher {
 
 	void list_files()
 	{
-		_datamode = Data_Mode.PrintFile;
-
+		send_Command("PASV");
 		send_Command("LIST");
+
+
+		_datamode = Data_Mode.PrintFile;
 		open_dataconnect(_host,_dataport);
 	}
 
@@ -269,13 +273,13 @@ protected:
 				case Code.CDC: // 226
 					//transfer complete
 					_dskt.close();
-		_busy.up();
-//		Console.putln("transfer complete");
+					_busy.up();
+					//		Console.putln("transfer complete");
 					break; 
 				case Code.PASS: //227
 					//break apart and determine port
 					string[] s = response.split("(,)");
-					_host ~= s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
+					_host = s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
 					ushort port1,port2;
 					s[5].nextInt(port1);
 					s[6].nextInt(port2);
@@ -289,7 +293,7 @@ protected:
 				case Code.RFAOK: 
 				
 					Console.putln("Current directory successful");
-					raiseSignal(Signal.CurDirSuc);
+		//			raiseSignal(Signal.CurDirSuc);
 					_busy.up();
 					break; 
 				case Code.NLI:
@@ -319,12 +323,10 @@ protected:
 		string response;
 		ulong check;
 		File f;
-		Stream s;
-
+		
 		switch (_datamode)
 		{
 			case Data_Mode.GetFile:
-				Console.putln("got here");	
 				f = new File(_filename);
 				do {
 					check = _dskt.readAny(f,100);
@@ -348,7 +350,6 @@ protected:
 				//probably bad
 			break;
 		}
-
 		_dskt.close();
 
 		//done transfer close connection 
