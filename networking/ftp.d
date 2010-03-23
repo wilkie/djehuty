@@ -182,7 +182,10 @@ class FtpClient : Dispatcher {
 
 	void list_files()
 	{
+		_datamode = Data_Mode.PrintFile;
+
 		send_Command("LIST");
+		open_dataconnect(_host,_dataport);
 	}
 
 	void switch_to_passive()
@@ -316,7 +319,8 @@ protected:
 		string response;
 		ulong check;
 		File f;
-	
+		Stream s;
+
 		switch (_datamode)
 		{
 			case Data_Mode.GetFile:
@@ -333,7 +337,14 @@ protected:
 				f.close();
 			break;
 			case Data_Mode.PrintFile:
-			
+				s = new Stream();
+				do {
+					check = _dskt.readAny(s,100);
+				}while(check != 0);
+				s.rewind();
+				while (s.readLine(response)) {
+					Console.putln(response);
+				}
 
 			break;
 
