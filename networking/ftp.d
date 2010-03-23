@@ -156,6 +156,7 @@ class FtpClient : Dispatcher {
 		_datamode = Data_Mode.GetFile;
 		_filename = local_dest ~ file;
 
+		send_Command("TYPE I");
 		send_Command("CWD " ~ spath);
 		send_Command("RETR " ~ file);
 		
@@ -169,6 +170,7 @@ class FtpClient : Dispatcher {
 		_datamode = Data_Mode.SendFile;
 		_filename = user_path ~ file;
 
+		send_Command("TYPE I");
 		send_Command("CWD " ~ server_path);
 		send_Command("STOR " ~ file);
 		
@@ -237,6 +239,7 @@ protected:
 			{
 				case Code.OK:// 200
 					raiseSignal(Signal.OK);
+					_busy.up();
 					break; 
 				case Code.SRNU: // 220
 					//enter username 
