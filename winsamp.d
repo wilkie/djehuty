@@ -72,11 +72,13 @@ class MyConsoleApp : Application {
 		ftp.connect(test,21,"bkuhlman","4folders4");
 		
 		ftp.switch_to_passive();
-		
-		ftp.get_file("/home/bkuhlman/public_html/files","webserver.c","./");
+
+		ftp.send_Command("TYPE I");
+
+		ftp.get_file("/home/bkuhlman/public_html/images","header.png","./");
 	
 
-//		bool check =ftp.close();
+		bool check =ftp.close();
 		
 	
 	}

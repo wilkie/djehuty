@@ -222,7 +222,7 @@ protected:
 		}
 	
 		string response;
-		while (!pleaseStop) {
+		while (1) {
 			
 			_cskt.readLine(response);
 	
@@ -236,6 +236,8 @@ protected:
 			switch (code)
 			{
 				case Code.OK:// 200
+
+					_busy.up();
 					raiseSignal(Signal.OK);
 					break; 
 				case Code.SRNU: // 220
@@ -259,12 +261,10 @@ protected:
 					Console.putln("Starting Data Transfer ...");
 					//get size of file
 					
-					_busy.down();
-					
-					_dskt.close();
 					break; 
 				case Code.CDC: // 226
 					//transfer complete
+					_busy.up();
 					break; 
 				case Code.PASS: //227
 					//break apart and determine port
@@ -283,13 +283,13 @@ protected:
 				case Code.RFAOK: 
 				
 					Console.putln("Current directory successful");
-					raiseSignal(Signal.CurDirSuc);
+		//			raiseSignal(Signal.CurDirSuc);
 					_busy.up();
 					break; 
 				case Code.NLI:
 
 					Console.putln("Login Incorrect");
-					raiseSignal(Signal.LoginIncorrect);
+		//			raiseSignal(Signal.LoginIncorrect);
 					break; 
 				default:
 					break;
@@ -313,11 +313,10 @@ protected:
 		string response;
 		ulong check;
 		File f;
-	
+
 		switch (_datamode)
 		{
 			case Data_Mode.GetFile:
-				Console.putln("got here");	
 				f = new File(_filename);
 				do {
 					check = _dskt.readAny(f,100);
@@ -341,7 +340,6 @@ protected:
 
 		_dskt.close();
 
-		_busy.up();
 		//done transfer close connection 
 	}
 
