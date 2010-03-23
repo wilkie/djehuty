@@ -337,14 +337,10 @@ protected:
 				f.close();
 			break;
 			case Data_Mode.PrintFile:
-				s = new Stream();
-				do {
-					check = _dskt.readAny(s,100);
-				}while(check != 0);
-				s.rewind();
-				while (s.readLine(response)) {
+				while (_dskt.readLine(response))
+				{
 					Console.putln(response);
-				}
+				}		
 
 			break;
 
