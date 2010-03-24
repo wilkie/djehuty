@@ -182,19 +182,17 @@ class FtpClient : Dispatcher {
 
 	}	
 
-	void list_files()
+	string list_directory(string path)
 	{
 		send_Command("PASV");
+		send_Command("CWD " ~ path);
 		send_Command("LIST");
-
 
 		_datamode = Data_Mode.PrintFile;
 		open_dataconnect(_host,_dataport);
-	}
-
-	void switch_to_passive()
-	{
-		send_Command("PASV");
+		_busy.down;
+		_busy.up;
+		return _reply;	
 	}
 
 	void send_Command(string command)
@@ -339,9 +337,10 @@ protected:
 				f.close();
 			break;
 			case Data_Mode.PrintFile:
+				_reply = "";
 				while (_dskt.readLine(response))
 				{
-					Console.putln(response);
+					_reply ~= response ~ "\n";
 				}		
 
 			break;
@@ -362,6 +361,7 @@ protected:
 	string _username;
 	string _password;
 	string _filename;
+	string _reply;
 
 	ushort _dataport;
 	ushort _datamode;
