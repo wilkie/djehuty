@@ -148,14 +148,17 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars)
 
 void MutexInit(ref MutexPlatformVars mutVars)
 {
+	pthread_mutex_init(&mutVars.mut_id, null);
 }
 
 void MutexUninit(ref MutexPlatformVars mutVars)
 {
+	pthread_mutex_destroy(&mutVars.mut_id);
 }
 
 void MutexLock(ref MutexPlatformVars mutVars)
 {
+	pthread_mutex_lock(&mutVars.mut_id);
 }
 
 void MutexLock(ref MutexPlatformVars mutVars, ref uint ms)
@@ -164,6 +167,7 @@ void MutexLock(ref MutexPlatformVars mutVars, ref uint ms)
 
 void MutexUnlock(ref MutexPlatformVars mutVars)
 {
+	pthread_mutex_unlock(&mutVars.mut_id);
 }
 
 void ConditionInit(ref ConditionPlatformVars condVars) {
