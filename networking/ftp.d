@@ -17,6 +17,7 @@ import io.file;
 
 import synch.thread;
 import synch.semaphore;
+import synch.mutex;
 
 import core.regex;
 
@@ -136,7 +137,11 @@ class FtpClient : Dispatcher {
 
 		return _connected;
 	}
+	
+	//Description: Connects to the ftp server to allow for data transfer. 
 
+	//host: The host to connect to.
+	//port: The port to use to connect. Default is 20
 	bool open_dataconnect(string host, ushort port =20)
 	{
 		bool data_connect = false;
@@ -150,43 +155,63 @@ class FtpClient : Dispatcher {
 		return data_connect;
 
 	}
-	
-	bool get_file(string spath,string file, string local_dest)
+	//Description: Downloads a file from the ftp server onto a user's local computer 
+
+	//server_path: The path to the file that the user wants to download from the server
+	//local_dest: The directory on the user's computer that the file will be saved to 
+	bool get_file(string server_path, string local_dest)
 	{
 		send_Command("PASV");
 		send_Command("TYPE I");
-		send_Command("CWD " ~ spath);
-		send_Command("RETR " ~ file);
+		send_Command("RETR " ~ server_path);
 		
+		string[] file = split(server_path,'/');
+
 		_datamode = Data_Mode.GetFile;
-		_filename = local_dest ~ file;
+		_filename = local_dest ~ file[$-1];
 
 		open_dataconnect(_host,_dataport);
 
 		return true;
 	}
+	//Description: Sends a file from the local computer to the ftp server
 
-	bool send_file(string server_path,string file, string user_path)
+	//user_path: The path to the file that the user wants to send to the server
+	//server_dest: The directory on the server that the file will be saved to
+	bool send_file(string user_path,string server_dest)
 	{
 		send_Command("PASV");
 		send_Command("TYPE I");
-		send_Command("CWD " ~ server_path);
-		send_Command("STOR " ~ file);
+
+		string[] file = split(user_path,'/');
+
+		send_Command("STOR " ~ server_dest ~ file[$-1]);
 	
 		_datamode = Data_Mode.SendFile;
-		_filename = user_path ~ file;
+		_filename = user_path;
 		
 		open_dataconnect(_host,_dataport);
 	
 		return true;
 
 	}	
+	//Description: Deletes a file on the server 
 
+	//path: The path to the file to delete on the ftp server
+	bool delete_file(string path)
+	{
+		send_Command("PASV");
+		send_Command("DELE " ~ path);
+
+		return true;
+	}
+	//Description: List the contents of the directory that the user specifies
+
+	//path: The directory that will be displayed to the user
 	string list_directory(string path)
 	{
 		send_Command("PASV");
-		send_Command("CWD " ~ path);
-		send_Command("LIST");
+		send_Command("LIST " ~ path);
 
 		_datamode = Data_Mode.PrintFile;
 		open_dataconnect(_host,_dataport);
@@ -194,7 +219,9 @@ class FtpClient : Dispatcher {
 		_busy.up;
 		return _reply;	
 	}
+	//Description: Sends a command to the ftp server 
 
+	//command: The command to be sent to the ftp server
 	void send_Command(string command)
 	{
 		_busy.down();
@@ -205,6 +232,7 @@ class FtpClient : Dispatcher {
 			_cskt.write(command);
 		}
 	}
+	//Description: Closes the ftp connection
 
 	bool close(){
 		_busy.down();
@@ -290,7 +318,7 @@ protected:
 					break;
 				case Code.RFAOK: 
 				
-					Console.putln("Current directory successful");
+				//	Console.putln("Current directory successful");
 		//			raiseSignal(Signal.CurDirSuc);
 					_busy.up();
 					break; 
@@ -306,8 +334,6 @@ protected:
 
 
 		}
-
-//		Console.putln("cthread stopped");
 
 
 	}
