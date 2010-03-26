@@ -62,7 +62,8 @@ protected:
 
 		sanitizePath(path);
 
-		Directory dir = new Directory(path);
+		Directory dir = Directory.open(path);
+
 		auto dirs = dir.list();
 
 		//auto dirs = std.file.listdir(path);

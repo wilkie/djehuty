@@ -77,37 +77,37 @@ class System {
 		// Description: This function will return the Directory representing the current directory.
 		// Returns: The Directory representing the working directory.
 		Directory currentDir() {
-			return new Directory(DirectoryGetCWD());
+			return Directory.open(DirectoryGetCWD());
 		}
 
 		// Description: This function will return the Directory representing the directory the executable is located in. It should not be relied on completely, as this information can be incorrect or non-existent.
 		// Returns: The Directory representing the executable location.
 		Directory applicationDir() {
-			return new Directory(DirectoryGetApp());
+			return Directory.open(DirectoryGetApp());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory tempDir() {
-			return new Directory(DirectoryGetTempData());
+			return Directory.open(DirectoryGetTempData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory appDataDir() {
-			return new Directory(DirectoryGetAppData());
+			return Directory.open(DirectoryGetAppData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory userDataDir() {
-			return new Directory(DirectoryGetUserData());
+			return Directory.open(DirectoryGetUserData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory binaryDir() {
-			return new Directory(DirectoryGetBinary());
+			return Directory.open(DirectoryGetBinary());
 		}
 	}
 	

@@ -332,14 +332,14 @@ class File : Stream {
 
 	void move(string destination) {
 		if (FileMove(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
-			_path = new Directory(destination);
+			_path = Directory.open(destination);
 		}
 	}
 
 	File copy(Directory destination) {
 		File ret;
 		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
-			ret = new File(destination.path ~ "/" ~ _name);
+			ret = File.open(destination.path ~ "/" ~ _name);
 		}
 		return ret;
 	}
@@ -347,7 +347,7 @@ class File : Stream {
 	File copy(string destination) {
 		File ret;
 		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
-			ret = new File(destination ~ "/" ~ _name);
+			ret = File.open(destination ~ "/" ~ _name);
 		}
 		return ret;
 	}

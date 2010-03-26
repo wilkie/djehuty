@@ -25,21 +25,26 @@ import scaffold.directory;
 // Section: Core
 
 // Description: This class represents a file system directory.
-class Directory
-{
+class Directory {
 	// Description: This constructor will create a Directory object that represents the root.
 	this() {
 		_isRoot = true;
 		_path = "";
 	}
 
-	// Description: This constructor will create a Directory object that represents the path, if valid.
+	// Description: This constructor will create a Directory at the specified path.
 	// path: A valid universal path.
 	this(string path) {
-		_isRoot = false;
+		// XXX: todo
+		throw new Exception("Not Done Yet");
+	}
+
+	static Directory open(string path) {
+		Directory ret = new Directory;
+		ret._isRoot = false;
 		if (path.length > 0 && path[0] == '/') {
 			// absolute path
-			_path = path.dup;
+			ret._path = path.dup;
 		}
 		else {
 			// relative path
@@ -48,16 +53,24 @@ class Directory
 			Directory cur = System.FileSystem.currentDir;
 
 			// create an absolute path
-			_path = cur.path ~ "/" ~ path;
+			ret._path = cur.path ~ "/" ~ path;
 		}
 
 		// retrieve _name
-		foreach_reverse(int i, chr; _path) {
-			if (chr == '/' && i < _path.length - 1) {
-				_name = _path[i+1.._path.length].dup;
+		foreach_reverse(int i, chr; ret._path) {
+			if (chr == '/' && i < ret._path.length - 1) {
+				ret._name = ret._path[i+1..ret._path.length].dup;
 				break;
 			}
 		}
+		if (!DirectoryFileIsDir(ret._path)) {
+			return null;
+		}
+		return ret;
+	}
+
+	static Directory create(string path) {
+		return new Directory(path);
 	}
 
 	bool isDir(string _name) {
@@ -70,7 +83,7 @@ class Directory
 
 	void move(string path) {
 		if (DirectoryMove(_path, path ~ "/" ~ _name)) {
-			_parent = new Directory(path);
+			_parent = Directory.open(path);
 			_path = path ~ "/" ~ _name;
 		}
 	}
@@ -150,7 +163,7 @@ class Directory
 				if (chr == '/')	{
 					// truncate
 					Console.putln(_path[0..i]);
-					_parent = new Directory(_path[0..i]);
+					_parent = Directory.open(_path[0..i]);
 					return _parent;
 				}
 			}
@@ -164,7 +177,7 @@ class Directory
 	// Returns: The child directory specified.
 	Directory traverse(string directoryName) {
 		if (isDir(directoryName)) {
-			Directory ret = new Directory(_path ~ "/" ~ directoryName);
+			Directory ret = Directory.open(_path ~ "/" ~ directoryName);
 
 			ret._parent = this;
 
