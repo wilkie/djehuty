@@ -30,16 +30,16 @@ class Directory
 	// Description: This constructor will create a Directory object that represents the root.
 	this() {
 		_isRoot = true;
-		_path = new String("");
+		_path = "";
 	}
 
 	// Description: This constructor will create a Directory object that represents the path, if valid.
 	// path: A valid universal path.
-	this(String path) {
+	this(string path) {
 		_isRoot = false;
 		if (path.length > 0 && path[0] == '/') {
 			// absolute path
-			_path = new String(path);
+			_path = path.dup;
 		}
 		else {
 			// relative path
@@ -53,32 +53,15 @@ class Directory
 
 		// retrieve _name
 		foreach_reverse(int i, chr; _path) {
-			if (chr == '/') {
-				_name = new String(_path[i+1.._path.length]);
+			if (chr == '/' && i < _path.length - 1) {
+				_name = _path[i+1.._path.length].dup;
 				break;
 			}
 		}
 	}
 
-	// Description: This constructor will create a Directory object that represents the path, if valid.
-	// path: A valid universal path.
-	this(string path) {
-		this(new String(path));
-	}
-
-	bool isDir(String _name) {
-		return DirectoryFileIsDir(_path ~ "/" ~ _name);
-	}
-
 	bool isDir(string _name) {
-		return isDir(new String(_name));
-	}
-
-	void move(String path) {
-		if (DirectoryMove(_path, path ~ "/" ~ _name)) {
-			_parent = new Directory(path);
-			_path = path ~ "/" ~ _name;
-		}
+		return DirectoryFileIsDir(_path ~ "/" ~ _name);
 	}
 
 	void move(Directory to) {
@@ -86,59 +69,50 @@ class Directory
 	}
 
 	void move(string path) {
-		move(new String(path));
+		if (DirectoryMove(_path, path ~ "/" ~ _name)) {
+			_parent = new Directory(path);
+			_path = path ~ "/" ~ _name;
+		}
 	}
 
-	void copy(String path) {
+	void copy(string path) {
 		if (DirectoryCopy(_path, path)) {
 			_parent = null;
 			_path = path;
 
 			// retrieve _name
 			foreach_reverse(int i, chr; _path) {
-				if (chr == '/') {
-					_name = new String(_path[i+1.._path.length]);
+				if (chr == '/' && i < _path.length - 1) {
+					_name = _path[i+1.._path.length].dup;
 					break;
 				}
 			}
 		}
 	}
 
-	void copy(string path) {
-		copy(new String(path));
-	}
-
-	void copy(Directory to, String newName = null) {
+	void copy(Directory to, string newName = null) {
 		if (newName is null) { newName = _name; }
 
 		copy(to.path() ~ "/" ~ newName);
 	}
 
-	void copy(Directory to, string newName = null) {
-		String nname;
-		if (newName is null) { nname = _name; } else { nname = new String(newName); }
-
-		copy(to.path() ~ "/" ~ nname);
-	}
-
 	// Description: This function will return a String representing the _name of the directory.
 	// Returns: The _name of the directory.
-	String name() {
-		return new String(_name);
+	string name() {
+		return _name.dup;
 	}
 
 	// Description: This function will return a String representing the path of this directory.
 	// Returns: The path of the directory.
-	String path() {
-		return new String(_path);
+	string path() {
+		return _path.dup;
 	}
 
 	// Description: This function will rename the directory, if possible.
 	// newName: The new _name for the directory.
-	void name(String newName) {
+	void name(string newName) {
 		// Rename directory
 
-		// XXX: Do it.
 		if (isRoot) {
 			// XXX: Exception
 		}
@@ -146,32 +120,22 @@ class Directory
 			// Change the _name of the directory (if possible)
 			DirectoryRename(_path, newName);
 			_path = this.parent.path ~ "/" ~ newName;
-			_name = new String(newName);
+			_name = newName;
 		}
-	}
-
-	// Description: This function will rename the directory, if possible.
-	// newName: The new _name for the directory.
-	void name(string newName) {
-		name(new String(newName));
 	}
 
 	// Description: This function will open the file specified by the parameter if it exists within the directory.
 	// filename: The _name of the file to open.
 	// Returns: Will return null if the file cannot be opened or found, will return a valid File otherwise.
-	File openFile(String filename) {
-		return null;
+	File openFile(string filename) {
+		return File.open(this.path ~ "/" ~ filename);
 	}
 
 	// Description: This function will create a new file in this directory.
 	// filename: The _name of the file to create.
 	// Returns: Will return null if the file cannot be created, will return a valid File otherwise.
-	File saveFile(String filename) {
-		return null;
-	}
-
-	File saveFile(string filename) {
-		return null;
+	File createFile(string filename) {
+		return File.create(this.path ~ "/" ~ filename);
 	}
 
 	// Description: This function will return the _parent directory of the current path.
@@ -180,7 +144,7 @@ class Directory
 		if (isRoot) { return null; }
 
 		if (_parent is null) {
-			Console.putln(_path.array);
+			Console.putln(_path);
 
 			foreach_reverse(int i, chr; _path) {
 				if (chr == '/')	{
@@ -198,7 +162,7 @@ class Directory
 	// Description: This function will return the Directory representing the directory specified within the current path.
 	// directoryName: The _name of the directory.
 	// Returns: The child directory specified.
-	Directory traverse(String directoryName) {
+	Directory traverse(string directoryName) {
 		if (isDir(directoryName)) {
 			Directory ret = new Directory(_path ~ "/" ~ directoryName);
 
@@ -209,13 +173,6 @@ class Directory
 		throw new DirectoryNotFound(_path ~ "/" ~ directoryName);
 	}
 
-	// Description: This function will return the Directory representing the directory specified within the current path.
-	// directoryName: The _name of the directory.
-	// Returns: The child directory specified.
-	Directory traverse(string directoryName) {
-		return new Directory(_path ~ "/" ~ directoryName);
-	}
-
 	// Description: This function will return whether or not the object represents the root.
 	// Returns: Will return true when the Directory is root and false otherwise.
 	bool isRoot() {
@@ -224,7 +181,7 @@ class Directory
 
 	// Description: This function will return an array of filenames that are found within this directory.
 	// Returns: An array of filenames.
-	String[] list() {
+	string[] list() {
 		return DirectoryList(_pfVars, _path);
 	}
 
@@ -244,13 +201,13 @@ class Directory
 	alias Object.opEquals opEquals;
 
 	override char[] toString() {
-		return this.path.toString();
+		return this.path.dup;
 	}
 
 protected:
 
-	String _name;
-	String _path;
+	string _name;
+	string _path;
 	Directory _parent;
 
 	bool _isRoot;

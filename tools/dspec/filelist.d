@@ -8,7 +8,7 @@ import io.directory;
 import io.console;
 
 class FileList {
-	bool fetch(inout String path) {
+	bool fetch(inout string path) {
 		sanitizePath(path);
 		if (path.length == 0) { return false; }
 
@@ -17,11 +17,11 @@ class FileList {
 		return true;
 	}
 
-	String[] opApply() {
+	string[] opApply() {
 		return files;
 	}
 
-	int opApply(int delegate(ref String) dg) {
+	int opApply(int delegate(ref string) dg) {
     	int result = 0;
 
 		for (int i = 0; i < files.length; i++)
@@ -36,16 +36,16 @@ class FileList {
 
 protected:
 
-	String[] files;
+	string[] files;
 	//char[][] files;
 
-	void sanitizePath(inout String path) {
+	void sanitizePath(inout string path) {
 		if (path.length == 0) {
 			return;
 		}
 
 		if (path[path.length-1] == '.') {
-			path = new String(path[0..path.length-1]);
+			path = path[0..path.length-1].dup;
 		}
 
 		if (path.length == 0) {
@@ -57,7 +57,7 @@ protected:
 		}
 	}
 
-	void lookForFiles(String path) {
+	void lookForFiles(string path) {
 		//Console.putln("filelist created");
 
 		sanitizePath(path);
@@ -73,7 +73,7 @@ protected:
 		foreach (d; dirs) {
 			//Console.putln(d);
 			if (d == "test.d") { continue; }
-			int pos = d.find(new String("."));
+			int pos = d.find(".");
 			//int pos = find(d, '.');
 
 			if (dir.isDir(d)) {
@@ -88,7 +88,7 @@ protected:
 
 			switch (ext) {
 				case ".d":
-					files ~= new String(path) ~ d;
+					files ~= path ~ d;
 					//files ~= path ~ d;
 					break;
 				default:

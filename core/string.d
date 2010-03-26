@@ -1264,4 +1264,100 @@ bool nextInt(string str, out ushort value) {
 	return _nextInt!(ushort)(str, value);
 }
 
+// Description: Will build and return a String object representing a slice of the current String.
+// start: The position to start from.
+// len: The length of the slice.  Pass -1 to get the remaining string.
+string subString(string str, int start, int len = -1) {
+	uint[] _indices = Unicode.calcIndices(str);
+
+	if (start >= _indices.length || len == 0) {
+		return "";
+	}
+
+	if (len < 0) { len = -1; }
+
+	if (len >= 0 && start + len >= _indices.length) {
+		len = -1;
+	}
+
+	// subdivide
+
+	if (len == -1) {
+		start = _indices[start];
+		string ret = "";
+		ret = str[start..$].dup;
+		return ret;
+	}
+
+	// this is the index for one character past the
+	// end of the substring of the original string...hence, len is
+	// now the exclusive end of the range to slice the array.
+	len = _indices[start+len];
+
+	start = _indices[start];
+
+	string ret = "";
+	ret = str[start..len].dup;
+	return ret;
+}
+
+string replace(string str, dchar find, dchar replace) {
+	string ret = str.dup;
+	uint[] _indices = Unicode.calcIndices(str);
+
+	for(int i = 0; i < _indices.length; i++) {
+		dchar cmpChar = Unicode.toUtf32Char(ret[_indices[i]..$]);
+		if (cmpChar == find) {
+			dchar[1] chrs = [replace];
+			ret = ret[0.._indices[i]] ~ Unicode.toUtf8(chrs) ~ ret[_indices[i+1]..$];
+			_indices = Unicode.calcIndices(ret);
+		}
+	}
+
+	return ret;
+}
+
+int find(string source, string search, uint start = 0) {
+	// look through string for term search
+	// in some, hopefully later on, efficient manner
+
+	uint[] _indices = Unicode.calcIndices(source);
+
+	uint[] search_indices = Unicode.calcIndices(search);
+
+	if (start >= _indices.length) {
+		return -1;
+	}
+
+	bool found;
+
+	int o;
+
+	foreach (i, aPos; _indices[start..$]) {
+		found = true;
+		o=i-1+start;
+		foreach (bPos; search_indices) {
+			o++;
+			if (o >= _indices.length) {
+				found = false;
+				break;
+			}
+
+			dchar aChr, bChr;
+
+			aChr = Unicode.toUtf32Char(source[_indices[o]..$]);
+			bChr = Unicode.toUtf32Char(search[bPos..$]);
+
+			if (aChr != bChr) {
+				found = false;
+				break;
+			}
+		}
+		if (found) {
+			return i+start;
+		}
+	}
+
+	return -1;
+}
 

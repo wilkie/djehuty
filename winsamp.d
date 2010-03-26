@@ -68,12 +68,12 @@ class MyConsoleApp : Application {
 
 		push(ftp);
 
-		string test = "paradox.sis.pitt.edu";
-		ftp.connect(test,21,"bkuhlman","4folders4");
+		string test = "ftp.xomb.org";
 
+		ftp.connect(test,21,"xombadmin","xomboverlord");
 		ftp.switch_to_passive();
 
-		ftp.get_file("/home/bkuhlman/public_html/files","webserver.c","./");
+		ftp.list_files();
 
 
 				bool check =ftp.close();

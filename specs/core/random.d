@@ -169,12 +169,6 @@ describe random() {
 	}
 
 	describe choose() {
-		it should_fail_on_empty_array() {
-			auto r = new Random();
-
-			shouldThrow();
-			r.choose([]);
-		}
 
 		it should_fail_on_empty_list() {
 			auto r = new Random();
