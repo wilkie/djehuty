@@ -10,7 +10,7 @@ import io.console;
 char[] delims = " \t.{}()[];,-+=/\\*&^%!|?:<>";
 
 class Feeder {
-	this(String filename) {
+	this(string filename) {
 		fp = File.open(filename);
 		//fp = fopen(std.string.toStringz(filename), "rb");
 
@@ -23,7 +23,7 @@ class Feeder {
 		//fclose(fp);
 	}
 
-	String[] feed() {
+	string[] feed() {
 		char[] line;
 
 		if(fp.readLine(line)) {
@@ -54,7 +54,7 @@ class Feeder {
 		return lineNumber;
 	}
 	
-	String fileName() {
+	string fileName() {
 		return fp.name;
 	}
 
@@ -64,25 +64,25 @@ protected:
 	//_iobuf* fp;
 	uint lineNumber = 0;
 
-	String[] splitAll(char[] s, char[] delim, bool keepDelim = true) {
-		String[] ret;
+	string[] splitAll(char[] s, char[] delim, bool keepDelim = true) {
+		string[] ret;
 
 		uint lastpos = 0;
 		foreach(i, c; s) {
 			foreach(cmp; delim) {
 				if (c == cmp) {
 					if (lastpos != i) {
-						ret ~= new String(s[lastpos..i]);
+						ret ~= s[lastpos..i].dup;
 					}
 					if (keepDelim) {
-						ret ~= new String(s[i..i+1]);
+						ret ~= s[i..i+1].dup;
 					}
 					lastpos = i+1;
 				}
 			}
 		}
 
-		ret ~= new String("\n");
+		ret ~= ["\n"];
 
 		return ret;
 	}

@@ -40,12 +40,6 @@ class Resource {
 		open(filename);
 	}
 
-	// Description: Will create the object and then load the file specified.
-	// filename: The path and filename of the resource file.
-	this(String filename) {
-		open(filename);
-	}
-
 	// Description: Will create the object using the specified array as the resource database. This is for static resource information stored within the executable.
 	// fromArray: The byte array to stream from.
 	this(ubyte[] fromArray) {
@@ -59,15 +53,7 @@ class Resource {
 	// Description: Will open the filename specified.
 	// filename: The path and filename of the resource file.
 	void open(string filename) {
-		_filename = new String(filename);
-
-		_open();
-	}
-
-	// Description: Will open the filename specified.
-	// filename: The path and filename of the resource file.
-	void open(String filename) {
-		_filename = new String(filename);
+		_filename = filename.dup;
 
 		_open();
 	}
@@ -101,7 +87,7 @@ class Resource {
 	// Description: Will traverse the resource stream and grab the String from the file.
 	// resourceID: The specific String resource to grab.
 	// Returns: The String resource.
-	String loadString(uint resourceID) {
+	string loadString(uint resourceID) {
 		Console.putln("loading string...");
 
 		// get the string from the file for the current language
@@ -151,7 +137,7 @@ class Resource {
 
 		_file.read(stringarr.ptr, stringLen * 4);
 
-		String s = new String(Unicode.toUtf8(stringarr));
+		string s = Unicode.toUtf8(stringarr);
 
 		_stringAccessed[resourceID] = s;
 
@@ -227,7 +213,7 @@ class Resource {
 
 private:
 
-	String _filename;
+	string _filename;
 
 	Stream _file;
 
@@ -244,7 +230,7 @@ private:
 	uint _imageOffsets[]; // position in the stream for the string resources
 	uint _menuOffsets[]; // position in the stream for the menu resources
 
-	String _stringAccessed[];	// stores menus already pulled
+	string _stringAccessed[];	// stores menus already pulled
 	Image _imageAccessed[];	// stores menus already pulled
 	Menu _menuAccessed[];	// stores menus already pulled
 
@@ -357,7 +343,7 @@ private:
 
 		// getting the string invalidates the file
 		// stream's current location
-		String mnuString = loadString(stringID);
+		string mnuString = loadString(stringID);
 
 		Menu mnu;
 
@@ -460,7 +446,7 @@ private:
 		// load string section information
 		if (_sectionCounts[0] > 0) {
 			_stringOffsets = new uint[_sectionCounts[0]];
-			_stringAccessed = new String[_sectionCounts[0]];
+			_stringAccessed = new string[_sectionCounts[0]];
 		}
 
 		// read in the string offsets

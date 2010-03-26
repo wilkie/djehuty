@@ -25,8 +25,8 @@ import io.directory;
 class File : Stream {
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(String filename) {
-		_name = new String(filename);
+	this(string filename) {
+		_name = filename.dup; 
 
 		_pos = null;
 		_curpos = 0;
@@ -40,12 +40,6 @@ class File : Stream {
 		_inited = true;
 	}
 
-	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
-	// filename: The file to open.
-	this(string filename) {
-		this(new String(filename));
-	}
-
 	// Description: Will create a closed File class.  You must open a file to use it as a stream.
 	this() {
 	}
@@ -57,9 +51,9 @@ class File : Stream {
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	// Returns: Will return an instance to the opened file.
-	static File open(String filename) {
+	static File open(string filename) {
 		File foo = new File;
-		foo._name = new String(filename);
+		foo._name = filename.dup;
 
 		foo._pos = null;
 		foo._curpos = 0;
@@ -73,14 +67,6 @@ class File : Stream {
 		foo._inited = true;
 
 		return foo;
-	}
-
-	static File open(string filename) {
-		return open(new String(filename));
-	}
-
-	static File create(String filename) {
-		return new File(filename);
 	}
 
 	static File create(string filename) {
@@ -284,11 +270,11 @@ class File : Stream {
 		return amount;
 	}
 
-	// Description: Will return the String representing the filename currently open, or null for when there is no open file.
+	// Description: Will return the string representing the filename currently open, or null for when there is no open file.
 	// Returns: The string representing the filename of this class.
-	String name() {
+	string name() {
 		if (_inited) {
-			return new String(_name);
+			return _name.dup;
 		}
 
 		return null;
@@ -344,24 +330,24 @@ class File : Stream {
 		}
 	}
 
-	void move(String destination) {
+	void move(string destination) {
 		if (FileMove(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
-			_path = new Directory(destination);
+			_path = Directory.open(destination);
 		}
 	}
 
 	File copy(Directory destination) {
 		File ret;
 		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination.path ~ "/" ~ _name)) {
-			ret = new File(destination.path ~ "/" ~ _name);
+			ret = File.open(destination.path ~ "/" ~ _name);
 		}
 		return ret;
 	}
 
-	File copy(String destination) {
+	File copy(string destination) {
 		File ret;
 		if (FileCopy(_pfvars, _path.path ~ "/" ~ _name, destination ~ "/" ~ _name)) {
-			ret = new File(destination ~ "/" ~ _name);
+			ret = File.open(destination ~ "/" ~ _name);
 		}
 		return ret;
 	}
@@ -370,7 +356,7 @@ class File : Stream {
 	}
 
 	override char[] toString() {
-		return (_path.path ~ "/" ~ _name).toString();
+		return _path.path ~ "/" ~ _name;
 	}
 
 	int opApply(int delegate(ref string) loopFunc) {
@@ -385,50 +371,27 @@ class File : Stream {
 		return ret;
 	}
 
-	int opApply(int delegate(ref String) loopFunc) {
-		string nextLine;
-		int ret;
-		while(readLine(nextLine)) {
-			String str = new String(nextLine);
-			ret = loopFunc(str);
-
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	protected:
+protected:
 
 	bool _inited = false;
 	FilePlatformVars _pfvars;
 
 	Directory _path;
-	String _name;
+	string _name;
 }
 
 // Section: Core/Streams
 
 // Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow writes.
-class FileReader : File
-{
+class FileReader : File {
 	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(String filename)
-	{
-		super(filename);
-	}
-
-	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
-	// filename: The file to open.
-	this(string filename)
-	{
+	this(string filename) {
 		super(filename);
 	}
 
 	// Description: Will create a closed File class. You must open a file to use it as a stream.
-	this()
-	{
+	this() {
 		super();
 	}
 }
@@ -436,25 +399,15 @@ class FileReader : File
 // Section: Core/Streams
 
 // Description: This class wraps common file operations within the context of a Stream. The permissions of this object will not allow reads.
-class FileWriter : File
-{
+class FileWriter : File {
 	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
-	this(String filename)
-	{
-		super(filename);
-	}
-
-	// Description: Will open the file located at the _path at filename. The internal pointer will point to the beginning of the file.
-	// filename: The file to open.
-	this(string filename)
-	{
+	this(string filename) {
 		super(filename);
 	}
 
 	// Description: Will create a closed File class. You must open a file to use it as a stream.
-	this()
-	{
+	this() {
 		super();
 	}
 }

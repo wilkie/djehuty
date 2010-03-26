@@ -37,27 +37,8 @@ class Image {
 		//_loaded.init(1);
 	}
 
-	this(String filename) {
-		load(filename);
-	}
-
 	this(string filename) {
 		load(filename);
-	}
-
-	// Description: Will load the image.  It will throw the file to all the available decoders
-	//   with a preference to the ones that match the file extension.  When the decoder accepts
-	//   the file, it will return true, otherwise on error it will return false.
-	// filename: The filename to open as an image.
-	// Returns: Will return true when the file is accepted and the image is loaded.
-	bool load(String filename) {
-		File f = File.open(filename);
-
-		if (f is null) {
-			return false;
-		}
-
-		return _stream(f) == StreamData.Accepted;
 	}
 
 	// Description: Will load the image.  It will throw the file to all the available decoders

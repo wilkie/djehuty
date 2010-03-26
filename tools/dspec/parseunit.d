@@ -17,17 +17,15 @@ class ParseUnit {
 	final AST parse() {
 		// get class name
 		ClassInfo ci = this.classinfo;
-		String className = new String(ci.name);
+		string className = ci.name.dup;
 
 		//Console.putln("CLASS: ", className.array);
 
 		original = new AST(null,null);
 		parseTree = original;
 
-		int pos = className.findReverse(new String("."));
-		if (pos > 0) {
-			className = new String(className[pos+1..className.length]);
-		}
+		string[] foo = className.split('.');
+		className = foo[$-1];
 		//Console.putln("CLASS: ", className.array);
 
 		parseTree.name = className;
@@ -44,8 +42,8 @@ class ParseUnit {
 
 			for( ; idx < tokens.length ; idx++) {
 				currentToken = tokens[idx];
-				if (currentToken.toString in parseFunctions) {
-					parseFunctions[currentToken.toString]();
+				if (currentToken in parseFunctions) {
+					parseFunctions[currentToken]();
 				}
 				else {
 					parseDefault();
@@ -72,7 +70,7 @@ class ParseUnit {
 		parseTree.right = right;
 
 		if (parseTree !is original && right !is null && right.valueType == AST.ValueType.Name) {
-			String val;
+			string val;
 			right.getValue(val);
 			parseTree.hint = val;
 		}
@@ -81,7 +79,7 @@ class ParseUnit {
 protected:
 
 	// feed state
-	static String[] tokens;
+	static string[] tokens;
 	static uint idx;
 
 	static Feeder feeder;
@@ -97,7 +95,7 @@ protected:
 
 	bool iAmDone;
 	
-	String currentToken;
+	string currentToken;
 	
 	AST newParseUnit(ParseUnit newUnit) {
 		parseUnit = newUnit;
@@ -106,10 +104,6 @@ protected:
 	
 	void done() {
 		iAmDone = true;
-	}
-	
-	void registerToken(String token, ParseFunction func) {
-		parseFunctions[token.toString] = func;
 	}
 	
 	void registerToken(string token, ParseFunction func) {
