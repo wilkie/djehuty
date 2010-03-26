@@ -14,6 +14,7 @@ import djehuty;
 import io.socket;
 import io.console;
 import io.file;
+import io.directory;
 
 import synch.thread;
 import synch.semaphore;
@@ -69,6 +70,8 @@ private {
 		COMNI = 502,			    //Command not implemented
 		BSOC = 503,			    //Bad sequence of commands
 		CNIFTP = 504,			    //Command not implemented for that parameter
+
+		DIRE = 521,			//Directory already exists
 
 		NLI = 530,			    //Not logged in
 
@@ -161,9 +164,9 @@ class FtpClient : Dispatcher {
 	//local_dest: The directory on the user's computer that the file will be saved to 
 	bool get_file(string server_path, string local_dest)
 	{
-		send_Command("PASV");
-		send_Command("TYPE I");
-		send_Command("RETR " ~ server_path);
+		send_command("PASV");
+		send_command("TYPE I");
+		send_command("RETR " ~ server_path);
 		
 		string[] file = split(server_path,'/');
 
@@ -180,18 +183,34 @@ class FtpClient : Dispatcher {
 	//server_dest: The directory on the server that the file will be saved to
 	bool send_file(string user_path,string server_dest)
 	{
-		send_Command("PASV");
-		send_Command("TYPE I");
+		Directory dir_files = Directory.open(user_path);
 
-		string[] file = split(user_path,'/');
+		send_command("PASV");
+		send_command("TYPE I");
+	
+		if (dir_files !is null)
+		{
+			string[] items = dir_files.list();
+			string server_loc = server_dest ~ dir_files.name() ~ "/";
+			send_command("MKD " ~ server_loc);
+			foreach(c;items) {
+				//RECURSION !! !
+				send_file(user_path ~ "/" ~ c,server_loc); 
+			}
+		}
+		else 
+		{
+			string[] file = split(user_path,'/');
 
-		send_Command("STOR " ~ server_dest ~ file[$-1]);
-	
-		_datamode = Data_Mode.SendFile;
-		_filename = user_path;
-		
-		open_dataconnect(_host,_dataport);
-	
+			send_command("STOR " ~ server_dest ~ file[$-1]);
+
+			_datamode = Data_Mode.SendFile;
+			_filename = user_path;
+
+			open_dataconnect(_host,_dataport);
+		}
+
+
 		return true;
 
 	}	
@@ -200,18 +219,27 @@ class FtpClient : Dispatcher {
 	//path: The path to the file to delete on the ftp server
 	bool delete_file(string path)
 	{
-		send_Command("PASV");
-		send_Command("DELE " ~ path);
+		send_command("PASV");
+		send_command("DELE " ~ path);
 
 		return true;
 	}
 	//Description: List the contents of the directory that the user specifies
 
 	//path: The directory that will be displayed to the user
-	string list_directory(string path)
+	//mode: 0 returns a string of the normal directory structure
+	//      1 returns a simplified directory structure 
+	string list_directory(string path, ubyte mode = 0)
 	{
-		send_Command("PASV");
-		send_Command("LIST " ~ path);
+		send_command("PASV");
+		if (!mode)
+		{
+			send_command("LIST " ~ path);
+		}
+		else 
+		{
+			send_command("NLST " ~ path);
+		}
 
 		_datamode = Data_Mode.PrintFile;
 		open_dataconnect(_host,_dataport);
@@ -219,10 +247,21 @@ class FtpClient : Dispatcher {
 		_busy.up;
 		return _reply;	
 	}
+	//Description: Renames a file on the ftp server
+
+	//orig_path: Path to the original file to rename
+	//new_path: Path to the new location of the file
+	bool rename_file(string orig_path, string new_path)
+	{
+		send_command("RNFR " ~ orig_path);
+		send_command("RNTO " ~ new_path);
+	
+		return true;
+	}
 	//Description: Sends a command to the ftp server 
 
 	//command: The command to be sent to the ftp server
-	void send_Command(string command)
+	void send_command(string command)
 	{
 		_busy.down();
 
@@ -254,12 +293,9 @@ protected:
 		string response;
 		while (!pleaseStop) {
 			
-	//			Console.putln("bleh");
 			if (!_cskt.readLine(response)) {
-	//			Console.putln("foo?!");
 				break;
 			}
-	//			Console.putln("bleh!");
 	
 			Console.putln(response);		
 			
@@ -271,7 +307,7 @@ protected:
 			switch (code)
 			{
 				case Code.OK:// 200
-					raiseSignal(Signal.OK);
+				//	raiseSignal(Signal.OK);
 					_busy.up();
 					break; 
 				case Code.SRNU: // 220
@@ -286,10 +322,10 @@ protected:
 				case Code.USERLOG: // 230 
 					//user logged in 
 					_busy.up();
-					raiseSignal(Signal.Authenticated);
+				//	raiseSignal(Signal.Authenticated);
 					break; 
 				case Code.PATHCR: // 257
-					Console.putln(response);
+					_busy.up();
 					break;
 				case Code.FSOK:  // 150
 					Console.putln("Starting Data Transfer ...");
@@ -313,10 +349,10 @@ protected:
 
 					
 					// Raise signal
-					raiseSignal(Signal.PassiveMode);
+				//	raiseSignal(Signal.PassiveMode);
 					_busy.up();
 					break;
-				case Code.RFAOK: 
+				case Code.RFAOK: //250 
 				
 				//	Console.putln("Current directory successful");
 		//			raiseSignal(Signal.CurDirSuc);
@@ -327,6 +363,14 @@ protected:
 					Console.putln("Login Incorrect");
 					raiseSignal(Signal.LoginIncorrect);
 					break; 
+				case Code.RFAPFI: //350
+					_busy.up();
+
+					break;	
+				case Code.DIRE: //521
+					_busy.up();
+			
+					break;
 				default:
 					break;
 			}
