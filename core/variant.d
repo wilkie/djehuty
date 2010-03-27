@@ -273,15 +273,15 @@ struct Variant {
 
 	string toString() {
 		if (_isArray) {
-			if (_type == Type.Char) {
+			if (_type == Type.Char && _depth == 1) {
 				// string
 				return _data.cs;
 			}
-			else if (_type == Type.Wchar) {
+			else if (_type == Type.Wchar && _depth == 1) {
 				// string
 				return Unicode.toUtf8(_data.ws);
 			}
-			else if (_type == Type.Dchar) {
+			else if (_type == Type.Dchar && _depth == 1) {
 				// string
 				return Unicode.toUtf8(_data.ds);
 			}

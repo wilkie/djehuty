@@ -61,9 +61,24 @@ import parsing.d.parser;
 
 import networking.ftp;
 
+string from(string str, int i) {
+	string ret = "";
+	switch (str) {
+		default:
+		case "d":
+			ret = itoa(i, 10);
+			break;
+		case "x":
+			ret = itoa(i, 16);
+			break;
+	}
+	return ret;
+}
+
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
+
 		ftp = new FtpClient();
 
 		push(ftp);
@@ -71,9 +86,9 @@ class MyConsoleApp : Application {
 		string test = "";
 		ftp.connect(test,21,"","");
 		
-		ftp.switch_to_passive();
 
-		ftp.list_files();
+		string foo = ftp.list_directory(".");
+		putln(foo);
 //		ftp.send_file("/home/bkuhlman/public_html/files","README","./");
 
 
