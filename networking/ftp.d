@@ -166,7 +166,6 @@ class FtpClient : Dispatcher {
 		//check if directory !!! 
 		string[] file = split(server_path,'/');
 
-<<<<<<< HEAD:networking/ftp.d
 		string par_path = server_path[0..($ - (file[$-1].length))];
 		
 		string[] cur_files = split(list_directory(par_path),"\n");
@@ -197,16 +196,14 @@ class FtpClient : Dispatcher {
 
 			send_command("RETR " ~ server_path);
 		
-			_datamode = Data_Mode.GetFile;
+			_datamode = DataMode.GetFile;
 			_filename = local_dest ~ file[$-1];
 
 			open_dataconnect(_host,_dataport);
 
 		}
-=======
 		_datamode = DataMode.GetFile;
 		_filename = local_dest ~ file[$-1];
->>>>>>> 4bdc906e45aeb7f61e7fe237ed03ef9991b5a254:networking/ftp.d
 
 
 		return true;
