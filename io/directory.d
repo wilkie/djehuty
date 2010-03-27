@@ -36,7 +36,29 @@ class Directory {
 	// path: A valid universal path.
 	this(string path) {
 		// XXX: todo
-		throw new Exception("Not Done Yet");
+		_isRoot = false;
+		if (path.length > 0 && path[0] == '/') {
+			// absolute path
+			_path = path.dup;
+		}
+		else {
+			// relative path
+
+			// get the working directory
+			Directory cur = System.FileSystem.currentDir;
+
+			// create an absolute path
+			_path = cur.path ~ "/" ~ path;
+		}
+		bool check = DirectoryCreate(_pfVars,_path);
+
+		// retrieve _name
+		foreach_reverse(int i, chr; _path) {
+			if (chr == '/' && i < _path.length - 1) {
+				_name = _path[i+1.._path.length].dup;
+				break;
+			}
+		}
 	}
 
 	static Directory open(string path) {
