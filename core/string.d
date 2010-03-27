@@ -1170,7 +1170,10 @@ string[] split(string input, string delims) {
 			}
 		}
 	}
-	retstring ~= input[last..$];
+	if (last != input.length)
+	{
+		retstring ~= input[last..$];
+	}
 
 	return retstring;
 }
@@ -1185,7 +1188,10 @@ string[] split(string input, char delim) {
 			last = i+1;
 		}
 	}
-	retstring ~= input[last..$];
+	if (last != input.length)
+	{
+		retstring ~= input[last..$];
+	}
 
 	return retstring;
 }

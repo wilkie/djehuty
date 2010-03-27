@@ -164,16 +164,46 @@ class FtpClient : Dispatcher {
 	//local_dest: The directory on the user's computer that the file will be saved to 
 	bool get_file(string server_path, string local_dest)
 	{
-		send_command("PASV");
-		send_command("TYPE I");
-		send_command("RETR " ~ server_path);
-		
+		//check if directory !!! 
 		string[] file = split(server_path,'/');
 
-		_datamode = Data_Mode.GetFile;
-		_filename = local_dest ~ file[$-1];
+		string par_path = server_path[0..($ - (file[$-1].length))];
+		
+		string[] cur_files = split(list_directory(par_path),"\n");
+		string[] temp;
+		foreach(c;cur_files)
+		{
+			temp = split(c," ");
+			if (temp[$-1] ==  file[$-1])
+			{
+				break;
+			}	
+		}
+		//directory!!
+		if (temp[0][0] == 'd')
+		{
+			Directory new_dir = Directory.create(local_dest ~ file[$-1]);
+			string[] proc_files = split(list_directory(server_path,1),"\n");
+			foreach(c;proc_files)
+			{
+				get_file(c,local_dest ~ file[$-1] ~ "/");
+			}
 
-		open_dataconnect(_host,_dataport);
+		}
+		else 
+		{
+			send_command("PASV");
+			send_command("TYPE I");
+
+			send_command("RETR " ~ server_path);
+		
+			_datamode = Data_Mode.GetFile;
+			_filename = local_dest ~ file[$-1];
+
+			open_dataconnect(_host,_dataport);
+
+		}
+
 
 		return true;
 	}
@@ -185,9 +215,6 @@ class FtpClient : Dispatcher {
 	{
 		Directory dir_files = Directory.open(user_path);
 
-		send_command("PASV");
-		send_command("TYPE I");
-	
 		if (dir_files !is null)
 		{
 			string[] items = dir_files.list();
@@ -200,6 +227,8 @@ class FtpClient : Dispatcher {
 		}
 		else 
 		{
+			send_command("PASV");
+			send_command("TYPE I");
 			string[] file = split(user_path,'/');
 
 			send_command("STOR " ~ server_dest ~ file[$-1]);
@@ -257,6 +286,15 @@ class FtpClient : Dispatcher {
 		send_command("RNTO " ~ new_path);
 	
 		return true;
+	}
+	//Description: Returns a string of the current path
+	string get_path()
+	{
+		send_command("PWD");
+
+		_busy.down;
+		_busy.up;
+		return _reply;
 	}
 	//Description: Sends a command to the ftp server 
 
@@ -325,6 +363,8 @@ protected:
 				//	raiseSignal(Signal.Authenticated);
 					break; 
 				case Code.PATHCR: // 257
+					string[] temp = split(response, " ");
+					_reply = temp[0][1..($-1)] ~ "/";
 					_busy.up();
 					break;
 				case Code.FSOK:  // 150
@@ -368,6 +408,7 @@ protected:
 
 					break;	
 				case Code.DIRE: //521
+					//directory already exists which is a fine result for us
 					_busy.up();
 			
 					break;
