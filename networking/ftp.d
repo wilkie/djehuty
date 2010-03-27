@@ -103,11 +103,10 @@ class FtpClient : Dispatcher {
 		OK = 4,
 	}
 
-	enum Data_Mode {
+	enum DataMode {
 		GetFile = 0,
 		SendFile = 1,
 		PrintFile = 2,
-
 	}
 
 	this() {
@@ -170,19 +169,18 @@ class FtpClient : Dispatcher {
 		
 		string[] file = split(server_path,'/');
 
-		_datamode = Data_Mode.GetFile;
+		_datamode = DataMode.GetFile;
 		_filename = local_dest ~ file[$-1];
 
 		open_dataconnect(_host,_dataport);
 
 		return true;
 	}
-	//Description: Sends a file from the local computer to the ftp server
 
+	//Description: Sends a file from the local computer to the ftp server
 	//user_path: The path to the file that the user wants to send to the server
 	//server_dest: The directory on the server that the file will be saved to
-	bool send_file(string user_path,string server_dest)
-	{
+	bool send_file(string user_path,string server_dest) {
 		Directory dir_files = Directory.open(user_path);
 
 		send_command("PASV");
@@ -204,18 +202,16 @@ class FtpClient : Dispatcher {
 
 			send_command("STOR " ~ server_dest ~ file[$-1]);
 
-			_datamode = Data_Mode.SendFile;
+			_datamode = DataMode.SendFile;
 			_filename = user_path;
 
 			open_dataconnect(_host,_dataport);
 		}
 
-
 		return true;
-
 	}	
-	//Description: Deletes a file on the server 
 
+	//Description: Deletes a file on the server 
 	//path: The path to the file to delete on the ftp server
 	bool delete_file(string path)
 	{
@@ -229,19 +225,16 @@ class FtpClient : Dispatcher {
 	//path: The directory that will be displayed to the user
 	//mode: 0 returns a string of the normal directory structure
 	//      1 returns a simplified directory structure 
-	string list_directory(string path, ubyte mode = 0)
-	{
+	string list_directory(string path, ubyte mode = 0) {
 		send_command("PASV");
-		if (!mode)
-		{
+		if (mode == 0) {
 			send_command("LIST " ~ path);
 		}
-		else 
-		{
+		else {
 			send_command("NLST " ~ path);
 		}
 
-		_datamode = Data_Mode.PrintFile;
+		_datamode = DataMode.PrintFile;
 		open_dataconnect(_host,_dataport);
 		_busy.down;
 		_busy.up;
@@ -394,19 +387,19 @@ protected:
 		
 		switch (_datamode)
 		{
-			case Data_Mode.GetFile:
+			case DataMode.GetFile:
 				f = new File(_filename);
 				do {
 					check = _dskt.readAny(f,100);
 				}while(check != 0);
 				f.close();
 			break;
-			case Data_Mode.SendFile:	
+			case DataMode.SendFile:	
 				f = File.open(_filename);
 	   			check = _dskt.write(f,f.length);
 				f.close();
 			break;
-			case Data_Mode.PrintFile:
+			case DataMode.PrintFile:
 				_reply = "";
 				while (_dskt.readLine(response))
 				{

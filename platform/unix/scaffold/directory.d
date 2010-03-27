@@ -40,13 +40,8 @@ bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
 }
 
 bool DirectoryCreate(ref DirectoryPlatformVars dirVars, ref string path) {
-	
-	//remove if it exists 
-	if (DirectoryFileIsDir(path))
-	{	
-		string rmdir = "rm -R " ~ path ~ "\0";
-
-		system(rmdir.ptr);
+	if (DirectoryFileIsDir(path)) {
+		return false;
 	}
 
 	string makedir = "mkdir " ~ path ~ "\0";

@@ -71,9 +71,9 @@ class MyConsoleApp : Application {
 		string test = "";
 		ftp.connect(test,21,"","");
 		
-		ftp.switch_to_passive();
 
-		ftp.list_files();
+		string foo = ftp.list_directory(".");
+		putln(foo);
 //		ftp.send_file("/home/bkuhlman/public_html/files","README","./");
 
 

@@ -35,7 +35,6 @@ class Directory {
 	// Description: This constructor will create a Directory at the specified path.
 	// path: A valid universal path.
 	this(string path) {
-		// XXX: todo
 		_isRoot = false;
 		if (path.length > 0 && path[0] == '/') {
 			// absolute path
@@ -51,6 +50,9 @@ class Directory {
 			_path = cur.path ~ "/" ~ path;
 		}
 		bool check = DirectoryCreate(_pfVars,_path);
+		if (check == false) {
+			throw new Exception("Directory Cannot be Created");
+		}
 
 		// retrieve _name
 		foreach_reverse(int i, chr; _path) {
