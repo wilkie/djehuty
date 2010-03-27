@@ -39,6 +39,18 @@ bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
 	return (dirVars.dir !is null);
 }
 
+bool DirectoryCreate(ref DirectoryPlatformVars dirVars, ref string path) {
+	if (DirectoryFileIsDir(path)) {
+		return false;
+	}
+
+	string makedir = "mkdir " ~ path ~ "\0";
+
+	system(makedir.ptr);
+
+	return DirectoryOpen(dirVars,path);
+
+}
 bool DirectoryClose(ref DirectoryPlatformVars dirVars) {
 	closedir(dirVars.dir);
 	return true;
@@ -148,7 +160,6 @@ bool DirectoryFileIsDir(string path) {
 
 	return false;
 }
-
 bool DirectoryMove(ref string path, string newPath) {
 	string exec = "mv " ~ path ~ " " ~ newPath ~ "\0";
 

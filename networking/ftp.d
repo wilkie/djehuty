@@ -14,9 +14,11 @@ import djehuty;
 import io.socket;
 import io.console;
 import io.file;
+import io.directory;
 
 import synch.thread;
 import synch.semaphore;
+import synch.mutex;
 
 import core.regex;
 
@@ -69,6 +71,8 @@ private {
 		BSOC = 503,			    //Bad sequence of commands
 		CNIFTP = 504,			    //Command not implemented for that parameter
 
+		DIRE = 521,			//Directory already exists
+
 		NLI = 530,			    //Not logged in
 
 		NAFSF = 532,			    //Need account for storing files
@@ -99,11 +103,10 @@ class FtpClient : Dispatcher {
 		OK = 4,
 	}
 
-	enum Data_Mode {
+	enum DataMode {
 		GetFile = 0,
 		SendFile = 1,
 		PrintFile = 2,
-
 	}
 
 	this() {
@@ -136,7 +139,11 @@ class FtpClient : Dispatcher {
 
 		return _connected;
 	}
+	
+	//Description: Connects to the ftp server to allow for data transfer. 
 
+	//host: The host to connect to.
+	//port: The port to use to connect. Default is 20
 	bool open_dataconnect(string host, ushort port =20)
 	{
 		bool data_connect = false;
@@ -144,56 +151,110 @@ class FtpClient : Dispatcher {
 		data_connect = _dskt.connect(host,port);
 
 		if (data_connect){
-			_dthread.start();
+			_dthread.run();
 		}
 		
 		return data_connect;
 
 	}
-	
-	bool get_file(string spath,string file, string local_dest)
-	{
-		_datamode = Data_Mode.GetFile;
-		_filename = local_dest ~ file;
+	//Description: Downloads a file from the ftp server onto a user's local computer 
 
-		send_Command("TYPE I");
-		send_Command("CWD " ~ spath);
-		send_Command("RETR " ~ file);
+	//server_path: The path to the file that the user wants to download from the server
+	//local_dest: The directory on the user's computer that the file will be saved to 
+	bool get_file(string server_path, string local_dest)
+	{
+		send_command("PASV");
+		send_command("TYPE I");
+		send_command("RETR " ~ server_path);
 		
+		string[] file = split(server_path,'/');
+
+		_datamode = DataMode.GetFile;
+		_filename = local_dest ~ file[$-1];
+
 		open_dataconnect(_host,_dataport);
 
 		return true;
 	}
 
-	bool send_file(string server_path,string file, string user_path)
-	{
-		_datamode = Data_Mode.SendFile;
-		_filename = user_path ~ file;
+	//Description: Sends a file from the local computer to the ftp server
+	//user_path: The path to the file that the user wants to send to the server
+	//server_dest: The directory on the server that the file will be saved to
+	bool send_file(string user_path,string server_dest) {
+		Directory dir_files = Directory.open(user_path);
 
-		send_Command("TYPE I");
-		send_Command("CWD " ~ server_path);
-		send_Command("STOR " ~ file);
-		
-		open_dataconnect(_host,_dataport);
+		send_command("PASV");
+		send_command("TYPE I");
 	
-		return true;
+		if (dir_files !is null)
+		{
+			string[] items = dir_files.list();
+			string server_loc = server_dest ~ dir_files.name() ~ "/";
+			send_command("MKD " ~ server_loc);
+			foreach(c;items) {
+				//RECURSION !! !
+				send_file(user_path ~ "/" ~ c,server_loc); 
+			}
+		}
+		else 
+		{
+			string[] file = split(user_path,'/');
 
+			send_command("STOR " ~ server_dest ~ file[$-1]);
+
+			_datamode = DataMode.SendFile;
+			_filename = user_path;
+
+			open_dataconnect(_host,_dataport);
+		}
+
+		return true;
 	}	
 
-	void list_files()
+	//Description: Deletes a file on the server 
+	//path: The path to the file to delete on the ftp server
+	bool delete_file(string path)
 	{
-		_datamode = Data_Mode.PrintFile;
+		send_command("PASV");
+		send_command("DELE " ~ path);
 
-		send_Command("LIST");
+		return true;
+	}
+	//Description: List the contents of the directory that the user specifies
+
+	//path: The directory that will be displayed to the user
+	//mode: 0 returns a string of the normal directory structure
+	//      1 returns a simplified directory structure 
+	string list_directory(string path, ubyte mode = 0) {
+		send_command("PASV");
+		if (mode == 0) {
+			send_command("LIST " ~ path);
+		}
+		else {
+			send_command("NLST " ~ path);
+		}
+
+		_datamode = DataMode.PrintFile;
 		open_dataconnect(_host,_dataport);
+		_busy.down;
+		_busy.up;
+		return _reply;	
 	}
+	//Description: Renames a file on the ftp server
 
-	void switch_to_passive()
+	//orig_path: Path to the original file to rename
+	//new_path: Path to the new location of the file
+	bool rename_file(string orig_path, string new_path)
 	{
-		send_Command("PASV");
+		send_command("RNFR " ~ orig_path);
+		send_command("RNTO " ~ new_path);
+	
+		return true;
 	}
+	//Description: Sends a command to the ftp server 
 
-	void send_Command(string command)
+	//command: The command to be sent to the ftp server
+	void send_command(string command)
 	{
 		_busy.down();
 
@@ -203,6 +264,7 @@ class FtpClient : Dispatcher {
 			_cskt.write(command);
 		}
 	}
+	//Description: Closes the ftp connection
 
 	bool close(){
 		_busy.down();
@@ -224,12 +286,9 @@ protected:
 		string response;
 		while (!pleaseStop) {
 			
-	//			Console.putln("bleh");
 			if (!_cskt.readLine(response)) {
-	//			Console.putln("foo?!");
 				break;
 			}
-	//			Console.putln("bleh!");
 	
 			Console.putln(response);		
 			
@@ -241,7 +300,7 @@ protected:
 			switch (code)
 			{
 				case Code.OK:// 200
-					raiseSignal(Signal.OK);
+				//	raiseSignal(Signal.OK);
 					_busy.up();
 					break; 
 				case Code.SRNU: // 220
@@ -256,10 +315,10 @@ protected:
 				case Code.USERLOG: // 230 
 					//user logged in 
 					_busy.up();
-					raiseSignal(Signal.Authenticated);
+				//	raiseSignal(Signal.Authenticated);
 					break; 
 				case Code.PATHCR: // 257
-					Console.putln(response);
+					_busy.up();
 					break;
 				case Code.FSOK:  // 150
 					Console.putln("Starting Data Transfer ...");
@@ -269,13 +328,13 @@ protected:
 				case Code.CDC: // 226
 					//transfer complete
 					_dskt.close();
-		_busy.up();
-//		Console.putln("transfer complete");
+					_busy.up();
+					//		Console.putln("transfer complete");
 					break; 
 				case Code.PASS: //227
 					//break apart and determine port
 					string[] s = response.split("(,)");
-					_host ~= s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
+					_host = s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
 					ushort port1,port2;
 					s[5].nextInt(port1);
 					s[6].nextInt(port2);
@@ -283,13 +342,13 @@ protected:
 
 					
 					// Raise signal
-					raiseSignal(Signal.PassiveMode);
+				//	raiseSignal(Signal.PassiveMode);
 					_busy.up();
 					break;
-				case Code.RFAOK: 
+				case Code.RFAOK: //250 
 				
-					Console.putln("Current directory successful");
-					raiseSignal(Signal.CurDirSuc);
+				//	Console.putln("Current directory successful");
+		//			raiseSignal(Signal.CurDirSuc);
 					_busy.up();
 					break; 
 				case Code.NLI:
@@ -297,6 +356,14 @@ protected:
 					Console.putln("Login Incorrect");
 					raiseSignal(Signal.LoginIncorrect);
 					break; 
+				case Code.RFAPFI: //350
+					_busy.up();
+
+					break;	
+				case Code.DIRE: //521
+					_busy.up();
+			
+					break;
 				default:
 					break;
 			}
@@ -304,8 +371,6 @@ protected:
 
 
 		}
-
-//		Console.putln("cthread stopped");
 
 
 	}
@@ -319,32 +384,27 @@ protected:
 		string response;
 		ulong check;
 		File f;
-		Stream s;
-
+		
 		switch (_datamode)
 		{
-			case Data_Mode.GetFile:
-				Console.putln("got here");	
+			case DataMode.GetFile:
 				f = new File(_filename);
 				do {
 					check = _dskt.readAny(f,100);
 				}while(check != 0);
 				f.close();
 			break;
-			case Data_Mode.SendFile:	
+			case DataMode.SendFile:	
 				f = File.open(_filename);
 	   			check = _dskt.write(f,f.length);
 				f.close();
 			break;
-			case Data_Mode.PrintFile:
-				s = new Stream();
-				do {
-					check = _dskt.readAny(s,100);
-				}while(check != 0);
-				s.rewind();
-				while (s.readLine(response)) {
-					Console.putln(response);
-				}
+			case DataMode.PrintFile:
+				_reply = "";
+				while (_dskt.readLine(response))
+				{
+					_reply ~= response ~ "\n";
+				}		
 
 			break;
 
@@ -352,7 +412,6 @@ protected:
 				//probably bad
 			break;
 		}
-
 		_dskt.close();
 
 		//done transfer close connection 
@@ -365,6 +424,7 @@ protected:
 	string _username;
 	string _password;
 	string _filename;
+	string _reply;
 
 	ushort _dataport;
 	ushort _datamode;

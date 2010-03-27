@@ -10,5 +10,9 @@
 
 module platform.vars.mutex;
 
+import platform.unix.common;
+
 struct MutexPlatformVars {
+	pthread_mutex_t mut_id;
 }
+
