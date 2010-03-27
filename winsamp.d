@@ -79,12 +79,6 @@ class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
-		putln("integers: ", 2, ":", "".from(2), ":", "x".from(128));
-		putln(["dave", "is", "awesome"]);
-		putln("dave.is.awesome".split('.'));
-		putln([1,2,3]);
-		putln([]);
-
 		ftp = new FtpClient();
 
 		push(ftp);
