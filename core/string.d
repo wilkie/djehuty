@@ -1367,3 +1367,10 @@ int find(string source, string search, uint start = 0) {
 	return -1;
 }
 
+string times(string str, int amount) {
+	string ret = "";
+	for(int i = 0; i < amount; i++) {
+		ret ~= str;
+	}
+	return ret;
+}
