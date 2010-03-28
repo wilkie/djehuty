@@ -207,7 +207,7 @@ class Directory {
 
 			return ret;
 		}
-		throw new DirectoryNotFound(_path ~ "/" ~ directoryName);
+		return null;
 	}
 
 	// Description: This function will return whether or not the object represents the root.
@@ -224,10 +224,6 @@ class Directory {
 
 	bool opEquals(Directory d) {
 		return _path == d._path;
-	}
-
-	bool opEquals(String d) {
-		return _path == d;
 	}
 
 	bool opEquals(string d) {
