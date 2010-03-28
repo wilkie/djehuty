@@ -157,7 +157,7 @@ class FtpClient : Dispatcher {
 		return data_connect;
 
 	}
-	//Description: Downloads a file from the ftp server onto a user's local computer 
+	//Description: Downloads a file or directory from the ftp server onto a user's local computer 
 
 	//server_path: The path to the file that the user wants to download from the server
 	//local_dest: The directory on the user's computer that the file will be saved to 
@@ -166,9 +166,9 @@ class FtpClient : Dispatcher {
 		//check if directory !!! 
 		string[] file = split(server_path,'/');
 
-		string par_path = server_path[0..($ - (file[$-1].length))];
+		string parent_path = server_path[0..($ - (file[$-1].length))];
 		
-		string[] cur_files = split(list_directory(par_path),"\n");
+		string[] cur_files = split(list_directory(parent_path),"\n");
 		string[] temp;
 		foreach(c;cur_files)
 		{
@@ -181,7 +181,13 @@ class FtpClient : Dispatcher {
 		//directory!!
 		if (temp[0][0] == 'd')
 		{
-			Directory new_dir = Directory.create(local_dest ~ file[$-1]);
+			Directory new_dir = Directory.open(local_dest ~ file[$-1]);
+			//create directory if it does not exist
+			if (new_dir is null)
+			{
+				new_dir = Directory.create(local_dest ~ file[$-1]);
+			}
+
 			string[] proc_files = split(list_directory(server_path,1),"\n");
 			foreach(c;proc_files)
 			{
@@ -202,14 +208,11 @@ class FtpClient : Dispatcher {
 			open_dataconnect(_host,_dataport);
 
 		}
-		_datamode = DataMode.GetFile;
-		_filename = local_dest ~ file[$-1];
-
 
 		return true;
 	}
 
-	//Description: Sends a file from the local computer to the ftp server
+	//Description: Sends a file or directory from the local computer to the ftp server
 	//user_path: The path to the file that the user wants to send to the server
 	//server_dest: The directory on the server that the file will be saved to
 	bool send_file(string user_path,string server_dest) {
@@ -246,8 +249,36 @@ class FtpClient : Dispatcher {
 	//path: The path to the file to delete on the ftp server
 	bool delete_file(string path)
 	{
-		send_command("PASV");
-		send_command("DELE " ~ path);
+		//check if directory !!! 
+		string[] file = split(path,'/');
+
+		string parent_path = path[0..($ - (file[$-1].length))];
+		
+		string[] cur_files = split(list_directory(parent_path),"\n");
+		string[] temp;
+		foreach(c;cur_files)
+		{
+			temp = split(c," ");
+			if (temp[$-1] ==  file[$-1])
+			{
+				break;
+			}	
+		}
+		//directory!!
+		if (temp[0][0] == 'd')
+		{
+			string[] proc_files = split(list_directory(path,1),"\n");
+			foreach(c;proc_files)
+			{
+				delete_file(c);
+			}
+			send_command("RMD " ~ path);
+		}
+		else
+		{
+			send_command("PASV");
+			send_command("DELE " ~ path);
+		}
 
 		return true;
 	}
