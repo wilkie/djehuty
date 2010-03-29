@@ -140,12 +140,12 @@ class FtpClient : Dispatcher {
 	
 	Directory openDirectory(string path = "") {
 		if (path == "") {
-			path = currentDirectory();
+			path = get_path();
 		}
 
 		// create a directory object that will represent this
 		// networked directory
-		FtpDirectory ret;
+		FtpDirectory ret = new FtpDirectory(path);
 
 		return ret;
 	}
@@ -244,7 +244,6 @@ class FtpClient : Dispatcher {
 			send_command("PASV");
 			send_command("TYPE I");
 			string[] file = split(user_path,'/');
-
 			send_command("STOR " ~ server_dest ~ file[$-1]);
 
 			_datamode = DataMode.SendFile;
@@ -341,7 +340,7 @@ class FtpClient : Dispatcher {
 		_busy.down();
 
 		if (_connected){
-			Console.putln("sending ", command);
+//			Console.putln("sending ", command);
 			command ~= "\n";
 			_cskt.write(command);
 		}
@@ -405,7 +404,6 @@ protected:
 					_busy.up();
 					break;
 				case Code.FSOK:  // 150
-					Console.putln("Starting Data Transfer ...");
 					//get size of file
 					
 					break; 
@@ -435,10 +433,11 @@ protected:
 		//			raiseSignal(Signal.CurDirSuc);
 					_busy.up();
 					break; 
-				case Code.NLI:
+				case Code.NLI: //530
 
-					Console.putln("Login Incorrect");
-					raiseSignal(Signal.LoginIncorrect);
+					throw new Exception("Login Incorrect");
+					close();
+					//raiseSignal(Signal.LoginIncorrect);
 					break; 
 				case Code.RFAPFI: //350
 					_busy.up();
@@ -449,6 +448,11 @@ protected:
 					_busy.up();
 			
 					break;
+				case Code.RANTFUA:
+
+					throw new Exception("File does not exist on server");
+					
+					break;	
 				default:
 					break;
 			}
@@ -481,6 +485,10 @@ protected:
 			break;
 			case DataMode.SendFile:	
 				f = File.open(_filename);
+				if (f is null)
+				{
+					throw new Exception("File does not exist on local machine");
+				}
 	   			check = _dskt.write(f,f.length);
 				f.close();
 			break;
@@ -520,7 +528,7 @@ protected:
 
 	Thread _cthread;
 	Thread _dthread;
-	
+
 	class FtpDirectory : Directory {
 		this(string path) {
 			if (_path is null) {
@@ -543,10 +551,29 @@ protected:
 		}
 
 		bool isDir(string _name) {
+
+			string[] cur_files = split(list_directory(_path),"\n");
+			string[] temp;
+			foreach(c;cur_files)
+			{
+				temp = split(c," ");
+				if (temp[$-1] ==  _name)
+				{
+					if (temp[0][0] == 'd')
+					{
+						return true;
+					}
+					else 
+					{
+						return false;
+					}
+				}	
+			}
 			return false;
 		}
 
 		void move(string path) {
+			rename_file(_path,path);
 		}
 
 		void copy(string path) {
@@ -619,7 +646,17 @@ protected:
 		}
 
 		string[] list() {
-			return [""];
+			string[] retstring;
+			
+			string[] cur_files = split(list_directory(_path,1),"\n");
+				
+			foreach(c;cur_files)
+			{
+				string[] temp = split(c,"/");
+				retstring ~= temp[$-1];
+			}
+			
+			return retstring;
 		}
 
 		bool opEquals(Directory d) {
