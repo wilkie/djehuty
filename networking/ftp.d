@@ -556,7 +556,7 @@ protected:
 			string[] temp;
 			foreach(c;cur_files)
 			{
-				temp = split(c," ");
+				temp = split(c,' ');
 				if (temp[$-1] ==  _name)
 				{
 					if (temp[0][0] == 'd')
@@ -573,9 +573,10 @@ protected:
 		}
 
 		void move(string path) {
+
 			rename_file(_path,path);
 		}
-
+		
 		void copy(string path) {
 		}
 
@@ -592,6 +593,10 @@ protected:
 
 		void name(string newName) {
 			// Rename directory
+			string temppath = _path[0..($ - (_name.length))] ~ newName;
+			
+			rename_file(_path,temppath);
+			_path = temppath;
 		}
 
 		File openFile(string filename) {
