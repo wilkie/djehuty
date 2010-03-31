@@ -593,10 +593,19 @@ protected:
 
 		void name(string newName) {
 			// Rename directory
-			string temppath = _path[0..($ - (_name.length))] ~ newName;
 			
-			rename_file(_path,temppath);
-			_path = temppath;
+			if (isRoot){
+				//TODO Exception
+			}
+			else {
+				string temppath = this.parent().path ~ "/" ~ newName;
+		
+				rename_file(_path,temppath);
+	
+				_path = temppath;
+				_name = newName;	
+			}
+
 		}
 
 		File openFile(string filename) {
