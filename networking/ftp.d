@@ -151,9 +151,41 @@ class FtpClient : Dispatcher {
 	}
 
 	string currentDirectory() {
-		return "";
-	}
+		send_command("PWD");
 
+		_busy.down;
+		_busy.up;
+		return _reply;		
+	}
+	
+	//Description: Checks if the specified path is a directory on the ftp server
+	//path: The path on the server to check
+	bool isDirectory(string path){
+	
+		string[] file = split(path,'/');
+
+		string parent_path = path[0..($ - (file[$-1].length))];
+		string[] cur_files = split(list_directory(parent_path),"\n");
+		string[] temp;
+		foreach(c;cur_files)
+		{
+			temp = split(c,' ');
+			if (temp[$-1] ==  file[$-1])
+			{
+				if (temp[0][0] == 'd')
+				{
+					return true;
+				}
+				else 
+				{
+					return false;
+				}
+			}	
+		}
+		return false;
+
+
+	}
 	//Description: Connects to the ftp server to allow for data transfer. 
 	//host: The host to connect to.
 	//port: The port to use to connect. Default is 20
@@ -176,21 +208,8 @@ class FtpClient : Dispatcher {
 	{
 		//check if directory !!! 
 		string[] file = split(server_path,'/');
-
-		string parent_path = server_path[0..($ - (file[$-1].length))];
 		
-		string[] cur_files = split(list_directory(parent_path),"\n");
-		string[] temp;
-		foreach(c;cur_files)
-		{
-			temp = split(c," ");
-			if (temp[$-1] ==  file[$-1])
-			{
-				break;
-			}	
-		}
-		//directory!!
-		if (temp[0][0] == 'd')
+		if (isDirectory(server_path))
 		{
 			Directory new_dir = Directory.open(local_dest ~ file[$-1]);
 			//create directory if it does not exist
@@ -262,20 +281,7 @@ class FtpClient : Dispatcher {
 		//check if directory !!! 
 		string[] file = split(path,'/');
 
-		string parent_path = path[0..($ - (file[$-1].length))];
-		
-		string[] cur_files = split(list_directory(parent_path),"\n");
-		string[] temp;
-		foreach(c;cur_files)
-		{
-			temp = split(c," ");
-			if (temp[$-1] ==  file[$-1])
-			{
-				break;
-			}	
-		}
-		//directory!!
-		if (temp[0][0] == 'd')
+		if (isDirectory(path))
 		{
 			string[] proc_files = split(list_directory(path,1),"\n");
 			foreach(c;proc_files)
@@ -548,32 +554,17 @@ protected:
 					}
 				}
 			}
+			if (!isDirectory(_path))
+			{
+				throw new Exception("Ftp Directory does not exist");
+			}
 		}
 
 		bool isDir(string _name) {
-
-			string[] cur_files = split(list_directory(_path),"\n");
-			string[] temp;
-			foreach(c;cur_files)
-			{
-				temp = split(c,' ');
-				if (temp[$-1] ==  _name)
-				{
-					if (temp[0][0] == 'd')
-					{
-						return true;
-					}
-					else 
-					{
-						return false;
-					}
-				}	
-			}
-			return false;
+			return isDirectory(_path ~ "/" ~ _name);
 		}
 
 		void move(string path) {
-
 			rename_file(_path,path);
 		}
 		
@@ -595,7 +586,7 @@ protected:
 			// Rename directory
 			
 			if (isRoot){
-				//TODO Exception
+				//XXX Exception
 			}
 			else {
 				string temppath = this.parent().path ~ "/" ~ newName;
@@ -662,11 +653,11 @@ protected:
 		string[] list() {
 			string[] retstring;
 			
-			string[] cur_files = split(list_directory(_path,1),"\n");
+			string[] cur_files = split(list_directory(_path,1),'\n');
 				
 			foreach(c;cur_files)
 			{
-				string[] temp = split(c,"/");
+				string[] temp = split(c,'/');
 				retstring ~= temp[$-1];
 			}
 			
