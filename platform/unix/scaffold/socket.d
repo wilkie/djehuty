@@ -104,6 +104,7 @@ bool SocketAccept(ref SocketPlatformVars sockVars)
 
 void SocketClose(ref SocketPlatformVars sockVars)
 {
+	shutdown(sockVars.m_skt, 2);
 	close(sockVars.m_skt);
 }
 
@@ -127,8 +128,6 @@ bool SocketRead(ref SocketPlatformVars sockVars, ubyte* buffer, ulong len)
 		progress += ret;
 		amt -= ret;
 		cur += ret;
-
-		if (ret <= 0) { return false; }
 	}
 
 	return true;

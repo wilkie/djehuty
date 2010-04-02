@@ -64,7 +64,7 @@ class Dspec : Application {
 
 		// Interpret arguments
 
-		String path = new String(options.path);
+		string path = options.path;
 
 		Console.putln("Starting on path ", path);
 
@@ -76,8 +76,7 @@ class Dspec : Application {
 		}
 
 		Parser parser = new Parser();
-		if (!(parser.parseFiles(path, files)))
-		{
+		if (!(parser.parseFiles(path, files))) {
 			Console.putln("error");
 			return;
 		}

@@ -1157,3 +1157,214 @@ string trim(string chrs) {
 
 	return chrs[idx_s..idx_e].dup;
 }
+
+string[] split(string input, string delims) {
+	string[] retstring;
+	size_t last;
+
+	foreach(size_t i, char c; input) {
+		foreach(char d; delims) {
+			if (c == d) {
+				retstring ~= input[last..i];
+				last = i+1;
+			}
+		}
+	}
+	retstring ~= input[last..$];
+
+	return retstring;
+}
+
+string[] split(string input, char delim) {
+	string[] retstring;
+	size_t last;
+
+	foreach(size_t i, char c; input) {
+		if (c == delim) {
+			retstring ~= input[last..i];
+			last = i+1;
+		}
+	}
+	retstring ~= input[last..$];
+
+	return retstring;
+}
+
+template _nextInt(T) {
+	bool _nextInt(T)(string str, out T value) {
+		int curpos;
+
+		for(curpos=0; curpos<str.length; curpos++) {
+			if (str[curpos] != ' ' &&
+					str[curpos] != '\t' &&
+					str[curpos] != '\r' &&
+					str[curpos] != '\n') {
+
+				break;
+			}
+		}
+
+		bool negative = false;
+
+		if (str[curpos] == '-') {
+			negative = true;
+			curpos++;
+			if (curpos == str.length) { return false; }
+		}
+
+		if (str[curpos] < '0' ||
+				str[curpos] > '9') {
+
+			return false;
+		}
+
+		long tmpval = 0;
+
+		for (;curpos<str.length;curpos++) {
+			if (str[curpos] < '0' ||
+					str[curpos] > '9') {
+
+				break;
+			}
+
+			tmpval *= 10;
+			tmpval += cast(long)(str[curpos] - '0');
+		}
+
+		if (negative) { tmpval = -tmpval; }
+
+		value = cast(T)tmpval;
+
+		return true;
+	}
+}
+
+// Description: This function will return the next integer value found in the string.
+bool nextInt(string str, out int value) {
+	return _nextInt!(int)(str, value);
+}
+
+bool nextInt(string str, out uint value) {
+	return _nextInt!(uint)(str, value);
+}
+
+bool nextInt(string str, out long value) {
+	return _nextInt!(long)(str, value);
+}
+
+bool nextInt(string str, out ulong value) {
+	return _nextInt!(ulong)(str, value);
+}
+
+bool nextInt(string str, out short value) {
+	return _nextInt!(short)(str, value);
+}
+
+bool nextInt(string str, out ushort value) {
+	return _nextInt!(ushort)(str, value);
+}
+
+// Description: Will build and return a String object representing a slice of the current String.
+// start: The position to start from.
+// len: The length of the slice.  Pass -1 to get the remaining string.
+string subString(string str, int start, int len = -1) {
+	uint[] _indices = Unicode.calcIndices(str);
+
+	if (start >= _indices.length || len == 0) {
+		return "";
+	}
+
+	if (len < 0) { len = -1; }
+
+	if (len >= 0 && start + len >= _indices.length) {
+		len = -1;
+	}
+
+	// subdivide
+
+	if (len == -1) {
+		start = _indices[start];
+		string ret = "";
+		ret = str[start..$].dup;
+		return ret;
+	}
+
+	// this is the index for one character past the
+	// end of the substring of the original string...hence, len is
+	// now the exclusive end of the range to slice the array.
+	len = _indices[start+len];
+
+	start = _indices[start];
+
+	string ret = "";
+	ret = str[start..len].dup;
+	return ret;
+}
+
+string replace(string str, dchar find, dchar replace) {
+	string ret = str.dup;
+	uint[] _indices = Unicode.calcIndices(str);
+
+	for(int i = 0; i < _indices.length; i++) {
+		dchar cmpChar = Unicode.toUtf32Char(ret[_indices[i]..$]);
+		if (cmpChar == find) {
+			dchar[1] chrs = [replace];
+			ret = ret[0.._indices[i]] ~ Unicode.toUtf8(chrs) ~ ret[_indices[i+1]..$];
+			_indices = Unicode.calcIndices(ret);
+		}
+	}
+
+	return ret;
+}
+
+int find(string source, string search, uint start = 0) {
+	// look through string for term search
+	// in some, hopefully later on, efficient manner
+
+	uint[] _indices = Unicode.calcIndices(source);
+
+	uint[] search_indices = Unicode.calcIndices(search);
+
+	if (start >= _indices.length) {
+		return -1;
+	}
+
+	bool found;
+
+	int o;
+
+	foreach (i, aPos; _indices[start..$]) {
+		found = true;
+		o=i-1+start;
+		foreach (bPos; search_indices) {
+			o++;
+			if (o >= _indices.length) {
+				found = false;
+				break;
+			}
+
+			dchar aChr, bChr;
+
+			aChr = Unicode.toUtf32Char(source[_indices[o]..$]);
+			bChr = Unicode.toUtf32Char(search[bPos..$]);
+
+			if (aChr != bChr) {
+				found = false;
+				break;
+			}
+		}
+		if (found) {
+			return i+start;
+		}
+	}
+
+	return -1;
+}
+
+string times(string str, int amount) {
+	string ret = "";
+	for(int i = 0; i < amount; i++) {
+		ret ~= str;
+	}
+	return ret;
+}

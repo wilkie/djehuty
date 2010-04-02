@@ -25,9 +25,9 @@ class UnaryExprUnit : ParseUnit {
 			default:
 				lexer.push(current);
 				auto tree = expand!(PostFixExprUnit)();
-				return false;
+				break;
 		}
-		return true;
+		return false;
 	}
 
 protected:

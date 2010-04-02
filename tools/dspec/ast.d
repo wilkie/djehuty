@@ -1,6 +1,6 @@
 module ast;
 
-import core.string;
+import djehuty;
 
 import io.console;
 
@@ -38,22 +38,22 @@ class AST
 		data.value.unsigned = val;
 	}
 
-	void value(String s)
+	void value(string s)
 	{
 		data.type = ValueType.String;
-		data.value.str = new String(s);
+		data.value.str = s.dup;
 	}
 
-	void hint(String s)
+	void hint(string s)
 	{
 		data.type = ValueType.Hint;
-		data.value.str = new String(s);
+		data.value.str = s.dup;
 	}
 
-	void name(String s)
+	void name(string s)
 	{
 		data.type = ValueType.Name;
-		data.value.str = new String(s);
+		data.value.str = s.dup;
 	}
 	
 	void walk(uint depth = 0)
@@ -62,13 +62,13 @@ class AST
 		if (data.type == ValueType.Hint)
 		{
 			// *** Console.putln(...);
-			Console.putln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
+			Console.putln(spaces[0..depth*2], "HINT: ", data.value.str, " [", left, ", ", right, "]");
 			//writefln(spaces[0..depth*2], "HINT: ", data.value.str.array, " [", left, ", ", right, "]");
 		}
 		else if (data.type == ValueType.Name)
 		{
 			// *** Console.putln(...);
-			Console.putln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
+			Console.putln(spaces[0..depth*2], data.value.str, " [", left, ", ", right, "]");
 			//writefln(spaces[0..depth*2], data.value.str.array, " [", left, ", ", right, "]");
 		}
 		else
@@ -97,9 +97,9 @@ class AST
 		return data.type;
 	}
 	
-	void getValue(out String value)
+	void getValue(out string value)
 	{
-		value = new String(data.value.str);
+		value = data.value.str.dup;
 	}
 	
 	void getValue(out ulong value)
@@ -123,8 +123,8 @@ protected:
 		long signed;
 		Object object;
 		void* pointer;
-		String str;
-		String hint;
+		string str;
+		string hint;
 	}
 	
 	valueHolder data;

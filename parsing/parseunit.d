@@ -78,6 +78,10 @@ protected:
 		_state = value;
 	}
 
+	void root(AbstractSyntaxTree ast) {
+		_root = ast;
+	}
+
 	AbstractSyntaxTree root() {
 		return _root;
 	}

@@ -23,11 +23,6 @@ public:
 		super();
 	}
 
-	this(String appName) {
-		TuiStart(&_pfvars);
-		super(appName);
-	}
-
 	this(string appName) {
 		TuiStart(&_pfvars);
 		super(appName);

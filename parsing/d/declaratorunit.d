@@ -57,7 +57,6 @@ class DeclaratorUnit : ParseUnit {
 					default:
 						// Done
 						return false;
-						break;
 				}
 				break;
 
@@ -69,13 +68,13 @@ class DeclaratorUnit : ParseUnit {
 					case DToken.Identifier:
 					case DToken.LeftParen:
 						auto tree = expand!(DeclaratorUnit)();
-						return false;
+						break;
 
 					default:
 						// done
-						return false;
+						break;
 				}
-				break;
+				return false;
 
 			// We have a nested declarator in play... look for a right
 			// parenthesis.

@@ -9,6 +9,9 @@ import core.tostring;
 import io.console;
 
 class AbstractSyntaxTree : List!(AbstractSyntaxTree) {
+	this() {
+	}
+
 	this(uint type, AbstractSyntaxTree[] nodes ...) {
 		addList(nodes);
 		_type = type;

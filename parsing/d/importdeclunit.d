@@ -14,6 +14,8 @@ import parsing.token;
 import parsing.d.tokens;
 import parsing.d.nodes;
 
+import parsing.d.trees;
+
 import io.console;
 
 import djehuty;
@@ -37,7 +39,7 @@ class ImportDeclUnit : ParseUnit {
 
 			case DToken.Semicolon:
 				// End of declaration
-				Console.putln("Import: ", cur_string);
+				this.root = new Import(cur_string);
 				return false;
 
 			case DToken.Identifier:

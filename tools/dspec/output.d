@@ -1,8 +1,6 @@
 module output;
 
-import core.string;
-import core.unicode;
-import core.definitions;
+import djehuty;
 
 import io.file;
 import io.console;
@@ -32,7 +30,7 @@ char[] footer =
 `;
 
 class Output {
-	this(String path) {
+	this(string path) {
 		if (!readyOutput(path)) {
 			// Error: cannot write file
 			Console.putln("Error: Cannot write to ", path);
@@ -43,8 +41,8 @@ class Output {
 	~this() {
 	}
 
-	void work(AST result, String path) {
-		specName = new String(path);
+	void work(AST result, string path) {
+		specName = path.dup;
 
 		//Console.putln("Outputting ... ");
 		AST working = result;
@@ -54,13 +52,13 @@ class Output {
 			node = working.right;
 			if (node !is null) {
 				if (node.valueType == AST.ValueType.Name) {
-					String name;
+					string name;
 					node.getValue(name);
 
 					//Console.putln("Tree: ", name.array);
 					//writefln(name);
 
-					switch(name.array) {
+					switch(name) {
 						case "ParseDescribe":
 
 							tests = null;
@@ -92,11 +90,11 @@ class Output {
 
 		foreach(className; classes) {
 			outfp.write("\tstatic void test"c);
-			outfp.write(Unicode.toUtf8(className.array));
+			outfp.write(Unicode.toUtf8(className));
 			outfp.write("() {\n"c);
 			//fwritef(outfp, "%s", "\tstatic void test", className, "()\n\t{\n");
 			outfp.write("\t\t"c);
-			outfp.write(Unicode.toUtf8(className.array));
+			outfp.write(Unicode.toUtf8(className));
 			outfp.write("Tester.test();\n"c);
 			//fwritef(outfp, "%s", "\t\t" ~ className ~ "Tester.test();\n");
 			outfp.write("\t}\n\n"c);
@@ -108,7 +106,7 @@ class Output {
 
 		foreach(className; classes) {
 			outfp.write("\t\ttest"c);
-			outfp.write(Unicode.toUtf8(className.array));
+			outfp.write(Unicode.toUtf8(className));
 			outfp.write("();\n"c);
 			//fwritef(outfp, "%s", "\t\ttest", className, "();\n");
 		}
@@ -130,21 +128,21 @@ class Output {
 
 protected:
 
-	String specName;
+	string specName;
 
 	File outfp;
 	//_iobuf* outfp;
-	String className;
-	String[] tests;
+	string className;
+	string[] tests;
 	ulong[] lines;
 
-	String[] classes;
+	string[] classes;
 
-	String exception;
+	string exception;
 
 	bool shouldThrow = false;
 
-	bool readyOutput(String path) {
+	bool readyOutput(string path) {
 		//Console.putln("opening file");
 		//outfp = fopen(std.string.toStringz(path), "w+");
 		outfp = new File(path);
@@ -165,12 +163,12 @@ protected:
 
 	}
 
-	bool printDone(AST tree, String describing) {
+	bool printDone(AST tree, string describing) {
 		AST working = tree;
 		AST node;
 
 		if (describing !is null) {
-			print(new String("done before_") ~ describing);
+			print("done before_" ~ describing);
 		}
 		else {
 			print("done before");
@@ -184,7 +182,7 @@ protected:
 				if (node.valueType == AST.ValueType.Name) {
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					printContent(content, 3);
 				}
@@ -208,7 +206,7 @@ protected:
 				if (node.valueType == AST.ValueType.Name) {
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					if (!(content == " testing.support")) {
 						print("import");
@@ -224,7 +222,7 @@ protected:
 		return true;
 	}
 
-	bool printIt(AST tree, String describing) {
+	bool printIt(AST tree, string describing) {
 		AST working = tree;
 		AST node;
 
@@ -232,12 +230,12 @@ protected:
 			node = working.right;
 			if (node !is null) {
 				if (node.valueType == AST.ValueType.Name) {
-					String name;
+					string name;
 					node.getValue(name);
 
-					switch(name.array) {
+					switch(name) {
 						case "Identifier":
-							String val;
+							string val;
 							node.right.getValue(val);
 
 							print("\n\tit ");
@@ -249,12 +247,12 @@ protected:
 
 							print("\t\tbefore");
 							if (describing !is null) {
-								print(new String("_") ~ describing);
+								print("_" ~ describing);
 							}
 							print("();\n");
 
 							if (describing is null) {
-								val = new String("_") ~ val;
+								val = "_" ~ val;
 							}
 
 							tests ~= val;
@@ -286,7 +284,7 @@ protected:
 					}
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					printContent(content, 3);
 				}
@@ -328,7 +326,7 @@ protected:
 				if (node.valueType == AST.ValueType.Name) {
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					printContent(content, 0);
 				}
@@ -354,7 +352,7 @@ protected:
 				if (node.valueType == AST.ValueType.Name) {
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					printContent(content, 0);
 				}
@@ -372,7 +370,7 @@ protected:
 		AST working = tree;
 		AST node;
 
-		exception = new String("");
+		exception = "";
 
 		while (working !is null) {
 			node = working.right;
@@ -380,7 +378,7 @@ protected:
 				if (node.valueType == AST.ValueType.Name) {
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					exception = content;
 				}
@@ -398,7 +396,7 @@ protected:
 		AST working = tree;
 		AST node;
 
-		String describing;
+		string describing;
 
 		bool hasDone = false;
 
@@ -406,10 +404,10 @@ protected:
 			node = working.right;
 			if (node !is null) {
 				if (node.valueType == AST.ValueType.Name) {
-					String name;
+					string name;
 					node.getValue(name);
 
-					switch(name.array) {
+					switch(name) {
 						case "Identifier":
 							node.right.getValue(describing);
 							break;
@@ -425,7 +423,7 @@ protected:
 					}
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
 					printContent(content, 3);
 				}
@@ -435,7 +433,7 @@ protected:
 		}
 
 		if (!hasDone) {
-			print(new String("\n\tdone before_") ~ describing ~ "() {\n\t}\n");
+			print("\n\tdone before_" ~ describing ~ "() {\n\t}\n");
 		}
 
 		return true;
@@ -447,29 +445,29 @@ protected:
 
 		bool hasDone = false;
 
-		String val;
+		string val;
 
 		while (working !is null) {
 			node = working.right;
 			if (node !is null) {
 				if (node.valueType == AST.ValueType.Name) {
-					String name;
+					string name;
 					node.getValue(name);
 
-					switch(name.array) {
+					switch(name) {
 						case "Identifier":
 							node.right.getValue(val);
 							//Console.putln("ID: ", val.array);
 
 							if (val[0] >= 'a' && val[0] <= 'z') {
-								val.setCharAt(0, val[0] - 32);
+								val[0] = val[0] - 32;
 							}
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
 							val ~= "Tester";
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
-							print(new String("class ") ~ val ~ " {\n");
+							print("class " ~ val ~ " {\n");
 							Console.putln("Creating ", val);
 							className = val;
 							break;
@@ -488,9 +486,9 @@ protected:
 					}
 				}
 				else {
-					String content;
+					string content;
 					node.getValue(content);
-					if (content.trim != "") {
+					if (content.trim() != "") {
 						print("\n");
 						printContent(content, 1);
 					}
@@ -509,34 +507,34 @@ protected:
 		// do tests
 
 		//Console.putln("className: ", className.array, " len " , className.length);
-		String classNameFixed = className.subString(0,className.length-6);
+		string classNameFixed = className.subString(0,className.length-6);
 		//Console.putln("className::", classNameFixed.array);
 		//Console.putln("className::", className[0..className.length-6]);
 
 		print ("\n\tstatic void test() {\n");
 
-		print (new String("\t\t") ~ className ~ " tester = new " ~ className ~ "();\n\n");
-		print (new String("\t\tTest test = new Test(\"") ~ classNameFixed ~ "\", \"");
+		print ("\t\t" ~ className ~ " tester = new " ~ className ~ "();\n\n");
+		print ("\t\tTest test = new Test(\"" ~ classNameFixed ~ "\", \"");
 		print (specName ~ "\");\n\n");
-		print (new String("\t\tit result;\n\n"));
+		print ("\t\tit result;\n\n");
 
-		String currentSection = new String("");
+		string currentSection = "";
 
 		foreach(i, test; tests) {
-			int pos = test.find(new String("_"));
-			String section = new String(test[0..pos]);
+			int pos = test.find("_");
+			string section = test[0..pos].dup;
 
 			if (currentSection != section) {
-				print(new String("\t\ttest.logSubset(\"") ~ section ~ "\");\n\n");
+				print("\t\ttest.logSubset(\"" ~ section ~ "\");\n\n");
 				currentSection = section;
 			}
 
-			print(new String("\t\ttester = new ") ~ className ~ "();\n\n");
-			print(new String("\t\tresult = tester.") ~ test ~ "();\n");
-			print(new String("\t\ttest.logResult(result, \"") ~ test.replace('_', ' ') ~ "\", \"");
+			print("\t\ttester = new " ~ className ~ "();\n\n");
+			print("\t\tresult = tester." ~ test ~ "();\n");
+			print("\t\ttest.logResult(result, \"" ~ test.replace('_', ' ') ~ "\", \"");
 			//Console.putln(lines);
 			//Console.putln(lines[i]);
-			print(new String(cast(long)lines[i]));
+			print(toStr(cast(long)lines[i]));
 			//fwritef(outfp, "", lines[i]);
 			print("\");\n\n");
 		}
@@ -556,12 +554,8 @@ protected:
 		//return true;
 	}
 
-	bool print(String stuff) {
-		return outfp.write(Unicode.toUtf8(stuff.array));
-	}
-	
-	void printContent(String content, int tabs) {
-		content = content.trim;
+	void printContent(string content, int tabs) {
+		content = content.trim();
 		if (content == "") { return; }
 		int pos = content.find("\n");
 		while(pos != -1) {
@@ -582,7 +576,7 @@ protected:
 			else {
 				print(content.subString(0, pos));
 			}
-			content = content.subString(pos+1).trim;
+			content = content.subString(pos+1).trim();
 			pos = content.find("\n");
 		}
 		if (tabs > 0) {
