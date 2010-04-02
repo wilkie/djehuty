@@ -21,6 +21,8 @@ import synch.semaphore;
 import synch.mutex;
 
 import core.regex;
+import core.system;
+
 
 private {
 	enum Code {
@@ -536,6 +538,7 @@ protected:
 	Thread _dthread;
 
 	class FtpDirectory : Directory {
+
 		this(string path) {
 			if (_path is null) {
 				_path = "";
@@ -567,8 +570,22 @@ protected:
 		void move(string path) {
 			rename_file(_path,path);
 		}
-		
+
 		void copy(string path) {
+			Directory temp = System.FileSystem.tempDir();
+			get_file(_path,temp.path() ~ "/");
+			Directory copy_dir = Directory.open(temp.path() ~ "/" ~ _name);
+
+			foreach_reverse(int i, chr; path) {
+				if (chr == '/' && i < path.length - 1) {
+					_name = path[i+1..path.length].dup;
+					break;
+				}
+			}
+			copy_dir.name(_name);
+			_path = path;
+			_parent = null;
+			send_file(copy_dir.path(), parent().path() ~ "/");
 		}
 
 		void copy(Directory to, string newName = null) {

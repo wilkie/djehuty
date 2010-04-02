@@ -183,7 +183,7 @@ bool DirectoryRename(ref string path, ref string newName) {
 	foreach_reverse(int i, chr; path) {
 		if (chr == '/') {
 			// truncate
-			str = path[0..i].dup;
+			str = path[0..(i+1)].dup;
 			break;
 		}
 	}
@@ -192,7 +192,7 @@ bool DirectoryRename(ref string path, ref string newName) {
 
 	str ~= newName;
 	str ~= '\0';
-
+	
 	rename(npath.ptr, str.ptr);
 	return true;
 }

@@ -17,6 +17,7 @@ import core.time;
 import core.timezone;
 
 import io.directory;
+import io.console;
 
 // Description: This class gives the developer a means to query common parameters about devices and configurations of the system.
 class System {
@@ -89,7 +90,14 @@ class System {
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
 		// Returns: The Directory representing the temp location.
 		Directory tempDir() {
-			return Directory.open(DirectoryGetTempData());
+			Directory retdir = Directory.open(DirectoryGetTempData());
+			if (retdir is null)
+			{
+				Console.putln("suckin it up");
+				retdir = new Directory(DirectoryGetTempData());
+			}
+			return retdir;
+			//return Directory.open(DirectoryGetTempData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
