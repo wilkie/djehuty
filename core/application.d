@@ -145,7 +145,6 @@ private:
 
 	package final void onPostApplicationEnd(uint exitCode) {
 		end(exitCode);
-		Console.putln(exitCode);
 		if (_platformAppController !is null) {
 			_platformAppController.exitCode = exitCode;
 			_platformAppController.end();
