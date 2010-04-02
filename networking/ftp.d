@@ -589,6 +589,9 @@ protected:
 		}
 
 		void copy(Directory to, string newName = null) {
+			if (newName is null) { newName = _name; } 
+			
+			copy(to.path() ~ "/" ~ newName);
 		}
 
 		string name() {
