@@ -10,6 +10,10 @@ class ApplicationController {
 		_exitCode = value;
 	}
 
+	uint exitCode() {
+		return _exitCode;
+	}
+
 	void start() {
 	}
 
