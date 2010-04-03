@@ -116,10 +116,8 @@ class FtpClient : Dispatcher {
 		_dthread = new Thread();		
 		_busy = new Semaphore(1);
 
-
 		_cthread.callback = &cthreadProc;
 		_dthread.callback = &dthreadProc;
-
 	}
 
 	//Description: Connect to the ftp server at the host given. The port is optional by default it is 21.
@@ -140,12 +138,26 @@ class FtpClient : Dispatcher {
 		return _connected;
 	}
 	
-	//Description: Connects to the ftp server to allow for data transfer. 
+	Directory openDirectory(string path = "") {
+		if (path == "") {
+			path = currentDirectory();
+		}
 
+		// create a directory object that will represent this
+		// networked directory
+		FtpDirectory ret;
+
+		return ret;
+	}
+
+	string currentDirectory() {
+		return "";
+	}
+
+	//Description: Connects to the ftp server to allow for data transfer. 
 	//host: The host to connect to.
 	//port: The port to use to connect. Default is 20
-	bool open_dataconnect(string host, ushort port =20)
-	{
+	bool open_dataconnect(string host, ushort port =20)	{
 		bool data_connect = false;
 			
 		data_connect = _dskt.connect(host,port);
@@ -155,10 +167,9 @@ class FtpClient : Dispatcher {
 		}
 		
 		return data_connect;
-
 	}
-	//Description: Downloads a file from the ftp server onto a user's local computer 
 
+	//Description: Downloads a file from the ftp server onto a user's local computer 
 	//server_path: The path to the file that the user wants to download from the server
 	//local_dest: The directory on the user's computer that the file will be saved to 
 	bool get_file(string server_path, string local_dest)
@@ -213,15 +224,14 @@ class FtpClient : Dispatcher {
 
 	//Description: Deletes a file on the server 
 	//path: The path to the file to delete on the ftp server
-	bool delete_file(string path)
-	{
+	bool delete_file(string path) {
 		send_command("PASV");
 		send_command("DELE " ~ path);
 
 		return true;
 	}
-	//Description: List the contents of the directory that the user specifies
 
+	//Description: List the contents of the directory that the user specifies
 	//path: The directory that will be displayed to the user
 	//mode: 0 returns a string of the normal directory structure
 	//      1 returns a simplified directory structure 
@@ -436,4 +446,130 @@ protected:
 	Thread _cthread;
 	Thread _dthread;
 	
+	class FtpDirectory : Directory {
+		this(string path) {
+			if (_path is null) {
+				_path = "";
+			}
+			_path = path.dup;
+			if (_path == "" || _path == "/") {
+				_name = "";
+				_isRoot = true;
+			}
+			else {
+				// retrieve _name
+				foreach_reverse(int i, chr; _path) {
+					if (chr == '/' && i < _path.length - 1) {
+						_name = _path[i+1.._path.length].dup;
+						break;
+					}
+				}
+			}
+		}
+
+		bool isDir(string _name) {
+			return false;
+		}
+
+		void move(string path) {
+		}
+
+		void copy(string path) {
+		}
+
+		void copy(Directory to, string newName = null) {
+		}
+
+		string name() {
+			return _name;
+		}
+
+		string path() {
+			return _path;
+		}
+
+		void name(string newName) {
+			// Rename directory
+		}
+
+		File openFile(string filename) {
+			// return a ftpfile
+
+			// an ftpfile that will read from the file
+			// on the server
+			FtpFile ret;
+			return ret;
+		}
+
+		File createFile(string filename) {
+			// return a ftpfile that will write to
+			// a location on the server when closed
+
+			// basically, an empty ftpfile (no read)
+			FtpFile ret;
+			return ret;
+		}
+
+		Directory parent() {
+			// go up the directory
+			if (isRoot) { return null; }
+
+			if (_parent is null) {
+				Console.putln(_path);
+
+				foreach_reverse(int i, chr; _path) {
+					if (chr == '/')	{
+						// truncate
+						Console.putln(_path[0..i]);
+						_parent = new FtpDirectory(_path[0..i]);
+						return _parent;
+					}
+				}
+			}
+
+			return _parent;
+		}
+
+		Directory traverse(string directoryName) {
+			if (isDir(directoryName)) {
+				FtpDirectory ret = new FtpDirectory(_path ~ "/" ~ directoryName);
+				ret._parent = this;
+				return ret;
+			}
+			return null;
+		}
+
+		bool isRoot() {
+			return _isRoot;
+		}
+
+		string[] list() {
+			return [""];
+		}
+
+		bool opEquals(Directory d) {
+			return _path == d.path();
+		}
+
+		bool opEquals(string d) {
+			return _path == d;
+		}
+
+		// this should work:
+		alias Object.opEquals opEquals;
+
+		override char[] toString() {
+			return this.path.dup;
+		}
+
+	protected:
+
+		bool _isRoot;
+		string _path;
+		string _name;
+		FtpDirectory _parent;
+	}
+
+	class FtpFile : File {
+	}
 }

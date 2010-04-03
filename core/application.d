@@ -84,7 +84,7 @@ abstract class Application : Responder {
 			
 			// If no event controllers are in play, then end
 			if (isZombie) {
-				exit(0);
+				exit(_platformAppController.exitCode);
 			}
 		}
 	}
