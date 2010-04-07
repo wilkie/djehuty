@@ -5,7 +5,6 @@ import parsing.lexer;
 import parsing.token;
 
 import core.string;
-import core.tostring;
 import core.variant;
 import core.definitions;
 

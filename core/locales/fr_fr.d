@@ -4,7 +4,7 @@ import core.locale;
 
 import core.time;
 import core.date;
-import core.tostring;
+import core.string;
 import core.definitions;
 
 class LocaleFrench_FR : LocaleInterface {
@@ -154,7 +154,7 @@ class LocaleFrench_FR : LocaleInterface {
 			}
 		}
 		ret ~= ",";
-		ret ~= ftoa(value, 10, false);
+		ret ~= toStr(value);
 	
 		// round last digit
 		bool roundUp = (ret[$-1] >= '5');

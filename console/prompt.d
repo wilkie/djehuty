@@ -1,6 +1,7 @@
 module console.prompt;
 
 import core.string;
+import core.unicode;
 
 import io.console;
 
@@ -14,25 +15,19 @@ import utils.linkedlist;
 class Prompt {
 	// TODO: Allow ANSI emulated prompt strings
 	this() {
-		_prompt = new String("");
-	}
-
-	// Description: This will set the prompt string that will precede the input.
-	// prompt: A string representing the prompt.
-	void prompt(String prompt) {
-		_prompt = new String(prompt);
+		_prompt = "";
 	}
 
 	// Description: This will set the prompt string that will precede the input.
 	// prompt: A string representing the prompt.
 	void prompt(string prompt) {
-		_prompt = new String(prompt);
+		_prompt = prompt.dup;
 	}
 
 	// Description: This function will return the current prompt.
 	// Returns: The current prompt.
-	String prompt() {
-		return new String(_prompt);
+	string prompt() {
+		return _prompt.dup;
 	}
 
 	void promptColor(fgColor fgClr) {
@@ -51,7 +46,7 @@ class Prompt {
 		}
 
 		if (bufferSize != 0) {
-			_lineBuffer = new LinkedList!(String)();
+			_lineBuffer = new LinkedList!(string)();
 		}
 		else {
 			_lineBuffer = null;
@@ -62,18 +57,18 @@ class Prompt {
 
 	// Description: This will display the prompt and return the line typed by the user.
 	// Returns: The line typed by the user.
-	String line() {
+	string line() {
 		// the current displayed line
-		String line;
+		string line;
 
 		// the 'working' line being edited
-		String workingLine;
+		string workingLine;
 
 		// Print out the prompt string
 
 		Console.setColor(_promptClr);
 
-		Console.put(_prompt.array);
+		Console.put(_prompt);
 
 		// Go into a key loop, wait for a return
 		// On any special key, fire the callback and expect a result (for instance, on TAB)
@@ -83,7 +78,7 @@ class Prompt {
 
 		uint code;
 
-		line = new String("");
+		line = "";
 
 		workingLine = line;
 		if (_lineBuffer !is null) {
@@ -105,23 +100,23 @@ class Prompt {
 			else if (code == Key.Backspace) {
 				// backspace
 
-				if (line.length() > 0 && _pos > 0) {
+				if (line.length > 0 && _pos > 0) {
 					Console.put(chr);
 					Console.put(' ');
 					Console.put(chr);
 
-					if (_pos == line.length()) {
-						line = line.subString(0, line.length()-1);
+					if (_pos == line.length) {
+						line = line.substring(0, line.length-1);
 					}
 					else {
-						String newLine = line.subString(0, _pos-1);
-						String restLine = line.subString(_pos);
-						newLine.append(restLine);
+						string newLine = line.substring(0, _pos-1);
+						string restLine = line.substring(_pos);
+						newLine ~= restLine;
 
-						Console.put(restLine.array);
+						Console.put(restLine);
 						Console.put(' ');
 
-						for (uint i=0; i<=restLine.length(); i++) {
+						for (uint i=0; i<=restLine.length; i++) {
 							Console.put(cast(char)0x8);
 						}
 
@@ -144,7 +139,7 @@ class Prompt {
 				}
 			}
 			else if (code == Key.Right) {
-				if (_pos < line.length()) {
+				if (_pos < line.length) {
 					Console.setRelative(1,0);
 
 					_pos++;
@@ -156,7 +151,7 @@ class Prompt {
 				// And then the line buffer spits out
 				// the previous line submitted
 				if (_lineBuffer !is null) {
-					if (_bufferPos+1 < cast(int)_lineBuffer.length() && _lineBuffer.length() > 0) {
+					if (_bufferPos+1 < cast(int)_lineBuffer.length && _lineBuffer.length > 0) {
 						// grab the line from the line buffer
 
 						_bufferPos++;
@@ -164,14 +159,14 @@ class Prompt {
 
 						uint i;
 
-						if (line.length() < _pos) {
-							for (i=line.length(); i<_pos; i++) {
+						if (line.length < _pos) {
+							for (i=line.length; i<_pos; i++) {
 								Console.put(cast(char)0x8);
 								Console.put(' ');
 								Console.put(cast(char)0x8);
 							}
 
-							_pos = line.length();
+							_pos = line.length;
 						}
 
 						for (i=0; i<_pos; i++) {
@@ -179,9 +174,9 @@ class Prompt {
 						}
 
 						// print the line
-						Console.put(line.array);
+						Console.put(line);
 
-						_pos = line.length();
+						_pos = line.length;
 					}
 				}
 			}
@@ -209,14 +204,14 @@ class Prompt {
 
 					uint i;
 
-					if (line.length() < _pos) {
-						for (i=line.length(); i<_pos; i++) {
+					if (line.length < _pos) {
+						for (i=line.length; i<_pos; i++) {
 							Console.put(cast(char)0x8);
 							Console.put(' ');
 							Console.put(cast(char)0x8);
 						}
 
-						_pos = line.length();
+						_pos = line.length;
 					}
 
 					for (i=0; i<_pos; i++) {
@@ -224,28 +219,26 @@ class Prompt {
 					}
 
 					// print the line
-					Console.put(line.array);
+					Console.put(line);
 
 					// erase the rest of the previous line
 
-					_pos = line.length();
+					_pos = line.length;
 				}
 			}
 			else if (chr != 0) {
 				// written character
 
-				if (_pos == line.length()) {
+				if (_pos == line.length) {
 					Console.put(chr);
-					line.appendChar(chr);
+					line ~= chr;
 				}
 				else if (_pos == 0) {
-					String newLine = new String("");
-					newLine.appendChar(chr);
-					newLine.append(line);
+					string newLine = "" ~ Unicode.toUtf8([chr]) ~ line;
 
-					Console.put(newLine.array);
+					Console.put(newLine);
 
-					for (uint i=1; i<newLine.length(); i++) {
+					for (uint i=1; i<newLine.length; i++) {
 						Console.put(cast(char)0x8);
 					}
 
@@ -253,14 +246,14 @@ class Prompt {
 				}
 				else {
 					Console.put(chr);
-					String leftLine = line.subString(0, _pos);
-					leftLine.appendChar(chr);
-					String rightLine = line.subString(_pos);
-					leftLine.append(rightLine);
+					string leftLine = line.substring(0, _pos);
+					leftLine ~= chr;
+					string rightLine = line.substring(_pos);
+					leftLine ~= rightLine;
 
-					Console.put(rightLine.array);
+					Console.put(rightLine);
 
-					for (uint i=0; i<rightLine.length(); i++) {
+					for (uint i=0; i<rightLine.length; i++) {
 						Console.put(cast(char)0x8);
 					}
 
@@ -294,11 +287,11 @@ class Prompt {
 protected:
 
 	// the prompt string, for instance "# " or "C:\>"
-	String _prompt;
+	string _prompt;
 	fgColor _promptClr = fgColor.White;
 	fgColor _clr = fgColor.White;
 
-	LinkedList!(String) _lineBuffer;
+	LinkedList!(string) _lineBuffer;
 	int _bufferSize;
 	int _bufferPos;
 

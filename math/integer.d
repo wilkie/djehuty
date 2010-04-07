@@ -11,7 +11,6 @@
 module math.integer;
 
 import core.string;
-import core.tostring;
 import core.definitions;
 
 // Description: This class represents an integer value.
@@ -154,7 +153,7 @@ class Integer {
 	string toString() {
 		string ret;
 		foreach_reverse(value; _value) {
-			string section = utoa(value, 16);
+			string section = "{x}".format(value);
 			int zeroLength = 16 - section.length;
 			if (ret !is null) {
 				ret ~= "0000000000000000"c[0..zeroLength];

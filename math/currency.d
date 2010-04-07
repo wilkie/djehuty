@@ -10,11 +10,9 @@
 
 module math.currency;
 
-import core.locale;
-import core.string;
-import core.definitions;
-
 import math.fixed;
+
+import djehuty;
 
 class Currency : Fixed {
 	this(long whole, long scale) {

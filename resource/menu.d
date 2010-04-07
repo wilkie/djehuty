@@ -18,29 +18,7 @@ class Menu {
 	// -- constructors -- //
 
 	this(string text, Menu[] submenus = null) {
-		_value = new String(text);
-
-		// Get the working text
-		_updateDisplay();
-
-		if (submenus is null || submenus.length == 0) {
-			_subitems = null;
-		}
-		else {
-			_subitems = new Menu[submenus.length];
-			_subitems[0..$] = submenus[0..$];
-		}
-
-		MenuCreate(&_pfvars);
-
-		foreach(mnu ; _subitems) {
-			mnu._addParent(this);
-			MenuAppend(cast(void*)this, &_pfvars, &mnu._pfvars, mnu.text, (mnu.length > 0));
-		}
-	}
-
-	this(String text, Menu[] submenus = null) {
-		_value = new String(text);
+		_value = text.dup;
 
 		// Get the working text
 		_updateDisplay();
@@ -82,23 +60,17 @@ class Menu {
 
 	// -- Properties -- //
 
-	void text(String newValue) {
-		_value = new String(newValue);
-
-		_updateItem();
-	}
-
 	void text(string newValue) {
-		_value = new String(newValue);
+		_value = newValue.dup;
 
 		_updateItem();
 	}
 
-	String text() {
+	string text() {
 		return _value;
 	}
 
-	String displayText() {
+	string displayText() {
 		return _displayValue;
 	}
 
@@ -110,7 +82,7 @@ class Menu {
 		if (_hintPosition < 0) {
 			return '\0';
 		}
-		return _displayValue.toLowercase[_hintPosition];
+		return _displayValue.lowercase()[_hintPosition];
 	}
 
 	uint length() {
@@ -162,8 +134,8 @@ class Menu {
 
 protected:
 
-	String _value;
-	String _displayValue;
+	string _value;
+	string _displayValue;
 	int _hintPosition;
 	Menu[] _subitems;
 	Menu[] _parents;
@@ -212,7 +184,7 @@ protected:
 		int curPos = 0;
 		int ampPos = int.max;
 
-		String itemText = new String("");
+		string itemText = "";
 
 		_hintPosition = -1;
 
@@ -220,10 +192,10 @@ protected:
 			ampPos = _value.find("&", curPos);
 
 			if (ampPos == -1) {
-				itemText ~= _value.subString(curPos);
+				itemText ~= _value.substring(curPos);
 			}
 			else {
-				itemText ~= _value.subString(curPos, ampPos - curPos);
+				itemText ~= _value.substring(curPos, ampPos - curPos);
 				if ((ampPos < _value.length) && (_value[ampPos+1] == '&')) {
 					// This is an actual amp
 					itemText ~= "&";

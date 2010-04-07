@@ -10,9 +10,7 @@
 
 module math.fixed;
 
-import core.definitions;
-import core.string;
-import core.tostring;
+import djehuty;
 
 import io.console;
 

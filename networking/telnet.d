@@ -100,20 +100,6 @@ public:
 		return _connected;
 	}
 
-	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
-	// host: The host to connect to.
-	// port: The port to use to connect.  Default is 23.
-	bool connect(String host, ushort port = 23) {
-		_connected = _skt.connect(host,port);
-
-		if (_connected) {
-	        //writefln("opened");
-			_thread.start();
-		}
-
-		return _connected;
-	}
-
 	// Description: This function will send the byte to the server
 	void sendByte(ubyte byteout) {
 		if (_connected) {

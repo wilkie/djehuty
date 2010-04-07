@@ -108,10 +108,10 @@ class Sound : Responder {
 
 		if (_name !is null) {
 			// get extension
-			String name = new String(_name);
-			int pos = name.findReverse(new String("."));
-			String extension = name.subString(pos+1);
-			_curCodec = findBestCodec(extension.toString);
+			string name =_name.dup;
+			int pos = name.findReverse(".");
+			string extension = name.substring(pos+1);
+			_curCodec = findBestCodec(extension);
 			if (_curCodec !is null) {
 				ret = _curCodec.decode(inStream, cast(Wavelet)null, wavInfo);
 			}

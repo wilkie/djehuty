@@ -507,7 +507,7 @@ protected:
 		// do tests
 
 		//Console.putln("className: ", className.array, " len " , className.length);
-		string classNameFixed = className.subString(0,className.length-6);
+		string classNameFixed = className.substring(0,className.length-6);
 		//Console.putln("className::", classNameFixed.array);
 		//Console.putln("className::", className[0..className.length-6]);
 
@@ -570,13 +570,13 @@ protected:
 					default:
 						break;
 				}
-				print(content.subString(0, pos));
+				print(content.substring(0, pos));
 				print("\n");
 			}
 			else {
-				print(content.subString(0, pos));
+				print(content.substring(0, pos));
 			}
-			content = content.subString(pos+1).trim();
+			content = content.substring(pos+1).trim();
 			pos = content.find("\n");
 		}
 		if (tabs > 0) {

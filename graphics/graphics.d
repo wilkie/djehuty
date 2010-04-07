@@ -167,24 +167,8 @@ class Graphics {
 	// x: The x coordinate to start rendering the text.
 	// y: The y coordinate to start rendering the text.
 	// str: The string to render.
-	void drawText(int x, int y, String str) {
-		Scaffold.drawText(_viewVars, x,y,str);
-	}
-
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y).
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// str: The string to render.
 	void drawText(int x, int y, string str) {
 		Scaffold.drawText(_viewVars, x,y,str);
-	}
-
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and only up to the number of characters specified by length.
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// str: The string to render.
-	void drawText(int x, int y, String str, uint length) {
-		Scaffold.drawText(_viewVars, x,y,str,length);
 	}
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and only up to the number of characters specified by length.
@@ -203,27 +187,8 @@ class Graphics {
 	// y: The y coordinate to start rendering the text.
 	// region: The Rect object that defines the rectangular clipping region.
 	// str: The string to render.
-	void drawClippedText(int x, int y, Rect region, String str) {
-		Scaffold.drawClippedText(_viewVars, x,y,region,str);
-	}
-
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and clips it within a rectangular region.
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// region: The Rect object that defines the rectangular clipping region.
-	// str: The string to render.
 	void drawClippedText(int x, int y, Rect region, string str) {
 		Scaffold.drawClippedText(_viewVars, x,y,region,str);
-	}
-
-	// Description: Draws the string starting with the top-left point of the text at the point (x,y) up to the specified number of characters and clips it within a rectangular region.
-	// x: The x coordinate to start rendering the text.
-	// y: The y coordinate to start rendering the text.
-	// region: The Rect object that defines the rectangular clipping region.
-	// str: The string to render.
-	// length: the length of the string.
-	void drawClippedText(int x, int y, Rect region, String str, uint length) {
-		Scaffold.drawClippedText(_viewVars, x,y,region,str,length);
 	}
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y) up to the specified number of characters and clips it within a rectangular region.
@@ -237,21 +202,6 @@ class Graphics {
 	}
 
 // Text Measurement
-
-	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
-	// str: The string to measure.
-	// sz: The Size struct to update.
-	void measureText(String str, out Size sz) {
-		Scaffold.measureText(_viewVars, str, sz);
-	}
-
-	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
-	// str: The string to measure.
-	// length: The length of the string to consider.
-	// sz: The Size struct to update.
-	void measureText(String str, uint length, out Size sz) {
-		Scaffold.measureText(_viewVars, str, length, sz);
-	}
 
 	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
 	// str: The string to measure.

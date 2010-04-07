@@ -410,14 +410,6 @@ public:
 		return write(cast(ubyte*)str.ptr, dchar.sizeof * str.length);
 	}
 
-	bool append(String str) {
-		return append(str.array);
-	}
-
-	bool write(String str) {
-		return write(str.array);
-	}
-
 	// Description: This function places the last bytes of information into the front and sets the pointer to end of the information after it is moved.
 	void flush() {
 	}
@@ -798,19 +790,6 @@ public:
 			if (ret) { break; }
 		}
 
-		return ret;
-	}
-
-	int opApply(int delegate(ref String) loopFunc) {
-		string nextLine;
-		int ret;
-		while(readLine(nextLine)) {
-			String str = new String(nextLine);
-			ret = loopFunc(str);
-
-			if (ret) { break; }
-		}
-		
 		return ret;
 	}
 

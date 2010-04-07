@@ -15,7 +15,6 @@ import Scaffold = scaffold.time;
 
 import core.definitions;
 import core.string;
-import core.tostring;
 
 import io.console;
 
@@ -35,14 +34,14 @@ class TimeZone {
 		if (name[0..3] == "UTC") {
 			_utc = name;
 			string foo = name[3..$];
-			int pos = (new String(foo)).find(":");
+			int pos = foo.find(":");
 			if (pos < 0) { pos = foo.length; }
 			foo = foo[0..pos];
 			int diff_hr;
 			int diff_min;
-			(new String(foo)).nextInt(diff_hr);
+			foo.nextInt(diff_hr);
 			foo = name[3+pos+1..$];
-			(new String(foo)).nextInt(diff_min);
+			foo.nextInt(diff_min);
 			_offset_in_minutes = (diff_hr * 60) + diff_min;
 		}
 		else {

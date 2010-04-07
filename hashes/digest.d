@@ -10,7 +10,7 @@
 
 module hashes.digest;
 
-import core.string;
+import djehuty;
 
 // Description: This class holds the computed digest from a hashing algorithm.
 class Digest {
@@ -20,16 +20,12 @@ class Digest {
 
 	uint[] data;
 
-	String getString() {
-		String ret = new String();
+	override string toString() {
+		string ret = "";
 		for(int i=0; i<data.length; i++) {
-			ret.append("%.8x", data[i]);
+			ret ~= "{8x}".format(data[i]);
 		}
 		return ret;
-	}
-
-	override char[] toString() {
-		return getString().toString();
 	}
 
 	// operator overloads

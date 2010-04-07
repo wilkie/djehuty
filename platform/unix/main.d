@@ -107,7 +107,7 @@ int main(char[][] args){
 
 		Arguments argList = Arguments.instance();
 		foreach(arg; args) {
-			argList.add(new String(arg));
+			argList.add(arg);
 		}
 
 		ConsoleInit();
