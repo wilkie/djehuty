@@ -24,7 +24,7 @@ template BuildArgumentRetrieval(T) {
 		const char[] BuildArgumentRetrieval = `(param)[0];`;
 	}
 	else static if (IsSigned!(T)) {
-		const char[] BuildArgumentRetrieval = `cast(` ~ T.stringof ~ `)atoi(param);`;
+		const char[] BuildArgumentRetrieval = `cast(` ~ T.stringof ~ `)param.toInt();`;
 	}
 	else {
 		const char[] BuildArgumentRetrieval = `param;`;

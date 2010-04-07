@@ -375,10 +375,6 @@ class TuiWindow : Responder {
 		_controlContainer.text(value);
 	}
 
-	void text(string value) {
-		_controlContainer.text(value);
-	}
-
 	string text() {
 		return _controlContainer.text;
 	}

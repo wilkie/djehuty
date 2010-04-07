@@ -573,6 +573,14 @@ int utflen(string str) {
 	return _indices.length;
 }
 
+int toInt(string str) {
+	int ret;
+	if (str.nextInt(ret)) {
+		return ret;
+	}
+	return 0;
+}
+
 private:
 string itoa(long val, uint base = 10) {
 	int intlen;
