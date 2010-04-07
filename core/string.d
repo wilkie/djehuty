@@ -34,151 +34,6 @@ string toStr(...) {
 	return toStrv(vars);
 }
 
-template _StringFormat() {
-	const char[] _StringFormat = `
-
-			// scan input, write when appropriate
-			dchar[] fmt = (new String(str)).toUtf32();
-
-			uint length;
-			uint base;
-			bool signed;
-
-			dchar result[];
-
-			int curArg = 0;
-
-			// grab an argument
-			bool intToStr = false;
-			long argval;
-
-			for(int i=0; i<fmt.length; i++) {
-				if (fmt[i] == '%') {
-					i++;
-					length = 0;
-					if (fmt[i] == '.') {
-						i++;
-						for( ; i<fmt.length && fmt[i] >= '0' && fmt[i] <= '9'; i++) {
-							// read integer for number of digits
-							length *= 10;
-							length += (fmt[i] - '0');
-						}
-					}
-
-					if (fmt[i] == 'x') {
-						// hex conversion
-						base = 16;
-						signed = false;
-					}
-					else if (fmt[i] == 'd' || fmt[i] == 'l') {
-						// integer
-						base = 10;
-						signed = true;
-					}
-					else if (fmt[i] == 'u') {
-						// uinteger
-						base = 10;
-						signed = false;
-					}
-
-					{
-
-						if (_arguments[curArg] == typeid(long)) {
-							argval = va_arg!(long)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(ulong)) {
-							argval = cast(long)va_arg!(ulong)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(int)) {
-							argval = cast(int)va_arg!(int)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(uint)) {
-							argval = cast(uint)va_arg!(uint)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(short)) {
-							argval = cast(short)va_arg!(short)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(ushort)) {
-							argval = cast(ushort)va_arg!(ushort)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(byte)) {
-							argval = cast(byte)va_arg!(byte)(_argptr);
-							intToStr = true;
-						}
-						else if (_arguments[curArg] == typeid(ubyte)) {
-							argval = cast(ubyte)va_arg!(ubyte)(_argptr);
-							intToStr = true;
-						}
-
-						if (intToStr) {
-							// convert int to string
-							// get length of potential string
-							uint actualLength = 1;
-							ulong tmpVal;
-
-							bool negative;
-
-							if (argval < 0) {
-								negative = true;
-								argval = -argval;
-							}
-
-							tmpVal = cast(ulong)(argval);
-
-							// initial push
-							tmpVal /= base;
-
-							// finds the length
-							while(tmpVal > 0) {
-								tmpVal /= base;
-								actualLength++;
-							}
-
-							if (actualLength < length) { actualLength = length; }
-
-							// from this, we can determine how much of the string to add
-							result ~= new dchar[actualLength];
-							result[$-actualLength..$] = '0';
-
-							// add the string
-							uint valIndex;
-							for(int o = result.length-1; ; o--) {
-								valIndex = cast(uint)argval % base;
-								if (valIndex >= 10) {
-									result[o] = (valIndex - 10) + 'a';
-								}
-								else {
-									result[o] = valIndex + '0';
-								}
-								argval /= base;
-
-								if (argval == 0) { break; }
-							}
-						}
-
-						curArg++;
-					}
-
-					if (curArg == _arguments.length) { // just append the rest and not care
-						i++;
-						result ~= fmt[i..$];
-						break; // exit for
-					}
-				}
-				else {
-					result ~= fmt[i];
-				}
-			}
-
-	`;
-}
-
 // Standard string functions (for C)
 
 // strlen
@@ -277,10 +132,8 @@ string[] split(string input, string delims) {
 			}
 		}
 	}
-	if (last != input.length)
-	{
-		retstring ~= input[last..$];
-	}
+	
+	retstring ~= input[last..$];
 
 	return retstring;
 }
@@ -295,10 +148,8 @@ string[] split(string input, char delim) {
 			last = i+1;
 		}
 	}
-	if (last != input.length)
-	{
-		retstring ~= input[last..$];
-	}
+
+	retstring ~= input[last..$];
 
 	return retstring;
 }
@@ -435,6 +286,10 @@ int findReverse(string source, string search, uint start = uint.max) {
 		start = source.length;
 	}
 
+	if (search == "") {
+		return -1;
+	}
+
 	uint[] _indices = Unicode.calcIndices(source);
 	uint[] search_indices = Unicode.calcIndices(search);
 
@@ -474,8 +329,11 @@ int find(string source, string search, uint start = 0) {
 	// in some, hopefully later on, efficient manner
 
 	uint[] _indices = Unicode.calcIndices(source);
-
 	uint[] search_indices = Unicode.calcIndices(search);
+
+	if (search == "") {
+		return -1;
+	}
 
 	if (start >= _indices.length) {
 		return -1;
@@ -513,7 +371,11 @@ int find(string source, string search, uint start = 0) {
 	return -1;
 }
 
-string times(string str, int amount) {
+string times(string str, uint amount) {
+	if (amount == 0) {
+		return "";
+	}
+
 	string ret = "";
 	for(int i = 0; i < amount; i++) {
 		ret ~= str;
@@ -535,6 +397,7 @@ string formatv(string format, Variadic vars) {
 		if (intoFormat && chr != '{') {
 			intoFormat = false;
 			inFormat = true;
+			specifier = "";
 		}
 
 		if (inFormat) {
@@ -573,6 +436,7 @@ string formatv(string format, Variadic vars) {
 						formatNumber = true;
 						break;
 					case "x":
+					case "X":
 						base = 16;
 						unsigned = true;
 						formatNumber = true;
@@ -629,6 +493,9 @@ string formatv(string format, Variadic vars) {
 					while (result.length < width) {
 						result = "0" ~ result;
 					}
+					if (specifier.uppercase() == specifier) {
+						result = result.uppercase();
+					}
 					ret ~= result;
 				}
 			}
@@ -648,21 +515,62 @@ string formatv(string format, Variadic vars) {
 }
 
 string lowercase(string str) {
-	string ret = "";
-	return "";
+	string ret = str.dup; 
+	foreach(ref chr; ret) {
+		if (chr >= 'A' && chr <= 'Z') {
+			chr = cast(char)((cast(byte)chr) + 32);
+		}
+	}
+	return ret;
 }
 
 string uppercase(string str) {
-	string ret = "";
-	return "";
+	string ret = str.dup; 
+	foreach(ref chr; ret) {
+		if (chr >= 'a' && chr <= 'z') {
+			chr = cast(char)((cast(byte)chr) - 32);
+		}
+	}
+	return ret;
 }
 
-string charAt(string str, int idx) {
-	return "";
+string charAt(string str, uint idx) {
+	uint[] _indices = Unicode.calcIndices(str);
+	int start, end;
+	if (_indices.length > idx) {
+		start = _indices[idx];
+	}
+	else {
+		return null;
+	}
+	if (_indices.length > idx+1) {
+		end = _indices[idx+1];
+	}
+	else {
+		end = str.length;
+	}
+	return str[start..end];
 }
 
-string insertAt(string str, string what, int idx) {
-	return "";
+string insertAt(string str, string what, uint idx) {
+	uint[] _indices = Unicode.calcIndices(str);
+	int pos;
+	if (_indices.length > idx) {
+		pos = _indices[idx];
+	}
+	else if (idx == _indices.length) {
+		pos = str.length;
+	}
+	else {
+		return null;
+	}
+
+	return str[0..pos] ~ what ~ str[pos..$];
+}
+
+int utflen(string str) {
+	uint[] _indices = Unicode.calcIndices(str);
+	return _indices.length;
 }
 
 private:

@@ -1114,6 +1114,1637 @@ class UnicodeTester {
 
 import core.string;
 
+class StringTester {
+
+	it trim_should_handle_empty_string() {
+		before_trim();
+		try {
+			if(!("".trim() == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it trim_should_handle_whitespace_on_left() {
+		before_trim();
+		try {
+			if(!(" \t\nhello".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!(" hello".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("\t\t\thello".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("\n\n\nhello".trim() == "hello")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it trim_should_handle_whitespace_on_right() {
+		before_trim();
+		try {
+			if(!("hello \t\n".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("hello\t\t".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("hello\n\n".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("hello   ".trim() == "hello")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it trim_should_handle_whitespace_on_both_sides() {
+		before_trim();
+		try {
+			if(!(" \t\nhello \t\n".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("\t\t\thello\n".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("\n\n\t\thello    \n".trim() == "hello")) {
+				return it.doesnt;
+			}
+			if(!("     \t   hello \t\t\t\n\n\t ".trim() == "hello")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_trim() {
+	}
+
+	it split_should_work_on_empty_strings() {
+		before_split();
+		try {
+			string[] foo1 = "".split('a');
+			string[] foo2 = "".split("a");
+			if(!(foo1[0] == "")) {
+				return it.doesnt;
+			}
+			if(!(foo2[0] == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it split_should_work_on_characters() {
+		before_split();
+		try {
+			string[] foo = "work.on.characters".split('.');
+			if(!(foo.length == 3)) {
+				return it.doesnt;
+			}
+			if(!(foo[0] == "work")) {
+				return it.doesnt;
+			}
+			if(!(foo[1] == "on")) {
+				return it.doesnt;
+			}
+			if(!(foo[2] == "characters")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it split_should_work_on_characters_with_delimiter_at_beginning() {
+		before_split();
+		try {
+			string[] foo = ".work.a.b".split('.');
+			if(!(foo.length == 4)) {
+				return it.doesnt;
+			}
+			if(!(foo[0] == "")) {
+				return it.doesnt;
+			}
+			if(!(foo[1] == "work")) {
+				return it.doesnt;
+			}
+			if(!(foo[2] == "a")) {
+				return it.doesnt;
+			}
+			if(!(foo[3] == "b")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it split_should_work_on_characters_with_delimiter_at_end() {
+		before_split();
+		try {
+			string[] foo = "work.a.b.".split('.');
+			if(!(foo.length == 4)) {
+				return it.doesnt;
+			}
+			if(!(foo[0] == "work")) {
+				return it.doesnt;
+			}
+			if(!(foo[1] == "a")) {
+				return it.doesnt;
+			}
+			if(!(foo[2] == "b")) {
+				return it.doesnt;
+			}
+			if(!(foo[3] == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it split_should_work_on_strings() {
+		before_split();
+		try {
+			string[] foo = "work(on strings.foo)".split("( .)");
+			if(!(foo.length == 5)) {
+				return it.doesnt;
+			}
+			if(!(foo[0] == "work")) {
+				return it.doesnt;
+			}
+			if(!(foo[1] == "on")) {
+				return it.doesnt;
+			}
+			if(!(foo[2] == "strings")) {
+				return it.doesnt;
+			}
+			if(!(foo[3] == "foo")) {
+				return it.doesnt;
+			}
+			if(!(foo[4] == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_split() {
+	}
+
+	it nextInt_should_work_on_empty_strings() {
+		before_nextInt();
+		try {
+			int foo;
+			if(!("".nextInt(foo) == false)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextInt_should_return_the_next_int() {
+		before_nextInt();
+		try {
+			int foo;
+			bool ret = "123foo".nextInt(foo);
+			if(!(foo == 123)) {
+				return it.doesnt;
+			}
+			if(!(ret == true)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it nextInt_should_fail_when_there_is_not_a_next_int() {
+		before_nextInt();
+		try {
+			int foo;
+			bool ret = "foo123".nextInt(foo);
+			if(!(ret == false)) {
+				return it.doesnt;
+			}
+			if(!(foo == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_nextInt() {
+	}
+
+	it substring_should_work_on_empty_strings() {
+		before_substring();
+		try {
+			string foo = "";
+			foo = foo.substring(0);
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_larger_than_length() {
+		before_substring();
+		try {
+			string foo = "abc";
+			foo = foo.substring(4);
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+			foo = "abc".substring(3);
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_at_zero_and_length_omitted() {
+		before_substring();
+		try {
+			string foo = "abc";
+			foo = foo.substring(0);
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_at_zero_and_length_longer_than_string() {
+		before_substring();
+		try {
+			string foo = "abc";
+			foo = foo.substring(0, 4);
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_at_zero_and_length_at_zero() {
+		before_substring();
+		try {
+			string foo = "abc";
+			foo = foo.substring(0,0);
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_at_zero_and_length_within_string() {
+		before_substring();
+		try {
+			string foo1 = "abc".substring(0, 1);
+			string foo2 = "abc".substring(0, 2);
+			if(!(foo1 == "a")) {
+				return it.doesnt;
+			}
+			if(!(foo2 == "ab")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_within_string_and_length_omitted() {
+		before_substring();
+		try {
+			string foo1 = "abc".substring(1);
+			string foo2 = "abc".substring(2);
+			if(!(foo1 == "bc")) {
+				return it.doesnt;
+			}
+			if(!(foo2 == "c")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_within_string_and_length_longer_than_string() {
+		before_substring();
+		try {
+			string foo1 = "abc".substring(1, 4);
+			string foo2 = "abc".substring(2, 4);
+			string foo3 = "abc".substring(3, 4);
+			if(!(foo1 == "bc")) {
+				return it.doesnt;
+			}
+			if(!(foo2 == "c")) {
+				return it.doesnt;
+			}
+			if(!(foo3 == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it substring_should_work_for_start_within_string_and_length_at_zero() {
+		before_substring();
+		try {
+			string foo1 = "abc".substring(1,0);
+			string foo2 = "abc".substring(2,0);
+			string foo3 = "abc".substring(3,0);
+			if(!(foo1 == "")) {
+				return it.doesnt;
+			}
+			if(!(foo2 == "")) {
+				return it.doesnt;
+			}
+			if(!(foo3 == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_substring() {
+	}
+
+	it replace_should_work_on_empty_strings() {
+		before_replace();
+		try {
+			string foo = "".replace('a', 'b');
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it replace_should_work_as_expected() {
+		before_replace();
+		try {
+			string foo = "abcaefahi".replace('a', 'x');
+			if(!(foo == "xbcxefxhi")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_replace() {
+	}
+
+	it find_should_work_on_empty_strings() {
+		before_find();
+		try {
+			int foo = "".find("foo", 0);
+			if(!(foo == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_fail_on_finding_empty_strings() {
+		before_find();
+		try {
+			int foo1 = "".find("", 0);
+			int foo2 = "abc".find("", 0);
+			if(!(foo1 == -1)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_work_when_start_is_omitted() {
+		before_find();
+		try {
+			int foo1 = "abcdebc".find("bc");
+			int foo2 = "abcdebc".find("ce");
+			if(!(foo1 == 1)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_work_when_search_string_is_at_beginning() {
+		before_find();
+		try {
+			int foo = "abcd".find("ab");
+			if(!(foo == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_work_when_search_string_is_at_end() {
+		before_find();
+		try {
+			int foo = "abcd".find("cd");
+			if(!(foo == 2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_work_when_search_string_is_within_string() {
+		before_find();
+		try {
+			int foo = "abcd".find("bc");
+			if(!(foo == 1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it find_should_work_when_start_is_given() {
+		before_find();
+		try {
+			int foo1 = "abcdab".find("ab", 0);
+			int foo2 = "abcdab".find("ab", 1);
+			if(!(foo1 == 0)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == 4)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_find() {
+	}
+
+	it findReverse_should_work_on_empty_strings() {
+		before_findReverse();
+		try {
+			int foo = "".findReverse("foo", 0);
+			if(!(foo == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_fail_on_finding_empty_strings() {
+		before_findReverse();
+		try {
+			int foo1 = "".findReverse("", 0);
+			int foo2 = "abc".findReverse("", 0);
+			if(!(foo1 == -1)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_work_when_start_is_omitted() {
+		before_findReverse();
+		try {
+			int foo1 = "abcdebc".findReverse("bc");
+			int foo2 = "abcdebc".findReverse("ce");
+			if(!(foo1 == 5)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == -1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_work_when_search_string_is_at_beginning() {
+		before_findReverse();
+		try {
+			int foo = "abcd".findReverse("ab");
+			if(!(foo == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_work_when_search_string_is_at_end() {
+		before_findReverse();
+		try {
+			int foo = "abcd".findReverse("cd");
+			if(!(foo == 2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_work_when_search_string_is_within_string() {
+		before_findReverse();
+		try {
+			int foo = "abcd".findReverse("bc");
+			if(!(foo == 1)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it findReverse_should_work_when_start_is_given() {
+		before_findReverse();
+		try {
+			int foo1 = "abcdabcd".findReverse("ab", 0);
+			int foo2 = "abcdabcd".findReverse("ab", 2);
+			int foo3 = "abcdabcd".findReverse("ab", 6);
+			if(!(foo1 == -1)) {
+				return it.doesnt;
+			}
+			if(!(foo2 == 0)) {
+				return it.doesnt;
+			}
+			if(!(foo3 == 4)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_findReverse() {
+	}
+
+	it times_should_work_on_empty_strings() {
+		before_times();
+		try {
+			if(!("".times(4) == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it times_should_return_empty_string_with_amount_being_zero() {
+		before_times();
+		try {
+			if(!("abc".times(0) == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it times_should_work_with_identity() {
+		before_times();
+		try {
+			if(!("abc".times(1) == "abc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it times_should_work_as_expected() {
+		before_times();
+		try {
+			if(!("abc".times(3) == "abcabcabc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_times() {
+	}
+
+	it format_should_work_on_empty_strings() {
+		before_format();
+		try {
+			if(!("".format() == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_on_d_specifier() {
+		before_format();
+		try {
+			if(!("a{d}b".format(4) == "a4b")) {
+				return it.doesnt;
+			}
+			if(!("a{D}b".format(4) == "a4b")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_on_x_specifier() {
+		before_format();
+		try {
+			if(!("a{x}b".format(10) == "aab")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_with_d_specifier_with_width() {
+		before_format();
+		try {
+			if(!("a{8d}b".format(4) == "a00000004b")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_with_x_specifier_with_width() {
+		before_format();
+		try {
+			if(!("a{8x}b".format(10) == "a0000000ab")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_on_X_specifier() {
+		before_format();
+		try {
+			if(!("a{8X}b".format(10) == "a0000000Ab")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_when_specifier_is_at_beginning() {
+		before_format();
+		try {
+			if(!("{d}xxx".format(4) == "4xxx")) {
+				return it.doesnt;
+			}
+			if(!("{x}xxx".format(10) == "axxx")) {
+				return it.doesnt;
+			}
+			if(!("{X}xxx".format(10) == "Axxx")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_when_specifier_is_at_end() {
+		before_format();
+		try {
+			if(!("xxx{d}".format(4) == "xxx4")) {
+				return it.doesnt;
+			}
+			if(!("xxx{x}".format(10) == "xxxa")) {
+				return it.doesnt;
+			}
+			if(!("xxx{X}".format(10) == "xxxA")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_when_specifier_is_alone() {
+		before_format();
+		try {
+			if(!("{d}".format(4) == "4")) {
+				return it.doesnt;
+			}
+			if(!("{x}".format(10) == "a")) {
+				return it.doesnt;
+			}
+			if(!("{X}".format(10) == "A")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_with_two_specifiers_in_a_row() {
+		before_format();
+		try {
+			if(!("{d}{d}".format(4,5) == "45")) {
+				return it.doesnt;
+			}
+			if(!("{8x}{8x}".format(10,11) == "0000000a0000000b")) {
+				return it.doesnt;
+			}
+			if(!("{8x}{8X}".format(10,11) == "0000000a0000000B")) {
+				return it.doesnt;
+			}
+			if(!("{x}{d}".format(10,4) == "a4")) {
+				return it.doesnt;
+			}
+			if(!("{X}{d}".format(10,4) == "A4")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it format_should_work_with_empty_specifier() {
+		before_format();
+		try {
+			if(!("{}".format("hello") == "hello")) {
+				return it.doesnt;
+			}
+			if(!("aaa{}bbb{}ccc".format(1,"f") == "aaa1bbbfccc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_format() {
+	}
+
+	it uppercase_should_work_on_empty_strings() {
+		before_uppercase();
+		try {
+			if(!("".uppercase() == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it uppercase_should_work_as_expected() {
+		before_uppercase();
+		try {
+			string foo = "abc123dEFg";
+			if(!(foo.uppercase() == "ABC123DEFG")) {
+				return it.doesnt;
+			}
+			if(!(foo == "abc123dEFg")) {
+				return it.doesnt;
+			}
+			if(!("123".uppercase() == "123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_uppercase() {
+	}
+
+	it lowercase_should_work_on_empty_strings() {
+		before_lowercase();
+		try {
+			if(!("".lowercase() == "")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it lowercase_should_work_as_expected() {
+		before_lowercase();
+		try {
+			string foo = "aBC123dEFg";
+			if(!(foo.lowercase() == "abc123defg")) {
+				return it.doesnt;
+			}
+			if(!(foo == "aBC123dEFg")) {
+				return it.doesnt;
+			}
+			if(!("123".uppercase() == "123")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_lowercase() {
+	}
+
+	it charAt_should_fail_on_empty_strings() {
+		before_charAt();
+		try {
+			string foo = "".charAt(0);
+			if(!(foo is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it charAt_should_work_for_normal_strings() {
+		before_charAt();
+		try {
+			string foo = "abc";
+			if(!(foo.charAt(0) == "a")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(1) == "b")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(2) == "c")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(3) is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it charAt_should_account_for_combining_marks() {
+		before_charAt();
+		try {
+			string foo = "he\u0364llo";
+			if(!(foo.charAt(0) == "h")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(1) == "e\u0364")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(2) == "l")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(3) == "l")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(4) == "o")) {
+				return it.doesnt;
+			}
+			if(!(foo.charAt(5) is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_charAt() {
+	}
+
+	it insertAt_should_work_on_empty_strings() {
+		before_insertAt();
+		try {
+			string foo = "";
+			string f2 = foo.insertAt("abc", 0);
+			if(!(foo == "")) {
+				return it.doesnt;
+			}
+			if(!(f2 == "abc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it insertAt_should_fail_when_index_is_out_of_bounds() {
+		before_insertAt();
+		try {
+			string foo = "abc";
+			string f2 = foo.insertAt("def", 4);
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+			if(!(f2 is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it insertAt_should_work_when_index_is_zero() {
+		before_insertAt();
+		try {
+			string foo = "abc";
+			string f2 = foo.insertAt("def", 0);
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+			if(!(f2 == "defabc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it insertAt_should_work_when_index_is_utflen() {
+		before_insertAt();
+		try {
+			string foo = "abc";
+			string f2 = foo.insertAt("def", foo.utflen());
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+			if(!(f2 == "abcdef")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it insertAt_should_work_when_index_is_within_string() {
+		before_insertAt();
+		try {
+			string foo = "abc";
+			string f2 = foo.insertAt("def", 1);
+			string f3 = foo.insertAt("def", 2);
+			if(!(foo == "abc")) {
+				return it.doesnt;
+			}
+			if(!(f2 == "adefbc")) {
+				return it.doesnt;
+			}
+			if(!(f3 == "abdefc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it insertAt_should_account_for_combining_marks() {
+		before_insertAt();
+		try {
+			string foo = "he\u0364llo";
+			string f1 = foo.insertAt("def", 0);
+			string f2 = foo.insertAt("def", 1);
+			string f3 = foo.insertAt("def", 2);
+			string f4 = foo.insertAt("def", 3);
+			string f5 = foo.insertAt("def", 4);
+			string f6 = foo.insertAt("def", 5);
+			string f7 = foo.insertAt("def", 6);
+			if(!(foo == "he\u0364llo")) {
+				return it.doesnt;
+			}
+			if(!(f1 == "defhe\u0364llo")) {
+				return it.doesnt;
+			}
+			if(!(f2 == "hdefe\u0364llo")) {
+				return it.doesnt;
+			}
+			if(!(f3 == "he\u0364defllo")) {
+				return it.doesnt;
+			}
+			if(!(f4 == "he\u0364ldeflo")) {
+				return it.doesnt;
+			}
+			if(!(f5 == "he\u0364lldefo")) {
+				return it.doesnt;
+			}
+			if(!(f6 == "he\u0364llodef")) {
+				return it.doesnt;
+			}
+			if(!(f7 is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_insertAt() {
+	}
+
+	it utflen_should_work_on_empty_strings() {
+		before_utflen();
+		try {
+			if(!("".utflen() == 0)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it utflen_should_work_on_normal_strings() {
+		before_utflen();
+		try {
+			if(!("abc".utflen() == 3)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it utflen_should_account_for_combining_marks() {
+		before_utflen();
+		try {
+			string foo = "hello\u0364world";
+			if(!(foo.utflen() == 10)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_utflen() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		StringTester tester = new StringTester();
+
+		Test test = new Test("String", "specs/core/string.d");
+
+		it result;
+
+		test.logSubset("trim");
+
+		tester = new StringTester();
+
+		result = tester.trim_should_handle_empty_string();
+		test.logResult(result, "trim should handle empty string", "9");
+
+		tester = new StringTester();
+
+		result = tester.trim_should_handle_whitespace_on_left();
+		test.logResult(result, "trim should handle whitespace on left", "13");
+
+		tester = new StringTester();
+
+		result = tester.trim_should_handle_whitespace_on_right();
+		test.logResult(result, "trim should handle whitespace on right", "20");
+
+		tester = new StringTester();
+
+		result = tester.trim_should_handle_whitespace_on_both_sides();
+		test.logResult(result, "trim should handle whitespace on both sides", "27");
+
+		test.logSubset("split");
+
+		tester = new StringTester();
+
+		result = tester.split_should_work_on_empty_strings();
+		test.logResult(result, "split should work on empty strings", "36");
+
+		tester = new StringTester();
+
+		result = tester.split_should_work_on_characters();
+		test.logResult(result, "split should work on characters", "43");
+
+		tester = new StringTester();
+
+		result = tester.split_should_work_on_characters_with_delimiter_at_beginning();
+		test.logResult(result, "split should work on characters with delimiter at beginning", "51");
+
+		tester = new StringTester();
+
+		result = tester.split_should_work_on_characters_with_delimiter_at_end();
+		test.logResult(result, "split should work on characters with delimiter at end", "60");
+
+		tester = new StringTester();
+
+		result = tester.split_should_work_on_strings();
+		test.logResult(result, "split should work on strings", "69");
+
+		test.logSubset("nextInt");
+
+		tester = new StringTester();
+
+		result = tester.nextInt_should_work_on_empty_strings();
+		test.logResult(result, "nextInt should work on empty strings", "81");
+
+		tester = new StringTester();
+
+		result = tester.nextInt_should_return_the_next_int();
+		test.logResult(result, "nextInt should return the next int", "86");
+
+		tester = new StringTester();
+
+		result = tester.nextInt_should_fail_when_there_is_not_a_next_int();
+		test.logResult(result, "nextInt should fail when there is not a next int", "93");
+
+		test.logSubset("substring");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_on_empty_strings();
+		test.logResult(result, "substring should work on empty strings", "102");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_larger_than_length();
+		test.logResult(result, "substring should work for start larger than length", "108");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_at_zero_and_length_omitted();
+		test.logResult(result, "substring should work for start at zero and length omitted", "116");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_at_zero_and_length_longer_than_string();
+		test.logResult(result, "substring should work for start at zero and length longer than string", "122");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_at_zero_and_length_at_zero();
+		test.logResult(result, "substring should work for start at zero and length at zero", "128");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_at_zero_and_length_within_string();
+		test.logResult(result, "substring should work for start at zero and length within string", "134");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_within_string_and_length_omitted();
+		test.logResult(result, "substring should work for start within string and length omitted", "141");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_within_string_and_length_longer_than_string();
+		test.logResult(result, "substring should work for start within string and length longer than string", "148");
+
+		tester = new StringTester();
+
+		result = tester.substring_should_work_for_start_within_string_and_length_at_zero();
+		test.logResult(result, "substring should work for start within string and length at zero", "157");
+
+		test.logSubset("replace");
+
+		tester = new StringTester();
+
+		result = tester.replace_should_work_on_empty_strings();
+		test.logResult(result, "replace should work on empty strings", "168");
+
+		tester = new StringTester();
+
+		result = tester.replace_should_work_as_expected();
+		test.logResult(result, "replace should work as expected", "173");
+
+		test.logSubset("find");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_on_empty_strings();
+		test.logResult(result, "find should work on empty strings", "180");
+
+		tester = new StringTester();
+
+		result = tester.find_should_fail_on_finding_empty_strings();
+		test.logResult(result, "find should fail on finding empty strings", "185");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_when_start_is_omitted();
+		test.logResult(result, "find should work when start is omitted", "193");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_when_search_string_is_at_beginning();
+		test.logResult(result, "find should work when search string is at beginning", "200");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_when_search_string_is_at_end();
+		test.logResult(result, "find should work when search string is at end", "205");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_when_search_string_is_within_string();
+		test.logResult(result, "find should work when search string is within string", "210");
+
+		tester = new StringTester();
+
+		result = tester.find_should_work_when_start_is_given();
+		test.logResult(result, "find should work when start is given", "215");
+
+		test.logSubset("findReverse");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_on_empty_strings();
+		test.logResult(result, "findReverse should work on empty strings", "225");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_fail_on_finding_empty_strings();
+		test.logResult(result, "findReverse should fail on finding empty strings", "230");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_when_start_is_omitted();
+		test.logResult(result, "findReverse should work when start is omitted", "238");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_when_search_string_is_at_beginning();
+		test.logResult(result, "findReverse should work when search string is at beginning", "245");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_when_search_string_is_at_end();
+		test.logResult(result, "findReverse should work when search string is at end", "250");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_when_search_string_is_within_string();
+		test.logResult(result, "findReverse should work when search string is within string", "255");
+
+		tester = new StringTester();
+
+		result = tester.findReverse_should_work_when_start_is_given();
+		test.logResult(result, "findReverse should work when start is given", "260");
+
+		test.logSubset("times");
+
+		tester = new StringTester();
+
+		result = tester.times_should_work_on_empty_strings();
+		test.logResult(result, "times should work on empty strings", "272");
+
+		tester = new StringTester();
+
+		result = tester.times_should_return_empty_string_with_amount_being_zero();
+		test.logResult(result, "times should return empty string with amount being zero", "276");
+
+		tester = new StringTester();
+
+		result = tester.times_should_work_with_identity();
+		test.logResult(result, "times should work with identity", "280");
+
+		tester = new StringTester();
+
+		result = tester.times_should_work_as_expected();
+		test.logResult(result, "times should work as expected", "284");
+
+		test.logSubset("format");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_on_empty_strings();
+		test.logResult(result, "format should work on empty strings", "290");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_on_d_specifier();
+		test.logResult(result, "format should work on d specifier", "294");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_on_x_specifier();
+		test.logResult(result, "format should work on x specifier", "299");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_with_d_specifier_with_width();
+		test.logResult(result, "format should work with d specifier with width", "303");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_with_x_specifier_with_width();
+		test.logResult(result, "format should work with x specifier with width", "307");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_on_X_specifier();
+		test.logResult(result, "format should work on X specifier", "311");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_when_specifier_is_at_beginning();
+		test.logResult(result, "format should work when specifier is at beginning", "315");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_when_specifier_is_at_end();
+		test.logResult(result, "format should work when specifier is at end", "321");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_when_specifier_is_alone();
+		test.logResult(result, "format should work when specifier is alone", "327");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_with_two_specifiers_in_a_row();
+		test.logResult(result, "format should work with two specifiers in a row", "333");
+
+		tester = new StringTester();
+
+		result = tester.format_should_work_with_empty_specifier();
+		test.logResult(result, "format should work with empty specifier", "341");
+
+		test.logSubset("uppercase");
+
+		tester = new StringTester();
+
+		result = tester.uppercase_should_work_on_empty_strings();
+		test.logResult(result, "uppercase should work on empty strings", "348");
+
+		tester = new StringTester();
+
+		result = tester.uppercase_should_work_as_expected();
+		test.logResult(result, "uppercase should work as expected", "352");
+
+		test.logSubset("lowercase");
+
+		tester = new StringTester();
+
+		result = tester.lowercase_should_work_on_empty_strings();
+		test.logResult(result, "lowercase should work on empty strings", "361");
+
+		tester = new StringTester();
+
+		result = tester.lowercase_should_work_as_expected();
+		test.logResult(result, "lowercase should work as expected", "365");
+
+		test.logSubset("charAt");
+
+		tester = new StringTester();
+
+		result = tester.charAt_should_fail_on_empty_strings();
+		test.logResult(result, "charAt should fail on empty strings", "374");
+
+		tester = new StringTester();
+
+		result = tester.charAt_should_work_for_normal_strings();
+		test.logResult(result, "charAt should work for normal strings", "379");
+
+		tester = new StringTester();
+
+		result = tester.charAt_should_account_for_combining_marks();
+		test.logResult(result, "charAt should account for combining marks", "387");
+
+		test.logSubset("insertAt");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_work_on_empty_strings();
+		test.logResult(result, "insertAt should work on empty strings", "399");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_fail_when_index_is_out_of_bounds();
+		test.logResult(result, "insertAt should fail when index is out of bounds", "406");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_work_when_index_is_zero();
+		test.logResult(result, "insertAt should work when index is zero", "413");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_work_when_index_is_utflen();
+		test.logResult(result, "insertAt should work when index is utflen", "420");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_work_when_index_is_within_string();
+		test.logResult(result, "insertAt should work when index is within string", "427");
+
+		tester = new StringTester();
+
+		result = tester.insertAt_should_account_for_combining_marks();
+		test.logResult(result, "insertAt should account for combining marks", "436");
+
+		test.logSubset("utflen");
+
+		tester = new StringTester();
+
+		result = tester.utflen_should_work_on_empty_strings();
+		test.logResult(result, "utflen should work on empty strings", "458");
+
+		tester = new StringTester();
+
+		result = tester.utflen_should_work_on_normal_strings();
+		test.logResult(result, "utflen should work on normal strings", "462");
+
+		tester = new StringTester();
+
+		result = tester.utflen_should_account_for_combining_marks();
+		test.logResult(result, "utflen should account for combining marks", "466");
+
+		test.finish();
+	}
+}
+
 import core.time;
 
 class TimeTester {
@@ -5417,6 +7048,10 @@ class Tests {
 		UnicodeTester.test();
 	}
 
+	static void testString() {
+		StringTester.test();
+	}
+
 	static void testTime() {
 		TimeTester.test();
 	}
@@ -5477,6 +7112,7 @@ class Tests {
 		testRandom();
 		testVariant();
 		testUnicode();
+		testString();
 		testTime();
 		testDate();
 		testException();
