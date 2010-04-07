@@ -91,13 +91,10 @@ class System {
 		// Returns: The Directory representing the temp location.
 		Directory tempDir() {
 			Directory retdir = Directory.open(DirectoryGetTempData());
-			if (retdir is null)
-			{
-				Console.putln("suckin it up");
+			if (retdir is null) {
 				retdir = new Directory(DirectoryGetTempData());
 			}
 			return retdir;
-			//return Directory.open(DirectoryGetTempData());
 		}
 
 		// Description: This function will return the Directory representing the system's temporary files directory. Persistance is not guaranteed.
