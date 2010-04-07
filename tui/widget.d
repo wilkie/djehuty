@@ -10,7 +10,6 @@ import core.definitions;
 import core.string;
 import core.unicode;
 import core.variant;
-import core.tostring;
 
 private import io.console;
 
@@ -202,7 +201,7 @@ protected:
 		}
 
 		final void putv(Variadic vars) {
-			putString(new String(toStrv(vars)));
+			putString(toStrv(vars));
 		}
 
 		final void putlnv(Variadic vars) {
@@ -221,10 +220,10 @@ protected:
 		final void putAt(uint x, uint y, ...) {
 			Variadic vars = new Variadic(_arguments, _argptr);
 
-			putStringAt(x, y, new String(toStrv(vars)));
+			putStringAt(x, y, toStrv(vars));
 		}
 
-		final void putStringAt(int x, int y, String str) {
+		final void putStringAt(int x, int y, string str) {
 			if (widget !is TuiWidget.widgetClippingContext) {
 				// We need to set up the current widget that wants to draw so that widgets
 				// above this one are clipped.
@@ -274,14 +273,14 @@ protected:
 				rightPos = r - _r;
 			}
 
-			str = str.subString(leftPos, str.length - rightPos - leftPos);
+			str = str.substring(leftPos, str.length - rightPos - leftPos);
 
 			io.console.Console.putStringAt(x, y, str);
 		}
 
 		// Description: This function is for printing strings within widget bounds.
 		// str: The String to print.string idget bounds
-		final void putString(String str) {
+		final void putString(string str) {
 			// Clip to the bounds of the control and the owner container
 			Coord pos = io.console.Console.position;
 
@@ -293,12 +292,6 @@ protected:
 			pos.y = pos.y - global_y;
 
 			putStringAt(pos.x, pos.y, str);
-		}
-
-		// Description: This function is for printing strings within widget bounds.
-		// str: The String to print.
-		final void putString(string str) {
-			putString(new String(str));
 		}
 
 		final void putSpaces(uint numSpaces) {

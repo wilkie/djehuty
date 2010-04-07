@@ -30,29 +30,8 @@ class Socket : Stream {
 	// hostname: The name of the host to connect.
 	// port: The port to connect through.
 	// Returns: Will return true when the connect is made and false if the connection cannot be made.
-    bool connect(String hostname, ushort port) {
-        _hostname = new String(hostname);
-        _port = port;
-
-        _pos = null;
-        _curpos = 0;
-        bool r = SocketOpen(_pfvars, _hostname, port);
-
-        if (!r) {
-            return false;
-        }
-
-        _inited = true;
-
-        return true;
-    }
-
-	// Description: Will open a connection with the host on the port given by the parameters.
-	// hostname: The name of the host to connect.
-	// port: The port to connect through.
-	// Returns: Will return true when the connect is made and false if the connection cannot be made.
     bool connect(string hostname, ushort port) {
-        _hostname = new String(hostname);
+        _hostname = hostname.dup;
         _port = port;
 
         _pos = null;
@@ -223,9 +202,9 @@ class Socket : Stream {
 
 	// Description: Will return the String representing the host currently open, or null for when there is no open socket.
 	// Returns: The String of the host.
-    String hostname() {
+    string hostname() {
 		if (_inited) {
-	        return _hostname;
+	        return _hostname.dup;
 	    }
 
 		return null;
@@ -240,7 +219,7 @@ class Socket : Stream {
 protected:
 
     bool _inited = false;
-    String _hostname = null;
+    string _hostname = null;
 
     ulong _port = 0;
 

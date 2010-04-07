@@ -25,29 +25,21 @@ class TuiWindow : Responder {
 		this(bgClr, "TuiWindow");
 	}
 
-	this(bgColor bgClr, String name) {
+	this(bgColor bgClr, string name) {
 		Console.clipRect(0,0,this.width, this.height);
 		_bgClr = bgClr;
 		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
-		_controlContainer.text = name;
-		_controlContainer._window = this;
-		push(_controlContainer);
-	}
-
-	this(bgColor bgClr, string name) {
-		this(bgClr, new String(name));
-	}
-
-	this(String name) {
-		Console.clipRect(0,0,this.width, this.height);
-		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
-		_controlContainer.text = name;
+		_controlContainer.text = name.dup;
 		_controlContainer._window = this;
 		push(_controlContainer);
 	}
 
 	this(string name) {
-		this(new String(name));
+		Console.clipRect(0,0,this.width, this.height);
+		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer.text = name.dup;
+		_controlContainer._window = this;
+		push(_controlContainer);
 	}
 
 	// Events
@@ -188,7 +180,7 @@ class TuiWindow : Responder {
 					size_t tmpIndex = _selectedMenuIndex;
 					tmpIndex++;
 					while (tmpIndex < _focusedMenu.length) {
-						if (_focusedMenu[tmpIndex].displayText.trim() != "") {
+						if (_focusedMenu[tmpIndex].displayText().trim() != "") {
 							_selectedMenuIndex = tmpIndex;
 							_selectedMenu = _focusedMenu[_selectedMenuIndex];
 							_drawSubmenu();
@@ -201,7 +193,7 @@ class TuiWindow : Responder {
 					size_t tmpIndex = _selectedMenuIndex;
 					while (tmpIndex > 0) {
 						tmpIndex--;
-						if (_focusedMenu[tmpIndex].displayText.trim() != "") {
+						if (_focusedMenu[tmpIndex].displayText().trim() != "") {
 							_selectedMenuIndex = tmpIndex;
 							_selectedMenu = _focusedMenu[_selectedMenuIndex];
 							_drawSubmenu();
@@ -304,7 +296,7 @@ class TuiWindow : Responder {
 							continue;
 						}
 
-						auto hint = mnuItem.displayText.toLowercase[mnuItem.hintPosition];
+						auto hint = mnuItem.displayText().lowercase()[mnuItem.hintPosition];
 						uint chr2 = cast(uint)(hint - 'a');
 
 						if (chr == chr2) {
@@ -383,11 +375,11 @@ class TuiWindow : Responder {
 		_controlContainer.text(value);
 	}
 
-	void text(String value) {
+	void text(string value) {
 		_controlContainer.text(value);
 	}
 
-	String text() {
+	string text() {
 		return _controlContainer.text;
 	}
 

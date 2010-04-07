@@ -6,6 +6,8 @@ import gui.button;
 import gui.widget;
 import gui.listbox;
 
+import hashes.digest;
+
 import resource.menu;
 
 import graphics.graphics;
@@ -61,39 +63,18 @@ import parsing.d.parser;
 
 import networking.ftp;
 
-string from(string str, int i) {
-	string ret = "";
-	switch (str) {
-		default:
-		case "d":
-			ret = itoa(i, 10);
-			break;
-		case "x":
-			ret = itoa(i, 16);
-			break;
-	}
-	return ret;
-}
-
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
-		ftp = new FtpClient();
+		DParser parser = new DParser(File.open("tests/test.d"));
+		parser.parse();
 
-		push(ftp);
-
-		string test = "";
-		ftp.connect(test,21,"","");
+		string s = "{8x}".format(255);
+		Console.putln(s);
 		
-
-		string foo = ftp.list_directory(".");
-		putln(foo);
-//		ftp.send_file("/home/bkuhlman/public_html/files","README","./");
-
-
-		bool check =ftp.close();
-
+		Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+		Console.putln(d);
 	}
 
 	/*	override bool onSignal(Dispatcher dsp, uint signal) {

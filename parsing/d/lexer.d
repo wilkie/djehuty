@@ -472,7 +472,7 @@ class DLexer : Lexer {
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 								if (cur_string !is null) {
-									current.value.data = cur_string;
+									current.value = cur_string;
 								}
 								_pos++;
 								return current;
@@ -485,7 +485,7 @@ class DLexer : Lexer {
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 								if (cur_string !is null) {
-									current.value.data = cur_string;
+									current.value = cur_string;
 								}
 								_pos++;
 								return current;
@@ -498,7 +498,7 @@ class DLexer : Lexer {
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 								if (cur_string !is null) {
-									current.value.data = cur_string;
+									current.value = cur_string;
 								}
 								_pos++;
 								return current;
@@ -515,7 +515,7 @@ class DLexer : Lexer {
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 								if (cur_string !is null) {
-									current.value.data = cur_string;
+									current.value = cur_string;
 								}
 								_pos++;
 								return current;
@@ -559,7 +559,7 @@ class DLexer : Lexer {
 							}
 
 							if (cur_string !is null) {
-								current.value.data = cur_string;
+								current.value = cur_string;
 							}
 							state = LexerState.Normal;
 							if (current.type != DToken.Invalid) {
@@ -658,7 +658,7 @@ class DLexer : Lexer {
 						else if (cur_base == 16) {
 							if ((chr < '0' || chr > '9') && (chr < 'a' || chr > 'f') && (chr < 'A' || chr > 'F')) {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
+								current.value = cur_integer;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 
@@ -681,7 +681,7 @@ class DLexer : Lexer {
 						else if (cur_base == 10) {
 							if (chr < '0' || chr > '9') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
+								current.value = cur_integer;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 
@@ -700,7 +700,7 @@ class DLexer : Lexer {
 							}
 							else if (chr < '0' || chr > '7') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
+								current.value = cur_integer;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 
@@ -715,7 +715,7 @@ class DLexer : Lexer {
 						else if (cur_base == 2) {
 							if (chr < '0' || chr > '1') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
+								current.value = cur_integer;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 
@@ -773,7 +773,7 @@ class DLexer : Lexer {
 									exp *= cur_base;
 								}
 								value *= exp;
-								current.value.data = value;
+								current.value = value;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 
@@ -810,7 +810,7 @@ class DLexer : Lexer {
 									exp *= 2;
 								}
 								value *= exp;
-								current.value.data = value;
+								current.value = value;
 								current.columnEnd = _pos;
 								current.lineEnd = _lineNumber;
 

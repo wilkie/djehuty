@@ -12,7 +12,6 @@ module parsing.options;
 
 import core.util;
 import core.string;
-import core.tostring;
 import core.definitions;
 import core.arguments;
 import core.main;
@@ -22,13 +21,13 @@ public import _ConsoleIO = io.console;
 template BuildArgumentRetrieval(T) {
 	//pragma(msg, T.stringof);
 	static if (is(T == char)) {
-		const char[] BuildArgumentRetrieval = `(param.toString())[0];`;
+		const char[] BuildArgumentRetrieval = `(param)[0];`;
 	}
 	else static if (IsSigned!(T)) {
-		const char[] BuildArgumentRetrieval = `cast(` ~ T.stringof ~ `)atoi(param.toString());`;
+		const char[] BuildArgumentRetrieval = `cast(` ~ T.stringof ~ `)atoi(param);`;
 	}
 	else {
-		const char[] BuildArgumentRetrieval = `param.toString();`;
+		const char[] BuildArgumentRetrieval = `param;`;
 	}
 }
 
@@ -90,22 +89,22 @@ template BuildOpName(uint idx, list...) {
 	const char[] BuildOpName = `on` ~ RebuildOpName!(list[idx]) ~ `(` ~ BuildOpParams!(0, idx+2, list) ~ `);`;
 }
 
-template BuildCaseList(char[] optionString, uint pos = 0) {
-	static if (pos >= optionString.length) {
-		const char[] BuildCaseList = `case ` ~ "`" ~ optionString ~ "`" ~ `:
+template BuildCaseList(char[] optionstring, uint pos = 0) {
+	static if (pos >= optionstring.length) {
+		const char[] BuildCaseList = `case ` ~ "`" ~ optionstring ~ "`" ~ `:
 				`;
 	}
-	else static if (optionString[pos] == ',' || optionString[pos] == ' ') {
-		static if (Trim!(optionString[0..pos]) == "") {
-			const char[] BuildCaseList = BuildCaseList!(optionString[pos+1..$], 0);
+	else static if (optionstring[pos] == ',' || optionstring[pos] == ' ') {
+		static if (Trim!(optionstring[0..pos]) == "") {
+			const char[] BuildCaseList = BuildCaseList!(optionstring[pos+1..$], 0);
 		}
 		else {
-			const char[] BuildCaseList = `case ` ~ "`" ~ Trim!(optionString[0..pos]) ~ "`" ~ `:
-			` ~ BuildCaseList!(optionString[pos+1..$], 0);
+			const char[] BuildCaseList = `case ` ~ "`" ~ Trim!(optionstring[0..pos]) ~ "`" ~ `:
+			` ~ BuildCaseList!(optionstring[pos+1..$], 0);
 		}
 	}
 	else {
-		const char[] BuildCaseList = BuildCaseList!(optionString, pos + 1);
+		const char[] BuildCaseList = BuildCaseList!(optionstring, pos + 1);
 	}
 }
 
@@ -141,15 +140,15 @@ template BuildArgumentParser(list...) {
 	`;
 }
 
-template BuildUsageString(char[] name, uint idx = 0) {
+template BuildUsagestring(char[] name, uint idx = 0) {
 	static if (idx >= name.length) {
-		const char[] BuildUsageString = Trim!(name[0..idx]);
+		const char[] BuildUsagestring = Trim!(name[0..idx]);
 	}
 	else static if (name[idx] == ',') {
-		const char[] BuildUsageString = Trim!(name[0..idx]) ~ ", -" ~ BuildUsageString!(name[idx+1..$], 0);
+		const char[] BuildUsagestring = Trim!(name[0..idx]) ~ ", -" ~ BuildUsagestring!(name[idx+1..$], 0);
 	}
 	else {
-		const char[] BuildUsageString = BuildUsageString!(name, idx + 1);
+		const char[] BuildUsagestring = BuildUsagestring!(name, idx + 1);
 	}
 }
 
@@ -198,7 +197,7 @@ template BuildUsageDesc(uint idx, list...) {
 		const char[] BuildUsageDesc = ``;
 	}
 	else {
-		const char[] BuildUsageDesc = `_ConsoleIO.Console.putln("-` ~ BuildUsageString!(list[idx]) ~ BuildUsageParameterList!(idx + 2, list) ~ `: ` ~ list[idx+1] ~ `");
+		const char[] BuildUsageDesc = `_ConsoleIO.Console.putln("-` ~ BuildUsagestring!(list[idx]) ~ BuildUsageParameterList!(idx + 2, list) ~ `: ` ~ list[idx+1] ~ `");
 				_ConsoleIO.Console.putln("` ~ BuildUsageParameterDescList!(idx + 2, list) ~ `");
 			`;
 	}
@@ -321,9 +320,9 @@ template BuildUsagePrinterAll(list...) {
 		options.sort;
 
 		foreach(_opt; options) {
-			String _str = new String(_opt);
-			int pos = _str.findReverse(new String(" "));
-			char[] option = _str[pos+1.._str.length];
+			string _str = _opt.dup;
+			int pos = _str.findReverse(" ");
+			string option = _str[pos+1.._str.length];
 
 			switch (option) {
 			` ~ BuildUsagePrinterAllItem!(0, list) ~ `
@@ -395,10 +394,10 @@ template Options(list...) {
 	//		_ConsoleIO.Console.putln(var);
 	//	}
 		char[] token;
-		String param;
+		string param;
 
 		for (uint i; i < args.length; ) {
-			String arg;
+			string arg;
 
 			void pullArgument() {
 				arg = args.peekAt(i);
@@ -411,8 +410,8 @@ template Options(list...) {
 				// it is an option
 				for (uint c = 1; c < arg.length; c++) {
 
-					String getParameter() {
-						String ret;
+					string getParameter() {
+						string ret;
 						if (arg is null) {
 							return null;
 						}
@@ -422,7 +421,7 @@ template Options(list...) {
 							ret = arg;
 						}
 						else {
-							ret = arg.subString(c+1);
+							ret = arg.substring(c+1);
 						}
 
 						if (ret !is null && ret.length > 0 && (ret[0] == '"' || ret[0] == '\'')) {
@@ -442,11 +441,11 @@ template Options(list...) {
 							char[] findStr = `\` ~ [lookingFor];
 							int pos = ret.find(findStr);
 							while (pos != -1) {
-								ret = new String(ret[0..pos] ~ [lookingFor] ~ ret[pos+2..ret.length]);
+								ret = (ret[0..pos] ~ [lookingFor] ~ ret[pos+2..ret.length]);
 								pos = ret.find(findStr, pos+1);
 							}
 							// good
-							ret = ret.subString(1, ret.length - 2);
+							ret = ret.substring(1, ret.length - 2);
 						}
 
 						if (arg !is null) {

@@ -587,6 +587,219 @@ class RandomTester {
 	}
 }
 
+import core.variant;
+
+class VariantTester {
+
+	it initial_state_should_be_null() {
+		before_initial_state();
+		try {
+			Variant var;
+			if(!(var.type == Type.Reference)) {
+				return it.doesnt;
+			}
+			if(!(var.to!(Object) is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_initial_state() {
+	}
+
+	it assignment_should_handle_integer_literals() {
+		before_assignment();
+		try {
+			Variant var = 2;
+			if(!(var == 2)) {
+				return it.doesnt;
+			}
+			if(!(var.to!(int) == 2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it assignment_should_handle_reassignment() {
+		before_assignment();
+		try {
+			Variant var = 2;
+			var = 3;
+			if(!(var == 3)) {
+				return it.doesnt;
+			}
+			var = "foo";
+			if(!(var == "foo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it assignment_should_handle_object_references() {
+		before_assignment();
+		try {
+			Object foo = new Object();
+			Variant var = foo;
+			if(!(var == foo)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it assignment_should_handle_float_literals() {
+		before_assignment();
+		try {
+			Variant var = 0.5;
+			if(!(var == 0.5)) {
+				return it.doesnt;
+			}
+			if(!(var.to!(float) == 0.5)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_assignment() {
+	}
+
+	it comparison_should_handle_int() {
+		before_comparison();
+		try {
+			int a = 2;
+			Variant var = a;
+			if(!(var == a)) {
+				return it.doesnt;
+			}
+			if(!(var == 2)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it comparison_should_handle_float() {
+		before_comparison();
+		try {
+			float a = 1.23;
+			Variant var = a;
+			if(!(var == a)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it comparison_should_handle_string() {
+		before_comparison();
+		try {
+			string a = "hello";
+			Variant var = a;
+			if(!(var == a)) {
+				return it.doesnt;
+			}
+			if(!(var == "hello")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_comparison() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		VariantTester tester = new VariantTester();
+
+		Test test = new Test("Variant", "specs/core/variant.d");
+
+		it result;
+
+		test.logSubset("initial");
+
+		tester = new VariantTester();
+
+		result = tester.initial_state_should_be_null();
+		test.logResult(result, "initial state should be null", "9");
+
+		test.logSubset("assignment");
+
+		tester = new VariantTester();
+
+		result = tester.assignment_should_handle_integer_literals();
+		test.logResult(result, "assignment should handle integer literals", "17");
+
+		tester = new VariantTester();
+
+		result = tester.assignment_should_handle_reassignment();
+		test.logResult(result, "assignment should handle reassignment", "23");
+
+		tester = new VariantTester();
+
+		result = tester.assignment_should_handle_object_references();
+		test.logResult(result, "assignment should handle object references", "31");
+
+		tester = new VariantTester();
+
+		result = tester.assignment_should_handle_float_literals();
+		test.logResult(result, "assignment should handle float literals", "37");
+
+		test.logSubset("comparison");
+
+		tester = new VariantTester();
+
+		result = tester.comparison_should_handle_int();
+		test.logResult(result, "comparison should handle int", "45");
+
+		tester = new VariantTester();
+
+		result = tester.comparison_should_handle_float();
+		test.logResult(result, "comparison should handle float", "52");
+
+		tester = new VariantTester();
+
+		result = tester.comparison_should_handle_string();
+		test.logResult(result, "comparison should handle string", "58");
+
+		test.finish();
+	}
+}
+
 import core.unicode;
 
 import core.string;
@@ -901,1195 +1114,6 @@ class UnicodeTester {
 
 import core.string;
 
-import core.regex;
-
-class RegexTester {
-
-	it eval_should_handle_kleene_star() {
-		before_eval();
-		try {
-			String str = Regex.eval("<EM>some text</EM>", `<.*>`);
-			if(!(str == "<EM>some text</EM>")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_lazy_kleene_star() {
-		before_eval();
-		try {
-			String str = Regex.eval("<EM>some text</EM>", `<.*?>`);
-			if(!(str == "<EM>")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_kleene_plus() {
-		before_eval();
-		try {
-			String str = Regex.eval("<>EM>some text</EM>", `<.+>`);
-			if(!(str == "<>EM>some text</EM>")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_lazy_kleene_plus() {
-		before_eval();
-		try {
-			String str = Regex.eval("<>EM>some text</EM>", `<.+?>`);
-			if(!(str == "<>EM>")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_options() {
-		before_eval();
-		try {
-			String str = Regex.eval("abc", `a?abc`);
-			if(!(str == "abc")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("aabc", `a?abc`);
-			if(!(str == "aabc")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("ababbababababbbc", `(a?b)*c`);
-			if(!(str == "ababbababababbbc")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_optional_groups() {
-		before_eval();
-		try {
-			String str = Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
-			if(!(str == "abcdefeggfoo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_union_at_base_level() {
-		before_eval();
-		try {
-			String str = Regex.eval("dogbert", `cat|dog`);
-			if(!(str == "dog")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_union_at_group_level() {
-		before_eval();
-		try {
-			String str = Regex.eval("bacd", `(bac|b)acd`);
-			if(!(str == "bacd")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_union_with_kleene_star() {
-		before_eval();
-		try {
-			String str = Regex.eval("catdogdogcatbert", `(cat|dog)*`);
-			if(!(str == "catdogdogcat")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_nested_groups() {
-		before_eval();
-		try {
-			String str = Regex.eval("acatbert", `a(cat(bert))`);
-			if(!(str == "acatbert")) {
-				return it.doesnt;
-			}
-			if(!(_1 == "catbert")) {
-				return it.doesnt;
-			}
-			if(!(_2 == "bert")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_nested_groups_with_union() {
-		before_eval();
-		try {
-			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
-			if(!(str == "dogpoo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_character_classes() {
-		before_eval();
-		try {
-			String str = Regex.eval("daccabaaccbg", `d[abc]*g`);
-			if(!(str == "daccabaaccbg")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("daccabadaccbg", `d[abc]*g`);
-			if(!(str == "daccbg")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("daccabadaccbg", `^d[abc]*g`);
-			if(!(str is null)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_inverse_character_classes() {
-		before_eval();
-		try {
-			String str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*g`);
-			if(!(str == "ddeffegggdefeddfeg")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*?g`);
-			if(!(str == "ddeffeg")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("ddeffeagggdefeddfeg", `d[^abc]*?g`);
-			if(!(str == "defeddfeg")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_dollar_sign() {
-		before_eval();
-		try {
-			String str = Regex.eval("root woot moot foot", `.oot$`);
-			if(!(str == "foot")) {
-				return it.doesnt;
-			}
-			str = Regex.eval("root\nwoot\nmoot\nfoot", `.oot$`);
-			if(!(str == "root")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_beginning_of_line_caret() {
-		before_eval();
-		try {
-			String str = Regex.eval("root woot moot foot", `^.oot`);
-			if(!(str == "root")) {
-				return it.doesnt;
-			}
-			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`, "m");
-			if(!(str == "woot")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_group_consumption() {
-		before_eval();
-		try {
-			String str = Regex.eval("dogpoo", `(dog(bert|poo))`);
-			if(!(str == "dogpoo")) {
-				return it.doesnt;
-			}
-			if(!(_1 == "dogpoo")) {
-				return it.doesnt;
-			}
-			if(!(_2 == "poo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_group_reconsumption() {
-		before_eval();
-		try {
-			String str = Regex.eval("bertpoopoobertpoo", `(bert|poo)+`);
-			if(!(str == "bertpoopoobertpoo")) {
-				return it.doesnt;
-			}
-			if(!(_1 == "poo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_backreferences() {
-		before_eval();
-		try {
-			String str = Regex.eval("dogpoo=dogpoo", `(dogpoo)=\1`);
-			if(!(str == "dogpoo=dogpoo")) {
-				return it.doesnt;
-			}
-			if(!(_1 == "dogpoo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_forwardreferences() {
-		before_eval();
-		try {
-			String str = Regex.eval("oneonetwo", `(\2two|(one))+`);
-			if(!(str == "oneonetwo")) {
-				return it.doesnt;
-			}
-			if(!(_1 == "onetwo")) {
-				return it.doesnt;
-			}
-			if(!(_2 == "one")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_comments() {
-		before_eval();
-		try {
-			String str = Regex.eval("bleh", `bl(?#comment here)eh`);
-			if(!(str == "bleh")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it eval_should_handle_complicated_constructions() {
-		before_eval();
-		try {
-			String str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
-			if(!(str == `#line 43 "foo\bar"`)) {
-				return it.doesnt;
-			}
-			if(!(_1 == "43")) {
-				return it.doesnt;
-			}
-			if(!(_2 == `"foo\bar"`)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_eval() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		RegexTester tester = new RegexTester();
-
-		Test test = new Test("Regex", "specs/core/regex.d");
-
-		it result;
-
-		test.logSubset("eval");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_kleene_star();
-		test.logResult(result, "eval should handle kleene star", "12");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_lazy_kleene_star();
-		test.logResult(result, "eval should handle lazy kleene star", "18");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_kleene_plus();
-		test.logResult(result, "eval should handle kleene plus", "24");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_lazy_kleene_plus();
-		test.logResult(result, "eval should handle lazy kleene plus", "30");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_options();
-		test.logResult(result, "eval should handle options", "36");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_optional_groups();
-		test.logResult(result, "eval should handle optional groups", "48");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_union_at_base_level();
-		test.logResult(result, "eval should handle union at base level", "54");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_union_at_group_level();
-		test.logResult(result, "eval should handle union at group level", "60");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_union_with_kleene_star();
-		test.logResult(result, "eval should handle union with kleene star", "66");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_nested_groups();
-		test.logResult(result, "eval should handle nested groups", "72");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_nested_groups_with_union();
-		test.logResult(result, "eval should handle nested groups with union", "80");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_character_classes();
-		test.logResult(result, "eval should handle character classes", "86");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_inverse_character_classes();
-		test.logResult(result, "eval should handle inverse character classes", "98");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_dollar_sign();
-		test.logResult(result, "eval should handle dollar sign", "109");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_beginning_of_line_caret();
-		test.logResult(result, "eval should handle beginning of line caret", "117");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_group_consumption();
-		test.logResult(result, "eval should handle group consumption", "125");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_group_reconsumption();
-		test.logResult(result, "eval should handle group reconsumption", "133");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_backreferences();
-		test.logResult(result, "eval should handle backreferences", "140");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_forwardreferences();
-		test.logResult(result, "eval should handle forwardreferences", "146");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_comments();
-		test.logResult(result, "eval should handle comments", "154");
-
-		tester = new RegexTester();
-
-		result = tester.eval_should_handle_complicated_constructions();
-		test.logResult(result, "eval should handle complicated constructions", "159");
-
-		test.finish();
-	}
-}
-
-import core.string;
-
-class StringTester {
-
-	it creation_should_handle_literals() {
-		before_creation();
-		try {
-			String str = new String("new string");
-			if(!(str == "new string")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it creation_should_handle_integers() {
-		before_creation();
-		try {
-			String str = new String(123);
-			if(!(str == "123")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it creation_should_handle_formatting() {
-		before_creation();
-		try {
-			String str = new String("%x%d!!!", 0xdead, 1234);
-			if(!(str == "dead1234!!!")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it creation_should_handle_string_objects() {
-		before_creation();
-		try {
-			String str = new String("hello");
-			String str2 = new String(str);
-			if(!(str == "hello")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_creation() {
-	}
-
-	it trim_should_trim_off_whitespace() {
-		before_trim();
-		try {
-			String str = new String("    \t\t bah \n\n\r\t");
-			str = str.trim();
-			if(!(str == "bah")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_trim() {
-	}
-
-	it length_should_account_for_combining_marks() {
-		before_length();
-		try {
-			String str = new String("hello\u0364world");
-			if(!(str.length == 10)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it length_should_return_the_number_of_characters() {
-		before_length();
-		try {
-			String str = new String("hello world");
-			if(!(str.length == 11)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it length_should_not_fail_on_an_empty_string() {
-		before_length();
-		try {
-			String str = new String("");
-			if(!(str.length == 0)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_length() {
-	}
-
-	it append_should_concatenate_a_string_object() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			String str2 = new String("world");
-			str.append(str2);
-			if(!(str == "hello world")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it append_should_concatenate_a_string_literal() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			str.append("world");
-			if(!(str == "hello world")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it append_should_concatenate_a_formatted_string_literal() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			str.append("%x%d!!!", 0xdead, 1234);
-			if(!(str == "hello dead1234!!!")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it append_should_not_fail_on_an_empty_string_object() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			String str2 = new String("");
-			str.append(str2);
-			if(!(str == "hello ")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it append_should_not_fail_on_an_empty_string_literal() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			str.append("");
-			if(!(str == "hello ")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it append_should_throw_an_exception_for_null_string_object() {
-		before_append();
-		try {
-			String str = new String("hello ");
-			String str2;
-			str.append(str2);
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_append() {
-	}
-
-	it toLowercase_should_work_as_expected() {
-		before_toLowercase();
-		try {
-			String str = new String("HelLo WoRLD");
-			str = str.toLowercase();
-			if(!(str == "hello world")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it toLowercase_should_not_fail_on_an_empty_string() {
-		before_toLowercase();
-		try {
-			String str = new String("");
-			str = str.toLowercase();
-			if(!(str == "")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_toLowercase() {
-	}
-
-	it toUppercase_should_work_as_expected() {
-		before_toUppercase();
-		try {
-			String str = new String("HelLo WoRLD");
-			str = str.toUppercase();
-			if(!(str == "HELLO WORLD")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it toUppercase_should_not_fail_on_an_empty_string() {
-		before_toUppercase();
-		try {
-			String str = new String("");
-			str = str.toUppercase();
-			if(!(str == "")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_toUppercase() {
-	}
-
-	it find_should_work_as_expected() {
-		before_find();
-		try {
-			String str = new String("foobar");
-			String toFind = new String("oob");
-			int pos = str.find(toFind);
-			if(!(pos == 1)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it find_should_fail_as_expected() {
-		before_find();
-		try {
-			String str = new String("foobar");
-			String toFind = new String("boo");
-			int pos = str.find(toFind);
-			if(!(pos == -1)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it find_should_work_at_the_beginning_of_the_string() {
-		before_find();
-		try {
-			String str = new String("foobar");
-			String toFind = new String("foo");
-			int pos = str.find(toFind);
-			if(!(pos == 0)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it find_should_work_at_the_end_of_the_string() {
-		before_find();
-		try {
-			String str = new String("foobar");
-			String toFind = new String("bar");
-			int pos = str.find(toFind);
-			if(!(pos == 3)) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_find() {
-	}
-
-	it insertAt_should_insert_a_string_object() {
-		before_insertAt();
-		try {
-			String str = new String("foobaz");
-			String str2 = new String("bar");
-			str = str.insertAt(str2, 3);
-			if(!(str == "foobarbaz")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it insertAt_should_insert_a_simple_string() {
-		before_insertAt();
-		try {
-			String str = new String("foobaz");
-			str = str.insertAt("bar", 3);
-			if(!(str == "foobarbaz")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it insertAt_should_not_fail_on_position_zero() {
-		before_insertAt();
-		try {
-			String str = new String("barbaz");
-			str = str.insertAt("foo", 0);
-			if(!(str == "foobarbaz")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it insertAt_should_not_fail_on_an_empty_string() {
-		before_insertAt();
-		try {
-			String str = new String("foobar");
-			str = str.insertAt("", 0);
-			if(!(str == "foobar")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it insertAt_should_not_fail_on_position_outside_string() {
-		before_insertAt();
-		try {
-			String str = new String("foobar");
-			str = str.insertAt("baz", str.length() + 1);
-			if(!(str == "foobar")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_insertAt() {
-	}
-
-	it repeat_should_repeat_a_string_object() {
-		before_repeat();
-		try {
-			String str = new String("foo");
-			String str2 = String.repeat(str, 3);
-			if(!(str2 == "foofoofoo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it repeat_should_repeat_a_simple_string() {
-		before_repeat();
-		try {
-			String str = String.repeat("foo", 3);
-			if(!(str == "foofoofoo")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it repeat_should_not_fail_on_an_empty_string() {
-		before_repeat();
-		try {
-			String str = String.repeat("", 3);
-			if(!(str == "")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it repeat_should_not_fail_on_zero_iterations() {
-		before_repeat();
-		try {
-			String str = String.repeat("foo", 0);
-			if(!(str == "")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_repeat() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		StringTester tester = new StringTester();
-
-		Test test = new Test("String", "specs/core/string.d");
-
-		it result;
-
-		test.logSubset("creation");
-
-		tester = new StringTester();
-
-		result = tester.creation_should_handle_literals();
-		test.logResult(result, "creation should handle literals", "9");
-
-		tester = new StringTester();
-
-		result = tester.creation_should_handle_integers();
-		test.logResult(result, "creation should handle integers", "14");
-
-		tester = new StringTester();
-
-		result = tester.creation_should_handle_formatting();
-		test.logResult(result, "creation should handle formatting", "19");
-
-		tester = new StringTester();
-
-		result = tester.creation_should_handle_string_objects();
-		test.logResult(result, "creation should handle string objects", "24");
-
-		test.logSubset("trim");
-
-		tester = new StringTester();
-
-		result = tester.trim_should_trim_off_whitespace();
-		test.logResult(result, "trim should trim off whitespace", "32");
-
-		test.logSubset("length");
-
-		tester = new StringTester();
-
-		result = tester.length_should_account_for_combining_marks();
-		test.logResult(result, "length should account for combining marks", "40");
-
-		tester = new StringTester();
-
-		result = tester.length_should_return_the_number_of_characters();
-		test.logResult(result, "length should return the number of characters", "45");
-
-		tester = new StringTester();
-
-		result = tester.length_should_not_fail_on_an_empty_string();
-		test.logResult(result, "length should not fail on an empty string", "50");
-
-		test.logSubset("append");
-
-		tester = new StringTester();
-
-		result = tester.append_should_concatenate_a_string_object();
-		test.logResult(result, "append should concatenate a string object", "57");
-
-		tester = new StringTester();
-
-		result = tester.append_should_concatenate_a_string_literal();
-		test.logResult(result, "append should concatenate a string literal", "66");
-
-		tester = new StringTester();
-
-		result = tester.append_should_concatenate_a_formatted_string_literal();
-		test.logResult(result, "append should concatenate a formatted string literal", "73");
-
-		tester = new StringTester();
-
-		result = tester.append_should_not_fail_on_an_empty_string_object();
-		test.logResult(result, "append should not fail on an empty string object", "80");
-
-		tester = new StringTester();
-
-		result = tester.append_should_not_fail_on_an_empty_string_literal();
-		test.logResult(result, "append should not fail on an empty string literal", "88");
-
-		tester = new StringTester();
-
-		result = tester.append_should_throw_an_exception_for_null_string_object();
-		test.logResult(result, "append should throw an exception for null string object", "95");
-
-		test.logSubset("toLowercase");
-
-		tester = new StringTester();
-
-		result = tester.toLowercase_should_work_as_expected();
-		test.logResult(result, "toLowercase should work as expected", "106");
-
-		tester = new StringTester();
-
-		result = tester.toLowercase_should_not_fail_on_an_empty_string();
-		test.logResult(result, "toLowercase should not fail on an empty string", "113");
-
-		test.logSubset("toUppercase");
-
-		tester = new StringTester();
-
-		result = tester.toUppercase_should_work_as_expected();
-		test.logResult(result, "toUppercase should work as expected", "122");
-
-		tester = new StringTester();
-
-		result = tester.toUppercase_should_not_fail_on_an_empty_string();
-		test.logResult(result, "toUppercase should not fail on an empty string", "129");
-
-		test.logSubset("find");
-
-		tester = new StringTester();
-
-		result = tester.find_should_work_as_expected();
-		test.logResult(result, "find should work as expected", "138");
-
-		tester = new StringTester();
-
-		result = tester.find_should_fail_as_expected();
-		test.logResult(result, "find should fail as expected", "146");
-
-		tester = new StringTester();
-
-		result = tester.find_should_work_at_the_beginning_of_the_string();
-		test.logResult(result, "find should work at the beginning of the string", "154");
-
-		tester = new StringTester();
-
-		result = tester.find_should_work_at_the_end_of_the_string();
-		test.logResult(result, "find should work at the end of the string", "162");
-
-		test.logSubset("insertAt");
-
-		tester = new StringTester();
-
-		result = tester.insertAt_should_insert_a_string_object();
-		test.logResult(result, "insertAt should insert a string object", "172");
-
-		tester = new StringTester();
-
-		result = tester.insertAt_should_insert_a_simple_string();
-		test.logResult(result, "insertAt should insert a simple string", "179");
-
-		tester = new StringTester();
-
-		result = tester.insertAt_should_not_fail_on_position_zero();
-		test.logResult(result, "insertAt should not fail on position zero", "185");
-
-		tester = new StringTester();
-
-		result = tester.insertAt_should_not_fail_on_an_empty_string();
-		test.logResult(result, "insertAt should not fail on an empty string", "191");
-
-		tester = new StringTester();
-
-		result = tester.insertAt_should_not_fail_on_position_outside_string();
-		test.logResult(result, "insertAt should not fail on position outside string", "197");
-
-		test.logSubset("repeat");
-
-		tester = new StringTester();
-
-		result = tester.repeat_should_repeat_a_string_object();
-		test.logResult(result, "repeat should repeat a string object", "205");
-
-		tester = new StringTester();
-
-		result = tester.repeat_should_repeat_a_simple_string();
-		test.logResult(result, "repeat should repeat a simple string", "211");
-
-		tester = new StringTester();
-
-		result = tester.repeat_should_not_fail_on_an_empty_string();
-		test.logResult(result, "repeat should not fail on an empty string", "216");
-
-		tester = new StringTester();
-
-		result = tester.repeat_should_not_fail_on_zero_iterations();
-		test.logResult(result, "repeat should not fail on zero iterations", "221");
-
-		test.finish();
-	}
-}
-
 import core.time;
 
 class TimeTester {
@@ -2103,7 +1127,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2118,7 +1141,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2133,7 +1155,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2148,7 +1169,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2163,7 +1183,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2178,7 +1197,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2193,7 +1211,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2211,7 +1228,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2229,7 +1245,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2244,7 +1259,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2259,7 +1273,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2277,7 +1290,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2292,7 +1304,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2307,7 +1318,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2325,7 +1335,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2340,7 +1349,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2355,7 +1363,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2373,7 +1380,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2388,7 +1394,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2403,7 +1408,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2419,7 +1423,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2435,7 +1438,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2451,7 +1453,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2470,7 +1471,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2486,7 +1486,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2502,7 +1501,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2527,7 +1525,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2549,7 +1546,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2567,7 +1563,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2583,7 +1578,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2598,7 +1592,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2613,7 +1606,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2628,7 +1620,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2643,7 +1634,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2663,7 +1653,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2683,7 +1672,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2703,7 +1691,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2723,7 +1710,6 @@ class TimeTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -2982,7 +1968,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3006,7 +1991,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3024,7 +2008,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3042,7 +2025,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3058,7 +2040,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3076,7 +2057,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3092,7 +2072,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3110,7 +2089,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3126,7 +2104,6 @@ class DateTester {
 			}
 		}
 		catch(Exception _exception_) {
-			if (_exception_.msg != "Access Violation") { return it.doesnt; }
 			return it.does;
 		}
 		return it.does;
@@ -3224,19 +2201,7 @@ class ExceptionTester {
 		return it.does;
 	}
 
-	it FileNotFound_should_work_with_string_object() {
-		before_FileNotFound();
-		try {
-			throw new FileNotFound(new String("some_file"));
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "File Not Found: some_file") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it FileNotFound_should_work_with_plain_string() {
+	it FileNotFound_should_work_with_string() {
 		before_FileNotFound();
 		try {
 			throw new FileNotFound("some_file");
@@ -3263,19 +2228,7 @@ class ExceptionTester {
 		return it.does;
 	}
 
-	it DirectoryNotFound_should_work_with_string_object() {
-		before_DirectoryNotFound();
-		try {
-			throw new DirectoryNotFound(new String("some_dir"));
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Directory Not Found: some_dir") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it DirectoryNotFound_should_work_with_plain_string() {
+	it DirectoryNotFound_should_work_with_string() {
 		before_DirectoryNotFound();
 		try {
 			throw new DirectoryNotFound("some_dir");
@@ -3302,19 +2255,7 @@ class ExceptionTester {
 		return it.does;
 	}
 
-	it OutOfElements_should_work_with_string_object() {
-		before_OutOfElements();
-		try {
-			throw new OutOfElements(new String("SomeClass"));
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Out of Elements in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it OutOfElements_should_work_with_plain_string() {
+	it OutOfElements_should_work_with_string() {
 		before_OutOfElements();
 		try {
 			throw new OutOfElements("SomeClass");
@@ -3341,19 +2282,7 @@ class ExceptionTester {
 		return it.does;
 	}
 
-	it OutOfBounds_should_work_with_string_object() {
-		before_OutOfBounds();
-		try {
-			throw new OutOfBounds(new String("SomeClass"));
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Out of Bounds in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it OutOfBounds_should_work_with_plain_string() {
+	it OutOfBounds_should_work_with_string() {
 		before_OutOfBounds();
 		try {
 			throw new OutOfBounds("SomeClass");
@@ -3380,19 +2309,7 @@ class ExceptionTester {
 		return it.does;
 	}
 
-	it ElementNotFound_should_work_with_string_object() {
-		before_ElementNotFound();
-		try {
-			throw new ElementNotFound(new String("SomeClass"));
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it ElementNotFound_should_work_with_plain_string() {
+	it ElementNotFound_should_work_with_string() {
 		before_ElementNotFound();
 		try {
 			throw new ElementNotFound("SomeClass");
@@ -3430,81 +2347,56 @@ class ExceptionTester {
 
 		tester = new ExceptionTester();
 
-		result = tester.FileNotFound_should_work_with_string_object();
-		test.logResult(result, "FileNotFound should work with string object", "14");
-
-		tester = new ExceptionTester();
-
-		result = tester.FileNotFound_should_work_with_plain_string();
-		test.logResult(result, "FileNotFound should work with plain string", "19");
+		result = tester.FileNotFound_should_work_with_string();
+		test.logResult(result, "FileNotFound should work with string", "14");
 
 		test.logSubset("DirectoryNotFound");
 
 		tester = new ExceptionTester();
 
 		result = tester.DirectoryNotFound_should_work_with_no_explanation();
-		test.logResult(result, "DirectoryNotFound should work with no explanation", "26");
+		test.logResult(result, "DirectoryNotFound should work with no explanation", "21");
 
 		tester = new ExceptionTester();
 
-		result = tester.DirectoryNotFound_should_work_with_string_object();
-		test.logResult(result, "DirectoryNotFound should work with string object", "31");
-
-		tester = new ExceptionTester();
-
-		result = tester.DirectoryNotFound_should_work_with_plain_string();
-		test.logResult(result, "DirectoryNotFound should work with plain string", "36");
+		result = tester.DirectoryNotFound_should_work_with_string();
+		test.logResult(result, "DirectoryNotFound should work with string", "26");
 
 		test.logSubset("OutOfElements");
 
 		tester = new ExceptionTester();
 
 		result = tester.OutOfElements_should_work_with_no_explanation();
-		test.logResult(result, "OutOfElements should work with no explanation", "43");
+		test.logResult(result, "OutOfElements should work with no explanation", "33");
 
 		tester = new ExceptionTester();
 
-		result = tester.OutOfElements_should_work_with_string_object();
-		test.logResult(result, "OutOfElements should work with string object", "48");
-
-		tester = new ExceptionTester();
-
-		result = tester.OutOfElements_should_work_with_plain_string();
-		test.logResult(result, "OutOfElements should work with plain string", "53");
+		result = tester.OutOfElements_should_work_with_string();
+		test.logResult(result, "OutOfElements should work with string", "38");
 
 		test.logSubset("OutOfBounds");
 
 		tester = new ExceptionTester();
 
 		result = tester.OutOfBounds_should_work_with_no_explanation();
-		test.logResult(result, "OutOfBounds should work with no explanation", "60");
+		test.logResult(result, "OutOfBounds should work with no explanation", "45");
 
 		tester = new ExceptionTester();
 
-		result = tester.OutOfBounds_should_work_with_string_object();
-		test.logResult(result, "OutOfBounds should work with string object", "65");
-
-		tester = new ExceptionTester();
-
-		result = tester.OutOfBounds_should_work_with_plain_string();
-		test.logResult(result, "OutOfBounds should work with plain string", "70");
+		result = tester.OutOfBounds_should_work_with_string();
+		test.logResult(result, "OutOfBounds should work with string", "50");
 
 		test.logSubset("ElementNotFound");
 
 		tester = new ExceptionTester();
 
 		result = tester.ElementNotFound_should_work_with_no_explanation();
-		test.logResult(result, "ElementNotFound should work with no explanation", "77");
+		test.logResult(result, "ElementNotFound should work with no explanation", "57");
 
 		tester = new ExceptionTester();
 
-		result = tester.ElementNotFound_should_work_with_string_object();
-		test.logResult(result, "ElementNotFound should work with string object", "82");
-
-		tester = new ExceptionTester();
-
-		result = tester.ElementNotFound_should_work_with_plain_string();
-		test.logResult(result, "ElementNotFound should work with plain string", "87");
+		result = tester.ElementNotFound_should_work_with_string();
+		test.logResult(result, "ElementNotFound should work with string", "62");
 
 		test.finish();
 	}
@@ -4059,6 +2951,813 @@ class UtilTester {
 	}
 }
 
+import core.string;
+
+import core.regex;
+
+class RegexTester {
+
+	it eval_should_handle_kleene_star() {
+		before_eval();
+		try {
+			string str = Regex.eval("<EM>some text</EM>", `<.*>`);
+			if(!(str == "<EM>some text</EM>")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_lazy_kleene_star() {
+		before_eval();
+		try {
+			string str = Regex.eval("<EM>some text</EM>", `<.*?>`);
+			if(!(str == "<EM>")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_kleene_plus() {
+		before_eval();
+		try {
+			string str = Regex.eval("<>EM>some text</EM>", `<.+>`);
+			if(!(str == "<>EM>some text</EM>")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_lazy_kleene_plus() {
+		before_eval();
+		try {
+			string str = Regex.eval("<>EM>some text</EM>", `<.+?>`);
+			if(!(str == "<>EM>")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_options() {
+		before_eval();
+		try {
+			string str = Regex.eval("abc", `a?abc`);
+			if(!(str == "abc")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("aabc", `a?abc`);
+			if(!(str == "aabc")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("ababbababababbbc", `(a?b)*c`);
+			if(!(str == "ababbababababbbc")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_optional_groups() {
+		before_eval();
+		try {
+			string str = Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`);
+			if(!(str == "abcdefeggfoo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_union_at_base_level() {
+		before_eval();
+		try {
+			string str = Regex.eval("dogbert", `cat|dog`);
+			if(!(str == "dog")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_union_at_group_level() {
+		before_eval();
+		try {
+			string str = Regex.eval("bacd", `(bac|b)acd`);
+			if(!(str == "bacd")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_union_with_kleene_star() {
+		before_eval();
+		try {
+			string str = Regex.eval("catdogdogcatbert", `(cat|dog)*`);
+			if(!(str == "catdogdogcat")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_nested_groups() {
+		before_eval();
+		try {
+			string str = Regex.eval("acatbert", `a(cat(bert))`);
+			if(!(str == "acatbert")) {
+				return it.doesnt;
+			}
+			if(!(_1 == "catbert")) {
+				return it.doesnt;
+			}
+			if(!(_2 == "bert")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_nested_groups_with_union() {
+		before_eval();
+		try {
+			string str = Regex.eval("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_character_classes() {
+		before_eval();
+		try {
+			string str = Regex.eval("daccabaaccbg", `d[abc]*g`);
+			if(!(str == "daccabaaccbg")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("daccabadaccbg", `d[abc]*g`);
+			if(!(str == "daccbg")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("daccabadaccbg", `^d[abc]*g`);
+			if(!(str is null)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_inverse_character_classes() {
+		before_eval();
+		try {
+			string str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*g`);
+			if(!(str == "ddeffegggdefeddfeg")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("ddeffegggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "ddeffeg")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("ddeffeagggdefeddfeg", `d[^abc]*?g`);
+			if(!(str == "defeddfeg")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_dollar_sign() {
+		before_eval();
+		try {
+			string str = Regex.eval("root woot moot foot", `.oot$`);
+			if(!(str == "foot")) {
+				return it.doesnt;
+			}
+			str = Regex.eval("root\nwoot\nmoot\nfoot", `.oot$`);
+			if(!(str == "root")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_beginning_of_line_caret() {
+		before_eval();
+		try {
+			string str = Regex.eval("root woot moot foot", `^.oot`);
+			if(!(str == "root")) {
+				return it.doesnt;
+			}
+			str = Regex.eval(" root\nwoot\nmoot\nfoot", `^.oot`, "m");
+			if(!(str == "woot")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_group_consumption() {
+		before_eval();
+		try {
+			string str = Regex.eval("dogpoo", `(dog(bert|poo))`);
+			if(!(str == "dogpoo")) {
+				return it.doesnt;
+			}
+			if(!(_1 == "dogpoo")) {
+				return it.doesnt;
+			}
+			if(!(_2 == "poo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_group_reconsumption() {
+		before_eval();
+		try {
+			string str = Regex.eval("bertpoopoobertpoo", `(bert|poo)+`);
+			if(!(str == "bertpoopoobertpoo")) {
+				return it.doesnt;
+			}
+			if(!(_1 == "poo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_backreferences() {
+		before_eval();
+		try {
+			string str = Regex.eval("dogpoo=dogpoo", `(dogpoo)=\1`);
+			if(!(str == "dogpoo=dogpoo")) {
+				return it.doesnt;
+			}
+			if(!(_1 == "dogpoo")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_forwardreferences() {
+		before_eval();
+		try {
+			string str = Regex.eval("oneonetwo", `(\2two|(one))+`);
+			if(!(str == "oneonetwo")) {
+				return it.doesnt;
+			}
+			if(!(_1 == "onetwo")) {
+				return it.doesnt;
+			}
+			if(!(_2 == "one")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_comments() {
+		before_eval();
+		try {
+			string str = Regex.eval("bleh", `bl(?#comment here)eh`);
+			if(!(str == "bleh")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it eval_should_handle_complicated_constructions() {
+		before_eval();
+		try {
+			string str = Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`);
+			if(!(str == `#line 43 "foo\bar"`)) {
+				return it.doesnt;
+			}
+			if(!(_1 == "43")) {
+				return it.doesnt;
+			}
+			if(!(_2 == `"foo\bar"`)) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_eval() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		RegexTester tester = new RegexTester();
+
+		Test test = new Test("Regex", "specs/core/regex.d");
+
+		it result;
+
+		test.logSubset("eval");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_kleene_star();
+		test.logResult(result, "eval should handle kleene star", "12");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_lazy_kleene_star();
+		test.logResult(result, "eval should handle lazy kleene star", "18");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_kleene_plus();
+		test.logResult(result, "eval should handle kleene plus", "24");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_lazy_kleene_plus();
+		test.logResult(result, "eval should handle lazy kleene plus", "30");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_options();
+		test.logResult(result, "eval should handle options", "36");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_optional_groups();
+		test.logResult(result, "eval should handle optional groups", "48");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_union_at_base_level();
+		test.logResult(result, "eval should handle union at base level", "54");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_union_at_group_level();
+		test.logResult(result, "eval should handle union at group level", "60");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_union_with_kleene_star();
+		test.logResult(result, "eval should handle union with kleene star", "66");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_nested_groups();
+		test.logResult(result, "eval should handle nested groups", "72");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_nested_groups_with_union();
+		test.logResult(result, "eval should handle nested groups with union", "80");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_character_classes();
+		test.logResult(result, "eval should handle character classes", "86");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_inverse_character_classes();
+		test.logResult(result, "eval should handle inverse character classes", "98");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_dollar_sign();
+		test.logResult(result, "eval should handle dollar sign", "109");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_beginning_of_line_caret();
+		test.logResult(result, "eval should handle beginning of line caret", "117");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_group_consumption();
+		test.logResult(result, "eval should handle group consumption", "125");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_group_reconsumption();
+		test.logResult(result, "eval should handle group reconsumption", "133");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_backreferences();
+		test.logResult(result, "eval should handle backreferences", "140");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_forwardreferences();
+		test.logResult(result, "eval should handle forwardreferences", "146");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_comments();
+		test.logResult(result, "eval should handle comments", "154");
+
+		tester = new RegexTester();
+
+		result = tester.eval_should_handle_complicated_constructions();
+		test.logResult(result, "eval should handle complicated constructions", "159");
+
+		test.finish();
+	}
+}
+
+import hashes.sha1;
+
+class SHA1Tester {
+
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
+		try {
+			string s = HashSHA1.hash("a").toString();
+			if(!(s == "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it hash_should_hash_the_empty_string() {
+		before_hash();
+		try {
+			string s = HashSHA1.hash("").toString();
+			if(!(s == "da39a3ee5e6b4b0d3255bfef95601890afd80709")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_hash() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		SHA1Tester tester = new SHA1Tester();
+
+		Test test = new Test("SHA1", "specs/hashes/sha1.d");
+
+		it result;
+
+		test.logSubset("hash");
+
+		tester = new SHA1Tester();
+
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "9");
+
+		tester = new SHA1Tester();
+
+		result = tester.hash_should_hash_the_empty_string();
+		test.logResult(result, "hash should hash the empty string", "14");
+
+		test.finish();
+	}
+}
+
+import hashes.sha256;
+
+class SHA256Tester {
+
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
+		try {
+			string s = HashSHA256.hash("a").toString();
+			if(!(s == "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it hash_should_hash_the_empty_string() {
+		before_hash();
+		try {
+			string s = HashSHA256.hash("").toString();
+			if(!(s == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_hash() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		SHA256Tester tester = new SHA256Tester();
+
+		Test test = new Test("SHA256", "specs/hashes/sha256.d");
+
+		it result;
+
+		test.logSubset("hash");
+
+		tester = new SHA256Tester();
+
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "9");
+
+		tester = new SHA256Tester();
+
+		result = tester.hash_should_hash_the_empty_string();
+		test.logResult(result, "hash should hash the empty string", "14");
+
+		test.finish();
+	}
+}
+
+import hashes.md5;
+
+class MD5Tester {
+
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
+		try {
+			string s = HashMD5.hash("Hashing Hashing Hashing").toString();
+			if(!(s == "7ba85cd90a910d790172b15e895f8e56")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it hash_should_respect_leading_zeroes() {
+		before_hash();
+		try {
+			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
+			string s = HashMD5.hash("d").toString();
+			if(!(s == "8277e0910d750195b448797616e091ad")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it hash_should_work_on_byte_arrays() {
+		before_hash();
+		try {
+			// Testing a classic MD5 
+			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
+			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
+			string a = HashMD5.hash(filea).toString();
+			string b = HashMD5.hash(fileb).toString();
+			if(!(a == b)) {
+				return it.doesnt;
+			}
+			if(!(a == "da5c61e1edc0f18337e46418e48c1290")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_hash() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		MD5Tester tester = new MD5Tester();
+
+		Test test = new Test("MD5", "specs/hashes/md5.d");
+
+		it result;
+
+		test.logSubset("hash");
+
+		tester = new MD5Tester();
+
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "9");
+
+		tester = new MD5Tester();
+
+		result = tester.hash_should_respect_leading_zeroes();
+		test.logResult(result, "hash should respect leading zeroes", "14");
+
+		tester = new MD5Tester();
+
+		result = tester.hash_should_work_on_byte_arrays();
+		test.logResult(result, "hash should work on byte arrays", "20");
+
+		test.finish();
+	}
+}
+
+import hashes.sha224;
+
+class SHA224Tester {
+
+	it hash_should_hash_as_expected_for_string_literals() {
+		before_hash();
+		try {
+			string s = HashSHA224.hash("a").toString();
+			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	it hash_should_hash_the_empty_string() {
+		before_hash();
+		try {
+			string s = HashSHA224.hash("").toString();
+			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
+				return it.doesnt;
+			}
+		}
+		catch(Exception _exception_) {
+			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
+			return it.does;
+		}
+		return it.does;
+	}
+
+	done before_hash() {
+	}
+
+	done before() {
+	}
+
+	this() {
+		before();
+	}
+
+	static void test() {
+		SHA224Tester tester = new SHA224Tester();
+
+		Test test = new Test("SHA224", "specs/hashes/sha224.d");
+
+		it result;
+
+		test.logSubset("hash");
+
+		tester = new SHA224Tester();
+
+		result = tester.hash_should_hash_as_expected_for_string_literals();
+		test.logResult(result, "hash should hash as expected for string literals", "9");
+
+		tester = new SHA224Tester();
+
+		result = tester.hash_should_hash_the_empty_string();
+		test.logResult(result, "hash should hash the empty string", "14");
+
+		test.finish();
+	}
+}
+
 import hashes.digest;
 
 class DigestTester {
@@ -4067,7 +3766,7 @@ class DigestTester {
 		before_creation();
 		try {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 			if(!(s == "deadbeef01234567")) {
 				return it.doesnt;
 			}
@@ -4083,7 +3782,7 @@ class DigestTester {
 		before_creation();
 		try {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 			if(!(s == "deadbeef01234567deadbeef01234567")) {
 				return it.doesnt;
 			}
@@ -4099,7 +3798,7 @@ class DigestTester {
 		before_creation();
 		try {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
-			String s = d.getString();
+			string s = d.toString();
 			if(!(s == "deadbeef01234567deadbeef01234567deadbeef")) {
 				return it.doesnt;
 			}
@@ -4115,7 +3814,7 @@ class DigestTester {
 		before_creation();
 		try {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 			if(!(s == "deadbeef01234567deadbeef01234567deadbeef01234567")) {
 				return it.doesnt;
 			}
@@ -4220,382 +3919,6 @@ class DigestTester {
 
 		result = tester.comparison_should_work_for_equals_function();
 		test.logResult(result, "comparison should work for equals function", "48");
-
-		test.finish();
-	}
-}
-
-import hashes.md5;
-
-class MD5Tester {
-
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
-		try {
-			String s = HashMD5.hash(new String("String you wish to hash")).getString();
-			if(!(s == "b262eb2435f39440672348388746115f")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
-		try {
-			String s = HashMD5.hash("Hashing Hashing Hashing").getString();
-			if(!(s == "7ba85cd90a910d790172b15e895f8e56")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_respect_leading_zeroes() {
-		before_hash();
-		try {
-			// Testing: leading 0s on parts, note that there is a 0 on the 9th value from the 
-			String s = HashMD5.hash("d").getString();
-			if(!(s == "8277e0910d750195b448797616e091ad")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_work_on_byte_arrays() {
-		before_hash();
-		try {
-			// Testing a classic MD5 
-			ubyte[] filea = cast(ubyte[])import("testmd5a.bin");
-			ubyte[] fileb = cast(ubyte[])import("testmd5b.bin");
-			String a = HashMD5.hash(filea).getString();
-			String b = HashMD5.hash(fileb).getString();
-			if(!(a == b)) {
-				return it.doesnt;
-			}
-			if(!(a == "da5c61e1edc0f18337e46418e48c1290")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_hash() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		MD5Tester tester = new MD5Tester();
-
-		Test test = new Test("MD5", "specs/hashes/md5.d");
-
-		it result;
-
-		test.logSubset("hash");
-
-		tester = new MD5Tester();
-
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
-
-		tester = new MD5Tester();
-
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
-
-		tester = new MD5Tester();
-
-		result = tester.hash_should_respect_leading_zeroes();
-		test.logResult(result, "hash should respect leading zeroes", "19");
-
-		tester = new MD5Tester();
-
-		result = tester.hash_should_work_on_byte_arrays();
-		test.logResult(result, "hash should work on byte arrays", "25");
-
-		test.finish();
-	}
-}
-
-import hashes.sha1;
-
-class SHA1Tester {
-
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
-		try {
-			String s = HashSHA1.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
-			if(!(s == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
-		try {
-			String s = HashSHA1.hash("a").getString();
-			if(!(s == "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_the_empty_string() {
-		before_hash();
-		try {
-			String s = HashSHA1.hash(new String("")).getString();
-			if(!(s == "da39a3ee5e6b4b0d3255bfef95601890afd80709")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_hash() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		SHA1Tester tester = new SHA1Tester();
-
-		Test test = new Test("SHA1", "specs/hashes/sha1.d");
-
-		it result;
-
-		test.logSubset("hash");
-
-		tester = new SHA1Tester();
-
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
-
-		tester = new SHA1Tester();
-
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
-
-		tester = new SHA1Tester();
-
-		result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "19");
-
-		test.finish();
-	}
-}
-
-import hashes.sha224;
-
-class SHA224Tester {
-
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
-		try {
-			String s = HashSHA224.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
-			if(!(s == "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
-		try {
-			String s = HashSHA224.hash("a").getString();
-			if(!(s == "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_the_empty_string() {
-		before_hash();
-		try {
-			String s = HashSHA224.hash(new String("")).getString();
-			if(!(s == "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_hash() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		SHA224Tester tester = new SHA224Tester();
-
-		Test test = new Test("SHA224", "specs/hashes/sha224.d");
-
-		it result;
-
-		test.logSubset("hash");
-
-		tester = new SHA224Tester();
-
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
-
-		tester = new SHA224Tester();
-
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
-
-		tester = new SHA224Tester();
-
-		result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "19");
-
-		test.finish();
-	}
-}
-
-import hashes.sha256;
-
-class SHA256Tester {
-
-	it hash_should_hash_as_expected_for_String_objects() {
-		before_hash();
-		try {
-			String s = HashSHA256.hash(new String("The quick brown fox jumps over the lazy dog")).getString();
-			if(!(s == "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_as_expected_for_string_literals() {
-		before_hash();
-		try {
-			String s = HashSHA256.hash("a").getString();
-			if(!(s == "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	it hash_should_hash_the_empty_string() {
-		before_hash();
-		try {
-			String s = HashSHA256.hash(new String("")).getString();
-			if(!(s == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
-				return it.doesnt;
-			}
-		}
-		catch(Exception _exception_) {
-			if (_exception_.msg != "Element Not Found in SomeClass") { return it.doesnt; }
-			return it.does;
-		}
-		return it.does;
-	}
-
-	done before_hash() {
-	}
-
-	done before() {
-	}
-
-	this() {
-		before();
-	}
-
-	static void test() {
-		SHA256Tester tester = new SHA256Tester();
-
-		Test test = new Test("SHA256", "specs/hashes/sha256.d");
-
-		it result;
-
-		test.logSubset("hash");
-
-		tester = new SHA256Tester();
-
-		result = tester.hash_should_hash_as_expected_for_String_objects();
-		test.logResult(result, "hash should hash as expected for String objects", "9");
-
-		tester = new SHA256Tester();
-
-		result = tester.hash_should_hash_as_expected_for_string_literals();
-		test.logResult(result, "hash should hash as expected for string literals", "14");
-
-		tester = new SHA256Tester();
-
-		result = tester.hash_should_hash_the_empty_string();
-		test.logResult(result, "hash should hash the empty string", "19");
 
 		test.finish();
 	}
@@ -6086,16 +5409,12 @@ class Tests {
 		RandomTester.test();
 	}
 
+	static void testVariant() {
+		VariantTester.test();
+	}
+
 	static void testUnicode() {
 		UnicodeTester.test();
-	}
-
-	static void testRegex() {
-		RegexTester.test();
-	}
-
-	static void testString() {
-		StringTester.test();
 	}
 
 	static void testTime() {
@@ -6114,24 +5433,28 @@ class Tests {
 		UtilTester.test();
 	}
 
-	static void testDigest() {
-		DigestTester.test();
-	}
-
-	static void testMD5() {
-		MD5Tester.test();
+	static void testRegex() {
+		RegexTester.test();
 	}
 
 	static void testSHA1() {
 		SHA1Tester.test();
 	}
 
+	static void testSHA256() {
+		SHA256Tester.test();
+	}
+
+	static void testMD5() {
+		MD5Tester.test();
+	}
+
 	static void testSHA224() {
 		SHA224Tester.test();
 	}
 
-	static void testSHA256() {
-		SHA256Tester.test();
+	static void testDigest() {
+		DigestTester.test();
 	}
 
 	static void testFibonacciHeap() {
@@ -6152,18 +5475,18 @@ class Tests {
 
 	static void testAll() {
 		testRandom();
+		testVariant();
 		testUnicode();
-		testRegex();
-		testString();
 		testTime();
 		testDate();
 		testException();
 		testUtil();
-		testDigest();
-		testMD5();
+		testRegex();
 		testSHA1();
-		testSHA224();
 		testSHA256();
+		testMD5();
+		testSHA224();
+		testDigest();
 		testFibonacciHeap();
 		testStack();
 		testLinkedList();

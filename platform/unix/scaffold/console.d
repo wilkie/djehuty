@@ -612,10 +612,10 @@ void ConsoleSetHome() {
 	}
 }
 
-void ConsolePutString(dchar[] chrs) {
+void ConsolePutString(char[] chrs) {
 	chrs ~= '\0';
 	Curses.getyx(Curses.stdscr, m_y, m_x);
-	char[] utf8 = Unicode.toUtf8(chrs);
+	char[] utf8 = chrs;
 	bool goBackOneLine = false;
 	if (ApplicationController.instance.usingCurses) {
 		for (uint i; i < utf8.length; i++) {

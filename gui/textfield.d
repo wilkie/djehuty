@@ -2,15 +2,13 @@ module gui.textfield;
 
 import gui.widget;
 
-import core.color;
-import core.definitions;
-import core.string;
+import djehuty;
 
 import graphics.graphics;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, String value) {
+	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
 	this(int x, int y, int width, int height, string value) {
@@ -29,16 +27,10 @@ public:
 		Changed,
 	}
 
-	this(int x, int y, int width, int height, String value) {
-		super(x,y,width,height);
-
-		_value = new String(value);
-	}
-
 	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height);
 
-		_value = new String(value);
+		_value = value.dup;
 	}
 
 	override void onAdd() {
@@ -57,7 +49,7 @@ public:
 		}
 		else
 		{
-			grp.measureText(new String(" "), _value_size);
+			grp.measureText(" ", _value_size);
 			_value_size.x = 0;
 		}
 
@@ -244,13 +236,13 @@ public:
 				if (_caret_pos == _sel_start) {
 					if ( _caret_pos != _value.length ) {
 						//delete the character to the right of the caret
-						String str_partA, str_partB;
+						string str_partA, str_partB;
 
-						str_partA = _value.subString(0, _caret_pos);
-						str_partB = _value.subString(_caret_pos+1);
+						str_partA = _value.substring(0, _caret_pos);
+						str_partB = _value.substring(_caret_pos+1);
 
 						_value = str_partA;
-						_value.append(str_partB);
+						_value ~= str_partB;
 
 						//load the font, and get the size of the text when drawn
 
@@ -261,7 +253,7 @@ public:
 							grp.measureText(_value, _value_size);
 						}
 						else {
-							grp.measureText(new String(" "), _value_size);
+							grp.measureText(" ", _value_size);
 							_value_size.x = 0;
 						}
 
@@ -285,15 +277,15 @@ public:
 
 				if (_caret_pos == _sel_start) {
 					if (_caret_pos != 0) {
-						String str_partA, str_partB;
+						string str_partA, str_partB;
 
 						_caret_pos--;
 
-						str_partA = _value.subString(0, _caret_pos);
-						str_partB = _value.subString(_caret_pos+1);
+						str_partA = _value.substring(0, _caret_pos);
+						str_partB = _value.substring(_caret_pos+1);
 
 						_value = str_partA;
-						_value.append(str_partB);
+						_value ~= str_partB;
 
 						_sel_start = _caret_pos;
 
@@ -308,7 +300,7 @@ public:
 						}
 						else
 						{
-							grp.measureText(new String(" "), _value_size);
+							grp.measureText(" ", _value_size);
 							_value_size.x = 0;
 						}
 
@@ -346,18 +338,18 @@ public:
 		//if there is a selection, clear it first
 		SelectionClear();
 
-		String str_partA;
-		String str_partB;
+		string str_partA;
+		string str_partB;
 
-		str_partA = _value.subString(0, _caret_pos);
+		str_partA = _value.substring(0, _caret_pos);
 
-		str_partB = _value.subString(_caret_pos);
+		str_partB = _value.substring(_caret_pos);
 
 		_sel_start = ++_caret_pos;
 
 		_value = str_partA;
-		_value.appendChar(character);
-		_value.append(str_partB);
+		_value ~= Unicode.toUtf8([character]);
+		_value ~= str_partB;
 
 		//load the font, and get the size of the text when drawn
 
@@ -368,7 +360,7 @@ public:
 			grp.measureText(_value, _value_size);
 		}
 		else {
-			grp.measureText(new String(" "), _value_size);
+			grp.measureText(" ", _value_size);
 			_value_size.x = 0;
 		}
 
@@ -504,21 +496,17 @@ public:
 		}
 	}
 
-	void text(String newTitle) {
-		_value = new String(newTitle);
-	}
-
 	void text(string newTitle) {
-		_value = new String(newTitle);
+		_value = newTitle.dup;
 	}
 
-	String text() {
-		return _value;
+	string text() {
+		return _value.dup;
 	}
 
 protected:
 
-	String _value;
+	string _value;
 
 private:
 
@@ -633,18 +621,18 @@ private:
 				_sel_start ^= _caret_pos;
 			}
 
-			String str_partA, str_partB;
+			string str_partA, str_partB;
 
-			// new_string = subString(0 ---> _sel_start)
+			// new_string = substring(0 ---> _sel_start)
 
-			str_partA = _value.subString(0, _sel_start);
+			str_partA = _value.substring(0, _sel_start);
 
-			// new_string += subString(_caret_pos ---> <EOS>);
+			// new_string += substring(_caret_pos ---> <EOS>);
 
-			str_partB = _value.subString(_caret_pos);
+			str_partB = _value.substring(_caret_pos);
 
 			_value = str_partA;
-			_value.append(str_partB);
+			_value ~= str_partB;
 
 			//turn off the selection
 			//make the selection start the new caret position
@@ -658,7 +646,7 @@ private:
 				grp.measureText(_value, _value_size);
 			}
 			else {
-				grp.measureText(new String(" "), _value_size);
+				grp.measureText(" ", _value_size);
 				_value_size.x = 0;
 			}
 

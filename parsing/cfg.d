@@ -5,49 +5,33 @@ import core.definitions;
 
 import io.console;
 
-class GrammarPhrase
-{
-	this(String rule)
-	{
-		Console.putln(rule.array);
+class GrammarPhrase {
+	this(string rule) {
+		Console.putln(rule);
 
 		_rule = rule;
 	}
 
-	this(string rule)
-	{
-		this(new String(rule));
-	}
-
-
-
 protected:
 
-	String _rule;
+	string _rule;
 }
 
 
 
 
-class GrammarRule
-{
-	this(String rule)
-	{
-		Console.putln(rule.array);
+class GrammarRule {
+	this(string rule) {
+		Console.putln(rule);
 
 		// parse the rule string
 		// get the left hand side and right hand side
 		// the string "->" delimits
 
-		int divider = rule.find(new String("->"));
+		int divider = rule.find("->");
 
-		_left = new GrammarPhrase(rule.subString(0, divider).trim);
-		_right = new GrammarPhrase(rule.subString(divider+2).trim);
-	}
-
-	this(string rule)
-	{
-		this(new String(rule));
+		_left = new GrammarPhrase(rule.substring(0, divider).trim());
+		_right = new GrammarPhrase(rule.substring(divider+2).trim());
 	}
 
 protected:
@@ -60,27 +44,15 @@ protected:
 
 
 
-class Grammar
-{
-	this()
-	{
+class Grammar {
+	this() {
 	}
 
-	void addRule(string rule)
-	{
+	void addRule(string rule) {
 		GrammarRule newRule = new GrammarRule(rule);
 
 		_rules ~= newRule;
 	}
-
-	void addRule(String rule)
-	{
-		GrammarRule newRule = new GrammarRule(rule);
-
-		_rules ~= newRule;
-	}
-
-protected:
 
 	GrammarRule[] _rules;
 }

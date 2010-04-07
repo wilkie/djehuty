@@ -23,8 +23,7 @@ class HTTPHeader
 {
 protected:
 
-	String _httpVersion;
-
+	string _httpVersion;
 }
 
 class HTTPServer
@@ -283,7 +282,7 @@ protected:
 
 					if (HTTPAttribute == "Content-Length")
 					{
-						String s = new String(cast(string)HTTPValue);
+						string s = cast(string)HTTPValue;
 						s.nextInt(_contentLength);
 					}
 

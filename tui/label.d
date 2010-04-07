@@ -13,17 +13,6 @@ import tui.widget;
 // Description: This console control abstracts a simple static text field.
 class TuiLabel : TuiWidget {
 
-	this( uint x, uint y, uint width, String text,
-		  fgColor fgclr = fgColor.BrightBlue,
-		  bgColor bgclr = bgColor.Black ) {
-		super(x,y,width,1);
-
-		_forecolor = fgclr;
-		_backcolor = bgclr;
-
-		_value = new String(text);
-	}
-
 	this( uint x, uint y, uint width, string text,
 		  fgColor fgclr = fgColor.BrightBlue,
 		  bgColor bgclr = bgColor.Black ) {
@@ -32,7 +21,7 @@ class TuiLabel : TuiWidget {
 		_forecolor = fgclr;
 		_backcolor = bgclr;
 
-		_value = new String(text);
+		_value = text.dup;
 	}
 
 	override void onAdd() {
@@ -43,23 +32,16 @@ class TuiLabel : TuiWidget {
 
 	// Properties
 
-	// Description: this property sets the value of the field
-	// newValue: the new value of the field
-	void text(String newValue) {
-		_value = new String(newValue);
-		onDraw();
-	}
-
 	// Description: this peroperty sets the value of the field
 	// newValue: the new value of the field
 	void text(string newValue) {
-		_value = new String(newValue);
+		_value = newValue.dup;
 		onDraw();
 	}
 
 	// Description: this property returns the value of the field
-	String text() {
-		return new String(_value);
+	string text() {
+		return _value.dup;
 	}
 
 	// Description: this property sets the foreground color of the field
@@ -94,7 +76,7 @@ class TuiLabel : TuiWidget {
 			// draw as much as we can
 
 			if (_value.length > this.width) {
-				Console.put((new String(_value[0..width])));
+				Console.put((_value[0..width]));
 			}
 			else {
 				Console.put(_value);
@@ -112,5 +94,5 @@ private:
 	fgColor _forecolor = fgColor.BrightBlue;
 	bgColor _backcolor = bgColor.Black;
 
-	String _value;
+	string _value;
 }

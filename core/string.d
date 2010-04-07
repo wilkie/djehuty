@@ -16,8 +16,23 @@ module core.string;
 import core.definitions;
 import core.unicode;
 import core.variant;
+import io.console;
 
 public import core.string;
+
+string toStrv(Variadic vars) {
+	string ret = "";
+	foreach(var; vars) {
+		ret ~= var.toString();
+	}
+	return ret;
+}
+
+string toStr(...) {
+	Variadic vars = new Variadic(_arguments, _argptr);
+
+	return toStrv(vars);
+}
 
 template _StringFormat() {
 	const char[] _StringFormat = `
@@ -162,914 +177,6 @@ template _StringFormat() {
 			}
 
 	`;
-}
-
-// Section: Core/Resources
-
-// Description: A class that abstracts a character array with the native platform's perferred unicode format.
-class String {
-
-	// Description: Will create an empty string.
-	this() {
-		this("");
-	}
-
-	// Description: Will create a string fitting the string passed through via the parameter.
-	// str: The string to copy to the class.
-	this (string str, ...) {
-		if (_arguments.length == 0) {
-			_data = Unicode.toNative(str);
-		}
-		else {
-			// formatted string
-			// perform format
-			mixin(_StringFormat!());
-
-			_data = Unicode.toNative(result);
-		}
-	}
-
-	// Description: Will create a string fitting the string passed through via the parameter.
-	// str: The string to copy to the class.
-	this(String str) {
-		_data ~= str._data;
-	}
-
-	// Description: Will create a string for the given integer.
-	// val: The value to use.
-	this(long val) {
-		fromInteger(val);
-	}
-
-	// Description: Will return the length of the string.
-	// Returns: The length of the string.
-	uint length() {
-		if (_data.length == 0) {
-			return 0;
-		}
-
-		if (_calcIndices) {
-			return _indices.length;
-		}
-
-		if (_calcLength) {
-			return _length;
-		}
-
-		_length = Unicode.utflen(_data);
-
-		_calcLength = true;
-
-		return _length;
-	}
-
-	// Description: Will return the pointer to the character array.
-	// Returns: An address to the internal character array for this String class.
-	Char* ptr() {
-		return _data.ptr;
-	}
-
-	// Description: Will return a reference to the internal character array.
-	// Returns: A reference to the internal character array for this String class.
-	Char[] array() {
-		return _data;
-	}
-
-	// Description: Will append a String to the current String.  The internal character array is rebuilt.
-	// str: The String to append to the internal character array of this String class.
-	void append(String str) {
-		_data ~= str._data.dup;
-		if (str._calcLength) {
-			_length += str._length;
-		}
-		else {
-			_calcLength = false;
-		}
-		_calcIndices = false;
-	}
-
-	void append(string str, ...) {
-		_calcLength = false;
-		_calcIndices = false;
-		if (_arguments.length == 0) {
-			_data ~= Unicode.toNative(str);
-		}
-		else {
-			// formatted string
-			// perform format
-
-			// scan input, write when appropriate
-			mixin(_StringFormat!());
-
-			_data ~= Unicode.toNative(result);
-		}
-	}
-
-	// Description: Will append a unicode character to this String.  The internal character array is rebuilt.
-	// character: The unicode character to append to the internal character array of this String class.
-	void appendChar(dchar character) {
-		_calcIndices = false;
-		static if (Char.sizeof == dchar.sizeof) {
-			_data ~= character;
-			if (!Unicode.isDeadChar(character)) {
-				_length++;
-			}
-		}
-		else {
-			dchar[] charArray = [ character ];
-			// BLEH
-			static if(Char.sizeof == wchar.sizeof) {
-				_data ~= Unicode.toUtf16(charArray);
-			}
-			else {
-				char[] chrs = Unicode.toUtf8(charArray);
-				_data ~= chrs;
-			}
-
-			if (!Unicode.isDeadChar(character)) {
-				_length++;
-			}
-		}
-	}
-
-	// Description: Will append a unicode character with combining marks to this String.  The internal character array is rebuilt.
-	// characters: The unicode character to append to the internal character array of this String class.
-	void appendChar(dstring characters) {
-		static if (Char.sizeof == dchar.sizeof) {
-			_data ~= characters;
-			if (!Unicode.isDeadChar(characters[0])) {
-				_length++;
-			}
-		}
-		else {
-			static if(Char.sizeof == wchar.sizeof) {
-				_data ~= Unicode.toUtf16Chars(characters);
-			}
-			else {
-				_data ~= Unicode.toUtf8Chars(characters);
-			}
-
-			if (!Unicode.isDeadChar(characters[0])) {
-				_length++;
-			}
-		}
-	}
-
-	// Description: Inserts a String at an arbitrary position.
-	String insertAt(String s, uint pos) {
-		if (pos >= this.length())
-			return this;
-
-		String ret = new String();
-
-		ret.append(this.subString(0, pos));
-		ret.append(s);
-		ret.append(this.subString(pos));
-
-		return ret;
-	}
-
-	String insertAt(string s, uint pos) {
-		return insertAt(new String(s), pos);
-	}
-
-	// Description: Repeats a given string.
-	// Returns: s repeated n times.
-	static String repeat(String s, uint n) {
-		String ret = new String();
-
-		for (uint i = 0; i < n; i++) {
-			ret.append(s);
-		}
-
-		return ret;
-	}
-
-	static String repeat(string s, uint n) {
-		return repeat(new String(s), n);
-	}
-
-	String trim() {
-		// find the start and end
-		// slice the array
-
-		int startpos;
-		int endpos;
-
-		if (_data.length == 0) {
-			return new String("");
-		}
-
-		for(startpos=0; startpos<_data.length; startpos++) {
-			if (_data[startpos] != ' ' &&
-				_data[startpos] != '\t' &&
-				_data[startpos] != '\r' &&
-				_data[startpos] != '\n') {
-
-				break;
-			}
-		}
-
-		for(endpos=_data.length-1; endpos>=0; endpos--) {
-			if (_data[endpos] != ' ' &&
-				_data[endpos] != '\t' &&
-				_data[endpos] != '\r' &&
-				_data[endpos] != '\n') {
-
-				break;
-			}
-		}
-		endpos++;
-
-		String ret = new String("");
-		if (endpos > _data.length) {
-			endpos = _data.length;
-		}
-
-		if (startpos > endpos) {
-			return new String("");
-		}
-
-		ret._data = _data[startpos..endpos];
-		return ret;
-	}
-
-	template _nextInt(T) {
-		bool _nextInt(T)(out T value) {
-			int curpos;
-
-			for(curpos=0; curpos<_data.length; curpos++) {
-				if (_data[curpos] != ' ' &&
-					_data[curpos] != '\t' &&
-					_data[curpos] != '\r' &&
-					_data[curpos] != '\n') {
-
-					break;
-				}
-			}
-
-			bool negative = false;
-
-			if (_data[curpos] == '-') {
-				negative = true;
-				curpos++;
-				if (curpos == _data.length) { return false; }
-			}
-
-			if (_data[curpos] < '0' ||
-				_data[curpos] > '9') {
-
-				return false;
-			}
-
-			long tmpval = 0;
-
-			for (;curpos<_data.length;curpos++) {
-				if (_data[curpos] < '0' ||
-					_data[curpos] > '9') {
-
-					break;
-				}
-
-				tmpval *= 10;
-				tmpval += cast(long)(_data[curpos] - '0');
-			}
-
-			if (negative) { tmpval = -tmpval; }
-
-			value = cast(T)tmpval;
-
-			return true;
-		}
-	}
-
-	// Description: This function will return the next integer value found in the string.
-	bool nextInt(out int value) {
-		return _nextInt!(int)(value);
-	}
-
-	bool nextInt(out uint value) {
-		return _nextInt!(uint)(value);
-	}
-
-	bool nextInt(out long value) {
-		return _nextInt!(long)(value);
-	}
-
-	bool nextInt(out ulong value) {
-		return _nextInt!(ulong)(value);
-	}
-
-	bool nextInt(out short value) {
-		return _nextInt!(short)(value);
-	}
-
-	bool nextInt(out ushort value) {
-		return _nextInt!(ushort)(value);
-	}
-
-	bool next(out String value, string delimiters) {
-		return false;
-	}
-
-	int findReverse(String search) {
-		// look through string for term search
-		// in some, hopefully later on, efficient manner
-
-		if (!_calcIndices) {
-			_indices = Unicode.calcIndices(_data);
-			_calcIndices = true;
-		}
-
-		if (!search._calcIndices) {
-			search._indices = Unicode.calcIndices(search._data);
-			search._calcIndices = true;
-		}
-
-		bool found;
-
-		int o;
-		int i;
-		int aPos;
-
-		for (i=_indices.length-1; i>=0; i--) {
-			aPos = _indices[i];
-
-			found = true;
-			o=i;
-			foreach (bPos; search._indices) {
-				dchar aChr, bChr;
-
-				aChr = Unicode.toUtf32Char(_data[_indices[o]..$]);
-				bChr = Unicode.toUtf32Char(search._data[bPos..$]);
-
-				if (aChr != bChr) {
-					found = false;
-					break;
-				}
-
-				o++;
-				if (o >= _indices.length) {
-					found = false;
-					break;
-				}
-			}
-			if (found) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	int find(string search, uint start = 0) {
-		return find(new String(search), start);
-	}
-
-	int find(String search, uint start = 0) {
-		// look through string for term search
-		// in some, hopefully later on, efficient manner
-
-		if (!_calcIndices) {
-			_indices = Unicode.calcIndices(_data);
-			_calcIndices = true;
-		}
-
-		if (!search._calcIndices) {
-			search._indices = Unicode.calcIndices(search._data);
-			search._calcIndices = true;
-		}
-
-		if (start >= _indices.length) {
-			return -1;
-		}
-
-		bool found;
-
-		int o;
-
-		foreach (i, aPos; _indices[start..$]) {
-			found = true;
-			o=i-1+start;
-			foreach (bPos; search._indices) {
-				o++;
-				if (o >= _indices.length) {
-					found = false;
-					break;
-				}
-
-				dchar aChr, bChr;
-
-				aChr = Unicode.toUtf32Char(_data[_indices[o]..$]);
-				bChr = Unicode.toUtf32Char(search._data[bPos..$]);
-
-				if (aChr != bChr) {
-					found = false;
-					break;
-				}
-			}
-			if (found) {
-				return i+start;
-			}
-		}
-
-		return -1;
-	}
-
-	String replace(dchar find, dchar replace) {
-		String ret = new String(this);
-
-		if (!ret._calcIndices) {
-			ret._indices = Unicode.calcIndices(ret._data);
-			ret._calcIndices = true;
-		}
-
-		for(int i = 0; i < ret._indices.length; i++) {
-			if (ret.charAt(i) == find) {
-				ret._calcIndices = false;
-				dchar[1] chrs = [replace];
-				ret._data = ret._data[0..ret._indices[i]] ~ Unicode.toNative(chrs) ~ ret._data[ret._indices[i+1]..$];
-			}
-
-			if (!ret._calcIndices) {
-				ret._indices = Unicode.calcIndices(ret._data);
-				ret._calcIndices = true;
-			}
-		}
-
-		return ret;
-	}
-
-	// Description: Will convert the string to lowercase.
-	// Returns: The lowercase version of the current string.
-	String toLowercase() {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		String str = new String("");
-
-		foreach(idx; _indices) {
-			dchar chr = Unicode.toUtf32Char(_data[idx..$]);
-
-			if (chr >= 'A' && chr <= 'Z') {
-				chr += 32;
-			}
-
-			str.appendChar(chr);
-		}
-
-		return str;
-	}
-
-	// Description: Will convert the string to uppercase.
-	// Returns: The uppercase version of the current string.
-	String toUppercase() {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		String str = new String("");
-
-		foreach(index; _indices) {
-			dchar chr = Unicode.toUtf32Char(_data[index..$]);
-
-			if (chr >= 'a' && chr <= 'z') {
-				chr -= 32;
-			}
-
-			str.appendChar(chr);
-		}
-
-		return str;
-	}
-
-	// Description: Will build and return a String object representing a slice of the current String.
-	// start: The position to start from.
-	// len: The length of the slice.  Pass -1 to get the remaining string.
-	String subString(int start, int len = -1) {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (start >= _indices.length || len == 0) {
-			return new String("");
-		}
-
-		if (len < 0) { len = -1; }
-
-		if (len >= 0 && start + len >= _indices.length) {
-			len = -1;
-		}
-
-		// subdivide
-
-		String str;
-		if (len == -1) {
-			start = _indices[start];
-			String ret = new String("");
-			ret._data = _data[start..$];
-			return ret;
-		}
-
-		// this is the index for one character past the
-		// end of the substring of the original string...hence, len is
-		// now the exclusive end of the range to slice the array.
-		len = _indices[start+len];
-
-		start = _indices[start];
-
-		String ret = new String();
-		ret._data = _data[start..len];
-		return ret;
-	}
-
-	// Description: Will return the UTF-32 character from the position given.  This will ignore combining marks!  Do not use unless you wish to compute the size of the character, where this function would be more efficient.  Otherwise, to ensure that internationalization is supported, use utfCharAt.
-	// position: The character index to retreive.
-	// Returns: The UTF-32 character at this position, without combining marks.
-	dchar charAt(uint position) {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (position >= _indices.length) {
-			return '\0';
-		}
-
-		if (_indices.length == 0) {
-			return '\0';
-		}
-
-		// convert the character starting at that position to a dchar
-
-		return Unicode.toUtf32Char(_data[_indices[position]..$]);
-	}
-
-	void setCharAt(uint position, dchar value) {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (position >= _indices.length) {
-			position = 0;
-		}
-
-		if (_indices.length == 0) {
-			return;
-		}
-
-		_calcIndices = false;
-		dchar[1] chrs = [value];
-		_data = _data[0.._indices[position]] ~ Unicode.toNative(chrs) ~ _data[_indices[position+1]..$];
-	}
-
-	// Description: Will return the UTF-32 character along with any combining marks.
-	// Returns: An array of UTF-32 characters.  The first character is the valid UTF-32 character base, and the rest of the dchars are combining marks.
-	// position: The character index to retreive.
-	dchar[] utfCharAt(uint position) {
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (position >= _indices.length) {
-			position = 0;
-		}
-
-		// convert the character starting at that position to a dchar
-
-		return Unicode.toUtf32Chars(_data[_indices[position]..$]);
-	}
-
-	// Description: Will cast the String object to a string for functions that require it.
-	//string opCast() {
-	//	return toString();
-	//}
-
-	// Unicode Conversions
-
-	// Description: Will return a Unicode character array for this string in UTF-32.
-	dstring toUtf32() {
-		static if (Char.sizeof == dchar.sizeof) {
-			// no change!
-			return cast(dstring)_data;
-		}
-		else {
-			return Unicode.toUtf32(_data);
-		}
-	}
-
-	// Description: Will return a Unicode character array for this string in UTF-16.
-	wstring toUtf16() {
-		static if (Char.sizeof == wchar.sizeof) {
-			// no change!
-			return cast(wstring)_data;
-		}
-		else {
-			return Unicode.toUtf16(_data);
-		}
-	}
-
-	// Description: Will return a Unicode character array for this string in UTF-8.
-	string toUtf8() {
-		static if (Char.sizeof == char.sizeof) {
-			// no change!
-			return _data;
-		}
-		else {
-			return Unicode.toUtf8(_data);
-		}
-	}
-
-	bool opEquals(string string) {
-		if (string.length != _data.length) {
-			return false;
-		}
-
-		if (_data[0..$] != Unicode.toNative(string[0..$])) {
-			return false;
-		}
-
-		return true;
-	}
-
-	// this should work:
-	alias Object.opEquals opEquals;
-
-	bool opEquals(String string) {
-		if (string._data.length != _data.length) {
-			return false;
-		}
-
-		if (_data[0..$] != string._data[0..$]) {
-			return false;
-		}
-
-		return true;
-	}
-
-	void fromInteger(long val) {
-		int intlen;
-		long tmp = val;
-
-	    bool negative;
-
-	    if (tmp < 0) {
-	        negative = true;
-	        tmp = -tmp;
-	        intlen = 2;
-	    }
-	    else {
-	        negative = false;
-	        intlen = 1;
-	    }
-
-	    while (tmp > 9) {
-	        tmp /= 10;
-	        intlen++;
-	    }
-
-	    //allocate
-
-	    _data = new Char[intlen];
-
-	    // we know the length
-	    _calcLength = true;
-	    _length = intlen;
-
-	    // we also know the indices!!!
-
-	    intlen--;
-
-	    if (negative) {
-	        tmp = -val;
-	    } else {
-	        tmp = val;
-	    }
-
-	    do {
-	        _data[intlen] = cast(Char)('0' + (tmp % 10));
-	        tmp /= 10;
-	        intlen--;
-	    } while (tmp != 0);
-
-
-	    if (negative) {
-	        _data[intlen] = '-';
-	    }
-
-		_calcIndices = false;
-		_calcLength = false;
-	}
-
-	// array operator overloads
-	string opSlice() {
-		return Unicode.toUtf8(_data);
-	}
-
-	string opSlice(size_t start) {
-		size_t end = _data.length;
-
-		if (start < 0) { start = 0; }
-
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (end >= _indices.length) {
-			end = _data.length;
-		}
-		else {
-			end = _indices[end];
-		}
-
-		if (start > end) { return ""; }
-
-		return Unicode.toUtf8(_data[start..end]);
-	}
-
-	string opSlice(size_t start, size_t end) {
-		if (start < 0) { start = 0; }
-
-		if (!_calcIndices) {
-			_calcIndices = true;
-			_indices = Unicode.calcIndices(_data);
-		}
-
-		if (end >= _indices.length) {
-			end = _data.length;
-		}
-		else {
-			end = _indices[end];
-		}
-
-		if (start > end) { return ""; }
-
-		return Unicode.toUtf8(_data[start..end]);
-	}
-
-	//string opSliceAssign(T val)
-	//{
-	//	return _components[] = val;
-	//}
-
-	//string opSliceAssign(T[] val)
-	//{
-	//	return _components[] = val;
-	//}
-
-	//string opSliceAssign(T val, size_t x, size_t y)
-	//{
-	//	return _components[x..y] = val;
-	//}
-
-	//string opSliceAssign(T[] val, size_t x, size_t y)
-	//{
-	//	return _components[x..y] = val;
-	//}
-
-	Char opIndex(size_t i) {
-		return charAt(i);
-	}
-
-	void opIndexAssign(size_t i, dchar val) {
-		setCharAt(i, val);
-	}
-
-	//string opIndexAssign(T value, size_t i)
-	//{
-	//	return _components[i] = value;
-	//}
-
-	String opCat(string string) {
-		String newStr = new String(this);
-		newStr.append(string);
-
-		return newStr;
-	}
-
-	void opCatAssign(string str) {
-		append(str);
-	}
-
-	String opCat(String string) {
-		String newStr = new String(this);
-		newStr.append(string);
-
-		return newStr;
-	}
-
-	void opCatAssign(String str) {
-		append(str);
-	}
-
-	String opCat(dchar chr) {
-		String newStr = new String(this);
-		newStr.appendChar(chr);
-
-		return newStr;
-	}
-
-	void opCatAssign(dchar chr) {
-		appendChar(chr);
-	}
-
-	int opApply(int delegate(inout dchar) loopFunc) {
-		int ret;
-
-		dchar[] utf32 = toUtf32();
-
-		foreach(chr; utf32) {
-			ret = loopFunc(chr);
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	int opApplyReverse(int delegate(inout dchar) loopFunc) {
-		int ret;
-
-		dchar[] utf32 = toUtf32();
-
-		foreach_reverse(chr; utf32) {
-			ret = loopFunc(chr);
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	int opApply(int delegate(inout int, inout dchar) loopFunc) {
-		int ret;
-
-		int idx = 0;
-
-		dchar[] utf32 = toUtf32();
-
-		foreach(chr; utf32) {
-			ret = loopFunc(idx,chr);
-			idx++;
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	int opApplyReverse(int delegate(inout int, inout dchar) loopFunc) {
-		int ret;
-		int idx = length();
-
-		dchar[] utf32 = toUtf32();
-
-		foreach_reverse(chr; utf32) {
-			idx--;
-			ret = loopFunc(idx,chr);
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	int opCmp(Object o) {
-		if (cast(String)o) {
-			String str = cast(String)o;
-			if (_data < str._data) {
-				return -1;
-			}
-			else if (_data == str._data) {
-				return 0;
-			}
-			return 1;
-		}
-		return 0;
-	}
-
-	int opCmp(string str) {
-		return opCmp(new String(str));
-	}
-
-	override char[] toString() {
-		return Unicode.toUtf8(_data);
-	}
-
-private:
-	uint _length;
-
-	bool _calcLength; 		// whether the length has been calculated
-
-	uint[] _indices;		// refer within the string for each character
-
-	bool _calcIndices;		// whether the indices have been calculated
-
-	uint _capacity;
-	Char _data[];
 }
 
 // Standard string functions (for C)
@@ -1273,7 +380,7 @@ bool nextInt(string str, out ushort value) {
 // Description: Will build and return a String object representing a slice of the current String.
 // start: The position to start from.
 // len: The length of the slice.  Pass -1 to get the remaining string.
-string subString(string str, int start, int len = -1) {
+string substring(string str, int start, int len = -1) {
 	uint[] _indices = Unicode.calcIndices(str);
 
 	if (start >= _indices.length || len == 0) {
@@ -1321,6 +428,45 @@ string replace(string str, dchar find, dchar replace) {
 	}
 
 	return ret;
+}
+
+int findReverse(string source, string search, uint start = uint.max) {
+	if (start == uint.max) {
+		start = source.length;
+	}
+
+	uint[] _indices = Unicode.calcIndices(source);
+	uint[] search_indices = Unicode.calcIndices(search);
+
+	bool found;
+
+	int o;
+	foreach_reverse(i, aPos; _indices[0..start]) {
+		found = true;
+		o=i-1;
+		foreach(bPos; search_indices) {
+			o++;
+			if(o >= _indices.length) {
+				found = false;
+				break;
+			}
+
+			dchar aChr, bChr;
+
+			aChr = Unicode.toUtf32Char(source[_indices[o]..$]);
+			bChr = Unicode.toUtf32Char(search[bPos..$]);
+
+			if(aChr != bChr) {
+				found = false;
+				break;
+			}
+		}
+		if (found) {
+			return i;
+		}
+	}
+
+	return -1;
 }
 
 int find(string source, string search, uint start = 0) {
@@ -1373,4 +519,577 @@ string times(string str, int amount) {
 		ret ~= str;
 	}
 	return ret;
+}
+
+string format(string format, ...) {
+	Variadic vars = new Variadic(_arguments, _argptr);
+	return formatv(format, vars);
+}
+
+string formatv(string format, Variadic vars) {
+	string ret = "";
+	string specifier = "";
+	bool inFormat = false;
+	bool intoFormat = false;
+	foreach(chr; format) {
+		if (intoFormat && chr != '{') {
+			intoFormat = false;
+			inFormat = true;
+		}
+
+		if (inFormat) {
+			// look for format end
+			if (chr == '}') {
+				inFormat = false;
+
+				Variant var = vars.next();
+				Type type = var.type;		
+				int width = 0;
+				int precision = 0;
+				int base = 10;
+				bool unsigned = false;
+				long value;
+				ulong uvalue;
+				float fvalue;
+				double dvalue;
+
+				bool formatNumber = false;
+				bool formatFloat = false;
+				bool formatDouble = false;
+
+				if (specifier.nextInt(width)) {
+					specifier = specifier.substring(toStr(width).length);
+				}
+
+				// interpret format specifier
+				if (specifier.length == 0) {
+					// None... just toString the argument
+					ret ~= var.toString();
+				}
+
+				switch(specifier) {
+					case "d":
+						base = 10;
+						formatNumber = true;
+						break;
+					case "x":
+						base = 16;
+						unsigned = true;
+						formatNumber = true;
+						break;
+					case "u":
+						base = 10;
+						unsigned = true;
+						formatNumber = true;
+						break;
+					default:
+						ret ~= var.toString();
+						break;
+				}
+
+				if (formatNumber) {
+					switch (type) {
+						case Type.Byte:
+						case Type.Ubyte:
+						case Type.Short:
+						case Type.Ushort:
+						case Type.Int:
+						case Type.Uint:
+						case Type.Long:
+							value = var.to!(long);
+							uvalue = var.to!(ulong);
+							break;
+						case Type.Ulong:
+							unsigned = true;
+							uvalue = var.to!(ulong);
+							break;
+						case Type.Float:
+							fvalue = var.to!(float);
+							formatFloat = true;
+							break;
+						case Type.Double:
+							dvalue = var.to!(double);
+							formatDouble = true;
+							break;
+					}
+
+					string result = "";
+					if (formatFloat) {
+						result = ftoa(fvalue, base);
+					}
+					else if (formatDouble) {
+						result = dtoa(dvalue, base);
+					}
+					else if (unsigned) {
+						result = utoa(uvalue, base);
+					}
+					else {
+						result = itoa(value, base);
+					}
+					while (result.length < width) {
+						result = "0" ~ result;
+					}
+					ret ~= result;
+				}
+			}
+			specifier ~= chr;
+		}
+		else {
+			// Go into a format specifier
+			if (chr == '{' && intoFormat == false) {
+				intoFormat = true;
+				continue;
+			}
+			intoFormat = false;
+			ret ~= chr;
+		}
+	}
+	return ret;
+}
+
+string lowercase(string str) {
+	string ret = "";
+	return "";
+}
+
+string uppercase(string str) {
+	string ret = "";
+	return "";
+}
+
+string charAt(string str, int idx) {
+	return "";
+}
+
+string insertAt(string str, string what, int idx) {
+	return "";
+}
+
+private:
+string itoa(long val, uint base = 10) {
+	int intlen;
+	long tmp = val;
+
+    bool negative;
+
+    if (tmp < 0) {
+        negative = true;
+        tmp = -tmp;
+        intlen = 2;
+    }
+    else {
+        negative = false;
+        intlen = 1;
+    }
+
+    while (tmp >= base) {
+        tmp /= base;
+        intlen++;
+    }
+
+    //allocate
+
+    string ret = new char[intlen];
+
+    intlen--;
+
+    if (negative) {
+        tmp = -val;
+    } else {
+        tmp = val;
+    }
+
+    do {
+    	uint off = cast(uint)(tmp % base);
+    	char replace;
+    	if (off < 10) {
+    		replace = cast(char)('0' + off);
+    	}
+    	else if (off < 36) {
+    		off -= 10;
+    		replace = cast(char)('a' + off);
+    	}
+        ret[intlen] = replace;
+        tmp /= base;
+        intlen--;
+    } while (tmp != 0);
+
+
+    if (negative) {
+        ret[intlen] = '-';
+    }
+
+    return ret;
+}
+
+string utoa(ulong val, uint base = 10) {
+	int intlen;
+	ulong tmp = val;
+
+    intlen = 1;
+
+    while (tmp >= base) {
+        tmp /= base;
+        intlen++;
+    }
+
+    //allocate
+    tmp = val;
+
+    string ret = new char[intlen];
+
+    intlen--;
+
+    do {
+    	uint off = cast(uint)(tmp % base);
+    	char replace;
+    	if (off < 10) {
+    		replace = cast(char)('0' + off);
+    	}
+    	else if (off < 36) {
+    		off -= 10;
+    		replace = cast(char)('a' + off);
+    	}
+        ret[intlen] = replace;
+        tmp /= base;
+        intlen--;
+    } while (tmp != 0);
+
+    return ret;
+}
+
+private union intFloat {
+	int l;
+	float f;
+}
+
+private union longDouble {
+	long l;
+	double f;
+}
+
+private union longReal {
+	struct inner {
+		short exp;
+		long frac;
+	}
+
+	inner l;
+	real f;
+}
+
+string ctoa(cfloat val, uint base = 10) {
+	if (val is cfloat.infinity) {
+		return "inf";
+	}
+	else if (val.re !<>= 0.0 && val.im !<>= 0.0) {
+		return "nan";
+	}
+
+	return ftoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
+string ctoa(cdouble val, uint base = 10) {
+	if (val is cdouble.infinity) {
+		return "inf";
+	}
+	else if (val.re !<>= 0.0 && val.im !<>= 0.0) {
+		return "nan";
+	}
+
+	return dtoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
+string ctoa(creal val, uint base = 10) {
+	if (val is creal.infinity) {
+		return "inf";
+	}
+	else if (val is creal.nan) {
+		return "nan";
+	}
+
+	return rtoa(val.re, base) ~ " + " ~ ftoa(val.im, base) ~ "i";
+}
+
+string ftoa(float val, uint base = 10) {
+	if (val == float.infinity) {
+		return "inf";
+	}
+	else if (val !<>= 0.0) {
+		return "nan";
+	}
+	else if (val == 0.0) {
+		return "0";
+	}
+
+	long mantissa;
+	long intPart;
+	long fracPart;
+
+	short exp;
+
+	intFloat iF;
+	iF.f = val;
+
+	// Conform to the IEEE standard
+	exp = ((iF.l >> 23) & 0xff) - 127;
+	mantissa = (iF.l & 0x7fffff) | 0x800000;
+	fracPart = 0;
+	intPart = 0;
+
+	if (exp >= 31) {
+		return "0";
+	}
+	else if (exp < -23) {
+		return "0";
+	}
+	else if (exp >= 23) {
+		intPart = mantissa << (exp - 23);
+	}
+	else if (exp >= 0) {
+		intPart = mantissa >> (23 - exp);
+		fracPart = (mantissa << (exp + 1)) & 0xffffff;
+	}
+	else { // exp < 0
+		fracPart = (mantissa & 0xffffff) >> (-(exp + 1));
+	}
+
+	string ret;
+	if (iF.l < 0) {
+		ret = "-";
+	}
+
+	ret ~= itoa(intPart, base);
+	ret ~= ".";
+	for (uint k; k < 7; k++) {
+		fracPart *= 10;
+		ret ~= cast(char)((fracPart >> 24) + '0');
+		fracPart &= 0xffffff;
+	}
+	
+	// round last digit
+	bool roundUp = (ret[$-1] >= '5');
+	ret = ret[0..$-1];
+
+	while (roundUp) {
+		if (ret.length == 0) {
+			return "0";
+		}
+		else if (ret[$-1] == '.' || ret[$-1] == '9') {
+			ret = ret[0..$-1];
+			continue;
+		}
+		ret[$-1]++;
+		break;
+	}
+
+	// get rid of useless zeroes (and point if necessary)
+	foreach_reverse(uint i, chr; ret) {
+		if (chr != '0' && chr != '.') {
+			ret = ret[0..i+1];
+			break;
+		}
+		else if (chr == '.') {
+			ret = ret[0..i];
+			break;
+		}
+	}
+
+	return ret;
+}
+
+string dtoa(double val, uint base = 10, bool doIntPart = true) {
+	if (val is double.infinity) {
+		return "inf";
+	}
+	else if (val !<>= 0.0) {
+		return "nan";
+	}
+	else if (val == 0.0) {
+		return "0";
+	}
+
+	long mantissa;
+	long intPart;
+	long fracPart;
+
+	long exp;
+
+	longDouble iF;
+	iF.f = val;
+
+	// Conform to the IEEE standard
+	exp = ((iF.l >> 52) & 0x7ff);
+	if (exp == 0) {
+		return "0";
+	}
+	else if (exp == 0x7ff) {
+		return "inf";
+	}
+	exp -= 1023;
+
+	mantissa = (iF.l & 0xfffffffffffff) | 0x10000000000000;
+	fracPart = 0;
+	intPart = 0;
+
+	if (exp < -52) {
+		return "0";
+	}
+	else if (exp >= 52) {
+		intPart = mantissa << (exp - 52);
+	}
+	else if (exp >= 0) {
+		intPart = mantissa >> (52 - exp);
+		fracPart = (mantissa << (exp + 1)) & 0x1fffffffffffff;
+	}
+	else { // exp < 0
+		fracPart = (mantissa & 0x1fffffffffffff) >> (-(exp + 1));
+	}
+
+	string ret;
+	if (iF.l < 0) {
+		ret = "-";
+	}
+
+	if (doIntPart) {
+		ret ~= itoa(intPart, base);
+		ret ~= ".";
+	}
+
+	for (uint k; k < 7; k++) {
+		fracPart *= 10;
+		ret ~= cast(char)((fracPart >> 53) + '0');
+		fracPart &= 0x1fffffffffffff;
+	}
+	
+	// round last digit
+	bool roundUp = (ret[$-1] >= '5');
+	ret = ret[0..$-1];
+
+	while (roundUp) {
+		if (ret.length == 0) {
+			return "0";
+		}
+		else if (ret[$-1] == '.' || ret[$-1] == '9') {
+			ret = ret[0..$-1];
+			continue;
+		}
+		ret[$-1]++;
+		break;
+	}
+
+	// get rid of useless zeroes (and point if necessary)
+	foreach_reverse(uint i, chr; ret) {
+		if (chr != '0' && chr != '.') {
+			ret = ret[0..i+1];
+			break;
+		}
+		else if (chr == '.') {
+			ret = ret[0..i];
+			break;
+		}
+	}
+
+	return ret;
+}
+
+string rtoa(real val, uint base = 10) {
+	static if (real.sizeof == 10) {
+		// Support for 80-bit extended precision
+
+		if (val is real.infinity) {
+			return "inf";
+		}
+		else if (val !<>= 0.0) {
+			return "nan";
+		}
+		else if (val == 0.0) {
+			return "0";
+		}
+
+		long mantissa;
+		long intPart;
+		long fracPart;
+	
+		long exp;
+
+		longReal iF;
+		iF.f = val;
+
+		// Conform to the IEEE standard
+		exp = iF.l.exp & 0x7fff;
+		if (exp == 0) {
+			return "0";
+		}
+		else if (exp == 32767) {
+			return "inf";
+		}
+		exp -= 16383;
+
+		mantissa = iF.l.frac;
+		fracPart = 0;
+		intPart = 0;
+	
+		if (exp >= 31) {
+			return "0";
+		}
+		else if (exp < -64) {
+			return "0";
+		}
+		else if (exp >= 64) {
+			intPart = mantissa << (exp - 64);
+		}
+		else if (exp >= 0) {
+			intPart = mantissa >> (64 - exp);
+			fracPart = mantissa << (exp + 1);
+		}
+		else { // exp < 0
+			fracPart = mantissa >> (-(exp + 1));
+		}
+
+		string ret;
+		if (iF.l.exp < 0) {
+			ret = "-";
+		}
+	
+		ret ~= itoa(intPart, base);
+		ret ~= ".";
+		for (uint k; k < 7; k++) {
+			fracPart *= 10;
+			ret ~= cast(char)((fracPart >> 64) + '0');
+		}
+		
+		// round last digit
+		bool roundUp = (ret[$-1] >= '5');
+		ret = ret[0..$-1];
+	
+		while (roundUp) {
+			if (ret.length == 0) {
+				return "0";
+			}
+			else if (ret[$-1] == '.' || ret[$-1] == '9') {
+				ret = ret[0..$-1];
+				continue;
+			}
+			ret[$-1]++;
+			break;
+		}
+	
+		// get rid of useless zeroes (and point if necessary)
+		foreach_reverse(uint i, chr; ret) {
+			if (chr != '0' && chr != '.') {
+				ret = ret[0..i+1];
+				break;
+			}
+			else if (chr == '.') {
+				ret = ret[0..i];
+				break;
+			}
+		}
+
+		return ret;
+	}
+	else {
+		return ftoa(cast(double)val, base);
+	}
 }

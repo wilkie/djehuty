@@ -12,8 +12,8 @@
 module core.list;
 
 import core.definitions;
+import core.string;
 import core.util;
-import core.tostring;
 import core.exception;
 
 // Description: This template resolves to true when the type T is

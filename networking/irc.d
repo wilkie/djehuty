@@ -245,38 +245,37 @@ struct IRC
 			_skt.close();
 		}
 
-		void sendPong(String server)
+		void sendPong(string server)
 		{
 			if (_connected)
 			{
-				_skt.writeUtf8("PONG " ~ server.toUtf8() ~ "\r\n");
+				_skt.writeUtf8("PONG " ~ server ~ "\r\n");
 			}
 		}
 
-		void sendMessage(String to, String message)
+		void sendMessage(string to, string message)
 		{
 			if (_connected)
 			{
-				_skt.writeUtf8("PRIVMSG " ~ to.toUtf8() ~ " :" ~ message.toUtf8() ~ "\r\n");
+				_skt.writeUtf8("PRIVMSG " ~ to ~ " :" ~ message ~ "\r\n");
 			}
 		}
 
-		void OnPing(String server)
+		void OnPing(string server)
 		{
-			Console.put("ping! " ~ server.toUtf8());
+			Console.put("ping! " ~ server);
 			sendPong(server);
 		}
 
-		void OnReceiveMessage(String to, String from, String message)
+		void OnReceiveMessage(string to, string from, string message)
 		{
-			int pos = from.find(new String("!"));
-			if (pos > 0)
-			{
-				from = from.subString(0, pos);
+			int pos = from.find("!");
+			if (pos > 0) {
+				from = from.substring(0, pos);
 			}
 			Console.put("Message Received");
-			Console.put("from: " ~ from.toUtf8());
-			Console.put("message: " ~ message.toUtf8());
+			Console.put("from: " ~ from);
+			Console.put("message: " ~ message);
 		}
 
 
@@ -372,13 +371,11 @@ struct IRC
 			{
 				if (command.command == "PRIVMSG" && command.paramCount > 0 && command.prefix !is null && command.content !is null)
 				{
-					OnReceiveMessage(new String(command.params[0]),
-						new String(command.prefix),
-						new String(command.content));
+					OnReceiveMessage(command.params[0], command.prefix, command.content);
 				}
 				else if (command.command == "PING" && command.prefix !is null)
 				{
-					OnPing(new String(command.prefix));
+					OnPing(command.prefix);
 				}
 			}
 		}
