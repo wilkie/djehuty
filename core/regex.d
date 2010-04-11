@@ -12,7 +12,6 @@
 module core.regex;
 
 import core.string;
-import core.tostring;
 import core.definitions;
 import core.list;
 
@@ -33,105 +32,105 @@ uint _position() {
 	return uint.max;
 }
 
-String _1() {
+string _1() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][0];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _2() {
+string _2() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][1];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _3() {
+string _3() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][2];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _4() {
+string _4() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][3];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _5() {
+string _5() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][4];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _6() {
+string _6() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][5];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _7() {
+string _7() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][6];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _8() {
+string _8() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][7];
 	}
 
-	return new String("");
+	return ("");
 }
 
-String _9() {
+string _9() {
 	if (Thread.getCurrent() in Regex.regexRefs) {
 		return Regex.regexRefs[Thread.getCurrent()][8];
 	}
 
-	return new String("");
+	return ("");
 }
 
 class Regex {
 
 	// Description: This constructor will create an instance of a Regex that will efficiently compute the regular expression given.
 	// regex: The regular expression to utilize.
-	this(String regex) {
-		regularExpression = new String(regex);
+	this(string regex) {
+		regularExpression = (regex);
 
 		buildDFA(false);
 	}
 
 	this(string regex) {
-		regularExpression = new String(regex);
+		regularExpression = (regex);
 
 		buildDFA();
 	}
 
-	// Description: This function will return a matched regular expression on the given String. Single use regular expression functions, such as this one, use a backtracking algorithm.
-	// str: The String to run the regular expression upon.
+	// Description: This function will return a matched regular expression on the given string. Single use regular expression functions, such as this one, use a backtracking algorithm.
+	// str: The string to run the regular expression upon.
 	// regex: The regular expression to use.
 	// Returns: The matched substring or null when no match could be found.
-	static String eval(String str, String regex, string options = "") {
+	static string eval(string str, string regex, string options = "") {
 		RegexInfo regexInfo;
 		
 		/*
 		static RegexInfo[string] oldRuns;
 
-		string oldRunIndex = (regex.toString() ~ "_" ~ options);
+		string oldRunIndex = (regex.tostring() ~ "_" ~ options);
 		if (oldRunIndex in oldRuns) {
 			regexInfo = oldRuns[oldRunIndex];
 		}*/
@@ -190,7 +189,7 @@ class Regex {
 
 		bool backtrackedOnCaret = false;
 
-		regexRefs[Thread.getCurrent()] = new String[](9);
+		regexRefs[Thread.getCurrent()] = new string [](9);
 
 		// Suppresses group matching until a position is reached.
 		int noMatchUntilClosedAtPos = -1;
@@ -555,7 +554,7 @@ class Regex {
 
 					if (!noMatch) {
 						if (regexGroupStart < 9) {
-							String consumed = new String(str[regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strStartPos..strPos]);
+							string consumed = (str[regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strStartPos..strPos]);
 							regexRefs[Thread.getCurrent()][regexGroupStart] = consumed;
 							regexGroupStart++;
 						}
@@ -1201,35 +1200,23 @@ class Regex {
 		// Return the result
 		if (matchMade && strPosStart <= str.length) {
 			if (strPos-strPosStart == 0) {
-				return new String("");
+				return ("");
 			}
 
 			// Save the position where the string was consumed
 			this.regexPos[Thread.getCurrent()] = strPosStart;
 
 			// Slice and return the consumed string
-			return str.subString(strPosStart, strPos-strPosStart);
+			return str.substring(strPosStart, strPos-strPosStart);
 		}
 
 		return null;
 	}
 
-	static String eval(string str, String regex, string options = "") {
-		return eval(new String(str), regex, options);
-	}
-
-	static String eval(String str, string regex, string options = "") {
-		return eval(str, new String(regex), options);
-	}
-
-	static String eval(string str, string regex, string options = "") {
-		return eval(new String(str), new String(regex), options);
-	}
-
-	// Description: This function will return a matched regular expression on the given String. Instances of a Regex will use a DFA based approach.
-	// str: The String to run the regular expression upon.
+	// Description: This function will return a matched regular expression on the given string. Instances of a Regex will use a DFA based approach.
+	// str: The string to run the regular expression upon.
 	// Returns: The matched substring or null when no match could be found.
-	String eval(String str) {
+	string eval(string str) {
 		State currentState = startingState;
 
 		uint strPos;
@@ -1294,15 +1281,11 @@ class Regex {
 
 		// Return consumed string
 		if (currentState.accept) {
-			return str.subString(startingStrPos, strPos - startingStrPos);
+			return str.substring(startingStrPos, strPos - startingStrPos);
 		}
 
 		// No match
 		return null;
-	}
-
-	String eval(string str) {
-		return eval(new String(str));
 	}
 
 protected:
@@ -1311,7 +1294,7 @@ protected:
 	// that will build and maintain the DFA for the regular expression
 
 	// Holds the regular expression for the instance
-	String regularExpression;
+	string regularExpression;
 
 	// For DFA regex operations
 	
@@ -1355,7 +1338,7 @@ protected:
 			all.add(this);
 		}
 	
-		string toString() {
+		string tostring() {
 			string ret = "State " ~ toStr(id) ~ ": [";
 
 			if (accept) {
@@ -1446,17 +1429,13 @@ private:
 	}
 
 	State buildDFA(string regex) {
-		return buildDFA(new String(regex));
-	}
-
-	State buildDFA(String regex) {
 		fillGroupInfo();
 		uint regexPos = 0;
 		List!(State) current = new List!(State);
 		return buildDFA(regex, regexPos, current);
 	}
 
-	State buildDFA(String regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
+	State buildDFA(string regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
 		State startState = new State();
 		Console.putln("Start State: ", startState.id);
 
@@ -1695,7 +1674,7 @@ private:
 
 	// Common
 
-	static String[][Thread] regexRefs;
+	static string[][Thread] regexRefs;
 	static uint[Thread] regexPos;
 
 	// For backtracking regex operations

@@ -23,7 +23,7 @@ import gui.listbox;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, Iterable!(String) list = null) {
+	this(int x, int y, int width, int height, Iterable!(string) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
@@ -42,17 +42,17 @@ class ListFieldWindow : Window {
 // Section: Controls
 
 // Description: This control provides a standard dropdown list selection box.
-class ListField : Widget, Iterable!(String) {
+class ListField : Widget, Iterable!(string) {
 
 	enum Signal : uint {
 		Selected,
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, Iterable!(String) list = null) {
+	this(int x, int y, int width, int height, Iterable!(string) list = null) {
 		super(x,y,width,height);
 
-		_list = new List!(String)();
+		_list = new List!(string)();
 		if (list !is null) {
 			foreach(item; list) {
 				_list.add(item);
@@ -131,47 +131,43 @@ class ListField : Widget, Iterable!(String) {
 
 	// List Methods
 
-	void add(String data) {
-		control_listbox.add(data);
-	}
-
 	void add(string data) {
 		control_listbox.add(data);
 	}
 
-	void add(Iterable!(String) list) {
+	void add(Iterable!(string) list) {
 		control_listbox.add(list);
 	}
 
-	void add(String[] list) {
+	void add(string[] list) {
 		control_listbox.add(list);
 	}
 
-	String remove() {
+	string remove() {
 		return control_listbox.remove();
 	}
 
-	String removeAt(size_t idx){
+	string removeAt(size_t idx){
 		return control_listbox.removeAt(idx);
 	}
 
-	String peek() {
+	string peek() {
 		return control_listbox.peek();
 	}
 
-	String peekAt(size_t idx) {
+	string peekAt(size_t idx) {
 		return control_listbox.peekAt(idx);
 	}
 
-	void set(String c) {
+	void set(string c) {
 		control_listbox.set(c);
 	}
 
-	void apply(String delegate(String) func) {
+	void apply(string delegate(string) func) {
 		control_listbox.apply(func);
 	}
 
-	bool contains(String c) {
+	bool contains(string c) {
 		return control_listbox.contains(c);
 	}
 
@@ -183,19 +179,19 @@ class ListField : Widget, Iterable!(String) {
 		control_listbox.clear();
 	}
 
-	String[] array() {
+	string[] array() {
 		return control_listbox.array();
 	}
 
-	List!(String) dup() {
+	List!(string) dup() {
 		return control_listbox.dup();
 	}
 
-	List!(String) slice(size_t start, size_t end) {
+	List!(string) slice(size_t start, size_t end) {
 		return control_listbox.slice(start, end);
 	}
 
-	List!(String) reverse() {
+	List!(string) reverse() {
 		return control_listbox.reverse();
 	}
 
@@ -203,47 +199,47 @@ class ListField : Widget, Iterable!(String) {
 		return control_listbox.length();
 	}
 
-	String opIndex(size_t i1) {
+	string opIndex(size_t i1) {
 		return control_listbox.opIndex(i1);
 	}
 
-	int opApply(int delegate(ref String) loopFunc) {
+	int opApply(int delegate(ref string) loopFunc) {
 		return control_listbox.opApply(loopFunc);
 	}
 
-	int opApply(int delegate(ref size_t, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref string) loopFunc) {
 		return control_listbox.opApply(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref string) loopFunc) {
 		return control_listbox.opApplyReverse(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
 		return control_listbox.opApplyReverse(loopFunc);
 	}
 
-	void opCatAssign(String[] list) {
+	void opCatAssign(string[] list) {
 		control_listbox.opCatAssign(list);
 	}
 
-	void opCatAssign(Iterable!(String) list) {
+	void opCatAssign(Iterable!(string) list) {
 		control_listbox.opCatAssign(list);
 	}
 
-	void opCatAssign(String item) {
+	void opCatAssign(string item) {
 		control_listbox.opCatAssign(item);
 	}
 
-	Iterable!(String) opCat(String[] list) {
+	Iterable!(string) opCat(string[] list) {
 		return control_listbox.opCat(list);
 	}
 
-	Iterable!(String) opCat(Iterable!(String) list) {
+	Iterable!(string) opCat(Iterable!(string) list) {
 		return control_listbox.opCat(list);
 	}
 
-	Iterable!(String) opCat(String item) {
+	Iterable!(string) opCat(string item) {
 		return control_listbox.opCat(item);
 	}
 protected:
@@ -268,5 +264,5 @@ protected:
 	ListBox control_listbox;
 	Window control_window;
 
-	List!(String) _list;
+	List!(string) _list;
 }

@@ -29,7 +29,7 @@ void MenuDestroy(MenuPlatformVars* menuVars)
 {
 }
 
-void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toAppendVars, String text, bool hasSubitems)
+void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toAppendVars, string text, bool hasSubitems)
 {
 	if (hasSubitems)
 	{
@@ -39,7 +39,7 @@ void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 	}
 }
 
-void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toUpdateVars, String text, uint position, bool hasSubitems)
+void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toUpdateVars, string text, uint position, bool hasSubitems)
 {
 	if (hasSubitems)
 	{

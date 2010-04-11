@@ -282,8 +282,8 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
 
 	//Fill in a text property
 
-	String str = new String(window.text);
-	str.appendChar('\0');
+	string str = window.text.dup;
+	str ~= '\0';
 
 	// Alternative Syntax:
 
@@ -305,12 +305,12 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
 	X.XChangeProperty(_pfvars.display, windowVars.window,
 			X.XInternAtom(_pfvars.display, "_NET_WM_NAME", X.Bool.False),
 			X.XInternAtom(_pfvars.display, "UTF8_STRING", X.Bool.False),
-			8, X.PropertyMode.PropModeReplace, cast(ubyte*)str.ptr, str.array.length-1);
+			8, X.PropertyMode.PropModeReplace, cast(ubyte*)str.ptr, str.length-1);
 
 	X.XChangeProperty(_pfvars.display, windowVars.window,
 			X.XInternAtom(_pfvars.display, "_NET_WM_ICON_NAME", X.Bool.False),
 			X.XInternAtom(_pfvars.display, "UTF8_STRING", X.Bool.False),
-			8, X.PropertyMode.PropModeReplace, cast(ubyte*)str.ptr, str.array.length-1);
+			8, X.PropertyMode.PropModeReplace, cast(ubyte*)str.ptr, str.length-1);
 
 }
 

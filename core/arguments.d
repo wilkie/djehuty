@@ -7,7 +7,7 @@ import core.string;
 import core.list;
 
 // Description: This class holds the command line arguments that were passed into the app and will aid in parsing them.
-class Arguments : List!(String) {
+class Arguments : List!(string) {
 public:
 
 	this() {

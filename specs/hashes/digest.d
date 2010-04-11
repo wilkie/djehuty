@@ -8,28 +8,28 @@ describe digest() {
 	describe creation() {
 		it should_allow_for_64_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 
 			should(s == "deadbeef01234567");
 		}
 
 		it should_allow_for_128_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 
 			should(s == "deadbeef01234567deadbeef01234567");
 		}
 
 		it should_allow_for_160_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF);
-			String s = d.getString();
+			string s = d.toString();
 
 			should(s == "deadbeef01234567deadbeef01234567deadbeef");
 		}
 
 		it should_allow_for_192_bits() {
 			Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
-			String s = d.getString();
+			string s = d.toString();
 
 			should(s == "deadbeef01234567deadbeef01234567deadbeef01234567");
 		}

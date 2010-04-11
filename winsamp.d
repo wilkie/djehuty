@@ -6,6 +6,8 @@ import gui.button;
 import gui.widget;
 import gui.listbox;
 
+import hashes.digest;
+
 import resource.menu;
 
 import graphics.graphics;
@@ -64,20 +66,36 @@ import networking.ftp;
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
-		ftp = new FtpClient();
 
-		push(ftp);
+		DParser parser = new DParser(File.open("tests/test.d"));
+		parser.parse();
 
-		string test = "paradox.sis.pitt.edu";
-		ftp.connect(test,21,"bkuhlman","4folders4");
+		string s = "{8x}".format(255);
+		Console.putln(s);
+		string s2 = "{8X}".format(255);
+		Console.putln(s2);
+		
+		Digest d = new Digest(0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567, 0xDEADBEEF, 0x01234567);
+		Console.putln(d);
 
-		ftp.switch_to_passive();
 
-		ftp.get_file("/home/bkuhlman/public_html/files","webserver.c","./");
+			string foo = "he\u0364llo";
+			string f1 = foo.insertAt("def", 0);
+			string f2 = foo.insertAt("def", 1);
+			string f3 = foo.insertAt("def", 2);
+			string f4 = foo.insertAt("def", 3);
+			string f5 = foo.insertAt("def", 4);
+			string f6 = foo.insertAt("def", 5);
+			string f7 = foo.insertAt("def", 6);
 
-
-				bool check =ftp.close();
-
+			Console.putln(foo == "he\u0364llo");
+			Console.putln(f1 == "defhe\u0364llo");
+			Console.putln(f2 == "hdefe\u0364llo");
+			Console.putln(f3 == "he\u0364defllo");
+			Console.putln(f4 == "he\u0364ldeflo");
+			Console.putln(f5 == "he\u0364lldefo");
+			Console.putln(f6 == "he\u0364llodef");
+			Console.putln(f7 is null);
 	}
 
 	/*	override bool onSignal(Dispatcher dsp, uint signal) {

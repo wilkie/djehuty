@@ -20,10 +20,6 @@ template CustomException(char[] name, char[] error, char[] error_more) {
 				super("`~error~`");
 			}
 
-			this(String msg) {
-				super("`~error~error_more~`" ~ msg.toString());
-			}
-
 			this(string msg) {
 				super("`~error~error_more~`" ~ msg);
 			}

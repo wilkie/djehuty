@@ -20,9 +20,6 @@ import graphics.brush;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, String value) {
-		super(x,y,width,height,value);
-	}
 	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}
@@ -39,15 +36,9 @@ class Button : Widget {
 	}
 
 	// Description: This will create a button with the specified dimensions and text.
-	this(int x, int y, int width, int height, String value) {
-		super(x,y,width,height);
-		_value = new String(value);
-	}
-
-	// Description: This will create a button with the specified dimensions and text.
 	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height);
-		_value = new String(value);
+		_value = value.dup;
 	}
 
 	override void onAdd() {
@@ -116,20 +107,16 @@ class Button : Widget {
 		return true;
 	}
 
-	void text(String newTitle) {
-		_value = new String(newTitle);
-	}
-
 	void text(string newTitle) {
-		_value = new String(newTitle);
+		_value = newTitle.dup;
 	}
 
-	String text() {
-		return _value;
+	string text() {
+		return _value.dup;
 	}
 
 protected:
-	String _value;
+	string _value;
 
 private:
 

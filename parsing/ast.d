@@ -4,7 +4,6 @@ import core.string;
 import core.definitions;
 import core.variant;
 import core.list;
-import core.tostring;
 
 import io.console;
 

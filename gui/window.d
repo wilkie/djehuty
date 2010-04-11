@@ -54,26 +54,7 @@ public:
 	// height: The initial height of the client area of the window.
 	this(string windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height) {
 		_color = color;
-		_window_title = new String(windowTitle);
-		_width = width;
-		_height = height;
-		_x = x;
-		_y = y;
-		_style = windowStyle;
-		_position = WindowPosition.User;
-	}
-
-	// Description: Will create the window with certain default parameters
-	// windowTitle: The initial title for the window.
-	// windowStyle: The initial style for the window.
-	// color: The initial color for the window.
-	// x: The initial x position of the window.
-	// y: The initial y position of the window.
-	// width: The initial width of the client area of the window.
-	// height: The initial height of the client area of the window.
-	this(String windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height) {
-		_color = color;
-		_window_title = new String(windowTitle);
+		_window_title = windowTitle.dup;
 		_width = width;
 		_height = height;
 		_x = x;
@@ -92,55 +73,18 @@ public:
 	// height: The initial height of the client area of the window.
 	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
 		ColorGetSystemColor(_color, sysColor);
-		_window_title = new String(windowTitle);
+		_window_title = windowTitle.dup;
 		_width = width;
 		_height = height;
 		_x = x;
 		_y = y;
 		_style = windowStyle;
 		_position = WindowPosition.User;
-	}
-
-	// Description: Will create the window with certain default parameters
-	// windowTitle: The initial title for the window.
-	// windowStyle: The initial style for the window.
-	// sysColor: The initial color for the window which is taken from a platform color setting.
-	// x: The initial x position of the window.
-	// y: The initial y position of the window.
-	// width: The initial width of the client area of the window.
-	// height: The initial height of the client area of the window.
-	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
-		ColorGetSystemColor(_color, sysColor);
-		_window_title = new String(windowTitle);
-		_width = width;
-		_height = height;
-		_x = x;
-		_y = y;
-		_style = windowStyle;
-		_position = WindowPosition.User;
-	}
-
-	this(String windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
-		_color = color;
-		_window_title = new String(windowTitle);
-		_width = width;
-		_height = height;
-		_position = pos;
-		_style = windowStyle;
-	}
-
-	this(String windowTitle, WindowStyle windowStyle, SystemColor sysColor, WindowPosition pos, int width, int height) {
-		ColorGetSystemColor(_color, sysColor);
-		_window_title = new String(windowTitle);
-		_width = width;
-		_height = height;
-		_position = pos;
-		_style = windowStyle;
 	}
 
 	this(string windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
 		_color = color;
-		_window_title = new String(windowTitle);
+		_window_title = windowTitle.dup;
 		_width = width;
 		_height = height;
 		_position = pos;
@@ -149,13 +93,12 @@ public:
 
 	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, WindowPosition pos, int width, int height) {
 		ColorGetSystemColor(_color, sysColor);
-		_window_title = new String(windowTitle);
+		_window_title = windowTitle.dup;
 		_width = width;
 		_height = height;
 		_position = pos;
 		_style = windowStyle;
 	}
-
 
 	~this() {
 		uninitialize();
@@ -178,24 +121,15 @@ public:
 	// Methods //
 
 	// Description: Will get the title of the window.
-	// Returns: The String representing the title.
-	String text() {
-		return new String(_window_title);
-	}
-
-	// Description: Will set the title of the window.
-	// str: The new title.
-	void text(String str) {
-		_window_title = new String(str);
-
-		if (!_inited) { return; }
-		WindowSetTitle(this, &_pfvars);
+	// Returns: The string representing the title.
+	string text() {
+		return _window_title.dup;
 	}
 
 	// Description: Will set the title of the window.
 	// str: The new title.
 	void text(string str) {
-		_window_title = new String(str);
+		_window_title = str.dup;
 
 		if (!_inited) { return; }
 		WindowSetTitle(this, &_pfvars);
@@ -1065,7 +999,7 @@ protected:
 	long _constraint_x = 0;
 	long _constraint_y = 0;
 
-	String _window_title;
+	string _window_title;
 	package uint _width, _height;
 	package uint _x, _y;
 

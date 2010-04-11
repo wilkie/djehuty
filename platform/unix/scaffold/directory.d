@@ -18,57 +18,61 @@ import platform.vars.file;
 import io.file;
 import io.console;
 
+import core.definitions;
 import core.string;
 import core.main;
 import core.list;
 
-bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref String path)
-{
-	String pn;
-	if (path == "")
-	{
-		pn = new String("/");
+bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
+	string pn;
+	if (path == "") {
+		pn = "/";
 	}
-	else
-	{
-		pn = new String(path);
+	else {
+		pn = path.dup;
 	}
 
-	pn.appendChar('\0');
+	pn ~= '\0';
 
 	dirVars.dir = opendir(pn.ptr);
 	return (dirVars.dir !is null);
 }
 
-bool DirectoryClose(ref DirectoryPlatformVars dirVars)
-{
+bool DirectoryCreate(ref DirectoryPlatformVars dirVars, ref string path) {
+	if (DirectoryFileIsDir(path)) {
+		return false;
+	}
+
+	string makedir = "mkdir " ~ path ~ "\0";
+
+	system(makedir.ptr);
+
+	return DirectoryOpen(dirVars,path);
+
+}
+bool DirectoryClose(ref DirectoryPlatformVars dirVars) {
 	closedir(dirVars.dir);
 	return true;
 }
 
-String DirectoryGetBinary()
-{
-	return new String("/usr/bin");
+string DirectoryGetBinary() {
+	return "/usr/bin";
 }
 
-String DirectoryGetAppData()
-{
-	return new String("/usr/share/") ~ Djehuty.app.name;
+string DirectoryGetAppData() {
+	return "/usr/share/" ~ Djehuty.app.name;
 }
 
-String DirectoryGetTempData()
-{
-	return new String("/tmp/djp") ~ new String(getpid());
+string DirectoryGetTempData() {
+	return "/tmp/djp" ~ toStr(getpid());
 }
 
-String DirectoryGetUserData()
-{
-	static String cached;
+string DirectoryGetUserData() {
+	static string cached;
 
 	// user data: $HOME/.{appname}
 
-	if (cached is null)
-	{
+	if (cached is null) {
 		char* result;
 		result = getenv("HOME\0"c.ptr);
 
@@ -79,53 +83,47 @@ String DirectoryGetUserData()
 		int i;
 		for(i = 0; *cur != '\0'; cur++, i++) {}
 
-		if (i != 0)
-		{
+		if (i != 0) {
 			homePath = result[0..i];
-			cached = new String(homePath) ~ "/." ~ Djehuty.app.name;
+			cached = homePath ~ "/." ~ Djehuty.app.name;
 		}
-		else
-		{
-			cached = new String("");
+		else {
+			cached = "";
 		}
 	}
 
 	return cached;
 }
 
-String DirectoryGetApp()
-{
+string DirectoryGetApp() {
 	// Store result
-	static String cached = null;
+	static string cached = null;
 
-	if (cached is null)
-	{
-		String procPath = new String("/proc/") ~ getpid() ~ "/exe\0";
+	if (cached is null) {
+		string procPath = "/proc/" ~ toStr(getpid()) ~ "/exe\0";
 
 		size_t ret = -1;
 		int len = 256;
 		char[] path;
 
-		while (ret == -1)
-		{
+		while (ret == -1) {
 			path = new char[len];
 			ret = readlink(procPath.ptr, path.ptr, len-1);
 			len <<= 1;
-			if (ret == -1 && len > 32000)
-			{
+			if (ret == -1 && len > 32000) {
 				// Error, path is too long
-				cached = new String("");
-				return cached;
+				cached = "";
+				return cached.dup;
 			}
 		}
 
-		cached = new String(path[0..ret]);
+		cached = path[0..ret].dup;
 	}
 
-	return cached;
+	return cached.dup;
 }
 
-String DirectoryGetCWD() {
+string DirectoryGetCWD() {
 	uint len = 512;
 	char[] chrs;
 
@@ -144,12 +142,12 @@ String DirectoryGetCWD() {
 		}
 	}
 
-	return new String(chrs);
+	return chrs.dup;
 }
 
-bool DirectoryFileIsDir(String path) {
-	String newPath = new String(path);
-	newPath.appendChar('\0');
+bool DirectoryFileIsDir(string path) {
+	string newPath = path.dup;
+	newPath ~= '\0';
 
 	struct_stat inode;
 
@@ -161,49 +159,48 @@ bool DirectoryFileIsDir(String path) {
 
 	return false;
 }
-
-bool DirectoryMove(ref String path, String newPath) {
-	String exec = new String("mv ") ~ path ~ " " ~ newPath ~ "\0";
-
-	system(exec.ptr);
-	return true;
-}
-
-bool DirectoryCopy(ref String path, String newPath) {
-	String exec = new String("cp -r ") ~ path ~ " " ~ newPath ~ "\0";
+bool DirectoryMove(ref string path, string newPath) {
+	string exec = "mv " ~ path ~ " " ~ newPath ~ "\0";
 
 	system(exec.ptr);
 	return true;
 }
 
-bool DirectoryRename(ref String path, ref String newName) {
-	String npath = new String(path);
-	npath.appendChar('\0');
+bool DirectoryCopy(ref string path, string newPath) {
+	string exec = "cp -r " ~ path ~ " " ~ newPath ~ "\0";
 
-	String str;
+	system(exec.ptr);
+	return true;
+}
+
+bool DirectoryRename(ref string path, ref string newName) {
+	string npath = path.dup;
+	npath ~= '\0';
+
+	string str;
 
 	foreach_reverse(int i, chr; path) {
 		if (chr == '/') {
 			// truncate
-			str = new String(path[0..i]);
+			str = path[0..(i+1)].dup;
 			break;
 		}
 	}
 
 	if (str is null) { return false; }
 
-	str.append(newName);
-	str.appendChar('\0');
-
+	str ~= newName;
+	str ~= '\0';
+	
 	rename(npath.ptr, str.ptr);
 	return true;
 }
 
-String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path) {
+string[] DirectoryList(ref DirectoryPlatformVars dirVars, ref string path) {
 	if (!DirectoryOpen(dirVars, path)) { return null; } 
 
 	dirent* dir;
-	String[] list;
+	string[] list;
 
 	// Retrieve first directory
 	dir = readdir(dirVars.dir);
@@ -221,7 +218,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, ref String path) {
 
 		// Add to list
 		if (dir.d_name[0..len] != "." && dir.d_name[0..len] != "..") {
-			list ~= new String(dir.d_name[0..len]);
+			list ~= dir.d_name[0..len].dup;
 		}
 
 		// Retrieve next item in the directory

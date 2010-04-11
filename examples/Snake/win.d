@@ -120,7 +120,7 @@ private:
 		(cast(SnakeApp)(this.application)).shutdown();
 		Console.clear();
 
-		String msg;
+		string msg;
 
 		uint time = cast(uint)(_end_time - _start_time).seconds;
 		uint fps = cast(uint)(1000.0 / _frame_wait * FrameWait.Multiplier * 2 / (SpeedCoef.H + SpeedCoef.V));
@@ -151,9 +151,9 @@ private:
 			if (s !is null)
 				len = s.length;
 
-			msg = new String(cod_msg ~ " with %d segments in %d seconds on %d lines and %d columns at %d frames per second", len, time, this.height, this.width, fps);
+			msg =  (cod_msg ~ " with {d} segments in {d} seconds on {d} lines and {d} columns at {d} frames per second").format(len, time, this.height, this.width, fps);
 		} else {
-			msg = new String("You didn't even play!");
+			msg = "You didn't even play!";
 		}
 
 		Console.putln(msg);

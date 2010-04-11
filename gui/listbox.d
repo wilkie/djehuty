@@ -13,7 +13,7 @@ import gui.vscrollbar;
 
 template ControlPrintCSTRList() {
 	const char[] ControlPrintCSTRList = `
-	this(int x, int y, int width, int height, List!(String) list = null) {
+	this(int x, int y, int width, int height, List!(string) list = null) {
 		super(x,y,width,height,list);
 	}
 	`;
@@ -27,10 +27,10 @@ class ListBox : Widget {
 		Unselected
 	}
 
-	this(int x, int y, int width, int height, List!(String) list = null) {
+	this(int x, int y, int width, int height, List!(string) list = null) {
 		super(x,y,width,height);
 
-		_list = new List!(String)();
+		_list = new List!(string)();
 		if (list !is null) {
 			foreach(item; list) {
 				_list.add(item);
@@ -108,7 +108,7 @@ class ListBox : Widget {
 
 		g.font = _font;
 
-		String data;
+		string data;
 
 		for (i=m_first_visible; i<m_first_visible+m_total_visible && i<_list.length(); i++) {
 			data = _list.peekAt(i);
@@ -173,75 +173,63 @@ class ListBox : Widget {
 
 	// List Methods
 
-	void add(String c) {
+	void add(string c) {
 		_list.add(c);
 
 		_checkScrollBarStatus();
 	}
 
-	void add(string c) {
-		_list.add(new String(c));
-
-		_checkScrollBarStatus();
-	}
-
-	void add(String[] c) {
+	void add(string[] c) {
 		foreach(item; c) {
 			_list.add(item);
 		}
 	}
 
-	void add(string[] c) {
-		foreach(item; c) {
-			_list.add(new String(item));
-		}
-	}
-
-	void add(Iterable!(String) list) {
+	void add(Iterable!(string) list) {
 		foreach(item; list) {
 			_list.add(item);
 		}
 	}
 
-	void addAt(String c, size_t idx) {
+	void addAt(string c, size_t idx) {
 		_list.addAt(c, idx);
 
 		_checkScrollBarStatus();
 	}
 
-	String remove() {
-		String ret = _list.remove();
+	string remove() {
+		string ret = _list.remove();
 
 		_checkScrollBarStatus();
 
 		return ret;
 	}
 
-	String removeAt(size_t idx){
-		String ret = _list.removeAt(idx);
+	string removeAt(size_t idx){
+		string ret = _list.removeAt(idx);
 
 		_checkScrollBarStatus();
 
 		return ret;
 	}
 
-	String peek() {
+	string peek() {
 		return _list.peek();
 	}
 
-	String peekAt(size_t idx) {
+	string peekAt(size_t idx) {
 		return _list.peekAt(idx);
 	}
 
-	void set(String c) {
+	void set(string c) {
 		_list.set(c);
 	}
 
-	void apply(String delegate(String) func) {
+	void apply(string delegate(string) func) {
 		_list.apply(func);
 	}
 
-	bool contains(String c) {
+	bool contains(string c) {
 		return _list.contains(c);
 	}
 
@@ -255,19 +243,19 @@ class ListBox : Widget {
 		_checkScrollBarStatus();
 	}
 
-	String[] array() {
+	string[] array() {
 		return _list.array();
 	}
 
-	List!(String) dup() {
+	List!(string) dup() {
 		return _list.dup();
 	}
 
-	List!(String) slice(size_t start, size_t end) {
+	List!(string) slice(size_t start, size_t end) {
 		return _list.slice(start, end);
 	}
 
-	List!(String) reverse() {
+	List!(string) reverse() {
 		return _list.reverse();
 	}
 
@@ -275,47 +263,47 @@ class ListBox : Widget {
 		return _list.length();
 	}
 
-	String opIndex(size_t i1) {
+	string opIndex(size_t i1) {
 		return _list.opIndex(i1);
 	}
 
-	int opApply(int delegate(ref String) loopFunc) {
+	int opApply(int delegate(ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 
-	int opApply(int delegate(ref size_t, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	void opCatAssign(String[] list) {
+	void opCatAssign(string[] list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(Iterable!(String) list) {
+	void opCatAssign(Iterable!(string) list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(String item) {
+	void opCatAssign(string item) {
 		_list.opCatAssign(item);
 	}
 
-	Iterable!(String) opCat(String[] list) {
+	Iterable!(string) opCat(string[] list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(Iterable!(String) list) {
+	Iterable!(string) opCat(Iterable!(string) list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(String item) {
+	Iterable!(string) opCat(string item) {
 		return _list.opCat(item);
 	}
 
@@ -335,7 +323,7 @@ protected:
 	uint m_total_visible;
 	uint m_sel_start;
 
-	List!(String) _list;
+	List!(string) _list;
 
 	int m_hoverstate;
 

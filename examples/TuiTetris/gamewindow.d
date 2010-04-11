@@ -20,7 +20,7 @@ class GameWindow : TuiWindow {
 	override bool onSignal(Dispatcher source, uint signal) {
 		if (source is game) {
 			if(signal == GameControl.Event.ScoreUpdated) {
-				scoreLabel.text = new String(game.getScore());
+				scoreLabel.text = toStr(game.getScore());
 				return true;
 			}
 		}

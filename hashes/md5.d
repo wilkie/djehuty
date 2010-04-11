@@ -165,15 +165,7 @@ public:
 	// utf8Message: The string to hash.
 	// Returns: A string representing the MD5 hash.
 	Digest hash(string utfMessage) {
-		return hash(cast(ubyte[])Unicode.toUtf8(utfMessage));
-	}
-
-	// Description: This function will calculate the MD5 hash of a string object.
-	// message: The string to hash.
-	// Returns: A string representing the MD5 hash.
-	Digest hash(String message) {
-		// for standard reasons, we convert to utf8
-		return hash(cast(ubyte[])(message.toUtf8()));
+		return hash(cast(ubyte[])utfMessage);
 	}
 
 	alias hash opCall;

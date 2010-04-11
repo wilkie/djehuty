@@ -4,8 +4,8 @@ import core.locale;
 
 import core.time;
 import core.date;
-import core.tostring;
 import core.definitions;
+import core.string;
 
 class LocaleEnglish_US : LocaleInterface {
 	string formatTime(Time time) {
@@ -166,7 +166,7 @@ class LocaleEnglish_US : LocaleInterface {
 			}
 		}
 		ret ~= ".";
-		ret ~= ftoa(value, 10, false);
+		ret ~= toStr(value);
 	
 		// round last digit
 		bool roundUp = (ret[$-1] >= '5');

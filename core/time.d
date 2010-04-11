@@ -4,7 +4,6 @@ import Scaffold = scaffold.time;
 
 import core.string;
 import core.definitions;
-import core.tostring;
 import core.timezone;
 
 import io.console;
@@ -158,7 +157,7 @@ class Time {
 		long h, ms, s, m;
 		long tmp = _micros;
 
-		String str = new String("");
+		string str = "";
 
 		if (tmp < 0) {
 			tmp *= -1;
@@ -176,33 +175,33 @@ class Time {
 		h = tmp;
 
 		if (_micros < 0) {
-			str.append("-");
+			str ~= "-";
 		}
 
 		if (h < 10) {
-			str.append("0");
+			str ~= "0";
 		}
-		str.append(toStr(h, ":"));
+		str ~= toStr(h, ":");
 
 		if (m < 10) {
-			str.append("0");
+			str ~= "0";
 		}
-		str.append(toStr(m, ":"));
+		str ~= toStr(m, ":");
 
 		if (s < 10) {
-			str.append("0");
+			str ~= "0";
 		}
-		str.append(toStr(s, "."));
+		str ~= toStr(s, ".");
 
 		if (ms < 100) {
-			str.append("0");
+			str ~= "0";
 		}
 		if (ms < 10) {
-			str.append("0");
+			str ~= "0";
 		}
-		str.append(toStr(ms));
+		str ~= toStr(ms);
 
-		return str.toString();
+		return str;
 	}
 
 	// mathematical functions

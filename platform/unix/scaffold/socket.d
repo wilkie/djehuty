@@ -34,7 +34,7 @@ struct addrinfo_fix {
 }
 extern(C) char* gai_strerror(int ecode);
 
-bool SocketOpen(ref SocketPlatformVars sockVars, ref String hostname, ref ushort port)
+bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort port)
 {
 	addrinfo_fix* result;
 
@@ -46,18 +46,16 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref String hostname, ref ushort
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_socktype = SOCK_STREAM;
 
-	String portstr = new String(port);
-
 	// make C style strings
-	portstr.appendChar('\0');
-	hostname.appendChar('\0');
+	string portstr = toStr(port) ~ '\0';
+	hostname = hostname.dup ~ '\0';
 
 	error = getaddrinfo( hostname.ptr, portstr.ptr, cast(addrinfo*)&hints, cast(addrinfo**)&result );
 
 	if ( 0 != error )
 	{
 		// Error Connecting
-		Console.putln("getaddrinfo, error", portstr.array.length, ",",portstr.array);
+		Console.putln("getaddrinfo, error", portstr.length, ",",portstr);
 		//printf("%s\n", gai_strerror(error));
 		return false;
     }

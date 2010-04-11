@@ -51,8 +51,8 @@ ulong SystemGetAvailableMemory() {
 	return 0;
 }
 
-bool SystemLoadLibrary(ref LibraryPlatformVars vars, String libraryPath) {
-	char[] path = libraryPath.array ~ "\0";
+bool SystemLoadLibrary(ref LibraryPlatformVars vars, string libraryPath) {
+	char[] path = libraryPath.dup ~ "\0";
 	//vars.handle = dlopen(path.ptr,RTLD_LAZY);
 	return vars.handle !is null;
 }
@@ -63,12 +63,12 @@ void SystemFreeLibrary(ref LibraryPlatformVars vars) {
 	vars.handle = null;
 }
 
-void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
+void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, string procName) {
 	if (vars.handle is null) {
 		return null;
 	}
 
-	char[] proc = procName.array ~ "\0";
+	char[] proc = procName.dup ~ "\0";
 	//return cast(void*)dlsym(vars.handle, proc.ptr);
 	return null;
 }
