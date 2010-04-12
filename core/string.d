@@ -475,6 +475,8 @@ string formatv(string format, Variadic vars) {
 							dvalue = var.to!(double);
 							formatDouble = true;
 							break;
+						default:
+							break;
 					}
 
 					string result = "";

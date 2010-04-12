@@ -20,6 +20,7 @@ import core.stream;
 import core.string;
 import core.main;
 import core.definitions;
+import core.unicode;
 
 import io.console;
 import io.directory;
@@ -27,74 +28,76 @@ import io.file;
 
 // OPERATIONS //
 
-bool FileMove(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath) {
-	String oldPath = new String(oldFullPath);
-	oldPath.appendChar('\0');
+bool FileMove(ref FilePlatformVars fileVars, string oldFullPath, string newFullPath) {
+	wstring oldPath = Unicode.toUtf16(oldFullPath);
+	oldPath ~= '\0';
 
-	String newPath = new String(newFullPath);
-	newPath.appendChar('\0');
+	wstring newPath = Unicode.toUtf16(newFullPath);
+	newPath ~= '\0';
 
 	MoveFileW(oldPath.ptr, newPath.ptr);
 	return true;
 }
 
-bool FileCopy(ref FilePlatformVars fileVars, String oldFullPath, String newFullPath) {
-	String oldPath = new String(oldFullPath);
-	oldPath.appendChar('\0');
+bool FileCopy(ref FilePlatformVars fileVars, string oldFullPath, string newFullPath) {
+	wstring oldPath = Unicode.toUtf16(oldFullPath);
+	oldPath ~= '\0';
 
-	String newPath = new String(newFullPath);
-	newPath.appendChar('\0');
+	wstring newPath = Unicode.toUtf16(newFullPath);
+	newPath ~= '\0';
 
 	CopyFileW(oldPath.ptr, newPath.ptr, 0);
 	return true;
 }
 
-bool FileRename(ref FilePlatformVars fileVars, ref String path, ref String newName) {
-	String old = new String(path);
-	old.appendChar('\0');
+bool FileRename(ref FilePlatformVars fileVars, ref string path, ref string newName) {
+	wstring old = Unicode.toUtf16(path);
+	old ~= '\0';
 
-	String str;
+	string str;
 
 	foreach_reverse(int i, chr; path)
 	{
 		if (chr == '/')
 		{
 			// truncate
-			str = new String(path[0..i]);
+			str = path[0..i];
 			break;
 		}
 	}
 
 	if (str is null) { return false; }
 
-	str.append(newName);
-	str.appendChar('\0');
+	str ~= newName;
+	str ~= '\0';
+	
+	wstring strw = Unicode.toUtf16(str);
 
-	MoveFileW(old.ptr, str.ptr);
+	MoveFileW(old.ptr, strw.ptr);
 	return true;
 }
 
-bool FileMove(ref String from, ref Directory to) {
-	String old = new String(from);
-	old.appendChar('\0');
+bool FileMove(ref string from, ref Directory to) {
+	wstring old = Unicode.toUtf16(from);
+	old ~= '\0';
 
-	String fn;
+	string fn;
 
 	foreach_reverse(int i, chr; from)
 	{
 		if (chr == '/')
 		{
 			// truncate (include the slash)
-			fn = new String(from[i..from.length]);
+			fn = from[i..from.length];
 			break;
 		}
 	}
 
 	if (fn is null) { return false; }
 
-	String str = new String(to.path);
-	str.append(fn);
-	str.appendChar('\0');
+	wstring str = Unicode.toUtf16(to.path);
+	str ~= Unicode.toUtf16(fn);
+	str ~= '\0';
 
 	MoveFileW(old.ptr, str.ptr);
 	return true;
@@ -102,19 +105,19 @@ bool FileMove(ref String from, ref Directory to) {
 
 // FILE //
 
-bool FileOpen(ref FilePlatformVars fileVars, ref String filename) {
-	String newString = new String(filename);
-	newString.appendChar('\0');
-	wchar[] foo = _ConvertFrameworkPath(newString.array);
+bool FileOpen(ref FilePlatformVars fileVars, ref string filename) {
+	wstring newString = Unicode.toUtf16(filename);
+	newString ~= '\0';
+	wchar[] foo = _ConvertFrameworkPath(newString);
 	fileVars.f = CreateFileW( foo.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,OPEN_ALWAYS,0,null);
 
 	return (fileVars.f !is null);
 }
 
-bool FileCreate(ref FilePlatformVars fileVars, ref String filename) {
-	String newString = new String(filename);
-	newString.appendChar('\0');
-	wchar[] foo = _ConvertFrameworkPath(newString.array);
+bool FileCreate(ref FilePlatformVars fileVars, ref string filename) {
+	wstring newString = Unicode.toUtf16(filename);
+	newString ~= '\0';
+	wchar[] foo = _ConvertFrameworkPath(newString);
 	fileVars.f = CreateFileW( foo.ptr, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, null,CREATE_ALWAYS,0,null);
 
 	return (fileVars.f !is null);

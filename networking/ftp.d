@@ -444,9 +444,7 @@ protected:
 				case Code.NLI: //530
 
 					throw new Exception("Login Incorrect");
-					close();
 					//raiseSignal(Signal.LoginIncorrect);
-					break; 
 				case Code.RFAPFI: //350
 					_busy.up();
 
@@ -459,8 +457,6 @@ protected:
 				case Code.RANTFUA:
 
 					throw new Exception("File does not exist on server");
-					
-					break;	
 				default:
 					break;
 			}
@@ -497,7 +493,7 @@ protected:
 				{
 					throw new Exception("File does not exist on local machine");
 				}
-	   			check = _dskt.write(f,f.length);
+	   			check = _dskt.write(f,cast(uint)f.length);
 				f.close();
 			break;
 			case DataMode.PrintFile:

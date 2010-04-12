@@ -289,7 +289,7 @@ void ConsoleShowCaret()
 	SetConsoleCursorInfo(hStdout, &ccinfo);
 }
 
-void ConsolePutString(dchar[] chrs)
+void ConsolePutString(char[] chrs)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -301,7 +301,7 @@ void ConsolePutString(dchar[] chrs)
 
 	// print line by line
 
-	String str = new String(Unicode.toUtf8(chrs));
+	string str = chrs.dup;
 
 	//wstring str = Unicode.toUtf16(chrs);
 
