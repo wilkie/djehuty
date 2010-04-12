@@ -3,25 +3,20 @@ module platform.osx.main;
 
 import core.main;
 import core.definitions;
-import core.window;
-import core.view;
-import core.menu;
+import gui.window;
+import graphics.view;
+import resource.menu;
 
-import console.window;
+import binding.c;
 
-import bases.window;
+import tui.window;
 
-// import strings
 import core.string;
 
-import std.stdio;
-
 extern (C) void hi();
-extern (C) void print(void* stuff, char* str);
 
 extern (C) void call(void* stuff)
 {
-		print(stuff, " YEAH");
 }
 
 // This event routine is a common event handler for all OS X Cocoa events.
@@ -50,8 +45,8 @@ extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2)
 {
 
 //	writefln("OSXEventRoutine (D)");
-
-	BaseWindow window = cast(BaseWindow)windowRef;
+/*
+	Window window = cast(Window)windowRef;
 	switch (event)
 	{
 		case OSXEvents.EventResize:
@@ -230,23 +225,21 @@ extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2)
 
 			break;
 	}
-
+*/
 //	writefln("OSXEventRoutine (D) done");
 }
 
 // These functions are within the objective-c code
 // These start the OS X event loop.
 extern (C) void _OSXStart();
-extern (C) void _OSXLoop();
 extern (C) void _OSXEnd();
 
-int main()
-{
+int main() {
+	printf("Main\n");
 	_OSXStart();
+	printf("Running\n");
 
-	DjehutyStart();
-
-	_OSXLoop();
+	Djehuty.application.run();
 
 	_OSXEnd();
 

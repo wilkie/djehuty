@@ -276,6 +276,7 @@ void ThreadModuleInit() {
 
 	// create a Thread for the main thread
 	Thread mainThread = new Thread();
+	mainThread._inited = true;
 
 	version(Tango) {
 		mainThread.stdThread.runtimeThread = Tango.Thread.getThis();
@@ -287,12 +288,10 @@ void ThreadModuleInit() {
 	Thread.threadById[mainThread.stdThread.runtimeThread] = mainThread;
 }
 
-void ThreadUninit(ref Thread t)
-{
+void ThreadUninit(ref Thread t) {
 	t._inited = false;
 }
 
-void ThreadSetWindow(ref Thread t, Window w)
-{
+void ThreadSetWindow(ref Thread t, Window w) {
 	t.wnd = w;
 }

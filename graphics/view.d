@@ -15,9 +15,6 @@ import platform.vars.view;
 
 import scaffold.view;
 
-/*import X = binding.x.Xlib;
-import Unix = platform.unix.main;*/
-
 // Section: Core
 
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
@@ -107,7 +104,6 @@ class View {
 	// Description: Will lock the canvas for drawing.
 	// Returns: A Graphics object that will draw to the current view.
 	Graphics lock() {
-		//X.XLockDisplay(Unix._pfvars.display);
 		_mutex.down();
 
 		_locked = true;
@@ -129,7 +125,6 @@ class View {
 			_pen._view = null;
 		}
 		_pen = null;
-		//X.XUnlockDisplay(Unix._pfvars.display);
 		_mutex.up();
 	}
 

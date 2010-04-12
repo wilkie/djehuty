@@ -45,8 +45,8 @@ struct dirent
 
 struct dirent64
 {
-	ulong d_ino;
-	ulong d_off;
+	Culong_t d_ino;
+	Culong_t d_off;
 
 	ushort d_reclen;
 	ubyte d_type;
@@ -67,8 +67,8 @@ alias uint mode_t;
 alias int pid_t;
 alias uint uid_t;
 alias uint gid_t;
-alias long off_t;
-alias long ssize_t;
+alias Clong_t off_t;
+alias Clong_t ssize_t;
 
 struct hostent
 {
@@ -104,14 +104,14 @@ struct in_addr
 
 struct timespec
 {
-    long tv_sec;
-    long tv_nsec;
+    Clong_t tv_sec;
+    Clong_t tv_nsec;
 }
 
 struct timeval
 {
-    long tv_sec;
-    long tv_usec;
+    Clong_t tv_sec;
+    Clong_t tv_usec;
 }
 
 struct timezone

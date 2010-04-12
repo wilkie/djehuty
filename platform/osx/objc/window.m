@@ -26,8 +26,7 @@ enum OSXEvents
 void OSXEventRoutine(void* window, int event, int p1, int p2);
 void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
-@interface _OSXWindow : NSWindow
-{
+@interface _OSXWindow : NSWindow {
 	@public
 		void* window;
 		struct _OSXWindowPlatformVars* window_info;
@@ -35,8 +34,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 @end
 
-@interface _OSXView : NSView
-{
+@interface _OSXView : NSView {
 	@public
 		void* window;
 		struct _OSXWindowPlatformVars* window_info;
@@ -47,13 +45,11 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 @implementation _OSXWindow
 
--(void)windowWillClose:(NSNotification *)notification
-{
+-(void)windowWillClose:(NSNotification *)notification {
 	//OSX_CloseWindowPrologue(window);
 }
 
-- (void)drawRect:(NSRect)rect
-{
+- (void)drawRect:(NSRect)rect {
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
@@ -63,41 +59,34 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 //	printf("OBJ-C: done with drawRect\n");
 }
 
--(BOOL)isFlipped
-{
+-(BOOL)isFlipped {
 	return YES;
 }
 
-- (BOOL)acceptsMouseMovedEvents
-{
+- (BOOL)acceptsMouseMovedEvents {
     return YES;
 }
 @end
 
 @implementation _OSXView
 
--(BOOL)isFlipped
-{
+-(BOOL)isFlipped {
 	return YES;
 }
 
-- (BOOL)acceptsFirstResponder
-{
+- (BOOL)acceptsFirstResponder {
     return YES;
 }
 
-- (BOOL)acceptsMouseMovedEvents
-{
+- (BOOL)acceptsMouseMovedEvents {
     return YES;
 }
 /*
--(void)windowDidExpose:(NSNotification*)aNotification
-{
+-(void)windowDidExpose:(NSNotification*)aNotification {
 	printf("OBJ-C: done with windowDidExpose\n");
 }
 
--(void)windowDidUpdate:(NSNotification*)aNotification
-{
+-(void)windowDidUpdate:(NSNotification*)aNotification {
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
@@ -107,13 +96,11 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 	printf("OBJ-C: done with windowDidUpdate\n");
 }
 
--(void)windowDidResize:(NSNotification*)aNotification
-{
+-(void)windowDidResize:(NSNotification*)aNotification {
 	printf("OBJ-C: done with windowDidResize\n");
 }
 */
-- (void)drawRect:(NSRect)rect
-{
+- (void)drawRect:(NSRect)rect {
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
@@ -123,56 +110,44 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 //	printf("OBJ-C: done with drawRect\n");
 }
 
-- (void)mouseDown:(NSEvent*)event
-{
+- (void)mouseDown:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)rightMouseDown:(NSEvent*)event
-{
+- (void)rightMouseDown:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)otherMouseDown:(NSEvent*)event
-{
+- (void)otherMouseDown:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)mouseUp:(NSEvent*)event
-{
+- (void)mouseUp:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)rightMouseUp:(NSEvent*)event
-{
+- (void)rightMouseUp:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)otherMouseUp:(NSEvent*)event
-{
+- (void)otherMouseUp:(NSEvent*)event {
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)mouseMoved:(NSEvent*)event
-{
+- (void)mouseMoved:(NSEvent*)event {
 	printf("hey\n");
 	[ self OSX_HandleEvent:event ];
 }
 
-- (void)mouseDragged:(NSEvent*)event
-{
+- (void)mouseDragged:(NSEvent*)event {
 	printf("hey!!!!!!!!!\n");
 	[ self OSX_HandleEvent:event ];
 }
 
-
-- (void)OSX_HandleEvent:(NSEvent*)event
-{
-
+- (void)OSX_HandleEvent:(NSEvent*)event {
 	NSPoint coord;
 
-	switch ( [ event type ] )
-	{
+	switch ( [ event type ] ) {
 
 	case NSLeftMouseDown:
 	case NSRightMouseDown:
@@ -184,8 +159,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 		xysend = coord.x;
 		xysend |= ((int)coord.y << 16);
 
-		switch ( [ event buttonNumber ] )
-		{
+		switch ( [ event buttonNumber ] ) {
 			case 0:
 				OSXEventRoutine(window_info->windowClassRef, EventPrimaryDown, xysend, [ event clickCount ] );
 				break;
@@ -212,8 +186,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 		xysendup = coord.x;
 		xysendup |= ((int)coord.y << 16);
 
-		switch ( [ event buttonNumber ] )
-		{
+		switch ( [ event buttonNumber ] ) {
 			case 0:
 				OSXEventRoutine(window_info->windowClassRef, EventPrimaryUp, xysendup, [ event clickCount ] );
 				break;
@@ -250,8 +223,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 // FOCUS //
 
-//- (void)windowDidBecomeKey:(NSNotification *)notification
-//{
+//- (void)windowDidBecomeKey:(NSNotification *)notification {
 	/*// control receives focus due to window
 
 	//fire event
@@ -265,8 +237,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 	//return;
 //}
 
-- (void)windowDidResignKey:(NSNotification *)notification
-{
+- (void)windowDidResignKey:(NSNotification *)notification {
 	/*// control loses focus due to window
 
 	//fire event
@@ -280,15 +251,13 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 // ACTION MESSAGES //
 
--(void)_osx_redraw
-{
+-(void)_osx_redraw {
 	//Scaffold.RequestRedraw(window_info);
 }
 
 // TIMERS //
 
-- (void)tick:(NSTimer*)timer
-{
+- (void)tick:(NSTimer*)timer {
 	/*NSValue* val = (NSValue*)[ timer userInfo ];
 
 	void* ptr_val = [ val pointerValue ];
@@ -307,11 +276,10 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 
 
-void _OSXWindowShow(struct _OSXWindowPlatformVars* window, int bShow)
-{
+void _OSXWindowShow(struct _OSXWindowPlatformVars* window, int bShow) {
 	NSWindow* wnd = window->windowRef;
 
-//	printf("windowshow\n");
+	printf("windowshow\n");
 
 	if (bShow) {
 		//[ wnd update ];
@@ -321,15 +289,13 @@ void _OSXWindowShow(struct _OSXWindowPlatformVars* window, int bShow)
 	}
 }
 
-void _OSXWindowSetTitle(struct _OSXWindowPlatformVars* window, char* str)
-{
+void _OSXWindowSetTitle(struct _OSXWindowPlatformVars* window, char* str) {
 	NSString* nss = [[NSString alloc] initWithUTF8String: str];
     [window->windowRef setTitle: nss];
 }
 
-struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindowPlatformVars* parent, struct _OSXWindowPlatformVars** window, char* initTitle, int initX, int initY, int initW, int initH)
-{
-//	printf("WindowCreate\n");
+struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindowPlatformVars* parent, struct _OSXWindowPlatformVars** window, char* initTitle, int initX, int initY, int initW, int initH) {
+	printf("WindowCreate\n");
 
     // initialize the rectangle variable
 	NSRect graphicsRect = NSMakeRect(initX,initY,initW,initH); //window->_initial_x,window->_initial_y,window->_initial_width,window->_initial_height);
@@ -351,7 +317,7 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	[ (*window)->viewVars->txtstore addLayoutManager:(*window)->viewVars->layout ];
 
-//		printf("Creating View for Window '%s'...\n", initTitle);
+		printf("Creating View for Window '%s'... %dx%d\n", initTitle, initW, initH);
 
     (*window)->viewVars->viewRef = [[[_OSXView alloc] initWithFrame:graphicsRect] autorelease];
 
@@ -359,7 +325,7 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	// the view is responsible for the rest of the setup
 
-//		printf("Creating Window '%s'...\n", initTitle);
+		printf("Creating Window '%s'...\n", initTitle);
 
 	(*window)->windowRef = (*window)->viewVars->viewRef->window = [ [_OSXWindow alloc]              // create the window
                initWithContentRect: graphicsRect
@@ -369,7 +335,7 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
                            backing:NSBackingStoreBuffered
                              defer:YES ];
 
-//		printf("Setting Window Title to '%s'...\n", initTitle);
+		printf("Setting Window Title to '%s'...\n", initTitle);
 
 	_OSXWindowSetTitle(*window, initTitle);
 
@@ -381,8 +347,7 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 	return (*window)->viewVars;
 }
 
-void _OSXWindowStartDraw(struct _OSXWindowPlatformVars* windVars, struct _OSXViewPlatformVars* viewVars, int isSysColorWindow, char r, char g, char b)
-{
+void _OSXWindowStartDraw(struct _OSXWindowPlatformVars* windVars, struct _OSXViewPlatformVars* viewVars, int isSysColorWindow, double r, double g, double b) {
 	// This stops it from painting upside down (for some reason)
 	[ viewVars->viewRef setNeedsDisplay:YES ];
 
@@ -391,11 +356,10 @@ void _OSXWindowStartDraw(struct _OSXWindowPlatformVars* windVars, struct _OSXVie
 //	printf("start draw (OBJ-C)\n");
 
 	//Fill the background of the window with the window color
-	if (!isSysColorWindow)
-	{
+	if (!isSysColorWindow) {
 		NSColor* clr;
 
-		clr = [ NSColor colorWithDeviceRed:((float)((r) & 0xFF)/255.0f) green:((float)((g) & 0xFF)/255.0f) blue:((float)(b)/255.0f) alpha:1.0f ];
+		clr = [ NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0f ];
 
 		[ clr set ];
 		NSRectFill(viewVars->nsRect);
