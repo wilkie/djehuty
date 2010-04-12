@@ -47,6 +47,10 @@ class ApplicationController {
 	void exitCode(uint value) {
 		_exitCode = value;
 	}
+	
+	uint exitCode() {
+		return _exitCode;
+	}
 
 	void start() {
 	}
@@ -202,7 +206,7 @@ private:
 
 			if (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\0') {
 				if (last != i) {
-					String token = new String(Unicode.toUtf8(cmdlne[last..i]));
+					string token = Unicode.toUtf8(cmdlne[last..i]);
 	
 					args.add(token);
 				}

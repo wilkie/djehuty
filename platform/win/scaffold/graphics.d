@@ -22,7 +22,6 @@ import platform.vars.region;
 
 import Gdiplus = binding.win32.gdiplus;
 
-import core.tostring;
 import core.string;
 import core.color;
 import core.main;
@@ -108,30 +107,12 @@ void strokePie(ViewPlatformVars* viewVars, int x, int y, int width, int height, 
 }
 
 // Text
-void drawText(ViewPlatformVars* viewVars, int x, int y, String str) {
-	str = new String(str);
-	str.appendChar('\0');
-
-	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
-    Gdiplus.GdipDrawString(viewVars.g, str.ptr, str.array.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
-	//TextOutW(viewVars.dc, x, y, str.ptr, str.length-1);
-}
-
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str) {
 	wstring utf16 = Unicode.toUtf16(str ~ '\0');
 
 	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
     Gdiplus.GdipDrawString(viewVars.g, utf16.ptr, utf16.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
 	//TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length-1);
-}
-
-void drawText(ViewPlatformVars* viewVars, int x, int y, String str, uint length) {
-	str = new String(str);
-	str.appendChar('\0');
-
-	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
-    Gdiplus.GdipDrawString(viewVars.g, str.ptr, length, viewVars.curFont, &rect, null, viewVars.curTextBrush);
-	//TextOutW(viewVars.dc, x, y, str.ptr, length);
 }
 
 void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length) {
@@ -143,17 +124,9 @@ void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length)
 }
 
 // Clipped Text
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str) {
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, str.length, null);
-}
-
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str) {
 	wstring utf16 = Unicode.toUtf16(str);
 	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, utf16.length, null);
-}
-
-void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, String str, uint length) {
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, str.ptr, length, null);
 }
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str, uint length) {
@@ -162,26 +135,6 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 }
 
 // Text Measurement
-void measureText(ViewPlatformVars* viewVars, String str, out Size sz) {
-	//GetTextExtentPoint32W(viewVars.dc, str.ptr, str.length, cast(SIZE*)&sz);
-	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
-	Gdiplus.RectF result;
-	Gdiplus.GdipMeasureString(viewVars.g, str.ptr, str.array.length-1,
-		viewVars.curFont, &rect, null, &result, null, null);
-	sz.x = cast(uint)result.Width;
-	sz.y = cast(uint)result.Height;
-}
-
-void measureText(ViewPlatformVars* viewVars, String str, uint length, out Size sz) {
-	//GetTextExtentPoint32W(viewVars.dc, str.ptr, length, cast(SIZE*)&sz);
-	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
-	Gdiplus.RectF result;
-	Gdiplus.GdipMeasureString(viewVars.g, str.ptr, length,
-		viewVars.curFont, &rect, null, &result, null, null);
-	sz.x = cast(uint)result.Width;
-	sz.y = cast(uint)result.Height;
-}
-
 void measureText(ViewPlatformVars* viewVars, string str, out Size sz) {
 	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
 	//GetTextExtentPoint32W(viewVars.dc, utf16.ptr, utf16.length, cast(SIZE*)&sz) ;
@@ -238,7 +191,6 @@ void setAntialias(ViewPlatformVars* viewVars, bool value) {
 
 
 // Fonts
-import std.stdio;
 void createFont(FontPlatformVars* font, string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 	// Create family
 	wstring utf16 = Unicode.toUtf16(fontname) ~ cast(wchar)'\0';
@@ -268,46 +220,6 @@ void createFont(FontPlatformVars* font, string fontname, int fontsize, int weigh
 
 	// Create font
     Gdiplus.GdipCreateFont(font.family, fontsize, style, Gdiplus.Unit.UnitPoint, &font.handle);
-
-//	HDC dcz = GetDC(cast(HWND)0);
-//	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, utf16.ptr);
-//	ReleaseDC(cast(HWND)0, dcz);
-}
-
-void createFont(FontPlatformVars* font, String fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
-	// Create family
-	fontname = new String(fontname);
-	fontname.appendChar('\0');
-	Gdiplus.GdipCreateFontFamilyFromName(fontname.ptr, null, &font.family);
-
-	Gdiplus.FontStyle style;
-	bool bold = false;
-	if (weight > 600) {
-		bold = true;
-	}
-
-	if (bold) {
-		style |= Gdiplus.FontStyle.FontStyleBold;
-	}
-
-	if (italic) {
-		style |= Gdiplus.FontStyle.FontStyleItalic;
-	}
-
-	if (underline) {
-		style |= Gdiplus.FontStyle.FontStyleUnderline;
-	}
-
-	if (strikethru) {
-		style |= Gdiplus.FontStyle.FontStyleStrikeout;
-	}
-
-	// Create font
-    Gdiplus.GdipCreateFont(font.family, fontsize, style, Gdiplus.Unit.UnitPoint, &font.handle);
-
-//	HDC dcz = GetDC(cast(HWND)0);
-//	font.fontHandle = CreateFontW(-MulDiv(fontsize, GetDeviceCaps(dcz, 90), 72),0,0,0, weight, italic, underline, strikethru, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, fontname.ptr);
-//	ReleaseDC(cast(HWND)0, dcz);
 }
 
 void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font) {

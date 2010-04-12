@@ -18,6 +18,7 @@ import binding.win32.winuser;
 
 import core.definitions;
 import core.string;
+import core.unicode;
 
 import gui.window;
 
@@ -70,7 +71,7 @@ struct WindowPlatformVars {
 	HWND parenthWnd;
 	void* userData;
 
-	String oldTitle;
+	string oldTitle;
 
 	Window windowClass;
 
@@ -105,11 +106,12 @@ struct WindowPlatformVars {
 		if (pleaseStop) {
 			return;
 		}
-
-		oldTitle.appendChar('\0');
+		
+		wstring oldTitleW = Unicode.toUtf16(oldTitle.dup);
+		oldTitleW ~='\0';
 
 		while(hWnd is null) {
-			hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitle.ptr, cast(DWORD)(istyle | WS_CLIPSIBLINGS),
+			hWnd = CreateWindowExW(iexstyle, "djehutyApp\0"w.ptr,oldTitleW.ptr, cast(DWORD)(istyle | WS_CLIPSIBLINGS),
 				oldX, oldY, oldWidth, oldHeight, null,
 				cast(HMENU) null, null, cast(void*)userData);
 		}
@@ -198,8 +200,10 @@ struct WindowPlatformVars {
 			return;
 		}
 
-		oldTitle.appendChar('\0');
-		hWnd = CreateWindowExW(0, "djehutyApp\0"w.ptr,oldTitle.ptr, istyle ,
+		wstring oldTitleW = Unicode.toUtf16(oldTitle.dup);
+		oldTitleW ~='\0';
+		
+		hWnd = CreateWindowExW(0, "djehutyApp\0"w.ptr,oldTitleW.ptr, istyle ,
 			oldX, oldY, oldWidth, oldHeight, null,
 			cast(HMENU) null, null, cast(void*)userData);
 

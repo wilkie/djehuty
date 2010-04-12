@@ -26,6 +26,7 @@ import platform.vars.window;
 import core.string;
 import core.main;
 import core.definitions;
+import core.unicode;
 
 import io.console;
 
@@ -42,8 +43,8 @@ void MenuDestroy(MenuPlatformVars* menuVars) {
 	menuVars.hMenu = null;
 }
 
-void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toAppendVars, String text, bool hasSubitems) {
-	String s;
+void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toAppendVars, string text, bool hasSubitems) {
+	wstring s;
 	if (text == "") {
 		if (hasSubitems) {
 			AppendMenuW(mnuVars.hMenu,MF_SEPARATOR,cast(UINT_PTR)toAppendVars.hMenu,"\0"w.ptr);
@@ -53,8 +54,8 @@ void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 		}
 	}
 	else {
-		s = new String(text);
-		s.appendChar('\0');
+		s = Unicode.toUtf16(text);
+		s ~= '\0';
 		if (hasSubitems) {
 			AppendMenuW(mnuVars.hMenu,MF_POPUP,cast(UINT_PTR)toAppendVars.hMenu,s.ptr);
 		}
@@ -64,8 +65,8 @@ void MenuAppend(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 	}
 }
 
-void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toUpdateVars, String text, uint position, bool hasSubitems) {
-	String s;
+void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* toUpdateVars, string text, uint position, bool hasSubitems) {
+	wstring s;
 	if (text.trim() == "") {
 		if (hasSubitems) {
 			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_SEPARATOR,cast(UINT_PTR)toUpdateVars.hMenu,"\0"w.ptr);
@@ -75,8 +76,8 @@ void MenuUpdate(void* identifier, MenuPlatformVars* mnuVars, MenuPlatformVars* t
 		}
 	}
 	else {
-		s = new String(text);
-		s.appendChar('\0');
+		s = Unicode.toUtf16(text);
+		s ~= '\0';
 		if (hasSubitems) {
 			ModifyMenuW(mnuVars.hMenu,position,MF_BYPOSITION | MF_POPUP,cast(UINT_PTR)toUpdateVars.hMenu,s.ptr);
 		}

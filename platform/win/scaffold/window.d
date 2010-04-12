@@ -31,6 +31,7 @@ import core.color;
 import core.string;
 import core.main;
 import core.definitions;
+import core.unicode;
 
 import gui.window;
 
@@ -322,8 +323,8 @@ void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bS
 }
 
 void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
-	String s = new String(window.text);
-	s.appendChar('\0');
+	wstring s = Unicode.toUtf16(window.text);
+	s ~= '\0';
 	SetWindowTextW(windowVars.hWnd, cast(wchar*)s.ptr);
 }
 
