@@ -33,6 +33,8 @@ char* getenv(char*);
 struct __direntry;
 alias __direntry DIR;
 
+static int _IONBF = 0x2;
+
 struct dirent
 {
 	Culong_t d_ino;
