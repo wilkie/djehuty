@@ -12,11 +12,11 @@ import tui.widget;
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
-class TuiListBox : TuiWidget, Iterable!(String) {
+class TuiListBox : TuiWidget, Iterable!(string) {
 	this( uint x, uint y, uint width, uint height ) {
 		super(x,y,width,height);
 
-		_list = new List!(String)();
+		_list = new List!(string)();
 	}
 
 	override void onAdd() {
@@ -141,35 +141,35 @@ class TuiListBox : TuiWidget, Iterable!(String) {
 		}
 	}
 	
-	void add(String c) {
+	void add(string c) {
 		_list.add(c);
 	}
 	
-	String remove() {
+	string remove() {
 		return _list.remove();
 	}
 	
-	String removeAt(size_t idx){
+	string removeAt(size_t idx){
 		return _list.removeAt(idx);
 	}
 	
-	String peek() {
+	string peek() {
 		return _list.peek();
 	}
 	
-	String peekAt(size_t idx) {
+	string peekAt(size_t idx) {
 		return _list.peekAt(idx);
 	}
 	
-	void set(String c) {
+	void set(string c) {
 		_list.set(c);
 	}
 	
-	void apply(String delegate(String) func) {
+	void apply(string delegate(string) func) {
 		_list.apply(func);
 	}
 	
-	bool contains(String c) {
+	bool contains(string c) {
 		return _list.contains(c);
 	}
 	
@@ -181,19 +181,19 @@ class TuiListBox : TuiWidget, Iterable!(String) {
 		_list.clear();
 	}
 	
-	String[] array() {
+	string[] array() {
 		return _list.array();
 	}
 	
-	List!(String) dup() {
+	List!(string) dup() {
 		return _list.dup();
 	}
 	
-	List!(String) slice(size_t start, size_t end) {
+	List!(string) slice(size_t start, size_t end) {
 		return _list.slice(start, end);
 	}
 	
-	List!(String) reverse() {
+	List!(string) reverse() {
 		return _list.reverse();
 	}
 	
@@ -201,47 +201,47 @@ class TuiListBox : TuiWidget, Iterable!(String) {
 		return _list.length();
 	}
 	
-	String opIndex(size_t i1) {
+	string opIndex(size_t i1) {
 		return _list.opIndex(i1);
 	}
 	
-	int opApply(int delegate(ref String) loopFunc) {
+	int opApply(int delegate(ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref size_t, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	void opCatAssign(String[] list) {
+	void opCatAssign(string[] list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(Iterable!(String) list) {
+	void opCatAssign(Iterable!(string) list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(String item) {
+	void opCatAssign(string item) {
 		_list.opCatAssign(item);
 	}
 
-	Iterable!(String) opCat(String[] list) {
+	Iterable!(string) opCat(string[] list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(Iterable!(String) list) {
+	Iterable!(string) opCat(Iterable!(string) list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(String item) {
+	Iterable!(string) opCat(string item) {
 		return _list.opCat(item);
 	}
 	
@@ -319,7 +319,7 @@ protected:
 
 	char[] _spacestr;
 
-	List!(String) _list;
+	List!(string) _list;
 	
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

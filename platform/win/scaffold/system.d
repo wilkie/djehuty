@@ -20,6 +20,7 @@ import scaffold.directory;
 import core.definitions;
 import core.string;
 import core.locale;
+import core.unicode;
 
 import platform.vars.library;
 
@@ -129,8 +130,8 @@ ulong SystemGetAvailableMemory() {
 	return stats.ullAvailPhys;
 }
 
-bool SystemLoadLibrary(ref LibraryPlatformVars vars, String libraryPath) {
-	wchar[] path = _ConvertFrameworkPath(libraryPath.array ~ "\0");
+bool SystemLoadLibrary(ref LibraryPlatformVars vars, string libraryPath) {
+	wchar[] path = _ConvertFrameworkPath(Unicode.toUtf16(libraryPath ~ "\0"));
 
 	vars.hmodule = LoadLibraryW(path.ptr);
 	return vars.hmodule !is null;
@@ -143,13 +144,13 @@ void SystemFreeLibrary(ref LibraryPlatformVars vars) {
 	vars.hmodule = null;
 }
 
-void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, String procName) {
+void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, string procName) {
 	if (vars.hmodule is null) {
 		return null;
 	}
 
-	String pn = new String(procName);
-	pn.appendChar('\0');
+	wstring pn = Unicode.toUtf16(procName);
+	pn ~= '\0';
 	return cast(void*)GetProcAddressW(vars.hmodule, pn.ptr);
 }
 

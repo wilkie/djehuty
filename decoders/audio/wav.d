@@ -27,29 +27,6 @@ import io.console;
 
 // Section: Codecs/Audio
 
-private {
-	align(2) struct _djehuty_wave_riff_header {
-		uint magic;
-		uint filesize;
-		uint rifftype;
-	}
-
-	align(2) struct _djehuty_wave_chunk_header {
-		uint chunkID;
-		uint chunkSize;
-	}
-
-	struct _djehuty_wave_format_chunk {
-		ushort compressionCode;
-		ushort numChannels;
-		uint sampleRate;
-		uint avgBytesPerSecond;
-		ushort blockAlign;
-		ushort significantBitsPerSample;
-		ushort extraBytes;
-	}
-}
-
 // Description: This is the Microsoft Wave file codec.
 class WAVDecoder : AudioDecoder {
 
@@ -413,6 +390,37 @@ class WAVDecoder : AudioDecoder {
 		return tme;
 	}
 
+private:
+
+	align(2) struct _djehuty_wave_riff_header {
+		uint magic;
+		uint filesize;
+		uint rifftype;
+	}
+
+	align(2) struct _djehuty_wave_chunk_header {
+		uint chunkID;
+		uint chunkSize;
+	}
+
+	struct _djehuty_wave_format_chunk {
+		ushort compressionCode;
+		ushort numChannels;
+		uint sampleRate;
+		uint avgBytesPerSecond;
+		ushort blockAlign;
+		ushort significantBitsPerSample;
+		ushort extraBytes;
+	}
+
+	const auto WAVE_STATE_INIT 			= 0;
+	const auto WAVE_STATE_READ_RIFF		= 1;
+	const auto WAVE_STATE_READ_CHUNK	= 2;
+	const auto WAVE_STATE_SKIP_CHUNK	= 3;
+
+	const auto WAVE_STATE_CHUNK_FMT		= 4;
+	const auto WAVE_STATE_CHUNK_DATA	= 5;
+
 protected:
 
 	_djehuty_wave_riff_header RIFFHeader;
@@ -428,14 +436,4 @@ protected:
 
 	AudioFormat wf;
 	Time bufferTime;
-
-private:
-
-	const auto WAVE_STATE_INIT 			= 0;
-	const auto WAVE_STATE_READ_RIFF		= 1;
-	const auto WAVE_STATE_READ_CHUNK	= 2;
-	const auto WAVE_STATE_SKIP_CHUNK	= 3;
-
-	const auto WAVE_STATE_CHUNK_FMT		= 4;
-	const auto WAVE_STATE_CHUNK_DATA	= 5;
 }

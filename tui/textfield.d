@@ -30,7 +30,7 @@ class TuiTextField : TuiWidget {
 
 		_max = width-2;
 
-		_value = new String(value);
+		_value = value.dup;
 	}
 
 	// Events
@@ -50,12 +50,12 @@ class TuiTextField : TuiWidget {
 			if (_pos > 0) {
 				if (_pos == _max) {
 					Console.put(' ');
-					_value = _value.subString(0,_value.length-1);
+					_value = _value.substring(0,_value.length-1);
 				}
 				else {
 					Console.put(cast(char)0x8);
 					Console.put(' ');
-					_value = _value.subString(0, _pos-1) ~ _value.subString(_pos);
+					_value = _value.substring(0, _pos-1) ~ _value.substring(_pos);
 				}
 
 				Console.put(cast(char)0x8);
@@ -79,11 +79,11 @@ class TuiTextField : TuiWidget {
 
 				if (_pos >= _max) {
 					_pos = _max;
-					_value = _value.subString(0, _value.length-1) ~ keyChar;
+					_value = _value.substring(0, _value.length-1) ~ Unicode.toUtf8([keyChar]);
 					Console.put(cast(char)(0x8));
 				}
 				else {
-					_value = _value.subString(0, _pos-1) ~ keyChar ~ _value.subString(_pos-1);
+					_value = _value.substring(0, _pos-1) ~ Unicode.toUtf8([keyChar]) ~ _value.substring(_pos-1);
 				}
 			}
 		}
@@ -102,13 +102,13 @@ class TuiTextField : TuiWidget {
 	// Description: This property returns the current text within the field.
 	// Returns: The value of the field.
 	string text() {
-		return _value.toString();
+		return _value.dup;
 	}
 
 	// Description: This property sets the current text within the field.
 	// text: The new value for the field.
 	void text(string text) {
-		_value = new String(text);
+		_value = text.dup;
 		onDraw();
 	}
 	
@@ -164,7 +164,7 @@ class TuiTextField : TuiWidget {
 
 			Console.setColor(_forecolor, _backcolor);
 
-			foreach(chr; _value.subString(0,_max)) {
+			foreach(chr; _value.substring(0,_max)) {
 				Console.put(chr);
 			}
 
@@ -194,7 +194,7 @@ protected:
 	uint _pos = 0;
 	uint _max = 0;
 
-	String _value;
+	string _value;
 
 	void positionCursor() {
 		if (_pos == _max) {

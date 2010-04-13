@@ -17,7 +17,6 @@ import platform.win.common;
 import core.date;
 import core.definitions;
 import core.string;
-import core.tostring;
 
 // Timing
 

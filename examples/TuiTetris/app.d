@@ -4,12 +4,15 @@ import io.console;
 
 import gamewindow;
 
+import binding.c;
+
 class TermTetris : TuiApplication {
 
 	// Start an application instance
-	static this() { new TermTetris(); }
+	static this() { printf("HELLO!\n"); new TermTetris(); }
 
 	override void onApplicationStart() {
+		Console.putln("foo");
 		Console.hideCaret();
 
 		gameWindow = new GameWindow();

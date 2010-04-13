@@ -6,6 +6,8 @@ import gui.button;
 import gui.widget;
 import gui.listbox;
 
+import hashes.digest;
+
 import resource.menu;
 
 import graphics.graphics;
@@ -21,6 +23,7 @@ import tui.tabbox;
 import tui.container;
 
 import synch.timer;
+import synch.thread;
 
 import networking.irc;
 
@@ -29,8 +32,6 @@ import io.console;
 import hashes.md5;
 
 import specs.test;
-
-import gui.osbutton;
 
 import parsing.options;
 
@@ -43,107 +44,6 @@ import utils.fibonacci;
 import math.vector;
 
 import core.date;
-
-class MyOptions : OptionParser {
-
-	mixin Options!(
-		"option", "will perform this option",
-		string, "gives the number of runs",
-		char, "gives the op to do",
-
-		"x", "foo",
-		int, "yeah",
-
-		"y", "asdf",
-
-		"-file, f", "The file to use",
-		string, "The filename",
-
-		"-help", "view help"
-	);
-
-	void onOption(string str, char foo) {
-		Console.putln("option flag ", str, foo);
-	}
-
-	void onX(int foo) {
-		Console.putln("x flag ", foo);
-	}
-
-	void onY() {
-		Console.putln("y flag");
-	}
-
-	void onFile(string filename) {
-		Console.putln("file flag ", filename);
-	}
-
-	void onHelp() {
-		showUsage();
-		Djehuty.application.exit(0);
-	}
-
-}
-
-/*class MyControl : Widget {
-
-	this() {
-		super(0,50,100,100);
-
-		img = new Image("tiles.png");
-	}
-
-	override void onDraw(ref Graphics g) {
-		g.drawImage(_x,_y,img);
-	}
-
-protected:
-	Image img;
-}*/
-
-/*class MyWindow : Window {
-	this() {
-		super("Hello", WindowStyle.Fixed, Color.Red, 100,100,300,300);
-
-		irc = new IRC.Client();
-	}
-
-	IRC.Client irc;
-
-	override void onAdd() {
-		push(button = new Button(0,0,100,50,"OK"));
-		push(new MyControl());
-		push(closeButton = new OSButton(100,0,100,50,"Close"));
-		push(button = new Button(50,25,100,50,"OK"));
-	}
-
-	override bool onSignal(Dispatcher source, uint signal) {
-		if (source is closeButton) {
-			if (signal == Button.Signal.Selected) {
-				remove();
-				return true;
-			}
-		}
-		else if (source is button) {
-		}
-			if (signal == Button.Signal.Selected) {
-
-				Tests.testAll();
-
-				Console.putln(Regex.eval(`a#line 43 "foo\bar"`, `#line\s+(0x[0-9a-fA-F_]+|0b[01_]+|0[_0-7]+|(?:[1-9][_0-9]*|0))(?:\s+("[^"]*"))?`));
-//				Console.putln(Regex.eval("abcdefeggfoo", `abc(egg|foo)?def(egg|foo)?(egg|foo)?`));
-				Console.putln(_1, " ... ", _2, " ... ", _3, " ... ", _4);
-
-				return true;
-			}
-		return false;
-	}
-
-private:
-
-	Button closeButton;
-	Button button;
-}*/
 
 import tui.textfield;
 import core.application;
@@ -336,7 +236,7 @@ class MyWindow : Window {
 	override void onAdd() {
 		Menu foo = new Menu("root", [new Menu("&File", [new Menu("&Save"), new Menu("&Open")]), new Menu("&Edit"), new Menu("&Options")]);
 		menu = foo;
-		push(new OSButton(0,0,100,50,"yo"));
+		push(new Button(0,0,100,50,"yo"));
 		ListBox lb;
 		//push(lb = new ListBox(0,0,100,100));
 		//lb.add("Hello");
@@ -386,104 +286,27 @@ import math.currency;
 import math.integer;
 import parsing.d.parser;
 
-uint utflen(char[] str) {
-	return Unicode.utflen(str);
-}
-
-char charAt(char[] str, uint i) {
-	return str[i];
-}
-
-string slice(string str, uint i, uint j) {
-	return str[i..j];
-}
+import networking.ftp;
 
 class MyConsoleApp : Application {
-	static this() { "helloworld".utflen(); "hello".charAt(1); new MyConsoleApp(); }
+	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
-		int[] foo = [1,2,3];
-		
-		//auto res = count((int a){ return a < 3; }, foo);
 
-		List!(int) foo2 = new List!(int);
-		foo2.add(1);
-		foo2.add(2);
-		foo2.add(3);
-
-		Iterable!(int) foob = foo2;
-		auto res = count((int a){ return a > 1; }, foo);
-		Console.putln(res);
-
-		Console.putln(first(foo));
-		Console.putln(first(foo2));
-		Console.putln(last(foo2));
-
-		Console.putln(foo2);
-		Console.putln(addBetween(foo2, 0));
-
-		List!(List!(int)) megaFoo = new List!(List!(int));
-		List!(int) innerFoo1 = new List!(int)([1,2]);
-		List!(int) innerFoo2 = new List!(int)([3,4,5]);
-
-		megaFoo.add(innerFoo1);
-		megaFoo.add(innerFoo2);
-
-		Console.putln(caar([[1,2],[3,4]]));
-		Console.putln(caar(megaFoo));
-
-		Console.putln(foldr((int a, int b){ return a + b; }, foo2));
-		Console.putln(filter((int a){return a <= 2;}, foo2));
-		Console.putln(count((int a){return a <= 2;}, foo2));
-
-		auto fooret = map((int a){return toStr(a);}, foo2);
-		foreach(item; fooret) {
-			Console.putln(":", item);
-		}
-
-		List!(List!(List!(int))) megaMEGAFoo = new List!(List!(List!(int)));
-		List!(List!(int)) inner_A = new List!(List!(int));
-		List!(List!(int)) inner_B = new List!(List!(int));
-		List!(int) inner_A1 = new List!(int);
-		List!(int) inner_A2 = new List!(int);
-		List!(int) inner_A3 = new List!(int);
-		List!(int) inner_B1 = new List!(int);
-		List!(int) inner_B2 = new List!(int);
-		inner_A1.add(0);
-		inner_A1.add(1);
-		inner_A1.add(2);
-		inner_A2.add(3);
-		inner_A2.add(4);
-		inner_A3.add(5);
-		inner_A3.add(6);
-		inner_A3.add(7);
-
-		inner_B1.add(8);
-		inner_B1.add(9);
-		inner_B2.add(10);
-		inner_B2.add(11);
-		inner_B2.add(12);
-		inner_B2.add(13);
-
-		inner_A.add(inner_A1);
-		inner_A.add(inner_A2);
-		inner_A.add(inner_A3);
-		inner_B.add(inner_B1);
-		inner_B.add(inner_B2);
-
-		megaMEGAFoo.add(inner_A);
-		megaMEGAFoo.add(inner_B);
-
-		Console.putln(flatten(megaFoo));
-		Console.putln(flatten(megaMEGAFoo));
-
-		Console.putln(Time.Now());
-		Console.putln(Time.Local());
-		foobbb(3);
-		
 		DParser parser = new DParser(File.open("tests/test.d"));
 		auto ast = parser.parse();
 		Console.putln();
 		Console.putln(ast);
+		Thread t = Thread.getCurrent();
+
+		tmr = new Timer(250);
+		push(tmr);
+		tmr.start();
+		for(;;){}
+	}
+
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		Console.putln("fire");
+		return true;
 	}
 
 	void foobbb(...) {
@@ -494,7 +317,8 @@ class MyConsoleApp : Application {
 	}
 
 protected:
-	List!(String) list;
+	List!(string) list;
+	Timer tmr;
 }
 
 class MyApp : GuiApplication {
@@ -502,21 +326,40 @@ class MyApp : GuiApplication {
 	//static this() { new MyApp(); }
 
 	override void onApplicationStart() {
-		wnd = new MyWindow();
-		wnd.visible = true;
-		Date d = Date.Local();
-
-		Locale.id = LocaleId.French_FR;
-		//Console.putln(d);
-		//Console.putln(d.dayOfWeek);
-
-		push(wnd);
 	}
 
-	override void onApplicationEnd() {
-	}
+	/*	override bool onSignal(Dispatcher dsp, uint signal) {
+		if (dsp is ftp) {
+		switch(signal) {
+		case FtpClient.Signal.Authenticated:
+		Console.putln("Authenticated");
+		ftp.switch_to_passive();
+		break;
+		case FtpClient.Signal.PassiveMode:
+		ftp.send_Command("TYPE A");
+	//	ftp.list_files();
+	break;
+	case FtpClient.Signal.OK:
+	ftp.send_Command("CWD /home/bkuhlman/public_html/files");
 
-private:
-	MyWindow wnd;
+	break;
+	case FtpClient.Signal.LoginIncorrect:
+	//exit incorrect login
+	//		ftp.close();
+	break;
+	case FtpClient.Signal.CurDirSuc:
+	//ftp.send_Command("STOR Project_3.doc");
+	ftp.send_Command("RETR life.c");
+	break;
+	default:
+	// Dunno
+	break;
+	}
+	}
+	return true;
+	}*/
+
+	private:
+	FtpClient ftp;
 }
 

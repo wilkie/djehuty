@@ -30,24 +30,17 @@ abstract class Application : Responder {
 	this() {
 		// go by classinfo to the application name
 		ClassInfo ci = this.classinfo;
-		String className = new String(ci.name);
+		string className = ci.name.dup;
 
-		int pos = className.findReverse(new String("."));
+		string[] foo = split(className, '.');
 
-		if (pos > -1) {
-			className = className.subString(pos+1);
-		}
+		className = foo[$-1];
 
 		this(className);
 	}
 
-	this(String appName) {
-		this._appName = new String(appName);
-		Djehuty.application = this;
-	}
-
 	this(string appName) {
-		this._appName = new String(appName);
+		this._appName = appName.dup;
 		Djehuty.application = this;
 	}
 
@@ -55,8 +48,8 @@ abstract class Application : Responder {
 
 	// Description: This function will return the name of the application, which is used to signify directory structures and executable names.
 	// Returns: The application name.
-	String name() {
-		return new String(_appName);
+	string name() {
+		return _appName.dup;
 	}
 
 	// Description: This function will return true when the application being executed has been installed and is running from the installation directory.
@@ -78,7 +71,7 @@ abstract class Application : Responder {
 	// Overrides //
 
 	override char[] toString() {
-		return _appName.toString();
+		return _appName;
 	}
 
 	// Events //
@@ -91,7 +84,7 @@ abstract class Application : Responder {
 			
 			// If no event controllers are in play, then end
 			if (isZombie) {
-				exit(0);
+				exit(_platformAppController.exitCode);
 			}
 		}
 	}
@@ -119,7 +112,7 @@ abstract class Application : Responder {
 	}
 
 protected:
-	String _appName;
+	string _appName;
 	Arguments _arguments;
 
 	override bool raiseSignal(uint signal) {

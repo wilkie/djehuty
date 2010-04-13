@@ -20,7 +20,7 @@ private import io.console;
 
 class TuiContainer : TuiWidget {
 	this(uint x, uint y, uint width, uint height) {
-		_name = new String("");
+		_name = "";
 		super(x,y,width,height);
 	}
 
@@ -238,15 +238,11 @@ class TuiContainer : TuiWidget {
 	}
 	
 	void text(string name) {
-		_name = new String(name);
+		_name = name.dup;
 	}
 
-	void text(String name) {
-		_name = new String(name);
-	}
-
-	String text() {
-		return _name;
+	string text() {
+		return _name.dup;
 	}
 
 protected:
@@ -263,7 +259,7 @@ protected:
 	bool _inited;
 	bool _isTabStop;
 	
-	String _name;
+	string _name;
 
 	void _reportMove(uint x, uint y) {
 		TuiWidget c = _firstControl;

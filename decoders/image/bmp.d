@@ -1769,37 +1769,6 @@ class BMPDecoder : ImageDecoder {
 		return StreamData.Invalid;
 	}
 
-protected:
-
-	_djehuty_image_bitmap_file_header bf;
-	_djehuty_image_bitmap_info_header bi;
-	_djehuty_image_os2_1_bitmap_info_header os2_1_bi;
-	_djehuty_image_os2_2_bitmap_info_header os2_2_bi;
-
-	uint biSize;
-
-	uint paletteNumColors;
-	uint palette[256];
-
-	int bytesPerRow;
-	int bytesForPadding;
-
-	ubyte fileData[];
-	ubyte* fileDataPtr;
-	ubyte* fileDataEndPtr;
-	ubyte* fileDataCurPtr;
-	int fileDataToSkip;
-
-	uint ptrLine;		//the current scan line of the image (y)
-	uint ptrPos;		//the current pixel of the line (x)
-
-	uint byteData;
-	uint byteCounter;
-
-	ulong bitmapDataLen;
-
-	ulong fileSize;
-
 private:
 	static const auto BMP_STATE_INIT						= 0;
 
@@ -1844,5 +1813,34 @@ private:
 
 	static const ubyte _djehuty_convert_16_of_5_to_32[32] = (0, 8, 16, 25, 33, 41, 49, 58, 66, 74, 82, 90, 99, 107, 115, 123,
 														132, 140, 148, 156, 165, 173, 181, 189, 197, 206, 214, 222, 230, 239, 247, 255);
+protected:
 
+	_djehuty_image_bitmap_file_header bf;
+	_djehuty_image_bitmap_info_header bi;
+	_djehuty_image_os2_1_bitmap_info_header os2_1_bi;
+	_djehuty_image_os2_2_bitmap_info_header os2_2_bi;
+
+	uint biSize;
+
+	uint paletteNumColors;
+	uint palette[256];
+
+	int bytesPerRow;
+	int bytesForPadding;
+
+	ubyte fileData[];
+	ubyte* fileDataPtr;
+	ubyte* fileDataEndPtr;
+	ubyte* fileDataCurPtr;
+	int fileDataToSkip;
+
+	uint ptrLine;		//the current scan line of the image (y)
+	uint ptrPos;		//the current pixel of the line (x)
+
+	uint byteData;
+	uint byteCounter;
+
+	ulong bitmapDataLen;
+
+	ulong fileSize;
 }

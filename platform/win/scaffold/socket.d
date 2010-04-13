@@ -20,6 +20,7 @@ import platform.vars.socket;
 import core.string;
 import core.main;
 import core.definitions;
+import core.unicode;
 
 import io.console;
 
@@ -47,7 +48,7 @@ INT GetAddrInfoW(
 
 // SOCKET
 
-bool SocketOpen(ref SocketPlatformVars sockVars, ref String hostname, ref ushort port)
+bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort port)
 {
 	WSADATA wsaData;
 	int iResult;
@@ -78,10 +79,10 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref String hostname, ref ushort
 
 	//OutputDebugStringA("getaddr start\n");
 
-	String portstr = new String(port);
+	wstring portstr = Unicode.toUtf16(toStr(port));
 
-	String hname = new String(hostname);
-	hname.appendChar('\0');
+	wstring hname = Unicode.toUtf16(hostname);
+	hname ~= '\0';
 
 	iResult = GetAddrInfoW(hname.ptr, portstr.ptr, &hints, &result);
 

@@ -20,14 +20,14 @@ import core.string;
 import core.definitions;
 import core.list;
 
-class TuiFileBox : TuiWidget, Iterable!(String) {
+class TuiFileBox : TuiWidget, Iterable!(string) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_path = new Directory();
-		_list = new List!(String);
-		String[] list = _path.list.sort;
+		_list = new List!(string);
+		string[] list = _path.list.sort;
 		if (!_path.isRoot) {
-			list = [new String("..")] ~ list;
+			list = [".."] ~ list;
 		}
 		foreach(item; list) {
 			_list.add(item);
@@ -92,9 +92,9 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 			// Traverse Directory
 			if (_list[_pos] == "..") {
 				_path = _path.parent;
-				String[] list = _path.list.sort;
+				string[] list = _path.list.sort;
 				if (!_path.isRoot) {
-					list = [new String("..")] ~ list;
+					list = [".."] ~ list;
 				}
 				_list.clear();
 				// XXX: Make this work for List!()
@@ -108,9 +108,9 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 			}
 			else if (_path.isDir(_list[_pos])) {
 				_path = _path.traverse(_list[_pos]);
-				String[] list = _path.list.sort;
+				string[] list = _path.list.sort;
 				if (!_path.isRoot) {
-					list = [new String("..")] ~ list;
+					list = [".."] ~ list;
 				}
 				_pos = 0;
 				_firstVisible = 0;
@@ -194,12 +194,12 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 
 	// Description: This event will be fired upon selection of a file within the widget.
 	// file: The complete path to the file.
-	void onFileSelect(String file) {
+	void onFileSelect(string file) {
 	}
 
 	// Description: This event will be fired upon selection of a directory within the widget.
 	// dir: The complete path to the directory.
-	void onDirectorySelect(String dir) {
+	void onDirectorySelect(string dir) {
 	}
 
 	// Methods
@@ -208,35 +208,35 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 		return true;
 	}
 	
-	void add(String c) {
+	void add(string c) {
 		return;
 	}
 	
-	String remove() {
+	string remove() {
 		return _list.peek();
 	}
 	
-	String removeAt(size_t idx){
+	string removeAt(size_t idx){
 		return _list.peekAt(idx);
 	}
 	
-	String peek() {
+	string peek() {
 		return _list.peek();
 	}
 	
-	String peekAt(size_t idx) {
+	string peekAt(size_t idx) {
 		return _list.peekAt(idx);
 	}
 	
-	void set(String c) {
+	void set(string c) {
 		return;
 	}
 	
-	void apply(String delegate(String) func) {
+	void apply(string delegate(string) func) {
 		return;
 	}
 	
-	bool contains(String c) {
+	bool contains(string c) {
 		return _list.contains(c);
 	}
 	
@@ -248,19 +248,19 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 		return;
 	}
 	
-	String[] array() {
+	string[] array() {
 		return _list.array();
 	}
 	
-	List!(String) dup() {
+	List!(string) dup() {
 		return _list.dup();
 	}
 	
-	List!(String) slice(size_t start, size_t end) {
+	List!(string) slice(size_t start, size_t end) {
 		return _list.slice(start, end);
 	}
 	
-	List!(String) reverse() {
+	List!(string) reverse() {
 		return _list.reverse();
 	}
 	
@@ -268,47 +268,47 @@ class TuiFileBox : TuiWidget, Iterable!(String) {
 		return _list.length();
 	}
 	
-	String opIndex(size_t i1) {
+	string opIndex(size_t i1) {
 		return _list.opIndex(i1);
 	}
 	
-	int opApply(int delegate(ref String) loopFunc) {
+	int opApply(int delegate(ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref size_t, ref String) loopFunc) {
+	int opApply(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApply(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref size_t, ref String) loopFunc) {
+	int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
 		return _list.opApplyReverse(loopFunc);
 	}
 
-	void opCatAssign(String[] list) {
+	void opCatAssign(string[] list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(Iterable!(String) list) {
+	void opCatAssign(Iterable!(string) list) {
 		_list.opCatAssign(list);
 	}
 
-	void opCatAssign(String item) {
+	void opCatAssign(string item) {
 		_list.opCatAssign(item);
 	}
 
-	Iterable!(String) opCat(String[] list) {
+	Iterable!(string) opCat(string[] list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(Iterable!(String) list) {
+	Iterable!(string) opCat(Iterable!(string) list) {
 		return _list.opCat(list);
 	}
 
-	Iterable!(String) opCat(String item) {
+	Iterable!(string) opCat(string item) {
 		return _list.opCat(item);
 	}
 
@@ -373,7 +373,7 @@ protected:
 	uint _firstVisible = 0;
 
 	Directory _path;
-	List!(String) _list;
+	List!(string) _list;
 
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

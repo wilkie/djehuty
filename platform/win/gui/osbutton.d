@@ -27,10 +27,6 @@ import graphics.graphics;
 
 class OSButton : Button, WinWidget {
 
-	this(int x, int y, int width, int height, String value) {
-		super(x,y,width,height,value);
-	}
-
 	this(int x, int y, int width, int height, string value) {
 		super(x,y,width,height,value);
 	}

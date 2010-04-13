@@ -4,7 +4,8 @@ import gui.application;
 import gui.window;
 import gui.button;
 import gui.widget;
-import gui.osbutton;
+
+import io.console;
 
 import graphics.graphics;
 import resource.image;
@@ -57,6 +58,7 @@ class MyWindow : Window {
 	}
 
 	override void onAdd() {
+		Console.putln("Running.");
 		push(imageBox = new MyControl());
 		push(button = new Button(1,1,358,48,"MORE DUCKS!"));
 	}
@@ -84,9 +86,11 @@ class MyApp : GuiApplication {
 	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
+		Console.putln("foo");
 		wnd = new MyWindow();
 		wnd.visible = true;
 
+		Console.putln("foo");
 		push(wnd);
 	}
 

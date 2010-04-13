@@ -167,14 +167,6 @@ public:
 		return hash(cast(ubyte[])utf8Message);
 	}
 
-	// Description: This function will calculate the SHA-1 hash of a string object.
-	// message: The string to hash.
-	// Returns: A string representing the SHA-1 hash.
-	Digest hash(String message) {
-		// for standard reasons, we convert to utf8
-		return hash(cast(ubyte[])(message.toUtf8()));
-	}
-
 	alias hash opCall;
 
 

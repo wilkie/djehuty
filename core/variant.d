@@ -10,7 +10,7 @@
 
 module core.variant;
 
-import core.tostring;
+import core.string;
 import core.definitions;
 import core.unicode;
 
@@ -59,7 +59,7 @@ enum Type {
 
 	// Abstract Data Types
 	Struct,
-	Class,
+	Reference,
 	Pointer,
 }
 
@@ -77,152 +77,240 @@ struct Variant {
 		return _isHash;
 	}
 
-	VariantData data() {
-		return _data;
-	}
-
-	void data(byte from) {
+	Variant opAssign(byte from) {
 		_type = Type.Byte;
 		_data.b = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(ubyte from) {
+	Variant opAssign(ubyte from) {
 		_type = Type.Ubyte;
 		_data.ub = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
-
-	void data(short from) {
+	
+	Variant opAssign(short from) {
 		_type = Type.Short;
 		_data.s = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(ushort from) {
+	Variant opAssign(ushort from) {
 		_type = Type.Ushort;
 		_data.us = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(int from) {
+	Variant opAssign(int from) {
 		_type = Type.Int;
 		_data.i = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(uint from) {
+	Variant opAssign(uint from) {
 		_type = Type.Uint;
 		_data.ui = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(long from) {
+	Variant opAssign(long from) {
 		_type = Type.Long;
 		_data.l = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(ulong from) {
+	Variant opAssign(ulong from) {
 		_type = Type.Ulong;
 		_data.ul = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(float from) {
+	Variant opAssign(float from) {
 		_type = Type.Float;
 		_data.f = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(double from) {
+	Variant opAssign(double from) {
 		_type = Type.Double;
 		_data.d = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(real from) {
+	Variant opAssign(real from) {
 		_type = Type.Real;
 		_data.r = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(ifloat from) {
+	Variant opAssign(ifloat from) {
 		_type = Type.Ifloat;
 		_data.fi = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(idouble from) {
+	Variant opAssign(idouble from) {
 		_type = Type.Idouble;
 		_data.di = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(ireal from) {
+	Variant opAssign(ireal from) {
 		_type = Type.Ireal;
 		_data.ri = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(cfloat from) {
+	Variant opAssign(cfloat from) {
 		_type = Type.Cfloat;
 		_data.fc = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(cdouble from) {
+	Variant opAssign(cdouble from) {
 		_type = Type.Cdouble;
 		_data.dc = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(creal from) {
+	Variant opAssign(creal from) {
 		_type = Type.Creal;
 		_data.rc = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(char from) {
+	Variant opAssign(char from) {
 		_type = Type.Char;
 		_data.cc = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(wchar from) {
+	Variant opAssign(wchar from) {
 		_type = Type.Wchar;
 		_data.cw = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(dchar from) {
+	Variant opAssign(dchar from) {
 		_type = Type.Dchar;
 		_data.cd = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
 	}
 
-	void data(string from) {
+	Variant opAssign(string from) {
 		_type = Type.Char;
 		_data.cs = from.dup;
 		_isArray = true;
+		_depth = 1;
+		return *this;
 	}
 
-	void data(wstring from) {
-		_type = Type.Wchar;
-		_data.ws = from.dup;
-		_isArray = true;
-	}
-
-	void data(dstring from) {
-		_type = Type.Dchar;
-		_data.ds = from.dup;
-		_isArray = true;
-	}
-
-	void data(Object from) {
-		_type = Type.Class;
+	Variant opAssign(Object from) {
+		_type = Type.Reference;
 		_data.reference = from;
 		_isArray = false;
+		_depth = 0;
+		return *this;
+	}
+
+	bool opEquals(byte var) {
+		auto cmp = to!(byte);
+		return cmp == var;
+	}
+
+	bool opEquals(ubyte var) {
+		auto cmp = to!(ubyte);
+		return cmp == var;
+	}
+
+	bool opEquals(short var) {
+		auto cmp = to!(short);
+		return cmp == var;
+	}
+
+	bool opEquals(ushort var) {
+		auto cmp = to!(ushort);
+		return cmp == var;
+	}
+
+	bool opEquals(int var) {
+		int cmp = to!(int);
+		return cmp == var;
+	}
+
+	bool opEquals(uint var) {
+		auto cmp = to!(uint);
+		return cmp == var;
+	}
+
+	bool opEquals(long var) {
+		auto cmp = to!(ulong);
+		return cmp == var;
+	}
+
+	bool opEquals(ulong var) {
+		auto cmp = to!(ulong);
+		return cmp == var;
+	}
+
+	bool opEquals(string var) {
+		string cmp = to!(string);
+		return cmp == var;
+	}
+
+	bool opEquals(Object var) {
+		Object cmp = to!(Object);
+		return cmp is var;
+	}
+
+	bool opEquals(float var) {
+		auto cmp = to!(float);
+		return cmp == var;
+	}
+
+	bool opEquals(double var) {
+		auto cmp = to!(double);
+		return cmp == var;
 	}
 
 	template to(T) {
@@ -235,6 +323,12 @@ struct Variant {
 				Object o = _data.reference;
 				T* c = cast(T*)&o;
 				return *c;
+			}
+			else static if (is(T == void*)) {
+				return _data.pointer.address;
+			}
+			else static if (is(T == char[])) {
+				return toString();
 			}
 			else {
 				if (_type == Type.Float) {
@@ -261,8 +355,29 @@ struct Variant {
 				else if (_type == Type.Uint) {
 					return cast(T)_data.ui;
 				}
-				else if (_type == Type.Ifloat || _type == Type.Idouble || _type == Type.Ireal) {
-					return 0.0; // It is 0.0 for the real part
+				else if (_type == Type.Byte) {
+					return cast(T)_data.b;
+				}
+				else if (_type == Type.Ubyte) {
+					return cast(T)_data.ub;
+				}
+				else if (_type == Type.Short) {
+					return cast(T)_data.s;
+				}
+				else if (_type == Type.Ushort) {
+					return cast(T)_data.us;
+				}
+				else if ((_type == Type.Ifloat) || (_type == Type.Idouble) || (_type == Type.Ireal)) {
+					return cast(T)0.0; // It is 0.0 for the real part
+				}
+				else if (_type == Type.Long) {
+					return cast(T)_data.l;
+				}
+				else if (_type == Type.Ulong) {
+					return cast(T)_data.ul;
+				}
+				else if (_type == Type.Pointer) {
+					return *cast(T*)_data.pointer.address;
 				}
 				else {
 					return *(cast(T*)&_data.b);
@@ -273,15 +388,15 @@ struct Variant {
 
 	string toString() {
 		if (_isArray) {
-			if (_type == Type.Char) {
+			if (_type == Type.Char && _depth == 1) {
 				// string
 				return _data.cs;
 			}
-			else if (_type == Type.Wchar) {
+			else if (_type == Type.Wchar && _depth == 1) {
 				// string
 				return Unicode.toUtf8(_data.ws);
 			}
-			else if (_type == Type.Dchar) {
+			else if (_type == Type.Dchar && _depth == 1) {
 				// string
 				return Unicode.toUtf8(_data.ds);
 			}
@@ -302,7 +417,7 @@ struct Variant {
 		}
 
 		switch (_type) {
-			case Type.Class:
+			case Type.Reference:
 				if (_data.reference is null) {
 					return "null";
 				}
@@ -328,34 +443,34 @@ struct Variant {
 			case Type.Dchar:
 				return Unicode.toUtf8([_data.cd]);
 			case Type.Byte:
-				return toStr(_data.b);
+				return "{d}".format(_data.b);
 			case Type.Ubyte:
-				return toStr(_data.ub);
+				return "{d}".format(_data.ub);
 			case Type.Short:
-				return toStr(_data.s);
+				return "{d}".format(_data.s);
 			case Type.Ushort:
-				return toStr(_data.us);
+				return "{d}".format(_data.us);
 			case Type.Int:
-				return toStr(_data.i);
+				return "{d}".format(_data.i);
 			case Type.Uint:
-				return toStr(_data.ui);
+				return "{d}".format(_data.ui);
 			case Type.Long:
-				return toStr(_data.l);
+				return "{d}".format(_data.l);
 			case Type.Ulong:
-				return toStr(_data.ul);
+				return "{d}".format(_data.ul);
 			case Type.Bool:
 				if (_data.truth) {
 					return "true";
 				}
 				return "false";
 			case Type.Float:
-				return toStr(_data.f);
+				return "{d}".format(cast(float)_data.f);
 			case Type.Double:
-				return toStr(_data.d);
+				return "{d}".format(cast(double)_data.d);
 			case Type.Real:
-				return toStr(_data.r);
+				return "{real}";
 			case Type.Pointer:
-				return toStr(_data.pointer.address);
+				return "0x{x}".format(cast(ulong)_data.pointer.address);
 			default:
 				break;
 		}
@@ -363,19 +478,18 @@ struct Variant {
 	}
 
 private:
-	Type _type;
+	Type _type = Type.Reference;
 
-	bool _isArray;
-	uint _depth;
+	bool _isArray = false;
+	uint _depth = 0;
 
-	bool _isHash;
-	size_t _size;
+	bool _isHash = false;
+	size_t _size = null.sizeof;
 
 	TypeInfo _tiRoot;
 	TypeInfo _ti;
 
-	VariantData _data;
-
+	VariantData _data = {reference:null};
 }
 
 union VariantData {
@@ -606,7 +720,7 @@ protected:
 				ret._type = sub._type;
 				break;
 			case "Class":
-				ret._type = Type.Class;
+				ret._type = Type.Reference;
 				if (ptr !is null) {
 					ret._data.reference = va_arg!(Object)(ptr);
 				}
@@ -1051,17 +1165,32 @@ protected:
 	}
 }
 
-Variadic foobar;
+private:
 
-void foo(...) {
-	Variadic vars = new Variadic(_arguments, _argptr);
-	vars.retain();
-	foov(vars);
-	foobar = vars;
-}
-
-void foov(Variadic v) {
-	foreach(var; v) {
-//		Console.putln(var.toString());
+long atoi(string value, uint base = 10) {
+	bool negative;
+	uint i;
+	if (value is null || value.length == 0) {
+		return 0;
 	}
+	if (value[i] == '-') {
+		negative = true;
+		i++;
+	}
+
+	long ret;
+
+	for (; i < value.length; i++) {
+		if (value[i] >= '0' && value[i] <= '9') {
+			ret *= 10;
+			ret += cast(int)value[i] - cast(int)'0';
+		}
+	}
+
+	if (negative) {
+		ret = -ret;
+	}
+
+	return ret;
 }
+

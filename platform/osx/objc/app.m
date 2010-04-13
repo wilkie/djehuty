@@ -1,13 +1,11 @@
 #include <Cocoa/Cocoa.h>
 #include <Foundation/Foundation.h>
 
-@interface _OSXApp : NSApplication
-{
+@interface _OSXApp : NSApplication {
 }
 @end
 
-@implementation _OSXApp
-{
+@implementation _OSXApp {
 }
 /*
 -(void)sendEvent:(NSEvent*)event
@@ -27,8 +25,7 @@ NSAutoreleasePool* pool;
 
 NSArray* fntKeys;
 
-void _OSXStart()
-{
+void _OSXStart() {
 	fntKeys = [ [NSArray alloc ] initWithObjects:
 			NSFontAttributeName,
 			NSUnderlineStyleAttributeName,
@@ -39,14 +36,12 @@ void _OSXStart()
 	NSApp = [_OSXApp sharedApplication];
 }
 
-void _OSXLoop()
-{
+void _OSXLoop() {
 	// run the main event loop
     [ NSApp run ];
 }
 
-void _OSXEnd()
-{
+void _OSXEnd() {
 	[ NSApp release ];
 
 	[ pool release ];

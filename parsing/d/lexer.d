@@ -24,6 +24,18 @@ class DLexer : Lexer {
 		_bank.push(token);
 	}
 
+	string line() {
+		return _line;
+	}
+
+	string line(uint number) {
+		number--;
+		if (number >= _lines.length) {
+			return "";
+		}
+		return _lines[number];
+	}
+
 	Token pop() {
 		if (!_bank.empty) {
 			return _bank.pop();
@@ -34,10 +46,11 @@ class DLexer : Lexer {
 
 		// will give us a string for the line of utf8 characters.
 		for(;;) {
-			if (_line is null || _pos == _line.length) {
+			if (_line is null || _pos >= _line.length) {
 				if(!_stream.readLine(_line)) {
 					return Token.init;
 				}
+				_lines ~= _line;
 				_lineNumber++;
 				_pos = 0;
 				current.line++;
@@ -47,8 +60,14 @@ class DLexer : Lexer {
 			// now break up the line into tokens
 			// the return for the line is whitespace, and can be ignored
 
-			for(; _pos < _line.length; _pos++) {
-				char chr = _line[_pos];
+			for(; _pos <= _line.length; _pos++) {
+				char chr;
+				if (_pos == _line.length) {
+					chr = '\n';
+				}
+				else {
+					chr = _line[_pos];
+				}
 				switch (state) {
 					default:
 						// error
@@ -315,7 +334,12 @@ class DLexer : Lexer {
 									break;
 								default:
 									// Token Error
-									_error("Unknown operator.");
+									if (current.type != DToken.Invalid) {
+										current.columnEnd = _pos;
+										current.lineEnd = _lineNumber;
+										return current;
+									}
+//									_error("Unknown operator.");
 									return Token.init;
 							}
 							
@@ -330,6 +354,8 @@ class DLexer : Lexer {
 							inStringType = StringType.Character;
 							cur_string = "";
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								_pos++;
 								return current;
 							}
@@ -340,6 +366,8 @@ class DLexer : Lexer {
 							inStringType = StringType.DoubleQuote;
 							cur_string = "";
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								_pos++;
 								return current;
 							}
@@ -350,6 +378,8 @@ class DLexer : Lexer {
 							inStringType = StringType.WhatYouSeeQuote;
 							cur_string = "";
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								_pos++;
 								return current;
 							}
@@ -357,8 +387,10 @@ class DLexer : Lexer {
 						}
 
 						// Whitespace
-						else if (chr == ' ' || chr == '\t') {
+						else if (chr == ' ' || chr == '\t' || chr == '\n') {
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								_pos++;
 								return current;
 							}
@@ -371,6 +403,8 @@ class DLexer : Lexer {
 							state = LexerState.Identifier;
 							cur_string = "";
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								return current;
 							}
 							goto case LexerState.Identifier;
@@ -397,6 +431,8 @@ class DLexer : Lexer {
 								state = LexerState.Integer;
 
 								if (current.type != DToken.Invalid) {
+									current.columnEnd = _pos;
+									current.lineEnd = _lineNumber;
 									return current;
 								}
 								goto case LexerState.Integer;
@@ -432,8 +468,12 @@ class DLexer : Lexer {
 						if (inStringType == StringType.DoubleQuote) {
 							if (chr == '"') {
 								state = LexerState.Normal;
-								Console.put('%', '"', cur_string, '"', '%');
 								current.type = DToken.StringLiteral;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -441,8 +481,12 @@ class DLexer : Lexer {
 						else if (inStringType == StringType.RawWhatYouSeeQuote) {
 							if (chr == '"') {
 								state = LexerState.Normal;
-								Console.put('%', '\'', cur_string, '\'', '%');
 								current.type = DToken.StringLiteral;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -450,8 +494,12 @@ class DLexer : Lexer {
 						else if (inStringType == StringType.WhatYouSeeQuote) {
 							if (chr == '`') {
 								state = LexerState.Normal;
-								Console.put('%', '`', cur_string, '`', '%');
 								current.type = DToken.StringLiteral;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -463,8 +511,12 @@ class DLexer : Lexer {
 									goto default;
 								}
 								state = LexerState.Normal;
-								Console.put('*', '\'', cur_string, '\'', '*');
 								current.type = DToken.CharacterLiteral;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
+								if (cur_string !is null) {
+									current.value = cur_string;
+								}
 								_pos++;
 								return current;
 							}
@@ -496,24 +548,23 @@ class DLexer : Lexer {
 								"typedef","typeid","typeof","ubyte","ucent","uint","ulong","union","unittest","ushort","version",
 								"void","volatile","wchar","while","with"
 							];
-
 							current.type = DToken.Identifier;
 
 							foreach(size_t i, keyword; keywordList) {
 								if (cur_string == keyword) {
 									current.type = keywordStart + i;
-									Console.put("KW ");
 									cur_string = null;
 									break;
 								}
 							}
 
 							if (cur_string !is null) {
-								current.value.data = cur_string;
-								Console.put('"', cur_string, '"');
+								current.value = cur_string;
 							}
 							state = LexerState.Normal;
 							if (current.type != DToken.Invalid) {
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 								return current;
 							}
 							goto case LexerState.Normal;
@@ -597,6 +648,8 @@ class DLexer : Lexer {
 							else {
 								// 0 ?
 								current.type = DToken.IntegerLiteral;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -605,9 +658,9 @@ class DLexer : Lexer {
 						else if (cur_base == 16) {
 							if ((chr < '0' || chr > '9') && (chr < 'a' || chr > 'f') && (chr < 'A' || chr > 'F')) {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
-
-								Console.put("int:", cur_integer, " ");
+								current.value = cur_integer;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -628,9 +681,9 @@ class DLexer : Lexer {
 						else if (cur_base == 10) {
 							if (chr < '0' || chr > '9') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
-
-								Console.put("int:", cur_integer, " ");
+								current.value = cur_integer;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -647,9 +700,9 @@ class DLexer : Lexer {
 							}
 							else if (chr < '0' || chr > '7') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
-
-								Console.put("int:", cur_integer, " ");
+								current.value = cur_integer;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -662,9 +715,9 @@ class DLexer : Lexer {
 						else if (cur_base == 2) {
 							if (chr < '0' || chr > '1') {
 								current.type = DToken.IntegerLiteral;
-								current.value.data = cur_integer;
-
-								Console.put("int:", cur_integer, " ");
+								current.value = cur_integer;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -720,8 +773,9 @@ class DLexer : Lexer {
 									exp *= cur_base;
 								}
 								value *= exp;
-								current.value.data = value;
-								Console.put("fp:", cur_integer, ".", cur_decimal,"e", cur_exponent, "=", value, " ");
+								current.value = value;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -756,8 +810,9 @@ class DLexer : Lexer {
 									exp *= 2;
 								}
 								value *= exp;
-								current.value.data = value;
-								Console.put("fp:", cur_integer, ".", cur_decimal,"e", cur_exponent, "=", value, " ");
+								current.value = value;
+								current.columnEnd = _pos;
+								current.lineEnd = _lineNumber;
 
 								state = LexerState.Normal;
 								return current;
@@ -796,6 +851,8 @@ class DLexer : Lexer {
 			}
 
 			if (current.type != DToken.Invalid) {
+				current.columnEnd = _pos;
+				current.lineEnd = _lineNumber;
 				return current;
 			}
 			current.line++;
@@ -803,7 +860,6 @@ class DLexer : Lexer {
 
 			if (state != LexerState.String) {
 				state = LexerState.Normal;
-				Console.putln();
 			}
 			else {
 				if (inStringType == StringType.Character) {
@@ -833,7 +889,6 @@ class DLexer : Lexer {
 private:
 
 	void _error(string msg) {
-		Console.putln();
 		Console.setColor(fgColor.Red);
 		Console.putln("Lexical Error: file.d @ ", _lineNumber+1, ":", _pos+1, " - ", msg);
 		Console.putln();
@@ -911,6 +966,8 @@ private:
 	ulong cur_denominator;
 	bool inDecimal;
 	bool inExponent;
+
+	string[] _lines;
 
 	Stack!(Token) _bank;
 }

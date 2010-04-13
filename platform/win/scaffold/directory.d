@@ -24,7 +24,21 @@ import core.unicode;
 import io.console;
 import io.file;
 
-bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref String path) {
+bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
+	return false;
+}
+
+bool DirectoryCreate(ref DirectoryPlatformVars dirVars, ref string path) {
+	wchar[] dirPath = Unicode.toUtf16(path);
+	
+	if (DirectoryFileIsDir(path)) {
+		return false;
+	}
+
+	if(CreateDirectoryW(dirPath.ptr,null) != 0){
+		return true;
+	}
+	
 	return false;
 }
 
@@ -32,8 +46,8 @@ bool DirectoryClose(ref DirectoryPlatformVars dirVars) {
 	return false;
 }
 
-String DirectoryGetBinary() {
-	static String cached;
+string DirectoryGetBinary() {
+	static string cached;
 
 	// %PROGRAMFILES%
 
@@ -47,14 +61,14 @@ String DirectoryGetBinary() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;
 }
 
-String DirectoryGetAppData() {
-	static String cached;
+string DirectoryGetAppData() {
+	static string cached;
 
 	// %PROGRAMFILES%
 
@@ -68,14 +82,14 @@ String DirectoryGetAppData() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;
 }
 
-String DirectoryGetTempData() {
-	static String cached;
+string DirectoryGetTempData() {
+	static string cached;
 
 	if (cached is null) {
 		int ret = GetTempPathW(0, null);
@@ -86,14 +100,14 @@ String DirectoryGetTempData() {
 		ret = GetTempPathW(ret, str.ptr);
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/dpj" ~ new String(GetCurrentProcessId());
+		cached = Unicode.toUtf8(str) ~ "/dpj" ~ toStr(GetCurrentProcessId());
 	}
 
 	return cached;
 }
 
-String DirectoryGetUserData() {
-	static String cached;
+string DirectoryGetUserData() {
+	static string cached;
 
 	// %APPDATA%
 
@@ -107,13 +121,13 @@ String DirectoryGetUserData() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = new String(Unicode.toUtf8(str)) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
 	}
 
 	return cached;
 }
 
-String DirectoryGetApp() {
+string DirectoryGetApp() {
 	int size = 512;
 	int ret = 0;
 
@@ -132,10 +146,10 @@ String DirectoryGetApp() {
 	dir = _SanitizeWindowsPath(dir);
 	dir = _TruncateFileName(dir);
 
-	return new String(Unicode.toUtf8(dir));
+	return Unicode.toUtf8(dir);
 }
 
-String DirectoryGetCWD() {
+string DirectoryGetCWD() {
 	int size = GetCurrentDirectoryW(0, null);
 	wchar[] cwd = new wchar[size];
 	GetCurrentDirectoryW(size, cwd.ptr);
@@ -143,11 +157,11 @@ String DirectoryGetCWD() {
 
 	cwd = _SanitizeWindowsPath(cwd);
 
-	return new String(Unicode.toUtf8(cwd));
+	return Unicode.toUtf8(cwd);
 }
 
-bool DirectoryFileIsDir(String path) {
-	wchar[] strArr = _ConvertFrameworkPath(path.array);
+bool DirectoryFileIsDir(string path) {
+	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(path));
 	strArr ~= '\0';
 
 	DWORD ret = GetFileAttributesW(strArr.ptr);
@@ -155,16 +169,16 @@ bool DirectoryFileIsDir(String path) {
 	return (ret & FILE_ATTRIBUTE_DIRECTORY) > 0;
 }
 
-bool DirectoryRename(ref String path, String newName) {
-	String old = new String(path);
-	old.appendChar('\0');
+bool DirectoryRename(ref string path, string newName) {
+	string old = path.dup;
+	old ~= '\0';
 
-	String str;
+	string str;
 
 	foreach_reverse(int i, chr; path) {
 		if (chr == '/') {
 			// truncate
-			str = new String(path[0..i]);
+			str = path[0..i];
 			break;
 		}
 	}
@@ -173,40 +187,40 @@ bool DirectoryRename(ref String path, String newName) {
 		return false;
 	}
 
-	str.appendChar('/');
-	str.append(newName);
-	str.appendChar('\0');
+	str ~= '/';
+	str ~= newName;
+	str ~= '\0';
 
-	wchar[] strArr = _ConvertFrameworkPath(str.array);
-	wchar[] oldArr = _ConvertFrameworkPath(old.array);
-
-	MoveFileW(oldArr.ptr, strArr.ptr);
-	return true;
-}
-
-bool DirectoryMove(ref String path, String newPath) {
-	String old = new String(path);
-	old.appendChar('\0');
-
-	String str = new String(newPath);
-	str.appendChar('\0');
-
-	wchar[] strArr = _ConvertFrameworkPath(str.array);
-	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(str));
+	wchar[] oldArr = _ConvertFrameworkPath(Unicode.toUtf16(old));
 
 	MoveFileW(oldArr.ptr, strArr.ptr);
 	return true;
 }
 
-bool DirectoryCopy(ref String path, String newPath) {
-	String old = new String(path);
-	old.appendChar('\0');
+bool DirectoryMove(ref string path, string newPath) {
+	string old = path.dup;
+	old ~= '\0';
 
-	String str = new String(newPath);
-	str.appendChar('\0');
+	string str = newPath.dup;
+	str ~= '\0';
 
-	wchar[] strArr = _ConvertFrameworkPath(str.array);
-	wchar[] oldArr = _ConvertFrameworkPath(old.array);
+	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(str));
+	wchar[] oldArr = _ConvertFrameworkPath(Unicode.toUtf16(old));
+
+	MoveFileW(oldArr.ptr, strArr.ptr);
+	return true;
+}
+
+bool DirectoryCopy(ref string path, string newPath) {
+	string old = path.dup;
+	old ~= '\0';
+
+	string str = newPath.dup;
+	str ~= '\0';
+
+	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(str));
+	wchar[] oldArr = _ConvertFrameworkPath(Unicode.toUtf16(old));
 
 	Console.putln("!!",oldArr, strArr);
 
@@ -214,9 +228,9 @@ bool DirectoryCopy(ref String path, String newPath) {
 	return true;
 }
 
-String[] _ReturnSharedFolders(wchar[] serverName) {
+string[] _ReturnSharedFolders(wchar[] serverName) {
 	// Read all drives on this server
-	String[] ret;
+	string[] ret;
 /*
 	SHARE_INFO_0* bufptr;
 
@@ -241,8 +255,8 @@ String[] _ReturnSharedFolders(wchar[] serverName) {
 	return ret;
 }
 
-String[] _ReturnNetworkComputers() {
-	String[] ret;
+string[] _ReturnNetworkComputers() {
+	string[] ret;
 /*
 	HANDLE enumWorkgroupHandle;
 
@@ -389,17 +403,17 @@ wchar[] _ConvertFrameworkPath(wchar[] tmp) {
 	return tmp;
 }
 
-String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
+string[] DirectoryList(ref DirectoryPlatformVars dirVars, string path) {
 
 	// trim trailing slash
 	if (path.length > 0 && path[path.length - 1] == '/' || path[path.length - 1] == '\\') {
-		path = path.subString(0, path.length-1);
+		path = path[0..path.length-1];
 	}
 
-	String newpath = new String(path);
-	newpath = new String(Unicode.toUtf8(_ConvertFrameworkPath(newpath.array)));
+	string newpath = path.dup;
+	newpath = Unicode.toUtf8(_ConvertFrameworkPath(Unicode.toUtf16(newpath)));
 
-	String[] list;
+	string[] list;
 
 	if (newpath == "") {
 		// root directory listing
@@ -411,7 +425,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 
 		while(logicaldrives != 0) {
 			if ((logicaldrives & 1) == 1) {
-				list ~= new String(curDrive);
+				list ~= curDrive;
 			}
 
 			if (curDrive[0] == 'z') { break; }
@@ -420,7 +434,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 			logicaldrives >>= 1;
 		}
 
-		list ~= new String("network");
+		list ~= "network";
 		return list;
 	}
 	/*else if (path.length >= 8 && path[0..8] == "/network") {
@@ -446,9 +460,9 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 
 	WIN32_FIND_DATAW ffd;
 
-	String pn = new String(newpath);
-	pn.append("/*");
-	pn.appendChar('\0');
+	wstring pn = Unicode.toUtf16(newpath);
+	pn ~= "/*";
+	pn ~= '\0';
 
 	HANDLE h = FindFirstFileW(pn.ptr, &ffd);
 	bool cont = true;
@@ -466,7 +480,7 @@ String[] DirectoryList(ref DirectoryPlatformVars dirVars, String path) {
 
 		// Add to list
 		if (ffd.cFileName[0..len] != "." && ffd.cFileName[0..len] != "..") {
-			list ~= new String(Unicode.toUtf8(ffd.cFileName[0..len]));
+			list ~= Unicode.toUtf8(ffd.cFileName[0..len]);
 		}
 
 		// Retrieve next item in the directory

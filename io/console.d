@@ -5,7 +5,6 @@ import scaffold.console;
 import synch.mutex;
 
 import core.string;
-import core.tostring;
 import core.unicode;
 import core.definitions;
 import core.variant;
@@ -326,19 +325,19 @@ static:
 		_putChar('\n');
 	}
 
-	void putStringAt(uint x, uint y, String str) {
+	void putStringAt(uint x, uint y, string str) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
 		_position(x,y);
-		_putString(str);
+		_putstring(str);
 	}
 
-	void putString(String str) {
+	void putString(string str) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
-		_putString(str);
+		_putstring(str);
 	}
 
 	void putAt(uint x, uint y, ...) {
@@ -570,7 +569,7 @@ private:
 	}
 
 	void _putv(Variadic vars) {
-		_putString(new String(toStrv(vars)));
+		_putstring(toStrv(vars));
 	}
 
 	void _putChar(dchar chr) {
@@ -578,14 +577,14 @@ private:
 	}
 
 	void _putInt(uint value) {
-		dstring foo = "";
+		string foo = "";
 		do {
-			foo = cast(dchar)((value % 10) + '0') ~ foo;
+			foo = cast(char)((value % 10) + '0') ~ foo;
 		} while(value /= 10);
 		ConsolePutString(foo);
 	}
 
-	void _putString(String str) {
+	void _putstring(string str) {
 		uint x;
 		uint y;
 		uint r;
@@ -598,7 +597,7 @@ private:
 
 		// Quick out... no clipping region, just draw the string
 		if (_clippingRegions.length == 0) {
-			ConsolePutString(str.toUtf32());
+			ConsolePutString(str);
 			return;
 		}
 
@@ -744,7 +743,7 @@ private:
 
 		for (uint i; i < formatArray.length; i++, isOut = !isOut) {
 			if (isOut) {
-				ConsolePutString(str.subString(pos, formatArray[i]).toUtf32());
+				ConsolePutString(str.substring(pos, formatArray[i]));
 			}
 			else {
 				ConsoleSetRelative(formatArray[i], 0);
@@ -753,3 +752,6 @@ private:
 		}
 	}
 }
+
+alias Console.put put;
+alias Console.putln putln;

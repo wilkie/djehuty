@@ -49,34 +49,23 @@ class LuaScript {
 		}
 	}
 
-	void eval(String code) {
-	}
-
 	void eval(string code) {
-		eval(new String(code));
-	}
-
-	// Description: This function will map a function of the type int(LuaBindings.lua_State) to be called whenever the function specified by the second parameter is called within a Lua script.
-	// func: The callback function to execute.
-	// functionName: The name of the function within the Lua script to map.
-	void registerFunction(Callback func, String functionName) {
-		char[] funcStr = functionName.toUtf8() ~ "\0";
-		//lua_pushcfunction(L, func);
-		//lua_setglobal(L, funcStr.ptr);
 	}
 
 	// Description: This function will map a function of the type int(LuaBindings.lua_State) to be called whenever the function specified by the second parameter is called within a Lua script.
 	// func: The callback function to execute.
 	// functionName: The name of the function within the Lua script to map.
 	void registerFunction(Callback func, string functionName) {
-		registerFunction(func, new String(functionName));
+		char[] funcStr = functionName ~ "\0";
+		//lua_pushcfunction(L, func);
+		//lua_setglobal(L, funcStr.ptr);
 	}
 
 	// Description: This function will evaluate the Lua script located at the path provided.
 	// filename: A Lua script to evaluate.
-	void evalFile(String filename) {
+	void evalFile(string filename) {
 
-		char[] chrs = Unicode.toUtf8(filename.array) ~ "\0";
+		char[] chrs = filename ~ "\0";
 
 		int s = luaL_loadfile(L, chrs.ptr);
 
@@ -87,24 +76,18 @@ class LuaScript {
 
 		if (s > 0) {
 			// errors!
-			String error = luaToString(-1);
+			string error = luaToString(-1);
 			Console.setColor(fgColor.BrightRed);
-			Console.putln(error.array);
+			Console.putln(error);
 			Console.setColor(fgColor.White);
 			lua_settop(L, 0); // remove error message
 		}
 	}
 
-	// Description: This function will evaluate the Lua script located at the path provided.
-	// filename: A Lua script to evaluate.
-	void evalFile(string filename) {
-		evalFile(new String(filename));
-	}
-
 protected:
 	lua_State* L;
 
-	String luaToString(int numArg) {
+	string luaToString(int numArg) {
 		char* str = lua_tostring(L, numArg);
 
 		int len;
@@ -117,6 +100,6 @@ protected:
 
 		char[] DStr = str[0..len];
 
-		return new String(DStr);
+		return DStr;
 	}
 }

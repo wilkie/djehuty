@@ -142,7 +142,7 @@ const auto CCHARW_MAX = 5;
 
 struct cchar_t {
 	attr_t attr;
-	wchar_t chars[CCHARW_MAX];
+	wchar chars[CCHARW_MAX];
 }
 
 typedef int function(WINDOW*, void*) NCURSES_CALLBACK;

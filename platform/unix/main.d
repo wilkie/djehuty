@@ -11,6 +11,7 @@
 module platform.unix.main;
 
 import platform.unix.common;
+import platform.application;
 
 import scaffold.console;
 import scaffold.directory;
@@ -106,7 +107,7 @@ int main(char[][] args){
 
 		Arguments argList = Arguments.instance();
 		foreach(arg; args) {
-			argList.add(new String(arg));
+			argList.add(arg);
 		}
 
 		ConsoleInit();
@@ -117,5 +118,5 @@ int main(char[][] args){
 		Debugger.raiseException(cast(Exception)o);
 	}
 
-	return 0;
+	return ApplicationController.instance.exitCode;
 }

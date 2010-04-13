@@ -69,17 +69,17 @@ public:
 		if (w !is null) {
 			// get class name
 			ClassInfo ci = w.classinfo;
-			String className = new String(ci.name);
+			string className = ci.name.dup;
 
-			Console.putln("    window: ", className.array, " [", w.text.array, "]");
+			Console.putln("    window: ", className, " [", w.text, "]");
 		}
 
 		if (t !is null) {
 			// get class name
 			ClassInfo ci = t.classinfo;
-			String className = new String(ci.name);
+			string className = ci.name.dup;
 
-			Console.putln("    thread: ", className.array);
+			Console.putln("    thread: ", className);
 		}
 
 		Console.setColor(fgColor.White);

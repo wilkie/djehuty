@@ -13,6 +13,7 @@ module tui.textbox;
 import tui.widget;
 
 import core.string;
+import core.unicode;
 import core.definitions;
 import core.list;
 
@@ -24,13 +25,13 @@ class TuiTextBox : TuiWidget {
 
 		_lines = new List!(LineInfo);
 		LineInfo newItem = new LineInfo();
-		newItem.value = new String("if (something) { /* in comment block */ init(); }");
+		newItem.value = "if (something) { /* in comment block */ init(); }";
 
 		_lines.add(newItem);
 		onLineChanged(_lines.length - 1);
 		for (int o; o < 500; o++) {
 			LineInfo subItem = new LineInfo();
-			subItem.value = new String(o);
+			subItem.value = new string(o);
 			_lines.add(subItem);
 			onLineChanged(_lines.length - 1);
 		}
@@ -66,7 +67,7 @@ class TuiTextBox : TuiWidget {
 					break;
 				}
 				else if (_column == 1) {
-					_lines[_row].value = _lines[_row].value.subString(1);
+					_lines[_row].value = _lines[_row].value.substring(1);
 					if (_lines[_row].format !is null) {
 						// The first section has one less length
 						if (_lines[_row].format[0].len <= 1) {
@@ -85,7 +86,7 @@ class TuiTextBox : TuiWidget {
 					}
 				}
 				else if (_column == _lines[_row].value.length) {
-					_lines[_row].value = _lines[_row].value.subString(0, _lines[_row].value.length - 1);
+					_lines[_row].value = _lines[_row].value.substring(0, _lines[_row].value.length - 1);
 					// The last section has one less length
 					if (_lines[_row].format !is null) {
 						if (_lines[_row].format[$-1].len <= 1) {
@@ -105,7 +106,7 @@ class TuiTextBox : TuiWidget {
 					}
 				}
 				else {
-					_lines[_row].value = _lines[_row].value.subString(0, _column-1) ~ _lines[_row].value.subString(_column);
+					_lines[_row].value = _lines[_row].value.substring(0, _column-1) ~ _lines[_row].value.substring(_column);
 					// Reduce the count of the current format index
 					if (_lines[_row].format !is null) {
 						if (_lines[_row].format[_formatIndex].len <= 1) {
@@ -144,7 +145,7 @@ class TuiTextBox : TuiWidget {
 					}
 				} else {
 					// Not the last column, so delete the character to the right.
-					_lines[_row].value = _lines[_row].value.subString(0, _column) ~ _lines[_row].value.subString(_column + 1);
+					_lines[_row].value = _lines[_row].value.substring(0, _column) ~ _lines[_row].value.substring(_column + 1);
 
 					if (_lines[_row].format !is null) {
 						_formatIndex = calculateFormatIndex(_lines[_row], _column + 1);
@@ -292,7 +293,7 @@ class TuiTextBox : TuiWidget {
 			// Pressing enter
 
 			LineInfo newLine = new LineInfo();
-			newLine.value = _lines[_row].value.subString(_column);
+			newLine.value = _lines[_row].value.substring(_column);
 
 			// Splitting format field
 
@@ -333,7 +334,7 @@ class TuiTextBox : TuiWidget {
 			}
 
 			_lines.addAt(newLine, _row+1);
-			_lines[_row].value = _lines[_row].value.subString(0, _column);
+			_lines[_row].value = _lines[_row].value.substring(0, _column);
 
 			_column = 0;
 			_row++;
@@ -347,7 +348,7 @@ class TuiTextBox : TuiWidget {
 
 		// Normal character append
 
-		_lines[_row].value = _lines[_row].value.subString(0, _column) ~ [chr] ~ _lines[_row].value.subString(_column);
+		_lines[_row].value = _lines[_row].value.substring(0, _column) ~ Unicode.toUtf8([chr]) ~ _lines[_row].value.substring(_column);
 
 		// Increase the length of the current format index
 		if (_lines[_row].format !is null) {
@@ -475,7 +476,7 @@ protected:
 			if (_lineNumbersWidth == 0) {
 				calculateLineNumbersWidth();
 			}
-			String strLineNumber = new String(lineNumber);
+			string strLineNumber = new string(lineNumber);
 			Console.setColor(_forecolorNum, _backcolorNum);
 			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
 			Console.put(strLineNumber);
@@ -490,8 +491,8 @@ protected:
 			untilNextFormat = _lines[lineNumber].format[0].len;
 		}
 
-		String actualLine = _lines[lineNumber].value;
-		String visibleLine = new String();
+		string actualLine = _lines[lineNumber].value;
+		string visibleLine = "";
 
 		if (_tabWidth > 0) {
 			for (uint i = 0; i < actualLine.length; i++) {
@@ -501,14 +502,14 @@ protected:
 				}
 				if (curFormat < formatTabExtension.length)
 					untilNextFormat--;
-				dchar c = actualLine.charAt(i);
-				if ('\t' == c) {
+				string c = actualLine.charAt(i);
+				if ("\t" == c) {
 					uint tabSpaces = _tabWidth - visibleLine.length % _tabWidth;
 					if (curFormat < formatTabExtension.length)
 						formatTabExtension[curFormat] += tabSpaces - 1;
-					visibleLine.append(String.repeat(" ", tabSpaces));
+					visibleLine ~= " ".times(tabSpaces);
 				} else {
-					visibleLine.appendChar(c);
+					visibleLine ~= c;
 				}
 			}
 		} else {
@@ -528,7 +529,7 @@ protected:
 			if (_firstColumn >= _lines[lineNumber].value.length) {
 			}
 			else {
-				Console.put(visibleLine.subString(_firstColumn));
+				Console.put(visibleLine.substring(_firstColumn));
 			}
 		}
 		else {
@@ -597,7 +598,7 @@ protected:
 		uint leftTabSpaces = 0;
 		if (_tabWidth > 0) {
 			for (uint i = 0; i < _column; i++) {
-				if ('\t' == _lines[_row].value.charAt(i)) {
+				if ("\t" == _lines[_row].value.charAt(i)) {
 					leftTabSpaces += _tabWidth - (i + leftTabSpaces) % _tabWidth - 1;
 				}
 			}
@@ -696,7 +697,7 @@ protected:
 		if (_lineNumbers) {
 			// The width of the maximum line (in decimal as a string)
 			// summed with two for the ': '
-			_lineNumbersWidth = (new String(_lines.length)).length + 2;
+			_lineNumbersWidth = (new string(_lines.length)).length + 2;
 		}
 		else {
 			_lineNumbers = 0;
@@ -736,14 +737,14 @@ protected:
 		this() {
 		}
 
-		this(String v, LineFormat[] f) {
+		this(string v, LineFormat[] f) {
 			value = v;
 			format = f;
 			this();
 		}
 
 		LineInfo dup() {
-			return new LineInfo(new String(this.value), this.format.dup);
+			return new LineInfo(this.value, this.format.dup);
 		}
 
 		void opCatAssign(LineInfo li) {
@@ -774,7 +775,7 @@ protected:
 			return li_new;
 		}
 
-		String value;
+		string value;
 		LineFormat[] format;
 	}
 
