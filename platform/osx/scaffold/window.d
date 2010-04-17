@@ -58,6 +58,8 @@ windowVars.viewVars = _OSXWindowCreate(cast(void*)window, null, &windowVars.vars
 		//	printf("WPV VARS: %p\n", windowVars.vars);
 	// show or hide the window
 	//_OSXWindowShow(windowVars.vars, cast(int)window.getVisibility());
+	window.onInitialize();
+	window.onAdd();
 }
 
 void WindowCreate(ref Window parent, WindowPlatformVars* parentVars, ref Window window, WindowPlatformVars* windowVars)
@@ -133,16 +135,8 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 }
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
-			//printf("WPV VARS: %p\n", windowVars.vars);
-	printf("start draw (D)\n");
-
-//	Color clr = window.getColor();
-
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	_OSXWindowStartDraw(windowVars.vars, windowVars.viewVars, 1, window.color.red, window.color.green, window.color.blue);
-
-	printf("start draw done(D)\n");
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)

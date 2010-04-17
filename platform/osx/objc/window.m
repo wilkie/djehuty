@@ -34,7 +34,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 @end
 
-@interface _OSXView : NSView {
+@interface _OSXView : NSView <NSWindowDelegate> {
 	@public
 		void* window;
 		struct _OSXWindowPlatformVars* window_info;
@@ -101,6 +101,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 }
 */
 - (void)drawRect:(NSRect)rect {
+	printf("drawRect\n");
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
@@ -279,12 +280,12 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 void _OSXWindowShow(struct _OSXWindowPlatformVars* window, int bShow) {
 	NSWindow* wnd = window->windowRef;
 
-	printf("windowshow\n");
-
 	if (bShow) {
-		//[ wnd update ];
+	printf("windowshow\n");
+		[ wnd update ];
 		[ wnd makeKeyAndOrderFront: nil ]; // displays
 	} else {
+	printf("windowhide\n");
 		[ wnd orderOut: nil ]; // hides
 	}
 }
@@ -317,7 +318,7 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	[ (*window)->viewVars->txtstore addLayoutManager:(*window)->viewVars->layout ];
 
-		printf("Creating View for Window '%s'... %dx%d\n", initTitle, initW, initH);
+		printf("Creating View for Window '%s'... %dx%d at %dx%d\n", initTitle, initW, initH, initX, initY);
 
     (*window)->viewVars->viewRef = [[[_OSXView alloc] initWithFrame:graphicsRect] autorelease];
 
@@ -366,8 +367,7 @@ void _OSXWindowStartDraw(struct _OSXWindowPlatformVars* windVars, struct _OSXVie
 	}
 //	printf("start draw (OBJ-C)\n");
 
-	//Disable anti-aliasing
-	[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
+	[ [ NSGraphicsContext currentContext ] setShouldAntialias:YES ];
 //	printf("start draw (OBJ-C)\n");
 
 	//Get the CGContextRef
