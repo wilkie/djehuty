@@ -23,6 +23,7 @@ import io.console;
 // FILE //
 
 bool FileOpen(ref FilePlatformVars fileVars, ref string filename) {
+	printf("opening file\n");
 	string fn = filename.dup;
 	fn ~= '\0';
 

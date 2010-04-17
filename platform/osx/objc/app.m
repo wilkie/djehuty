@@ -33,11 +33,13 @@ void _OSXStart() {
 
 	pool = [ [ NSAutoreleasePool alloc ] init ];
 
+printf("start\n");
 	NSApp = [_OSXApp sharedApplication];
 }
 
 void _OSXLoop() {
 	// run the main event loop
+	printf("Loop\n");
     [ NSApp run ];
 }
 

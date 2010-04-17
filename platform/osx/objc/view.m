@@ -17,7 +17,7 @@ void _OSXViewCreateDIB(struct _OSXViewPlatformVars** viewVars, int width, int he
 		hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace
 		bitmapFormat:NSAlphaNonpremultipliedBitmapFormat bytesPerRow:(width*4) bitsPerPixel:32 ] retain ];
 
-	(*viewVars)->dib_image = [ [ NSImage alloc ] retain ];
+	(*viewVars)->dib_image = [ [ [ NSImage alloc ] initWithSize:NSMakeSize(width, height) ] retain ];
 	[ (*viewVars)->dib_image addRepresentation: (*viewVars)->dib_image_rep ];
 
 	[ (*viewVars)->dib_image setFlipped:YES ];
@@ -53,13 +53,13 @@ void _OSXUsePen(struct _OSXViewPlatformVars* viewVars, int fromWindow, void* pen
 	}
 }
 
-void _OSXCreatePen(struct _OSXViewPlatformVars* viewVars, int fromWindow, void** pen, int r, int g, int b, int a) {
-	NSColor* nsclr = [ [ NSColor colorWithDeviceRed:((float)r / 255) green:((float)g / 255) blue:((float)b / 255) alpha:((float)a / 255) ] retain ];
+void _OSXCreatePen(void** pen, double r, double g, double b, double a) {
+	NSColor* nsclr = [ [ NSColor colorWithDeviceRed:r green:g blue:b alpha:a ] retain ];
 
 	(*pen) = (void*)nsclr;
 }
 
-void _OSXDestroyPen(struct _OSXViewPlatformVars* viewVars, int fromWindow, void* pen) {
+void _OSXDestroyPen(void* pen) {
 	[ (NSColor*)pen release ];
 }
 
@@ -75,13 +75,13 @@ void _OSXUseBrush(struct _OSXViewPlatformVars* viewVars, int fromWindow, void* b
 	}
 }
 
-void _OSXCreateBrush(struct _OSXViewPlatformVars* viewVars, int fromWindow, void** brush, int r, int g, int b, int a) {
-	NSColor* nsclr = [ [ NSColor colorWithDeviceRed:((float)r / 255) green:((float)g / 255) blue:((float)b / 255) alpha:((float)a / 255) ] retain ];
+void _OSXCreateBrush(void** brush, double r, double g, double b, double a) {
+	NSColor* nsclr = [ [ NSColor colorWithDeviceRed:r green:g blue:b alpha:a ] retain ];
 
 	(*brush) = (void*)nsclr;
 }
 
-void _OSXDestroyBrush(struct _OSXViewPlatformVars* viewVars, int fromWindow, void* brush) {
+void _OSXDestroyBrush(void* brush) {
 	[ (NSColor*)brush release ];
 }
 
@@ -101,7 +101,30 @@ void _OSXDrawLine(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, 
 void _OSXDrawRect(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, int y, int x2, int y2) {
 	if (!fromWindow) {
 		[ viewVars->dib_image lockFocus ];
-		NSRectFill(NSMakeRect((x),(y),(x2)-(x),(y2)-(y)));
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
+		[ viewVars->dib_image unlockFocus ];
+	}
+	else {
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
+	}
+}
+
+void _OSXFillRect(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, int y, int x2, int y2) {
+	if (!fromWindow) {
+		[ viewVars->dib_image lockFocus ];
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+		[ viewVars->dib_image unlockFocus ];
+	}
+	else {
+		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+	}
+}
+
+void _OSXStrokeRect(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, int y, int x2, int y2) {
+	if (!fromWindow) {
+		[ viewVars->dib_image lockFocus ];
 		[ [ NSBezierPath bezierPathWithRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
 		[ viewVars->dib_image unlockFocus ];
 	}
@@ -120,6 +143,28 @@ void _OSXDrawOval(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, 
 	}
 	else {
 		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
+	}
+}
+
+void _OSXFillOval(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, int y, int x2, int y2) {
+	if (!fromWindow) {
+		[ viewVars->dib_image lockFocus ];
+		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+		[ viewVars->dib_image unlockFocus ];
+	}
+	else {
+		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] fill ];
+	}
+}
+
+void _OSXStrokeOval(struct _OSXViewPlatformVars* viewVars, int fromWindow, int x, int y, int x2, int y2) {
+	if (!fromWindow) {
+		[ viewVars->dib_image lockFocus ];
+		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
+		[ viewVars->dib_image unlockFocus ];
+	}
+	else {
 		[ [ NSBezierPath bezierPathWithOvalInRect:NSMakeRect((x),(y),(x2)-(x),(y2)-(y)) ] stroke ];
 	}
 }
