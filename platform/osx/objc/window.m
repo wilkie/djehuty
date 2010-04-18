@@ -22,6 +22,8 @@ enum OSXEvents
 	EventMouseExit,
 	EventMouseEnter,
 
+	EventWindowClose,
+
 	EventOtherDown = 0xff,
 	EventOtherUp = 0xffff,
 };
@@ -49,18 +51,12 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 @implementation _OSXWindow
 
--(void)windowWillClose:(NSNotification *)notification {
-	//OSX_CloseWindowPrologue(window);
-}
-
 - (void)drawRect:(NSRect)rect {
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
 
 	OSXEventRoutine(window_info->windowClassRef, EventResize, window_info->viewVars->nsRect.size.width, window_info->viewVars->nsRect.size.height);
-
-//	printf("OBJ-C: done with drawRect\n");
 }
 
 -(BOOL)isFlipped {
@@ -76,6 +72,10 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 
 -(BOOL)isFlipped {
 	return YES;
+}
+
+-(void)windowWillClose:(NSNotification *)notification {
+	OSXEventRoutine(window_info->windowClassRef, EventWindowClose, 0, 0);
 }
 
 - (BOOL)acceptsFirstResponder {
@@ -302,11 +302,8 @@ void _OSXWindowShow(struct _OSXWindowPlatformVars* window, int bShow) {
 	NSWindow* wnd = window->windowRef;
 
 	if (bShow) {
-	printf("windowshow\n");
-		[ wnd update ];
 		[ wnd makeKeyAndOrderFront: nil ]; // displays
 	} else {
-	printf("windowhide\n");
 		[ wnd orderOut: nil ]; // hides
 	}
 }
@@ -317,7 +314,6 @@ void _OSXWindowSetTitle(struct _OSXWindowPlatformVars* window, char* str) {
 }
 
 struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindowPlatformVars* parent, struct _OSXWindowPlatformVars** window, char* initTitle, int initX, int initY, int initW, int initH) {
-	printf("WindowCreate\n");
 
     // initialize the rectangle variable
 	NSRect graphicsRect = NSMakeRect(initX,initY,initW,initH); //window->_initial_x,window->_initial_y,window->_initial_width,window->_initial_height);
@@ -339,8 +335,6 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	[ (*window)->viewVars->txtstore addLayoutManager:(*window)->viewVars->layout ];
 
-		printf("Creating View for Window '%s'... %dx%d at %dx%d\n", initTitle, initW, initH, initX, initY);
-
     (*window)->viewVars->viewRef = [[[_OSXView alloc] initWithFrame:graphicsRect] autorelease];
 	
 	NSTrackingArea* tarea = [[ NSTrackingArea alloc ] initWithRect:graphicsRect options:(NSTrackingMouseMoved | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways | NSTrackingInVisibleRect) owner:(*window)->viewVars->viewRef userInfo:nil ];
@@ -350,8 +344,6 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	// the view is responsible for the rest of the setup
 
-		printf("Creating Window '%s'...\n", initTitle);
-
 	(*window)->windowRef = (*window)->viewVars->viewRef->window = [ [_OSXWindow alloc]              // create the window
                initWithContentRect: graphicsRect
                          styleMask:NSTitledWindowMask
@@ -359,8 +351,6 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
                                   |NSMiniaturizableWindowMask
                            backing:NSBackingStoreBuffered
                              defer:YES ];
-
-		printf("Setting Window Title to '%s'...\n", initTitle);
 
 	_OSXWindowSetTitle(*window, initTitle);
 

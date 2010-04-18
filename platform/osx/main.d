@@ -24,9 +24,7 @@ extern (C) void _OSXStart();
 extern (C) void _OSXEnd();
 
 int main() {
-	printf("Main\n");
 	_OSXStart();
-	printf("Running\n");
 
 	Djehuty.application.run();
 

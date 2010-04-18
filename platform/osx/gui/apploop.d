@@ -66,16 +66,22 @@ enum OSXEvents {
 	EventMouseExit,
 	EventMouseEnter,
 
+	EventWindowClose,
+
 	EventOtherDown = 0xff,
 	EventOtherUp = 0xffff,
 }
 
 extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2) {
 
-	//	writefln("OSXEventRoutine (D)");
-
 	Window window = cast(Window)windowRef;
 	switch (event) {
+		case OSXEvents.EventWindowClose:
+			window.uninitialize();
+			window.remove();
+			Console.putln("CLOSE");
+			break;
+
 		case OSXEvents.EventMouseExit:
 			window.onMouseLeave();
 			break;
