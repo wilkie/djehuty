@@ -18,7 +18,7 @@ class ApplicationController {
 	}
 
 	void end() {
-//		exit(_exitCode);
+		exit(_exitCode);
 	}
 
 	static ApplicationController instance() {

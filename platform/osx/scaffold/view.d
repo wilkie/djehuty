@@ -35,7 +35,6 @@ void ViewDestroy(ref View view, ViewPlatformVars* viewVars) {
 }
 
 void ViewCreateDIB(ref Bitmap view, ViewPlatformVars* viewVars) {
-	Console.putln("CREATE DIB");
 	_OSXViewCreateDIB(&viewVars.vars, view.width(), view.height());
 
 	viewVars.dibBytes = view.width() * view.height() * 4;
@@ -55,17 +54,14 @@ void ViewResize(ref View view, ViewPlatformVars* viewVars) {
 
 void* ViewGetBytes(ViewPlatformVars* viewVars, ref ulong length) {
 	length = viewVars.dibBytes;
-	printf("getbytes\n");
 	return _OSXGetBytes(viewVars.vars);
 }
 
 void* ViewGetBytes(ViewPlatformVars* viewVars) {
-	printf("getbytes\n");
 	return _OSXGetBytes(viewVars.vars);
 }
 
 void ViewUnlockBytes(ViewPlatformVars* viewVars) {
-	printf("unlockbytes\n");
 	return _OSXGetBytes(viewVars.vars);
 }
 
