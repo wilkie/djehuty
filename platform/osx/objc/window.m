@@ -19,6 +19,9 @@ enum OSXEvents
 	EventTertiaryUp,
 	EventMouseMove,
 
+	EventMouseExit,
+	EventMouseEnter,
+
 	EventOtherDown = 0xff,
 	EventOtherUp = 0xffff,
 };
@@ -38,6 +41,7 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 	@public
 		void* window;
 		struct _OSXWindowPlatformVars* window_info;
+		bool acceptMouse;
 }
 - (void)tick:(NSTimer*)timer;
 - (void)OSX_HandleEvent:(NSEvent*)event;
@@ -101,7 +105,6 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 }
 */
 - (void)drawRect:(NSRect)rect {
-	printf("drawRect\n");
 	window_info->viewVars->nsRect = [ window_info->viewVars->viewRef bounds ];
 
 	[ window_info->viewVars->viewRef setNeedsDisplay:YES ];
@@ -109,6 +112,16 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 	OSXEventRoutine(window_info->windowClassRef, EventResize, window_info->viewVars->nsRect.size.width, window_info->viewVars->nsRect.size.height);
 
 //	printf("OBJ-C: done with drawRect\n");
+}
+
+- (void)mouseExited:(NSEvent*)event {
+	acceptMouse = false;
+	[ self OSX_HandleEvent:event ];
+}
+
+- (void)mouseEntered:(NSEvent*)event {
+	acceptMouse = true;
+	[ self OSX_HandleEvent:event ];
 }
 
 - (void)mouseDown:(NSEvent*)event {
@@ -136,12 +149,12 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 }
 
 - (void)mouseMoved:(NSEvent*)event {
-	printf("hey\n");
-	[ self OSX_HandleEvent:event ];
+	if (acceptMouse) {
+		[ self OSX_HandleEvent:event ];
+	}
 }
 
 - (void)mouseDragged:(NSEvent*)event {
-	printf("hey!!!!!!!!!\n");
 	[ self OSX_HandleEvent:event ];
 }
 
@@ -149,6 +162,14 @@ void _D_OSXInitView(void* windPtr, struct _OSXViewPlatformVars* viewVars);
 	NSPoint coord;
 
 	switch ( [ event type ] ) {
+
+	case NSMouseExited:
+		OSXEventRoutine(window_info->windowClassRef, EventMouseExit, 0, 0);
+		break;
+	
+	case NSMouseEntered:
+		OSXEventRoutine(window_info->windowClassRef, EventMouseEnter, 0, 0);
+		break;
 
 	case NSLeftMouseDown:
 	case NSRightMouseDown:
@@ -321,6 +342,9 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 		printf("Creating View for Window '%s'... %dx%d at %dx%d\n", initTitle, initW, initH, initX, initY);
 
     (*window)->viewVars->viewRef = [[[_OSXView alloc] initWithFrame:graphicsRect] autorelease];
+	
+	NSTrackingArea* tarea = [[ NSTrackingArea alloc ] initWithRect:graphicsRect options:(NSTrackingMouseMoved | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways | NSTrackingInVisibleRect) owner:(*window)->viewVars->viewRef userInfo:nil ];
+	[ (*window)->viewVars->viewRef addTrackingArea:tarea ];
 
 	(*window)->viewVars->viewRef->window_info = *window;
 
@@ -340,10 +364,11 @@ struct _OSXViewPlatformVars* _OSXWindowCreate(void* windowRef, struct _OSXWindow
 
 	_OSXWindowSetTitle(*window, initTitle);
 
-	[ (*window)->windowRef setAcceptsMouseMovedEvents:YES ];
     [ (*window)->windowRef setContentView:(NSView*)(*window)->viewVars->viewRef ];    // set window's view
 	[ (*window)->windowRef setDelegate: (*window)->viewVars->viewRef ];
 	[ (*window)->windowRef makeFirstResponder: (*window)->viewVars->viewRef ];
+	[ (*window)->windowRef setAcceptsMouseMovedEvents:NO ];
+	[ (*window)->windowRef setAcceptsMouseMovedEvents:YES ];
 
 	return (*window)->viewVars;
 }

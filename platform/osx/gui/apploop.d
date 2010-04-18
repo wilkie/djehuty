@@ -63,6 +63,9 @@ enum OSXEvents {
 	EventTertiaryUp,
 	EventMouseMove,
 
+	EventMouseExit,
+	EventMouseEnter,
+
 	EventOtherDown = 0xff,
 	EventOtherUp = 0xffff,
 }
@@ -73,6 +76,14 @@ extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2) {
 
 	Window window = cast(Window)windowRef;
 	switch (event) {
+		case OSXEvents.EventMouseExit:
+			window.onMouseLeave();
+			break;
+
+		case OSXEvents.EventMouseEnter:
+			window.onMouseEnter();
+			break;
+
 		case OSXEvents.EventResize:
 			window._width = p1;
 			window._height = p2;
@@ -178,6 +189,16 @@ extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2) {
 
 			short x = p1 & 0xFFFF;
 			short y = p1 >> 16;
+
+			if (x < 0 || y < 0) {
+				window.onMouseLeave();
+				break;
+			}
+
+			if (x >= window.width() || y >= window.height()) {
+				window.onMouseLeave();
+				break;
+			}
 
 			window.mouseProps.x = x;
 			window.mouseProps.y = y;
