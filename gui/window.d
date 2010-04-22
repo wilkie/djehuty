@@ -400,24 +400,19 @@ public:
 		if (_view !is null) {
 			Graphics g = _view.lock();
 
-			printf("view locked\n");
 			WindowStartDraw(this, &_pfvars, _view, *_viewVars);
 
-			printf("start draw finished\n");
 			Brush brush = new Brush(this.color);
 			Pen pen = new Pen(Color.Black);
 
-			printf("brush and pen created\n");
 			g.brush = brush;
 			g.pen = pen;
 
 			g.fillRect(0,0,this.width,this.height);
-			printf("fill rect finished\n");
 
 			brush = new Brush(Color.White);
 			g.brush = brush;
 
-			printf("brush created\n");
 			Widget c = _firstControl;
 
 			if (c !is null) {
@@ -425,16 +420,13 @@ public:
 					c = c._prevControl;
 
 					c.onDraw(g);
-					printf("control draw called\n");
 				} while (c !is _firstControl)
 			}
 
 			WindowEndDraw(this, &_pfvars, _view, *_viewVars);
-					printf("end draw finished\n");
 
 			_view.unlock();
 		}
-					printf("meeh\n");
 	}
 
 	void onKeyChar(dchar keyChar) {

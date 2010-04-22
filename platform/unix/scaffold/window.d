@@ -342,7 +342,6 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 
 // Viewable windows
 void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
-	printf("start draw\n");
 	X.XLockDisplay(_pfvars.display);
 	// code executed at the start of a redraw for a window
 	viewVars.textclr_red = 0.0;
@@ -360,11 +359,9 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	else {
 		Cairo.cairo_set_antialias(viewVars.cr, Cairo.cairo_antialias_t.CAIRO_ANTIALIAS_NONE);
 	}
-	printf("start draw done\n");
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
-	printf("end draw\n");
 	// code to reclaim resources, and executed after all components have drawn to the window
 
 	//copy over area
@@ -374,7 +371,6 @@ void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref Window
 		windowVars.window, viewVars.gc,
 		0, 0, window.width, window.height, 0, 0);
 	X.XUnlockDisplay(_pfvars.display);
-	printf("end draw done\n");
 }
 
 void WindowCaptureMouse(ref Window window, WindowPlatformVars* windowVars) {

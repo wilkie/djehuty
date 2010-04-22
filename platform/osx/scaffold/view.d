@@ -11,6 +11,7 @@ import gui.window;
 import platform.osx.main;
 import core.string;
 import io.file;
+import io.console;
 
 import core.main;
 
@@ -25,24 +26,24 @@ extern (C) void _OSXViewDestroy(_OSXViewPlatformVars* viewVars, int isDIB, int i
 extern (C) void* _OSXGetBytes(_OSXViewPlatformVars* viewVars);
 // views
 void ViewCreate(ref View view, ViewPlatformVars* viewVars) {
-//	_OSXViewCreate(&viewVars.vars, view.width(), view.height());
+	_OSXViewCreate(&viewVars.vars, view.width(), view.height());
 }
 
 void ViewDestroy(ref View view, ViewPlatformVars* viewVars) {
-//	_OSXViewDestroy(viewVars.vars, ViewIsDIB(view), ViewIsFromWindow(view));
-//	viewVars.fromWindow = 0;
+	_OSXViewDestroy(viewVars.vars, cast(Bitmap)view !is null, viewVars.fromWindow == 1);
+	viewVars.fromWindow = 0;
 }
 
 void ViewCreateDIB(ref Bitmap view, ViewPlatformVars* viewVars) {
-//	_OSXViewCreateDIB(&viewVars.vars, view.width(), view.height());
+	_OSXViewCreateDIB(&viewVars.vars, view.width(), view.height());
 
-//	viewVars.dibBytes = view.width() * view.height() * 4;
+	viewVars.dibBytes = view.width() * view.height() * 4;
 }
 
 void ViewCreateForWindow(ref WindowView view, ViewPlatformVars* viewVars, ref Window window, WindowPlatformVars* windowVars) {
 	// is done via WindowCreate
-//	viewVars.fromWindow = 1;
-//	viewVars.vars = WindowGetPlatformVars(bw).viewVars;
+	viewVars.fromWindow = 1;
+	viewVars.vars = windowVars.viewVars;
 }
 
 void ViewResizeForWindow(ref WindowView view, ViewPlatformVars* viewVars, ref Window window, WindowPlatformVars* windowVars) {
@@ -61,6 +62,7 @@ void* ViewGetBytes(ViewPlatformVars* viewVars) {
 }
 
 void ViewUnlockBytes(ViewPlatformVars* viewVars) {
+	return _OSXGetBytes(viewVars.vars);
 }
 
 uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars* _pfvars, ref uint r, ref uint g, ref uint b, ref uint a){

@@ -9,6 +9,10 @@ class DjehutyTester : Application {
 
 	void onApplicationStart() {
 		Console.putln();
-		Tests.testAll();
+
+		uint result = Tests.testAll();
+		if (result > 0) {
+			exit(1);
+		}
 	}
 }

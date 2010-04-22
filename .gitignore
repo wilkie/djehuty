@@ -15,3 +15,4 @@ djehuty.lib
 *.idb
 dspec
 runtests
+specs/test.d

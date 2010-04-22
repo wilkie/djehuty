@@ -45,3 +45,212 @@ private:
 		_OSXLoop();
 	}
 }
+
+// This event routine is a common event handler for all OS X Cocoa events.
+
+enum OSXEvents {
+	// Window Events
+
+	EventResize, // parameters: (width, height) of window
+
+	// Mouse Events, params are (x, y) coordinates
+
+	EventPrimaryDown,
+	EventSecondaryDown,
+	EventTertiaryDown,
+	EventPrimaryUp,
+	EventSecondaryUp,
+	EventTertiaryUp,
+	EventMouseMove,
+
+	EventMouseExit,
+	EventMouseEnter,
+
+	EventWindowClose,
+
+	EventOtherDown = 0xff,
+	EventOtherUp = 0xffff,
+}
+
+extern (C) void OSXEventRoutine(void* windowRef, int event, int p1, int p2) {
+
+	Window window = cast(Window)windowRef;
+	switch (event) {
+		case OSXEvents.EventWindowClose:
+			window.uninitialize();
+			window.remove();
+			Console.putln("CLOSE");
+			break;
+
+		case OSXEvents.EventMouseExit:
+			window.onMouseLeave();
+			break;
+
+		case OSXEvents.EventMouseEnter:
+			window.onMouseEnter();
+			break;
+
+		case OSXEvents.EventResize:
+			window._width = p1;
+			window._height = p2;
+
+			window.onResize();
+			break;
+
+		case OSXEvents.EventPrimaryDown:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.leftDown = 1;
+
+			window.onPrimaryMouseDown();
+
+			break;
+
+		case OSXEvents.EventSecondaryDown:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.rightDown = 1;
+
+			window.onSecondaryMouseDown();
+
+			break;
+
+		case OSXEvents.EventTertiaryDown:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.middleDown = 1;
+
+			window.onTertiaryMouseDown();
+
+			break;
+
+		case OSXEvents.EventPrimaryUp:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.leftDown = 0;
+
+			window.onPrimaryMouseUp();
+
+			break;
+
+		case OSXEvents.EventSecondaryUp:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.rightDown = 0;
+
+			window.onSecondaryMouseUp();
+			break;
+
+		case OSXEvents.EventTertiaryUp:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.mouseProps.middleDown = 0;
+
+			window.onTertiaryMouseUp();
+			break;
+
+		case OSXEvents.EventMouseMove:
+
+			short x = p1 & 0xFFFF;
+			short y = p1 >> 16;
+
+			if (x < 0 || y < 0) {
+				window.onMouseLeave();
+				break;
+			}
+
+			if (x >= window.width() || y >= window.height()) {
+				window.onMouseLeave();
+				break;
+			}
+
+			window.mouseProps.x = x;
+			window.mouseProps.y = y;
+
+			window.mouseProps.clicks = p2;
+
+			window.onMouseMove();
+			break;
+
+		default:
+
+			// check for mouse event: Other Up
+			if (event >= OSXEvents.EventOtherUp) {
+
+				short x = p1 & 0xFFFF;
+				short y = p1 >> 16;
+
+				window.mouseProps.x = x;
+				window.mouseProps.y = y;
+
+				window.mouseProps.clicks = p2;
+
+				window.onOtherMouseUp(event -= OSXEvents.EventOtherUp);
+			}
+			// look for mouse event: Other Down
+			else if (event >= OSXEvents.EventOtherDown) {
+
+				short x = p1 & 0xFFFF;
+				short y = p1 >> 16;
+
+				window.mouseProps.x = x;
+				window.mouseProps.y = y;
+
+				window.mouseProps.clicks = p2;
+
+				//window.mouseProps.middleDown = 0;
+
+				window.onOtherMouseDown(event -= OSXEvents.EventOtherDown);
+
+			}
+
+			break;
+	}
+
+	//	writefln("OSXEventRoutine (D) done");
+}
+
+
+
