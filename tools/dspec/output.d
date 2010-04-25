@@ -304,23 +304,19 @@ protected:
 			//Console.putln("!!", exception.array);
 			if (exception == "") {
 				print("\t\t\tret = it.does");
-				//print("\t\t\treturn it.does");
 			}
 			else {
 				print("\t\t\tif (_exception_.msg != ");
 				print(exception);
 				print(") { ret = it.doesnt; }\n\t\t\tret = it.does");
-				//print(") { return it.doesnt; }\n\t\t\treturn it.does");
 			}
 		}
 		else {
 			print("\t\t\tret = it.doesnt");
-			//print("\t\t\treturn it.doesnt");
 		}
 		
 		
 		print(";\n\t\t}\n\t\treturn ret;\n\t}\n");
-		//print(";\n\t\t}\n\t\treturn it.does;\n\t}\n");
 
 
 		return true;
@@ -348,7 +344,6 @@ protected:
 		}
 		
 		print(")) {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
-		//print(")) {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
@@ -375,7 +370,6 @@ protected:
 		}
 		
 		print(") {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
-		//print(") {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
