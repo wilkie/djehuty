@@ -301,15 +301,15 @@ describe string {
 		}
 
 		it should_work_with_d_specifier_with_width {
-			should("a{8d}b".format(4) == "a00000004b");
+			should("a{d8}b".format(4) == "a00000004b");
 		}
 
 		it should_work_with_x_specifier_with_width {
-			should("a{8x}b".format(10) == "a0000000ab");
+			should("a{x8}b".format(10) == "a0000000ab");
 		}
 
 		it should_work_on_X_specifier {
-			should("a{8X}b".format(10) == "a0000000Ab");
+			should("a{X8}b".format(10) == "a0000000Ab");
 		}
 		
 		it should_work_when_specifier_is_at_beginning {
@@ -332,8 +332,8 @@ describe string {
 
 		it should_work_with_two_specifiers_in_a_row {
 			should("{d}{d}".format(4,5) == "45");
-			should("{8x}{8x}".format(10,11) == "0000000a0000000b");
-			should("{8x}{8X}".format(10,11) == "0000000a0000000B");
+			should("{x8}{x8}".format(10,11) == "0000000a0000000b");
+			should("{x8}{X8}".format(10,11) == "0000000a0000000B");
 			should("{x}{d}".format(10,4) == "a4");
 			should("{X}{d}".format(10,4) == "A4");
 		}
@@ -341,6 +341,16 @@ describe string {
 		it should_work_with_empty_specifier {
 			should("{}".format("hello") == "hello");
 			should("aaa{}bbb{}ccc".format(1,"f") == "aaa1bbbfccc");
+		}
+
+		it should_work_with_position_specifier {
+			should("{1}{0}".format('a', 'b') == "ba");
+			should("aaa{0}aaa{1}bbb{0}bbb{1}ccc".format('a', 'b') == "aaaaaaabbbbabbbbccc");
+		}
+
+		it should_fail_with_position_out_of_bounds {
+			shouldThrow("Invalid Format String");
+			format("{0}{1}{2}",1,2);
 		}
 	}
 

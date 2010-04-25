@@ -157,6 +157,9 @@ string[] split(string input, char delim) {
 template _nextInt(T) {
 	bool _nextInt(T)(string str, out T value) {
 		int curpos;
+		if (str.length == 0) {
+			return false;
+		}
 
 		for(curpos=0; curpos<str.length; curpos++) {
 			if (str[curpos] != ' ' &&
@@ -405,8 +408,7 @@ string formatv(string format, Variadic vars) {
 			if (chr == '}') {
 				inFormat = false;
 
-				Variant var = vars.next();
-				Type type = var.type;		
+				int index = 0;
 				int width = 0;
 				int precision = 0;
 				int base = 10;
@@ -416,47 +418,74 @@ string formatv(string format, Variadic vars) {
 				float fvalue;
 				double dvalue;
 
+				bool formatIndex = false;
 				bool formatNumber = false;
 				bool formatFloat = false;
 				bool formatDouble = false;
+				bool formatUpper = false;
 
-				if (specifier.nextInt(width)) {
-					specifier = specifier.substring(toStr(width).length);
+				if (specifier.nextInt(index)) {
+					specifier = specifier.substring(toStr(index).length);
+					formatIndex = true;
 				}
 
 				// interpret format specifier
+				if (specifier.length > 0) {
+					if (specifier[0] == ':') {
+						specifier = specifier[1..$];
+					}
+				}
 				if (specifier.length == 0) {
-					// None... just toString the argument
-					ret ~= var.toString();
+					specifier = ":";
 				}
 
-				switch(specifier) {
-					case "d":
+				switch(specifier[0]) {
+					case 'd':
 						base = 10;
 						formatNumber = true;
+						specifier[1..$].nextInt(width);
 						break;
-					case "x":
-					case "X":
+					case 'x':
+					case 'X':
 						base = 16;
 						unsigned = true;
 						formatNumber = true;
+						specifier[1..$].nextInt(width);
 						break;
-					case "o":
-					case "O":
+					case 'o':
+					case 'O':
 						base = 8;
 						unsigned = true;
 						formatNumber = true;
+						specifier[1..$].nextInt(width);
 						break;
-					case "u":
+					case 'u':
 						base = 10;
 						unsigned = true;
 						formatNumber = true;
 						break;
 					default:
-						ret ~= var.toString();
 						break;
 				}
 
+				specifier = specifier[0..1];
+
+				// Pull an argument off of the stack
+				Variant var;
+				if (formatIndex) {
+					if (index < vars.length) {
+						var = vars[index];
+					}
+					else {
+						// TODO: More descriptive and uniform exception?
+						throw new Exception("Invalid Format String");
+					}
+				}
+				else {
+					var = vars.next();
+				}
+
+				Type type = var.type;
 				if (formatNumber) {
 					switch (type) {
 						case Type.Byte:
@@ -505,6 +534,9 @@ string formatv(string format, Variadic vars) {
 						result = result.uppercase();
 					}
 					ret ~= result;
+				}
+				else {
+					ret ~= var.toString();
 				}
 			}
 			specifier ~= chr;
