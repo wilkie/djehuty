@@ -77,6 +77,7 @@ class MyConsoleApp : Application {
 		a = 4;
 		b = 4;
 		c = 5;
+		Console.putln("{1}, {0}, {1}, {0:X}, {} {} {X8}".format(12, 11, 13));
 		Console.putln(a,b,c);
 		Console.putln(Atomic.compareExchange(a,b,c));
 		Console.putln(a,b,c);

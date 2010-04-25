@@ -543,6 +543,13 @@ class Variadic {
 		_originalPtr = _ptr;
 	}
 
+	bool hasNext() {
+		if (_idx == length()) {
+			return false;
+		}
+		return true;
+	}
+
 	Variant next() {
 		Variant ret = _variantForTypeInfo(_args[_idx], _ptr);
 		_ptr += argPtrSize(_args[_idx]);
