@@ -465,6 +465,33 @@ string formatv(string format, Variadic vars) {
 						formatNumber = true;
 						break;
 					default:
+						// Other specifier series
+						// Parse them
+
+						width = 0;
+						precision = 0;
+						bool gettingPrecision = false;
+						foreach(c; specifier) {
+
+							// Zero Placeholders
+							if (c == '0') {
+								if (gettingPrecision) {
+									precision++;
+								}
+								else {
+									width++;
+								}
+							}
+							else if (c == '.') {
+								if (gettingPrecision) {
+									throw new Exception("Format Exception");
+								}
+								gettingPrecision = true;
+							}
+						}
+						if (width > 0 || precision > 0) {
+							formatNumber = true;
+						}
 						break;
 				}
 
@@ -515,20 +542,38 @@ string formatv(string format, Variadic vars) {
 					}
 
 					string result = "";
-					if (formatFloat) {
-						result = ftoa(fvalue, base);
+					if (formatFloat | formatDouble) {
+						string[] foo;
+						if (formatFloat) {
+							foo = pftoa(fvalue, base);
+						}
+						else {
+							foo = pdtoa(dvalue, base);
+						}
+						result = foo[0];
+						while (result.length < width) {
+							result = "0" ~ result;
+						}
+						string dec = foo[1];
+						while (dec.length < precision) {
+							dec ~= "0";
+						}
+						result ~= "." ~ dec;
 					}
 					else if (formatDouble) {
 						result = dtoa(dvalue, base);
 					}
-					else if (unsigned) {
-						result = utoa(uvalue, base);
-					}
 					else {
-						result = itoa(value, base);
-					}
-					while (result.length < width) {
-						result = "0" ~ result;
+						if (unsigned) {
+							result = utoa(uvalue, base);
+						}
+						else {
+							result = itoa(value, base);
+						}
+
+						while (result.length < width) {
+							result = "0" ~ result;
+						}
 					}
 					if (specifier.uppercase() == specifier) {
 						result = result.uppercase();
@@ -768,14 +813,24 @@ string ctoa(creal val, uint base = 10) {
 }
 
 string ftoa(float val, uint base = 10) {
+	string[] foo = pftoa(val, base);
+
+	string ret = foo[0];
+	if (foo[1].length > 0) {
+		ret ~= "." ~ foo[1];
+	}
+	return ret;
+}
+
+string[] pftoa(float val, uint base = 10) {
 	if (val == float.infinity) {
-		return "inf";
+		return ["inf",""];
 	}
 	else if (val !<>= 0.0) {
-		return "nan";
+		return ["nan",""];
 	}
 	else if (val == 0.0) {
-		return "0";
+		return ["0",""];
 	}
 
 	long mantissa;
@@ -794,10 +849,10 @@ string ftoa(float val, uint base = 10) {
 	intPart = 0;
 
 	if (exp >= 31) {
-		return "0";
+		return ["0",""];
 	}
 	else if (exp < -23) {
-		return "0";
+		return ["0",""];
 	}
 	else if (exp >= 23) {
 		intPart = mantissa << (exp - 23);
@@ -810,43 +865,40 @@ string ftoa(float val, uint base = 10) {
 		fracPart = (mantissa & 0xffffff) >> (-(exp + 1));
 	}
 
-	string ret;
+	string[] ret = ["",""];
 	if (iF.l < 0) {
-		ret = "-";
+		ret[0] = "-";
 	}
 
-	ret ~= itoa(intPart, base);
-	ret ~= ".";
+	ret[0] ~= itoa(intPart, base);
+
 	for (uint k; k < 7; k++) {
 		fracPart *= 10;
-		ret ~= cast(char)((fracPart >> 24) + '0');
+		ret[1] ~= cast(char)((fracPart >> 24) + '0');
 		fracPart &= 0xffffff;
 	}
 	
 	// round last digit
-	bool roundUp = (ret[$-1] >= '5');
-	ret = ret[0..$-1];
+	bool roundUp = (ret[1][$-1] >= '5');
+	ret[1] = ret[1][0..$-1];
 
 	while (roundUp) {
-		if (ret.length == 0) {
-			return "0";
+		// Look for a completely empty float
+		if (ret[0].length + ret[1].length == 0) {
+			return ["0",""];
 		}
-		else if (ret[$-1] == '.' || ret[$-1] == '9') {
-			ret = ret[0..$-1];
+		else if (ret[1].length > 0 && ret[1][$-1] == '9') {
+			ret[1] = ret[1][0..$-1];
 			continue;
 		}
-		ret[$-1]++;
+		ret[1][$-1]++;
 		break;
 	}
 
-	// get rid of useless zeroes (and point if necessary)
-	foreach_reverse(uint i, chr; ret) {
-		if (chr != '0' && chr != '.') {
-			ret = ret[0..i+1];
-			break;
-		}
-		else if (chr == '.') {
-			ret = ret[0..i];
+	// get rid of useless trailing zeroes
+	foreach_reverse(uint i, chr; ret[1]) {
+		if (chr != '0') {
+			ret[1] = ret[1][0..i+1];
 			break;
 		}
 	}
@@ -854,15 +906,26 @@ string ftoa(float val, uint base = 10) {
 	return ret;
 }
 
-string dtoa(double val, uint base = 10, bool doIntPart = true) {
+string dtoa(double val, uint base = 10) {
+	string[] foo = pdtoa(val, base);
+
+	string ret = foo[0];
+	if (foo[1].length > 0) {
+		ret ~= "." ~ foo[1];
+	}
+	
+	return ret;
+}
+
+string[] pdtoa(double val, uint base = 10) {
 	if (val is double.infinity) {
-		return "inf";
+		return ["inf",""];
 	}
 	else if (val !<>= 0.0) {
-		return "nan";
+		return ["nan",""];
 	}
 	else if (val == 0.0) {
-		return "0";
+		return ["0",""];
 	}
 
 	long mantissa;
@@ -877,10 +940,10 @@ string dtoa(double val, uint base = 10, bool doIntPart = true) {
 	// Conform to the IEEE standard
 	exp = ((iF.l >> 52) & 0x7ff);
 	if (exp == 0) {
-		return "0";
+		return ["0",""];
 	}
 	else if (exp == 0x7ff) {
-		return "inf";
+		return ["inf",""];
 	}
 	exp -= 1023;
 
@@ -889,7 +952,7 @@ string dtoa(double val, uint base = 10, bool doIntPart = true) {
 	intPart = 0;
 
 	if (exp < -52) {
-		return "0";
+		return ["0",""];
 	}
 	else if (exp >= 52) {
 		intPart = mantissa << (exp - 52);
@@ -902,46 +965,39 @@ string dtoa(double val, uint base = 10, bool doIntPart = true) {
 		fracPart = (mantissa & 0x1fffffffffffff) >> (-(exp + 1));
 	}
 
-	string ret;
+	string ret[] = ["", ""];
 	if (iF.l < 0) {
-		ret = "-";
+		ret[0] = "-";
 	}
 
-	if (doIntPart) {
-		ret ~= itoa(intPart, base);
-		ret ~= ".";
-	}
+	ret[0] ~= itoa(intPart, base);
 
 	for (uint k; k < 7; k++) {
 		fracPart *= 10;
-		ret ~= cast(char)((fracPart >> 53) + '0');
+		ret[1] ~= cast(char)((fracPart >> 53) + '0');
 		fracPart &= 0x1fffffffffffff;
 	}
 	
 	// round last digit
-	bool roundUp = (ret[$-1] >= '5');
-	ret = ret[0..$-1];
+	bool roundUp = (ret[1][$-1] >= '5');
+	ret[1] = ret[1][0..$-1];
 
 	while (roundUp) {
-		if (ret.length == 0) {
-			return "0";
+		if (ret[0].length == 0 && ret[1].length == 0) {
+			return ["0",""];
 		}
-		else if (ret[$-1] == '.' || ret[$-1] == '9') {
-			ret = ret[0..$-1];
+		else if (ret[1][$-1] == '9') {
+			ret[1] = ret[1][0..$-1];
 			continue;
 		}
-		ret[$-1]++;
+		ret[1][$-1]++;
 		break;
 	}
 
 	// get rid of useless zeroes (and point if necessary)
-	foreach_reverse(uint i, chr; ret) {
-		if (chr != '0' && chr != '.') {
-			ret = ret[0..i+1];
-			break;
-		}
-		else if (chr == '.') {
-			ret = ret[0..i];
+	foreach_reverse(uint i, chr; ret[1]) {
+		if (chr != '0') {
+			ret[1] = ret[1][0..i+1];
 			break;
 		}
 	}
@@ -1009,7 +1065,8 @@ string rtoa(real val, uint base = 10) {
 		}
 	
 		ret ~= itoa(intPart, base);
-		ret ~= ".";
+		ret ~= '.';
+
 		for (uint k; k < 7; k++) {
 			fracPart *= 10;
 			ret ~= cast(char)((fracPart >> 64) + '0');

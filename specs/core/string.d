@@ -352,6 +352,10 @@ describe string {
 			shouldThrow("Invalid Format String");
 			format("{0}{1}{2}",1,2);
 		}
+
+		it should_work_with_zero_placeholder {
+			should("{0:00.0000}".format(1500.42) == "1500.4200");
+		}
 	}
 
 	describe uppercase {
