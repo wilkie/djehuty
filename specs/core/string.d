@@ -85,15 +85,15 @@ describe string {
 
 		it should_return_the_next_int {
 			int foo;
-			bool ret = "123foo".nextInt(foo);
+			bool returnVal = "123foo".nextInt(foo);
 			should(foo == 123);
-			should(ret == true);
+			should(returnVal == true);
 		}
 
 		it should_fail_when_there_is_not_a_next_int {
 			int foo;
-			bool ret = "foo123".nextInt(foo);
-			should(ret == false);
+			bool returnVal = "foo123".nextInt(foo);
+			should(returnVal == false);
 			should(foo == 0);
 		}
 	}
