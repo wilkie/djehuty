@@ -198,6 +198,8 @@ dspec: lib
 	@echo compiling DSpec and linking...
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
+	for i in ${TOOLS_DSPEC}; do $(DC) "$${i}" $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/dspec -I./platform/osx; done
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/dspec/*.o` -o dspec $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@dmd.exe -w -version=PlatformWindows -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)

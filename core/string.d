@@ -441,6 +441,12 @@ string formatv(string format, Variadic vars) {
 						unsigned = true;
 						formatNumber = true;
 						break;
+					case "o":
+					case "O":
+						base = 8;
+						unsigned = true;
+						formatNumber = true;
+						break;
 					case "u":
 						base = 10;
 						unsigned = true;
