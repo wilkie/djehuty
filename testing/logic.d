@@ -83,24 +83,24 @@ class Test {
 		testsOk = 0;
 	}
 
-	static int getSuccessCount() {
+	static uint getSuccessCount() {
 		return lastOk;
 	}
 
-	static int getFailureCount() {
+	static uint getFailureCount() {
 		return lastFailcopter;
 	}
 
 private:
 
-	static int testsOk;
-	static int testsFailcopter;
+	static uint testsOk;
+	static uint testsFailcopter;
 
-	static int lastOk;
-	static int lastFailcopter;
+	static uint lastOk;
+	static uint lastFailcopter;
 
-	int classFail;
-	int classOk;
+	uint classFail;
+	uint classOk;
 
 	char[] currentTest;
 	char[] specFile;

@@ -101,7 +101,7 @@ class Output {
 			//fwritef(outfp, "%s", "\t}\n\n");
 		}
 
-		outfp.write("\tstatic void testAll() {\n"c);
+		outfp.write("\tstatic uint testAll() {\n"c);
 		//fwritef(outfp, "%s", "\tstatic void testAll()\n\t{\n");
 
 		foreach(className; classes) {
@@ -112,6 +112,8 @@ class Output {
 		}
 
 		outfp.write("\t\tTest.done();\n"c);
+
+		outfp.write("\t\treturn Test.getFailureCount();\n"c);
 
 		outfp.write("\t}\n"c);
 		//fwritef(outfp, "%s", "\t}\n");
