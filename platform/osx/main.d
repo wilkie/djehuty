@@ -1,11 +1,18 @@
 
 module platform.osx.main;
 
+import platform.application;
+
+import core.arguments;
 import core.main;
 import core.definitions;
 import gui.window;
 import graphics.view;
 import resource.menu;
+
+import analyzing.debugger;
+
+import scaffold.console;
 
 import binding.c;
 
@@ -23,12 +30,23 @@ extern (C) void call(void* stuff) {
 extern (C) void _OSXStart();
 extern (C) void _OSXEnd();
 
-int main() {
-	_OSXStart();
+int main(char[][] args) {
+	try	{
+		_OSXStart();
 
-	Djehuty.application.run();
+		ConsoleInit();
+		Arguments argList = Arguments.instance();
+		foreach(arg; args) {
+			argList.add(arg);
+		}
+
+		Djehuty.application.run();
+		ConsoleUninit();
+	}
+	catch(Object o)	{
+		Debugger.raiseException(cast(Exception)o);
+	}
 
 	_OSXEnd();
-
-    return 0;
+	return ApplicationController.instance.exitCode;
 }
