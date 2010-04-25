@@ -101,7 +101,7 @@ libdeps_xomb: $(OBJS_XOMB)
 %.o: %.d
 	@echo \-\-\-\> $<
 ifeq (${MY_ARCH},Darwin)
-	@$(DC) $< $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -of$@ -O3 -J./tests -I./platform/osx 
+	@$(DC) $< $(DFLAGS) -d-version=PlatformOSX -c -of$@ -O3 -J./tests -I./platform/osx 
 else
 ifeq ($(PLATFORM),"WINDOWS")
 else
@@ -183,7 +183,7 @@ all: lib
 
 	@echo linking...
 ifeq (${MY_ARCH},Darwin)
-	@$(DC) winsamp.d $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -ofwinsamp.o -O3 -J./tests -I./platform/osx 
+	@$(DC) winsamp.d $(DFLAGS) -d-version=PlatformOSX -c -ofwinsamp.o -O3 -J./tests -I./platform/osx 
 	@$(OBJCC) -m32 $(OBJS_MAC) winsamp.o -o winsamp $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
@@ -198,7 +198,7 @@ dspec: lib
 	@echo compiling DSpec and linking...
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
-	for i in ${TOOLS_DSPEC}; do $(DC) "$${i}" $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/dspec -I./platform/osx; done
+	for i in ${TOOLS_DSPEC}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/dspec -I./platform/osx; done
 	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/dspec/*.o` -o dspec $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
@@ -225,7 +225,7 @@ tuitetris: lib
 
 	@echo compiling TuiTetris example and linking...
 ifeq (${MY_ARCH},Darwin)
-	for i in ${EXAMPLES_TUITETRIS}; do $(DC) "$${i}" $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/TuiTetris -I./platform/osx; done
+	for i in ${EXAMPLES_TUITETRIS}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/TuiTetris -I./platform/osx; done
 	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/TuiTetris/*.o` -o tuitetris $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
@@ -239,7 +239,7 @@ moreducks: lib
 
 	@echo compiling More Ducks example and linking...
 ifeq (${MY_ARCH},Darwin)
-	for i in ${EXAMPLES_MOREDUCKS}; do $(DC) "$${i}" $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/MoreDucks -I./platform/osx; done
+	for i in ${EXAMPLES_MOREDUCKS}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/MoreDucks -I./platform/osx; done
 	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/MoreDucks/*.o` -o moreducks $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
@@ -265,7 +265,7 @@ endif
 tests: lib
 	@echo compiling Test Suite...
 ifeq (${MY_ARCH},Darwin)
-	@$(DC) runtests.d $(DFLAGS) -mtriple=i386-apple-darwin10 -d-version=PlatformOSX -c -ofruntests.o -O3 -J./tests -I./platform/osx 
+	@$(DC) runtests.d $(DFLAGS) -d-version=PlatformOSX -c -ofruntests.o -O3 -J./tests -I./platform/osx 
 	@$(OBJCC) -m32 $(OBJS_MAC) runtests.o -o runtests $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
