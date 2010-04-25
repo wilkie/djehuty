@@ -23,7 +23,7 @@ class Digest {
 	override string toString() {
 		string ret = "";
 		for(int i=0; i<data.length; i++) {
-			ret ~= "{8x}".format(data[i]);
+			ret ~= "{x8}".format(data[i]);
 		}
 		return ret;
 	}

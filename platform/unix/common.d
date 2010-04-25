@@ -216,8 +216,7 @@ align(2) struct struct_stat
 		ulong[64] fuck;
 	}
 	else version(X86_64) {
-		uint st_dev;
-		Culong_t st_dev;
+		ulong st_dev;
 		Culong_t st_ino;
 		Culong_t st_nlink;
 		uint st_mode;
