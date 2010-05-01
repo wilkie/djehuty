@@ -16,7 +16,10 @@ module core.string;
 import core.definitions;
 import core.unicode;
 import core.variant;
+
 import io.console;
+
+import math.currency;
 
 public import core.string;
 
@@ -423,10 +426,17 @@ string formatv(string format, Variadic vars) {
 				bool formatFloat = false;
 				bool formatDouble = false;
 				bool formatUpper = false;
+				bool formatCurrency = false;
 
 				if (specifier.nextInt(index)) {
-					specifier = specifier.substring(toStr(index).length);
-					formatIndex = true;
+					string newSpecifier = specifier.substring(toStr(index).length);
+					if (newSpecifier.length > 0 && newSpecifier[0] != ':') {
+						// Not an index
+					}
+					else {
+						specifier = newSpecifier;
+						formatIndex = true;
+					}
 				}
 
 				// interpret format specifier
@@ -441,28 +451,36 @@ string formatv(string format, Variadic vars) {
 
 				switch(specifier[0]) {
 					case 'd':
+					case 'D':	// Decimal
 						base = 10;
 						formatNumber = true;
 						specifier[1..$].nextInt(width);
 						break;
 					case 'x':
-					case 'X':
+					case 'X':	// Hexidecimal
 						base = 16;
 						unsigned = true;
 						formatNumber = true;
 						specifier[1..$].nextInt(width);
 						break;
 					case 'o':
-					case 'O':
+					case 'O':	// Octal
 						base = 8;
 						unsigned = true;
 						formatNumber = true;
 						specifier[1..$].nextInt(width);
 						break;
 					case 'u':
+					case 'U':	// Unsigned Integer
 						base = 10;
 						unsigned = true;
 						formatNumber = true;
+						break;
+					case 'c':	// Currency
+						base = 10;
+						unsigned = false;
+						formatNumber = true;
+						formatCurrency = true;
 						break;
 					default:
 						// Other specifier series
@@ -542,7 +560,18 @@ string formatv(string format, Variadic vars) {
 					}
 
 					string result = "";
-					if (formatFloat | formatDouble) {
+					if (formatCurrency) {
+						if (formatFloat) {
+							result ~= (new Currency(fvalue)).toString();
+						}
+						else if (formatDouble) {
+							result ~= (new Currency(dvalue)).toString();
+						}
+						else {
+							result ~= var.toString();
+						}
+					}
+					else if (formatFloat || formatDouble) {
 						string[] foo;
 						if (formatFloat) {
 							foo = pftoa(fvalue, base);

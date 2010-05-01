@@ -3,6 +3,7 @@ module specs.core.string;
 import testing.support;
 
 import core.string;
+import math.currency;
 
 describe string {
 	describe trim {
@@ -291,6 +292,13 @@ describe string {
 			should("".format() == "");
 		}
 
+		it should_work_on_empty_specifier {
+			should("{:}".format(3) == "3");
+			should("{0:}".format(3) == "3");
+			should("{1:}".format(3,4) == "4");
+			should("{2:}".format(3,4,5) == "5");
+		}
+
 		it should_work_on_d_specifier {
 			should("a{d}b".format(4) == "a4b");
 			should("a{D}b".format(4) == "a4b");
@@ -355,6 +363,20 @@ describe string {
 
 		it should_work_with_zero_placeholder {
 			should("{0:00.0000}".format(1500.42) == "1500.4200");
+			should("{0:00.0000}".format(3.42) == "03.4200");
+			should("{0:00.0000}".format(3.42555) == "03.42555");
+			should("{0:00.0000}".format(1234.42555) == "1234.42555");
+		}
+
+		it should_not_require_a_index_with_a_zero_placeholder {
+			should("{00.0000}".format(1500.42) == "1500.4200");
+			should("{00.0000}".format(3.42) == "03.4200");
+			should("{00.0000}".format(3.42555) == "03.42555");
+			should("{00.0000}".format(1234.42555) == "1234.42555");
+		}
+
+		it should_work_with_currency_specifier {
+			should("{c}".format(1500.42) == (new Currency(150042,2)).toString());
 		}
 	}
 
