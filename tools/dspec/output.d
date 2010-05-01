@@ -267,12 +267,16 @@ protected:
 								print("_" ~ describing);
 							}
 							print("();\n");
+							
+
 
 							if (describing is null) {
 								val = "_" ~ val;
 							}
 
 							tests ~= val;
+
+							print("\t\tit ret = it.does;\n");
 
 							print("\t\ttry {\n");
 							break;
@@ -314,19 +318,21 @@ protected:
 		if (shouldThrow) {
 			//Console.putln("!!", exception.array);
 			if (exception == "") {
-				print("\t\t\treturn it.does");
+				print("\t\t\tret = it.does");
 			}
 			else {
 				print("\t\t\tif (_exception_.msg != ");
 				print(exception);
-				print(") { return it.doesnt; }\n\t\t\treturn it.does");
+				print(") { ret = it.doesnt; }\n\t\t\tret = it.does");
 			}
 		}
 		else {
-			print("\t\t\treturn it.doesnt");
+			print("\t\t\tret = it.doesnt");
 		}
+		
+		
+		print(";\n\t\t}\n\t\treturn ret;\n\t}\n");
 
-		print(";\n\t\t}\n\t\treturn it.does;\n\t}\n");
 
 		return true;
 	}
@@ -351,8 +357,8 @@ protected:
 
 			working = working.left;
 		}
-
-		print(")) {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
+		
+		print(")) {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
@@ -377,8 +383,8 @@ protected:
 
 			working = working.left;
 		}
-
-		print(") {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
+		
+		print(") {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
