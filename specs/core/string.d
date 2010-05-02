@@ -3,6 +3,7 @@ module specs.core.string;
 import testing.support;
 
 import core.string;
+import math.currency;
 
 describe string {
 	describe trim {
@@ -85,15 +86,15 @@ describe string {
 
 		it should_return_the_next_int {
 			int foo;
-			bool ret = "123foo".nextInt(foo);
+			bool returnVal = "123foo".nextInt(foo);
 			should(foo == 123);
-			should(ret == true);
+			should(returnVal == true);
 		}
 
 		it should_fail_when_there_is_not_a_next_int {
 			int foo;
-			bool ret = "foo123".nextInt(foo);
-			should(ret == false);
+			bool returnVal = "foo123".nextInt(foo);
+			should(returnVal == false);
 			should(foo == 0);
 		}
 	}
@@ -291,6 +292,13 @@ describe string {
 			should("".format() == "");
 		}
 
+		it should_work_on_empty_specifier {
+			should("{:}".format(3) == "3");
+			should("{0:}".format(3) == "3");
+			should("{1:}".format(3,4) == "4");
+			should("{2:}".format(3,4,5) == "5");
+		}
+
 		it should_work_on_d_specifier {
 			should("a{d}b".format(4) == "a4b");
 			should("a{D}b".format(4) == "a4b");
@@ -301,15 +309,15 @@ describe string {
 		}
 
 		it should_work_with_d_specifier_with_width {
-			should("a{8d}b".format(4) == "a00000004b");
+			should("a{d8}b".format(4) == "a00000004b");
 		}
 
 		it should_work_with_x_specifier_with_width {
-			should("a{8x}b".format(10) == "a0000000ab");
+			should("a{x8}b".format(10) == "a0000000ab");
 		}
 
 		it should_work_on_X_specifier {
-			should("a{8X}b".format(10) == "a0000000Ab");
+			should("a{X8}b".format(10) == "a0000000Ab");
 		}
 		
 		it should_work_when_specifier_is_at_beginning {
@@ -332,8 +340,8 @@ describe string {
 
 		it should_work_with_two_specifiers_in_a_row {
 			should("{d}{d}".format(4,5) == "45");
-			should("{8x}{8x}".format(10,11) == "0000000a0000000b");
-			should("{8x}{8X}".format(10,11) == "0000000a0000000B");
+			should("{x8}{x8}".format(10,11) == "0000000a0000000b");
+			should("{x8}{X8}".format(10,11) == "0000000a0000000B");
 			should("{x}{d}".format(10,4) == "a4");
 			should("{X}{d}".format(10,4) == "A4");
 		}
@@ -341,6 +349,34 @@ describe string {
 		it should_work_with_empty_specifier {
 			should("{}".format("hello") == "hello");
 			should("aaa{}bbb{}ccc".format(1,"f") == "aaa1bbbfccc");
+		}
+
+		it should_work_with_position_specifier {
+			should("{1}{0}".format('a', 'b') == "ba");
+			should("aaa{0}aaa{1}bbb{0}bbb{1}ccc".format('a', 'b') == "aaaaaaabbbbabbbbccc");
+		}
+
+		it should_fail_with_position_out_of_bounds {
+			shouldThrow("Invalid Format String");
+			format("{0}{1}{2}",1,2);
+		}
+
+		it should_work_with_zero_placeholder {
+			should("{0:00.0000}".format(1500.42) == "1500.4200");
+			should("{0:00.0000}".format(3.42) == "03.4200");
+			should("{0:00.0000}".format(3.42555) == "03.42555");
+			should("{0:00.0000}".format(1234.42555) == "1234.42555");
+		}
+
+		it should_not_require_a_index_with_a_zero_placeholder {
+			should("{00.0000}".format(1500.42) == "1500.4200");
+			should("{00.0000}".format(3.42) == "03.4200");
+			should("{00.0000}".format(3.42555) == "03.42555");
+			should("{00.0000}".format(1234.42555) == "1234.42555");
+		}
+
+		it should_work_with_currency_specifier {
+			should("{c}".format(1500.42) == (new Currency(150042,2)).toString());
 		}
 	}
 

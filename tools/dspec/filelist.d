@@ -8,7 +8,7 @@ import io.directory;
 import io.console;
 
 class FileList {
-	bool fetch(inout string path) {
+	bool fetch(ref string path) {
 		sanitizePath(path);
 		if (path.length == 0) { return false; }
 
@@ -39,7 +39,7 @@ protected:
 	string[] files;
 	//char[][] files;
 
-	void sanitizePath(inout string path) {
+	void sanitizePath(ref string path) {
 		if (path.length == 0) {
 			return;
 		}
@@ -63,6 +63,7 @@ protected:
 		sanitizePath(path);
 
 		Directory dir = Directory.open(path);
+		Console.putln(dir.path);
 
 		auto dirs = dir.list();
 
@@ -76,6 +77,7 @@ protected:
 			if (d == "test.d") { continue; }
 			int pos = d.find(".");
 			//int pos = find(d, '.');
+			Console.putln(d);
 
 			if (dir.isDir(d)) {
 				//Console.putln("is dir1");

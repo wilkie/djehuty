@@ -47,7 +47,6 @@ extern (C) void _OSXWindowStartDraw(_OSXWindowPlatformVars* windVars, _OSXViewPl
 import binding.c;
 void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 {
-		printf("WPV VARS: %p\n", windowVars.vars);
 //	String s = new String(window.getText());
 //	s.appendChar('\0');
 //	windowVars.viewVars = _OSXWindowCreate(cast(void*)window, null, &windowVars.vars, s.ptr, window.getX(), window.getY(), window.getWidth(), window.getHeight());
@@ -55,9 +54,10 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars)
 string s = window.text;
 s ~= '\0';
 windowVars.viewVars = _OSXWindowCreate(cast(void*)window, null, &windowVars.vars, s.ptr, window.x, window.y, window.width, window.height);  
-		//	printf("WPV VARS: %p\n", windowVars.vars);
 	// show or hide the window
 	//_OSXWindowShow(windowVars.vars, cast(int)window.getVisibility());
+	window.onInitialize();
+	window.onAdd();
 }
 
 void WindowCreate(ref Window parent, WindowPlatformVars* parentVars, ref Window window, WindowPlatformVars* windowVars)
@@ -100,9 +100,7 @@ void WindowDestroy(ref Window window, WindowPlatformVars* windowVars)
 {
 }
 
-void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow)
-{
-			printf("WPV VARS: %p\n", windowVars.vars);
+void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bShow) {
 	_OSXWindowShow(windowVars.vars, 1);
 }
 
@@ -133,16 +131,8 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 }
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)
-{
-			//printf("WPV VARS: %p\n", windowVars.vars);
-	printf("start draw (D)\n");
-
-//	Color clr = window.getColor();
-
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
 	_OSXWindowStartDraw(windowVars.vars, windowVars.viewVars, 1, window.color.red, window.color.green, window.color.blue);
-
-	printf("start draw done(D)\n");
 }
 
 void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars)

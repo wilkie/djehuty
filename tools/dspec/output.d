@@ -101,6 +101,21 @@ class Output {
 			//fwritef(outfp, "%s", "\t}\n\n");
 		}
 
+		outfp.write("\tstatic uint test(string className) {\n"c);
+		outfp.write("\t\tswitch(className) {\n"c);
+		foreach(className; classes) {
+			outfp.write("\t\t\tcase \"" ~ className ~ "\":\n"c);
+			outfp.write("\t\t\t\ttest"c);
+			outfp.write(className);
+			outfp.write("();\n"c);
+		}
+		outfp.write("\t\t\tdefault:\n"c);
+		outfp.write("\t\t\t\treturn 0;\n"c);
+		outfp.write("\t\t}\n\n"c);
+		outfp.write("\t\tTest.done();\n"c);
+		outfp.write("\t\treturn Test.getFailureCount();\n"c);
+		outfp.write("\t}"c);
+
 		outfp.write("\tstatic uint testAll() {\n"c);
 		//fwritef(outfp, "%s", "\tstatic void testAll()\n\t{\n");
 
@@ -252,12 +267,16 @@ protected:
 								print("_" ~ describing);
 							}
 							print("();\n");
+							
+
 
 							if (describing is null) {
 								val = "_" ~ val;
 							}
 
 							tests ~= val;
+
+							print("\t\tit ret = it.does;\n");
 
 							print("\t\ttry {\n");
 							break;
@@ -299,19 +318,21 @@ protected:
 		if (shouldThrow) {
 			//Console.putln("!!", exception.array);
 			if (exception == "") {
-				print("\t\t\treturn it.does");
+				print("\t\t\tret = it.does");
 			}
 			else {
 				print("\t\t\tif (_exception_.msg != ");
 				print(exception);
-				print(") { return it.doesnt; }\n\t\t\treturn it.does");
+				print(") { ret = it.doesnt; }\n\t\t\tret = it.does");
 			}
 		}
 		else {
-			print("\t\t\treturn it.doesnt");
+			print("\t\t\tret = it.doesnt");
 		}
+		
+		
+		print(";\n\t\t}\n\t\treturn ret;\n\t}\n");
 
-		print(";\n\t\t}\n\t\treturn it.does;\n\t}\n");
 
 		return true;
 	}
@@ -336,8 +357,8 @@ protected:
 
 			working = working.left;
 		}
-
-		print(")) {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
+		
+		print(")) {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
@@ -362,8 +383,8 @@ protected:
 
 			working = working.left;
 		}
-
-		print(") {\n\t\t\t\treturn it.doesnt;\n\t\t\t}\n");
+		
+		print(") {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}

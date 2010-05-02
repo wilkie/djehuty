@@ -114,12 +114,6 @@ class Regex {
 		buildDFA(false);
 	}
 
-	this(string regex) {
-		regularExpression = (regex);
-
-		buildDFA();
-	}
-
 	// Description: This function will return a matched regular expression on the given string. Single use regular expression functions, such as this one, use a backtracking algorithm.
 	// str: The string to run the regular expression upon.
 	// regex: The regular expression to use.

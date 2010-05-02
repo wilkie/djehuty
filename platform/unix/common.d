@@ -24,8 +24,8 @@ public import Curses = binding.ncurses.ncurses;
 extern(C):
 
 size_t readlink(char* path, char* buf, size_t len);
-int getpid();
 
+int getpid();
 char* getenv(char*);
 
 // Directory Streams
@@ -37,12 +37,21 @@ static int _IONBF = 0x2;
 
 struct dirent
 {
-	Culong_t d_ino;
-	Culong_t d_off;
+	version(darwin) {
+		uint d_ino;
+		ushort d_reclen;
+		ubyte d_type;
+		ubyte d_namlen;
+		char d_name[256];
+	}
+	else {
+		Culong_t d_ino;
+		Culong_t d_off;
 
-	ushort d_reclen;
-	ubyte d_type;
-	char d_name[256];
+		ushort d_reclen;
+		ubyte d_type;
+		char d_name[256];
+	}
 }
 
 struct dirent64
@@ -74,145 +83,157 @@ alias Clong_t ssize_t;
 
 struct hostent
 {
-    char* h_name;
-    char** h_aliases;
-    int h_addrtype;
-    int h_length;
-    char** h_addr_list;
+	char* h_name;
+	char** h_aliases;
+	int h_addrtype;
+	int h_length;
+	char** h_addr_list;
 
-  char* h_addr()
-  {
-      return h_addr_list[0];
-  }
+	char* h_addr()
+	{
+		return h_addr_list[0];
+	}
 
 }
 
 struct addrinfo { }
 struct passwd
 {
-    char* pw_name;
-    char* pw_passwd;
-    uint pw_uid;
-    uint pw_gid;
-    char* pw_gecos;
-    char* pw_dir;
-    char* pw_shell;
+	char* pw_name;
+	char* pw_passwd;
+	uint pw_uid;
+	uint pw_gid;
+	char* pw_gecos;
+	char* pw_dir;
+	char* pw_shell;
 }
 
 struct in_addr
 {
-    uint s_addr;
+	uint s_addr;
 }
 
 struct timespec
 {
-    Clong_t tv_sec;
-    Clong_t tv_nsec;
+	Clong_t tv_sec;
+	Clong_t tv_nsec;
 }
 
 struct timeval
 {
-    Clong_t tv_sec;
-    Clong_t tv_usec;
+	Clong_t tv_sec;
+	Clong_t tv_usec;
 }
 
 struct timezone
 {
-    int tz_minuteswest;
-    int tz_dsttime;
+	int tz_minuteswest;
+	int tz_dsttime;
 }
 
 struct sem_t
 {
-    byte[32] __opaque;
+	byte[32] __opaque;
 }
 
 alias ulong pthread_t;
 struct pthread_attr_t
 {
-    byte[56] __opaque;
+	byte[56] __opaque;
 }
 
 struct pthread_cond_t
 {
-    byte[48] __opaque;
+	byte[48] __opaque;
 }
 
 struct pthread_condattr_t
 {
-    byte[4] __opaque;
+	byte[4] __opaque;
 }
 
 struct pthread_mutex_t
 {
-    byte[40] __opaque;
+	byte[40] __opaque;
 }
 
 struct pthread_mutexattr_t
 {
-    byte[4] __opaque;
+	byte[4] __opaque;
 }
 
 struct sched_param
 {
-    int sched_priority;
+	int sched_priority;
 }
 
 struct pthread_barrier_t
 {
-    byte[32] __opaque;
+	byte[32] __opaque;
 }
 
 struct pthread_barrierattr_t
 {
-    byte[4] __opaque;
+	byte[4] __opaque;
 }
 
 struct pthread_rwlock_t
 {
-    byte[56] __opaque;
+	byte[56] __opaque;
 }
 
 struct pthread_rwlockattr_t
 {
-    byte[8] __opaque;
+	byte[8] __opaque;
 }
 
 alias int pthread_spinlock_t;
 enum
 {
-  PTHREAD_CANCEL_DEFERRED = 0,
-  PTHREAD_CANCEL_ASYNCHRONOUS = 1,
-  PTHREAD_CANCEL_ENABLE = 0,
-  PTHREAD_CANCEL_DISABLE = 1,
+	PTHREAD_CANCEL_DEFERRED = 0,
+	PTHREAD_CANCEL_ASYNCHRONOUS = 1,
+	PTHREAD_CANCEL_ENABLE = 0,
+	PTHREAD_CANCEL_DISABLE = 1,
 }
 
 //alias int clockid_t;
 struct utimbuf
 {
-    long actime;
-    long modtime;
+	long actime;
+	long modtime;
 }
 
-struct struct_stat
+align(2) struct struct_stat
 {
-    ulong st_dev;
-    ulong st_ino;
-    ulong st_nlink;
-    uint st_mode;
-    uint st_uid;
-    uint st_gid;
-    ubyte[4] __pad1;
-    ulong st_rdev;
-    long st_size;
-    long st_blksize;
-    long st_blocks;
-    long st_atime;
-    ubyte[8] __pad2;
-    long st_mtime;
-    ubyte[8] __pad3;
-    long st_ctime;
-   ubyte[32] __pad4;
+	version(darwin) {
+		uint st_dev;
+		uint st_ino;
+		ushort st_mode;
+		ushort st_nlink;
+		uint st_uid;
+		uint st_gid;
+		uint st_rdev;
+		ulong[64] fuck;
+	}
+	else version(X86_64) {
+		ulong st_dev;
+		Culong_t st_ino;
+		Culong_t st_nlink;
+		uint st_mode;
+		uint st_uid;
+		uint st_gid;
+		ubyte[4] __pad1;
+		Culong_t st_rdev;
+		Clong_t st_size;
+		Clong_t st_blksize;
+		Clong_t st_blocks;
+		Clong_t st_atime;
+		ubyte[8] __pad2;
+		Clong_t st_mtime;
+		ubyte[8] __pad3;
+		Clong_t st_ctime;
+		ubyte[32] __pad4;
+	}
 }
 
 const auto S_IFMT	= 0170000;
@@ -236,7 +257,7 @@ bool S_ISREG(uint mode) {
 }
 
 bool S_ISDIR(uint mode) {
-	return (mode & S_IFMT) == S_IFDIR;
+	return ((mode & S_IFMT) & S_IFDIR) == S_IFDIR;
 }
 
 bool S_ISCHR(uint mode) {
@@ -256,107 +277,107 @@ bool S_ISSOCK(uint mode) {
 }
 
 struct sigaction_t {
-    union {
-        extern(C) void function(int) sa_handler;
-        extern(C) void function(int, siginfo_t *, void *) sa_sigaction;
-    }
-    sigset_t sa_mask;
-    int sa_flags;
-   ubyte[12] __pad1;
+	union {
+		extern(C) void function(int) sa_handler;
+		extern(C) void function(int, siginfo_t *, void *) sa_sigaction;
+	}
+	sigset_t sa_mask;
+	int sa_flags;
+	ubyte[12] __pad1;
 }
 
 
 struct sockaddr {
-    ushort sa_family;
-    byte[14] sa_data;
+	ushort sa_family;
+	byte[14] sa_data;
 }
 
 struct fd_set {
-    byte[128] __opaque;
+	byte[128] __opaque;
 }
 
 
 enum
 {
-  AF_MAX = 34,
-  AF_APPLETALK = 5,
-  AF_INET6 = 10,
-  AF_NETLINK = 16,
-  AF_FILE = 1,
-  AF_ROSE = 11,
-  AF_NETROM = 6,
-  AF_ATMPVC = 8,
-  AF_WANPIPE = 25,
-  AF_UNSPEC = 0,
-  AF_BRIDGE = 7,
-  AF_X25 = 9,
-  AF_BLUETOOTH = 31,
-  AF_ROUTE = 16,
-  AF_SECURITY = 14,
-  AF_RXRPC = 33,
-  AF_AX25 = 3,
-  AF_KEY = 15,
-  AF_IUCV = 32,
-  AF_ECONET = 19,
-  AF_INET = 2,
-  AF_ATMSVC = 20,
-  AF_PPPOX = 24,
-  AF_PACKET = 17,
-  AF_IRDA = 23,
-  AF_NETBEUI = 13,
-  AF_SNA = 22,
-  AF_LOCAL = 1,
-  AF_ASH = 18,
-  AF_UNIX = 1,
-  AF_DECnet = 12,
-  AF_IPX = 4,
+	AF_MAX = 34,
+	AF_APPLETALK = 5,
+	AF_INET6 = 10,
+	AF_NETLINK = 16,
+	AF_FILE = 1,
+	AF_ROSE = 11,
+	AF_NETROM = 6,
+	AF_ATMPVC = 8,
+	AF_WANPIPE = 25,
+	AF_UNSPEC = 0,
+	AF_BRIDGE = 7,
+	AF_X25 = 9,
+	AF_BLUETOOTH = 31,
+	AF_ROUTE = 16,
+	AF_SECURITY = 14,
+	AF_RXRPC = 33,
+	AF_AX25 = 3,
+	AF_KEY = 15,
+	AF_IUCV = 32,
+	AF_ECONET = 19,
+	AF_INET = 2,
+	AF_ATMSVC = 20,
+	AF_PPPOX = 24,
+	AF_PACKET = 17,
+	AF_IRDA = 23,
+	AF_NETBEUI = 13,
+	AF_SNA = 22,
+	AF_LOCAL = 1,
+	AF_ASH = 18,
+	AF_UNIX = 1,
+	AF_DECnet = 12,
+	AF_IPX = 4,
 }
 
 struct sockaddr_in
 {
-    ushort sin_family = AF_INET;
-    ushort sin_port;
-    in_addr sin_addr;
-    ubyte[8] sin_zero;
+	ushort sin_family = AF_INET;
+	ushort sin_port;
+	in_addr sin_addr;
+	ubyte[8] sin_zero;
 }
 
 struct protoent
 {
-    char* p_name;
-    char** p_aliases;
-    int p_proto;
-   ubyte[4] __pad1;
+	char* p_name;
+	char** p_aliases;
+	int p_proto;
+	ubyte[4] __pad1;
 }
 
 struct servent
 {
-    char* s_name;
-    char** s_aliases;
-    int s_port;
-    ubyte[4] __pad1;
-    char* s_proto;
+	char* s_name;
+	char** s_aliases;
+	int s_port;
+	ubyte[4] __pad1;
+	char* s_proto;
 }
 
 alias uint socklen_t;
 enum
 {
-  SOL_ATM = 264,
-  SOL_PACKET = 263,
-  SOL_IPV6 = 41,
-  SOL_DECNET = 261,
-  SOL_X25 = 262,
-  SOL_IP = 0,
-  SOL_ICMPV6 = 58,
-  SOL_SOCKET = 1,
-  SOL_TCP = 6,
-  SOL_RAW = 255,
-  SOL_IRDA = 266,
-  SOL_AAL = 265,
+	SOL_ATM = 264,
+	SOL_PACKET = 263,
+	SOL_IPV6 = 41,
+	SOL_DECNET = 261,
+	SOL_X25 = 262,
+	SOL_IP = 0,
+	SOL_ICMPV6 = 58,
+	SOL_SOCKET = 1,
+	SOL_TCP = 6,
+	SOL_RAW = 255,
+	SOL_IRDA = 266,
+	SOL_AAL = 265,
 }
 
 struct sigset_t
 {
-    byte[128] __opaque;
+	byte[128] __opaque;
 }
 
 //alias extern(C) void function(int) __sighandler_t;
@@ -365,195 +386,195 @@ const __sighandler_t SIG_IGN = cast(__sighandler_t) 1;
 const __sighandler_t SIG_ERR = cast(__sighandler_t) 0xffffffffffffffffUL;
 struct siginfo_t
 {
-    int si_signo;
-    int si_errno;
-    int si_code;
-   ubyte[116] __pad1;
+	int si_signo;
+	int si_errno;
+	int si_code;
+	ubyte[116] __pad1;
 }
 
 extern (C):
 
-// DMD linux.d has dirent.h declarations
-//public import std.c.dirent;
-//int dirfd(DIR*);
-//public import std.c.stdio;
-int fseeko(FILE*, off_t, int);
-off_t ftello(FILE*);
+	// DMD linux.d has dirent.h declarations
+	//public import std.c.dirent;
+	//int dirfd(DIR*);
+	//public import std.c.stdio;
+	int fseeko(FILE*, off_t, int);
+	off_t ftello(FILE*);
 
-int open(in char*, int, ...);
-ssize_t read(int, void*, size_t);
-ssize_t write(int, in void*, size_t);
-int close(int);
-off_t lseek(int, off_t, int);
-int access(in char *path, int mode);
-int utime(char *path, utimbuf *buf);
-int fstat(int, struct_stat*);
-int stat(in char*, struct_stat*);
-int	lstat(in char *, struct_stat *);
-int	chmod(in char *, mode_t);
-int chdir(in char*);
-int mkdir(in char*, mode_t);
-int rmdir(in char*);
-char* getcwd(char*, size_t);
+	int open(in char*, int, ...);
+	ssize_t read(int, void*, size_t);
+	ssize_t write(int, in void*, size_t);
+	int close(int);
+	off_t lseek(int, off_t, int);
+	int access(in char *path, int mode);
+	int utime(char *path, utimbuf *buf);
+	int fstat(int, struct_stat*);
+	int stat(in char*, struct_stat*);
+	int	lstat(in char *, struct_stat *);
+	int	chmod(in char *, mode_t);
+	int chdir(in char*);
+	int mkdir(in char*, mode_t);
+	int rmdir(in char*);
+	char* getcwd(char*, size_t);
 
-pid_t fork();
-int dup(int);
-int dup2(int, int);
-int pipe(int[2]);
-pid_t wait(int*);
-pid_t waitpid(pid_t, int*, int);
-int kill(pid_t, int);
+	pid_t fork();
+	int dup(int);
+	int dup2(int, int);
+	int pipe(int[2]);
+	pid_t wait(int*);
+	pid_t waitpid(pid_t, int*, int);
+	int kill(pid_t, int);
 
-int gettimeofday(timeval*, void*);
-int settimeofday(in timeval *, in void *);
-time_t time(time_t*);
-//tm *localtime(time_t*);
+	int gettimeofday(timeval*, void*);
+	int settimeofday(in timeval *, in void *);
+	time_t time(time_t*);
+	//tm *localtime(time_t*);
 
-int sem_init (sem_t *, int, uint);
-int sem_destroy (sem_t *);
-sem_t * sem_open (char *, int, ...);
-int sem_close(sem_t *);
-int sem_wait(sem_t*);
-int sem_post(sem_t*);
-int sem_trywait(sem_t*);
-int sem_getvalue(sem_t*, int*);
+	int sem_init (sem_t *, int, uint);
+	int sem_destroy (sem_t *);
+	sem_t * sem_open (char *, int, ...);
+	int sem_close(sem_t *);
+	int sem_wait(sem_t*);
+	int sem_post(sem_t*);
+	int sem_trywait(sem_t*);
+	int sem_getvalue(sem_t*, int*);
 
-int sigemptyset(sigset_t*);
-int sigfillset(sigset_t*);
-int sigdelset(sigset_t*, int);
-int sigismember(sigset_t *set, int);
-int sigaction(int, sigaction_t*, sigaction_t*);
-int sigsuspend(sigset_t*);
+	int sigemptyset(sigset_t*);
+	int sigfillset(sigset_t*);
+	int sigdelset(sigset_t*, int);
+	int sigismember(sigset_t *set, int);
+	int sigaction(int, sigaction_t*, sigaction_t*);
+	int sigsuspend(sigset_t*);
 
-//Clong_t sysconf(int name);
+	//Clong_t sysconf(int name);
 
-// version ( Unix_Pthread )...
-int pthread_attr_init(pthread_attr_t *);
-int pthread_attr_destroy(pthread_attr_t *);
-int pthread_attr_setdetachstate(pthread_attr_t *, int);
-int pthread_attr_getdetachstate(pthread_attr_t *, int *);
-int pthread_attr_setguardsize(pthread_attr_t*, size_t);
-int pthread_attr_getguardsize(pthread_attr_t*, size_t *);
-int pthread_attr_setinheritsched(pthread_attr_t *, int);
-int pthread_attr_getinheritsched(pthread_attr_t *, int *);
-int pthread_attr_setschedparam(pthread_attr_t *, sched_param *);
-int pthread_attr_getschedparam(pthread_attr_t *, sched_param *);
-int pthread_attr_setschedpolicy(pthread_attr_t *, int);
-int pthread_attr_getschedpolicy(pthread_attr_t *, int*);
-int pthread_attr_setscope(pthread_attr_t *, int);
-int pthread_attr_getscope(pthread_attr_t *, int*);
-int pthread_attr_setstack(pthread_attr_t *, void*, size_t);
-int pthread_attr_getstack(pthread_attr_t *, void**, size_t *);
-int pthread_attr_setstackaddr(pthread_attr_t *, void *);
-int pthread_attr_getstackaddr(pthread_attr_t *, void **);
-int pthread_attr_setstacksize(pthread_attr_t *, size_t);
-int pthread_attr_getstacksize(pthread_attr_t *, size_t *);
+	// version ( Unix_Pthread )...
+	int pthread_attr_init(pthread_attr_t *);
+	int pthread_attr_destroy(pthread_attr_t *);
+	int pthread_attr_setdetachstate(pthread_attr_t *, int);
+	int pthread_attr_getdetachstate(pthread_attr_t *, int *);
+	int pthread_attr_setguardsize(pthread_attr_t*, size_t);
+	int pthread_attr_getguardsize(pthread_attr_t*, size_t *);
+	int pthread_attr_setinheritsched(pthread_attr_t *, int);
+	int pthread_attr_getinheritsched(pthread_attr_t *, int *);
+	int pthread_attr_setschedparam(pthread_attr_t *, sched_param *);
+	int pthread_attr_getschedparam(pthread_attr_t *, sched_param *);
+	int pthread_attr_setschedpolicy(pthread_attr_t *, int);
+	int pthread_attr_getschedpolicy(pthread_attr_t *, int*);
+	int pthread_attr_setscope(pthread_attr_t *, int);
+	int pthread_attr_getscope(pthread_attr_t *, int*);
+	int pthread_attr_setstack(pthread_attr_t *, void*, size_t);
+	int pthread_attr_getstack(pthread_attr_t *, void**, size_t *);
+	int pthread_attr_setstackaddr(pthread_attr_t *, void *);
+	int pthread_attr_getstackaddr(pthread_attr_t *, void **);
+	int pthread_attr_setstacksize(pthread_attr_t *, size_t);
+	int pthread_attr_getstacksize(pthread_attr_t *, size_t *);
 
-int pthread_create(pthread_t*, pthread_attr_t*, void* (*)(void*), void*);
-int pthread_join(pthread_t, void**);
-int pthread_kill(pthread_t, int);
-pthread_t pthread_self();
-int pthread_equal(pthread_t, pthread_t);
-int pthread_suspend_np(pthread_t);
-int pthread_continue_np(pthread_t);
-int pthread_cancel(pthread_t);
-int pthread_setcancelstate(int state, int *oldstate);
-int pthread_setcanceltype(int type, int *oldtype);
-void pthread_testcancel();
-int pthread_detach(pthread_t);
-void pthread_exit(void*);
-int pthread_getattr_np(pthread_t, pthread_attr_t*);
-int pthread_getconcurrency();
-int pthread_getcpuclockid(pthread_t, clockid_t*);
+	int pthread_create(pthread_t*, pthread_attr_t*, void* (*)(void*), void*);
+	int pthread_join(pthread_t, void**);
+	int pthread_kill(pthread_t, int);
+	pthread_t pthread_self();
+	int pthread_equal(pthread_t, pthread_t);
+	int pthread_suspend_np(pthread_t);
+	int pthread_continue_np(pthread_t);
+	int pthread_cancel(pthread_t);
+	int pthread_setcancelstate(int state, int *oldstate);
+	int pthread_setcanceltype(int type, int *oldtype);
+	void pthread_testcancel();
+	int pthread_detach(pthread_t);
+	void pthread_exit(void*);
+	int pthread_getattr_np(pthread_t, pthread_attr_t*);
+	int pthread_getconcurrency();
+	int pthread_getcpuclockid(pthread_t, clockid_t*);
 
-int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
-int pthread_cond_destroy(pthread_cond_t *);
-int pthread_cond_signal(pthread_cond_t *);
-int pthread_cond_broadcast(pthread_cond_t *);
-int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
-int pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *, timespec *);
-int pthread_condattr_init(pthread_condattr_t *);
-int pthread_condattr_destroy(pthread_condattr_t *);
-int pthread_condattr_getpshared(pthread_condattr_t *, int *);
-int pthread_condattr_setpshared(pthread_condattr_t *, int);
+	int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
+	int pthread_cond_destroy(pthread_cond_t *);
+	int pthread_cond_signal(pthread_cond_t *);
+	int pthread_cond_broadcast(pthread_cond_t *);
+	int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
+	int pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *, timespec *);
+	int pthread_condattr_init(pthread_condattr_t *);
+	int pthread_condattr_destroy(pthread_condattr_t *);
+	int pthread_condattr_getpshared(pthread_condattr_t *, int *);
+	int pthread_condattr_setpshared(pthread_condattr_t *, int);
 
-int pthread_mutex_init(pthread_mutex_t *, pthread_mutexattr_t *);
-int pthread_mutex_lock(pthread_mutex_t *);
-int pthread_mutex_trylock(pthread_mutex_t *);
-int pthread_mutex_unlock(pthread_mutex_t *);
-int pthread_mutex_destroy(pthread_mutex_t *);
-int pthread_mutexattr_init(pthread_mutexattr_t *);
-int pthread_mutexattr_destroy(pthread_mutexattr_t *);
-int pthread_mutexattr_getpshared(pthread_mutexattr_t *, int *);
-int pthread_mutexattr_setpshared(pthread_mutexattr_t *, int);
+	int pthread_mutex_init(pthread_mutex_t *, pthread_mutexattr_t *);
+	int pthread_mutex_lock(pthread_mutex_t *);
+	int pthread_mutex_trylock(pthread_mutex_t *);
+	int pthread_mutex_unlock(pthread_mutex_t *);
+	int pthread_mutex_destroy(pthread_mutex_t *);
+	int pthread_mutexattr_init(pthread_mutexattr_t *);
+	int pthread_mutexattr_destroy(pthread_mutexattr_t *);
+	int pthread_mutexattr_getpshared(pthread_mutexattr_t *, int *);
+	int pthread_mutexattr_setpshared(pthread_mutexattr_t *, int);
 
-int pthread_barrierattr_init(pthread_barrierattr_t*);
-int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
-int pthread_barrierattr_destroy(pthread_barrierattr_t*);
-int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
+	int pthread_barrierattr_init(pthread_barrierattr_t*);
+	int pthread_barrierattr_getpshared(pthread_barrierattr_t*, int*);
+	int pthread_barrierattr_destroy(pthread_barrierattr_t*);
+	int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int);
 
-int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
-int pthread_barrier_destroy(pthread_barrier_t*);
-int pthread_barrier_wait(pthread_barrier_t*);
+	int pthread_barrier_init(pthread_barrier_t*, pthread_barrierattr_t*, uint);
+	int pthread_barrier_destroy(pthread_barrier_t*);
+	int pthread_barrier_wait(pthread_barrier_t*);
 
-// version ( Unix_Sched )
-void sched_yield();
+	// version ( Unix_Sched )
+	void sched_yield();
 
-// from <sys/mman.h>
-void* mmap(void* addr, size_t len, int prot, int flags, int fd, off_t offset);
-int munmap(void* addr, size_t len);
-int msync(void* start, size_t length, int flags);
-int madvise(void*, size_t, int);
-int mlock(void*, size_t);
-int munlock(void*, size_t);
-int mlockall(int);
-int munlockall();
-//void* mremap(void*, size_t, size_t, Culong_t); // Linux specific
-int mincore(void*, size_t, ubyte*);
-int remap_file_pages(void*, size_t, int, ssize_t, int); // Linux specific
-int shm_open(in char*, int, mode_t);
-int shm_unlink(in char*);
+	// from <sys/mman.h>
+	void* mmap(void* addr, size_t len, int prot, int flags, int fd, off_t offset);
+	int munmap(void* addr, size_t len);
+	int msync(void* start, size_t length, int flags);
+	int madvise(void*, size_t, int);
+	int mlock(void*, size_t);
+	int munlock(void*, size_t);
+	int mlockall(int);
+	int munlockall();
+	//void* mremap(void*, size_t, size_t, Culong_t); // Linux specific
+	int mincore(void*, size_t, ubyte*);
+	int remap_file_pages(void*, size_t, int, ssize_t, int); // Linux specific
+	int shm_open(in char*, int, mode_t);
+	int shm_unlink(in char*);
 
-// from <fcntl.h>
-int fcntl(int fd, int cmd, ...);
+	// from <fcntl.h>
+	int fcntl(int fd, int cmd, ...);
 
-int select(int n, fd_set *, fd_set *, fd_set *, timeval *);
+	int select(int n, fd_set *, fd_set *, fd_set *, timeval *);
 
-// could probably rewrite fd_set stuff in D, but for now...
-private void _d_gnu_fd_set(int n, fd_set * p);
-private void _d_gnu_fd_clr(int n, fd_set * p);
-private int  _d_gnu_fd_isset(int n, fd_set * p);
-private void _d_gnu_fd_copy(fd_set * f, fd_set * t);
-private void _d_gnu_fd_zero(fd_set * p);
-// maybe these should go away in favor of fd_set methods
-/*version (none)
-{
-    void FD_SET(int n, inout fd_set p) { return _d_gnu_fd_set(n, & p); }
-    void FD_CLR(int n, inout fd_set p) { return _d_gnu_fd_clr(n, & p); }
-    int FD_ISSET(int n, inout fd_set p) { return _d_gnu_fd_isset(n, & p); }
-    void FD_COPY(inout fd_set f, inout fd_set t) { return _d_gnu_fd_copy(& f, & t); }
-    void FD_ZERO(inout fd_set p) { return _d_gnu_fd_zero(& p); }
-}*/
-/*void FD_SET(int n,  fd_set * p) { return _d_gnu_fd_set(n, p); }
-void FD_CLR(int n,  fd_set * p) { return _d_gnu_fd_clr(n, p); }
-int FD_ISSET(int n, fd_set * p) { return _d_gnu_fd_isset(n, p); }
-void FD_COPY(fd_set * f, inout fd_set * t) { return _d_gnu_fd_copy(f, t); }
-void FD_ZERO(fd_set * p) { return _d_gnu_fd_zero(p); }*/
+	// could probably rewrite fd_set stuff in D, but for now...
+	private void _d_gnu_fd_set(int n, fd_set * p);
+	private void _d_gnu_fd_clr(int n, fd_set * p);
+	private int  _d_gnu_fd_isset(int n, fd_set * p);
+	private void _d_gnu_fd_copy(fd_set * f, fd_set * t);
+	private void _d_gnu_fd_zero(fd_set * p);
+	// maybe these should go away in favor of fd_set methods
+	/*version (none)
+	  {
+	  void FD_SET(int n, inout fd_set p) { return _d_gnu_fd_set(n, & p); }
+	  void FD_CLR(int n, inout fd_set p) { return _d_gnu_fd_clr(n, & p); }
+	  int FD_ISSET(int n, inout fd_set p) { return _d_gnu_fd_isset(n, & p); }
+	  void FD_COPY(inout fd_set f, inout fd_set t) { return _d_gnu_fd_copy(& f, & t); }
+	  void FD_ZERO(inout fd_set p) { return _d_gnu_fd_zero(& p); }
+	  }*/
+	/*void FD_SET(int n,  fd_set * p) { return _d_gnu_fd_set(n, p); }
+	  void FD_CLR(int n,  fd_set * p) { return _d_gnu_fd_clr(n, p); }
+	  int FD_ISSET(int n, fd_set * p) { return _d_gnu_fd_isset(n, p); }
+	  void FD_COPY(fd_set * f, inout fd_set * t) { return _d_gnu_fd_copy(f, t); }
+	  void FD_ZERO(fd_set * p) { return _d_gnu_fd_zero(p); }*/
 
-//void FD_SET(int, fd_set*p);
+	//void FD_SET(int, fd_set*p);
 
-// from <pwd.h>
-passwd *getpwnam(in char *name);
-passwd *getpwuid(uid_t uid);
-int getpwnam_r(char *name, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
-int getpwuid_r(uid_t uid, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
+	// from <pwd.h>
+	passwd *getpwnam(in char *name);
+	passwd *getpwuid(uid_t uid);
+	int getpwnam_r(char *name, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
+	int getpwuid_r(uid_t uid, passwd *pwbuf, char *buf, size_t buflen, passwd **pwbufp);
 
-// std/socket.d
+	// std/socket.d
 enum: int
 {
-    SD_RECEIVE =  0,
-    SD_SEND =     1,
-    SD_BOTH =     2,
+	SD_RECEIVE =  0,
+	SD_SEND =     1,
+	SD_BOTH =     2,
 }
 
 int socket(int af, int type, int protocol);
@@ -592,38 +613,38 @@ short htons(int x);
 //private import std.stdint;
 
 /*version(BigEndian)
-{
-	uint16_t htons(uint16_t x)
-	{
-		return x;
-	}
+  {
+  uint16_t htons(uint16_t x)
+  {
+  return x;
+  }
 
 
-	uint32_t htonl(uint32_t x)
-	{
-		return x;
-	}
-}
-else version(LittleEndian)
-{
-	private import std.intrinsic;
+  uint32_t htonl(uint32_t x)
+  {
+  return x;
+  }
+  }
+  else version(LittleEndian)
+  {
+  private import std.intrinsic;
 
 
-	uint16_t htons(uint16_t x)
-	{
-		return (x >> 8) | (x << 8);
-	}
+  uint16_t htons(uint16_t x)
+  {
+  return (x >> 8) | (x << 8);
+  }
 
 
-	uint32_t htonl(uint32_t x)
-	{
-		return bswap(x);
-	}
-}
-else
-{
-	static assert(0);
-}*/
+  uint32_t htonl(uint32_t x)
+  {
+  return bswap(x);
+  }
+  }
+  else
+  {
+  static assert(0);
+  }*/
 
 //alias htons ntohs;
 //alias htonl ntohl;
@@ -687,9 +708,9 @@ const int __SIGEV_PAD_SIZE = 13;
 alias void function(int) sighandler_t;
 
 extern(C)
-sighandler_t signal(int signum, sighandler_t handler);
+	sighandler_t signal(int signum, sighandler_t handler);
 
-enum
+	enum
 {
 	SIGHUP = 1,
 	SIGINT,
@@ -769,7 +790,7 @@ union sigevent_sigev_un
 	int _pad[__SIGEV_PAD_SIZE];
 
 	/* When SIGEV_SIGNAL and SIGEV_THREAD_ID set, LWP ID of the
-		thread to receive the signal.  */
+	   thread to receive the signal.  */
 	__pid_t _tid;
 
 	sigevent_sigev_un_sigev_thread _sigev_thread;
@@ -819,46 +840,46 @@ struct termios {
 }
 
 extern(C)
-char *setlocale(int category, char *locale);
+	char *setlocale(int category, char *locale);
 
 extern(C)
-int timer_create(clockid_t clockid, sigevent* evp,
-    timer_t *timerid);
+	int timer_create(clockid_t clockid, sigevent* evp,
+			timer_t *timerid);
 
 extern(C)
-int timer_delete(timer_t timerid);
+	int timer_delete(timer_t timerid);
 
 extern(C)
-int timer_settime(timer_t timerid, int flags,
-    itimerspec* value, itimerspec* ovalue);
+	int timer_settime(timer_t timerid, int flags,
+			itimerspec* value, itimerspec* ovalue);
 
 extern(C)
-int nanosleep(timespec* rqtp, timespec* rmtp);
+	int nanosleep(timespec* rqtp, timespec* rmtp);
 
 extern (C)
-int ioctl (int, uint, ...);
+	int ioctl (int, uint, ...);
 
-alias void function(int) __sighandler_t;
+	alias void function(int) __sighandler_t;
 
-extern(C) __sighandler_t sigset (int, __sighandler_t);
+	extern(C) __sighandler_t sigset (int, __sighandler_t);
 
-const int CLOCK_REALTIME = 0;
+	const int CLOCK_REALTIME = 0;
 
 enum:int
 {
-  LC_CTYPE = 0,
-  LC_NUMERIC = 1,
-  LC_TIME = 2,
-  LC_COLLATE = 3,
-  LC_MONETARY = 4,
-  LC_MESSAGES = 5,
-  LC_ALL = 6,
-  LC_PAPER = 7,
-  LC_NAME = 8,
-  LC_ADDRESS = 9,
-  LC_TELEPHONE = 10,
-  LC_MEASUREMENT = 11,
-  LC_IDENTIFICATION = 12,
+	LC_CTYPE = 0,
+	LC_NUMERIC = 1,
+	LC_TIME = 2,
+	LC_COLLATE = 3,
+	LC_MONETARY = 4,
+	LC_MESSAGES = 5,
+	LC_ALL = 6,
+	LC_PAPER = 7,
+	LC_NAME = 8,
+	LC_ADDRESS = 9,
+	LC_TELEPHONE = 10,
+	LC_MEASUREMENT = 11,
+	LC_IDENTIFICATION = 12,
 }
 
 
@@ -941,131 +962,131 @@ const auto TIOCSER_TEMT    		= 0x01;	/* Transmitter physically empty */
 
 enum
 {
-  IPPROTO_IP = 0,
-  IPPROTO_ROUTING = 43,
-  IPPROTO_EGP = 8,
-  IPPROTO_PIM = 103,
-  IPPROTO_ENCAP = 98,
-  IPPROTO_ESP = 50,
-  IPPROTO_PUP = 12,
-  IPPROTO_IDP = 22,
-  IPPROTO_IPIP = 4,
-  IPPROTO_TCP = 6,
-  IPPROTO_IPV6 = 41,
-  IPPROTO_SCTP = 132,
-  IPPROTO_AH = 51,
-  IPPROTO_MTP = 92,
-  IPPROTO_TP = 29,
-  IPPROTO_UDP = 17,
-  IPPROTO_HOPOPTS = 0,
-  IPPROTO_RAW = 255,
-  IPPROTO_ICMP = 1,
-  IPPROTO_GGP = 3,
-  IPPROTO_FRAGMENT = 44,
-  IPPROTO_GRE = 47,
-  IPPROTO_DSTOPTS = 60,
-  IPPROTO_NONE = 59,
-  IPPROTO_RSVP = 46,
-  IPPROTO_IGMP = 2,
-  IPPROTO_ICMPV6 = 58,
-  IPPROTO_COMP = 108,
+	IPPROTO_IP = 0,
+	IPPROTO_ROUTING = 43,
+	IPPROTO_EGP = 8,
+	IPPROTO_PIM = 103,
+	IPPROTO_ENCAP = 98,
+	IPPROTO_ESP = 50,
+	IPPROTO_PUP = 12,
+	IPPROTO_IDP = 22,
+	IPPROTO_IPIP = 4,
+	IPPROTO_TCP = 6,
+	IPPROTO_IPV6 = 41,
+	IPPROTO_SCTP = 132,
+	IPPROTO_AH = 51,
+	IPPROTO_MTP = 92,
+	IPPROTO_TP = 29,
+	IPPROTO_UDP = 17,
+	IPPROTO_HOPOPTS = 0,
+	IPPROTO_RAW = 255,
+	IPPROTO_ICMP = 1,
+	IPPROTO_GGP = 3,
+	IPPROTO_FRAGMENT = 44,
+	IPPROTO_GRE = 47,
+	IPPROTO_DSTOPTS = 60,
+	IPPROTO_NONE = 59,
+	IPPROTO_RSVP = 46,
+	IPPROTO_IGMP = 2,
+	IPPROTO_ICMPV6 = 58,
+	IPPROTO_COMP = 108,
 }
 
 enum
 {
-  IPV6_RTHDR_TYPE_0 = 0,
-  IPV6_LEAVE_GROUP = 21,
-  IPV6_PMTUDISC_WANT = 1,
-  IPV6_NEXTHOP = 9,
-  IPV6_IPSEC_POLICY = 34,
-  IPV6_2292HOPOPTS = 3,
-  IPV6_HOPOPTS = 54,
-  IPV6_MTU_DISCOVER = 23,
-  IPV6_AUTHHDR = 10,
-  IPV6_ADD_MEMBERSHIP = 20,
-  IPV6_DSTOPTS = 59,
-  IPV6_2292PKTOPTIONS = 6,
-  IPV6_RECVHOPOPTS = 53,
-  IPV6_XFRM_POLICY = 35,
-  IPV6_RXHOPOPTS = 54,
-  IPV6_UNICAST_HOPS = 16,
-  IPV6_ROUTER_ALERT = 22,
-  IPV6_V6ONLY = 26,
-  IPV6_RECVRTHDR = 56,
-  IPV6_RECVHOPLIMIT = 51,
-  IPV6_RECVTCLASS = 66,
-  IPV6_RTHDR_STRICT = 1,
-  IPV6_MTU = 24,
-  IPV6_RECVDSTOPTS = 58,
-  IPV6_MULTICAST_IF = 17,
-  IPV6_RECVERR = 25,
-  IPV6_RXDSTOPTS = 59,
-  IPV6_2292PKTINFO = 2,
-  IPV6_2292DSTOPTS = 4,
-  IPV6_MULTICAST_HOPS = 18,
-  IPV6_HOPLIMIT = 52,
-  IPV6_PMTUDISC_DO = 2,
-  IPV6_PKTINFO = 50,
-  IPV6_RTHDRDSTOPTS = 55,
-  IPV6_JOIN_ANYCAST = 27,
-  IPV6_TCLASS = 67,
-  IPV6_2292RTHDR = 5,
-  IPV6_RTHDR_LOOSE = 0,
-  IPV6_ADDRFORM = 1,
-  IPV6_JOIN_GROUP = 20,
-  IPV6_RTHDR = 57,
-  IPV6_RECVPKTINFO = 49,
-  IPV6_DROP_MEMBERSHIP = 21,
-  IPV6_MULTICAST_LOOP = 19,
-  IPV6_2292HOPLIMIT = 8,
-  IPV6_LEAVE_ANYCAST = 28,
-  IPV6_PMTUDISC_DONT = 0,
-  IPV6_CHECKSUM = 7,
+	IPV6_RTHDR_TYPE_0 = 0,
+	IPV6_LEAVE_GROUP = 21,
+	IPV6_PMTUDISC_WANT = 1,
+	IPV6_NEXTHOP = 9,
+	IPV6_IPSEC_POLICY = 34,
+	IPV6_2292HOPOPTS = 3,
+	IPV6_HOPOPTS = 54,
+	IPV6_MTU_DISCOVER = 23,
+	IPV6_AUTHHDR = 10,
+	IPV6_ADD_MEMBERSHIP = 20,
+	IPV6_DSTOPTS = 59,
+	IPV6_2292PKTOPTIONS = 6,
+	IPV6_RECVHOPOPTS = 53,
+	IPV6_XFRM_POLICY = 35,
+	IPV6_RXHOPOPTS = 54,
+	IPV6_UNICAST_HOPS = 16,
+	IPV6_ROUTER_ALERT = 22,
+	IPV6_V6ONLY = 26,
+	IPV6_RECVRTHDR = 56,
+	IPV6_RECVHOPLIMIT = 51,
+	IPV6_RECVTCLASS = 66,
+	IPV6_RTHDR_STRICT = 1,
+	IPV6_MTU = 24,
+	IPV6_RECVDSTOPTS = 58,
+	IPV6_MULTICAST_IF = 17,
+	IPV6_RECVERR = 25,
+	IPV6_RXDSTOPTS = 59,
+	IPV6_2292PKTINFO = 2,
+	IPV6_2292DSTOPTS = 4,
+	IPV6_MULTICAST_HOPS = 18,
+	IPV6_HOPLIMIT = 52,
+	IPV6_PMTUDISC_DO = 2,
+	IPV6_PKTINFO = 50,
+	IPV6_RTHDRDSTOPTS = 55,
+	IPV6_JOIN_ANYCAST = 27,
+	IPV6_TCLASS = 67,
+	IPV6_2292RTHDR = 5,
+	IPV6_RTHDR_LOOSE = 0,
+	IPV6_ADDRFORM = 1,
+	IPV6_JOIN_GROUP = 20,
+	IPV6_RTHDR = 57,
+	IPV6_RECVPKTINFO = 49,
+	IPV6_DROP_MEMBERSHIP = 21,
+	IPV6_MULTICAST_LOOP = 19,
+	IPV6_2292HOPLIMIT = 8,
+	IPV6_LEAVE_ANYCAST = 28,
+	IPV6_PMTUDISC_DONT = 0,
+	IPV6_CHECKSUM = 7,
 }
 
 enum : uint
 {
-  INADDR_MAX_LOCAL_GROUP = -536870657,
-  INADDR_ALLHOSTS_GROUP = -536870911,
-  INADDR_ANY = 0,
-  INADDR_UNSPEC_GROUP = -536870912,
-  INADDR_NONE = -1,
-  INADDR_ALLRTRS_GROUP = -536870910,
-  INADDR_LOOPBACK = 2130706433,
-  INADDR_BROADCAST = -1,
+	INADDR_MAX_LOCAL_GROUP = -536870657,
+	INADDR_ALLHOSTS_GROUP = -536870911,
+	INADDR_ANY = 0,
+	INADDR_UNSPEC_GROUP = -536870912,
+	INADDR_NONE = -1,
+	INADDR_ALLRTRS_GROUP = -536870910,
+	INADDR_LOOPBACK = 2130706433,
+	INADDR_BROADCAST = -1,
 }
 
 enum { ADDR_ANY = INADDR_ANY }
 enum
 {
-  TCP_KEEPCNT = 6,
-  TCP_CONGESTION = 13,
-  TCP_CORK = 3,
-  TCP_WINDOW_CLAMP = 10,
-  TCP_MSS = 512,
-  TCP_DEFER_ACCEPT = 9,
-  TCP_KEEPIDLE = 4,
-  TCP_MD5SIG_MAXKEYLEN = 80,
-  TCP_MAX_WINSHIFT = 14,
-  TCP_SYNCNT = 7,
-  TCP_MAXSEG = 2,
-  TCP_QUICKACK = 12,
-  TCP_MAXWIN = 65535,
-  TCP_KEEPINTVL = 5,
-  TCP_INFO = 11,
-  TCP_LINGER2 = 8,
-  TCP_MD5SIG = 14,
-  TCP_NODELAY = 1,
+	TCP_KEEPCNT = 6,
+	TCP_CONGESTION = 13,
+	TCP_CORK = 3,
+	TCP_WINDOW_CLAMP = 10,
+	TCP_MSS = 512,
+	TCP_DEFER_ACCEPT = 9,
+	TCP_KEEPIDLE = 4,
+	TCP_MD5SIG_MAXKEYLEN = 80,
+	TCP_MAX_WINSHIFT = 14,
+	TCP_SYNCNT = 7,
+	TCP_MAXSEG = 2,
+	TCP_QUICKACK = 12,
+	TCP_MAXWIN = 65535,
+	TCP_KEEPINTVL = 5,
+	TCP_INFO = 11,
+	TCP_LINGER2 = 8,
+	TCP_MD5SIG = 14,
+	TCP_NODELAY = 1,
 }
 
 
 enum
 {
-  SOCK_RAW = 3,
-  SOCK_RDM = 4,
-  SOCK_SEQPACKET = 5,
-  SOCK_PACKET = 10,
-  SOCK_DGRAM = 2,
-  SOCK_STREAM = 1,
+	SOCK_RAW = 3,
+	SOCK_RDM = 4,
+	SOCK_SEQPACKET = 5,
+	SOCK_PACKET = 10,
+	SOCK_DGRAM = 2,
+	SOCK_STREAM = 1,
 }
 

@@ -19,6 +19,10 @@ class Currency : Fixed {
 		super(whole, scale);
 	}
 
+	this(double value) {
+		super(value);
+	}
+
 	// This function will provide a string for the currency value rounded to 2 decimal points
 	override string toString() {
 		return Locale.formatCurrency(_whole, _scale);

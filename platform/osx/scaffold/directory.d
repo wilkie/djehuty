@@ -151,14 +151,22 @@ bool DirectoryFileIsDir(string path) {
 
 	struct_stat inode;
 
+//	return true;
+	
 	if (stat(newPath.ptr, &inode) != -1) {
 		if (S_ISDIR(inode.st_mode)) {
 			return true;
 		}
+		else {
+		}
+	}
+	else {
 	}
 
 	return false;
+
 }
+
 bool DirectoryMove(ref string path, string newPath) {
 	string exec = "mv " ~ path ~ " " ~ newPath ~ "\0";
 

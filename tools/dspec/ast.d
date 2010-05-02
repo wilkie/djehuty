@@ -6,6 +6,41 @@ import io.console;
 
 class AST
 {
+public:
+	enum ValueType
+	{
+		Unsigned,
+		Signed,
+		Object,
+		Pointer,
+		String,
+		Hint,
+		Name
+	}
+	
+protected:
+	
+	AST children[2];
+
+	struct values
+	{
+		ulong unsigned;
+		long signed;
+		Object object;
+		void* pointer;
+		string str;
+		string hint;
+	}
+
+	union valueHolder
+	{
+		ValueType type;
+		values value;
+	}
+	
+	valueHolder data;
+
+public:
 	this(AST left, AST right)
 	{
 		children[0] = left;
@@ -81,17 +116,6 @@ class AST
 		if (right !is null) { right.walk(depth+1); }
 	}
 
-	enum ValueType
-	{
-		Unsigned,
-		Signed,
-		Object,
-		Pointer,
-		String,
-		Hint,
-		Name
-	}
-	
 	ValueType valueType()
 	{
 		return data.type;
@@ -106,26 +130,4 @@ class AST
 	{
 		value = data.value.unsigned;
 	}
-	
-protected:
-	
-	AST children[2];
-	
-	union valueHolder
-	{
-		ValueType type;
-		values value;
-	}
-	
-	struct values
-	{
-		ulong unsigned;
-		long signed;
-		Object object;
-		void* pointer;
-		string str;
-		string hint;
-	}
-	
-	valueHolder data;
 }
