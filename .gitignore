@@ -1,18 +1,30 @@
+# Generated files
+*.exe
+*.idb
+*.map
 *.o
 *.obj
-*.d~
-.DS_Store
-winsamp
-tuitetris
-snake
-moreducks
-*.exe
+
+djehuty.lib
+
+/specs/test.d
+
+/dspec
+/runtests
+
+/moreducks
+/snake
+/tuitetris
+
+/winsamp
+
+# Keys
 *.ppk
+
 key
 key.pub
-djehuty.lib
-*.map
-*.idb
-dspec
-runtests
-specs/test.d
+
+# Misc
+*~
+
+.DS_Store
