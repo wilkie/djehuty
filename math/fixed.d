@@ -12,14 +12,30 @@ module math.fixed;
 
 import djehuty;
 
-import io.console;
-
 // Description: This class provides a fixed point arithmetic type.
 class Fixed {
 
 	this(long whole, long scale) {
 		_whole = whole;
 		_scale = scale;
+	}
+
+	this(double value) {
+		string val = toStr(value);
+		int pos = val.find(".");
+
+		if (pos >= 0) {
+			_scale = val.length - pos - 1;
+			val = val[0..pos] ~ val[pos+1..$];
+		}
+		else {
+			if (val == "inf" || val == "nan") {
+				throw new Exception("Invalid Input");
+			}
+			_scale = 0;
+		}
+
+		val.nextInt(_whole);
 	}
 
 	// Operator Overloads
@@ -50,8 +66,6 @@ class Fixed {
 		string ret;
 		string part = toStr(_whole);
 
-		// Weird that I have to dup this... otherwise, it appends to the slice in place.
-		// Total compiler bug.
 		if (part.length <= _scale) {
 			ret = "0.";
 			ret ~= part;
@@ -120,7 +134,6 @@ class Fixed {
 			_whole *= 10;
 			argmax_scale_sq--;
 		}
-		Console.putln(_whole);
 		_whole /= fixed._whole;
 	}
 

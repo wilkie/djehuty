@@ -114,21 +114,21 @@ class LocaleEnglish_US : LocaleInterface {
 		// Get integer part of decimal
 		intPart = whole;
 		baseScale = 1;
+		int precision;
 		for (long i; i < scale; i++) {
 			intPart /= 10;
 			baseScale *= 10;
+			precision++;
 		}
-		baseScale /= 10;
 
 		// Get fraction as an integer
 		fracPart = whole % baseScale;
 
 		// Round down 
-		for ( ; round > 0 ; round-- ) {
-			baseScale /= 10;
+		for ( ; precision > round ; precision-- ) {
+			fracPart /= 10;
 		}
-		fracPart /= baseScale;
-		
+
 		return formatNumber(intPart) ~ "." ~ formatNumber(fracPart);
 	}
 

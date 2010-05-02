@@ -67,22 +67,22 @@ class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 	override void onApplicationStart() {
 
-		DParser parser = new DParser(File.open("tests/test.d"));
-		auto ast = parser.parse();
-		Console.putln();
-		Console.putln(ast);
 		Thread t = Thread.getCurrent();
 
 		ulong a, b, c;
 		a = 4;
 		b = 4;
 		c = 5;
-		Console.putln("{1}, {0}, {1}, {0:X}, {} {} {X8}".format(12, 11, 13));
+		Console.putln("{1}, {0}, {1}, {0:X}, {} {} {X8} {00.0000}".format(12, 11, 13, 3.4));
 		Console.putln(a,b,c);
 		Console.putln(Atomic.compareExchange(a,b,c));
 		Console.putln(a,b,c);
+		Console.putln(new Fixed(3.5));
 		Atomic.exchange(a,6);
 		Console.putln(a,b,c);
+		Console.putln("{c}".format(1500.42) == (new Currency(150042,2)).toString());
+		Console.putln("{c}".format(1500.42));
+		Console.putln(new Currency(150042,2));
 		Timer tmr = new Timer(250);
 		push(tmr);
 		tmr.start();

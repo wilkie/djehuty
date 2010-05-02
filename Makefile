@@ -137,10 +137,12 @@ ifeq (${MY_ARCH},Darwin)
 else
 endif
 
+$(DFILES_SPECS):
+	touch $(DFILES_SPECS)
+
 # initiates the compilation of the main framework
 lib:
 	@echo compiling framework... Target: ${MY_ARCH}
-	touch $(DFILES_SPECS)
 ifeq (${MY_ARCH},Darwin)
 	@echo OS X detected...
 	@make libdeps_mac

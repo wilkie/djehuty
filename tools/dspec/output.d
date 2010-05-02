@@ -101,6 +101,21 @@ class Output {
 			//fwritef(outfp, "%s", "\t}\n\n");
 		}
 
+		outfp.write("\tstatic uint test(string className) {\n"c);
+		outfp.write("\t\tswitch(className) {\n"c);
+		foreach(className; classes) {
+			outfp.write("\t\t\tcase \"" ~ className ~ "\":\n"c);
+			outfp.write("\t\t\t\ttest"c);
+			outfp.write(className);
+			outfp.write("();\n"c);
+		}
+		outfp.write("\t\t\tdefault:\n"c);
+		outfp.write("\t\t\t\treturn 0;\n"c);
+		outfp.write("\t\t}\n\n"c);
+		outfp.write("\t\tTest.done();\n"c);
+		outfp.write("\t\treturn Test.getFailureCount();\n"c);
+		outfp.write("\t}"c);
+
 		outfp.write("\tstatic uint testAll() {\n"c);
 		//fwritef(outfp, "%s", "\tstatic void testAll()\n\t{\n");
 
