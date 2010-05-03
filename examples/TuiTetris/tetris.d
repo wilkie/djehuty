@@ -1,5 +1,7 @@
 import djehuty;
 
+import math.random;
+
 class Tetris {
 
 	this() {

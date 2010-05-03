@@ -9,12 +9,11 @@
  *
  */
 
-module utils.heap;
+module data.heap;
 
-import core.list;
+import data.list;
+
 import core.util;
-
-import utils.heap;
 
 enum : bool {
 	MinHeap = true,

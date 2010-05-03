@@ -10,12 +10,11 @@
 
 module tui.tabbox;
 
-import tui.container;
+import djehuty;
 
-import core.string;
-import core.definitions;
-import core.list;
-import core.event;
+import data.list;
+
+import tui.container;
 
 import io.console;
 

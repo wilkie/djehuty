@@ -1,11 +1,11 @@
-module specs.utils.linkedlist;
+module specs.data.queue;
 
-import utils.linkedlist;
+import data.queue;
 
-describe linkedList() {
+describe queue() {
 	describe creation() {
 		it should_work_as_expected() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			shouldNot(list is null);
 			should(list.length == 0);
 		}
@@ -13,7 +13,7 @@ describe linkedList() {
 
 	describe add() {
 		it should_add_item_to_the_head() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			int item = 42;
 			list.add(item);
 			
@@ -22,8 +22,8 @@ describe linkedList() {
 		}
 
 		it should_an_a_list_to_list() {
-			LinkedList!(int) list1 = new LinkedList!(int)();
-			LinkedList!(int) list2 = new LinkedList!(int)();
+			Queue!(int) list1 = new Queue!(int)();
+			Queue!(int) list2 = new Queue!(int)();
 			int item = 33;
 
 			list2.add(item);
@@ -36,7 +36,7 @@ describe linkedList() {
 
 		it should_add_an_array_to_list() {
 			int[3] arr = 1;
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 
 			list.add(arr);
 
@@ -47,7 +47,7 @@ describe linkedList() {
 
 	describe peek() {
 		it should_return_the_head() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			
 			int item1 = 1;
 			int item2 = 2;
@@ -61,7 +61,7 @@ describe linkedList() {
 		}
 
 		it should_return_the_item_at_index() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			
 			int item1 = 1;
 			int item2 = 2;
@@ -79,7 +79,7 @@ describe linkedList() {
 
 	describe remove() {
 		it should_remove_the_tail() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			int item = 1;
 			list.add(item);
 			
@@ -88,7 +88,7 @@ describe linkedList() {
 		}
 
 		it should_remove_by_data() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			int item = 1;
 			list.add(item);
 
@@ -97,7 +97,7 @@ describe linkedList() {
 		}
 
 		it should_remove_at_index(){
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			
 			int item1 = 1;
 			int item2 = 2;
@@ -118,7 +118,7 @@ describe linkedList() {
 
 	describe clear() {
 		it should_work_as_expected() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 
 			list.add(1);
 			list.add(2);
@@ -132,7 +132,7 @@ describe linkedList() {
 
 	describe empty() {
 		it should_work_as_expected() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 
 			should(list.empty());
 
@@ -145,7 +145,7 @@ describe linkedList() {
 
 	describe operations() {
 		it should_peek_at_the_index() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			int entry = 1;
 			list.add(entry);
 
@@ -155,7 +155,7 @@ describe linkedList() {
 
 	describe array() {
 		it should_return_an_array_of_the_list() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			
 			int entry1 = 1;
 			int entry2 = 2;
@@ -176,11 +176,11 @@ describe linkedList() {
 
 	describe duplication() {
 		it should_work_as_expected() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			int entry = 1;
 			list.add(entry);
 
-			LinkedList!(int) dupList = list.dup();
+			Queue!(int) dupList = list.dup();
 
 			shouldNot(dupList is null);
 			should(dupList.peek() == entry);
@@ -190,7 +190,7 @@ describe linkedList() {
 
 	describe slicing() {
 		it should_work_as_expected() {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 
 			int entry1 = 1;
 			int entry2 = 2; 
@@ -200,7 +200,7 @@ describe linkedList() {
 			list.add(entry2);
 			list.add(entry1);
 
-			LinkedList!(int) sliceList = list.slice(0,2);
+			Queue!(int) sliceList = list.slice(0,2);
 
 			shouldNot(sliceList is null);
 			should(sliceList.length == 2);
@@ -211,7 +211,7 @@ describe linkedList() {
 
 	describe reverse() {
 		it should_work_as_expected {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 
 			int entry1 = 1;
 			int entry2 = 2; 
@@ -221,7 +221,7 @@ describe linkedList() {
 			list.add(entry2);
 			list.add(entry3);
 
-			LinkedList!(int) revList = list.reverse();
+			Queue!(int) revList = list.reverse();
 
 			shouldNot(revList is null);
 			should(revList.length == 3);
@@ -233,7 +233,7 @@ describe linkedList() {
 	
 	describe string() {
 		it should_work_as_expected {
-			LinkedList!(int) list = new LinkedList!(int)();
+			Queue!(int) list = new Queue!(int)();
 			
 			list.add(1);
 			list.add(2);

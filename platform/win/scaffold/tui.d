@@ -24,7 +24,7 @@ import platform.vars.tui;
 
 import scaffold.console;
 
-import utils.linkedlist;
+import data.queue;
 
 void TuiStart(TuiPlatformVars* vars) {
 	// Window Resize Detect Thread (Silly)

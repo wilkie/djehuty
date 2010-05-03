@@ -10,12 +10,11 @@
 
 module tui.textbox;
 
-import tui.widget;
+import djehuty;
 
-import core.string;
-import core.unicode;
-import core.definitions;
-import core.list;
+import data.list;
+
+import tui.widget;
 
 import io.console;
 

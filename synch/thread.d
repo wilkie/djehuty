@@ -92,7 +92,7 @@ class Thread {
 	// Returns: Will return true when this thread is the current thread executing and false otherwise.
 	bool isCurrentThread() {
 		if (_inited) {
-			return this is getCurrent(); //return ThreadIsCurrent(_pfvars);
+			return this is this.current(); //return ThreadIsCurrent(_pfvars);
 		}
 
 		return false;
@@ -154,7 +154,7 @@ class Thread {
 		return time - oldTime;
 	}
 
-	static Thread getCurrent() {
+	static Thread current() {
 		Thread ret;
 
 		version(LDC) {

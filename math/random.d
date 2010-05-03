@@ -13,11 +13,12 @@
  *
  */
 
-module core.random;
+module math.random;
 
 import core.definitions;
-import core.list;
 import core.system;
+
+import data.list;
 
 // Description: This class represents a Random number generator.
 class Random {

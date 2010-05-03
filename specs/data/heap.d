@@ -1,14 +1,13 @@
-module specs.utils.priorityqueue;
+module specs.data.heap;
 
-import utils.fibonacci;
-import utils.heap;
+import data.heap;
 
-import core.random;
+import math.random;
 
-describe fibonacciHeap() {
+describe priorityQueue() {
 	describe creation() {
 		it should_work_as_expected() {
-			FibonacciHeap!(int) queue = new FibonacciHeap!(int)();
+			PriorityQueue!(int) queue = new PriorityQueue!(int)();
 			shouldNot(queue is null);
 			should(queue.length == 0);
 		}
@@ -16,7 +15,7 @@ describe fibonacciHeap() {
 
 	describe add() {
 		it should_add_an_item_to_an_empty_list() {
-			FibonacciHeap!(int) queue = new FibonacciHeap!(int)();
+			PriorityQueue!(int) queue = new PriorityQueue!(int)();
 			int item = 42;
 			queue.add(item);
 			should(queue.length == 1);
@@ -26,7 +25,7 @@ describe fibonacciHeap() {
 
 	describe peek() {
 		it should_return_the_first_item_in_min_heap() {
-			auto queue = new FibonacciHeap!(int, MinHeap);
+			auto queue = new PriorityQueue!(int, MinHeap);
 			queue.add(10);
 			queue.add(4);
 			queue.add(15);
@@ -35,7 +34,7 @@ describe fibonacciHeap() {
 		}
 
 		it should_return_the_first_item_in_max_heap() {
-			auto queue = new FibonacciHeap!(int, MaxHeap);
+			auto queue = new PriorityQueue!(int, MaxHeap);
 			queue.add(10);
 			queue.add(4);
 			queue.add(15);
@@ -44,7 +43,7 @@ describe fibonacciHeap() {
 		}
 
 		it should_handle_a_heavy_workload() {
-			auto queue = new FibonacciHeap!(int, MinHeap);
+			auto queue = new PriorityQueue!(int, MinHeap);
 			int min;
 			int val;
 
@@ -53,7 +52,7 @@ describe fibonacciHeap() {
 			queue.add(val);
 			min = val;
 
-			for(int i; i < 100; i++) {
+			for(int i; i < 10000; i++) {
 				val = cast(int)r.next();
 				queue.add(val);
 				if (val < min) {
@@ -62,21 +61,21 @@ describe fibonacciHeap() {
 			}			
 
 			should(queue.peek() == min);
+
 			int foo;
-			int last = queue.peek();
+			int last = min;
 
 			while (!queue.empty()) {
 				foo = queue.remove();
 				should(foo >= last);
 				last = foo;
 			}
-
 		}
 	}
 
 	describe remove() {
 		it should_remove_the_first_item_in_min_heap() {
-			auto queue = new FibonacciHeap!(int, MinHeap);
+			auto queue = new PriorityQueue!(int, MinHeap);
 			queue.add(10);
 			queue.add(4);
 			queue.add(15);
@@ -85,7 +84,7 @@ describe fibonacciHeap() {
 		}
 
 		it should_remove_the_first_item_in_max_heap() {
-			auto queue = new FibonacciHeap!(int, MaxHeap);
+			auto queue = new PriorityQueue!(int, MaxHeap);
 			queue.add(10);
 			queue.add(4);
 			queue.add(15);
@@ -96,7 +95,7 @@ describe fibonacciHeap() {
 
 	describe length() {
 		it should_be_zero_for_an_empty_list() {
-			auto queue = new FibonacciHeap!(int);
+			auto queue = new PriorityQueue!(int);
 			should(queue.empty);
 			should(queue.length == 0);
 		}
@@ -104,7 +103,7 @@ describe fibonacciHeap() {
 
 	describe clear() {
 		it should_result_in_an_empty_list() {
-			auto queue = new FibonacciHeap!(int);
+			auto queue = new PriorityQueue!(int);
 			queue.add(15);
 			queue.add(10);
 			queue.add(24);
@@ -120,7 +119,7 @@ describe fibonacciHeap() {
 
 	describe empty() {
 		it should_be_true_when_the_list_is_empty() {
-			auto queue = new FibonacciHeap!(int);
+			auto queue = new PriorityQueue!(int);
 			queue.add(10);
 			shouldNot(queue.empty());
 			queue.remove();
@@ -128,7 +127,7 @@ describe fibonacciHeap() {
 		}
 
 		it should_be_true_for_a_new_list() {
-			auto queue = new FibonacciHeap!(int);
+			auto queue = new PriorityQueue!(int);
 			should(queue.empty());
 		}
 	}

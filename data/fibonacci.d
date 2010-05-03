@@ -18,11 +18,11 @@
  *
  */
 
-module utils.fibonacci;
+module data.fibonacci;
 
 import core.util;
 
-import utils.heap;
+import data.heap;
 
 class FibonacciHeap(T, bool minHeap = true) : HeapInterface!(T, minHeap) {
 

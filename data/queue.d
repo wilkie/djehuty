@@ -1,11 +1,13 @@
-module utils.linkedlist;
+module utils.queue;
 
 import djehuty;
+
+import data.list;
 
 // Section: Utils
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
-class LinkedList(T) : Iterable!(T) {
+class Queue(T) : Iterable!(T) {
 	this() {
 	}
 
@@ -320,17 +322,17 @@ class LinkedList(T) : Iterable!(T) {
 		return items;
 	}
 
-	LinkedList!(T) dup() {
-		LinkedList!(T) ret = new LinkedList!(T);
+	Queue!(T) dup() {
+		Queue!(T) ret = new Queue!(T);
 		foreach(item; this) {
 			ret.add(item);
 		}
 		return ret;
 	}
 
-	LinkedList!(T) slice(size_t start, size_t end) {
+	Queue!(T) slice(size_t start, size_t end) {
 		synchronized (this) {
-			LinkedList!(T) ret = new LinkedList!(T);
+			Queue!(T) ret = new Queue!(T);
 
 			LinkedListNode* curnode = _tail;
 
@@ -361,15 +363,15 @@ class LinkedList(T) : Iterable!(T) {
 		}
 	}
 
-	LinkedList!(T) reverse() {
-		LinkedList!(T) ret = new LinkedList!(T);
+	Queue!(T) reverse() {
+		Queue!(T) ret = new Queue!(T);
 		foreach(item; this) {
 			ret.add(item);
 		}
 		return ret;
 	}
 
-    LinkedList!(T) opSlice() {
+    Queue!(T) opSlice() {
 		return dup();
     }
 
@@ -497,19 +499,19 @@ class LinkedList(T) : Iterable!(T) {
 	}
 
 	Iterable!(T) opCat(T[] list) {
-		LinkedList!(T) ret = this.dup();
+		Queue!(T) ret = this.dup();
 		ret.addList(list);
 		return ret;
 	}
 
 	Iterable!(T) opCat(Iterable!(T) list) {
-		LinkedList!(T) ret = this.dup();
+		Queue!(T) ret = this.dup();
 		ret.addList(list);
 		return ret;
 	}
 
 	Iterable!(T) opCat(T item) {
-		LinkedList!(T) ret = this.dup();
+		Queue!(T) ret = this.dup();
 		ret.add(item);
 		return ret;
 	}

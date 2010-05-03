@@ -1,9 +1,8 @@
 module tui.listbox;
 
-import core.string;
-import core.main;
-import core.definitions;
-import core.list;
+import djehuty;
+
+import data.list;
 
 import io.console;
 

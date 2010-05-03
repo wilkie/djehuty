@@ -1,8 +1,8 @@
-module specs.core.random;
+module specs.math.random;
 
 import testing.support;
 
-import core.random;
+import math.random;
 
 describe random() {
 	const uint SEED = 12345678;

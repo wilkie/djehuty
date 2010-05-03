@@ -18,7 +18,8 @@ import io.console;
 
 import core.string;
 import core.definitions;
-import core.list;
+
+import data.list;
 
 class TuiFileBox : TuiWidget, Iterable!(string) {
 	this(uint x, uint y, uint width, uint height) {

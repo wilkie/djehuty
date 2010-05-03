@@ -8,7 +8,7 @@ import parsing.d.tokens;
 import core.stream;
 import core.definitions;
 
-import utils.stack;
+import data.stack;
 
 import io.console;
 

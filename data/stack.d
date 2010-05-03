@@ -1,6 +1,6 @@
-module utils.stack;
+module data.stack;
 
-import core.list;
+import data.list;
 
 import io.console;
 

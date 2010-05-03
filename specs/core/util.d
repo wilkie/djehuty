@@ -1,8 +1,8 @@
 module specs.core.util;
 
 import core.util;
-import utils.stack;
-import core.list;
+import data.stack;
+import data.list;
 import interfaces.container;
 
 describe util() {

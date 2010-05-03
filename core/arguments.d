@@ -2,9 +2,9 @@ module core.arguments;
 
 import core.definitions;
 import core.util;
-
 import core.string;
-import core.list;
+
+import data.list;
 
 // Description: This class holds the command line arguments that were passed into the app and will aid in parsing them.
 class Arguments : List!(string) {

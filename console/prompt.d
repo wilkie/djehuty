@@ -7,7 +7,7 @@ import io.console;
 
 import core.definitions;
 
-import utils.linkedlist;
+import data.queue;
 
 // Section: Console
 
@@ -46,7 +46,7 @@ class Prompt {
 		}
 
 		if (bufferSize != 0) {
-			_lineBuffer = new LinkedList!(string)();
+			_lineBuffer = new Queue!(string)();
 		}
 		else {
 			_lineBuffer = null;
@@ -291,7 +291,7 @@ protected:
 	fgColor _promptClr = fgColor.White;
 	fgColor _clr = fgColor.White;
 
-	LinkedList!(string) _lineBuffer;
+	Queue!(string) _lineBuffer;
 	int _bufferSize;
 	int _bufferPos;
 

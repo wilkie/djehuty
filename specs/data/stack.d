@@ -1,6 +1,6 @@
-module specs.utils.stack;
+module specs.data.stack;
 
-import utils.stack;
+import data.stack;
 
 describe stack() {
 	describe creation() {

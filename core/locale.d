@@ -16,8 +16,7 @@ import core.string;
 import core.definitions;
 
 // Supported Locales
-import core.locales.en_us;
-import core.locales.fr_fr;
+import locales.all;
 
 enum LocaleId : uint {
 	English_US,

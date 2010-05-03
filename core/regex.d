@@ -13,92 +13,92 @@ module core.regex;
 
 import core.string;
 import core.definitions;
-import core.list;
 
 import synch.thread;
 
 import io.console;
 
-import utils.stack;
+import data.stack;
+import data.list;
 
 // This provides thread-local access to regex variables set via
 // Regex groups.
 
 uint _position() {
-	if (Thread.getCurrent() in Regex.regexPos) {
-		return Regex.regexPos[Thread.getCurrent()];
+	if (Thread.current() in Regex.regexPos) {
+		return Regex.regexPos[Thread.current()];
 	}
 
 	return uint.max;
 }
 
 string _1() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][0];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][0];
 	}
 
 	return ("");
 }
 
 string _2() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][1];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][1];
 	}
 
 	return ("");
 }
 
 string _3() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][2];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][2];
 	}
 
 	return ("");
 }
 
 string _4() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][3];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][3];
 	}
 
 	return ("");
 }
 
 string _5() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][4];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][4];
 	}
 
 	return ("");
 }
 
 string _6() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][5];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][5];
 	}
 
 	return ("");
 }
 
 string _7() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][6];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][6];
 	}
 
 	return ("");
 }
 
 string _8() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][7];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][7];
 	}
 
 	return ("");
 }
 
 string _9() {
-	if (Thread.getCurrent() in Regex.regexRefs) {
-		return Regex.regexRefs[Thread.getCurrent()][8];
+	if (Thread.current() in Regex.regexRefs) {
+		return Regex.regexRefs[Thread.current()][8];
 	}
 
 	return ("");
@@ -183,7 +183,7 @@ class Regex {
 
 		bool backtrackedOnCaret = false;
 
-		regexRefs[Thread.getCurrent()] = new string [](9);
+		regexRefs[Thread.current()] = new string [](9);
 
 		// Suppresses group matching until a position is reached.
 		int noMatchUntilClosedAtPos = -1;
@@ -549,7 +549,7 @@ class Regex {
 					if (!noMatch) {
 						if (regexGroupStart < 9) {
 							string consumed = (str[regexInfo.groupInfo[regexInfo.groupInfo[regexPos].startPos].strStartPos..strPos]);
-							regexRefs[Thread.getCurrent()][regexGroupStart] = consumed;
+							regexRefs[Thread.current()][regexGroupStart] = consumed;
 							regexGroupStart++;
 						}
 					}
@@ -1004,11 +1004,11 @@ class Regex {
 									int refIndex = cast(uint)regex[regexPos] - cast(uint)'1';
 									// forward and backward references
 
-									if (Thread.getCurrent() in regexRefs) {
-										if (regexRefs[Thread.getCurrent()][refIndex] !is null) {
+									if (Thread.current() in regexRefs) {
+										if (regexRefs[Thread.current()][refIndex] !is null) {
 											matchMade = true;
 
-											foreach(int i, chr; regexRefs[Thread.getCurrent()][refIndex]) {
+											foreach(int i, chr; regexRefs[Thread.current()][refIndex]) {
 
 												if (strPos >= str.length) {
 													matchMade = false;
@@ -1179,9 +1179,9 @@ class Regex {
 		}
 
 		// Null out any outstanding groups
-		if (Thread.getCurrent() in regexRefs) {
+		if (Thread.current() in regexRefs) {
 			for( ; regexGroupStart < 9 ; regexGroupStart++ ) {
-			//	regexRefs[Thread.getCurrent()][regexGroupStart]
+			//	regexRefs[Thread.current()][regexGroupStart]
 				//	= null;
 			}
 		}
@@ -1198,7 +1198,7 @@ class Regex {
 			}
 
 			// Save the position where the string was consumed
-			this.regexPos[Thread.getCurrent()] = strPosStart;
+			this.regexPos[Thread.current()] = strPosStart;
 
 			// Slice and return the consumed string
 			return str.substring(strPosStart, strPos-strPosStart);

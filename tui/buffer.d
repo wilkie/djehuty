@@ -3,7 +3,8 @@ module tui.buffer;
 import core.string;
 import core.main;
 import core.definitions;
-import core.list;
+
+import data.list;
 
 import synch.semaphore;
 
