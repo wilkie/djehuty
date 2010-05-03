@@ -479,42 +479,6 @@ static:
 		return cast(dstring)src.dup;
 	}
 
-	Char[] toNative(string src) {
-		static if (Char.sizeof == dchar.sizeof) {
-			return cast(Char[])toUtf32(src);
-		}
-		else static if (Char.sizeof == wchar.sizeof) {
-			return cast(Char[])toUtf16(src);
-		}
-		else {
-			return cast(Char[])toUtf8(src);
-		}
-	}
-
-	Char[] toNative(wstring src) {
-		static if (Char.sizeof == dchar.sizeof) {
-			return cast(Char[])toUtf32(src);
-		}
-		else static if (Char.sizeof == wchar.sizeof) {
-			return cast(Char[])toUtf16(src);
-		}
-		else {
-			return cast(Char[])toUtf8(src);
-		}
-	}
-
-	Char[] toNative(dstring src) {
-		static if (Char.sizeof == dchar.sizeof) {
-			return cast(Char[])toUtf32(src);
-		}
-		else static if (Char.sizeof == wchar.sizeof) {
-			return cast(Char[])toUtf16(src);
-		}
-		else {
-			return cast(Char[])toUtf8(src);
-		}
-	}
-
 	// character conversions
 	dchar toUtf32Char(string src) {
 		// grab the first character,
