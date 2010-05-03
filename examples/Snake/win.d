@@ -4,7 +4,7 @@ import io.console;
 
 import synch.timer;
 
-import tui.window;
+import cui.window;
 
 import app;
 import constants;
@@ -12,7 +12,7 @@ import game;
 import posn;
 import snake;
 
-class SnakeWindow : TuiWindow {
+class SnakeWindow : CuiWindow {
 	this() {
 		_frame_wait = FrameWait.Init;
 

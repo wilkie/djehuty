@@ -18,8 +18,8 @@ import core.string;
 
 import synch.thread;
 
-import tui.application;
-import tui.window;
+import cui.application;
+import cui.window;
 
 ushort _fgclrvalues[] =
 [
@@ -56,7 +56,7 @@ int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 	switch(uMsg)
 	{
 		case WM_SIZE:
-			(cast(TuiApplication)Djehuty.app).window.onResize();
+			(cast(CuiApplication)Djehuty.app).window.onResize();
 			return 0;
 
 		default:

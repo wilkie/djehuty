@@ -8,17 +8,17 @@
  *
  */
 
-module tui.tabbox;
+module cui.tabbox;
 
 import djehuty;
 
 import data.list;
 
-import tui.container;
+import cui.container;
 
 import io.console;
 
-// Tabs should loop through TuiContainers that are sized to the size of the tab widget
+// Tabs should loop through CuiContainers that are sized to the size of the tab widget
 
 // Some hints:
 // onDraw() { current_container.onDraw(); }
@@ -30,10 +30,10 @@ import io.console;
 // Pass resize events down to current container and ALL containers 
 //   (eventually.. like check the size when containers are switched to reduce overhead)
 
-class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
+class CuiTabBox : CuiContainer, Iterable!(CuiContainer) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
-		_tabList = new List!(TuiContainer);
+		_tabList = new List!(CuiContainer);
 	}
 
 	override void onAdd() {
@@ -63,7 +63,7 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 		}
 
 		if(!_tabList.empty()) {
-			TuiContainer c = _tabList[_curTab];
+			CuiContainer c = _tabList[_curTab];
 
 			io.console.Console.clipSave();
 			this.widgetClippingContext = c;
@@ -169,8 +169,8 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 	}
 	
 	override void push(Dispatcher dsp) {
-		if (cast(TuiContainer)dsp) {
-			TuiContainer c = cast(TuiContainer)dsp;
+		if (cast(CuiContainer)dsp) {
+			CuiContainer c = cast(CuiContainer)dsp;
 			c.resize(width, height-1);
 			c.move(0,0);
 			_tabList.add(c);
@@ -178,35 +178,35 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 		super.push(dsp);
 	}
 	
-	void add(TuiContainer c) {
+	void add(CuiContainer c) {
 		push(c);
 	}
 	
-	TuiContainer remove() {
+	CuiContainer remove() {
 		return _tabList.remove();
 	}
 	
-	TuiContainer removeAt(size_t idx){
+	CuiContainer removeAt(size_t idx){
 		return _tabList.removeAt(idx);
 	}
 	
-	TuiContainer peek() {
+	CuiContainer peek() {
 		return _tabList.peek();
 	}
 	
-	TuiContainer peekAt(size_t idx) {
+	CuiContainer peekAt(size_t idx) {
 		return _tabList.peekAt(idx);
 	}
 	
-	void set(TuiContainer c) {
+	void set(CuiContainer c) {
 		_tabList.set(c);
 	}
 	
-	void apply(TuiContainer delegate(TuiContainer) func) {
+	void apply(CuiContainer delegate(CuiContainer) func) {
 		_tabList.apply(func);
 	}
 	
-	bool contains(TuiContainer c) {
+	bool contains(CuiContainer c) {
 		return _tabList.contains(c);
 	}
 	
@@ -218,19 +218,19 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 		_tabList.clear();
 	}
 	
-	TuiContainer[] array() {
+	CuiContainer[] array() {
 		return _tabList.array();
 	}
 	
-	List!(TuiContainer) dup() {
+	List!(CuiContainer) dup() {
 		return _tabList.dup();
 	}
 	
-	List!(TuiContainer) slice(size_t start, size_t end) {
+	List!(CuiContainer) slice(size_t start, size_t end) {
 		return _tabList.slice(start, end);
 	}
 	
-	List!(TuiContainer) reverse() {
+	List!(CuiContainer) reverse() {
 		return _tabList.reverse();
 	}
 	
@@ -238,47 +238,47 @@ class TuiTabBox : TuiContainer, Iterable!(TuiContainer) {
 		return _tabList.length();
 	}
 	
-	TuiContainer opIndex(size_t i1) {
+	CuiContainer opIndex(size_t i1) {
 		return _tabList.opIndex(i1);
 	}
 	
-	int opApply(int delegate(ref TuiContainer) loopFunc) {
+	int opApply(int delegate(ref CuiContainer) loopFunc) {
 		return _tabList.opApply(loopFunc);
 	}
 	
-	int opApply(int delegate(ref size_t, ref TuiContainer) loopFunc) {
+	int opApply(int delegate(ref size_t, ref CuiContainer) loopFunc) {
 		return _tabList.opApply(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref TuiContainer) loopFunc) {
+	int opApplyReverse(int delegate(ref CuiContainer) loopFunc) {
 		return _tabList.opApplyReverse(loopFunc);
 	}
 
-	int opApplyReverse(int delegate(ref size_t, ref TuiContainer) loopFunc) {
+	int opApplyReverse(int delegate(ref size_t, ref CuiContainer) loopFunc) {
 		return _tabList.opApplyReverse(loopFunc);
 	}
 
-	void opCatAssign(TuiContainer[] list) {
+	void opCatAssign(CuiContainer[] list) {
 		_tabList.opCatAssign(list);
 	}
 
-	void opCatAssign(Iterable!(TuiContainer) list) {
+	void opCatAssign(Iterable!(CuiContainer) list) {
 		_tabList.opCatAssign(list);
 	}
 
-	void opCatAssign(TuiContainer item) {
+	void opCatAssign(CuiContainer item) {
 		_tabList.opCatAssign(item);
 	}
 
-	Iterable!(TuiContainer) opCat(TuiContainer[] list) {
+	Iterable!(CuiContainer) opCat(CuiContainer[] list) {
 		return _tabList.opCat(list);
 	}
 
-	Iterable!(TuiContainer) opCat(Iterable!(TuiContainer) list) {
+	Iterable!(CuiContainer) opCat(Iterable!(CuiContainer) list) {
 		return _tabList.opCat(list);
 	}
 
-	Iterable!(TuiContainer) opCat(TuiContainer item) {
+	Iterable!(CuiContainer) opCat(CuiContainer item) {
 		return _tabList.opCat(item);
 	}
 	
@@ -339,7 +339,7 @@ protected:
 	uint _old_base_y;
 	size_t _curTab = 0;
 
-	List!(TuiContainer) _tabList;
+	List!(CuiContainer) _tabList;
 
 	fgColor _forecolor = fgColor.White;
 	bgColor _backcolor = bgColor.Black;

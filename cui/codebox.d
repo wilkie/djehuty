@@ -8,9 +8,9 @@
  *
  */
 
-module tui.codebox;
+module cui.codebox;
 
-import tui.textbox;
+import cui.textbox;
 
 import io.console;
 
@@ -18,7 +18,7 @@ import core.regex;
 import core.string;
 import core.definitions;
 
-class TuiCodeBox : TuiTextBox {
+class CuiCodeBox : CuiTextBox {
 
 	// Constructors
 

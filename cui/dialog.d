@@ -1,14 +1,14 @@
 /*
  * dialog.d
  *
- * This module implements a subwindow for Tui applications.
+ * This module implements a subwindow for Cui applications.
  *
  */
 
-module tui.dialog;
+module cui.dialog;
 
-import tui.widget;
-import tui.container;
+import cui.widget;
+import cui.container;
 
 private import io.console;
 
@@ -16,7 +16,7 @@ import core.unicode;
 import core.event;
 import core.definitions;
 
-class TuiDialog : TuiContainer {
+class CuiDialog : CuiContainer {
 	this(string title, uint x, uint y, uint width, uint height) {
 		_title = Unicode.toUtf32(title);
 		super(x,y,width,height);
@@ -76,18 +76,18 @@ protected:
 	uint _old_base_y;
 }
 
-import tui.filebox;
-import tui.listbox;
+import cui.filebox;
+import cui.listbox;
 
-class TuiOpenDialog : TuiDialog {
+class CuiOpenDialog : CuiDialog {
 	this(uint x, uint y) {
 		super("Open", x, y, 60, 20);
 	}
 
 	override void onAdd() {
 		super.onAdd();
-		push(files = new TuiFileBox(0,0,60,19));
+		push(files = new CuiFileBox(0,0,60,19));
 	}
 protected:
-	TuiFileBox files;
+	CuiFileBox files;
 }

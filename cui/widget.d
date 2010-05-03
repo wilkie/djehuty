@@ -1,8 +1,8 @@
-module tui.widget;
+module cui.widget;
 
-import tui.window;
-import tui.application;
-import tui.container;
+import cui.window;
+import cui.application;
+import cui.container;
 
 import core.event;
 import core.main;
@@ -14,7 +14,7 @@ import core.variant;
 private import io.console;
 
 // Description: This class abstracts part of the console's screen.  When attached to a window, this class will receive input through the events.  Keyboard events will be passed only when the control is activated.  A control can decide not to be activatable by setting it's _isTabStop to false.
-class TuiWidget : Responder {
+class CuiWidget : Responder {
 
 	this() {
 		Console.widget = this;
@@ -87,7 +87,7 @@ class TuiWidget : Responder {
 	}
 
 	override void push(Dispatcher dsp) {
-		if (cast(TuiWidget)dsp) {
+		if (cast(CuiWidget)dsp) {
 			// Adding a child widget to this widget
 			//_owner.push(dsp);
 		}
@@ -140,7 +140,7 @@ class TuiWidget : Responder {
 		return _height;
 	}
 
-	TuiWindow window() {
+	CuiWindow window() {
 		return _window;
 	}
 
@@ -153,7 +153,7 @@ protected:
 	// This stores the widget currently clipped by the Console's clipping region
 	// That is, the one with focus, that can safely draw and not interfere with
 	// another widget.
-	static TuiWidget widgetClippingContext;
+	static CuiWidget widgetClippingContext;
 
 	struct _Console {
 		// Description: This will move the terminal caret to the relative position indicated by the parameters.
@@ -224,7 +224,7 @@ protected:
 		}
 
 		final void putStringAt(int x, int y, string str) {
-			if (widget !is TuiWidget.widgetClippingContext) {
+			if (widget !is CuiWidget.widgetClippingContext) {
 				// We need to set up the current widget that wants to draw so that widgets
 				// above this one are clipped.
 			}
@@ -308,7 +308,7 @@ protected:
 		}
 
 	private:
-		TuiWidget widget;
+		CuiWidget widget;
 	}
 
 	_Console Console;
@@ -324,12 +324,12 @@ protected:
 private:
 
 	// For internal linked list of parent container
-	package TuiWidget _nextControl;
-	package TuiWidget _prevControl;
+	package CuiWidget _nextControl;
+	package CuiWidget _prevControl;
 
 	// Widget ultimate parent
-	package TuiWindow _window;
-	package TuiContainer _owner;
+	package CuiWindow _window;
+	package CuiContainer _owner;
 
 	// Widget relative coordinates
 	uint _x = 0;

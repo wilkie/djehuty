@@ -1,4 +1,4 @@
-module tui.listbox;
+module cui.listbox;
 
 import djehuty;
 
@@ -6,12 +6,12 @@ import data.list;
 
 import io.console;
 
-import tui.widget;
+import cui.widget;
 
 // Section: Console
 
 // Description: This console control abstracts a simple list of items.
-class TuiListBox : TuiWidget, Iterable!(string) {
+class CuiListBox : CuiWidget, Iterable!(string) {
 	this( uint x, uint y, uint width, uint height ) {
 		super(x,y,width,height);
 

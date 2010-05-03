@@ -1,13 +1,13 @@
-module tui.vt100;
+module cui.vt100;
 
 import io.console;
 
-import tui.buffer;
+import cui.buffer;
 
 // Section: Console
 
 // Description: This console control is a console buffer that emulations VT100 terminal codes.
-class TuiVT100 : TuiBuffer {
+class CuiVT100 : CuiBuffer {
 
 	// Constructors
 
@@ -15,7 +15,7 @@ class TuiVT100 : TuiBuffer {
 		super(x,y,width,height);
 	}
 
-	alias TuiBuffer.writeChar writeChar;
+	alias CuiBuffer.writeChar writeChar;
 
 	override void writeChar(dchar chr) {
 		if (_vt100_inescape2) {

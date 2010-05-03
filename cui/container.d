@@ -1,16 +1,16 @@
 /*
  * container.d
  *
- * This module implements a widget container for TuiWidget.
+ * This module implements a widget container for CuiWidget.
  *
  * Author: Dave Wilkinson
  * Originated: August 20th 2009
  *
  */
 
-module tui.container;
+module cui.container;
 
-import tui.widget;
+import cui.widget;
 
 import core.event;
 import core.definitions;
@@ -18,7 +18,7 @@ import core.string;
 
 private import io.console;
 
-class TuiContainer : TuiWidget {
+class CuiContainer : CuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		_name = "";
 		super(x,y,width,height);
@@ -26,7 +26,7 @@ class TuiContainer : TuiWidget {
 
 	override void onInit() {
 		_inited = true;
-		TuiWidget c = _firstControl;
+		CuiWidget c = _firstControl;
 
 		if (c is null) { return; }
 
@@ -41,7 +41,7 @@ class TuiContainer : TuiWidget {
 
 	override void onGotFocus() {
 		if (_focusedControl is null) {
-			TuiWidget c = _firstControl;
+			CuiWidget c = _firstControl;
 
 			if (c is null) { return; }
 
@@ -69,7 +69,7 @@ class TuiContainer : TuiWidget {
 		// Go through child widget list and draw each one
 		Console.position(0,0);
 
-		TuiWidget c = _firstControl;
+		CuiWidget c = _firstControl;
 
 		io.console.Console.clipSave();
 
@@ -173,9 +173,9 @@ class TuiContainer : TuiWidget {
 	}
 
 	override void push(Dispatcher dsp) {
-		if (cast(TuiWidget)dsp) {
+		if (cast(CuiWidget)dsp) {
 			// do not add a control that is already part of another window
-			TuiWidget control = cast(TuiWidget)dsp;
+			CuiWidget control = cast(CuiWidget)dsp;
 
 			if (control._nextControl !is null) {
 				return;
@@ -248,11 +248,11 @@ class TuiContainer : TuiWidget {
 protected:
 
 	// head and tail of the control linked list
-	TuiWidget _firstControl;	//head
-	TuiWidget _lastControl;		//tail
+	CuiWidget _firstControl;	//head
+	CuiWidget _lastControl;		//tail
 
 	// currently focused control
-	TuiWidget _focusedControl;
+	CuiWidget _focusedControl;
 
 	uint _numControls;
 
@@ -262,7 +262,7 @@ protected:
 	string _name;
 
 	void _reportMove(uint x, uint y) {
-		TuiWidget c = _firstControl;
+		CuiWidget c = _firstControl;
 
 		if (c is null) {
 			super.move(x,y);
@@ -273,8 +273,8 @@ protected:
 			c = c._prevControl;
 			c._base_x = _base_x + x;
 			c._base_y = _base_y + y;
-			if (cast(TuiContainer)c) {
-				TuiContainer container = cast(TuiContainer)c;
+			if (cast(CuiContainer)c) {
+				CuiContainer container = cast(CuiContainer)c;
 				container._reportMove(c.left, c.top);
 			}
 		} while (c !is _firstControl);
@@ -282,7 +282,7 @@ protected:
 
 	package void _tabForward() {
 		// activate the next control
-		TuiWidget curFocus = _focusedControl;
+		CuiWidget curFocus = _focusedControl;
 
 		if (curFocus is null) { return; }
 
@@ -302,7 +302,7 @@ protected:
 
 	package void _tabBackward() {
 		// activate the previous control
-		TuiWidget curFocus = _focusedControl;
+		CuiWidget curFocus = _focusedControl;
 
 		if (curFocus is null) { return; }
 

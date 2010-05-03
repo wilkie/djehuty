@@ -1,4 +1,4 @@
-import tui.application;
+import cui.application;
 
 import io.console;
 
@@ -6,7 +6,7 @@ import gamewindow;
 
 import binding.c;
 
-class TermTetris : TuiApplication {
+class TermTetris : CuiApplication {
 
 	// Start an application instance
 	static this() { printf("HELLO!\n"); new TermTetris(); }

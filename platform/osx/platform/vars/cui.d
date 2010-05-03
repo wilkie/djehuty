@@ -1,12 +1,12 @@
 /*
- * tui.d
+ * cui.d
  *
  * This module contains platform specific variables that are stored with
- * a TuiApplication for Unix.
+ * a CuiApplication for Unix.
  *
  */
 
-module platform.vars.tui;
+module platform.vars.cui;
 
-struct TuiPlatformVars {
+struct CuiPlatformVars {
 }

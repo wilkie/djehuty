@@ -1,6 +1,6 @@
-module tui.application;
+module cui.application;
 
-import tui.window;
+import cui.window;
 
 import core.application;
 import core.string;
@@ -8,35 +8,35 @@ import core.event;
 import core.main;
 import core.definitions;
 
-import scaffold.tui;
+import scaffold.cui;
 
-import platform.vars.tui;
+import platform.vars.cui;
 
 import io.console;
 
 // Description: This class represents a Text User Interface application (TUI).
-class TuiApplication : Application {
+class CuiApplication : Application {
 public:
 
 	this() {
-		TuiStart(&_pfvars);
+		CuiStart(&_pfvars);
 		super();
 	}
 
 	this(string appName) {
-		TuiStart(&_pfvars);
+		CuiStart(&_pfvars);
 		super(appName);
 	}
 
 	override void push(Dispatcher dsp) {
 		super.push(dsp);
 
-		if (cast(TuiWindow)dsp !is null) {
-			setWindow(cast(TuiWindow)dsp);
+		if (cast(CuiWindow)dsp !is null) {
+			setWindow(cast(CuiWindow)dsp);
 		}
 	}
 
-	TuiWindow window() {
+	CuiWindow window() {
 		return _curConsoleWindow;
 	}
 
@@ -46,12 +46,12 @@ public:
 
 protected:
 
-	TuiWindow _curConsoleWindow;
+	CuiWindow _curConsoleWindow;
 
-    TuiPlatformVars _pfvars;
+    CuiPlatformVars _pfvars;
 
 	override void shutdown() {
-		TuiEnd(&_pfvars);
+		CuiEnd(&_pfvars);
 	}
 
 	override void start() {
@@ -64,7 +64,7 @@ protected:
 
 private:
 
-	void setWindow(TuiWindow window) {
+	void setWindow(CuiWindow window) {
 		_curConsoleWindow = window;
 
 		// Draw Window
@@ -75,31 +75,31 @@ private:
 
 	void eventLoop() {
 		while(_running) {
-			TuiEvent evt;
+			CuiEvent evt;
 			if (_curConsoleWindow is null) {
 				continue;
 			}
 
-			TuiNextEvent(&evt, &_pfvars);
+			CuiNextEvent(&evt, &_pfvars);
 
 			switch(evt.type) {
-				case TuiEvent.Type.KeyDown:
+				case CuiEvent.Type.KeyDown:
 					_curConsoleWindow.onKeyDown(evt.info.key);
 					dchar chr;
 					if (isPrintable(evt.info.key, chr)) {
 						_curConsoleWindow.onKeyChar(chr);
 					}
 					break;
-				case TuiEvent.Type.MouseDown:
+				case CuiEvent.Type.MouseDown:
 					break;
-				case TuiEvent.Type.MouseUp:
+				case CuiEvent.Type.MouseUp:
 					break;
-				case TuiEvent.Type.MouseMove:
+				case CuiEvent.Type.MouseMove:
 					break;
-				case TuiEvent.Type.Close:
+				case CuiEvent.Type.Close:
 					this.exit(evt.aux);
 					break;
-				case TuiEvent.Type.Size:
+				case CuiEvent.Type.Size:
 					_curConsoleWindow._onResize();
 					break;
 				default:

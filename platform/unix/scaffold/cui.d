@@ -1,16 +1,16 @@
 /*
- * tui.d
+ * cui.d
  *
- * This module implements the Tui event loop.
+ * This module implements the Cui event loop.
  *
  * Author: Dave Wilkinson
  * Originated: August 17th 2009
  *
  */
 
-module scaffold.tui;
+module scaffold.cui;
 
-import platform.vars.tui;
+import platform.vars.cui;
 
 import platform.unix.common;
 
@@ -20,13 +20,12 @@ import core.definitions;
 
 import platform.application;
 
-void TuiStart(TuiPlatformVars* vars) {
-	printf("TuiStart\n");
+void CuiStart(CuiPlatformVars* vars) {
 	Curses.savetty();
 
 	ApplicationController app = ApplicationController.instance();
 	app.usingCurses = true;
-	//setvbuf (stdout, null, _IONBF, 0);
+	setvbuf (stdout, null, _IONBF, 0);
 
 	Curses.initscr();
 	setlocale(LC_ALL, "");
@@ -51,11 +50,10 @@ void TuiStart(TuiPlatformVars* vars) {
 	m_y = 0;
 
 	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
-	//setvbuf (stdout, null, _IONBF, 0);
-	printf("TuiStart done\n");
+	setvbuf (stdout, null, _IONBF, 0);
 }
 
-void TuiEnd(TuiPlatformVars* vars) {
+void CuiEnd(CuiPlatformVars* vars) {
 	if (ApplicationController.instance.usingCurses) {
 		ApplicationController.instance.usingCurses = false;
 	}
@@ -64,7 +62,7 @@ void TuiEnd(TuiPlatformVars* vars) {
 	Curses.resetterm();
 }
 
-void TuiNextEvent(TuiEvent* evt, TuiPlatformVars* vars) {
+void CuiNextEvent(CuiEvent* evt, CuiPlatformVars* vars) {
 
 start:
 
@@ -79,7 +77,7 @@ start:
 
 	if (key.code == Curses.KEY_RESIZE) {
 		// Resize
-		evt.type = TuiEvent.Type.Size;
+		evt.type = CuiEvent.Type.Size;
 		return;
 	}
 	else if (key.code == Curses.KEY_MOUSE) {
@@ -113,55 +111,55 @@ start:
 		}
 
 		if (event.bstate & Curses.BUTTON1_PRESSED) {
-			evt.type = TuiEvent.Type.MouseDown;
+			evt.type = CuiEvent.Type.MouseDown;
 			evt.info.mouse.leftDown = true;
 			evt.aux = 0;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON2_PRESSED) {
-			evt.type = TuiEvent.Type.MouseDown;
+			evt.type = CuiEvent.Type.MouseDown;
 			evt.info.mouse.rightDown = true;
 			evt.aux = 1;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON3_PRESSED) {
-			evt.type = TuiEvent.Type.MouseDown;
+			evt.type = CuiEvent.Type.MouseDown;
 			evt.info.mouse.middleDown = true;
 			evt.aux = 2;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON4_PRESSED) {
-			evt.type = TuiEvent.Type.MouseDown;
+			evt.type = CuiEvent.Type.MouseDown;
 			evt.aux = 3;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON5_PRESSED) {
-			evt.type = TuiEvent.Type.MouseDown;
+			evt.type = CuiEvent.Type.MouseDown;
 			evt.aux = 4;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON1_RELEASED) {
-			evt.type = TuiEvent.Type.MouseUp;
+			evt.type = CuiEvent.Type.MouseUp;
 			evt.aux = 0;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON2_RELEASED) {
-			evt.type = TuiEvent.Type.MouseUp;
+			evt.type = CuiEvent.Type.MouseUp;
 			evt.aux = 1;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON3_RELEASED) {
-			evt.type = TuiEvent.Type.MouseUp;
+			evt.type = CuiEvent.Type.MouseUp;
 			evt.aux = 2;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON4_RELEASED) {
-			evt.type = TuiEvent.Type.MouseUp;
+			evt.type = CuiEvent.Type.MouseUp;
 			evt.aux = 3;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON5_RELEASED) {
-			evt.type = TuiEvent.Type.MouseUp;
+			evt.type = CuiEvent.Type.MouseUp;
 			evt.aux = 4;
 			return;
 		}
@@ -170,13 +168,13 @@ start:
 			mouse_x = event.x;
 			mouse_y = event.y;
 
-			evt.type = TuiEvent.Type.MouseMove;
+			evt.type = CuiEvent.Type.MouseMove;
 			return;
 		}
 		goto start;
 	}
 
-	evt.type = TuiEvent.Type.KeyDown;
+	evt.type = CuiEvent.Type.KeyDown;
 	evt.info.key = key;
 	return;
 }

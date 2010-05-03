@@ -8,17 +8,17 @@
  *
  */
 
-module tui.textbox;
+module cui.textbox;
 
 import djehuty;
 
 import data.list;
 
-import tui.widget;
+import cui.widget;
 
 import io.console;
 
-class TuiTextBox : TuiWidget {
+class CuiTextBox : CuiWidget {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 

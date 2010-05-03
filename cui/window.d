@@ -1,9 +1,9 @@
-module tui.window;
+module cui.window;
 
-import tui.application;
-import tui.widget;
-import tui.container;
-import tui.dialog;
+import cui.application;
+import cui.widget;
+import cui.container;
+import cui.dialog;
 
 import core.event;
 import core.string;
@@ -14,21 +14,21 @@ import resource.menu;
 import io.console;
 
 // Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
-class TuiWindow : Responder {
+class CuiWindow : Responder {
 	// Constructor
 
 	this() {
-		this("TuiWindow");
+		this("CuiWindow");
 	}
 
 	this(bgColor bgClr) {
-		this(bgClr, "TuiWindow");
+		this(bgClr, "CuiWindow");
 	}
 
 	this(bgColor bgClr, string name) {
 		Console.clipRect(0,0,this.width, this.height);
 		_bgClr = bgClr;
-		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer = new CuiContainer(0, 0, this.width, this.height);
 		_controlContainer.text = name.dup;
 		_controlContainer._window = this;
 		push(_controlContainer);
@@ -36,7 +36,7 @@ class TuiWindow : Responder {
 
 	this(string name) {
 		Console.clipRect(0,0,this.width, this.height);
-		_controlContainer = new TuiContainer(0, 0, this.width, this.height);
+		_controlContainer = new CuiContainer(0, 0, this.width, this.height);
 		_controlContainer.text = name.dup;
 		_controlContainer._window = this;
 		push(_controlContainer);
@@ -393,8 +393,8 @@ class TuiWindow : Responder {
 		if (dsp is _controlContainer) {
 			super.push(dsp);
 		}
-		else if (cast(TuiWidget)dsp) {
-			_controlContainer.push(cast(TuiWidget)dsp);
+		else if (cast(CuiWidget)dsp) {
+			_controlContainer.push(cast(CuiWidget)dsp);
 		}
 		else {
 			super.push(dsp);
@@ -405,8 +405,8 @@ class TuiWindow : Responder {
 		return _bgClr;
 	}
 
-	TuiApplication application() {
-		return cast(TuiApplication)this.responder;
+	CuiApplication application() {
+		return cast(CuiApplication)this.responder;
 	}
 
 	bool isActive() {
@@ -716,8 +716,8 @@ private:
 	bgColor _bgClr = bgColor.Black;
 
 	// head and tail of the control linked list
-	TuiWidget _firstControl;	//head
-	TuiWidget _lastControl;	//tail
+	CuiWidget _firstControl;	//head
+	CuiWidget _lastControl;	//tail
 
 	int _numControls = 0;
 
@@ -740,7 +740,7 @@ private:
 	Menu _selectedMenu;
 	uint _selectedMenuIndex;
 
-	TuiContainer _controlContainer;
+	CuiContainer _controlContainer;
 
 	MenuContext[] _menus;
 

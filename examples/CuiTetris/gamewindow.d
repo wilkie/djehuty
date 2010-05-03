@@ -1,5 +1,5 @@
-import tui.window;
-import tui.label;
+import cui.window;
+import cui.label;
 
 import io.console;
 
@@ -7,13 +7,13 @@ import djehuty;
 
 import gamecontrol;
 
-class GameWindow : TuiWindow {
+class GameWindow : CuiWindow {
 	this() {
-		scoreLabel = new TuiLabel(4, 5, 10, "0");
+		scoreLabel = new CuiLabel(4, 5, 10, "0");
 		game = new GameControl();
 
 		push(scoreLabel);
-		push(new TuiLabel(2, 3, 10, "Score", fgColor.BrightYellow));
+		push(new CuiLabel(2, 3, 10, "Score", fgColor.BrightYellow));
 		push(game);
 	}
 
@@ -41,6 +41,6 @@ class GameWindow : TuiWindow {
 	}
 
 protected:
-	TuiLabel scoreLabel;
+	CuiLabel scoreLabel;
 	GameControl game;
 }

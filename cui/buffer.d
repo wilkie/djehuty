@@ -1,4 +1,4 @@
-module tui.buffer;
+module cui.buffer;
 
 import core.string;
 import core.main;
@@ -10,12 +10,12 @@ import synch.semaphore;
 
 import io.console;
 
-import tui.widget;
+import cui.widget;
 
 // Section: Console
 
 // Description: This console control is a line buffer that is similar to having a terminal inside a terminal.  It is basically a terminal window.  Extending this class will allow for other types of terminals and emulations.  For instance, the VT100 control is a buffer control with VT100 ANSI emulation.
-class TuiBuffer : TuiWidget
+class CuiBuffer : CuiWidget
 {
 	this( uint x, uint y, uint width, uint height)
 	{

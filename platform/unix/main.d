@@ -34,8 +34,8 @@ import analyzing.debugger;
 
 import io.console;
 
-import tui.application;
-import tui.window;
+import cui.application;
+import cui.window;
 
 struct DjehutyPlatformVars {
 	X.Display* display;

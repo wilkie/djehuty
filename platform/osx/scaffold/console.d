@@ -20,8 +20,8 @@ import platform.application;
 
 import synch.thread;
 
-import tui.application;
-import tui.window;
+import cui.application;
+import cui.window;
 
 void ConsoleSetColors(uint fg, uint bg, int bright) {
 	if (ApplicationController.instance.usingCurses) {
@@ -531,7 +531,7 @@ extern(C) void size_sig_handler(int signal) {
     }
 
     //fire Size event
-	TuiApplication app = cast(TuiApplication)Djehuty.app;
+	CuiApplication app = cast(CuiApplication)Djehuty.app;
 	app.window.onResize();
 }
 

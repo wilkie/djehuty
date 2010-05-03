@@ -1,17 +1,17 @@
 /*
  * filebox.d
  *
- * This module implements a TuiWidget that lists a directory.
+ * This module implements a CuiWidget that lists a directory.
  *
  * Author: Dave Wilkinson
  * Originated: August 20th 2009
  *
  */
 
-module tui.filebox;
+module cui.filebox;
 
-import tui.listbox;
-import tui.widget;
+import cui.listbox;
+import cui.widget;
 
 import io.directory;
 import io.console;
@@ -21,7 +21,7 @@ import core.definitions;
 
 import data.list;
 
-class TuiFileBox : TuiWidget, Iterable!(string) {
+class CuiFileBox : CuiWidget, Iterable!(string) {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_path = new Directory();

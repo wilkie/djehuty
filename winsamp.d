@@ -15,12 +15,12 @@ import graphics.graphics;
 import resource.image;
 import resource.sound;
 
-import tui.application;
-import tui.window;
-import tui.label;
-import tui.textfield;
-import tui.tabbox;
-import tui.container;
+import cui.application;
+import cui.window;
+import cui.label;
+import cui.textfield;
+import cui.tabbox;
+import cui.container;
 
 import synch.timer;
 import synch.thread;
@@ -42,15 +42,15 @@ import math.vector;
 
 import core.date;
 
-import tui.textfield;
+import cui.textfield;
 import core.application;
 
-import tui.textbox;
-import tui.codebox;
+import cui.textbox;
+import cui.codebox;
 
-import tui.dialog;
-import tui.filebox;
-import tui.listbox;
+import cui.dialog;
+import cui.filebox;
+import cui.listbox;
 
 import math.fixed;
 import math.currency;

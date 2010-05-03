@@ -1,4 +1,4 @@
-module tui.label;
+module cui.label;
 
 import core.string;
 import core.main;
@@ -6,12 +6,12 @@ import core.definitions;
 
 import io.console;
 
-import tui.widget;
+import cui.widget;
 
 // Section: Console
 
 // Description: This console control abstracts a simple static text field.
-class TuiLabel : TuiWidget {
+class CuiLabel : CuiWidget {
 
 	this( uint x, uint y, uint width, string text,
 		  fgColor fgclr = fgColor.BrightBlue,

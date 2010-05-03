@@ -1,8 +1,8 @@
-import tui.application;
+import cui.application;
 
 import win;
 
-class SnakeApp : TuiApplication {
+class SnakeApp : CuiApplication {
 	static this() {
 		new SnakeApp();
 	}

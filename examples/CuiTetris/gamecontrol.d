@@ -1,6 +1,6 @@
 import djehuty;
 
-import tui.widget;
+import cui.widget;
 
 import synch.timer;
 import synch.semaphore;
@@ -9,7 +9,7 @@ import io.console;
 
 import tetris;
 
-class GameControl : TuiWidget {
+class GameControl : CuiWidget {
 
 	enum Event {
 		ScoreUpdated,

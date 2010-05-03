@@ -1,14 +1,14 @@
 /*
- * tui.d
+ * cui.d
  *
- * This module contains state information for a tui app for Windows.
+ * This module contains state information for a cui app for Windows.
  *
  * Author: Dave Wilkinson
  * Originated: August 17th 2009
  *
  */
 
-module platform.vars.tui;
+module platform.vars.cui;
 
 import core.definitions;
 
@@ -18,7 +18,7 @@ import utils.linkedlist;
 
 import platform.win.common;
 
-struct TuiPlatformVars {
+struct CuiPlatformVars {
 	// Window resize thread
 	Thread t;
 
@@ -29,5 +29,5 @@ struct TuiPlatformVars {
 	// Input state
 	INPUT_RECORD irInBuf[128];
 
-	LinkedList!(TuiEvent) events;
+	LinkedList!(CuiEvent) events;
 }

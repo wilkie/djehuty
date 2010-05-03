@@ -1,7 +1,7 @@
-module tui.telnet;
+module cui.telnet;
 
-import tui.vt100;
-import tui.buffer;
+import cui.vt100;
+import cui.buffer;
 
 import core.string;
 
@@ -10,7 +10,7 @@ import networking.telnet;
 // Section: Console
 
 // Description: This console control is a console buffer that will facilitate a connection to a telnet server within a section of your console view.
-class TuiTelnet : TuiVT100 {
+class CuiTelnet : CuiVT100 {
 	this( uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 

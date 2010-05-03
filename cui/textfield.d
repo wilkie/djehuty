@@ -7,7 +7,7 @@
  *
  */
 
-module tui.textfield;
+module cui.textfield;
 
 import core.string;
 import core.main;
@@ -16,12 +16,12 @@ import core.unicode;
 
 import io.console;
 
-import tui.widget;
+import cui.widget;
 
 // Section: Console
 
 // Description: This console control abstracts a simple one line text field.
-class TuiTextField : TuiWidget {
+class CuiTextField : CuiWidget {
 
 	// Constructors
 

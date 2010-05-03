@@ -3,7 +3,7 @@
 *.d~
 .DS_Store
 winsamp
-tuitetris
+cuitetris
 snake
 moreducks
 *.exe
