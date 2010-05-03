@@ -104,7 +104,8 @@ class MyConsoleApp : Application {
 		Console.putln(new Fixed(3.5));
 		Atomic.exchange(a,6);
 		Console.putln(a,b,c);
-		Console.putln("{c}".format(1500.42) == (new Currency(150042,2)).toString());
+		Console.putln("{c}".format(1500.42));
+		Locale.id = LocaleId.French_FR;
 		Console.putln("{c}".format(1500.42));
 		Console.putln(new Currency(150042,2));
 		t = new Thread(&foo);
