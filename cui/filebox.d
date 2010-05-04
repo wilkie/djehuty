@@ -16,8 +16,7 @@ import cui.widget;
 import io.directory;
 import io.console;
 
-import core.string;
-import core.definitions;
+import djehuty;
 
 import data.list;
 
@@ -42,7 +41,8 @@ class CuiFileBox : CuiWidget, Iterable!(string) {
 			drawLine(i);
 		}
 		
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 
 		for (; i < this.height + _firstVisible; i++) {
 			Console.position(0, i-_firstVisible);
@@ -316,38 +316,38 @@ class CuiFileBox : CuiWidget, Iterable!(string) {
 	// Propeties
 
 	// Description: This property is for setting the backcolor for normal items.
-	bgColor backcolor() {
+	Color backcolor() {
 		return _backcolor;
 	}
 
-	void backcolor(bgColor value) {
+	void backcolor(Color value) {
 		_backcolor = value;
 	}
 
 	// Description: This property is for setting the forecolor for normal items.
-	fgColor forecolor() {
+	Color forecolor() {
 		return _forecolor;
 	}
 
-	void forecolor(fgColor value) {
+	void forecolor(Color value) {
 		_forecolor = value;
 	}
 
 	// Description: This property is for setting the forecolor for selected items.
-	fgColor selectedForecolor() {
+	Color selectedForecolor() {
 		return _selectedForecolor;
 	}
 
-	void selectedForecolor(fgColor value) {
+	void selectedForecolor(Color value) {
 		_selectedForecolor = value;
 	}
 
 	// Description: This property is for setting the backcolor for selected items.
-	bgColor selectedBackcolor() {
+	Color selectedBackcolor() {
 		return _selectedBackcolor;
 	}
 
-	void selectedBackcolor(bgColor value) {
+	void selectedBackcolor(Color value) {
 		_selectedBackcolor = value;
 	}
 
@@ -357,10 +357,12 @@ protected:
 		Console.position(0, pos - _firstVisible);
 
 		if(pos == _pos) {
-			Console.setColor(_selectedForecolor, _selectedBackcolor);
+			Console.backcolor = _selectedBackcolor;
+			Console.forecolor = _selectedForecolor;
 		}
 		else {
-			Console.setColor(_forecolor, _backcolor);
+			Console.backcolor = _backcolor;
+			Console.forecolor = _forecolor;
 		}
 
 		Console.put(_list[pos]);
@@ -376,10 +378,10 @@ protected:
 	Directory _path;
 	List!(string) _list;
 
-	fgColor _forecolor = fgColor.White;
-	bgColor _backcolor = bgColor.Black;
+	Color _forecolor = Color.White;
+	Color _backcolor = Color.Black;
 
-	fgColor _selectedForecolor = fgColor.BrightYellow;
-	bgColor _selectedBackcolor = bgColor.Black;
+	Color _selectedForecolor = Color.Yellow;
+	Color _selectedBackcolor = Color.Black;
 
 }

@@ -28,7 +28,8 @@ class CuiListBox : CuiWidget, Iterable!(string) {
 			drawLine(i);
 		}
 
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 
 		for (; i < this.height + _firstVisible; i++) {
 			Console.position(0, i-_firstVisible);
@@ -251,46 +252,46 @@ class CuiListBox : CuiWidget, Iterable!(string) {
 	}
 
 	// Description: This property returns the backcolor value for normal items.
-	bgColor backcolor() {
+	Color backcolor() {
 		return _backcolor;
 	}
 
 	// Description: This property is for setting the backcolor for normal items.
 	// value: The color to set the backcolor to
-	void backcolor(bgColor value) {
+	void backcolor(Color value) {
 		_backcolor = value;
 	}
 
 	// Description: This property returns the backcolor value for normal items.
-	fgColor forecolor() {
+	Color forecolor() {
 		return _forecolor;
 	}
 
 	// Description: This property is for setting the forecolor for normal items.
 	// value: The color to set the forecolor to
-	void forecolor(fgColor value) {
+	void forecolor(Color value) {
 		_forecolor = value;
 	}
 
 	// Description: This property returns the forecolor for selected items.
-	fgColor selectedForecolor() {
+	Color selectedForecolor() {
 		return _selectedForecolor;
 	}
 
 	// Description: This property is for setting the forecolor for selected items.
 	// value: The color to set the forecolor to
-	void selectedForecolor(fgColor value) {
+	void selectedForecolor(Color value) {
 		_selectedForecolor = value;
 	}
 
 	// Description: This property returns the backcolor for selected items.
-	bgColor selectedBackcolor() {
+	Color selectedBackcolor() {
 		return _selectedBackcolor;
 	}
 	
 	// Description: This property is for setting the backcolor for selected items.
 	// value: The color to set the backcolor to
-	void selectedBackcolor(bgColor value) {
+	void selectedBackcolor(Color value) {
 		_selectedBackcolor = value;
 	}
 
@@ -300,10 +301,12 @@ protected:
 		Console.position(0, pos - _firstVisible);
 
 		if(pos == _pos) {
-			Console.setColor(_selectedForecolor, _selectedBackcolor);
+			Console.forecolor = _selectedForecolor;
+			Console.backcolor = _selectedBackcolor;
 		}
 		else {
-			Console.setColor(_forecolor, _backcolor);
+			Console.forecolor = _forecolor;
+			Console.backcolor = _backcolor;
 		}
 
 		Console.put(_list[pos]);
@@ -320,9 +323,9 @@ protected:
 
 	List!(string) _list;
 	
-	fgColor _forecolor = fgColor.White;
-	bgColor _backcolor = bgColor.Black;
+	Color _forecolor = Color.White;
+	Color _backcolor = Color.Black;
 
-	fgColor _selectedForecolor = fgColor.BrightYellow;
-	bgColor _selectedBackcolor = bgColor.Black;
+	Color _selectedForecolor = Color.Yellow;
+	Color _selectedBackcolor = Color.Black;
 }

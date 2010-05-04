@@ -9,10 +9,7 @@
 
 module cui.textfield;
 
-import core.string;
-import core.main;
-import core.definitions;
-import core.unicode;
+import djehuty;
 
 import io.console;
 
@@ -45,7 +42,8 @@ class CuiTextField : CuiWidget {
 
 	override void onKeyDown(Key key) {
 
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 		if (key.code == Key.Backspace) {
 			if (_pos > 0) {
 				if (_pos == _max) {
@@ -70,7 +68,8 @@ class CuiTextField : CuiWidget {
 
 	override void onKeyChar(dchar keyChar) {
 
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 		if (keyChar != 0x8 && keyChar != '\t' && keyChar != '\n' && keyChar != '\r') {
 			if (_pos <= _max) {
 				Console.put(keyChar);
@@ -94,7 +93,8 @@ class CuiTextField : CuiWidget {
 
 		positionCursor();
 
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 	}
 
 	// Properties
@@ -114,39 +114,39 @@ class CuiTextField : CuiWidget {
 	
 	// Description: This property returns the current forecolor of the text in the field
 	// Returns: forecolor of text
-	fgColor forecolor() {
+	Color forecolor() {
 		return _forecolor;
 	}
 	
 	// Description: This property sets the current forecolor of the text in the field
 	// value: The new forecolor
-	void forecolor(fgColor value) {
+	void forecolor(Color value) {
 		_forecolor = value;
 		onDraw();
 	}
 	
 	// Description: This property returns the current backcolor of the text in the field
 	// Returns: backcolor of text
-	bgColor backcolor() {
+	Color backcolor() {
 		return _backcolor;
 	}
 	
 	// Description: This property sets the current backcolor of the text in the field
 	// value: The new backcolor
-	void backcolor(bgColor value) {
+	void backcolor(Color value) {
 		_backcolor = value;
 		onDraw();
 	}
 	
 	// Description: This property returns the current forecolor of the borders of the field
 	// Returns: forecolor of borders
-	fgColor basecolor() {
+	Color basecolor() {
 		return _color;
 	}
 	
 	// Description: This property sets the current forecolor of the borders of the field
 	// value: The new forecolor of the borders
-	void basecolor(fgColor value) {
+	void basecolor(Color value) {
 		_color = value;
 	}
 
@@ -159,10 +159,12 @@ class CuiTextField : CuiWidget {
 	override void onDraw() {
 		if (canDraw) {
 			Console.position(this.left, this.top);
-			Console.setColor(_color, bgColor.Black);
+			Console.forecolor = _color;
+			Console.backcolor = Color.Black;
 			Console.put("[");
 
-			Console.setColor(_forecolor, _backcolor);
+			Console.forecolor = _forecolor;
+			Console.backcolor = _backcolor;
 
 			foreach(chr; _value.substring(0,_max)) {
 				Console.put(chr);
@@ -177,7 +179,8 @@ class CuiTextField : CuiWidget {
 				Console.put(' ');
 			}
 
-			Console.setColor(_color, bgColor.Black);
+			Console.forecolor = _color;
+			Console.backcolor = Color.Black;
 
 			Console.put("]");
 
@@ -187,9 +190,9 @@ class CuiTextField : CuiWidget {
 
 protected:
 
-	fgColor _color = fgColor.BrightBlue;
-	fgColor _forecolor = fgColor.BrightWhite;
-	bgColor _backcolor = bgColor.Black;
+	Color _color = Color.Blue;
+	Color _forecolor = Color.White;
+	Color _backcolor = Color.Black;
 
 	uint _pos = 0;
 	uint _max = 0;

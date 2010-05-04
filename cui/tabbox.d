@@ -46,14 +46,17 @@ class CuiTabBox : CuiContainer, Iterable!(CuiContainer) {
 		//draw the tabs
 		io.console.Console.clipSave();
 		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
-		io.console.Console.setColor(_forecolor, _backcolor);
+		io.console.Console.forecolor = _forecolor;
+		io.console.Console.backcolor = _backcolor;
 
 		io.console.Console.put(" ");		
 		foreach(i, item; _tabList) {
 			if(i == _curTab) {
-				io.console.Console.setColor(_selectedForecolor, _selectedBackcolor);
+				io.console.Console.forecolor = _selectedForecolor;
+				io.console.Console.backcolor = _selectedBackcolor;
 				io.console.Console.put(item.text);
-				io.console.Console.setColor(_forecolor, _backcolor);
+				io.console.Console.forecolor = _forecolor;
+				io.console.Console.backcolor = _backcolor;
 			}
 			else {
 				io.console.Console.put(item.text);
@@ -341,10 +344,10 @@ protected:
 
 	List!(CuiContainer) _tabList;
 
-	fgColor _forecolor = fgColor.White;
-	bgColor _backcolor = bgColor.Black;
+	Color _forecolor = Color.Gray;
+	Color _backcolor = Color.Black;
 
-	fgColor _selectedForecolor = fgColor.BrightYellow;
-	bgColor _selectedBackcolor = bgColor.Black;
+	Color _selectedForecolor = Color.Yellow;
+	Color _selectedBackcolor = Color.Black;
 }
 

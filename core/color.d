@@ -92,20 +92,28 @@ public:
 	// -- Predefined values
 
 	// Description: Black!
-	static Color Black 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Black 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color Green		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static Color Red		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static Color Blue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Green		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Red		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Blue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color Magenta 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
-	static Color Yellow 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static Color Cyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Magenta 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Yellow 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Cyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
-	static Color DarkGray	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
-	static Color Gray 		= { _internal: { components: {r: _8toNativebpp!(0.75), g: _8toNativebpp!(0.75), b: _8toNativebpp!(0.75), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkGreen		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkRed		= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkBlue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
 
-	static Color White 		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkMagenta 	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkYellow 	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkCyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+
+	static const Color DarkGray	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+	static const Color Gray 		= { _internal: { components: {r: _8toNativebpp!(0.75), g: _8toNativebpp!(0.75), b: _8toNativebpp!(0.75), a: _8toNativebpp!(1.0) } } };
+
+	static const Color White 		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
 
 	// --
 

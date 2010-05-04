@@ -1,5 +1,7 @@
 module cui.vt100;
 
+import djehuty;
+
 import io.console;
 
 import cui.buffer;
@@ -105,18 +107,18 @@ class CuiVT100 : CuiBuffer {
 							fgclr = _vt100_params[i] - 30;
 						}
 						else if (_vt100_params[i] == 39) {
-							fgclr = fgColor.White;
+							fgclr = 8;
 						}
 						else if (_vt100_params[i] >= 40 && _vt100_params[i] <= 47) {
 							bgclr = _vt100_params[i] - 40;
 						}
 						else if (_vt100_params[i] == 49) {
-							bgclr = bgColor.Black;
+							bgclr = 0;
 						}
 						else if (_vt100_params[i] == 0) {
 							bright = 0;
-							fgclr = fgColor.White;
-							bgclr = fgColor.Black;
+							fgclr = 8;
+							bgclr = 0;
 						}
 						else if (_vt100_params[i] < 2) {
 							bright = _vt100_params[i];
@@ -141,10 +143,10 @@ class CuiVT100 : CuiBuffer {
 				    _cur_fg_color = _cur_fg_color % 8;
 				    _cur_fg_color += (8 * _cur_bright_color);
 
-				    _curfg = cast(fgColor)_cur_fg_color;
-				    _curbg = cast(bgColor)_cur_bg_color;
+				    _curfg = _consoleToColor[_cur_fg_color];
+				    _curbg = _consoleToColor[_cur_bg_color];
 
-				    setColor(_curfg, _curbg);
+				    setColors(_curfg, _curbg);
 				}
 				else {
 					//Console.putln("!!!!!", chr , "!!!!!");
@@ -191,7 +193,26 @@ private:
 	static int _vt100_curparam = 0;
 	static int _vt100_paramFilled = 0;
 
-	static uint _cur_fg_color = fgColor.White;
-	static uint _cur_bg_color = bgColor.Black;
+	static int _cur_fg_color = 8;
+	static int _cur_bg_color = 0;
 	static uint _cur_bright_color = 0;
+
+	static const Color[] _consoleToColor = [
+		Color.Black,
+		Color.DarkRed,
+		Color.DarkGreen,
+		Color.DarkYellow,
+		Color.DarkBlue,
+		Color.DarkMagenta,
+		Color.DarkCyan,
+		Color.DarkGray,
+		Color.Gray,
+		Color.Red,
+		Color.Green,
+		Color.Yellow,
+		Color.Blue,
+		Color.Magenta,
+		Color.Cyan,
+		Color.White
+	];
 }

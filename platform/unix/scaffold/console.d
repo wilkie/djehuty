@@ -9,10 +9,7 @@
 
 module scaffold.console;
 
-import core.main;
-import core.unicode;
-import core.definitions;
-import core.string;
+import djehuty;
 
 import platform.unix.common;
 import platform.unix.main;
@@ -24,10 +21,104 @@ import synch.thread;
 import cui.application;
 import cui.window;
 
-void ConsoleSetColors(uint fg, uint bg, int bright) {
+private int _toNearestConsoleColor(Color clr) {
+	// 16 colors on console
+	// For each channel, it can be 00, 88, or ff
+	// That is, something mid range
+
+	int nearRed, nearGreen, nearBlue;
+	int ret;
+
+	nearRed = cast(int)((clr.red * 3.0) + 0.5);
+	nearGreen = cast(int)((clr.green * 3.0) + 0.5);
+	nearBlue = cast(int)((clr.blue * 3.0) + 0.5);
+
+	if ((nearRed == nearGreen) && (nearGreen == nearBlue)) {
+		// gray
+		if (clr.red < (Color.DarkGray.red / 2.0)) {
+			// Closer to black
+			ret = 0;
+		}
+		else if (clr.red < ((Color.Gray.red - Color.DarkGray.red) / 2.0) + Color.DarkGray.red) {
+			// Closer to dark gray
+			ret = 8;
+		}
+		else if (clr.red < ((Color.White.red - Color.Gray.red) / 2.0) + Color.Gray.red) {
+			// Closer to light gray
+			ret = 7;
+		}
+		else {
+			// Closer to white
+			ret = 15;
+		}
+	}
+	else {
+		// Nearest color match
+		static int[3][] translations = [
+			[1,0,0],	// 1, Dark Red
+			[0,1,0],	// 2, Dark Green
+			[1,1,0],	// 3, Dark Yellow
+			[0,0,1],	// 4, Dark Blue
+			[1,0,1],	// 5, Dark Magenta
+			[0,1,1],	// 6, Dark Cyan
+
+			[2,0,0],	// 9, Dark Red
+			[0,2,0],	// 10, Dark Green
+			[2,2,0],	// 11, Dark Yellow
+			[0,0,2],	// 12, Dark Blue
+			[2,0,2],	// 13, Dark Magenta
+			[0,2,2],	// 14, Dark Cyan
+		];
+
+		float mindistance = 4*3;
+
+		foreach(size_t i, coord; translations) {
+			// Compare euclidian distance
+			float distance = 0.0;
+			float intermediate;
+
+			intermediate = coord[0] - nearRed;
+			intermediate *= intermediate;
+
+			distance += intermediate;
+
+			intermediate = coord[1] - nearGreen;
+			intermediate *= intermediate;
+
+			distance += intermediate;
+
+			intermediate = coord[2] - nearBlue;
+			intermediate *= intermediate;
+
+			distance += intermediate;
+
+			// Omitting square root, it is unnecessary for comparison
+			if (mindistance > distance) {
+				mindistance = distance;
+				ret = i;
+				ret++;
+				if (ret > 6) {
+					ret += 2;
+				}
+			}	
+		}
+	}
+
+	return ret;
+}
+
+void ConsoleSetColors(Color fg, Color bg) {
+	int fgidx = _toNearestConsoleColor(fg);
+	int bgidx = _toNearestConsoleColor(bg);
+
+	int bright = 0;
+	if (fgidx > 7) {
+		fgidx %= 8;
+		bright = 1;
+	}
 	if (ApplicationController.instance.usingCurses) {
-		int idx= fg << 3;
-		idx |= bg;
+		int idx = fgidx << 3;
+		idx |= bgidx;
 
 		if (bright) {
 			Curses.attron(Curses.A_BOLD);
@@ -36,15 +127,13 @@ void ConsoleSetColors(uint fg, uint bg, int bright) {
 			Curses.attroff(Curses.A_BOLD);
 		}
 
-		Curses.init_pair(idx, fg, bg);
+		Curses.init_pair(idx, fgidx, bgidx);
 		Curses.attron(Curses.COLOR_PAIR(idx));
 	}
 	else {
-		printf("\x1B[%d;%d;%dm", bright, 30 + fg, 40 + bg);
+		printf("\x1B[%d;%d;%dm", bright, 30 + fgidx, 40 + bgidx);
 	}
 }
-
-import io.console;
 
 //will return the next character pressed
 Key consoleGetKey() {

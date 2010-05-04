@@ -12,9 +12,7 @@ import cui.container;
 
 private import io.console;
 
-import core.unicode;
-import core.event;
-import core.definitions;
+import djehuty;
 
 class CuiDialog : CuiContainer {
 	this(string title, uint x, uint y, uint width, uint height) {
@@ -30,7 +28,8 @@ class CuiDialog : CuiContainer {
 	override void onDraw() {
 		io.console.Console.position(_base_x + this.left, _base_y + this.top - 1);
 
-		io.console.Console.setColor(_forecolor, _backcolor);
+		io.console.Console.forecolor = _forecolor;
+		io.console.Console.backcolor = _backcolor;
 
 		uint x;
 		if (_title.length + 2 > this.width) {
@@ -70,8 +69,8 @@ protected:
 
 	dstring _title;
 
-	fgColor _forecolor = fgColor.Black;
-	bgColor _backcolor = bgColor.White;
+	Color _forecolor = Color.Black;
+	Color _backcolor = Color.White;
 
 	uint _old_base_y;
 }

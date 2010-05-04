@@ -222,13 +222,13 @@ class Graphics {
 
 	// Description: Will set the text background color, sometimes refered to as the highlight color.
 	// textColor: The Color structure to be used as the background color.
-	void backcolor(ref Color textColor) {
+	void backcolor(in Color textColor) {
 		//Scaffold.setTextBackgroundColor(_viewVars, textColor);
 	}
 
 	// Description: Will set the text foreground color.
 	// textColor: The Color structure to be used as the background color.
-	void forecolor(ref Color textColor) {
+	void forecolor(in Color textColor) {
 		Scaffold.setTextColor(_viewVars, textColor);
 	}
 

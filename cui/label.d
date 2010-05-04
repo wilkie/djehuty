@@ -1,8 +1,6 @@
 module cui.label;
 
-import core.string;
-import core.main;
-import core.definitions;
+import djehuty;
 
 import io.console;
 
@@ -14,8 +12,8 @@ import cui.widget;
 class CuiLabel : CuiWidget {
 
 	this( uint x, uint y, uint width, string text,
-		  fgColor fgclr = fgColor.BrightBlue,
-		  bgColor bgclr = bgColor.Black ) {
+		  Color fgclr = Color.Blue,
+		  Color bgclr = Color.Black ) {
 		super(x,y,width,1);
 
 		_forecolor = fgclr;
@@ -46,32 +44,33 @@ class CuiLabel : CuiWidget {
 
 	// Description: this property sets the foreground color of the field
 	// fgclr: the color to set the foreground to
-	void forecolor(fgColor fgclr) {
+	void forecolor(Color fgclr) {
 		_forecolor = fgclr;
 		onDraw();
 	}
 
 	// Description: this property returns the foreground color of the field
-	fgColor forecolor() {
+	Color forecolor() {
 		return _forecolor;
 	}
 
 	// Description: this property sets the background color of the field
 	// bgclr: the color to set the background to
-	void backcolor(bgColor bgclr) {
+	void backcolor(Color bgclr) {
 		_backcolor = bgclr;
 		onDraw();
 	}
 
 	// Description: this property returns the background color of the field
-	bgColor backcolor() {
+	Color backcolor() {
 		return _backcolor;
 	}
 
 	override void onDraw() {
 		if (canDraw) {
 			Console.position(0, 0);
-			Console.setColor(_forecolor, _backcolor);
+			Console.forecolor = _forecolor;
+			Console.backcolor = _backcolor;
 
 			// draw as much as we can
 
@@ -91,8 +90,8 @@ protected:
 
 private:
 
-	fgColor _forecolor = fgColor.BrightBlue;
-	bgColor _backcolor = bgColor.Black;
+	Color _forecolor = Color.Blue;
+	Color _backcolor = Color.Black;
 
 	string _value;
 }

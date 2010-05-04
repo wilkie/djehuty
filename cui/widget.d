@@ -1,15 +1,10 @@
 module cui.widget;
 
+import djehuty;
+
 import cui.window;
 import cui.application;
 import cui.container;
-
-import core.event;
-import core.main;
-import core.definitions;
-import core.string;
-import core.unicode;
-import core.variant;
 
 private import io.console;
 
@@ -181,16 +176,20 @@ protected:
 			io.console.Console.showCaret();
 		}
 
-		final void setColor(fgColor forecolor) {
-			io.console.Console.setColor(forecolor);
+		final void forecolor(Color value) {
+			io.console.Console.forecolor = value;
 		}
 
-		final void setColor(bgColor backcolor) {
-			io.console.Console.setColor(backcolor);
+		final Color forecolor() {
+			return io.console.Console.forecolor;
 		}
 
-		final void setColor(fgColor forecolor, bgColor backcolor) {
-			io.console.Console.setColor(forecolor, backcolor);
+		final void backcolor(Color value) {
+			io.console.Console.backcolor(value);
+		}
+
+		final Color backcolor() {
+			return io.console.Console.backcolor;
 		}
 
 		// Description: This function will print to the widget.

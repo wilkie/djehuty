@@ -385,46 +385,46 @@ class CuiTextBox : CuiWidget {
 	}
 
 	// Description: This property returns the backcolor color of the text
-	bgColor backcolor() {
+	Color backcolor() {
 		return _backcolor;
 	}
 
 	// Description: This property sets the backcolor of the text
 	// value: the color to set backcolor to
-	void backcolor(bgColor value) {
+	void backcolor(Color value) {
 		_backcolor = value;
 	}
 
 	// Description: This property returns the forecolor color of the text
-	fgColor forecolor() {
+	Color forecolor() {
 		return _forecolor;
 	}
 
 	// Description: This property sets the forecolor of the text
 	// value: the color to set forecolor to
-	void forecolor(fgColor value) {
+	void forecolor(Color value) {
 		_forecolor = value;
 	}
 
 	// Description: This property returns the backcolor color of the line numbers
-	bgColor backcolorNum() {
+	Color backcolorNum() {
 		return _backcolorNum;
 	}
 
 	// Description: This property sets the backcolor of the line numbers
 	// value: the color to set backcolor to
-	void backcolorNum(bgColor value) {
+	void backcolorNum(Color value) {
 		_backcolorNum = value;
 	}
 
 	// Description: returns the forecolor color of the line numbers
-	fgColor forecolorNum() {
+	Color forecolorNum() {
 		return _forecolorNum;
 	}
 
 	// Description: This property sets the forecolor of the line numbers
 	// value: the color to set forecolor to
-	void forecolorNum(fgColor value) {
+	void forecolorNum(Color value) {
 		_forecolorNum = value;
 	}
 
@@ -476,7 +476,8 @@ protected:
 				calculateLineNumbersWidth();
 			}
 			string strLineNumber = new string(lineNumber);
-			Console.setColor(_forecolorNum, _backcolorNum);
+			Console.forecolor = _forecolorNum;
+			Console.backcolor = _backcolorNum;
 			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
 			Console.put(strLineNumber);
 			Console.put(": ");
@@ -524,7 +525,8 @@ protected:
 
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
-			Console.setColor(_forecolor, _backcolor);
+			Console.forecolor = _forecolor;
+			Console.backcolor = _backcolor;
 			if (_firstColumn >= _lines[lineNumber].value.length) {
 			}
 			else {
@@ -534,7 +536,8 @@ protected:
 		else {
 			// Splitting up the line due to formatting
 			for (uint i = 0; i < _lines[lineNumber].format.length; i++) {
-				Console.setColor(cast(fgColor)_lines[lineNumber].format[i].fgCol, cast(bgColor)_lines[lineNumber].format[i].bgCol);
+				Console.forecolor = _lines[lineNumber].format[i].fgCol;
+				Console.backcolor = _lines[lineNumber].format[i].bgCol;
 				//Console.Console.put("[", _lines[lineNumber].format[i].length, "]");
 				uint formatLength = _lines[lineNumber].format[i].len + formatTabExtension[i];
 
@@ -552,7 +555,8 @@ protected:
 			}
 		}
 
-		Console.setColor(_forecolor, _backcolor);
+		Console.forecolor = _forecolor;
+		Console.backcolor = _backcolor;
 		// Pad with spaces
 		uint num = (visibleLine.length - _firstColumn);
 		//uint num = (_lines[lineNumber].value.length - _firstColumn);
@@ -571,7 +575,8 @@ protected:
 		}
 
 		// Output the necessary line continuation symbols.
-		Console.setColor(fgColor.BrightWhite, bgColor.Black);
+		Console.forecolor = Color.White;
+		Console.backcolor = Color.Black;
 		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
 			Console.position(_lineNumbersWidth, lineNumber - _firstVisible);
 			Console.put(_lineCont);
@@ -712,7 +717,7 @@ protected:
 	// The formatting of a line segment
 	static class LineFormat {
 		this () {}
-		this (uint f, uint b, uint l) {
+		this (Color f, Color b, uint l) {
 			fgCol = f;
 			bgCol = b;
 			len = l;
@@ -726,8 +731,8 @@ protected:
 			return cast(int)(this.fgCol == lf.fgCol && this.bgCol == lf.bgCol);
 		}
 
-		uint fgCol;
-		uint bgCol;
+		Color fgCol;
+		Color bgCol;
 		uint len;
 	}
 
@@ -805,10 +810,10 @@ protected:
 	uint _tabWidth;
 
 	// The default text colors
- 	fgColor _forecolor = fgColor.White;
-	bgColor _backcolor = bgColor.Black;
-	fgColor _forecolorNum = fgColor.Yellow;
-	bgColor _backcolorNum = bgColor.Black;
+ 	Color _forecolor = Color.Gray;
+	Color _backcolor = Color.Black;
+	Color _forecolorNum = Color.DarkYellow;
+	Color _backcolorNum = Color.Black;
 
 	// The symbol to use to show a line continuation
 	dchar _lineCont;

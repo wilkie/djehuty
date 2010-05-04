@@ -5,9 +5,7 @@ import cui.widget;
 import cui.container;
 import cui.dialog;
 
-import core.event;
-import core.string;
-import core.definitions;
+import djehuty;
 
 import resource.menu;
 
@@ -21,11 +19,11 @@ class CuiWindow : Responder {
 		this("CuiWindow");
 	}
 
-	this(bgColor bgClr) {
+	this(Color bgClr) {
 		this(bgClr, "CuiWindow");
 	}
 
-	this(bgColor bgClr, string name) {
+	this(Color bgClr, string name) {
 		Console.clipRect(0,0,this.width, this.height);
 		_bgClr = bgClr;
 		_controlContainer = new CuiContainer(0, 0, this.width, this.height);
@@ -47,7 +45,7 @@ class CuiWindow : Responder {
 	void onInitialize() {
 		// go through control list, init
 
-		Console.setColor(_bgClr);
+		Console.backcolor = _bgClr;
 		Console.clear();
 		Console.clipRect(0,0,this.width, this.height);
 
@@ -401,7 +399,7 @@ class CuiWindow : Responder {
 		}
 	}
 
-	bgColor backcolor() {
+	Color backcolor() {
 		return _bgClr;
 	}
 
@@ -459,20 +457,24 @@ private:
 		foreach(subItem; mnu) {
 			Console.position(x, y);
 			if (subItem is _selectedMenu) {
-				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+				Console.forecolor = Color.White;
+				Console.backcolor = Color.Blue;
 			}
 			else {
-				Console.setColor(fgColor.Black, bgColor.White);
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
 			}
 			Console.put(" ");
 			int padding = maxLength - subItem.displayText.length;
 
 			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
 			if (subItem is _selectedMenu) {
-				Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+				Console.forecolor = Color.White;
+				Console.backcolor = Color.Blue;
 			}
 			else {
-				Console.setColor(fgColor.Black, bgColor.White);
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
 			}
 			Console.put(" ");
 			y++;
@@ -481,10 +483,12 @@ private:
 
 	void _drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 0) {
 		if (mnuItem is _selectedMenu) {
-			Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+			Console.forecolor = Color.Gray;
+			Console.backcolor = Color.Blue;
 		}
 		else {
-			Console.setColor(fgColor.Black, bgColor.White);
+			Console.forecolor = Color.Black;
+			Console.backcolor = Color.Gray;
 		}
 
 		if (mnuItem.hintPosition >= 0) {
@@ -494,17 +498,18 @@ private:
 
 			if (mnuItem !is _selectedMenu) {
 				if (drawHints) {
-					Console.setColor(fgColor.BrightBlue);
+					Console.forecolor = Color.Blue;
 				}
 				else {
-					Console.setColor(fgColor.Blue);
+					Console.forecolor = Color.DarkBlue;
 				}
 			}
 
 			Console.put(mnuItem.displayText[mnuItem.hintPosition]);
 
 			if (mnuItem !is _selectedMenu) {
-				Console.setColor(fgColor.Black, bgColor.White);
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
 			}
 			if (mnuItem.hintPosition < mnuItem.displayText.length) {
 				Console.put(mnuItem.displayText[mnuItem.hintPosition + 1..mnuItem.displayText.length]);
@@ -520,7 +525,8 @@ private:
 		}
 
 		if (mnuItem is _selectedMenu) {
-			Console.setColor(fgColor.Black, bgColor.White);
+			Console.forecolor = Color.Black;
+			Console.backcolor = Color.White;
 		}
 	}
 
@@ -532,13 +538,16 @@ private:
 		uint curWidth = this.width;
 
 		Console.position(0,0);
-		Console.setColor(fgColor.Black, bgColor.White);
+		Console.forecolor = Color.Black;
+		Console.backcolor = Color.White;
 
 		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {
-			Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+			Console.forecolor = Color.White;
+			Console.backcolor = Color.Blue;
 		}
 		else {
-			Console.setColor(fgColor.Black, bgColor.White);
+			Console.forecolor = Color.White;
+			Console.backcolor = Color.Blue;
 		}
 		Console.put(" ");
 		curWidth--;
@@ -547,9 +556,11 @@ private:
 			if (curWidth > mnuItem.displayText.length) {
 				_drawMenuItem(mnuItem, drawHints, 0);
 				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
-					Console.setColor(fgColor.BrightWhite, bgColor.Blue);
+					Console.forecolor = Color.White;
+					Console.backcolor = Color.Blue;
 					Console.put(" ");
-					Console.setColor(fgColor.Black, bgColor.White);
+					Console.forecolor = Color.Black;
+					Console.backcolor = Color.White;
 				}
 				else {
 					Console.put(" ");
@@ -713,7 +724,7 @@ private:
 		}
 	}
 
-	bgColor _bgClr = bgColor.Black;
+	Color _bgClr = Color.Black;
 
 	// head and tail of the control linked list
 	CuiWidget _firstControl;	//head

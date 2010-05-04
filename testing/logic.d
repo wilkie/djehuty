@@ -2,6 +2,8 @@ module testing.logic;
 
 public import testing.support : describe, done;
 
+import djehuty;
+
 import io.console;
 
 enum it {
@@ -22,20 +24,20 @@ class Test {
 	void logResult(it result, char[] msg, char[] lineNumber) {
 		if (result == it.does) {
 			// success
-			//Console.setColor(fgColor.BrightGreen);
+			Console.forecolor = Color.Green;
 			//Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
-			//Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 
 			testsOk++;
 			classOk++;
 		}
 		else {
 			// fail
-			Console.setColor(fgColor.BrightRed);
+			Console.forecolor = Color.Red;
 			Console.putln("FAILED : (", specFile, ":", lineNumber, ")");
 			Console.putln("       : ", currentTest, " ", msg);
 			Console.putln();
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 
 			testsFailcopter++;
 			classFail++;
@@ -45,15 +47,15 @@ class Test {
 	void finish() {
 		if (classFail == 0) {
 			// success
-			Console.setColor(fgColor.BrightGreen);
+			Console.forecolor = Color.Green;
 			Console.putln("  OK   : ", currentTest, " (", classOk, " out of ", classOk + classFail, ")");
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 		else {
-			Console.setColor(fgColor.BrightRed);
+			Console.forecolor = Color.Red;
 			Console.putln("FAILED : ", currentTest, " (", classOk, " out of ", classOk + classFail, ")");
 			Console.putln();
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 
 		classOk = 0;
@@ -65,14 +67,14 @@ class Test {
 		Console.putln("Testing Completed");
 		Console.putln("");
 		if (testsFailcopter > 0) {
-			Console.setColor(fgColor.BrightRed);
+			Console.forecolor = Color.Red;
 			Console.putln(testsFailcopter, " tests FAILED");
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 		else {
-			Console.setColor(fgColor.BrightGreen);
+			Console.forecolor = Color.Green;
 			Console.putln("All ", testsOk, " tests SUCCEEDED");
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 		Console.putln("");
 

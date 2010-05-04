@@ -383,7 +383,7 @@ void setAntialias(ViewPlatformVars* viewVars, bool value) {
 
 // Brushes
 
-void createBrush(BrushPlatformVars* brush, ref Color clr) {
+void createBrush(BrushPlatformVars* brush, in Color clr) {
 	brush.handle = Cairo.cairo_pattern_create_rgba(clr.red,clr.green,clr.blue,clr.alpha);
 }
 

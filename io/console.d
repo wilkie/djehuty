@@ -4,10 +4,7 @@ import scaffold.console;
 
 import synch.mutex;
 
-import core.string;
-import core.unicode;
-import core.definitions;
-import core.variant;
+import djehuty;
 
 // Section: Enums
 
@@ -20,84 +17,6 @@ enum ConsoleEvent : uint {
 	CtrlBreak,
 }
 
-// Description: This enum gives all possible foreground colors for the console.
-enum fgColor : uint {
-	// Description: The color black.
-	Black=0,
-
-	// Description: The color red.
-	Red,
-
-	// Description: The color green.
-	Green,
-
-	// Description: The color yellow.
-	Yellow,
-
-	// Description: The color blue.
-	Blue,
-
-	// Description: The color magenta.
-	Magenta,
-
-	// Description: The color cyan.
-	Cyan,
-
-	// Description: The color white.
-	White,
-
-	// Description: The color black (emphasized).
-	BrightBlack,
-
-	// Description: The color red (emphasized).
-	BrightRed,
-
-	// Description: The color green (emphasized).
-	BrightGreen,
-
-	// Description: The color yellow (emphasized).
-	BrightYellow,
-
-	// Description: The color blue (emphasized).
-	BrightBlue,
-
-	// Description: The color magenta (emphasized).
-	BrightMagenta,
-
-	// Description: The color cyan (emphasized).
-	BrightCyan,
-
-	// Description: The color white (emphasized).
-	BrightWhite,
-}
-
-// Description: This enum gives all possible background colors for the console.
-enum bgColor : uint {
-	// Description: The color black.
-	Black=0,
-
-	// Description: The color red.
-	Red,
-
-	// Description: The color green.
-	Green,
-
-	// Description: The color yellow.
-	Yellow,
-
-	// Description: The color blue.
-	Blue,
-
-	// Description: The color magenta.
-	Magenta,
-
-	// Description: The color cyan.
-	Cyan,
-
-	// Description: The color white.
-	White,
-}
-
 // Section: Core
 
 // Description: This class abstracts simple console operations.
@@ -106,52 +25,29 @@ static:
 
 	//Description: Sets the foreground color for the console.
 	//fgclr: The foreground color to set.
-	void setColor(fgColor fclr) {
+	void forecolor(Color clr) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
-		int bright = 0;
-		if (fclr > fgColor.White)
-		{
-			bright = 1;
-		}
-
-	    cur_fg_color = fclr % 8;
-	    cur_bright_color = bright;
-
-	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
+		_fgcolor = clr;
+		ConsoleSetColors(_fgcolor, _bgcolor);
 	}
 
-	//Description: Sets the foreground and background colors for the console.
-	//fgclr: The foreground color to set.
-	//bgclr: The background color to set.
-	void setColor(fgColor fclr, bgColor bclr) {
+	Color forecolor() {
+		return _fgcolor;
+	}
+
+	void backcolor(Color clr) {
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
-		int bright = 0;
-		if (fclr > fgColor.White)
-		{
-			bright = 1;
-		}
-
-	    cur_fg_color = fclr % 8;
-	    cur_bg_color = bclr;
-	    cur_bright_color = bright;
-
-	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
+		_bgcolor = clr;
+	    ConsoleSetColors(_fgcolor, _bgcolor);
 	}
 
-	//Description: Sets the background color for the console.
-	//bgclr: The background color to set.
-	void setColor(bgColor bclr) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
-
-	    cur_bg_color = bclr;
-
-	    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
-	}
+	Color backcolor() {
+		return _bgcolor;
+	}	
 
 	// Description: Clears the console screen.
 	void clear() {
@@ -360,171 +256,7 @@ static:
 		_lock.lock();
 		scope(exit) _lock.unlock();
 
-		if (_vt100_inescape2) {
-			if (chr >= '0' && chr <= '9') {
-				// another number,
-				// add to current param
-				_vt100_params[_vt100_curparam] *= 10;
-				_vt100_params[_vt100_curparam] += chr - cast(ubyte)'0';
-				_vt100_paramFilled = 1;
-			}
-			else if (chr == ';') {
-				// goto next param
-				if (_vt100_curparam < 4) {
-					_vt100_curparam++;
-					_vt100_params[_vt100_curparam] = 0;
-					_vt100_paramFilled = 0;
-				}
-			}
-
-			if ((chr >= 'a' && chr <= 'z') ||
-				(chr >= 'A' && chr <= 'Z')) {
-
-				if (_vt100_curparam < 4 && _vt100_paramFilled != 0) {
-					_vt100_curparam++;
-				}
-				// found a code
-				// interpret this
-				if (chr == 'J') {
-					if (_vt100_params[0] == 2) {
-						ConsoleClear();
-						ConsoleSetHome();
-					}
-					else {
-					}
-				}
-				else if (chr == 's') {
-					// save position
-					//ConsoleSavePosition();
-				}
-				else if (chr == 'u') {
-					// restore position
-					//ConsoleRestorePosition();
-				}
-				else if (chr == 'A') {
-					if (_vt100_params[0] == 0) {
-						_vt100_params[0] = 1;
-					}
-					ConsoleSetRelative(0, -_vt100_params[0]);
-				}
-				else if (chr == 'B') {
-					if (_vt100_params[0] == 0) {
-						_vt100_params[0] = 1;
-					}
-					ConsoleSetRelative(0, _vt100_params[0]);
-				}
-				else if (chr == 'C') {
-					if (_vt100_params[0] == 0)
-					{
-						_vt100_params[0] = 1;
-					}
-					ConsoleSetRelative(_vt100_params[0], 0);
-				}
-				else if (chr == 'D') {
-					if (_vt100_params[0] == 0)
-					{
-						_vt100_params[0] = 1;
-					}
-					ConsoleSetRelative(-_vt100_params[0], 0);
-				}
-				else if (chr == 'H' || chr == 'f') {
-					// set cursor position
-					if (_vt100_params[1] == 0) {
-						_vt100_params[1] = 1;
-					}
-					if (_vt100_params[0] == 0) {
-						_vt100_params[0] = 1;
-					}
-
-					//ConsoleSetPosition(0,45);
-					//writef("H: ", _vt100_params[1]-1, ",", _vt100_params[0]-1);
-
-					ConsoleSetPosition(_vt100_params[1]-1, _vt100_params[0]-1);
-				}
-				else if (chr == 'm') {
-					// color
-
-					int fgclr=-1;
-					int bgclr=-1;
-					int bright=-1;
-
-					for(uint i=0; i<_vt100_curparam; i++) {
-						if (_vt100_params[i] >= 30 && _vt100_params[i] <= 37) {
-							fgclr = _vt100_params[i] - 30;
-						}
-						else if (_vt100_params[i] == 39) {
-							fgclr = fgColor.White;
-						}
-						else if (_vt100_params[i] >= 40 && _vt100_params[i] <= 47) {
-							bgclr = _vt100_params[i] - 40;
-						}
-						else if (_vt100_params[i] == 49) {
-							bgclr = bgColor.Black;
-						}
-						else if (_vt100_params[i] == 0) {
-							bright = 0;
-							fgclr = fgColor.White;
-							bgclr = fgColor.Black;
-						}
-						else if (_vt100_params[i] < 2) {
-							bright = _vt100_params[i];
-						}
-						else if (_vt100_params[i] == 7) {
-							// invert the colors
-						}
-					}
-
-					if (bright != -1) {
-					    cur_bright_color = bright;
-					}
-
-					if (fgclr != -1) {
-						cur_fg_color = fgclr;
-					}
-
-					if (bgclr != -1) {
-						cur_bg_color = bgclr;
-				    }
-
-				    ConsoleSetColors(cur_fg_color, cur_bg_color, cur_bright_color);
-				}
-				else {
-				}
-
-				_vt100_inescape2 = false;
-			}
-			return;
-		}
-		else if (_vt100_inescape) {
-			if (chr == '[') {
-				_vt100_inescape2 = true;
-				_vt100_inescape = false;
-				return;
-			}
-			_vt100_inescape = false;
-		}
-
-		if (chr == 13) {
-			//ConsoleSetRelative(0,1);
-			//ConsoleSetHome();
-			_putChar(chr);
-		}
-		else if (chr == 27 && _vt100_emulation) {
-			_vt100_curparam = 0;
-			_vt100_inescape = true;
-			_vt100_params[0] = 0;
-			_vt100_params[1] = 0;
-			_vt100_params[2] = 0;
-			_vt100_paramFilled = 0;
-		}
-		else if (chr == 10) {
-			//ConsoleSetRelative(0,1);
-			//ConsoleSetHome();
-			_putChar(chr);
-		}
-		else {
-			_putChar(chr);
-		}
+		_putChar(chr);
 	}
 
 	void lock() {
@@ -542,9 +274,8 @@ static:
 
 private:
 
-	uint cur_fg_color = fgColor.White;
-	uint cur_bg_color = bgColor.Black;
-	uint cur_bright_color = 0;
+	Color _fgcolor = Color.White;
+	Color _bgcolor = Color.Black;
 
 	bool _vt100_emulation = false;
 	bool _vt100_inescape = false;

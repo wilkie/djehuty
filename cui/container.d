@@ -12,9 +12,7 @@ module cui.container;
 
 import cui.widget;
 
-import core.event;
-import core.definitions;
-import core.string;
+import djehuty;
 
 private import io.console;
 
@@ -88,10 +86,10 @@ class CuiContainer : CuiWidget {
 		// Should clear the rest of the space not used by a widget
 		static string spaces = "                                                                                                                  ";
 
-		Console.setColor(bgColor.White);
+		Console.backcolor = Color.Gray;
 		for (uint i; i < this.height; i++) {
 			Console.position(0,i);
-			io.console.Console.setColor(bgColor.Black);
+			io.console.Console.backcolor = Color.Black;
 			uint numSpaces = this.width;
 
 			do {

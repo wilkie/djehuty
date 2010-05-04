@@ -1,8 +1,6 @@
 module cui.buffer;
 
-import core.string;
-import core.main;
-import core.definitions;
+import djehuty;
 
 import data.list;
 
@@ -30,12 +28,11 @@ class CuiBuffer : CuiWidget
 
 		_buffer = new List!(BufferLine)();
 
-		for (uint i; i<_h; i++)
-		{
+		for (uint i; i<_h; i++) {
 			BufferLine bf = new BufferLine;
 			bf.line = new emptyChar[width];
-			bf.bgclr = new bgColor[width];
-			bf.fgclr = new fgColor[width];
+			bf.bgclr = new Color[width];
+			bf.fgclr = new Color[width];
 			_buffer.add(bf);
 		}
 
@@ -137,18 +134,18 @@ class CuiBuffer : CuiWidget
 		uint curx = 0;
 		uint cury = _firstVisible;
 
-		fgColor fgclr;
-		bgColor bgclr;
+		Color fgclr;
+		Color bgclr;
 
 		fgclr = _buffer[cury].fgclr[0];
 		bgclr = _buffer[cury].bgclr[0];
 
-		Console.setColor(fgclr, bgclr);
+		Console.forecolor = fgclr;
+		Console.backcolor = bgclr;
 
 		BufferLine bf;
 
-		for (uint y = _y; y < _b; y++, cury++)
-		{
+		for (uint y = _y; y < _b; y++, cury++) {
 			Console.position(0,30);
 			Console.put("y ", _curx, " ", _cury);
 			Console.position(_x, y);
@@ -156,11 +153,10 @@ class CuiBuffer : CuiWidget
 			bf = _buffer[cury];
 
 			curx = 0;
-			for (curx = 0; curx < _w; curx++)
-			{
-				if (bf.fgclr[curx] != fgclr || bf.bgclr[curx] != bgclr)
-				{
-					Console.setColor(bf.fgclr[curx], bf.bgclr[curx]);
+			for (curx = 0; curx < _w; curx++) {
+				if (bf.fgclr[curx] != fgclr || bf.bgclr[curx] != bgclr) {
+					Console.forecolor = bf.fgclr[curx];
+					Console.backcolor = bf.bgclr[curx];
 					fgclr = bf.fgclr[curx];
 					bgclr = bf.bgclr[curx];
 				}
@@ -177,8 +173,23 @@ class CuiBuffer : CuiWidget
 
 	// Methods
 
-	void setColor(fgColor fgclr, bgColor bgclr)
-	{
+	void forecolor(Color fgclr) {
+		_drawLock.down();
+
+		_curfg = fgclr;
+
+		_drawLock.up();
+	}
+
+	void backcolor(Color bgclr) {
+		_drawLock.down();
+
+		_curbg = bgclr;
+
+		_drawLock.up();
+	}
+
+	void setColors(Color fgclr, Color bgclr) {
 		_drawLock.down();
 
 		_curfg = fgclr;
@@ -187,8 +198,7 @@ class CuiBuffer : CuiWidget
 		_drawLock.up();
 	}
 
-	void writeChar(dchar chr)
-	{
+	void writeChar(dchar chr) {
 		static int a = 0;
 		Console.position((a * 10),29);
 		Console.put(_curx, " ", _cury);
@@ -197,7 +207,7 @@ class CuiBuffer : CuiWidget
 		{
 			_linefeed();
 
-		Console.position((a * 10),29);
+			Console.position((a * 10),29);
 			Console.put("lf: ", _curx, " ", _cury);
 		}
 		a++;
@@ -206,7 +216,8 @@ class CuiBuffer : CuiWidget
 		_drawLock.down();
 
 		Console.position(_curx, _cury);
-		Console.setColor(_curfg, _curbg);
+		Console.forecolor = _curfg;
+		Console.backcolor = _curbg;
 
 		Console.put(chr);
 
@@ -243,7 +254,8 @@ class CuiBuffer : CuiWidget
 		_buffer[y].fgclr[x] = _curfg;
 
 		Console.position(x+_x, y+_y);
-		Console.setColor(_curfg, _curbg);
+		Console.forecolor = _curfg;
+		Console.backcolor = _curbg;
 
 		Console.put(chr);
 
@@ -288,11 +300,9 @@ class CuiBuffer : CuiWidget
 
 protected:
 
-	void _linefeed()
-	{
-
+	void _linefeed() {
 		Console.position((4 * 10),29);
-			Console.put("af: ", _curx, " ", _cury);
+		Console.put("af: ", _curx, " ", _cury);
 		_drawLock.down();
 
 		bool needRedraw = false;
@@ -302,9 +312,8 @@ protected:
 		// linefeed
 		_cury++;
 
-		while (_cury >= _b)
-		{
-		Console.position((4 * 10),29);
+		while (_cury >= _b) {
+			Console.position((4 * 10),29);
 			Console.put("bf: ", _curx, " ", _cury);
 			// we have reached the bottom
 			// we have to move the first line
@@ -312,29 +321,27 @@ protected:
 
 			BufferLine bl;
 
-			for(uint i=0; i<_linesToScroll;i++)
-			{
+			for(uint i=0; i<_linesToScroll;i++) {
 				bl = null;
-				while (bl is null)
-				{
+				while (bl is null) {
 					bl = new BufferLine();
 				}
-		Console.position((4 * 10),29);
-			Console.put("ef: ", _curx, " ", _cury);
-				bl.fgclr = new fgColor[_w];
-		Console.position((4 * 10),29);
-			Console.put("ff: ", _curx, " ", _cury);
-				bl.bgclr = new bgColor[_w];
-		Console.position((4 * 10),29);
-			Console.put("df: ", _curx, " ", _cury);
+				Console.position((4 * 10),29);
+				Console.put("ef: ", _curx, " ", _cury);
+				bl.fgclr = new Color[_w];
+				Console.position((4 * 10),29);
+				Console.put("ff: ", _curx, " ", _cury);
+				bl.bgclr = new Color[_w];
+				Console.position((4 * 10),29);
+				Console.put("df: ", _curx, " ", _cury);
 				bl.line = new emptyChar[_w];
-		Console.position((4 * 10),29);
-			Console.put("gf: ", _curx, " ", _cury);
+				Console.position((4 * 10),29);
+				Console.put("gf: ", _curx, " ", _cury);
 				_buffer.add(bl);
-		Console.position((4 * 10),29);
-			Console.put("hf: ", _curx, " ", _cury);
+				Console.position((4 * 10),29);
+				Console.put("hf: ", _curx, " ", _cury);
 			}
-		Console.position((4 * 10),29);
+			Console.position((4 * 10),29);
 			Console.put("cf: ", _curx, " ", _cury);
 
 			_firstVisible += _linesToScroll;
@@ -368,8 +375,8 @@ protected:
 		{
 			BufferLine bl = new BufferLine();
 			bl.line = new emptyChar[_w];
-			bl.fgclr = new fgColor[_w];
-			bl.bgclr = new bgColor[_w];
+			bl.fgclr = new Color[_w];
+			bl.bgclr = new Color[_w];
 			_buffer.add(bl);
 		}
 
@@ -398,14 +405,14 @@ protected:
 	// keep a line buffer of previous lines, for scrollback, etc
 	class BufferLine {
 		emptyChar[] line = null;
-		fgColor[] fgclr = null;
-		bgColor[] bgclr = null;
+		Color[] fgclr = null;
+		Color[] bgclr = null;
 	}
 	List!(BufferLine) _buffer;
 	uint _firstVisible;	// first line visible
 
-	fgColor _curfg = fgColor.White;
-	bgColor _curbg = bgColor.Black;
+	Color _curfg = Color.White;
+	Color _curbg = Color.Gray;
 
 	uint _curx;
 	uint _cury;

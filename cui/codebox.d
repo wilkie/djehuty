@@ -12,11 +12,9 @@ module cui.codebox;
 
 import cui.textbox;
 
-import io.console;
+import djehuty;
 
-import core.regex;
-import core.string;
-import core.definitions;
+import io.console;
 
 class CuiCodeBox : CuiTextBox {
 
@@ -80,13 +78,13 @@ class CuiCodeBox : CuiTextBox {
 
 private:
 
-	void addFormat(uint lineNumber, uint firstPos, uint length, fgColor forecolor, bgColor backcolor) {
+	void addFormat(uint lineNumber, uint firstPos, uint length, Color forecolor, Color backcolor) {
 		if (_lines[lineNumber].format is null) {
 			// Simply add
 			_lines[lineNumber].format = [
-				new LineFormat(cast(uint)_forecolor, cast(uint)_backcolor, firstPos),
-				new LineFormat(cast(uint)forecolor, backcolor, length),
-				new LineFormat(cast(uint)_forecolor, cast(uint)_backcolor, _lines[lineNumber].value.length - (firstPos + length))
+				new LineFormat(_forecolor, _backcolor, firstPos),
+				new LineFormat(forecolor, backcolor, length),
+				new LineFormat(_forecolor, _backcolor, _lines[lineNumber].value.length - (firstPos + length))
 			];
 		}
 		else {
@@ -107,7 +105,7 @@ private:
 			// Split format at firstPos
 			newFormat = _lines[lineNumber].format[0..formatIdx+1];
 			newFormat[formatIdx+1].len = firstPos - last;
-			newFormat ~= [new LineFormat(cast(uint)forecolor, cast(uint)backcolor, length)];
+			newFormat ~= [new LineFormat(forecolor, backcolor, length)];
 			newFormat ~= _lines[lineNumber].format[formatIdx..formatIdx+1];
 			newFormat[formatIdx+2].len = pos - (firstPos + length);
 
@@ -117,20 +115,20 @@ private:
 
 	struct SyntaxRule {
 		string regex;
-		fgColor forecolor;
-		bgColor backcolor;
+		Color forecolor;
+		Color backcolor;
 	}
 
 	SyntaxRule[] _rules = [
 		// Line Comments
-//		{ `//([^\n\r]*)`, fgColor.Green, bgColor.Black},
+//		{ `//([^\n\r]*)`, Color.Green, Color.Black},
 		// Block Comments
-//		{ `/\*([^\*](?:\*[^/])?)*(?:\*/)?`, fgColor.Green, bgColor.Black},
+//		{ `/\*([^\*](?:\*[^/])?)*(?:\*/)?`, Color.Green, Color.Black},
 		// Double Quote strings
-//		{ `"((?:[^\\"](?:\\.)?)*)"?`, fgColor.Magenta, bgColor.Black},
+//		{ `"((?:[^\\"](?:\\.)?)*)"?`, Color.Magenta, Color.Black},
 		// Keywords
-		{ `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`, fgColor.BrightBlue, bgColor.Black },
+		{ `\b(abstract|alias|align|asm|assert|auto|body|bool|break|byte|case|cast|catch|cdouble|cent|cfloat|char|class|const|continue|creal|dchar|debug|default|delegate|delete|deprecated|do|double|else|enum|export|extern|false|final|finally|float|for|foreach|foreach_reverse|function|goto|idouble|if|ifloat|import|in|inout|int|interface|invariant|ireal|is|lazy|long|macro|mixin|module|new|null|out|override|package|pragma|private|protected|public|real|ref|return|scope|short|static|struct|super|switch|synchronized|template|this|throw|__traits|true|try|typedef|typeof|ubyte|ucent|uint|ulong|union|unittest|ushort|version|void|volatile|wchar|while|with)\b`, Color.Blue, Color.Black },
 		// Operators
-//		{ `[\(\)]+`, fgColor.Red, bgColor.Black}
+//		{ `[\(\)]+`, Color.Red, Color.Black}
 	];
 }
