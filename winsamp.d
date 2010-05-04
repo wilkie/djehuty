@@ -1,5 +1,6 @@
 import djehuty;
 
+import data.list;
 import gui.application;
 import gui.window;
 import gui.button;
@@ -63,8 +64,8 @@ import data.queue2;
 
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
-	override void onApplicationStart() {
 
+	override void onApplicationStart() {
 		q = new Queue2!(string);
 		Thread t = Thread.current;
 
@@ -170,6 +171,9 @@ class MyConsoleApp : Application {
 		Atomic.add(foo, 45);
 		Console.putln(foo);
 		Console.putln(q);
+		
+		Console.putln([1,2,3,4].rotate(-1));
+
 		for(;;){}
 	}
 

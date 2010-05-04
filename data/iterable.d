@@ -1,6 +1,7 @@
 module data.iterable;
 
 import djehuty;
+import io.console;
 
 // Description: This template resolves to true when the type T is
 //   either an array or a class that inherits from Iterable.
@@ -626,5 +627,42 @@ template addBetween(T, S) {
 		ret ~= [list[list.length-1]];
 
 		return ret;
+	}
+}
+
+// Description: This function will rotate an array by shifting the contents in place.
+// list: An Iterable type.
+// amount: The amount to rotate to the left. To rotate to the right, specify a negative value.
+// Returns: Simply returns the reference to the input.
+template rotate(T) {
+	static assert(IsIterable!(T), "rotate: " ~ T.stringof ~ " is not iterable.");
+	IterableType!(T)[] rotate(T list, int amount) {
+		if (list.length == 0) {
+			return list;
+		}
+
+		amount %= list.length;
+		if (amount == 0) {
+			return list;
+		}
+
+		IterableType!(T) tmp;
+
+		if ((amount % list.length) == 0) {
+			// Will require multiple passes
+		}
+		else {
+			size_t swapWith;
+			size_t swapIndex = 0;
+			tmp = list[0];
+			for (size_t i = 0; i < list.length-1; i++) {
+				swapWith = (swapIndex + amount) % list.length;
+				list[swapIndex] = list[swapWith];
+				swapIndex = swapWith;
+			}
+			list[swapIndex] = tmp;
+		}
+
+		return list;
 	}
 }

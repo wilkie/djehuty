@@ -488,39 +488,7 @@ static:
 	}
 
 	dchar toUtf32Char(wstring src) {
-		// grab the first character,
-		// convert it to a UTF-32 character,
-		// and then return
-
-		wchar* source = src.ptr;
-		wchar* sourceEnd = &src[$-1] + 1;
-
-		dchar ch, ch2;
-
-		ch = *source++;
-		/* If we have a surrogate pair, convert to UTF32 first. */
-		if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
-			/* If the 16 bits following the high surrogate are in the source buffer... */
-			if (source < sourceEnd) {
-				ch2 = *source;
-				/* If it's a low surrogate, convert to UTF32. */
-				if (ch2 >= UNI_SUR_LOW_START && ch2 <= UNI_SUR_LOW_END) {
-					ch = ((ch - UNI_SUR_HIGH_START) << halfShift) + (ch2 - UNI_SUR_LOW_START) + halfBase;
-					// found a valid character
-				}
-				else {
-					return UNI_REPLACEMENT_CHAR;
-				}
-			}
-			else {
-				/* We don't have the 16 bits following the high surrogate. */
-				// sourceExhausted
-				return UNI_REPLACEMENT_CHAR;
-			}
-		}
-		// else: found a valid character
-
-		return ch;
+		return toUtf32(src)[0];
 	}
 
 	dchar toUtf32Char(dstring src) {
@@ -529,10 +497,19 @@ static:
 		return src[0];
 	}
 
+	bool isDeadChar(char[] chr) {
+		dchar dchr = toUtf32Char(chr);
+		return isDeadChar(dchr);
+	}
 
+	bool isDeadChar(wchar[] chr) {
+		dchar dchr = toUtf32Char(chr);
+		return isDeadChar(dchr);
+	}
 
-
-
+	bool isDeadChar(dchar[] chr) {
+		return isDeadChar(chr[0]);
+	}
 
 	bool isDeadChar(dchar chr) {
 		// if it is a dead character
@@ -708,9 +685,6 @@ static:
 
 		return cast(dchar[])container;
 	}
-
-
-
 
 	wchar[] toUtf16Chars(dstring src) {
 		wchar[] container;
@@ -1057,6 +1031,26 @@ static:
 		return ret;
 	}
 
+	bool isStartChar(char chr) {
+		// Look for non-surrogate entries
+		if ((chr & 0b11000000) == 0b10000000) { // Signature for a follow up byte
+			return false;
+		}
+		return true;
+	}
+
+	bool isStartChar(wchar chr) {
+		// Look for non-surrogate entries
+		if (chr >= UNI_SUR_LOW_START && chr <= UNI_SUR_LOW_END) {
+			return false;
+		}
+		return true;
+	}
+
+	bool isStartChar(dchar chr) {
+		// Obvious
+		return true;
+	}
 
 	dchar fromCP866(char chr) {
 		if (chr < 0x80) {
