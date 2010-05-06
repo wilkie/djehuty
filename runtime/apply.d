@@ -6,118 +6,104 @@
  *
  */
 
-module runtime.array;
+module runtime.apply;
 
 import runtime.common;
 
 import core.unicode;
 
+import io.console;
+
 extern(D) typedef int delegate(void*) apply_dg_t;
-extern(D) typedef int delegate(size_t, void*) apply_dg2_t;
+extern(D) typedef int delegate(size_t*, void*) apply_dg2_t;
 
 extern(C):
 
-const char[] applyCode = `
-	// Capture the result
-	int result;
+private {
+	const char[] applyCode = `
+		// Capture the result
+		int result;
 
-	// Value to give to the loop (outside of loop stack frame)
-	typeof(array[0]) val;
-	foreach(ref chr; array) {
-		val = chr;
-		// Call the loop body of the foreach, passing the pointer to the character
-		result = loopBody(&val);
-
-		// It will return nonzero when it breaks out of the loop early
-		if (result) {
-			return result;
-		}
-	}
-
-	// Return result
-	return result;
-`;
-
-const char[] indexedApplyCode = `
-	// Capture the result
-	int result;
-
-	// Value to give to the loop (outside of loop stack frame)
-	typeof(array[0]) val;
-	foreach(size_t idx, ref chr; array) {
-		val = chr;
-		// Call the loop body of the foreach, passing the pointer to the character and index
-		result = loopBody(idx, &val);
-
-		// It will return nonzero when it breaks out of the loop early
-		if (result) {
-			return result;
-		}
-	}
-
-	// Return result
-	return result;
-`;
-
-// Note: this code will add like "foo".reverse, and respect combining marks!
-// so, it does something like a foreach(chr; foo.dup.reverse), but more space efficient
-const char[] applyReverseCode = `
-	int result;
-
-	typeof(array[0]) val;
-	int endIdx = array.length;
-	for(int idx = array.length-1; idx < 0; idx--) {
-		if (Unicode.isStartChar(array[idx]) && !Unicode.isDeadChar(array[idx..$])) {
-			for(int subIdx = idx; subIdx < endIdx; subIdx++) {
-				val = array[subIdx];
-				result = loopBody(&val);
-				if (result) {
-					return result;
-				}
+		foreach(size_t idx, ref chr; array) {
+			// Call the loop body of the foreach, passing the pointer to the character
+			result = loopBody(&array[idx]);
+	
+			// It will return nonzero when it breaks out of the loop early
+			if (result) {
+				return result;
 			}
-			endIdx = idx;
 		}
-	}
-	return result;
-`;
 
-const char[] indexedApplyReverseCode = `
-	int result;
+		// Return result
+		return result;
+	`;
 
-	typeof(array[0]) val;
-	int endIdx = array.length;
-	int loopIdx = array.length;
-	for(int idx = array.length-1; idx >= 0; idx--) {
-		if (Unicode.isStartChar(array[idx]) && !Unicode.isDeadChar(array[idx..$])) {
-			for(int subIdx = idx; subIdx < endIdx; subIdx++) {
-				val = array[subIdx];
-				loopIdx--;
-				result = loopBody(loopIdx, &val);
-				if (result) {
-					return result;
-				}
+	const char[] indexedApplyCode = `
+		// Capture the result
+		int result;
+
+		foreach(size_t idx, ref chr; array) {
+			// Call the loop body of the foreach, passing the pointer to the character and index
+			result = loopBody(&idx, &array[idx]);
+	
+			// It will return nonzero when it breaks out of the loop early
+			if (result) {
+				return result;
 			}
-			endIdx = idx;
 		}
-	}
-	return result;
-`;
 
-private template _apply(T, char[] code) {
-	static if (is(T : dchar)) {
-		const char[] _apply = `
-			dchar[] array = Unicode.toUtf32(input);` ~ code;
-	}
-	else static if (is(T : wchar)) {
-		const char[] _apply = `
-			wchar[] array = Unicode.toUtf16(input);` ~ code;
-	}
-	else static if (is(T : char)) {
-		const char[] _apply = `
-			char[] array = Unicode.toUtf8(input);` ~ code;
-	}
-	else {
-		static assert(false, "Runtime mixin for string apply functions has been misused.");
+		// Return result
+		return result;
+	`;
+
+	const char[] applyReverseCode = `
+		int result;
+
+		foreach_reverse(size_t idx, ref chr; array) {
+			// Call the loop body of the foreach, passing the pointer to the character and index
+			result = loopBody(&array[idx]);
+	
+			// It will return nonzero when it breaks out of the loop early
+			if (result) {
+				return result;
+			}
+		}
+
+		return result;
+	`;
+
+	const char[] indexedApplyReverseCode = `
+		int result;
+
+		foreach_reverse(size_t idx, ref chr; array) {
+			// Call the loop body of the foreach, passing the pointer to the character and index
+			result = loopBody(&idx, &array[idx]);
+	
+			// It will return nonzero when it breaks out of the loop early
+			if (result) {
+				return result;
+			}
+		}
+
+		return result;
+	`;
+
+	template _apply(T, char[] code) {
+		static if (is(T : dchar) && T.sizeof == dchar.sizeof) {
+			const char[] _apply = `
+				dchar[] array = Unicode.toUtf32(input);` ~ code;
+		}
+		else static if (is(T : wchar) && T.sizeof == wchar.sizeof) {
+			const char[] _apply = `
+				wchar[] array = Unicode.toUtf16(input);` ~ code;
+		}
+		else static if (is(T : char) && T.sizeof == char.sizeof) {
+			const char[] _apply = `
+				char[] array = Unicode.toUtf8(input);` ~ code;
+		}
+		else {
+			static assert(false, "Runtime mixin for string apply functions has been misused.");
+		}
 	}
 }
 
@@ -136,7 +122,7 @@ int _aApplycd1(char[] input, apply_dg_t loopBody) {
 // Description: This runtime function will decode a UTF16 string into char
 // elements. Used with a foreach loop of the form: foreach(char;: wchar[]).
 int _aApplywc1(wchar[] input, apply_dg_t loopBody) {
-	mixin(_apply!(wchar, applyCode));
+	mixin(_apply!(char, applyCode));
 }
 
 // Description: This runtime function will decode a UTF16 string into dchar

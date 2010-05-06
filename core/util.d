@@ -40,6 +40,20 @@ template IsUnsigned(T) {
 			|| is(T == ubyte);
 }
 
+// Description: Resolves to true when T is a char, wchar, or dchar and false otherwise.
+template IsCharType(T) {
+	const bool IsCharType = is(T == char)
+		|| is(T == wchar)
+		|| is(T == dchar);
+}
+
+// Description: Resolves to true when T is a string, wstring, or dstring and false otherwise.
+template IsStringType(T) {
+	const bool IsStringType = is(T == char[])
+		|| is(T == wchar[])
+		|| is(T == dchar[]);
+}
+
 // Description: Resolves to true when T is an byte, short, int, or long and false otherwise.
 template IsSigned(T) {
 	const bool IsSigned = is(T == int)

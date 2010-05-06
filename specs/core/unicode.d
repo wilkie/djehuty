@@ -18,6 +18,20 @@ describe unicode() {
 	wstring empty16 = "";
 	string empty8 = "";
 
+	describe toUtf8() {
+		it should_work_for_utf32() {
+			should(Unicode.toUtf8(utf32) == utf8);
+		}
+
+		it should_work_for_utf16() {
+			should(Unicode.toUtf8(utf16) == utf8);
+		}
+
+		it should_work_for_utf8() {
+			should(Unicode.toUtf8(utf8) == utf8);
+		}
+	}
+
 	describe utflen() {
 		it should_be_the_same_for_utf8_as_utf32() {
 			uint length = Unicode.utflen(utf8);

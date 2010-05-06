@@ -6,7 +6,7 @@ import math.random;
 
 describe random() {
 	const uint SEED = 12345678;
-	const uint REPEATS = 10000000;
+	const uint REPEATS = 1000000;
 
 	describe creation() {
 		it should_have_sane_defaults() {

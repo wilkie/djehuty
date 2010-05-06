@@ -25,7 +25,7 @@ class Test {
 		if (result == it.does) {
 			// success
 			Console.forecolor = Color.Green;
-			//Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
+			Console.putln("  OK   : (", lineNumber, ") : ", currentTest, " ", msg);
 			Console.forecolor = Color.Gray;
 
 			testsOk++;

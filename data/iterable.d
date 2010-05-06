@@ -648,21 +648,181 @@ template rotate(T) {
 
 		IterableType!(T) tmp;
 
-		if ((amount % list.length) == 0) {
+		size_t iterations = 1;
+		if ((list.length % amount) == 0) {
 			// Will require multiple passes
+			iterations = amount;
 		}
-		else {
+
+		// Figure out the number of swaps per iteration
+		size_t maxSwaps = list.length / iterations;
+		maxSwaps--;		// account for final swap outside of loop
+
+		while(iterations > 0) {
 			size_t swapWith;
-			size_t swapIndex = 0;
-			tmp = list[0];
-			for (size_t i = 0; i < list.length-1; i++) {
+			size_t swapIndex = iterations-1;
+			tmp = list[swapIndex];
+			for (size_t i = 0; i < maxSwaps; i++) {
 				swapWith = (swapIndex + amount) % list.length;
 				list[swapIndex] = list[swapWith];
 				swapIndex = swapWith;
 			}
 			list[swapIndex] = tmp;
+
+			iterations--;
 		}
 
 		return list;
 	}
 }
+
+// Description: This function will reverse the contents of the array in place. It will respect unicode
+//   encoding in terms of grouping combining marks for utf encoded strings.
+// list: An Iterable type.
+// Returns: Simply returns the reference to the input.
+template reverse(T) {
+	static assert(IsIterable!(T), "reverse: " ~ T.stringof ~ " is not iterable.");
+	IterableType!(T)[] reverse(T list) {
+		static if (IsCharType!(IterableType!(T))) {
+			// We are reversing a unicode string
+			return unicode_reverse(list);
+		}
+		else {
+			// Normal reverse
+			size_t front, end;
+
+			// Go from front to end, and swap each index
+
+			// Note: Since the array passed has a length measured in a factor
+			//   of elementSize, we need to account for that when we treat
+			//   it is a byte array.
+
+			if (list.length == 0) {
+				return list;
+			}
+
+			front = 0;
+			end = list.length-1;
+
+			while(front < end) {
+				IterableType!(T) tmp = list[front];
+				list[front] = list[end];
+				list[end] = tmp;
+
+				front++;
+				end--;
+			}
+
+			return list;
+		}
+	}
+}
+
+// This internal function will reverse a unicode string of any flavor.
+private template unicode_reverse(T) {
+	T[] unicode_reverse(T[] a) {
+		// for all elements in 'a'
+		// A: Identify two substrings to swap
+		// B: Swap
+
+		size_t frontIndex = 0;
+		size_t frontLength = 0;
+
+		size_t endIndex = a.length;
+		size_t endLength = 0;
+
+		size_t swapLength = 0;
+		int swapRotate = 0;
+
+		// Two sections will swap: 
+		// - a[frontIndex..frontIndex+frontLength]
+		// - a[endIndex..endIndex+endLength]
+
+		// If the two sections do not completely match up, it passes
+		// responsibility to the next iteration to move the remaining elements.
+
+		// Like so:
+		// [0][1][ ][ ][ ][ ][2][3][4]
+		//  \- frontIndex
+		// |----| frontLength
+		//                    \- endIndex
+		//                   |-------| endLength
+
+		// Will become:
+		// [2][3][ ][ ][ ][ ][4][0][1]
+		//       |-------------| next iteration
+		//                    \- endIndex
+		//                   |-| - endLength
+
+		// The next iteration will move the remaining elements to the front during
+		// the swap phase. This is done to avoid phase shifting an array and to
+		// promote a O(1) space complexity.
+
+		while(frontIndex <= endIndex) {
+			// Find length of next substring to swap
+			if (frontLength == 0) {
+				frontLength = 1;
+				while(!Unicode.isStartChar(a[frontIndex+frontLength]) 
+						|| Unicode.isDeadChar(a[frontIndex+frontLength..$])) {
+					if (frontIndex + frontLength == endIndex) {
+						// Do not count it if it is within the endIndex,
+						// This would mean the combining marks have been swapped onto another character
+						break;
+					}
+					frontLength++;
+				}
+			}
+
+			// Find length of next substring from end to swap with
+			if (endLength == 0) {
+				endIndex--;
+				while(!Unicode.isStartChar(a[endIndex]) 
+						|| Unicode.isDeadChar(a[endIndex..$])) {
+					endIndex--;
+					endLength++;
+				}
+				endLength++;
+			}
+
+			if (frontIndex + frontLength > endIndex) {
+				// We do not have to move the middle substring
+				break;
+			}
+
+			// Figure out the number to swap (lowest length)
+			if (frontLength < endLength) {
+				swapLength = frontLength;
+				swapRotate = cast(int)(swapLength);
+
+				// Shift end
+				a[endIndex..endIndex+endLength].rotate(swapRotate);
+			}
+			else {
+				swapLength = endLength;
+				swapRotate = cast(int)(cast(long)frontLength - cast(long)swapLength);
+
+				// Shift front
+				a[frontIndex..frontIndex+frontLength].rotate(swapRotate);
+			}
+
+			// xor swap front and end
+			for(size_t swapCount = 0; swapCount < swapLength; swapCount++) {
+				size_t index1 = frontIndex + swapCount;
+				size_t index2 = endIndex + endLength - swapLength + swapCount;
+				a[index1] ^= a[index2];
+				a[index2] ^= a[index1];
+				a[index1] ^= a[index2];
+			}
+
+			// Move to next position in string
+			frontIndex += swapLength;
+
+			frontLength -= swapLength;
+			endLength -= swapLength;
+		}
+
+		return a;
+	}
+}
+
+
