@@ -75,6 +75,7 @@ class ParseDSpec : ParseUnit {
 		// hook for describe section
 		registerToken("describe", &parseDescribe);
 		registerToken("import", &parseImport);
+		registerToken("module", &parseImport);
 
 		// hook for comments
 		//registerToken(...)
@@ -88,6 +89,34 @@ class ParseDSpec : ParseUnit {
 	void parseImport() {
 		AST ast = newParseUnit(new ParseImport());
 		progressTree(ast);
+	}
+
+	void parseModule() {
+		AST ast = newParseUnit(new ParseModule());
+		progressTree(ast);
+	}
+}
+
+class ParseModule : ParseUnit {
+	string mod;
+
+	this() {
+		registerToken(";", &parseSemicolon);
+		mod = "";
+	}
+
+	void parseSemicolon() {
+		AST ast = new AST(null, null);
+		ast.value = mod;
+		progressTree(ast);
+
+		done();
+	}
+
+	void parseDefault() {
+		if (currentToken != "module") {
+			mod ~= currentToken;
+		}
 	}
 }
 

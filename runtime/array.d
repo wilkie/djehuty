@@ -90,7 +90,7 @@ int _adEq(void[] a1, void[] a2, TypeInfo ti) {
 
 // Description: This runtime function sorts an array and is invoked with
 // the sort property: array.sort
-Array _adSort(Array a, TypeInfo ti) {
+void[] _adSort(void[] a, TypeInfo ti) {
 	return a;
 }
 

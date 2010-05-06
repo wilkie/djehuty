@@ -64,14 +64,28 @@ class Output {
 							tests = null;
 							lines = null;
 							className = null;
+							moduleName = null;
 
 							printDescribe(node);
 							break;
 						case "ParseImport":
 							printImport(node);
 							break;
+						case "ParseModule":
+							node = node.right;
+							if (node !is null) {
+								if (node.valueType == AST.ValueType.Name) {
+								}
+								else {
+									string content;
+									node.getValue(content);
+									moduleName = content;
+								}
+							}
+
+							break;
 						default:
-							// error
+						// error
 							break;
 					}
 				}
@@ -150,6 +164,7 @@ protected:
 	File outfp;
 	//_iobuf* outfp;
 	string className;
+	string moduleName;
 	string[] tests;
 	ulong[] lines;
 
@@ -537,7 +552,7 @@ protected:
 		print ("\n\tstatic void test() {\n");
 
 		print ("\t\t" ~ className ~ " tester = new " ~ className ~ "();\n\n");
-		print ("\t\tTest test = new Test(\"" ~ classNameFixed ~ "\", \"");
+		print ("\t\tTest test = new Test(\"" ~ classNameFixed ~ "\", \"" ~ moduleName ~ "\", \"");
 		print (specName ~ "\");\n\n");
 		print ("\t\tit result;\n\n");
 

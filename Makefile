@@ -62,7 +62,7 @@ DFILES_INTERFACES = interfaces/container.d
 DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/window.d opengl/texture.d opengl/light.d
 DFILES_SPECS = specs/test.d
-DFILES_TESTING = testing/dspec.d testing/support.d testing/logic.d
+DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d
 DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RSC =
