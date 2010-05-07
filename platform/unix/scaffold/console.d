@@ -116,6 +116,7 @@ void ConsoleSetColors(Color fg, Color bg) {
 		fgidx %= 8;
 		bright = 1;
 	}
+	bgidx %= 8;
 	if (ApplicationController.instance.usingCurses) {
 		int idx = fgidx << 3;
 		idx |= bgidx;

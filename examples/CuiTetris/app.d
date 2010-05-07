@@ -1,5 +1,7 @@
 import cui.application;
 
+import djehuty;
+
 import io.console;
 
 import gamewindow;
@@ -22,13 +24,13 @@ class TermTetris : CuiApplication {
 
 	override void onApplicationEnd() {
 		Console.clear();
-		Console.setColor(fgColor.White);
+		Console.forecolor = Color.White;
 		Console.put("Your Score was: ");
-		Console.setColor(fgColor.BrightYellow);
+		Console.forecolor = Color.Yellow;
 		Console.putln(gameWindow.getScore());
 
 		Console.putln("");
-		Console.setColor(fgColor.White);
+		Console.forecolor = Color.Gray;
 		Console.putln("Thank you for playing!");
 	}
 

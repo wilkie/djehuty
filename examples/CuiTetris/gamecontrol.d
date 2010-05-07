@@ -118,7 +118,7 @@ class GameControl : CuiWidget {
 						if (clr != board[i,j]) {
 							clr = board[i,j];
 
-							Console.setColor(cast(bgColor)clr);
+							Console.backcolor = colors[clr];
 						}
 
 						Console.putAt(i*4, (j*2) + o, "    ");
@@ -128,11 +128,21 @@ class GameControl : CuiWidget {
 		}
 	}
 
+	static Color colors[] = [
+		Color.Black,
+		Color.Red,
+		Color.Blue,
+		Color.Green,
+		Color.Yellow,
+		Color.Magenta,
+		Color.Cyan,
+		Color.White
+	];
+
 	void drawPiece() {
 		synchronized(this) {
 			lastPiece = new Coord[](4);
-	
-			Console.setColor(cast(bgColor)(board.getPieceType() + 1));
+			Console.backcolor = colors[board.getPieceType() + 1];
 
 			foreach(i, pt; board.getPiece()) {
 				Coord curPt;
@@ -149,13 +159,14 @@ class GameControl : CuiWidget {
 				}
 			}
 	
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 	}
 
 	void clearPiece() {
 		synchronized(this) {
-			Console.setColor(fgColor.Blue, bgColor.Black);
+			Console.forecolor = Color.Blue;
+			Console.backcolor = Color.Black;
 			foreach(pt; lastPiece) {
 				if (pt.x >= 0 && pt.y >= 0 && pt.x < 40 && pt.y < 40) {
 					//Console.position(pt.x, pt.y);
@@ -164,7 +175,7 @@ class GameControl : CuiWidget {
 					Console.putAt(pt.x, pt.y + 1, "    ");
 				}
 			}
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.Gray;
 		}
 	}
 	

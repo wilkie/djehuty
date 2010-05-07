@@ -13,7 +13,7 @@ class GameWindow : CuiWindow {
 		game = new GameControl();
 
 		push(scoreLabel);
-		push(new CuiLabel(2, 3, 10, "Score", fgColor.BrightYellow));
+		push(new CuiLabel(2, 3, 10, "Score", Color.Yellow));
 		push(game);
 	}
 
