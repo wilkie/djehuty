@@ -1,4 +1,4 @@
-module specs.runtime.apply;
+module specs.runtime.foreach;
 
 import io.console;
 

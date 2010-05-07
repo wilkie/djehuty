@@ -53,8 +53,6 @@ class Output {
 							printImport(node);
 							break;
 						case "ParseModule":
-							Console.putln("module");
-
 							AST work = node;
 							while (work !is null) {
 								node = work.right;
@@ -64,11 +62,9 @@ class Output {
 									else {
 										string content;
 										node.getValue(content);
-										Console.putln(content);
 										moduleName = content.trim();
 										packageName = moduleName.substring(0, moduleName.findReverse("."));
 										moduleName = moduleName.substring(packageName.length+1);
-										Console.putln("p:", packageName, "m:", moduleName);
 									}
 								}
 

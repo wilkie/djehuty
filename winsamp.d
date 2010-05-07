@@ -60,6 +60,43 @@ import parsing.d.parser;
 
 import networking.ftp;
 
+private template _switch_string(T) {
+	int _switch_string(T[][] table, T[] compare) {
+		if (table.length == 0) {
+			return -1;
+		}
+
+		TypeInfo ti = typeid(T[]);
+		// Binary search the table
+		size_t min = 0;
+		size_t max = table.length;
+
+		// Current comparing position
+		size_t cur;
+
+		// Temp for compare value
+		int cmp;
+
+		while(max > min) {
+			cur = (max + min) / 2;
+			cmp = ti.compare(&table[cur], &compare);
+
+			if (cmp == 0) {
+				return cur;
+			}
+			else if (cmp > 0) {
+				max = cur;
+			}		
+			else {
+				min = cur + 1;
+			}
+		}
+
+		return -1;
+	}
+}
+
+
 import spec.specification;
 
 import data.queue2;
@@ -191,6 +228,27 @@ class MyConsoleApp : Application {
 
 		Console.putln([3,2,1].sort);	
 		Console.putln([[1,2],[2,3],[3],[1],[0]].sort);
+
+		dstring[] fuzz = [
+			"abc",
+			"zzt"
+			"hello",
+		];
+
+		string foobe = "hello";
+
+		switch(foobe) {
+			case "abc":
+			case "zzt":
+				break;
+			case "hello":
+				Console.putln("yay");
+				break;
+			default:
+				break;
+		}
+
+		Console.putln(_switch_string(fuzz, "hello"d));
 
 		for(;;){}
 	}

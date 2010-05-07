@@ -222,3 +222,31 @@ private template RemoveSpacesImpl(char[] foo, uint pos = 0) {
 template RemoveSpaces(char[] foo) {
 	const char[] RemoveSpaces = RemoveSpacesImpl!(foo);
 }
+
+template Itoa(long i) {
+	static if(i < 0) {
+		const char[] Itoa = "-" ~ IntToStr!(-i, 10);
+	}
+	else {
+		const char[] Itoa = IntToStr!(i, 10);
+	}
+}
+
+template Itoh(long i) {
+	const char[] Itoh = "0x" ~ IntToStr!(i, 16);
+}
+
+template Digits(long i) {
+	const char[] Digits = "0123456789abcdefghijklmnopqrstuvwxyz"[0 .. i];
+}
+
+template IntToStr(ulong i, int base) {
+	static if(i >= base) {
+		const char[] IntToStr = IntToStr!(i / base, base) ~ Digits!(base)[i % base];
+	}
+	else {
+		const char[] IntToStr = "" ~ Digits!(base)[i % base];
+	}
+}
+
+
