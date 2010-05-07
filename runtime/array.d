@@ -93,12 +93,12 @@ int _adEq(void[] a1, void[] a2, TypeInfo ti) {
 // the sort property: array.sort
 ubyte[] _adSort(ubyte[] array, TypeInfo ti) {
 	ubyte[] cmp = (array.ptr)[0..array.length * ti.tsize()];
-	qsort(cmp, ti.tsize(), ti);
+	_qsort(cmp, ti.tsize(), ti);
 	return array;
 }
 
 // Special quicksort implementation
-private void qsort(ubyte[] array, size_t size, TypeInfo ti, Random rnd = null) {
+private void _qsort(ubyte[] array, size_t size, TypeInfo ti, Random rnd = null) {
 	if (rnd is null) {
 		rnd = new Random();
 	}
@@ -171,8 +171,8 @@ private void qsort(ubyte[] array, size_t size, TypeInfo ti, Random rnd = null) {
 		}
 	}
 
-	qsort(array[0..element], size, ti, rnd);
-	qsort(array[element+size..$], size, ti, rnd);
+	_qsort(array[0..element], size, ti, rnd);
+	_qsort(array[element+size..$], size, ti, rnd);
 }//*/
 
 // Description: This runtime function sorts a char array and is invoked with
