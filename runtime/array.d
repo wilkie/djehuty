@@ -13,6 +13,7 @@ import core.unicode;
 import data.iterable;
 
 import runtime.common;
+import math.random;
 
 import core.util;
 import io.console;
@@ -90,18 +91,98 @@ int _adEq(void[] a1, void[] a2, TypeInfo ti) {
 
 // Description: This runtime function sorts an array and is invoked with
 // the sort property: array.sort
-void[] _adSort(void[] a, TypeInfo ti) {
-	return a;
+ubyte[] _adSort(ubyte[] array, TypeInfo ti) {
+	ubyte[] cmp = (array.ptr)[0..array.length * ti.tsize()];
+	qsort(cmp, ti.tsize(), ti);
+	return array;
 }
+
+// Special quicksort implementation
+private void qsort(ubyte[] array, size_t size, TypeInfo ti, Random rnd = null) {
+	if (rnd is null) {
+		rnd = new Random();
+	}
+
+	// Base case
+	if ((array.length/size) < 2) {
+		return;
+	}
+
+	// Selecting a pivot
+	size_t length = array.length / size;
+	size_t element = cast(size_t)rnd.nextLong(length);
+	element *= size;
+	//Console.putln("pivot: ", element/size, " array.length: ", array.length/size);
+
+	// Move things
+	size_t end = array.length - size;
+	for(size_t i = 0; i < array.length; i += size) {
+		if (i == element) {
+			continue;
+		}
+		if (i > end) {
+			break;
+		}
+		// compare array[i..i+size] to array[element..element+size]
+		// if < and i < element
+		//    Just continue (this is normal)
+		// if < and i > element
+		//    Swap i and element ('i' can only be the next element, that is, element+size)
+		// if > and end == element
+		//    Swap i and element (This will place element to the left of 'i'), decrement end
+		// if > and end > element
+		//    Swap i with end, decrement end (this is normal)
+		int cmp = ti.compare(&array[i], &array[element]);
+		//Console.putln("comparing ", i/size, " against ", element/size, " : ", cmp);
+		if (cmp < 0) {
+			// array[i] < array[element]
+			if (i > element) {
+				// swap with element
+				for(size_t idx; idx < size; idx++) {
+					array[i+idx] ^= array[element+idx];
+					array[element+idx] ^= array[i+idx];
+					array[i+idx] ^= array[element+idx];
+				}
+				element = i;
+			}
+		}
+		else if (cmp > 0) {
+			if (end > element) {
+				if (end != i) {
+					for(size_t idx; idx < size; idx++) {
+						array[i+idx] ^= array[end+idx];
+						array[end+idx] ^= array[i+idx];
+						array[i+idx] ^= array[end+idx];
+					}
+				}
+				// we need to compare with the item at end
+				i -= size;
+			}
+			else {
+				// swap with element
+				for(size_t idx; idx < size; idx++) {
+					array[i+idx] ^= array[element+idx];
+					array[element+idx] ^= array[i+idx];
+					array[i+idx] ^= array[element+idx];
+				}
+				element = i;
+			}
+			end -= size;
+		}
+	}
+
+	qsort(array[0..element], size, ti, rnd);
+	qsort(array[element+size..$], size, ti, rnd);
+}//*/
 
 // Description: This runtime function sorts a char array and is invoked with
 // the sort property: array.sort
-char[] _adSortChar(char[] a) {
-	return a;
+ubyte[] _adSortChar(ubyte[] array) {
+	return _adSort(array, typeid(char[]));
 }
 
 // Description: This runtime function sorts a wchar array and is invoked with
 // the sort property: array.sort
-wchar[] _adSortWchar(wchar[] a) {
-	return a;
+ubyte[] _adSortWchar(ubyte[] array) {
+	return _adSort(array, typeid(wchar[]));
 }

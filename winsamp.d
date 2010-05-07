@@ -189,10 +189,8 @@ class MyConsoleApp : Application {
 			Console.putln(d);
 		}
 
-		Console.putln(Specification.toString());
-	
-		auto tester = new Test();
-		tester.run();
+		Console.putln([3,2,1].sort);	
+		Console.putln([[1,2],[2,3],[3],[1],[0]].sort);
 
 		for(;;){}
 	}

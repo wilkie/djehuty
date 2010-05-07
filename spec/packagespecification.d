@@ -46,8 +46,8 @@ class PackageSpecification {
 	}
 
 	int opApply(int delegate(ref PackageSpecification) loopBody) {
-		foreach(pack; _packages.values.sort) {
-			if (loopBody(pack)) {
+		foreach(pack; _packages.keys.sort) {
+			if (loopBody(_packages[pack])) {
 				return 1;
 			}
 		}
@@ -55,8 +55,8 @@ class PackageSpecification {
 	}
 
 	int opApply(int delegate(ref ModuleSpecification) loopBody) {
-		foreach(mod; _modules.values.sort) {
-			if (loopBody(mod)) {
+		foreach(mod; _modules.keys.sort) {
+			if (loopBody(_modules[mod])) {
 				return 1;
 			}
 		}

@@ -42,8 +42,8 @@ class ModuleSpecification {
 	}
 
 	int opApply(int delegate(ref ItemSpecification) loopBody) {
-		foreach(test; _tests.values.sort) {
-			if (loopBody(test)) {
+		foreach(test; _tests.keys.sort) {
+			if (loopBody(_tests[test])) {
 				return 1;
 			}
 		}
