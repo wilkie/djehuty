@@ -175,7 +175,14 @@ ifeq (${MY_ARCH},MINGW32_NT-6.1)
 	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
 endif
 
-
+$(DFILES_SPECS):
+	mkdir -p .specs
+	mkdir -p .specs/core
+	mkdir -p .specs/runtime
+	mkdir -p .specs/data
+	mkdir -p .specs/hashes
+	mkdir -p .specs/math
+	touch $(DFILES_SPECS)
 
 
 

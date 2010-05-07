@@ -30,7 +30,7 @@ class Parser {
 				filepath ~= "/" ~ directory;
 				dir = Directory.openOrCreate(filepath);
 			}
-			output = new Output(outputPath ~ f[inputPath.length..$]);
+			output = new Output(outputPath ~ f[inputPath.length..$-1]);
 			Console.putln("!!!!", f[inputPath.length..$]);
 			if (!(parseFile(f))) {
 				return false;
