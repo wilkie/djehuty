@@ -26,23 +26,18 @@ class ModuleSpecification {
 		return _name;
 	}
 
-	// Description: This function will run all tests associated with this
-	//   module.
-	bool all() {
-		bool ret = true;
-		foreach(test; _tests.values) {
-			if(!test.all()) {
-				ret = false;
-			}
-		}
-		return ret;
+	void add(ItemSpecification item) {
+		_tests[item.name] = item;
 	}
 
 	// Description: This function will return a class representing the test
 	//   given by the name.
 	// name: The name of the test.
 	// Returns: A class that can be used to run the test.
-	ItemSpecification test(string name) {
+	ItemSpecification retrieve(string name) {
+		if (!(name in _tests)) {
+			return null;
+		}
 		return _tests[name];
 	}
 

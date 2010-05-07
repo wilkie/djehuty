@@ -12,6 +12,8 @@ import spec.packagespecification;
 
 import djehuty;
 
+import tango.io.Stdout;
+
 class Specification {
 static:
 
@@ -19,25 +21,18 @@ static:
 		return Djehuty.app.name; 
 	}
 
-	void add(string packageName, PackageSpecification spec) {
-		_packages[packageName] = spec;
+	void add(PackageSpecification spec) {
+		_packages[spec.name] = spec;
 	}
 
-	bool all() {
-		bool ret = true;
-		foreach(pack; _packages) {
-			if (!pack.all()) {
-				ret = false;
-			}
+	PackageSpecification traverse(string name) {
+		if (!(name in _packages)) {
+			return null;
 		}
-		return false;
-	}
-
-	PackageSpecification test(string name) {
 		return _packages[name];
 	}
 
-	int opApply(int delegate(PackageSpecification) loopBody) {
+	int opApply(int delegate(ref PackageSpecification) loopBody) {
 		foreach(pack; _packages.values.sort) {
 			if (loopBody(pack)) {
 				return 1;
@@ -56,15 +51,7 @@ static:
 		string ret = "";
 
 		foreach(pack; _packages.values.sort) {
-			ret ~= pack.name ~ "\n";
-			foreach(mod; pack) {
-				ret ~= "  " ~ mod.name ~ "\n";
-				foreach(item; mod) {
-					foreach(spec; item) {
-						ret ~= "    " ~ item.name ~ " " ~ spec ~ "\n";
-					}
-				}
-			}
+			ret ~= pack.toString();
 		}
 
 		return ret;

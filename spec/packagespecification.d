@@ -23,22 +23,35 @@ class PackageSpecification {
 		return _name;
 	}
 
-	void add(string moduleName, ModuleSpecification spec) {
-		_modules[moduleName] = spec;
+	void add(ModuleSpecification spec) {
+		_modules[spec.name] = spec;
 	}
 
-	bool all() {
-		bool ret = true;
-		foreach(mod; _modules.values) {
-			if (!mod.all()) {
-				ret = false;
+	void add(PackageSpecification spec) {
+		_packages[spec.name] = spec;
+	}
+
+	PackageSpecification traverse(string name) {
+		if (!(name in _packages)) {
+			return null;
+		}
+		return _packages[name];
+	}
+
+	ModuleSpecification retrieve(string name) {
+		if (!(name in _modules)) {
+			return null;
+		}
+		return _modules[name];
+	}
+
+	int opApply(int delegate(ref PackageSpecification) loopBody) {
+		foreach(pack; _packages.values.sort) {
+			if (loopBody(pack)) {
+				return 1;
 			}
 		}
-		return ret;
-	}
-
-	ModuleSpecification test(string name) {
-		return _modules[name];
+		return 1;
 	}
 
 	int opApply(int delegate(ref ModuleSpecification) loopBody) {
@@ -57,13 +70,23 @@ class PackageSpecification {
 		//   Module
 		//     Item should do this
 		//     Item should do that
-		string ret = "";
+		return _toString("");
+	}
+
+private:
+
+	string _toString(string padding) {
+		string ret = padding ~ _name ~ "\n";
+
+		foreach(pack; _packages.values.sort) {
+			ret ~= pack._toString(padding ~ "  ");
+		}
 
 		foreach(mod; _modules.values.sort) {
-			ret ~= mod.name ~ "\n";
+			ret ~= padding ~ "  " ~ mod.name ~ "\n";
 			foreach(item; mod) {
 				foreach(spec; item) {
-					ret ~= "  " ~ item.name ~ " " ~ spec ~ "\n";
+					ret ~= padding ~ "    " ~ item.name ~ " " ~ spec ~ "\n";
 				}
 			}
 		}
@@ -71,9 +94,8 @@ class PackageSpecification {
 		return ret;
 	}
 
-private:
-
 	string _name;
 
 	ModuleSpecification _modules[string];
+	PackageSpecification _packages[string];
 }

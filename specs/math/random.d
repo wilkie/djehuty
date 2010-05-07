@@ -4,6 +4,9 @@ import testing.support;
 
 import math.random;
 
+import data.iterable;
+import data.list;
+
 describe random() {
 	const uint SEED = 12345678;
 	const uint REPEATS = 1000000;

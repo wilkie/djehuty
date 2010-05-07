@@ -33,7 +33,7 @@ import io.console;
 
 import hashes.md5;
 
-import specs.test;
+import spec.test;
 
 import parsing.options;
 
@@ -59,6 +59,8 @@ import math.integer;
 import parsing.d.parser;
 
 import networking.ftp;
+
+import spec.specification;
 
 import data.queue2;
 
@@ -186,6 +188,11 @@ class MyConsoleApp : Application {
 		foreach_reverse(dchar d; "he\u0364llo"c) {
 			Console.putln(d);
 		}
+
+		Console.putln(Specification.toString());
+	
+		auto tester = new Test();
+		tester.run();
 
 		for(;;){}
 	}

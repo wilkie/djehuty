@@ -8,27 +8,6 @@ import io.console;
 import ast;
 import parser;
 
-char[] header =
-`
-/*
- * test.d
- *
- * Tests the specifications defined and parsed by dspec
- *
- */
-
-module specs.test;
-
-import testing.logic;
-
-import djehuty;
-
-`;
-
-char[] footer =
-`
-`;
-
 class Output {
 	this(string path) {
 		if (!readyOutput(path)) {
@@ -48,6 +27,9 @@ class Output {
 		AST working = result;
 		AST node;
 
+		moduleName = "";
+		packageName = "";
+
 		while(working !is null) {
 			node = working.right;
 			if (node !is null) {
@@ -64,7 +46,6 @@ class Output {
 							tests = null;
 							lines = null;
 							className = null;
-							moduleName = null;
 
 							printDescribe(node);
 							break;
@@ -72,15 +53,26 @@ class Output {
 							printImport(node);
 							break;
 						case "ParseModule":
-							node = node.right;
-							if (node !is null) {
-								if (node.valueType == AST.ValueType.Name) {
+							Console.putln("module");
+
+							AST work = node;
+							while (work !is null) {
+								node = work.right;
+								if (node !is null) {
+									if (node.valueType == AST.ValueType.Name) {
+									}
+									else {
+										string content;
+										node.getValue(content);
+										Console.putln(content);
+										moduleName = content.trim();
+										packageName = moduleName.substring(0, moduleName.findReverse("."));
+										moduleName = moduleName.substring(packageName.length+1);
+										Console.putln("p:", packageName, "m:", moduleName);
+									}
 								}
-								else {
-									string content;
-									node.getValue(content);
-									moduleName = content;
-								}
+
+								work = work.left;
 							}
 
 							break;
@@ -99,59 +91,6 @@ class Output {
 			return false;
 		}
 
-		//fwritef(outfp, "%s", "\nclass Tests\n{\n");
-		outfp.write("\nclass Tests {\n"c);
-
-		foreach(className; classes) {
-			outfp.write("\tstatic void test"c);
-			outfp.write(Unicode.toUtf8(className));
-			outfp.write("() {\n"c);
-			//fwritef(outfp, "%s", "\tstatic void test", className, "()\n\t{\n");
-			outfp.write("\t\t"c);
-			outfp.write(Unicode.toUtf8(className));
-			outfp.write("Tester.test();\n"c);
-			//fwritef(outfp, "%s", "\t\t" ~ className ~ "Tester.test();\n");
-			outfp.write("\t}\n\n"c);
-			//fwritef(outfp, "%s", "\t}\n\n");
-		}
-
-		outfp.write("\tstatic uint test(string className) {\n"c);
-		outfp.write("\t\tswitch(className) {\n"c);
-		foreach(className; classes) {
-			outfp.write("\t\t\tcase \"" ~ className ~ "\":\n"c);
-			outfp.write("\t\t\t\ttest"c);
-			outfp.write(className);
-			outfp.write("();\n"c);
-		}
-		outfp.write("\t\t\tdefault:\n"c);
-		outfp.write("\t\t\t\treturn 0;\n"c);
-		outfp.write("\t\t}\n\n"c);
-		outfp.write("\t\tTest.done();\n"c);
-		outfp.write("\t\treturn Test.getFailureCount();\n"c);
-		outfp.write("\t}"c);
-
-		outfp.write("\tstatic uint testAll() {\n"c);
-		//fwritef(outfp, "%s", "\tstatic void testAll()\n\t{\n");
-
-		foreach(className; classes) {
-			outfp.write("\t\ttest"c);
-			outfp.write(Unicode.toUtf8(className));
-			outfp.write("();\n"c);
-			//fwritef(outfp, "%s", "\t\ttest", className, "();\n");
-		}
-
-		outfp.write("\t\tTest.done();\n"c);
-
-		outfp.write("\t\treturn Test.getFailureCount();\n"c);
-
-		outfp.write("\t}\n"c);
-		//fwritef(outfp, "%s", "\t}\n");
-
-		outfp.write("}\n"c);
-		//fwritef(outfp, "%s", "}\n");
-		outfp.write(footer);
-		//fwritef(outfp, "%s", footer);
-
 		outfp.close();
 		//fclose(outfp);
 		return true;
@@ -165,6 +104,7 @@ protected:
 	//_iobuf* outfp;
 	string className;
 	string moduleName;
+	string packageName;
 	string[] tests;
 	ulong[] lines;
 
@@ -189,7 +129,13 @@ protected:
 	bool printHeader() {
 		//fwritef(outfp, "%s", header);
 		//Console.putln("output header");
-		outfp.write(header);
+		print("/*\n *\n */\n\n");
+		print("import spec.specification;\n");
+		print("import spec.itemspecification;\n");
+		print("import spec.modulespecification;\n");
+		print("import spec.packagespecification;\n");
+		print("\nimport spec.logic;\n");
+		print("\nimport djehuty;\n");
 
 		return true;
 
@@ -272,11 +218,12 @@ protected:
 
 							print("\n\tit ");
 							if (describing !is null) {
-								val = describing ~ "_" ~ val;
+								val = describing ~ "!" ~ val;
 							}
 
-							print(val ~ "() {\n");
+							print(val.replace('!','_') ~ "() {\n");
 
+							print("\t\tbefore();\n");
 							print("\t\tbefore");
 							if (describing !is null) {
 								print("_" ~ describing);
@@ -291,7 +238,7 @@ protected:
 
 							tests ~= val;
 
-							print("\t\tit ret = it.does;\n");
+							print("\t\tit _ret = it.does;\n");
 
 							print("\t\ttry {\n");
 							break;
@@ -333,20 +280,20 @@ protected:
 		if (shouldThrow) {
 			//Console.putln("!!", exception.array);
 			if (exception == "") {
-				print("\t\t\tret = it.does");
+				print("\t\t\t_ret = it.does");
 			}
 			else {
 				print("\t\t\tif (_exception_.msg != ");
 				print(exception);
-				print(") { ret = it.doesnt; }\n\t\t\tret = it.does");
+				print(") { _ret = it.doesnt; }\n\t\t\t_ret = it.does");
 			}
 		}
 		else {
-			print("\t\t\tret = it.doesnt");
+			print("\t\t\t_ret = it.doesnt");
 		}
 		
 		
-		print(";\n\t\t}\n\t\treturn ret;\n\t}\n");
+		print(";\n\t\t}\n\t\treturn _ret;\n\t}\n");
 
 
 		return true;
@@ -373,7 +320,7 @@ protected:
 			working = working.left;
 		}
 		
-		print(")) {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
+		print(")) {\n\t\t\t\t_ret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
@@ -399,7 +346,7 @@ protected:
 			working = working.left;
 		}
 		
-		print(") {\n\t\t\t\tret = it.doesnt;\n\t\t\t}\n");
+		print(") {\n\t\t\t\t_ret = it.doesnt;\n\t\t\t}\n");
 
 		return true;
 	}
@@ -502,10 +449,10 @@ protected:
 							}
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
-							val ~= "Tester";
+							val ~= "Tests";
 							//Console.putln("ID: ", val.array, " len ", val.length);
 
-							print("class " ~ val ~ " {\n");
+							print("private struct " ~ val ~ " {\nstatic:\n");
 							Console.putln("Creating ", val);
 							className = val;
 							break;
@@ -540,8 +487,6 @@ protected:
 			print("\n\tdone before() {\n\t}\n\n");
 		}
 
-		print("\tthis() {\n\t\tbefore();\n\t}\n");
-
 		// do tests
 
 		//Console.putln("className: ", className.array, " len " , className.length);
@@ -549,37 +494,54 @@ protected:
 		//Console.putln("className::", classNameFixed.array);
 		//Console.putln("className::", className[0..className.length-6]);
 
-		print ("\n\tstatic void test() {\n");
+		print("\n}\n\n");
 
-		print ("\t\t" ~ className ~ " tester = new " ~ className ~ "();\n\n");
-		print ("\t\tTest test = new Test(\"" ~ classNameFixed ~ "\", \"" ~ moduleName ~ "\", \"");
-		print (specName ~ "\");\n\n");
-		print ("\t\tit result;\n\n");
+		print ("\nstatic this() {\n");
 
-		string currentSection = "";
+		print ("\t// Add to specification\n");
+		// Split packageName into separate things
+		string[] packages = packageName.split('.');
+		print ("\tPackageSpecification ps;\n");
+		print ("\tPackageSpecification tmpps;\n");
 
-		foreach(i, test; tests) {
-			int pos = test.find("_");
-			string section = test[0..pos].dup;
+		print ("\tps = Specification.traverse(\"" ~ packages[0] ~ "\");\n");
+		print ("\tif(ps is null) {\n");
+		print ("\t\tps = new PackageSpecification(\"" ~ packages[0] ~ "\");\n");
+		print ("\t\tSpecification.add(ps);\n");
+		print ("\t}\n\n");
 
-			if (currentSection != section) {
-				print("\t\ttest.logSubset(\"" ~ section ~ "\");\n\n");
-				currentSection = section;
-			}
-
-			print("\t\ttester = new " ~ className ~ "();\n\n");
-			print("\t\tresult = tester." ~ test ~ "();\n");
-			print("\t\ttest.logResult(result, \"" ~ test.replace('_', ' ') ~ "\", \"");
-			//Console.putln(lines);
-			//Console.putln(lines[i]);
-			print(toStr(cast(long)lines[i]));
-			//fwritef(outfp, "", lines[i]);
-			print("\");\n\n");
+		foreach(pack; packages[1..$]) {
+			print ("\ttmpps = ps;\n");
+			print ("\tps = tmpps.traverse(\"" ~ pack ~ "\");\n");
+			print ("\tif(ps is null) {\n");
+			print ("\t\tps = new PackageSpecification(\"" ~ pack ~ "\");\n");
+			print ("\t\ttmpps.add(ps);\n");
+			print ("\t}\n\n");
 		}
 
-		print("\t\ttest.finish();\n\t}");
+		print ("\t// Add to this module\n");
+		print ("\tModuleSpecification ms = ps.retrieve(\"" ~ moduleName ~ "\");\n");
+		print ("\tif(ms is null) {\n");
+		print ("\t\tms = new ModuleSpecification(\"" ~ moduleName ~ "\");\n");
+		print ("\t\tps.add(ms);\n");
+		print ("\t}\n\n");
 
-		print("\n}\n\n");
+		print ("\tItemSpecification item;\n\n");
+
+		string currentSection = "";
+		foreach(i, test; tests) {
+			int pos = test.find("!");
+			string section = test[0..pos].dup;
+			Console.putln("cs:", currentSection, " t:", test);
+			if (currentSection != section) {
+				currentSection = section;
+				print ("\titem = new ItemSpecification(\"" ~ section ~ "\");\n");
+				print ("\tms.add(item);\n");
+			}
+			print("\titem.add(\"" ~ test[pos+1..$].replace('_', ' ') ~ "\", &" ~ className ~ "." ~ test.replace('!','_') ~ ");\n");
+		}
+
+		print("}\n\n");
 
 		classes ~= classNameFixed;
 

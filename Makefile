@@ -61,13 +61,15 @@ DFILES_BINDING = binding/opengl/gl.d binding/opengl/glu.d binding/lua.d
 DFILES_INTERFACES = interfaces/container.d
 DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d
 DFILES_OPENGL = opengl/window.d opengl/texture.d opengl/light.d
-DFILES_SPECS = specs/test.d
-DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d
+DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d spec/test.d
 DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RSC =
+DFILES_SPECS = .specs/runtime/array.d .specs/runtime/apply.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d
 
-OBJS_CORE = $(DFILES:.d=.o) $(DFILES_RUNTIME:.d=.o) $(DFILES_LOCALES:.d=.o) $(DFILES_RESOURCE:.d=.o) $(DFILES_IO:.d=.o) $(DFILES_SYNCH:.d=.o) $(DFILES_PARSING:.d=.o) $(DFILES_OPENGL:.d=.o) $(DFILES_CUI:.d=.o) $(DFILES_ANALYZING:.d=.o) $(DFILES_SCRIPTING:.d=.o) $(DFILES_BINDING:.d=.o) $(DFILES_SPECS:.d=.o) $(DFILES_TESTING:.d=.o) $(DFILES_MATH:.d=.o) $(DFILES_GRAPHICS:.d=.o) $(DFILES_HASHES:.d=.o) $(DFILES_RSC:.d=.o) $(DFILES_NETWORKING:.d=.o) $(DFILES_INTERFACES:.d=.o) $(DFILES_DATA:.d=.o) $(DFILES_CONSOLE:.d=.o) $(DFILES_BINARY_CODECS:.d=.o) $(DFILES_CODEC:.d=.o) $(DFILES_IMAGE_CODECS:.d=.o) $(DFILES_AUDIO_CODECS:.d=.o) $(DFILES_CORE:.d=.o) $(DFILES_GUI:.d=.o) $(DFILES_PARSERS:.d=.o)
+SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_SCRIPTING) $(DFILES_BINDING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
+
+OBJS_CORE = $(SOURCES:.d=.o)
 
 OBJS_MAC = $(OBJS_CORE) $(DFILES_PLATFORM_MAC:.d=.o) $(OBJC_FILES:.m=.o)
 
@@ -139,9 +141,6 @@ ifeq (${MY_ARCH},Darwin)
 else
 endif
 
-$(DFILES_SPECS):
-	touch $(DFILES_SPECS)
-
 # initiates the compilation of the main framework
 lib:
 	@echo compiling framework... Target: ${MY_ARCH}
@@ -157,8 +156,6 @@ else
 	@make libdeps_linux
 endif
 endif
-
-
 
 app: libdeps_xomb
 
