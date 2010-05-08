@@ -143,12 +143,12 @@ class MyConsoleApp : Application {
 
 		Console.putln([1,2,3,4].rotate(2));
 		Console.putln("hello"c.dup.reverse);
-		/*Console.putln("he\u0364llo"c.dup.reverse);
+		Console.putln("he\u0364llo"c.dup.reverse);
 		Console.putln("hlle\u0364o"c.dup.reverse);
 		Console.putln("he\u0364po"c.dup.reverse);
 		Console.putln("he\u0364llo"w.dup.reverse);
 		Console.putln("he\u0364llo"d.dup.reverse);
-		Console.putln("he\u0364llo"d.dup.reverse());*/
+		Console.putln("he\u0364llo"d.dup.reverse());
 		Console.putln([1,2,3,4,5,6,7,8].dup.reverse());
 		Console.putln(new Fixed(3.5));
 		//Atomic.exchange(a,6);
