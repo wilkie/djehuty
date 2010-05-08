@@ -11,8 +11,6 @@ module spec.modulespecification;
 
 import spec.itemspecification;
 
-import spec.support : describe, done;
-
 import djehuty;
 
 import io.console;

@@ -10,7 +10,6 @@
 
 module spec.itemspecification;
 
-import spec.support : describe, done;
 import spec.logic;
 
 import djehuty;

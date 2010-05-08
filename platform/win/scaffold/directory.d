@@ -25,17 +25,22 @@ import io.console;
 import io.file;
 
 bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
+	if (DirectoryFileIsDir(path)) {
+		return true;
+	}
+
 	return false;
 }
 
 bool DirectoryCreate(ref DirectoryPlatformVars dirVars, ref string path) {
-	wchar[] dirPath = Unicode.toUtf16(path);
+	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(path));
+	strArr ~= '\0';
 	
 	if (DirectoryFileIsDir(path)) {
 		return false;
 	}
 
-	if(CreateDirectoryW(dirPath.ptr,null) != 0){
+	if(CreateDirectoryW(strArr.ptr,null) != 0){
 		return true;
 	}
 	
@@ -486,6 +491,8 @@ string[] DirectoryList(ref DirectoryPlatformVars dirVars, string path) {
 		// Retrieve next item in the directory
 		cont = FindNextFileW(h, &ffd) > 0;
 	}
+	
+	Console.putln("HELLO?", list);
 
 	DirectoryClose(dirVars);
 	return list;
