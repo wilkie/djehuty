@@ -227,8 +227,6 @@ bool DirectoryCopy(ref string path, string newPath) {
 	wchar[] strArr = _ConvertFrameworkPath(Unicode.toUtf16(str));
 	wchar[] oldArr = _ConvertFrameworkPath(Unicode.toUtf16(old));
 
-	Console.putln("!!",oldArr, strArr);
-
 	CopyFileW(oldArr.ptr, strArr.ptr, 0);
 	return true;
 }
@@ -491,8 +489,6 @@ string[] DirectoryList(ref DirectoryPlatformVars dirVars, string path) {
 		// Retrieve next item in the directory
 		cont = FindNextFileW(h, &ffd) > 0;
 	}
-	
-	Console.putln("HELLO?", list);
 
 	DirectoryClose(dirVars);
 	return list;
