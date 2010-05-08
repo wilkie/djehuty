@@ -8,6 +8,11 @@
 
 module runtime.gc;
 
+extern(C):
+void* gc_malloc(size_t len, uint bits = 0);
+void gc_free(void* ptr);
+
+/*
 void gc_init() {
 }
 
@@ -72,4 +77,4 @@ void gc_removeRange(void* p) {
 
 bool onCollectResource(Object obj) {
 	return false;
-}
+}//*/

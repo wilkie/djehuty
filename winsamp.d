@@ -1,4 +1,5 @@
 import djehuty;
+import runtime.lifetime;
 
 import data.list;
 import gui.application;
@@ -228,6 +229,9 @@ class MyConsoleApp : Application {
 
 		Console.putln([3,2,1].sort);	
 		Console.putln([[1,2],[2,3],[3],[1],[0]].sort);
+
+		int[] fooint = (cast(int*)_d_newarrayiT(typeid(int[]), 10))[0..10];
+		Console.putln(fooint);
 
 		dstring[] fuzz = [
 			"abc",

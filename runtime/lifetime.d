@@ -11,7 +11,9 @@ import runtime.common;
 import runtime.exception;
 import runtime.gc;
 
-extern(C):
+import io.console;
+
+//extern(C):
 
 Object _d_allocclass(ClassInfo ci) {
 	return cast(Object)gc_malloc(ci.init.length, BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0));
@@ -53,6 +55,7 @@ void _d_delclass(Object p) {
 
 private template _newarray(bool initialize, bool withZero) {
 	void[] _newarray(TypeInfo ti, size_t length) {
+		Console.putln("hello");
 		size_t elementSize = ti.next.tsize();
 
 		// Check to see if the size of the array can fit
@@ -78,13 +81,21 @@ private template _newarray(bool initialize, bool withZero) {
 			else {
 				// Initialize with the values set in the TypeInfo
 				ubyte[] init = cast(ubyte[])ti.next.init();
-				size_t initIndex = 0;
 
-				foreach(size_t idx, ref element; ret) {
-					element = init[initIndex];
-					initIndex++;
-					if (initIndex == init.length) {
-						initIndex = 0;
+				// If there is no init vector, then just init to zero
+				if (init is null) {
+					ret[0..length] = 0;
+				}
+				else {
+					// Initialize all values we can
+					size_t initIndex = 0;
+
+					foreach(size_t idx, ref element; ret) {
+						element = init[initIndex];
+						initIndex++;
+						if (initIndex == init.length) {
+							initIndex = 0;
+						}
 					}	
 				}
 			}
@@ -100,30 +111,68 @@ private template _newarray(bool initialize, bool withZero) {
 
 // Description: Will allocate a new array of type ti with the length
 //  given, and will initialize it to the default value.
-void[] _d_newarrayT(TypeInfo ti, size_t length) {
+// ti: The TypeInfo object that represents the array to be allocated.
+// length: The number of elements in the array to be allocated.
+void* _d_newarrayT(TypeInfo ti, size_t length) {
 	// Use the template, initialize the array with 0
-	return _newarray!(true, true)(ti, length);
+	return _newarray!(true, true)(ti, length).ptr;
 }
 
 // Description: Will allocate a new array of type ti with the length
 //   given, and will initialize it to a given value.
-void[] _d_newarrayiT(TypeInfo ti, size_t length) {
-	return _newarray!(true, false)(ti, length);
+// ti: The TypeInfo object that represents the array to be allocated.
+//   The init() function within the TypeInfo will be used to initialize
+//   the array.
+// length: The number of elements in the array to be allocated.
+void* _d_newarrayiT(TypeInfo ti, size_t length) {
+	return _newarray!(true, false)(ti, length).ptr;
 }
 
 // Description: Will allocate a uninitialized array of type ti with
 //   the length given.
-void[]_d_newarrayvT(TypeInfo ti, size_t length) {
+// ti: The TypeInfo object that represents the array to be allocated.
+// length: The number of elements in the array to be allocated.
+void*_d_newarrayvT(TypeInfo ti, size_t length) {
 	// Use the template, but do not initialize
-	return _newarray!(false, false)(ti, length);
+	return _newarray!(false, false)(ti, length).ptr;
 }
 
-void[] _d_newarraymTp(TypeInfo ti, size_t[] dimensions) {
-	return null;
+template _newarraym(bool initialize, bool withZero) {
+	void[] _newarraym(TypeInfo ti, size_t[] dimensions) {
+		if (dimensions.length == 0) {
+			return null;
+		}
+
+		// We need to allocate either the final array or the arrays of arrays
+		// The intermediate arrays are void[]
+
+		// This function is recursive, the base case is when we are allocating a
+		// simple array.
+		if (dimensions.length == 1) {
+			return _newarray!(initialize, withZero)(ti, dimensions[$-1]);
+		}
+
+		// The intermediate dimensions... we call upon this function recursively
+
+		// For each intermediate layer, we need to allocate a void[]
+		void[][] intermediate = (cast(void[]*)gc_malloc(dimensions[0] * (void[]).sizeof + 1))[0 .. dimensions[0]];
+		for(size_t i = 0; i < dimensions[0]; i++) {
+			intermediate[i] = _newarraym!(initialize, withZero)(ti, dimensions[1..$]);
+		}
+		return intermediate;
+	}
 }
 
-void[] _d_newarraymiTp(TypeInfo ti, size_t[] dimensions) {
-	return null;
+void* _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(true, true)(ti, dimensions).ptr;
+}
+
+void* _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(true, false)(ti, dimensions).ptr;
+}
+
+void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(false, false)(ti, dimensions).ptr;
 }
 
 // Description: Will delete an array.
