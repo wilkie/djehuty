@@ -1,5 +1,4 @@
 import djehuty;
-import runtime.lifetime;
 
 import data.list;
 import gui.application;
@@ -144,12 +143,12 @@ class MyConsoleApp : Application {
 
 		Console.putln([1,2,3,4].rotate(2));
 		Console.putln("hello"c.dup.reverse);
-		Console.putln("he\u0364llo"c.dup.reverse);
+		/*Console.putln("he\u0364llo"c.dup.reverse);
 		Console.putln("hlle\u0364o"c.dup.reverse);
 		Console.putln("he\u0364po"c.dup.reverse);
 		Console.putln("he\u0364llo"w.dup.reverse);
 		Console.putln("he\u0364llo"d.dup.reverse);
-		Console.putln("he\u0364llo"d.dup.reverse());
+		Console.putln("he\u0364llo"d.dup.reverse());*/
 		Console.putln([1,2,3,4,5,6,7,8].dup.reverse());
 		Console.putln(new Fixed(3.5));
 		Atomic.exchange(a,6);
@@ -230,8 +229,11 @@ class MyConsoleApp : Application {
 		Console.putln([3,2,1].sort);	
 		Console.putln([[1,2],[2,3],[3],[1],[0]].sort);
 
-		int[] fooint = (cast(int*)_d_newarrayiT(typeid(int[]), 10))[0..10];
-		Console.putln(fooint);
+		typedef int oneint = 3;
+		oneint fb;
+		oneint[] oneints = new oneint[10];
+		Console.putln(oneints[0]);
+		Console.putln(fb);
 
 		dstring[] fuzz = [
 			"abc",

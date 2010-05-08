@@ -23,11 +23,11 @@ Object _d_newclass(ClassInfo ci) {
 	return null;
 }
 
-void _d_delinterface(void* p) {
+void _d_delinterface(Interface*** p) {
 	if (p is null) {
 		return;
 	}
-	Interface* pi = **cast(Interface***)p;
+	Interface* pi = **p;
 	Object o = cast(Object)(p - pi.offset);
 	_d_delclass(o);
 }
@@ -56,6 +56,9 @@ void _d_delclass(Object p) {
 private template _newarray(bool initialize, bool withZero) {
 	void[] _newarray(TypeInfo ti, size_t length) {
 		Console.putln("hello");
+		if (cast(TypeInfo_Typedef)ti !is null) {
+//			ti = ti.next;
+		}
 		size_t elementSize = ti.next.tsize();
 
 		// Check to see if the size of the array can fit
@@ -90,8 +93,10 @@ private template _newarray(bool initialize, bool withZero) {
 					// Initialize all values we can
 					size_t initIndex = 0;
 
-					foreach(size_t idx, ref element; ret) {
-						element = init[initIndex];
+//					foreach(size_t idx, ref element; ret) {
+					for(size_t idx = 0; idx < length; idx++) {
+//						element = init[initIndex];
+						ret[idx] = init[initIndex];
 						initIndex++;
 						if (initIndex == init.length) {
 							initIndex = 0;
