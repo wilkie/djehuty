@@ -180,6 +180,7 @@ void ConsoleSetColors(Color fg, Color bg) {
 		fgidx %= 8;
 		bright = 1;
 	}
+	bgidx %= 8;
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	_curAttribs = cast(ushort)(_fgclrvalues[fgidx] | _bgclrvalues[bgidx] | (FOREGROUND_INTENSITY * cast(ushort)bright));
