@@ -28,7 +28,7 @@ import core.string;
 import core.main;
 import core.definitions;
 
-import utils.linkedlist;
+import data.queue;
 
 import io.console;
 

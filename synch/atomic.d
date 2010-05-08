@@ -119,6 +119,12 @@ static:
 						ret;
 					}
 				}
+				else version(X86) {
+					asm {
+						naked;
+						ret;
+					}
+				}
 				else {
 					static assert(false, "compareExchange is not implemented on this architecture");
 				}
@@ -137,6 +143,12 @@ static:
 						cmp RAX, RSI;
 						sete AL;
 
+						ret;
+					}
+				}
+				else version(X86) {
+					asm {
+						naked;
 						ret;
 					}
 				}
@@ -163,6 +175,12 @@ static:
 						ret;
 					}
 				}
+				else version(X86) {
+					asm {
+						naked;
+						ret;
+					}
+				}
 				else {
 					static assert(false, "compareExchange is not implemented on this architecture");
 				}
@@ -181,6 +199,12 @@ static:
 						cmp RAX, RSI;
 						sete AL;
 
+						ret;
+					}
+				}
+				else version(X86) {
+					asm {
+						naked;
 						ret;
 					}
 				}
@@ -205,6 +229,12 @@ static:
 						ret;
 					}
 				}
+				else version(X86) {
+					asm {
+						naked;
+						ret;
+					}
+				}
 				else {
 					static assert(false, "compareExchange is not implemented on this architecture");
 				}
@@ -223,6 +253,12 @@ static:
 						cmp RAX, RSI;
 						sete AL;
 
+						ret;
+					}
+				}
+				else version(X86) {
+					asm {
+						naked;
 						ret;
 					}
 				}
@@ -398,7 +434,7 @@ naked;
 			ulong newVal;
 
 			ulong setMask = 1 << bit;
-			ulong clearMask = ~setmask;
+			ulong clearMask = ~setMask;
 
 			for(;;) {
 				oldVal = reference;

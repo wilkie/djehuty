@@ -1,4 +1,4 @@
-module utils.queue;
+module data.queue;
 
 import djehuty;
 

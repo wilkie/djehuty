@@ -12,8 +12,6 @@ import spec.packagespecification;
 
 import djehuty;
 
-import tango.io.Stdout;
-
 class Specification {
 static:
 

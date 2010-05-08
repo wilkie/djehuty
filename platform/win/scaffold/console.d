@@ -15,6 +15,7 @@ import platform.win.common;
 import core.main;
 import core.unicode;
 import core.string;
+import core.color;
 
 import synch.thread;
 

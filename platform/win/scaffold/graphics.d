@@ -158,11 +158,11 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 }
 
 // Text Colors
-void setTextBackgroundColor(ViewPlatformVars* viewVars, ref Color textColor) {
+void setTextBackgroundColor(ViewPlatformVars* viewVars, in Color textColor) {
 	SetBkColor(viewVars.dc, textColor.value);
 }
 
-void setTextColor(ViewPlatformVars* viewVars, ref Color textColor) {
+void setTextColor(ViewPlatformVars* viewVars, in Color textColor) {
 	//platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
 	Gdiplus.GdipCreateSolidFill(textColor.value, &viewVars.curTextBrush);
 }
@@ -236,7 +236,7 @@ void destroyFont(FontPlatformVars* font) {
 
 // Brushes
 
-void createBrush(BrushPlatformVars* brush, ref Color clr) {
+void createBrush(BrushPlatformVars* brush, in Color clr) {
 	//brush.brushHandle = CreateSolidBrush(clr.value);
 	Gdiplus.GdipCreateSolidFill(clr.value, &brush.handle);
 }
@@ -298,7 +298,7 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 
 // Pens
 
-void createPen(PenPlatformVars* pen, ref Color clr, double width) {
+void createPen(PenPlatformVars* pen, in Color clr, double width) {
     Gdiplus.GdipCreatePen1(clr.value, width, Gdiplus.Unit.UnitWorld, &pen.handle);
 	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
 }

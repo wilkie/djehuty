@@ -15,7 +15,6 @@ import core.definitions;
 import core.unicode;
 
 import io.console;
-import tango.io.Stdout;
 
 // Imposed variadic
 version(LDC) {

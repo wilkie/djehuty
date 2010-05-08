@@ -151,7 +151,7 @@ class MyConsoleApp : Application {
 		Console.putln("he\u0364llo"d.dup.reverse());*/
 		Console.putln([1,2,3,4,5,6,7,8].dup.reverse());
 		Console.putln(new Fixed(3.5));
-		Atomic.exchange(a,6);
+		//Atomic.exchange(a,6);
 		Console.putln(a,b,c);
 		Console.putln("{c}".format(1500.42));
 		Locale.id = LocaleId.French_FR;
@@ -179,8 +179,8 @@ class MyConsoleApp : Application {
 		Timer tmr = new Timer(250);
 		push(tmr);
 		tmr.start();
-		while(freak < 9) {
-		}
+		//while(freak < 9) {
+		//}
 		Console.forecolor = Color.White;
 		Console.putln("White");
 		Console.forecolor = Color.Red;
@@ -232,8 +232,8 @@ class MyConsoleApp : Application {
 		typedef int oneint = 3;
 		oneint fb;
 		oneint[] oneints = new oneint[10];
-		Console.putln(oneints[0]);
-		Console.putln(fb);
+		//Console.putln(oneints[0]);
+		//Console.putln(fb);
 
 		dstring[] fuzz = [
 			"abc",
