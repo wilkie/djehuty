@@ -2,7 +2,11 @@ import djehuty;
 
 import io.console;
 
-import specs.test;
+import spec.specification;
+import spec.itemspecification;
+import spec.packagespecification;
+import spec.modulespecification;
+import spec.test;
 
 import parsing.options;
 
@@ -45,13 +49,63 @@ class DjehutyTester : Application {
 		if (options.modules is null) {
 			Console.putln();
 
-			uint result = Tests.testAll();
-			if (result > 0) {
-				exit(1);
+			// Go through every package
+			foreach(pack; Specification) {
+				_testPackage(pack);
 			}
 		}
 	}
 
 private:
+
+	void _testPackage(PackageSpecification ps, string prior = "") {
+		foreach(PackageSpecification pack; ps) {
+			_testPackage(pack, prior ~ ps.name ~ ".");
+		}
+
+		foreach(ModuleSpecification mod; ps) {
+			_testModule(mod, prior ~ ps.name);
+		}
+	}
+
+	void _testModule(ModuleSpecification ms, string packName = "") {
+		Console.put(packName ~ "." ~ ms.name, " : ");
+
+		// Keep track of success over the module
+		int numFailures;
+		int numSuccesses;
+		foreach(item; ms) {
+			foreach(feature; item) {
+				auto tester = new Test(item, feature);
+				tester.run();
+				if (tester.failures > 0) {
+					Console.forecolor = Color.Red;
+					if (numFailures == 0) {
+						Console.putln("FAILED ");
+					}
+					Console.putln(" ".times((packName ~ "." ~ ms.name).length), " : ", item.name, " ", feature);
+				}
+				numFailures += tester.failures;
+				numSuccesses += tester.successes;
+			}
+		}
+		if (numFailures > 0) {
+			Console.forecolor = Color.Gray;
+			Console.put(packName ~ "." ~ ms.name, " : ");
+			Console.forecolor = Color.Red;
+			Console.put("FAILED ");
+			
+			Console.forecolor = Color.Gray;
+			Console.putln(numSuccesses, " / ", numSuccesses+numFailures);
+		}
+		else {
+			Console.forecolor = Color.Green;
+			Console.put("PASSED ");
+
+			Console.forecolor = Color.Gray;
+			Console.putln("all ", numSuccesses, " tests");
+		}
+	}
+
 	Opts options;
 }

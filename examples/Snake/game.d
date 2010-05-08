@@ -1,6 +1,7 @@
 import djehuty;
 
 import io.console;
+import math.random;
 
 import constants;
 import posn;

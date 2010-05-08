@@ -1,0 +1,122 @@
+module specs.runtime.switch;
+
+import core.util;
+
+import math.random;
+
+describe runtime() {
+	describe _d_switch_string {
+		it should_handle_empty_switch_statements {
+			string foo = "hello";
+
+			switch(foo) {
+				default:
+					break;
+			}
+		}
+
+		it should_handle_one_case {
+			string foo = "hello";
+
+			switch(foo) {
+				case "hello":
+					should(true);
+					break;
+				default:
+					should(false);
+					break;
+			}
+		}
+
+		it should_handle_three_cases {
+			string foo = "hello";
+
+			switch(foo) {
+				case "abc":
+				case "zzt":
+					should(false);
+					break;
+				case "hello":
+					should(true);
+					break;
+				default:
+					should(false);
+					break;
+			}
+		}
+
+		template StringList(int idx) {
+			static if (idx == 50) {
+				const char[] StringList = `"` ~ IntToStr!(idx, 16) ~ `"
+					`;
+			}
+			else {
+				const char[] StringList = `"` ~ IntToStr!(idx, 16) ~ `",
+					` ~ StringList!(idx+1);
+			}
+		}
+
+		template StringArray() {
+			const char[] StringArray = `
+				string[] foo = [
+				` ~ StringList!(0) ~ `
+				];`;	
+		}
+
+		template CaseList(int idx) {
+			static if (idx == 50) {
+				const char[] CaseList = `case "` ~ IntToStr!(idx, 16) ~ `":
+					picked = "` ~ IntToStr!(idx, 16) ~ `";
+					break;`;
+			}
+			else {
+				const char[] CaseList = `case "` ~ IntToStr!(idx, 16) ~ `":
+					picked = "` ~ IntToStr!(idx, 16) ~ `";
+					break;
+				` ~ CaseList!(idx+1);
+			}
+		}
+
+		template SwitchList() {
+			const char[] SwitchList = `
+				switch(foo[idx]) {
+					` ~ CaseList!(0) ~ `
+					default:
+						picked = "";
+						break;
+				}`;
+		}
+
+		it should_handle_many_cases {
+
+			mixin(StringArray!());
+
+			auto r = new Random();
+			for (size_t i=0; i<50; i++) {
+				size_t idx = cast(size_t)r.nextLong(50);
+				string picked;
+
+				mixin(SwitchList!());
+
+				should(picked == foo[idx]);
+			}
+		}
+
+		it should_handle_empty_string {
+			switch("") {
+				case "":
+					should(true);
+					break;
+				case "abc":
+				case "zsdf":
+				case "asdf":
+				case "afsfdfas":
+					should(false);
+					break;
+				default:
+					should(false);
+					break;
+			}
+		}
+	}
+}

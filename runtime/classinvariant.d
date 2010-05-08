@@ -25,5 +25,5 @@ void _d_invariant(Object o) {
 
 		// Go up class hierarchy, return the next ClassInfo
 		c = c.base;
-	} while(c)
+	} while(c !is null)
 }

@@ -10,14 +10,11 @@
  *
  */
 
-module codecs.binary.par2;
+module decoders.binary.par2;
 
-import core.endian;
-import core.literals;
+import core.stream;
 
-import interfaces.stream;
-
-import codecs.binary.codec;
+import decoders.binary.codec;
 
 private {
 
@@ -73,9 +70,9 @@ private {
 // Section: Codecs/Binary
 
 // Description: This represents the Par2 Codec.
-class Par2Codec : BinaryCodec {
+class Par2Decoder : BinaryDecoder {
 
-	StreamData decode(AbstractStream stream, AbstractStream toStream) {
+	StreamData decode(Stream stream, Stream toStream) {
 
 		for (;;) {
 			switch (decoderState) {

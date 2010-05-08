@@ -13,9 +13,7 @@ import io.console;
 
 import gui.window;
 
-import core.string;
-import core.unicode;
-import core.definitions;
+import djehuty;
 
 import synch.thread;
 
@@ -43,7 +41,7 @@ public:
 		}
 
 		Console.putln("");
-		Console.setColor(fgColor.BrightRed);
+		Console.forecolor = Color.Red;
 
 		if (t is null) {
 			Console.putln("Unhandled Main Exception: ");
@@ -82,7 +80,7 @@ public:
 			Console.putln("    thread: ", className);
 		}
 
-		Console.setColor(fgColor.White);
+		Console.forecolor = Color.White;
 	}
 
 	void receiver(void delegate(Exception) newDelegate) {

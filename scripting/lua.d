@@ -15,9 +15,7 @@ module scripting.lua;
 import binding.lua;
 
 // common
-import core.string;
-import core.unicode;
-import core.definitions;
+import djehuty;
 
 // print
 import io.console;
@@ -77,9 +75,9 @@ class LuaScript {
 		if (s > 0) {
 			// errors!
 			string error = luaToString(-1);
-			Console.setColor(fgColor.BrightRed);
+			Console.forecolor = Color.Red;
 			Console.putln(error);
-			Console.setColor(fgColor.White);
+			Console.forecolor = Color.White;
 			lua_settop(L, 0); // remove error message
 		}
 	}

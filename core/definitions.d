@@ -299,13 +299,13 @@ else {
 	alias long Clong;
 }
 
-union TuiEventInfo {
+union CuiEventInfo {
 	Key key;
 	Mouse mouse;
 	Size size;
 }
 
-struct TuiEvent {
+struct CuiEvent {
 	enum Type {
 		KeyDown,
 		KeyUp,
@@ -319,6 +319,6 @@ struct TuiEvent {
 	}
 
 	Type type;
-	TuiEventInfo info;
+	CuiEventInfo info;
 	uint aux;
 }

@@ -3,7 +3,7 @@
 *.d~
 .DS_Store
 winsamp
-tuitetris
+cuitetris
 snake
 moreducks
 *.exe
@@ -15,4 +15,4 @@ djehuty.lib
 *.idb
 dspec
 runtests
-specs/test.d
+.specs

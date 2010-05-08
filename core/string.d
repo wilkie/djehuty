@@ -17,6 +17,8 @@ import core.definitions;
 import core.unicode;
 import core.variant;
 
+import data.iterable;
+
 import io.console;
 
 import math.currency;
@@ -1135,3 +1137,4 @@ string rtoa(real val, uint base = 10) {
 		return ftoa(cast(double)val, base);
 	}
 }
+

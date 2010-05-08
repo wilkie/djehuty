@@ -3,6 +3,7 @@ module parser;
 import djehuty;
 
 import io.console;
+import io.directory;
 
 import filelist;
 import output;
@@ -12,10 +13,24 @@ import parseunit;
 import ast;
 
 class Parser {
-	bool parseFiles(string outputPath, FileList files) {
-		output = new Output(outputPath ~ "test.d");
+	bool parseFiles(string inputPath, string outputPath, FileList files) {
+		if (inputPath[$-1] != '/') {
+			inputPath ~= '/';
+		}
+		if (outputPath[$-1] != '/') {
+			outputPath ~= '/';
+		}
 
 		foreach(f; files) {
+			// Create directories as needed in outputPath
+			auto dir = Directory.openOrCreate(outputPath);
+			string[] path = f[inputPath.length..$].split('/');
+			string filepath = outputPath;
+			foreach(directory; path[0..$-1]) {
+				filepath ~= "/" ~ directory;
+				dir = Directory.openOrCreate(filepath);
+			}
+			output = new Output(outputPath ~ f[inputPath.length..$-1]);
 			if (!(parseFile(f))) {
 				return false;
 			}
@@ -75,6 +90,7 @@ class ParseDSpec : ParseUnit {
 		// hook for describe section
 		registerToken("describe", &parseDescribe);
 		registerToken("import", &parseImport);
+		registerToken("module", &parseModule);
 
 		// hook for comments
 		//registerToken(...)
@@ -88,6 +104,34 @@ class ParseDSpec : ParseUnit {
 	void parseImport() {
 		AST ast = newParseUnit(new ParseImport());
 		progressTree(ast);
+	}
+
+	void parseModule() {
+		AST ast = newParseUnit(new ParseModule());
+		progressTree(ast);
+	}
+}
+
+class ParseModule : ParseUnit {
+	string mod;
+
+	this() {
+		registerToken(";", &parseSemicolon);
+		mod = "";
+	}
+
+	void parseSemicolon() {
+		AST ast = new AST(null, null);
+		ast.value = mod;
+		progressTree(ast);
+
+		done();
+	}
+
+	void parseDefault() {
+		if (currentToken != "module") {
+			mod ~= currentToken;
+		}
 	}
 }
 

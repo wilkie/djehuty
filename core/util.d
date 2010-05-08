@@ -40,6 +40,20 @@ template IsUnsigned(T) {
 			|| is(T == ubyte);
 }
 
+// Description: Resolves to true when T is a char, wchar, or dchar and false otherwise.
+template IsCharType(T) {
+	const bool IsCharType = is(T == char)
+		|| is(T == wchar)
+		|| is(T == dchar);
+}
+
+// Description: Resolves to true when T is a string, wstring, or dstring and false otherwise.
+template IsStringType(T) {
+	const bool IsStringType = is(T == char[])
+		|| is(T == wchar[])
+		|| is(T == dchar[]);
+}
+
 // Description: Resolves to true when T is an byte, short, int, or long and false otherwise.
 template IsSigned(T) {
 	const bool IsSigned = is(T == int)
@@ -208,3 +222,31 @@ private template RemoveSpacesImpl(char[] foo, uint pos = 0) {
 template RemoveSpaces(char[] foo) {
 	const char[] RemoveSpaces = RemoveSpacesImpl!(foo);
 }
+
+template Itoa(long i) {
+	static if(i < 0) {
+		const char[] Itoa = "-" ~ IntToStr!(-i, 10);
+	}
+	else {
+		const char[] Itoa = IntToStr!(i, 10);
+	}
+}
+
+template Itoh(long i) {
+	const char[] Itoh = "0x" ~ IntToStr!(i, 16);
+}
+
+template Digits(long i) {
+	const char[] Digits = "0123456789abcdefghijklmnopqrstuvwxyz"[0 .. i];
+}
+
+template IntToStr(ulong i, int base) {
+	static if(i >= base) {
+		const char[] IntToStr = IntToStr!(i / base, base) ~ Digits!(base)[i % base];
+	}
+	else {
+		const char[] IntToStr = "" ~ Digits!(base)[i % base];
+	}
+}
+
+

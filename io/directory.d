@@ -63,6 +63,14 @@ class Directory {
 		}
 	}
 
+	static Directory openOrCreate(string path) {
+		Directory ret = open(path);
+		if (ret is null) {
+			return Directory.create(path);
+		}
+		return ret;
+	}
+
 	static Directory open(string path) {
 		Directory ret = new Directory;
 		ret._isRoot = false;

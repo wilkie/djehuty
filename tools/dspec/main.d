@@ -46,8 +46,13 @@ class Opts : OptionParser {
 		return _path;
 	}
 
+	string outputPath() {
+		return _outputPath;
+	}
+
 private:
 	string _path = ".";
+	string _outputPath = ".specs";
 }
 
 class Dspec : Application {
@@ -65,6 +70,7 @@ class Dspec : Application {
 		// Interpret arguments
 
 		string path = options.path;
+		string outputPath = options.outputPath;
 
 		Console.putln("Starting on path ", path);
 
@@ -76,7 +82,7 @@ class Dspec : Application {
 		}
 
 		Parser parser = new Parser();
-		if (!(parser.parseFiles(path, files))) {
+		if (!(parser.parseFiles(path, outputPath, files))) {
 			Console.putln("error");
 			return;
 		}

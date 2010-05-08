@@ -5,10 +5,9 @@ import parsing.lexer;
 
 import parsing.d.tokens;
 
-import core.stream;
-import core.definitions;
+import djehuty;
 
-import utils.stack;
+import data.stack;
 
 import io.console;
 
@@ -889,7 +888,7 @@ class DLexer : Lexer {
 private:
 
 	void _error(string msg) {
-		Console.setColor(fgColor.Red);
+		Console.forecolor = Color.Red;
 		Console.putln("Lexical Error: file.d @ ", _lineNumber+1, ":", _pos+1, " - ", msg);
 		Console.putln();
 	}

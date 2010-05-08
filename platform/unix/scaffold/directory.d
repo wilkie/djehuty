@@ -21,7 +21,7 @@ import io.console;
 import core.definitions;
 import core.string;
 import core.main;
-import core.list;
+import data.list;
 
 bool DirectoryOpen(ref DirectoryPlatformVars dirVars, ref string path) {
 	string pn;

@@ -4,9 +4,7 @@ import parsing.ast;
 import parsing.lexer;
 import parsing.token;
 
-import core.string;
-import core.variant;
-import core.definitions;
+import djehuty;
 
 import io.console;
 
@@ -117,7 +115,6 @@ private:
 	Token current;
 
 	void _printerror(string msg, string desc, string[] usages, uint line, uint column) {
-		Console.setColor(fgColor.Red);
 		Console.putln("Syntax Error: file.d");
 		Console.putln("   Line: ", line, ": ", _lexer.line(line));
 		uint position = column;
@@ -126,7 +123,7 @@ private:
 			Console.put(" ");
 		}
 		Console.putln("^");
-		Console.setColor(fgColor.White);
+		Console.forecolor = Color.Gray;
 		Console.putln(" Reason: ", msg);
 		if (desc !is null) {
 			Console.putln("   Hint: ", desc);

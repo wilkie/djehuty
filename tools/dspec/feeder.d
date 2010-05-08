@@ -7,7 +7,7 @@ import core.definitions;
 import io.file;
 import io.console;
 
-char[] delims = " \t.{}()[];,-+=/\\*&^%!|?:<>";
+char[] delims = " \t.{}()[];,-+=/\\*&^%!|?:<>`\"'";
 
 class Feeder {
 	this(string filename) {

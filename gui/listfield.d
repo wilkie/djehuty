@@ -12,7 +12,8 @@ module gui.listfield;
 import core.color;
 import core.definitions;
 import core.string;
-import core.list;
+
+import data.list;
 
 import graphics.graphics;
 

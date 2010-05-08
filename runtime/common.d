@@ -10,11 +10,6 @@ module runtime.common;
 extern(C):
 
 package {
-	struct Array {
-		size_t length;
-		byte* data;
-	}
-
 	struct aaA {
 		aaA* left;
 		aaA* right;
@@ -31,12 +26,6 @@ package {
 	struct AA {
 		BB* a;
 	}
-
-	alias long ArrayRet_t;
-	extern(D) typedef int delegate(void*) aa_dg_t;
-	extern(D) typedef int delegate(void*, void*) aa_dg2_t;
-	extern(D) typedef int delegate(void*) array_dg_t;
-	extern(D) typedef int delegate(void*, void*) array_dg2_t;
 
 	enum BlkAttr : uint {
 		FINALIZE = 0b0000_0001,

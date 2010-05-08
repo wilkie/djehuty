@@ -1,0 +1,825 @@
+module specs.runtime.foreach;
+
+import io.console;
+
+describe runtime() {
+	dstring utf32 = "hello\u015Bworld";
+	wstring utf16 = "hello\u015Bworld";
+	string utf8 = "hello\u015Bworld";
+
+	dstring normal32 = "hello";
+	wstring normal16 = "hello";
+	string normal8 = "hello";
+
+	dstring utf32marks = "hello\u0364world";
+	wstring utf16marks = "hello\u0364world";
+	string utf8marks = "hello\u0364world";
+
+	dstring empty32 = "";
+	wstring empty16 = "";
+	string empty8 = "";
+
+	describe _aApplycw1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(wchar chr; normal8) {
+				should(normal16[i] == chr);
+				i++;
+			}
+			should(i == normal16.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(wchar chr; utf8) {
+				should(utf16[i] == chr);
+				i++;
+			}
+			should(i == utf16.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(wchar chr; utf8marks) {
+				should(utf16marks[i] == chr);
+				i++;
+			}
+			should(i == utf16marks.length);		
+		}
+	}
+
+	describe _aApplycd1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(dchar chr; normal8) {
+				should(normal32[i] == chr);
+				i++;
+			}
+			should(i == normal32.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(dchar chr; utf8) {
+				should(utf32[i] == chr);
+				i++;
+			}
+			should(i == utf32.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(dchar chr; utf8marks) {
+				should(utf32marks[i] == chr);
+				i++;
+			}
+			should(i == utf32marks.length);		
+		}
+	}
+
+	describe _aApplywc1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(char chr; normal16) {
+				should(normal8[i] == chr);
+				i++;
+			}
+			should(i == normal8.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(char chr; utf16) {
+				should(utf8[i] == chr);
+				i++;
+			}
+			should(i == utf8.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(char chr; utf16marks) {
+				should(utf8marks[i] == chr);
+				i++;
+			}
+			should(i == utf8marks.length);		
+		}
+	}
+
+	describe _aApplywd1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(dchar chr; normal16) {
+				should(normal32[i] == chr);
+				i++;
+			}
+			should(i == normal32.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(dchar chr; utf16) {
+				should(utf32[i] == chr);
+				i++;
+			}
+			should(i == utf32.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(dchar chr; utf16marks) {
+				should(utf32marks[i] == chr);
+				i++;
+			}
+			should(i == utf32marks.length);		
+		}
+	}
+
+	describe _aApplydc1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(char chr; normal32) {
+				should(normal8[i] == chr);
+				i++;
+			}
+			should(i == normal8.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(char chr; utf32) {
+				should(utf8[i] == chr);
+				i++;
+			}
+			should(i == utf8.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(char chr; utf32marks) {
+				should(utf8marks[i] == chr);
+				i++;
+			}
+			should(i == utf8marks.length);		
+		}
+	}
+
+	describe _aApplydw1() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(wchar chr; normal32) {
+				should(normal16[i] == chr);
+				i++;
+			}
+			should(i == normal16.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(wchar chr; utf32) {
+				should(utf16[i] == chr);
+				i++;
+			}
+			should(i == utf16.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(wchar chr; utf32marks) {
+				should(utf16marks[i] == chr);
+				i++;
+			}
+			should(i == utf16marks.length);		
+		}
+	}
+
+	describe _aApplycw2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; normal8) {
+				should(idx == i);
+				should(normal16[i] == chr);
+				i++;
+			}
+			should(i == normal16.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; utf8) {
+				should(idx == i);
+				should(utf16[i] == chr);
+				i++;
+			}
+			should(i == utf16.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; utf8marks) {
+				should(idx == i);
+				should(utf16marks[i] == chr);
+				i++;
+			}
+			should(i == utf16marks.length);		
+		}
+	}
+
+	describe _aApplycd2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; normal8) {
+				should(idx == i);
+				should(normal32[i] == chr);
+				i++;
+			}
+			should(i == normal32.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; utf8) {
+				should(idx == i);
+				should(utf32[i] == chr);
+				i++;
+			}
+			should(i == utf32.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; utf8marks) {
+				should(idx == i);
+				should(utf32marks[i] == chr);
+				i++;
+			}
+			should(i == utf32marks.length);		
+		}
+	}
+
+	describe _aApplywc2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, char chr; normal16) {
+				should(idx == i);
+				should(normal8[i] == chr);
+				i++;
+			}
+			should(i == normal8.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, char chr; utf16) {
+				should(idx == i);
+				should(utf8[i] == chr);
+				i++;
+			}
+			should(i == utf8.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, char chr; utf16marks) {
+				should(idx == i);
+				should(utf8marks[i] == chr);
+				i++;
+			}
+			should(i == utf8marks.length);		
+		}
+	}
+
+	describe _aApplywd2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; normal16) {
+				should(idx == i);
+				should(normal32[i] == chr);
+				i++;
+			}
+			should(i == normal32.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; utf16) {
+				should(idx == i);
+				should(utf32[i] == chr);
+				i++;
+			}
+			should(i == utf32.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, dchar chr; utf16marks) {
+				should(idx == i);
+				should(utf32marks[i] == chr);
+				i++;
+			}
+			should(i == utf32marks.length);		
+		}
+	}
+
+	describe _aApplydc2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, char chr; normal32) {
+				should(idx == i);
+				should(normal8[i] == chr);
+				i++;
+			}
+			should(i == normal8.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, char chr; utf32) {
+				should(idx == i);
+				should(utf8[i] == chr);
+				i++;
+			}
+			should(i == utf8.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, char chr; utf32marks) {
+				should(idx == i);
+				should(utf8marks[i] == chr);
+				i++;
+			}
+			should(i == utf8marks.length);		
+		}
+	}
+
+	describe _aApplydw2() {
+		it should_handle_normal_strings() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; normal32) {
+				should(idx == i);
+				should(normal16[i] == chr);
+				i++;
+			}
+			should(i == normal16.length);		
+		}
+
+		it should_handle_unicode_strings() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; utf32) {
+				should(idx == i);
+				should(utf16[i] == chr);
+				i++;
+			}
+			should(i == utf16.length);		
+		}
+
+		it should_handle_combining_marks() {
+			int i = 0;
+			foreach(size_t idx, wchar chr; utf32marks) {
+				should(idx == i);
+				should(utf16marks[i] == chr);
+				i++;
+			}
+			should(i == utf16marks.length);		
+		}
+	}
+
+	describe _aApplyRcw1() {
+		it should_handle_normal_strings() {
+			int i = normal16.length;
+			foreach_reverse(wchar chr; normal8) {
+				i--;
+				should(normal16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf16.length;
+			foreach_reverse(wchar chr; utf8) {
+				i--;
+				should(utf16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf16marks.length;
+			foreach_reverse(wchar chr; utf8marks) {
+				i--;
+				should(utf16marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(wchar chr; empty8) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRcd1() {
+		it should_handle_normal_strings() {
+			int i = normal32.length;
+			foreach_reverse(dchar chr; normal8) {
+				i--;
+				should(normal32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf32.length;
+			foreach_reverse(dchar chr; utf8) {
+				i--;
+				should(utf32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf32marks.length;
+			foreach_reverse(dchar chr; utf8marks) {
+				i--;
+				should(utf32marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(dchar chr; empty8) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRwc1() {
+		it should_handle_normal_strings() {
+			int i = normal8.length;
+			foreach_reverse(char chr; normal16) {
+				i--;
+				should(normal8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf8.length;
+			foreach_reverse(char chr; utf16) {
+				i--;
+				should(utf8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf8marks.length;
+			foreach_reverse(char chr; utf16marks) {
+				i--;
+				should(utf8marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(char chr; empty16) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRwd1() {
+		it should_handle_normal_strings() {
+			int i = normal32.length;
+			foreach_reverse(dchar chr; normal16) {
+				i--;
+				should(normal32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf32.length;
+			foreach_reverse(dchar chr; utf16) {
+				i--;
+				should(utf32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf32marks.length;
+			foreach_reverse(dchar chr; utf16marks) {
+				i--;
+				should(utf32marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(dchar chr; empty16) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRdc1() {
+		it should_handle_normal_strings() {
+			int i = normal8.length;
+			foreach_reverse(char chr; normal32) {
+				i--;
+				should(normal8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf8.length;
+			foreach_reverse(char chr; utf32) {
+				i--;
+				should(utf8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf8marks.length;
+			foreach_reverse(char chr; utf32marks) {
+				i--;
+				should(utf8marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(char chr; empty32) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRdw1() {
+		it should_handle_normal_strings() {
+			int i = normal16.length;
+			foreach_reverse(wchar chr; normal32) {
+				i--;
+				should(normal16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf16.length;
+			foreach_reverse(wchar chr; utf32) {
+				i--;
+				should(utf16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf16marks.length;
+			foreach_reverse(wchar chr; utf32marks) {
+				i--;
+				should(utf16marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(wchar chr; empty32) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRcw2() {
+		it should_handle_normal_strings() {
+			int i = normal16.length;
+			foreach_reverse(size_t idx, wchar chr; normal8) {
+				i--;
+				should(idx == i);
+				should(normal16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf16.length;
+			foreach_reverse(size_t idx, wchar chr; utf8) {
+				i--;
+				should(idx == i);
+				should(utf16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf16marks.length;
+			foreach_reverse(size_t idx, wchar chr; utf8marks) {
+				i--;
+				should(idx == i);
+				should(utf16marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, wchar chr; empty8) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRcd2() {
+		it should_handle_normal_strings() {
+			int i = normal32.length;
+			foreach_reverse(size_t idx, dchar chr; normal8) {
+				i--;
+				should(idx == i);
+				should(normal32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf32.length;
+			foreach_reverse(size_t idx, dchar chr; utf8) {
+				i--;
+				should(idx == i);
+				should(utf32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf32marks.length;
+			foreach_reverse(size_t idx, dchar chr; utf8marks) {
+				i--;
+				should(idx == i);
+				should(utf32marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, dchar chr; empty8) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRwc2() {
+		it should_handle_normal_strings() {
+			int i = normal8.length;
+			foreach_reverse(size_t idx, char chr; normal16) {
+				i--;
+				should(idx == i);
+				should(normal8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf8.length;
+			foreach_reverse(size_t idx, char chr; utf16) {
+				i--;
+				should(idx == i);
+				should(utf8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf8marks.length;
+			foreach_reverse(size_t idx, char chr; utf16marks) {
+				i--;
+				should(idx == i);
+				should(utf8marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, char chr; empty16) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRwd2() {
+		it should_handle_normal_strings() {
+			int i = normal32.length;
+			foreach_reverse(size_t idx, dchar chr; normal16) {
+				i--;
+				should(idx == i);
+				should(normal32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf32.length;
+			foreach_reverse(size_t idx, dchar chr; utf16) {
+				i--;
+				should(idx == i);
+				should(utf32[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf32marks.length;
+			foreach_reverse(size_t idx, dchar chr; utf16marks) {
+				i--;
+				should(idx == i);
+				should(utf32marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, dchar chr; empty16) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRdc2() {
+		it should_handle_normal_strings() {
+			int i = normal8.length;
+			foreach_reverse(size_t idx, char chr; normal32) {
+				i--;
+				should(idx == i);
+				should(normal8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf8.length;
+			foreach_reverse(size_t idx, char chr; utf32) {
+				i--;
+				should(idx == i);
+				should(utf8[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf8marks.length;
+			foreach_reverse(size_t idx, char chr; utf32marks) {
+				i--;
+				should(idx == i);
+				should(utf8marks[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, char chr; empty32) {
+				shouldNot(true);
+			}
+		}
+	}
+
+	describe _aApplyRdw2() {
+		it should_handle_normal_strings() {
+			int i = normal16.length;
+			foreach_reverse(size_t idx, wchar chr; normal32) {
+				i--;
+				should(idx == i);
+				should(normal16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_unicode_strings() {
+			int i = utf16.length;
+			foreach_reverse(size_t idx, wchar chr; utf32) {
+				i--;
+				should(idx == i);
+				should(utf16[i] == chr);
+			}
+			should(i == 0);
+		}
+
+		it should_handle_combining_marks() {
+			int i = utf16marks.length;
+			foreach_reverse(size_t idx, wchar chr; utf32marks) {
+				i--;
+				should(idx == i);
+				should(utf16marks[i] == chr);
+			}
+			should(i == 0);
+		}	
+
+		it should_handle_empty_string() {
+			foreach_reverse(size_t idx, wchar chr; empty32) {
+				shouldNot(true);
+			}
+		}
+	}
+}

@@ -1,13 +1,12 @@
 module console.prompt;
 
-import core.string;
-import core.unicode;
+import djehuty;
 
 import io.console;
 
 import core.definitions;
 
-import utils.linkedlist;
+import data.queue;
 
 // Section: Console
 
@@ -30,11 +29,11 @@ class Prompt {
 		return _prompt.dup;
 	}
 
-	void promptColor(fgColor fgClr) {
+	void promptColor(Color fgClr) {
 		_promptClr = fgClr;
 	}
 
-	void forecolor(fgColor fgClr) {
+	void forecolor(Color fgClr) {
 		_clr = fgClr;
 	}
 
@@ -46,7 +45,7 @@ class Prompt {
 		}
 
 		if (bufferSize != 0) {
-			_lineBuffer = new LinkedList!(string)();
+			_lineBuffer = new Queue!(string)();
 		}
 		else {
 			_lineBuffer = null;
@@ -66,7 +65,7 @@ class Prompt {
 
 		// Print out the prompt string
 
-		Console.setColor(_promptClr);
+		Console.forecolor = _promptClr;
 
 		Console.put(_prompt);
 
@@ -85,7 +84,7 @@ class Prompt {
 			_bufferPos = -1;
 		}
 
-		Console.setColor(_clr);
+		Console.forecolor = _clr;
 
 		for(;;) {
 			Console.getChar(chr, code);
@@ -288,10 +287,10 @@ protected:
 
 	// the prompt string, for instance "# " or "C:\>"
 	string _prompt;
-	fgColor _promptClr = fgColor.White;
-	fgColor _clr = fgColor.White;
+	Color _promptClr = Color.Gray;
+	Color _clr = Color.Gray;
 
-	LinkedList!(string) _lineBuffer;
+	Queue!(string) _lineBuffer;
 	int _bufferSize;
 	int _bufferPos;
 

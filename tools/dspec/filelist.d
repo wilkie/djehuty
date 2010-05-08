@@ -90,7 +90,7 @@ protected:
 			else ext = null;
 
 			switch (ext) {
-				case ".d":
+				case ".ds":
 					files ~= path ~ d;
 					//files ~= path ~ d;
 					break;

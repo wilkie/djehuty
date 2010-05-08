@@ -15,6 +15,7 @@ import core.arguments;
 import core.application;
 import core.locale;
 import core.system;
+import core.color;
 
 import io.console;
 
@@ -85,7 +86,8 @@ package:
 		}
 
 		// Reset colors to something sane
-		Console.setColor(fgColor.White, bgColor.Black);
+		Console.forecolor = Color.White;
+		Console.backcolor = Color.Black;
 		if (app !is null) {
 			app.onApplicationEnd();
 			app.onPostApplicationEnd(code);

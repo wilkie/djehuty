@@ -3,7 +3,8 @@ module parsing.ast;
 import core.string;
 import core.definitions;
 import core.variant;
-import core.list;
+
+import data.list;
 
 import io.console;
 

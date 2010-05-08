@@ -409,7 +409,7 @@ public:
 
 		//g.font = (_font);
 
-		g.forecolor = (Color.Black);
+		g.forecolor = Color.Black;
 
 		if (_caret_pos == _sel_start || (_caret_pos < _first_char && _sel_start < _first_char)) {
 			//no selection visible
