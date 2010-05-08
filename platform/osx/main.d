@@ -16,7 +16,7 @@ import scaffold.console;
 
 import binding.c;
 
-import tui.window;
+import cui.window;
 
 import core.string;
 

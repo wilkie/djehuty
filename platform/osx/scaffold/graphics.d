@@ -154,7 +154,7 @@ void setAntialias(ViewPlatformVars* viewVars, bool value) {
 // Brushes
 
 extern(C) void _OSXCreateBrush(void** brush, double r, double g, double b, double a);
-void createBrush(BrushPlatformVars* brush, ref Color clr) {
+void createBrush(BrushPlatformVars* brush, Color clr) {
 	_OSXCreateBrush(&brush.brush, clr.red, clr.green, clr.blue, clr.alpha);
 }
 

@@ -107,7 +107,7 @@ private int _toNearestConsoleColor(Color clr) {
 }
 
 
-void ConsoleSetColors(uint fg, uint bg, int bright) {
+void ConsoleSetColors(Color fg, Color bg) {
 	int fgidx = _toNearestConsoleColor(fg);
 	int bgidx = _toNearestConsoleColor(bg);
 
