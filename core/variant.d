@@ -14,6 +14,9 @@ import core.string;
 import core.definitions;
 import core.unicode;
 
+import io.console;
+import tango.io.Stdout;
+
 // Imposed variadic
 version(LDC) {
 	public import ldc.vararg;
@@ -671,6 +674,10 @@ protected:
 	Variant _variantForTypeInfo(TypeInfo _ti, void* ptr) {
 		Variant ret;
 		void[] arr;
+
+		if ((cast(TypeInfo_Typedef)_ti) !is null ) {
+			_ti = _ti.next;
+		}
 
 		ret._tiRoot = _ti;
 
