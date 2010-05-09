@@ -182,3 +182,41 @@ LocaleId SystemGetLocaleId() {
 	}
 	return ret;
 }
+
+private import binding.c;
+
+ubyte[] malloc(size_t length) {
+	ubyte* ret = cast(ubyte*)binding.c.malloc(length);
+
+	// Error, probably out of memory.
+	if (ret is null) {
+		return null;
+	}
+
+	return ret[0..length];
+}
+
+ubyte[] realloc(ubyte[] original, size_t length) {
+	ubyte* ret = cast(ubyte*)binding.c.realloc(original.ptr, length);
+
+	if (ret is null) {
+		return null;
+	}
+
+	return ret[0..length];
+}
+
+ubyte[] calloc(size_t length) {
+	ubyte* ret = cast(ubyte*)binding.c.calloc(length);
+
+	// Error, probably out of memory.
+	if (ret is null) {
+		return null;
+	}
+
+	return ret[0..length];
+}
+
+void free(void[] memory) {
+	binding.c.free(memory.ptr);
+}
