@@ -7,6 +7,18 @@ class MathObject {
 		return null;
 	}
 
+	MathObject opCos() {
+		return null;
+	}
+
+	MathObject opSin() {
+		return null;
+	}
+
+	MathObject opTan() {
+		return null;
+	}
+
 	// arithmetic overloads
 	MathObject opDiv(MathObject operand) {
 		return null;
