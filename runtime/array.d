@@ -18,6 +18,14 @@ import math.random;
 import core.util;
 import io.console;
 
+// Arrays in D are represented as such:
+
+// align(size_t.sizeof)
+// struct Array {
+//   size_t length;
+//   void* ptr;
+// }
+
 extern(C):
 
 // Description: This runtime function reverses a char array in place and is invoked with
@@ -186,3 +194,141 @@ ubyte[] _adSortChar(ubyte[] array) {
 ubyte[] _adSortWchar(ubyte[] array) {
 	return _adSort(array, typeid(wchar[]));
 }
+
+private template _array_init(T) {
+	void _array_init(T[] array, T value) {
+		foreach(ref element; array) {
+			element = value;
+		}
+	}
+}
+
+/*
+void _d_array_init_i1(bool* array, size_t length, bool value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_i8(ubyte[] array, ubyte value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_i16(ushort[] array, ushort value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_i32(uint[] array, uint value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_i64(ulong[] array, ulong value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_float(float[] array, float value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_double(double* array, size_t length, double value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_pointer(void** array, size_t length, void* value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_mem(ubyte* array, size_t length, ubyte* value, size_t valueLength) {
+	if (valueLength == 0 || length == 0) {
+		return;
+	}
+
+	ubyte[] cmp = array[0..length*valueLength];
+
+	size_t valueIndex = 0;
+	foreach(ref element; cmp) {
+		element = value[valueIndex];
+		valueIndex++;
+		if (valueIndex == valueLength) {
+			valueIndex = 0;
+		}
+	}
+}
+//*/
+
+/*
+size_t _d_array_cast_len(size_t length, size_t elementSize, size_t newElementSize) {
+	if (newElementSize == 1) {
+		return length * elementSize;
+	}
+	else if (length % newElementSize != 0) {
+		// Probably bad
+	}
+
+	return (length * elementSize) / newElementSize;
+}
+
+// Description: This runtime function will simply set the length to reflect storing a different type.
+void[] _d_arraycast(size_t toElementSize, size_t fromElementSize, void[] array) {
+	if (toElementSize == fromElementSize) {
+		return array;
+	}
+
+	if (toElementSize == 0) {
+		// Technically does not divide evenly
+		throw new Exception("Array cast misalignment");
+	}
+
+	size_t numbytes = array.length * fromElementSize;
+
+	// Can we divide this array up into equal parts of the new elements?
+	if (numbytes % toElementSize != 0) {
+		// Error
+		throw new Exception("Array cast misalignment");
+	}
+	
+	size_t newLength = numbytes / toElementSize;
+
+	// Set the new length
+	*cast(size_t*)&array = newLength;
+	return array;
+}
+
+byte[] _d_arraycopy(size_t size, byte[] from, byte[] to) {
+	// The arrays should be of equal size
+	if (to.length != from.length) {
+		throw new Exception("Length mismatch for array copy");
+	}
+
+	// Get the memory bounds for the array
+	byte* toEnd = to.ptr + (to.length * size);
+	byte* fromEnd = from.ptr + (from.length * size);
+
+	// Check for overlapping copy
+	if (toEnd > from.ptr && fromEnd > to.ptr) {
+		// Overlapping...
+		throw new Exception("Array copy overlaps");
+	}
+
+	// Perform the copy
+	foreach(size_t idx, ref element; to) {
+		element = from[idx];
+	}
+
+	return to;
+}
+
+void _d_array_slice_copy(ubyte* dst, size_t dstLength, ubyte* src, size_t srcLength) {
+	if (dstLength != srcLength) {
+		throw new Exception("Length mismatch for array copy");
+	}
+	
+	if (dst + dstLength > src && src + srcLength > dst) {
+		// Overlapping copy
+		throw new Exception("Array copy overlaps");
+	}
+
+	// Perform the copy
+	foreach(size_t idx, ref element; dst[0..dstLength]) {
+		element = src[idx];
+	}
+}
+//*/
