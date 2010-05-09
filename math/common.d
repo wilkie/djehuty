@@ -87,8 +87,8 @@ template sqrt(T) {
 			}
 
 			real a,b;
-			a = fabs(x.re);
-			b = fabs(x.im);
+			a = abs(x.re);
+			b = abs(x.im);
 
 			real y,z;
 			if (a >= b) {
@@ -245,7 +245,7 @@ private int _rempio2(double x, double[] y) {
 	}
 
 	if (ix <= 0x413921fb) { // |x| <= 2^19 * (pi/2)
-		t = fabs(x);
+		t = abs(x);
 		n = cast(int)((t * invpio2) + half);
 		fn = cast(double)n;
 		r = t - (fn * pio2_1);
@@ -462,12 +462,6 @@ double sin(double x) {
 
 double tan(double x) {
 	return x;
-}
-
-double fabs(double x) {
-	ulong intRepresentation = *cast(ulong*)&x;
-	intRepresentation &= 0x7fff_ffff_ffff_ffff;
-	return *cast(double*)&intRepresentation;
 }
 
 double abs(double x) {
