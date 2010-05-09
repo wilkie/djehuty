@@ -7,7 +7,6 @@
 
 module runtime.dstatic;
 
-import runtime.util;
 import runtime.common;
 
 extern(C):

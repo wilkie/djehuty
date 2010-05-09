@@ -8,9 +8,7 @@
 module object;
 
 // Imports necessary routines used by the runtime
-import runtime.util;
 import runtime.dstatic;
-import runtime.dstubs;
 import runtime.exception;
 import runtime.error;
 

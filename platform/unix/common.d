@@ -18,7 +18,6 @@ public import CairoX = binding.cairo.xlib;
 
 public import Pango = binding.pango.pango;
 
-public import binding.c;
 public import Curses = binding.ncurses.ncurses;
 
 extern(C):

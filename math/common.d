@@ -20,30 +20,99 @@ template _mathFunc(string func) {
 		`;
 }
 
-mixin(_mathFunc!("sqrt"));
-
-// Abstract standard library (silliness)
-version(Tango) {
-	// Tango
-	public import tango.math.Math;
-
-	// OK. DMD has an issue when you redefine intrinsics...
-	// that is, it forgets they exist.
-	// Eventually, this will cause an error. therefore,
-
-	// XXX: REMOVE when compiler is fixed
-	private import Math = tango.math.Math;
-}
-else {
-	// Phobos
-	public import std.math;
-
-	// OK. DMD has an issue when you redefine intrinsics...
-	// that is, it forgets they exist.
-	// Eventually, this will cause an error. therefore,
-
-	// XXX: REMOVE when compiler is fixed
-	private import Math = std.math;
+// Description: Will resolve to true when the object T inherits or is of type 
+//   MathObject.
+template IsMathObject(T) {
+	static if (T.stringof == "MathObject") {
+		const bool IsMathObject = true;
+	}
+	else static if (T == Object) {
+		const bool IsMathObject = false;
+	}
+	else {
+		const bool IsMathObject = IsMathObject!(Super!(T));
+	}
 }
 
-alias Math.sqrt sqrt;
+// Description: Will resolve to true when the type T can be used as input into
+//   a math function.
+template IsMathType(T) {
+	static if (is(T : creal) || is(T : real) || is(T : double) || is(T : float) || IsIntType!(T) || IsMathObject!(T)) {
+		const bool IsMathType = true;
+	}
+	else {
+		const bool IsMathType = false;
+	}
+}
+
+template sqrt(T) {
+	static assert(IsMathType!(T), T.stringof ~ " cannot be used as input to this function.");
+	T sqrt(T x) {
+		static if (IsMathObject!(T)) {
+			return x.opSqrt();
+		}
+		else static if (is(T : int)) {
+			float temp;
+			float x, y, rr;
+			
+			int ret;
+
+			rr = x;
+			y = rr * 0.5;
+			*cast(uint*)&temp = (0xbe6f0000 - *cast(uint*)&rr) >> 1;
+			x = temp;
+			x = (1.5 * x) - (x * x) * (x * y);
+
+			if (r > 101123) {
+				x = (1.5 * x) - (x * x) * (x * y);
+			}
+
+			ret = cast(int)((x * rr) + 0.5);
+
+			return ret;
+		}
+		else static if (is(T : creal)) {
+			if (x == 0.0) {
+				return x;
+			}
+
+			real a,b;
+			a = fabs(x.re);
+			b = fabs(x.im);
+
+			real y,z;
+			if (a >= b) {
+				y = b / a;
+				y *= y;
+				z = 1 + sqrt(1+y);
+				z *= 0.5;
+				z = sqrt(z);
+				z *= sqrt(a);
+			}
+			else {
+				y = a / b;
+				z = sqrt(1 + (y*y));
+				z += y;
+				z = sqrt(0.5 * z);
+				z *= sqrt(b);
+			}
+
+			creal ret;
+			if (z.re >= 0) {
+				c = z + (x.im / (z + z)) * 1.0i;
+			}
+			else {
+				if (x.im < 0) {
+					z = -z;
+				}
+				c = (x.im / (z + z)) + (z * 1.0i);
+			}
+
+			return ret;
+		}
+		else {
+			// double, float, real
+		}
+	}
+}
+
