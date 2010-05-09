@@ -7,7 +7,7 @@
 
 module runtime.typeinfo.ti_object;
 
-class TypeInfo_C : TypeInfo {
+class TypeInfo_Class : TypeInfo {
 	hash_t getHash(void *p) {
 		Object o = *cast(Object*)p;
 		assert(o);

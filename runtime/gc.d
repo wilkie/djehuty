@@ -54,35 +54,35 @@ void* gc_calloc(size_t sz, uint ba = 0) {
 	return GarbageCollector.calloc(sz).ptr;
 }
 
-void* gc_realloc(void* p, size_t sz, uint ba = 0) {
-	return GarbageCollector.realloc(p[0..sz]).ptr;
+void* gc_realloc(ubyte* p, size_t sz, uint ba = 0) {
+	return GarbageCollector.realloc(p[0..sz], sz).ptr;
 }
 
-size_t gc_extend(void* p, size_t mx, size_t sz) {
-	return GarbageCollector.extend(p[0..mx]);
+size_t gc_extend(ubyte* p, size_t mx, size_t sz) {
+	return GarbageCollector.extend(p[0..mx], mx, sz);
 }
 
-void gc_free(void* p) {
+void gc_free(ubyte* p) {
 	return GarbageCollector.free(p[0..1]);
 }
 
-size_t gc_sizeOf(void* p) {
+size_t gc_sizeOf(ubyte* p) {
 	return GarbageCollector.sizeOf(p[0..1]);
 }
 
-void gc_addRoot(void* p) {
+void gc_addRoot(ubyte* p) {
 	return GarbageCollector.addRoot(p[0..1]);
 }
 
-void gc_addRange(void* p, size_t sz) {
-	return GarbageCollector.addRange(p[0..1]);
+void gc_addRange(ubyte* p, size_t sz) {
+	return GarbageCollector.addRange(p[0..sz]);
 }
 
-void gc_removeRoot(void* p) {
+void gc_removeRoot(ubyte* p) {
 	return GarbageCollector.removeRoot(p[0..1]);
 }
 
-void gc_removeRange(void* p) {
+void gc_removeRange(ubyte* p) {
 	return GarbageCollector.removeRange(p[0..1]);
 }
 
@@ -95,11 +95,11 @@ public:
 static:
 
 	void enable() {
-		Atomic.decrement(disabled);
+		Atomic.decrement(_disabled);
 	}
 
 	void disable() {
-		Atomic.increment(disabled);
+		Atomic.increment(_disabled);
 	}
 
 	void minimize() {
@@ -116,6 +116,10 @@ static:
 		return null;
 	}
 
+	ubyte[] calloc(size_t length) {
+		return null;
+	}
+
 	size_t extend(ubyte[] original, size_t max, size_t size) {
 		return 0;
 	}
@@ -128,9 +132,11 @@ static:
 	}
 
 	void* addressOf(ubyte[] memory) {
+		return null;
 	}
 
 	size_t sizeOf(ubyte[] memory) {
+		return 0;
 	}
 
 	void addRoot(ubyte[] memory) {
@@ -151,6 +157,10 @@ private:
 		_inited = 1;
 	}
 
-	uint _disabled;
+	void _terminate() {
+		_inited = 0;
+	}
+
+	ulong _disabled;
 	bool _inited;
 }

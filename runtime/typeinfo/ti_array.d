@@ -9,6 +9,76 @@ module runtime.typeinfo.ti_array;
 
 import runtime.util;
 
+class TypeInfo_Array : TypeInfo {
+	char[] toString() { return value.toString() ~ "[]"; }
+
+	int opEquals(Object o) {
+		TypeInfo_Array c;
+
+		return cast(int)
+			   (this is o ||
+				((c = cast(TypeInfo_Array)o) !is null &&
+				 this.value == c.value));
+	}
+
+	hash_t getHash(void *p) {
+		size_t sz = value.tsize();
+		hash_t hash = 0;
+		void[] a = *cast(void[]*)p;
+		for (size_t i = 0; i < a.length; i++)
+			hash += value.getHash(a.ptr + i * sz);
+		return hash;
+	}
+
+	int equals(void *p1, void *p2) {
+		void[] a1 = *cast(void[]*)p1;
+		void[] a2 = *cast(void[]*)p2;
+		if (a1.length != a2.length)
+			return 0;
+		size_t sz = value.tsize();
+		for (size_t i = 0; i < a1.length; i++) {
+			if (!value.equals(a1.ptr + i * sz, a2.ptr + i * sz))
+				return 0;
+		}
+		return 1;
+	}
+
+	int compare(void *p1, void *p2) {
+		void[] a1 = *cast(void[]*)p1;
+		void[] a2 = *cast(void[]*)p2;
+		size_t sz = value.tsize();
+		size_t len = a1.length;
+
+		if (a2.length < len)
+			len = a2.length;
+		for (size_t u = 0; u < len; u++) {
+			int result = value.compare(a1.ptr + u * sz, a2.ptr + u * sz);
+			if (result)
+				return result;
+		}
+		return cast(int)a1.length - cast(int)a2.length;
+	}
+
+	size_t tsize() {
+		return (void[]).sizeof;
+	}
+
+	void swap(void *p1, void *p2) {
+		void[] tmp;
+		tmp = *cast(void[]*)p1;
+		*cast(void[]*)p1 = *cast(void[]*)p2;
+		*cast(void[]*)p2 = tmp;
+	}
+
+	TypeInfo value;
+
+	TypeInfo next() {
+		return value;
+	}
+
+	uint flags() { return 1; }
+}
+
 class ArrayInfo(char[] TYPE) : TypeInfo {
 	mixin("alias " ~ TYPE ~ " T;");
 

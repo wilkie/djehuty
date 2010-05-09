@@ -7,8 +7,8 @@
 
 module runtime.lifetime;
 
-import runtime.common;
 import runtime.exception;
+import runtime.common;
 import runtime.gc;
 
 import io.console;
@@ -50,7 +50,7 @@ void _d_delclass(Object p) {
 	else {
 		rt_finalize(cast(void*)p);
 	}
-	gc_free(cast(void*)p);
+	gc_free(cast(ubyte*)p);
 }
 
 private template _newarray(bool initialize, bool withZero) {
@@ -184,7 +184,7 @@ void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
 // array: The array to delete.
 void _d_delarray(void[] array) {
 	if (array !is null) {
-		gc_free(array.ptr);
+		gc_free(cast(ubyte*)array.ptr);
 	}
 }
 
@@ -192,7 +192,7 @@ void _d_delarray(void[] array) {
 // ptr: The pointer to the address to free.
 void _d_delmemory(void* ptr) {
 	if (ptr !is null) {
-		gc_free(ptr);
+		gc_free(cast(ubyte*)ptr);
 	}
 }
 

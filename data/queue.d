@@ -87,7 +87,7 @@ class Queue(T) : Iterable!(T) {
 
 	T peek() {
 		if (_count == 0) {
-			throw new OutOfElements(this.classinfo.name);
+			throw new DataException.OutOfElements(this.classinfo.name);
 		}
 
 		return _head.data;
@@ -96,7 +96,7 @@ class Queue(T) : Iterable!(T) {
 	T peekAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
-				throw new OutOfBounds(this.classinfo.name);
+				throw new DataException.OutOfBounds(this.classinfo.name);
 			}
 
 			if (index == 0) {
@@ -154,7 +154,7 @@ class Queue(T) : Iterable!(T) {
 	T remove() {
 		synchronized(this) {
 			if (_tail == null) {
-				throw new OutOfElements(this.classinfo.name);
+				throw new DataException.OutOfElements(this.classinfo.name);
 			}
 
 			T data = _tail.data;
@@ -182,7 +182,7 @@ class Queue(T) : Iterable!(T) {
 	T remove(T item) {
 		synchronized(this) {
 			if (_head is null) {
-				throw new OutOfElements(this.classinfo.name);
+				throw new DataException.OutOfElements(this.classinfo.name);
 			}
 
 			LinkedListNode* curnode = null;
@@ -218,14 +218,14 @@ class Queue(T) : Iterable!(T) {
 				curnode = curnode.next;
 			} while (curnode !is _head);
 
-			throw new ElementNotFound(this.classinfo.name);
+			throw new DataException.ElementNotFound(this.classinfo.name);
 		}
 	}
 
 	T removeAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
-				throw new OutOfBounds(this.classinfo.name);
+				throw new DataException.OutOfBounds(this.classinfo.name);
 			}
 
 			LinkedListNode* curnode = null;

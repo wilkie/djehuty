@@ -7,7 +7,7 @@
 
 module runtime.typeinfo.ti_ptr;
 
-class TypeInfo_P : TypeInfo {
+class TypeInfo_Pointer : TypeInfo {
 	hash_t getHash(void *p) {
 		return cast(uint)*cast(void* *)p;
 	}

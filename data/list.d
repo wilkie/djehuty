@@ -85,7 +85,7 @@ class List(T) : Iterable!(T) {
 				}
 
 				if (idx >= _count) {
-					throw new OutOfBounds(this.classinfo.name);
+					throw new DataException.OutOfBounds(this.classinfo.name);
 				}
 
 				if (_count == 0) {
@@ -134,11 +134,11 @@ class List(T) : Iterable!(T) {
 	T removeAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
-				throw new OutOfBounds(this.classinfo.name);
+				throw new DataException.OutOfBounds(this.classinfo.name);
 			}
 
 			if (this.empty()) {
-				throw new OutOfElements(this.classinfo.name);
+				throw new DataException.OutOfElements(this.classinfo.name);
 			}
 
 			_count--;
@@ -150,7 +150,7 @@ class List(T) : Iterable!(T) {
 	T peek() {
 		synchronized(this) {
 			if (this.empty()) {
-				throw new OutOfElements(this.classinfo.name);
+				throw new DataException.OutOfElements(this.classinfo.name);
 			}
 
 			return _data[_count-1];
@@ -160,11 +160,11 @@ class List(T) : Iterable!(T) {
 	T peekAt(size_t index) {
 		synchronized(this) {
 			if (index >= _count) {
-				throw new OutOfBounds(this.classinfo.name);
+				throw new DataException.OutOfBounds(this.classinfo.name);
 			}
 
 			if (this.empty()) {
-				throw new OutOfElements(this.classinfo.name);
+				throw new DataException.OutOfElements(this.classinfo.name);
 			}
 
 			return _data[index];
@@ -175,7 +175,7 @@ class List(T) : Iterable!(T) {
 		void set(R value) {
 			synchronized(this) {
 				if (this.empty()) {
-					throw new OutOfElements(this.classinfo.name);
+					throw new DataException.OutOfElements(this.classinfo.name);
 				}
 
 				if (_count > 0) {
@@ -189,11 +189,11 @@ class List(T) : Iterable!(T) {
 		void setAt(size_t index, R value) {
 			synchronized(this) {
 				if (index >= _count) {
-					throw new OutOfBounds(this.classinfo.name);
+					throw new DataException.OutOfBounds(this.classinfo.name);
 				}
 
 				if (this.empty()) {
-					throw new OutOfElements(this.classinfo.name);
+					throw new DataException.OutOfElements(this.classinfo.name);
 				}
 
 				_data[index] = cast(T)value;
