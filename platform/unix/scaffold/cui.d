@@ -20,6 +20,8 @@ import core.definitions;
 
 import platform.application;
 
+import binding.c;
+
 void CuiStart(CuiPlatformVars* vars) {
 	Curses.savetty();
 

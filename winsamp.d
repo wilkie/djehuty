@@ -70,6 +70,8 @@ class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
+		Console.putln(sin(0));
+		Console.putln(cos(3.1415296));
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {

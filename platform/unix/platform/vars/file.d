@@ -12,6 +12,8 @@ module platform.vars.file;
 
 import platform.unix.common;
 
+import binding.c;
+
 struct FilePlatformVars {
 	FILE* file;
 }
