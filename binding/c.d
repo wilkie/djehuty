@@ -105,3 +105,8 @@ int  getchar(); ///
 int  putchar(int c); ///
 int  getc(FILE *fp); ///
 int  putc(int c,FILE *fp); ///
+
+void* malloc(size_t len);
+void* realloc(void* ptr, size_t len);
+void* calloc(size_t len);
+void free(void* ptr);
