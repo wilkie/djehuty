@@ -157,6 +157,10 @@ static:
 	void removeRange(ubyte[] range) {
 	}
 
+	size_t query(ubyte[] memory) {
+		return memory.length;
+	}
+
 private:
 
 	void _initialize() {

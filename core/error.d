@@ -40,6 +40,12 @@ static:
 		}
 	}
 
+	class CyclicDependency : RuntimeError {
+		this(string moduleNameA, string moduleNameB) {
+			super("Cyclic Dependency detected between " ~ moduleNameA ~ " and " ~ moduleNameB, "", 0);
+		}
+	}
+
 	// Description: This Error is thrown when a switch statement does not have a default and there is no case available.
 	class NoDefaultCase : RuntimeError {
 		this(string file, ulong line) {

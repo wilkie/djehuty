@@ -268,7 +268,7 @@ size_t _d_array_cast_len(size_t length, size_t elementSize, size_t newElementSiz
 }
 
 // Description: This runtime function will simply set the length to reflect storing a different type.
-void[] _d_arraycast(size_t toElementSize, size_t fromElementSize, void[] array) {
+ubyte[] _d_arraycast(size_t toElementSize, size_t fromElementSize, ubyte[] array) {
 	if (toElementSize == fromElementSize) {
 		return array;
 	}
@@ -288,9 +288,8 @@ void[] _d_arraycast(size_t toElementSize, size_t fromElementSize, void[] array) 
 	
 	size_t newLength = numbytes / toElementSize;
 
-	// Set the new length
-	*cast(size_t*)&array = newLength;
-	return array;
+	// Return the updated array length
+	return array.ptr[0..newLength];
 }
 
 byte[] _d_arraycopy(size_t size, byte[] from, byte[] to) {

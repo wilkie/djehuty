@@ -9,6 +9,7 @@ module runtime.exception;
 
 import core.exception;
 
+import binding.c;
 extern(C):
 
 // Description: This function will carefully throw an out of memory exception.
@@ -18,6 +19,7 @@ void onOutOfMemoryError() {
 }
 
 void _d_throw_exception(Object e) {
+	printf("throwing exception\n");
 }
 
 int _d_eh_personality(int ver, int actions, ulong eh_class, void* info, void* context) {

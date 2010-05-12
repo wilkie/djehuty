@@ -96,6 +96,91 @@ class MyConsoleApp : Application {
 	Queue2!(string) q;
 }
 
+import binding.c;
+
+class A {
+	this(int foo = 5) {
+		_foo = foo;
+		printf("class constructor %d\n", foo);
+	}
+
+	int foobar() {
+		return _foo;
+	}
+private:
+	int _foo;
+}
+
 int main(string[] args) {
+	printf("hello world\n");
+	printf("---------------\n");
+	int[] foobar = new int[10];
+	foreach(size_t i, ref element; foobar) {
+		element = i;
+	}
+	foreach(ref element; foobar) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", foobar.length);
+	printf("---------------\n");
+	foobar ~= 42;
+	foreach(ref element; foobar) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", foobar.length);
+	printf("---------------\n");
+	int[] eff = new int[5];
+	foreach(size_t i, ref element; eff) {
+		element = i + foobar.length;
+	}
+	foreach(element;eff) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", eff.length);
+	printf("---------------\n");
+	int[] result = foobar ~ eff;
+	foreach(element; result) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", result.length);
+	printf("---------------\n");
+	foreach(ref element; foobar) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", foobar.length);
+	printf("---------------\n");
+	foreach(element;eff) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", eff.length);
+	printf("---------------\n");
+
+	eff.length = eff.length + 5;
+
+	foreach(element;eff) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", eff.length);
+	printf("---------------\n");
+
+	int[] duplicate = result.dup;
+	foreach(element; duplicate) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", duplicate.length);
+	printf("---------------\n");
+
+	duplicate ~= result;
+	foreach(element; duplicate) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", duplicate.length);
+	printf("---------------\n");
+
+
+	A a = new A(15);
+	int ret = a.foobar();
+	printf("%d\n", ret);
+
 	return 0;
 }
