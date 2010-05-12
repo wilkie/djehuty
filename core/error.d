@@ -10,7 +10,7 @@
 
 module core.error;
 
-import core.definitions;
+import core.exception;
 
 // Description: This is for non irrecoverable failure.
 class Error : Exception {
@@ -45,5 +45,11 @@ static:
 		this(string file, ulong line) {
 			super("Switch has no default",file,line);
 		}
+	}
+
+	class NoCompare : RuntimeError {
+		this(string className) {
+			super("Class " ~ className ~ " needs an opCmp.", "", 0);
+		}	
 	}
 }

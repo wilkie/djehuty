@@ -34,13 +34,11 @@ void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 	nanosleep(&timetoexpire, null);
 }
 
-/*
-
 extern (C)
 void *_djehuty_unix_thread_proc(void* udata)
 {
-	Thread t_info = cast(Thread)(udata);
-	ThreadPlatformVars* threadVars = ThreadGetPlatformVars(t_info);
+	ThreadPlatformVars* threadVars = cast(ThreadPlatformVars*)(udata);
+	Thread t_info = threadVars.thread;
 
 	t_info.run();
 
@@ -71,14 +69,14 @@ void ThreadStop(ref ThreadPlatformVars threadVars)
 		if (threadVars.id == pthread_self())
 		{
 			//soft exit
-			printf("thread - soft kill\n");
+			//printf("thread - soft kill\n");
 			threadVars.id = 0;
 			pthread_exit(null);
 		}
 		else
 		{
 			//hard exit
-			printf("thread - hard kill\n");
+			//printf("thread - hard kill\n");
 			pthread_kill(threadVars.id, SIGKILL);
 		}
 
@@ -86,30 +84,10 @@ void ThreadStop(ref ThreadPlatformVars threadVars)
 	}
 }
 
-void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
-{
-	timespec timetoexpire;
-
-	timetoexpire.tv_sec = (milliseconds / 1000);
-	timetoexpire.tv_nsec = (milliseconds % 1000) * 1000000;
-
-	nanosleep(&timetoexpire, null);
-}
-
 bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
 {
 	return false;
 }
-
-
-
-*/
-
-
-
-
-
-
 
 
 // Semaphores

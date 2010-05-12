@@ -29,10 +29,12 @@ else {
 /* stdarg */
 
 version(GNU) {
-	public import std.c.stdarg;
+	private import std.c.stdarg;
+	alias va_list Cva_list;
 }
 else version(LDC) {
-	public import ldc.cstdarg;
+	private import ldc.cstdarg;
+	alias va_list Cva_list;
 }
 else {
 	static assert(false, "Compiler not supported.");
@@ -242,10 +244,10 @@ int	 ungetc(int,FILE *);	///
 size_t	 fread(void *,size_t,size_t,FILE *);	///
 size_t	 fwrite(void *,size_t,size_t,FILE *);	///
 int	 fprintf(FILE *,char *,...);	///
-int	 vfprintf(FILE *,char *,va_list);	///
-int	 vprintf(char *,va_list);	///
+int	 vfprintf(FILE *,char *,Cva_list);	///
+int	 vprintf(char *,Cva_list);	///
 int	 sprintf(char *,char *,...);	///
-int	 vsprintf(char *,char *,va_list);	///
+int	 vsprintf(char *,char *,Cva_list);	///
 int	 scanf(char *,...);	///
 int	 fscanf(FILE *,char *,...);	///
 int	 sscanf(char *,char *,...);	///

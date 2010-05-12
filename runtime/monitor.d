@@ -17,3 +17,9 @@ void _d_monitorenter(Object h) {
 
 void _d_monitorexit(Object h) {
 }
+
+void _d_criticalenter(void* dcs) {
+}
+
+void _d_criticalexit(void* dcs) {
+}

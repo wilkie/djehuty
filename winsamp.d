@@ -64,7 +64,6 @@ import networking.ftp;
 import spec.specification;
 
 import data.queue2;
-import Math = tango.math.Math;
 
 class MyConsoleApp : Application {
 	static this() { new MyConsoleApp(); }
@@ -95,4 +94,8 @@ class MyConsoleApp : Application {
 	ulong fudge;
 	ulong freak;
 	Queue2!(string) q;
+}
+
+int main(string[] args) {
+	return 0;
 }

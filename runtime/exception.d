@@ -19,3 +19,10 @@ void onOutOfMemoryError() {
 
 void _d_throw_exception(Object e) {
 }
+
+int _d_eh_personality(int ver, int actions, ulong eh_class, void* info, void* context) {
+	return 0;
+}
+
+void _d_eh_resume_unwind(void* exception_struct) {
+}

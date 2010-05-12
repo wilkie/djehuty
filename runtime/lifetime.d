@@ -11,12 +11,14 @@ import runtime.exception;
 import runtime.common;
 import runtime.gc;
 
-import io.console;
-
-//extern(C):
+extern(C):
 
 Object _d_allocclass(ClassInfo ci) {
 	return cast(Object)gc_malloc(ci.init.length, BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0));
+}
+
+void* _d_allocmemoryT(TypeInfo ti) {
+	return gc_malloc(ti.tsize(), 0);
 }
 
 Object _d_newclass(ClassInfo ci) {
@@ -55,11 +57,11 @@ void _d_delclass(Object p) {
 
 private template _newarray(bool initialize, bool withZero) {
 	void[] _newarray(TypeInfo ti, size_t length) {
-		Console.putln("hello");
 		if (cast(TypeInfo_Typedef)ti !is null) {
 //			ti = ti.next;
 		}
 		size_t elementSize = ti.next.tsize();
+		size_t returnLength = length;
 
 		// Check to see if the size of the array can fit
 		// within a size_t. If there is no overflow, then
@@ -110,7 +112,7 @@ private template _newarray(bool initialize, bool withZero) {
 		// we do not initialize them. Falling through will
 		// work for those.
 
-		return ret;
+		return ret[0..returnLength];
 	}
 }
 
@@ -203,11 +205,11 @@ void _d_callfinalizer(void* p) {
 void rt_finalize(void* p, bool det = true) {
 }
 
-byte[] _d_arraysetlengthT(TypeInfo ti, size_t newlength, void[]* p) {
+byte* _d_arraysetlengthT(TypeInfo ti, size_t newlength, size_t plength, byte* pdata) {
 	return null;
 }
 
-byte[] _d_arraysetlengthiT(TypeInfo ti, size_t newlength, void[]* p) {
+byte* _d_arraysetlengthiT(TypeInfo ti, size_t newlength, size_t plength, byte* pdata) {
 	return null;
 }
 
@@ -215,14 +217,18 @@ void[] _d_arrayappendT(TypeInfo ti, void[]* px, byte[] y) {
 	return null;
 }
 
-byte[] _d_arrayappendcTp(TypeInfo ti, ref byte[] x, void* argp) {
+// Description: This runtime function will append a single element to an
+//   array.
+// ti: The TypeInfo of the base type of this array.
+// array: The array to append the element.
+// element: The element to append.
+byte[] _d_arrayappendcT(TypeInfo ti, ref byte[] array, void* element) {
 	return null;
 }
 
 byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y) {
 	return null;
 }
-
 byte[] _d_arraycatnT(TypeInfo ti, uint n, ...) {
 	return null;
 }

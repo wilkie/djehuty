@@ -470,6 +470,13 @@ double abs(double x) {
 	return *cast(double*)&intRepresentation;
 }
 
+int abs(int x) {
+	if (x < 0) {
+		return -x;
+	}
+	return x;
+}
+
 long abs(long x) {
 	if (x < 0) {
 		return -x;
@@ -480,3 +487,4 @@ long abs(long x) {
 double pow(double x, double y) {
 	return x;
 }
+

@@ -89,8 +89,7 @@ extern(C) void segfault_handler(int signum) {
 	throw new Exception("Access Violation");
 }
 
-void AppInit()
-{
+void AppInit() {
 	// ------------- */
 
 	// UTF-8 SUPPORT
@@ -101,9 +100,12 @@ void AppInit()
 	signal(SIGSEGV, &segfault_handler);
 }
 
-int main(char[][] args){
-	try	{
+import binding.c;
+/+int main(string[] args){
+/*	try	{
+		printf("fudge\n");
 		AppInit();
+		printf("fudge\n");
 
 		Arguments argList = Arguments.instance();
 		foreach(arg; args) {
@@ -116,7 +118,8 @@ int main(char[][] args){
 	}
 	catch(Object o)	{
 		Debugger.raiseException(cast(Exception)o);
-	}
+	}*/
 
-	return ApplicationController.instance.exitCode;
-}
+//	return ApplicationController.instance.exitCode;
+	return 0;
+}+/

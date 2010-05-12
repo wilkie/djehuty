@@ -10,9 +10,11 @@ module runtime.gc;
 
 import synch.atomic;
 
-extern(C):
+import System = scaffold.system;
 
-import scaffold.system;
+import binding.c;
+
+extern(C):
 
 void gc_init() {
 	GarbageCollector._initialize();
@@ -36,14 +38,17 @@ void gc_collect() {
 
 uint gc_getAttr(void* p) {
 	return 0;
+	//GarbageCollector.getAttr(p);
 }
 
 uint gc_setAttr(void* p, uint a) {
 	return 0;
+	//GarbageCollector.setAttr(p, a);
 }
 
 uint gc_clrAttr(void* p, uint a) {
 	return 0;
+	//GarbageCollector.clearAttr(p, a);
 }
 
 void* gc_malloc(size_t sz, uint ba = 0) {
@@ -109,15 +114,16 @@ static:
 	}
 
 	ubyte[] malloc(size_t length) {
-		return null;
+		printf("malloc %d\n", length);
+		return System.malloc(length);
 	}
 
 	ubyte[] realloc(ubyte[] original, size_t length) {
-		return null;
+		return System.realloc(original, length);
 	}
 
 	ubyte[] calloc(size_t length) {
-		return null;
+		return System.calloc(length);
 	}
 
 	size_t extend(ubyte[] original, size_t max, size_t size) {
@@ -154,10 +160,12 @@ static:
 private:
 
 	void _initialize() {
+		printf("GC initialized\n");
 		_inited = 1;
 	}
 
 	void _terminate() {
+		printf("GC terminated\n");
 		_inited = 0;
 	}
 

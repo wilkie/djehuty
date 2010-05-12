@@ -8,7 +8,7 @@
 module core.event;
 
 // Description: This class represents an object that can dispatch signals.
-class Dispatcher {
+class Dispatcher : Object {
 
 	void onPush(Responder rsp) {
 	}

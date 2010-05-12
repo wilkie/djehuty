@@ -1,9 +1,7 @@
 module runtime.moduleinfo;
 
-import core.definitions;
-
 // Description: This class describes a D module.
-class ModuleInfo {
+class ModuleInfo : Object {
 	string name;
 	ModuleInfo[] importedModules;
 	ClassInfo[] localClasses;
@@ -30,10 +28,18 @@ class ModuleInfo {
 		return ret;
 	}
 
-	ModuleInfo[] modules {
+	ModuleInfo[] modules() {
 		return _modules.dup;
 	}
 
 private:
 	static ModuleInfo[] _modules;
 }
+
+// This linked list is created by a compiler generated function inserted
+// into the .ctor list by the compiler.
+struct ModuleReference {
+    ModuleReference* next;
+    ModuleInfo       mod;
+}
+extern (C) ModuleReference* _Dmodule_ref;   // start of linked list

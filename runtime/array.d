@@ -203,7 +203,6 @@ private template _array_init(T) {
 	}
 }
 
-/*
 void _d_array_init_i1(bool* array, size_t length, bool value) {
 	_array_init(array[0..length], value);
 }
@@ -236,6 +235,10 @@ void _d_array_init_pointer(void** array, size_t length, void* value) {
 	_array_init(array[0..length], value);
 }
 
+void _d_array_init_cdouble(cdouble[] array, cdouble value) {
+	_array_init(array[0..length], value);
+}
+
 void _d_array_init_mem(ubyte* array, size_t length, ubyte* value, size_t valueLength) {
 	if (valueLength == 0 || length == 0) {
 		return;
@@ -252,9 +255,7 @@ void _d_array_init_mem(ubyte* array, size_t length, ubyte* value, size_t valueLe
 		}
 	}
 }
-//*/
 
-/*
 size_t _d_array_cast_len(size_t length, size_t elementSize, size_t newElementSize) {
 	if (newElementSize == 1) {
 		return length * elementSize;

@@ -11,9 +11,8 @@
 module core.exception;
 
 import core.string;
-import core.definitions;
-/*
-class Exception {
+
+class Exception : Object {
 	this(string msg, string file = "", ulong line = 0) {
 		_msg = msg.dup;
 		_file = file.dup;
@@ -45,7 +44,6 @@ private:
 	char[] _file;
 	ulong _line;
 }
-*/
 
 // Exceptions for IO
 abstract class IOException : Exception {
