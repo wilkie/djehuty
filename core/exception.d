@@ -12,18 +12,21 @@ module core.exception;
 
 import core.string;
 
+import binding.c;
+
 class Exception : Object {
 	this(string msg, string file = "", ulong line = 0) {
 		_msg = msg.dup;
 		_file = file.dup;
 		_line = line;
+		printf("EXCEPTION: %s %s\n", _msg.ptr, _file.ptr);
 	}
 
 	string name() {
 		return this.classinfo.name.dup;
 	}
 
-	string message() {
+	string msg() {
 		return _msg.dup;
 	}
 

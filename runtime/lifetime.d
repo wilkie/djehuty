@@ -11,6 +11,8 @@ import runtime.exception;
 import runtime.common;
 import runtime.gc;
 
+import binding.c;
+
 extern(C):
 
 Object _d_allocclass(ClassInfo ci) {

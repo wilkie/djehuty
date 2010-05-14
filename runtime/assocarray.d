@@ -79,19 +79,13 @@ template _aaAccess(bool addKey, bool deleteKey) {
 			bucketIndex = hash % (2 * aa.range);
 		}
 
-		printf("bucket index: %d\n", bucketIndex);
-
 		// Search for the value
 		foreach(size_t idx, entry; aa.buckets[bucketIndex].entries) {
-			printf("checking bucket %d @ %p\n", idx, entry.key.ptr);
-			if (entry.key.ptr !is null) {
+			if (entry.key !is null) {
 				// compare the bucket with the hash
-				printf("comparing...\n");
 				int cmp = keyti.compare(pkey, entry.key.ptr);
-				printf("cmp: %d\n", cmp);
 				if (cmp == 0) {
 					// Good, we found the item
-					printf("item found!\n");
 
 					// Delete the key here
 					static if (deleteKey) {
@@ -100,41 +94,49 @@ template _aaAccess(bool addKey, bool deleteKey) {
 						Atomic.decrement(aa.buckets[bucketIndex].usedCount);
 					}
 
+					// Return a reference to the value
 					return entry.value.ptr;
 				}
 			}
 		}
 
-		printf("hmm, item not found\n");
 		static if (addKey) {
 			// Add the value (rehashing if necessary)
 
 			while(aa.buckets[bucketIndex].usedCount == aa.buckets[bucketIndex].entries.length) {
 				// Hmm, no free buckets... Rehash
-				printf("rehashing!\n");
 				_aaRehash(aa, keyti);
+
+				// Find the bucket (if it has changed)
+				bucketIndex = hash % aa.range;
+
+				// If the bucket is in the lower half, it may have been rehashed to the upper half
+				if (bucketIndex < aa.buckets.length - aa.range) {
+					bucketIndex = hash % (2 * aa.range);
+				}
 
 			}
 
 			// Scan for the empty item
 			Atomic.increment(aa.buckets[bucketIndex].usedCount);
 			Atomic.increment(aa.items);
-			foreach(ref bucket; aa.buckets[bucketIndex].entries) {
-				if (bucket.key.ptr is null) {
+			foreach(ref entry; aa.buckets[bucketIndex].entries) {
+				if (entry.key is null) {
 					// Add item here by allocating memory for the key and value
-					bucket.hash = hash;
-					bucket.key = GarbageCollector.malloc(keyti.tsize()); 
-					bucket.value = GarbageCollector.malloc(valuesize);
+					entry.hash = hash;
+					entry.key = GarbageCollector.malloc(keyti.tsize()); 
+					entry.value = GarbageCollector.malloc(valuesize);
 					
 					// Insert the key into the table
-					bucket.key[0..keyti.tsize()] = pkey[0..keyti.tsize()];
+					entry.key[0..keyti.tsize()] = pkey[0..keyti.tsize()];
 
 					// Return a pointer to the value
-					return bucket.value.ptr;
+					return entry.value.ptr;
 				}
 			}
 		}
 
+		// Did not find the item
 		return null;
 	}
 }
@@ -171,7 +173,7 @@ ubyte[] _aaKeys(ref AssocArray aa, size_t keysize) {
 	ubyte[] ret;
 	foreach(bucket; aa.buckets) {
 		foreach(entry; bucket.entries) {
-			if (entry.key.ptr !is null) {
+			if (entry.key !is null) {
 				ret ~= entry.key;
 			}
 		}
@@ -187,7 +189,7 @@ ubyte[] _aaValues(ref AssocArray aa, size_t keysize, size_t valuesize) {
 	ubyte[] ret;
 	foreach(bucket; aa.buckets) {
 		foreach(entry; bucket.entries) {
-			if (entry.key.ptr !is null) {
+			if (entry.key !is null) {
 				ret ~= entry.value;
 			}
 		}
@@ -209,7 +211,7 @@ AssocArray* _aaRehash(ref AssocArray* aa, TypeInfo keyti) {
 
 	// Rehash a bucket
 	foreach(ref element; aa.buckets[rehashBucketIndex].entries) {
-		if (element.key.ptr !is null) {
+		if (element.key !is null) {
 			// Rehash
 			size_t newBucketIndex;
 
@@ -218,14 +220,19 @@ AssocArray* _aaRehash(ref AssocArray* aa, TypeInfo keyti) {
 
 				// Move (TODO: lockfree atomic exchange?)
 				foreach(ref newElement; aa.buckets[newBucketIndex].entries) {
-					if (newElement.key.ptr is null) {
+					if (newElement.key is null) {
 						newElement = element;
+						
+						// We found one, break
+						// Otherwise, we end up moving element twice :P
+						break;
 					}
 				}
 
 				// Remove old references
 				element.key = null;
 				element.value = null;
+
 				Atomic.decrement(aa.buckets[rehashBucketIndex].usedCount);
 				Atomic.increment(aa.buckets[newBucketIndex].usedCount);
 			}

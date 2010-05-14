@@ -114,7 +114,6 @@ static:
 	}
 
 	ubyte[] malloc(size_t length) {
-		printf("malloc %d\n", length);
 		return System.malloc(length);
 	}
 
