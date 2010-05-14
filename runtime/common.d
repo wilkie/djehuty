@@ -33,6 +33,7 @@ package {
 		NO_MOVE = 0b0000_0100,
 		ALL_BITS = 0b1111_1111
 	}
+
 }
 
 

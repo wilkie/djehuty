@@ -7,6 +7,8 @@
 
 module object;
 
+import runtime.util;
+
 // Figure out the size of a pointer
 static if ((ubyte*).sizeof == 8) {
 	version = Arch64;
@@ -45,7 +47,8 @@ class Object {
 
 	// Description: Computes a hash representing this object
 	hash_t toHash() {
-		return *cast(hash_t*)this;
+		// Hash the pointer
+		return hash(cast(hash_t)this);
 	}
 
 	// Description: Will compare two Object classes

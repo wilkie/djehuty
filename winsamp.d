@@ -177,10 +177,35 @@ int main(string[] args) {
 	printf("%d\n", duplicate.length);
 	printf("---------------\n");
 
+	int[] hahaha = [0,1,2,3,6,7,8,9];
+
+	foreach(element; hahaha) {
+		printf("%d\n", element);
+	}
+	printf("%d\n", hahaha.length);
+	printf("---------------\n");
+
 
 	A a = new A(15);
+	A b = new A(15);
 	int ret = a.foobar();
 	printf("%d\n", ret);
 
+	long flong = 0x1234123412341234;
+	printf("%lx\n", a.toHash());
+	printf("%lx\n", b.toHash());
+
+	int[int] haha;
+	haha[4] = 3;
+	haha[8] = 6;
+	haha[16] = 13;
+	haha[32] = 24;
+	haha[64] = 123;
+	printf("%d %d %d %d %d\n", haha[4], haha[8], haha[16], haha[32], haha[64]);
+	printf("length: %d\n", haha.length);
+	int[] values = haha.keys;
+	foreach(val; values) {
+		printf(":%d\n", val);
+	}
 	return 0;
 }
