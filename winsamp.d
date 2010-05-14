@@ -196,16 +196,26 @@ int main(string[] args) {
 	printf("%lx\n", b.toHash());
 
 	int[int] haha;
+	
 	haha[4] = 3;
 	haha[8] = 6;
 	haha[16] = 13;
 	haha[32] = 24;
 	haha[64] = 123;
+
 	printf("%d %d %d %d %d\n", haha[4], haha[8], haha[16], haha[32], haha[64]);
 	printf("length: %d\n", haha.length);
 	int[] values = haha.keys;
 	foreach(val; values) {
 		printf(":%d\n", val);
 	}
+
+	int[int] fooaa = [4: 3, 8: 6, 16: 13, 32: 24, 64: 123];
+
+	values = fooaa.keys;
+	foreach(val; values) {
+		printf(":%d\n", val);
+	}
+
 	return 0;
 }
