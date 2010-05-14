@@ -42,7 +42,7 @@ size_t _aaLen(ref AssocArray aa) {
 	return aa.items;
 }
 
-template _aaAccess(bool addKey) {
+template _aaAccess(bool addKey, bool deleteKey) {
 	ubyte* _aaAccess(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
 					
 		// If we can update the array to add the key, 
@@ -82,17 +82,25 @@ template _aaAccess(bool addKey) {
 		printf("bucket index: %d\n", bucketIndex);
 
 		// Search for the value
-		foreach(size_t idx, bucket; aa.buckets[bucketIndex].entries) {
-			printf("checking bucket %d @ %p\n", idx, bucket.key.ptr);
-			if (bucket.key.ptr !is null) {
+		foreach(size_t idx, entry; aa.buckets[bucketIndex].entries) {
+			printf("checking bucket %d @ %p\n", idx, entry.key.ptr);
+			if (entry.key.ptr !is null) {
 				// compare the bucket with the hash
 				printf("comparing...\n");
-				int cmp = keyti.compare(pkey, bucket.key.ptr);
+				int cmp = keyti.compare(pkey, entry.key.ptr);
 				printf("cmp: %d\n", cmp);
 				if (cmp == 0) {
 					// Good, we found the item
 					printf("item found!\n");
-					return bucket.value.ptr;
+
+					// Delete the key here
+					static if (deleteKey) {
+						entry.key = null;
+						entry.value = null;
+						Atomic.decrement(aa.buckets[bucketIndex].usedCount);
+					}
+
+					return entry.value.ptr;
 				}
 			}
 		}
@@ -136,7 +144,7 @@ template _aaAccess(bool addKey) {
 //   it does not exist.
 // Returns: A pointer to the value associated with the given key.
 ubyte* _aaGet(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
-	return _aaAccess!(true)(aa, keyti, valuesize, pkey);
+	return _aaAccess!(true, false)(aa, keyti, valuesize, pkey);
 }
 
 // Description: This runtime function will get a pointer to a value in an
@@ -145,12 +153,14 @@ ubyte* _aaGet(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey)
 //   otherwise.
 ubyte* _aaIn(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
 	AssocArray* arrayPointer = &aa;
-	return _aaAccess!(false)(arrayPointer, keyti, 0, pkey);
+	return _aaAccess!(false, false)(arrayPointer, keyti, 0, pkey);
 }
 
 // Description: This runtime function will delete a value with the given key.
 //   It will do nothing if the value does not exist.
-void _aaDel(ref AssocArray aa, TypeInfo keyti, void* pkey) {
+void _aaDel(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
+	AssocArray* arrayPointer = &aa;
+	_aaAccess!(false, true)(arrayPointer, keyti, 0, pkey);
 }
 
 // Description: This runtime function will produce an array of keys of an
@@ -216,8 +226,8 @@ AssocArray* _aaRehash(ref AssocArray* aa, TypeInfo keyti) {
 				// Remove old references
 				element.key = null;
 				element.value = null;
-				aa.buckets[rehashBucketIndex].usedCount--;
-				aa.buckets[newBucketIndex].usedCount++;
+				Atomic.decrement(aa.buckets[rehashBucketIndex].usedCount);
+				Atomic.increment(aa.buckets[newBucketIndex].usedCount);
 			}
 		}
 	}
