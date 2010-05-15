@@ -26,8 +26,8 @@ static:
 	//Description: Sets the foreground color for the console.
 	//fgclr: The foreground color to set.
 	void forecolor(Color clr) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_fgcolor = clr;
 		ConsoleSetColors(_fgcolor, _bgcolor);
@@ -38,8 +38,8 @@ static:
 	}
 
 	void backcolor(Color clr) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_bgcolor = clr;
 	    ConsoleSetColors(_fgcolor, _bgcolor);
@@ -51,36 +51,36 @@ static:
 
 	// Description: Clears the console screen.
 	void clear() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		ConsoleClear();
 	}
 
 	void position(Coord coord) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_position(coord.x, coord.y);
 	}
 
 	void position(uint[] coord) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_position(coord[0], coord[1]);
 	}
 
 	void position(uint x, uint y) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_position(x,y);
 	}
 
 	Coord position() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		Coord ret;
 		ConsoleGetPosition(cast(uint*)&ret.x,cast(uint*)&ret.y);
@@ -91,16 +91,16 @@ static:
 	// x: The number of columns for the caret to move.  Negative values move down.
 	// y: The number of rows for the caret.  Negative values move up.
 	void setRelative(int x, int y) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		ConsoleSetRelative(x,y);
 	}
 
 	// Description: Will show the caret.
 	void showCaret() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		if (!_caretVisible) {
 			ConsoleShowCaret();
@@ -110,8 +110,8 @@ static:
 
 	// Description: Will hide the caret.
 	void hideCaret() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		if (_caretVisible) {
 			ConsoleHideCaret();
@@ -152,16 +152,16 @@ static:
 
 	// Description: This function will save the current clipping context.
 	void clipSave() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_clippingStack ~= _clippingRegions;
 	}
 
 	// Description: This function will restore a former clipping context.
 	void clipRestore() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		if (_clippingStack.length > 0) {
 			_clippingRegions = _clippingStack[$-1];
@@ -171,8 +171,8 @@ static:
 
 	// Description: This function will clear the clipping context.
 	void clipClear() {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_clippingRegions = null;
 	}
@@ -180,8 +180,8 @@ static:
 	// Description: This function will add a rectangular region defined as screen coordinates that will clip the drawing surface. When a clipping context is not clear, only regions within rectangles will be drawn to the screen.
 	// region: The rectangular region to add as a clipping region.
 	void clipRect(Rect region) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_clippingRegions ~= region;
 	}
@@ -207,31 +207,31 @@ static:
 	}
 
 	void putv(Variadic vars) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_putv(vars);
 	}
 
 	void putlnv(Variadic vars) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_putv(vars);
 		_putChar('\n');
 	}
 
 	void putStringAt(uint x, uint y, string str) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_position(x,y);
 		_putstring(str);
 	}
 
 	void putString(string str) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_putstring(str);
 	}
@@ -243,8 +243,8 @@ static:
 	}
 
 	void putAtv(uint x, uint y, Variadic vars) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_position(x, y);
 		_putv(vars);
@@ -253,13 +253,16 @@ static:
 	// Description: Will print out this character to the screen and the current location.
 	// chr: The UTF-32 character to print.
 	void putChar(dchar chr) {
-		_lock.lock();
-		scope(exit) _lock.unlock();
+		lock();
+		scope(exit) unlock();
 
 		_putChar(chr);
 	}
 
 	void lock() {
+		if (_lock is null) {
+			_lock = new Mutex();
+		}
 		_lock.lock();
 	}
 

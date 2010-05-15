@@ -32,7 +32,7 @@ void _d_assert_msg(string msg, string file, uint line ) {
 // file: The file that contains the error.
 // line: The line number of the error.
 void _d_array_bounds(string file, uint line ) {
-	throw new DataException.OutOfBounds("Array");
+	throw new DataException.OutOfBounds("Array", file, line);
 }
 
 // Description: This is called when there is no valid case for the switch.

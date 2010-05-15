@@ -161,7 +161,7 @@ class ArrayInfo(char[] TYPE) : TypeInfo {
 			len = s2.length;
 		}
 
-		foreach(size_t idx, element; s1) {
+		foreach(size_t idx, element; s1[0..len]) {
 			if (element < s2[idx]) {
 				return -1;
 			}

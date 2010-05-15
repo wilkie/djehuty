@@ -101,8 +101,9 @@ void AppInit() {
 }
 
 import binding.c;
-/+int main(string[] args){
-/*	try	{
+/*
+int main(string[] args){
+	try	{
 		printf("fudge\n");
 		AppInit();
 		printf("fudge\n");
@@ -118,8 +119,8 @@ import binding.c;
 	}
 	catch(Object o)	{
 		Debugger.raiseException(cast(Exception)o);
-	}*/
+	}
 
-//	return ApplicationController.instance.exitCode;
-	return 0;
-}+/
+	return ApplicationController.instance.exitCode;
+//	return 0;
+}*/

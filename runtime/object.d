@@ -84,7 +84,7 @@ class ClassInfo : Object {
 
 	ClassInfo base;
 	void* destructor;	
-	void function(Object) classInvariant;
+	void* classInvariant;
 
 	uint flags;
 	void* deallocator;

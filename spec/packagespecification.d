@@ -55,6 +55,7 @@ class PackageSpecification {
 	}
 
 	int opApply(int delegate(ref ModuleSpecification) loopBody) {
+		string[] mods = _modules.keys.sort;
 		foreach(mod; _modules.keys.sort) {
 			if (loopBody(_modules[mod])) {
 				return 1;

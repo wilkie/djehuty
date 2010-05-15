@@ -221,8 +221,10 @@ private template _arraysetlength(bool initWithZero) {
 		ubyte[] newArray;
 
 		if (memorySize <= newSize) {
-			// realloc
-			newArray = GarbageCollector.realloc(oldData[0..1], newSize);
+			newArray = GarbageCollector.malloc(newSize);
+			if (oldLength != 0) {
+				newArray[0..oldLength*elementSize] = oldData[0..oldLength*elementSize];
+			}
 		}
 		else {
 			// just resize
@@ -297,8 +299,11 @@ ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
 
 	ubyte[] newArray;
 	if (memorySize <= newSize) {
-		// realloc
-		newArray = GarbageCollector.realloc(destArray, newSize);
+		newArray = GarbageCollector.malloc(newSize);
+		size_t oldSize = oldLength * elementSize;
+		if (oldSize > 0) {
+			newArray[0..oldSize] = destArray.ptr[0..oldSize];
+		}
 	}
 	else {
 		// just resize
@@ -332,8 +337,9 @@ ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
 	ubyte[] newArray;
 
 	if (memorySize <= newSize) {
-		// realloc
-		newArray = GarbageCollector.realloc(array, newSize);
+		newArray = GarbageCollector.malloc(newSize);
+		size_t oldSize = oldLength * elementSize;
+		newArray[0..oldSize] = array.ptr[0..oldSize];
 	}
 	else {
 		// just resize

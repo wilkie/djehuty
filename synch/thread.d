@@ -22,6 +22,14 @@ class Thread {
 
 	// Description: Will create a normal thread that does not have any external callback functions.
 	this() {
+		// Check for creating thread
+		Thread callee = Thread.current();
+
+		if (callee is null) {
+			// We do not know this thread... add it
+			threadById[ThreadIdentifier()] = this;
+		}
+
 		startTime = time = System.time;
 	}
 
@@ -134,10 +142,13 @@ class Thread {
 	static Thread current() {
 		Thread ret;
 
-		if (ret is null) {
+		uint curID = ThreadIdentifier();
+
+		if (curID in threadById) {
+			return threadById[curID];
 		}
 
-		return ret;
+		return null;
 	}
 
 protected:

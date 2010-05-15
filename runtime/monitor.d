@@ -10,6 +10,8 @@
 
 module runtime.monitor;
 
+import synch.mutex;
+
 extern(C):
 
 void _d_monitorenter(Object h) {

@@ -20,7 +20,10 @@ void _d_invariant(Object o) {
 	do {
 		// If the class has an invariant defined, execute it
 		if(c.classInvariant !is null) {
-			(*c.classInvariant)(o);
+			void delegate() inv;
+			inv.ptr = cast(void*) o;
+			inv.funcptr =  cast(void function()) c.classInvariant;
+			inv();
 		}
 
 		// Go up class hierarchy, return the next ClassInfo

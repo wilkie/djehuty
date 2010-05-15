@@ -10,7 +10,14 @@ module runtime.main;
 import runtime.gc;
 import runtime.moduleinfo;
 
+import analyzing.debugger;
+
 import core.error;
+import core.arguments;
+
+import synch.thread;
+
+import scaffold.console;
 
 // The user supplied D entry
 int main(char[][] args);
@@ -110,25 +117,54 @@ private void moduleDestructors() {
 	}
 }
 
+private size_t strlen(char* cstr) {
+	size_t ret = 0;
+	while(*cstr != '\0') {
+		ret++;
+		cstr++;
+	}
+	return ret;
+}
+
 private extern(C) int main(int argc, char** argv) {
 	// Initialize the garbage collector
 	gc_init();
 
-	moduleInfoInitialize();
-	moduleIndependentConstructors();
+	int exitCode = -1;
 
-	int numDtors = 0;
-	moduleConstructors(null, ModuleInfo._modules, numDtors);
+	try {
+		moduleInfoInitialize();
+		moduleIndependentConstructors();
 
-	ModuleInfo._dtors = ModuleInfo._dtors[0..numDtors];
+		int numDtors = 0;
+		moduleConstructors(null, ModuleInfo._modules, numDtors);
 
-	// Gather arguments
+		ModuleInfo._dtors = ModuleInfo._dtors[0..numDtors];
 
-	// Run main
-	int exitCode = main([]);
+		// Gather arguments
+		Arguments argList = Arguments.instance();
+		foreach(cstr; argv[0..argc]) {
+			argList.add(cstr[0..strlen(cstr)]);
+		}
 
-	// Run the module destructors
-	moduleDestructors();
+		// Initialize the console
+		ConsoleInit();
+
+		// Make an instance for the main thread
+		Thread mainThread = new Thread();
+
+		// Run main
+		exitCode = main(argList.array);
+
+		// Uninitialize the console
+		ConsoleUninit();
+
+		// Run the module destructors
+		moduleDestructors();
+	}
+	catch(Object o) {
+		Debugger.raiseException(cast(Exception)o);
+	}
 
 	// Terminate the garbage collector
 	gc_term();

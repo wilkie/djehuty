@@ -41,8 +41,6 @@ private:
 
 // Do not change the class name, it is used in a test for djehuty proper!
 class DjehutyTester : Application {
-	static this() { new DjehutyTester(); }
-
 	void onApplicationStart() {
 		options = new Opts();
 
@@ -85,6 +83,8 @@ private:
 					}
 					Console.putln(" ".times((packName ~ "." ~ ms.name).length), " : ", item.name, " ", feature);
 				}
+				else {
+				}
 				numFailures += tester.failures;
 				numSuccesses += tester.successes;
 			}
@@ -108,4 +108,10 @@ private:
 	}
 
 	Opts options;
+}
+
+int main() {
+	auto app = new DjehutyTester();
+	app.run();
+	return 0;
 }

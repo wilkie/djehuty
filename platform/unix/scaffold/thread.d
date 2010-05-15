@@ -84,8 +84,11 @@ void ThreadStop(ref ThreadPlatformVars threadVars)
 	}
 }
 
-bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
-{
+uint ThreadIdentifier() {
+	return pthread_self();
+}
+
+bool ThreadIsCurrent(ref ThreadPlatformVars threadVars) {
 	return false;
 }
 

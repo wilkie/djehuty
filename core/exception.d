@@ -12,14 +12,11 @@ module core.exception;
 
 import core.string;
 
-import binding.c;
-
 class Exception : Object {
 	this(string msg, string file = "", ulong line = 0) {
 		_msg = msg.dup;
 		_file = file.dup;
 		_line = line;
-		printf("EXCEPTION: %s %s\n", _msg.ptr, _file.ptr);
 	}
 
 	string name() {
@@ -77,8 +74,8 @@ static:
 
 // Exceptions for data structures
 abstract class DataException : Exception {
-	this(string msg) {
-		super(msg);
+	this(string msg, string file = "", ulong line = 0) {
+		super(msg, file, line);
 	}
 
 static:
@@ -90,8 +87,8 @@ static:
 	}
 
 	class OutOfBounds : DataException {
-		this(string objectName) {
-			super("Index out of bounds in " ~ objectName);
+		this(string objectName, string file = "", ulong line = 0) {
+			super("Index out of bounds in " ~ objectName, file, line);
 		}
 	}
 

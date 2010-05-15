@@ -111,111 +111,33 @@ private:
 	int _foo;
 }
 
+
+import spec.modulespecification;
+
+import data.queue;
 int main(string[] args) {
-	printf("hello world\n");
-	printf("---------------\n");
-	int[] foobar = new int[10];
-	foreach(size_t i, ref element; foobar) {
-		element = i;
-	}
-	foreach(ref element; foobar) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", foobar.length);
-	printf("---------------\n");
-	foobar ~= 42;
-	foreach(ref element; foobar) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", foobar.length);
-	printf("---------------\n");
-	int[] eff = new int[5];
-	foreach(size_t i, ref element; eff) {
-		element = i + foobar.length;
-	}
-	foreach(element;eff) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", eff.length);
-	printf("---------------\n");
-	int[] result = foobar ~ eff;
-	foreach(element; result) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", result.length);
-	printf("---------------\n");
-	foreach(ref element; foobar) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", foobar.length);
-	printf("---------------\n");
-	foreach(element;eff) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", eff.length);
-	printf("---------------\n");
-
-	eff.length = eff.length + 5;
-
-	foreach(element;eff) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", eff.length);
-	printf("---------------\n");
-
-	int[] duplicate = result.dup;
-	foreach(element; duplicate) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", duplicate.length);
-	printf("---------------\n");
-
-	duplicate ~= result;
-	foreach(element; duplicate) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", duplicate.length);
-	printf("---------------\n");
-
-	int[] hahaha = [0,1,2,3,6,7,8,9];
-
-	foreach(element; hahaha) {
-		printf("%d\n", element);
-	}
-	printf("%d\n", hahaha.length);
-	printf("---------------\n");
-
-
-	A a = new A(15);
-	A b = new A(15);
-	int ret = a.foobar();
-	printf("%d\n", ret);
-
-	long flong = 0x1234123412341234;
-	printf("%lx\n", a.toHash());
-	printf("%lx\n", b.toHash());
-
-	int[int] haha;
-	
-	haha[4] = 3;
-	haha[8] = 6;
-	haha[16] = 13;
-	haha[32] = 24;
-	haha[64] = 123;
-
-	printf("%d %d %d %d %d\n", haha[4], haha[8], haha[16], haha[32], haha[64]);
-	printf("length: %d\n", haha.length);
-	int[] values = haha.keys;
-	foreach(val; values) {
-		printf(":%d\n", val);
+	string foobar = "abc";
+	foobar ~= 'd';
+	Console.putln(3);
+	int[] foo;
+	foo ~= 3;
+	Console.putln(foo);
+	int[] foo2 = null;
+	foo2 ~= [2,4];
+	Console.putln(foo2);
+	Console.putln(foo2.length);
+	synchronized {
 	}
 
-	int[int] fooaa = [4: 3, 8: 6, 16: 13, 32: 24, 64: 123];
 
-	values = fooaa.keys;
-	foreach(val; values) {
-		printf(":%d\n", val);
-	}
+	Console.putln("lists test\n");
+	int[3] arr = 1;
+	Queue!(int) list = new Queue!(int)();
+
+	list.add(arr);
+
+	Console.putln(list.length == 3);
+	Console.putln(list.peek() == arr[2]);
 
 	return 0;
 }

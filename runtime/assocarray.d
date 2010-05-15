@@ -56,8 +56,9 @@ template _aaAccess(bool addKey, bool deleteKey) {
 				aa.keyTypeInfo = keyti;
 
 				// Set up the default buckets
-				aa.buckets = new Bucket[8];
-				aa.range = 8;
+				static const int startingSize = 2048;
+				aa.buckets = new Bucket[startingSize];
+				aa.range = startingSize;
 			}
 		}
 		else {
@@ -92,6 +93,7 @@ template _aaAccess(bool addKey, bool deleteKey) {
 						entry.key = null;
 						entry.value = null;
 						Atomic.decrement(aa.buckets[bucketIndex].usedCount);
+						Atomic.decrement(aa.items);
 					}
 
 					// Return a reference to the value
@@ -170,6 +172,10 @@ void _aaDel(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
 // Returns: An array of keys.
 ubyte[] _aaKeys(ref AssocArray aa, size_t keysize) {
 	// Sweep through every bucket, appending each key
+	if (&aa is null) {
+		return null;
+	}
+
 	ubyte[] ret;
 	foreach(bucket; aa.buckets) {
 		foreach(entry; bucket.entries) {
@@ -186,6 +192,10 @@ ubyte[] _aaKeys(ref AssocArray aa, size_t keysize) {
 // Returns: An array of values.
 ubyte[] _aaValues(ref AssocArray aa, size_t keysize, size_t valuesize) {
 	// Sweep through every bucket, appending each key
+	if (&aa is null) {
+		return null;
+	}
+
 	ubyte[] ret;
 	foreach(bucket; aa.buckets) {
 		foreach(entry; bucket.entries) {

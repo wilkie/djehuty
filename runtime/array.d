@@ -100,6 +100,10 @@ int _adEq(void[] a1, void[] a2, TypeInfo ti) {
 // Description: This runtime function sorts an array and is invoked with
 // the sort property: array.sort
 ubyte[] _adSort(ubyte[] array, TypeInfo ti) {
+	if (array is null) {
+		return null;
+	}
+
 	ubyte[] cmp = (array.ptr)[0..array.length * ti.tsize()];
 	_qsort(cmp, ti.tsize(), ti);
 	return array;
@@ -207,23 +211,23 @@ void _d_array_init_i1(bool* array, size_t length, bool value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i8(ubyte[] array, ubyte value) {
+void _d_array_init_i8(ubyte* array, size_t length, ubyte value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i16(ushort[] array, ushort value) {
+void _d_array_init_i16(ushort* array, size_t length, ushort value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i32(uint[] array, uint value) {
+void _d_array_init_i32(uint* array, size_t length, uint value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i64(ulong[] array, ulong value) {
+void _d_array_init_i64(ulong* array, size_t length, ulong value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_float(float[] array, float value) {
+void _d_array_init_float(float* array, size_t length, float value) {
 	_array_init(array[0..length], value);
 }
 
@@ -235,7 +239,7 @@ void _d_array_init_pointer(void** array, size_t length, void* value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_cdouble(cdouble[] array, cdouble value) {
+void _d_array_init_cdouble(cdouble* array, size_t length, cdouble value) {
 	_array_init(array[0..length], value);
 }
 

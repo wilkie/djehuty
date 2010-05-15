@@ -163,12 +163,10 @@ static:
 private:
 
 	void _initialize() {
-		printf("GC initialized\n");
 		_inited = 1;
 	}
 
 	void _terminate() {
-		printf("GC terminated\n");
 		_inited = 0;
 	}
 
