@@ -8,13 +8,15 @@ import gamewindow;
 
 import binding.c;
 
+int main() {
+	auto app = new TermTetris;
+	app.run();
+	return 0;
+}
+
 class TermTetris : CuiApplication {
 
-	// Start an application instance
-	static this() { printf("HELLO!\n"); new TermTetris(); }
-
 	override void onApplicationStart() {
-		Console.putln("foo");
 		Console.hideCaret();
 
 		gameWindow = new GameWindow();

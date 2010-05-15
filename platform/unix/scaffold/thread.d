@@ -24,8 +24,7 @@ import platform.vars.condition;
 import platform.vars.mutex;
 import platform.vars.semaphore;
 
-void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
-{
+void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
 	timespec timetoexpire;
 
 	timetoexpire.tv_sec = (milliseconds / 1000);
@@ -35,46 +34,39 @@ void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds)
 }
 
 extern (C)
-void *_djehuty_unix_thread_proc(void* udata)
-{
+void *_djehuty_unix_thread_proc(void* udata) {
 	ThreadPlatformVars* threadVars = cast(ThreadPlatformVars*)(udata);
 	Thread t_info = threadVars.thread;
 
 	t_info.run();
 
-	threadVars.id = 0;
-
-	ThreadUninit(t_info);
-
-	pthread_exit(null);
-
+	threadVars.endCallback();
 	return null;
 }
 
+long ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
+	threadVars.thread = thread;
+	threadVars.endCallback = endCallback;
 
-void ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread)
-{
-	int ret = pthread_create(&threadVars.id, null, &_djehuty_unix_thread_proc, cast(void *)thread);
-	if (ret)
-	{
+	int ret = pthread_create(&threadVars.id, null, &_djehuty_unix_thread_proc, &threadVars);
+
+	if (ret) {
 		// error creating thread
 		threadVars.id = 0;
 	}
+
+	return threadVars.id;
 }
 
-void ThreadStop(ref ThreadPlatformVars threadVars)
-{
-	if (threadVars.id)
-	{
-		if (threadVars.id == pthread_self())
-		{
+void ThreadStop(ref ThreadPlatformVars threadVars) {
+	if (threadVars.id) {
+		if (threadVars.id == pthread_self()) {
 			//soft exit
 			//printf("thread - soft kill\n");
 			threadVars.id = 0;
 			pthread_exit(null);
 		}
-		else
-		{
+		else {
 			//hard exit
 			//printf("thread - hard kill\n");
 			pthread_kill(threadVars.id, SIGKILL);
@@ -95,29 +87,24 @@ bool ThreadIsCurrent(ref ThreadPlatformVars threadVars) {
 
 // Semaphores
 
-void SemaphoreInit(ref SemaphorePlatformVars semVars, ref uint initialValue)
-{
+void SemaphoreInit(ref SemaphorePlatformVars semVars, ref uint initialValue) {
 	sem_init(&semVars.sem_id, 0, initialValue);
 }
 
-void SemaphoreUninit(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreUninit(ref SemaphorePlatformVars semVars) {
 	sem_destroy(&semVars.sem_id);
 }
 
-void SemaphoreUp(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreUp(ref SemaphorePlatformVars semVars) {
 	sem_post(&semVars.sem_id);
 }
 
-void SemaphoreDown(ref SemaphorePlatformVars semVars, uint ms)
-{
+void SemaphoreDown(ref SemaphorePlatformVars semVars, uint ms) {
 	// TODO: semaphore timeout
 	sem_wait(&semVars.sem_id);
 }
 
-void SemaphoreDown(ref SemaphorePlatformVars semVars)
-{
+void SemaphoreDown(ref SemaphorePlatformVars semVars) {
 	sem_wait(&semVars.sem_id);
 }
 
@@ -127,27 +114,22 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars)
 
 // Mutexes
 
-void MutexInit(ref MutexPlatformVars mutVars)
-{
+void MutexInit(ref MutexPlatformVars mutVars) {
 	pthread_mutex_init(&mutVars.mut_id, null);
 }
 
-void MutexUninit(ref MutexPlatformVars mutVars)
-{
+void MutexUninit(ref MutexPlatformVars mutVars) {
 	pthread_mutex_destroy(&mutVars.mut_id);
 }
 
-void MutexLock(ref MutexPlatformVars mutVars)
-{
+void MutexLock(ref MutexPlatformVars mutVars) {
 	pthread_mutex_lock(&mutVars.mut_id);
 }
 
-void MutexLock(ref MutexPlatformVars mutVars, ref uint ms)
-{
+void MutexLock(ref MutexPlatformVars mutVars, ref uint ms) {
 }
 
-void MutexUnlock(ref MutexPlatformVars mutVars)
-{
+void MutexUnlock(ref MutexPlatformVars mutVars) {
 	pthread_mutex_unlock(&mutVars.mut_id);
 }
 

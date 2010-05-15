@@ -66,11 +66,13 @@ import spec.specification;
 import data.queue2;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
 
 	override void onApplicationStart() {
-		Console.putln(sin(0));
-		Console.putln(cos(3.1415296));
+		Timer tmr = new Timer;
+		tmr.interval = 500;
+		push(tmr);
+		tmr.start;
+		for(;;){}
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
@@ -115,29 +117,32 @@ private:
 import spec.modulespecification;
 
 import data.queue;
-int main(string[] args) {
-	string foobar = "abc";
-	foobar ~= 'd';
-	Console.putln(3);
-	int[] foo;
-	foo ~= 3;
-	Console.putln(foo);
-	int[] foo2 = null;
-	foo2 ~= [2,4];
-	Console.putln(foo2);
-	Console.putln(foo2.length);
-	synchronized {
+
+class MyWindow : CuiWindow {
+	this() {
+		push (new CuiLabel(2,3, 10, "hello"));
 	}
 
+	override void onKeyDown(Key key) {
+		if (key.ctrl && key.code == Key.Q) {
+			Djehuty.app.exit(0);
+		}
+	}
+}
 
-	Console.putln("lists test\n");
-	int[3] arr = 1;
-	Queue!(int) list = new Queue!(int)();
+class MyApp : CuiApplication {
+	override void onApplicationStart() {
+		push(new MyWindow);
+	}
+}
 
-	list.add(arr);
+void foo(bool stop) {
+	Console.putln("hello");
+	Console.putln("what is up?");
+}
 
-	Console.putln(list.length == 3);
-	Console.putln(list.peek() == arr[2]);
-
+int main(string[] args) {
+	auto app = new MyConsoleApp;
+	app.run();
 	return 0;
 }

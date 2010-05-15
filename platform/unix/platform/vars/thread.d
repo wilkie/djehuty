@@ -17,4 +17,5 @@ import synch.thread;
 struct ThreadPlatformVars {
 	pthread_t id;
 	Thread thread;
+	void delegate() endCallback;
 }

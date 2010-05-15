@@ -217,13 +217,18 @@ private template _arraysetlength(bool initWithZero) {
 
 		size_t newSize = length * elementSize;
 		size_t memorySize = GarbageCollector.query(oldData[0..1]);
+		memorySize = oldLength;
 
 		ubyte[] newArray;
+
+		if (newSize == 0) {
+			return null;
+		}
 
 		if (memorySize <= newSize) {
 			newArray = GarbageCollector.malloc(newSize);
 			if (oldLength != 0) {
-				newArray[0..oldLength*elementSize] = oldData[0..oldLength*elementSize];
+				newArray[0..oldLength] = oldData[0..oldLength];
 			}
 		}
 		else {
@@ -234,7 +239,7 @@ private template _arraysetlength(bool initWithZero) {
 		// Initialize the new space
 		static if (initWithZero) {
 			// Initialize the remaining space with zero
-			newArray[oldLength*elementSize..newSize] = 0;
+			newArray[oldLength..newSize] = 0;
 		}
 		else {
 			// Initialize the remaining space with the init value from ti
@@ -242,13 +247,13 @@ private template _arraysetlength(bool initWithZero) {
 
 			// If there is no init vector, then just init to zero
 			if (init is null) {
-				newArray[oldLength*elementSize..newSize] = 0;
+				newArray[oldLength..newSize] = 0;
 			}
 			else {
 				// Initialize all values we can
 				size_t initIndex = 0;
 
-				foreach(ref element; newArray[oldLength*elementSize..newSize]) {
+				foreach(ref element; newArray[oldLength..newSize]) {
 					element = init[initIndex];
 					initIndex++;
 					if (initIndex == init.length) {

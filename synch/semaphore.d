@@ -5,6 +5,7 @@ import scaffold.thread;
 import platform.vars.semaphore;
 
 import core.definitions;
+import binding.c;
 
 // Section: Core/Synchronization
 
@@ -12,8 +13,7 @@ import core.definitions;
 class Semaphore {
 
 	~this() {
-		if (_inited)
-		{
+		if (_inited) {
 			SemaphoreUninit(_pfvars);
 		}
 	}
@@ -25,12 +25,12 @@ class Semaphore {
 	// Description: Creates and initializes a semaphore.
 	// initialValue: The initial count for the semaphore.
 	this(uint initialValue) {
-		init(initialValue);
+		initialize(initialValue);
 	}
 
 	// Description: This function will initialize a semaphore and set it to an initial count.
 	// initialValue: The initial count for the semaphore.
-	void init(uint initialValue) {
+	void initialize(uint initialValue) {
 		SemaphoreInit(_pfvars, initialValue);
 		_inited = true;
 	}

@@ -6,6 +6,8 @@ import synch.mutex;
 
 import djehuty;
 
+import binding.c;
+
 // Section: Enums
 
 // Description: This enum gives possible events that can be triggered by the Console.

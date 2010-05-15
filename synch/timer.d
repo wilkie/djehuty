@@ -23,8 +23,12 @@ class Timer : Dispatcher {
 
 	// Description: This function will set the time interval to periodly call the timerProc() function.
 	// milliseconds: The number of milliseconds to wait before the next timer fire.
-	void setInterval(ulong milliseconds) {
+	void interval(ulong milliseconds) {
 		_interval = milliseconds;
+	}
+
+	ulong interval() {
+		return _interval;
 	}
 
 	// Description: This function will start the timer.

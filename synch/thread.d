@@ -101,8 +101,7 @@ class Thread {
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.
 	void start() {
 		if (!_inited) {
-			RegisterThread(this);
-			ThreadStart(_pfvars, this);
+			_id = ThreadStart(_pfvars, this, &end);
 
 			startTime = time = System.time;
 
@@ -114,7 +113,6 @@ class Thread {
 	void stop() {
 		if (_inited) {
 			ThreadStop(_pfvars);
-			UnregisterThread(this);
 		}
 		_inited = false;
 	}
@@ -153,16 +151,16 @@ class Thread {
 
 protected:
 
+	void end() {
+		threadById[_id] = null;
+		_inited = false;
+	}
+
 	void delegate (bool) _thread_callback = null;
 	void function (bool) _thread_f_callback = null;
 
-	int _threadProc() {
-		run();
-
-		return 0;
-	}
-
 	bool _inited;
+	int _id;
 
 	long startTime;
 	long time;
@@ -172,26 +170,6 @@ protected:
 	ThreadPlatformVars _pfvars;
 
 	static Thread[uint] threadById;
-}
-
-void ThreadModuleInit() {
-
-	// create a Thread for the main thread
-	Thread mainThread = new Thread();
-	mainThread._inited = true;
-
-//	version(Tango) {
-		//mainThread.stdThread.runtimeThread = Tango.Thread.getThis();
-//	}
-//	else {
-		//mainThread.stdThread.runtimeThread = Phobos.Thread.getThis();
-//	}
-
-	//Thread.threadById[mainThread.stdThread.runtimeThread] = mainThread;
-}
-
-void ThreadUninit(ref Thread t) {
-	t._inited = false;
 }
 
 void ThreadSetWindow(ref Thread t, Window w) {
