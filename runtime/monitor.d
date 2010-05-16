@@ -31,13 +31,11 @@ void _d_monitorenter(Object h) {
 		// proceed to use that object.
 		*(cast(Monitor**)h + 1) = monitor;
 	}
-	Console.putln("down");
 	monitor.semaphore.down();
 }
 
 void _d_monitorexit(Object h) {
 	Monitor* monitor = *(cast(Monitor**)h + 1);
-	Console.putln("up");
 	monitor.semaphore.up();
 }
 
