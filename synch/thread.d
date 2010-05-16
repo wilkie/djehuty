@@ -101,11 +101,10 @@ class Thread {
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.
 	void start() {
 		if (!_inited) {
+			_inited = true;
 			_id = ThreadStart(_pfvars, this, &end);
 
 			startTime = time = System.time;
-
-			_inited = true;
 		}
 	}
 

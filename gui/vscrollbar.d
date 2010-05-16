@@ -51,8 +51,8 @@ public:
 		_readyTimer = new Timer();
 		_clickTimer = new Timer();
 
-		_clickTimer.setInterval(50);
-		_readyTimer.setInterval(100);
+		_clickTimer.interval = 50;
+		_readyTimer.interval = 100;
 
 		push(_readyTimer);
 		push(_clickTimer);

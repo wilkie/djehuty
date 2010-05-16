@@ -68,9 +68,8 @@ class GameControl : CuiWidget {
 			}
 		}
 		else if (key.code == Key.Space) {
-			tmr.stop();
-
 			lock.down();
+			tmr.stop();
 
 			int result = 1;
 			while(result == 1) {
@@ -87,9 +86,8 @@ class GameControl : CuiWidget {
 				drawPiece();
 			}
 
-			lock.up();
-
 			tmr.start();
+			lock.up();
 		}
 	}
 
@@ -186,19 +184,20 @@ class GameControl : CuiWidget {
 protected:
 
 	void timerProc() {
-		lock.down();
-		int result = board.moveDown();
+		if (lock.tryDown()) {
+			int result = board.moveDown();
 
-		if (result > 0) {
-			clearPiece();
+			if (result > 0) {
+				clearPiece();
+			}
+			else if (result == -1) {
+				// cleared rows
+				raiseSignal(Event.ScoreUpdated);
+				drawBoard();
+			}
+			drawPiece();
+			lock.up();
 		}
-		else if (result == -1) {
-			// cleared rows
-			raiseSignal(Event.ScoreUpdated);
-			drawBoard();
-		}
-		drawPiece();
-		lock.up();
 	}
 
 	bool inited;

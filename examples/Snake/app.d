@@ -2,11 +2,13 @@ import cui.application;
 
 import win;
 
-class SnakeApp : CuiApplication {
-	static this() {
-		new SnakeApp();
-	}
+int main(string[] args) {
+	auto app = new SnakeApp();
+	app.run();
+	return 0;
+}
 
+class SnakeApp : CuiApplication {
 	override void onApplicationStart() {
 		push(new SnakeWindow());
 	}

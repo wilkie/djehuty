@@ -66,20 +66,6 @@ import spec.specification;
 import data.queue2;
 
 class MyConsoleApp : Application {
-
-	override void onApplicationStart() {
-		Timer tmr = new Timer;
-		tmr.interval = 500;
-		push(tmr);
-		tmr.start;
-		for(;;){}
-	}
-
-	override bool onSignal(Dispatcher dsp, uint signal) {
-		Console.putln("fire");
-		return true;
-	}
-
 	void foo(bool bar) {
 		Atomic.increment(fudge);
 		while(fudge < 9) {
@@ -120,14 +106,43 @@ import data.queue;
 
 class MyWindow : CuiWindow {
 	this() {
-		push (new CuiLabel(2,3, 10, "hello"));
+		push (label = new CuiLabel(2,3, 10, "hello"));
+		tmr = new Timer;
+		tmr.interval = 10000;
+		push(tmr);
+		tmr.start;
+	}
+
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		if (dsp !is tmr) {
+			return false;
+		}
+
+		static int i = 0;
+		i++;
+		if (signal == 1) {
+			label.text = "fuck!" ~ toStr(i);
+		}
+		if (label.text.length > 4) {
+		redraw();
+			return true;
+		}
+		label.text = toStr(i);
+		redraw();
+		return true;
 	}
 
 	override void onKeyDown(Key key) {
 		if (key.ctrl && key.code == Key.Q) {
 			Djehuty.app.exit(0);
 		}
+
+		tmr.stop();
+		tmr.start();
 	}
+
+	Timer tmr;
+	CuiLabel label;
 }
 
 class MyApp : CuiApplication {
@@ -141,8 +156,20 @@ void foo(bool stop) {
 	Console.putln("what is up?");
 }
 
+import math.random;
+static const int REPEATS = 10000;
 int main(string[] args) {
-	auto app = new MyConsoleApp;
-	app.run();
+	auto r = new Random();
+	List!(char) lst = new List!(char)(['a', 'e', 'i', 'o', 'u']);
+	char v;
+	for (uint i = 0; i < REPEATS; i++) {
+		Console.putln("um");
+		v = r.choose(lst);
+		Console.putln("chosen: ", v);
+		Console.putln(member(v, lst) is null);
+	}
+
+	//auto app = new MyApp;
+	//app.run();
 	return 0;
 }

@@ -51,6 +51,10 @@ class Semaphore {
 		SemaphoreDown(_pfvars, milliseconds);
 	}
 
+	bool tryDown() {
+		return SemaphoreTry(_pfvars);
+	}
+
 protected:
 
 	SemaphorePlatformVars _pfvars;

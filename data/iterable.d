@@ -347,9 +347,12 @@ template foldr(T, R, S) {
 template member(T, S) {
 	static assert(IsIterable!(T), "member: " ~ T.stringof ~ " is not iterable.");
 	T member(S value, T list) {
+		Console.putln("member");
 		foreach(size_t i, S item; list) {
+			Console.putln("Comparing ", value, " vs ", item);
 			if (value == item) {
-				return cast(T)(list[i..list.length]);
+				Console.putln("item found: ", list[i..list.length]);
+				return list[i..list.length];
 			}
 		}
 		return null;

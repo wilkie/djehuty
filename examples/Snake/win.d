@@ -34,7 +34,7 @@ class SnakeWindow : CuiWindow {
 				dirCoef = s.isVertical ? SpeedCoef.V : SpeedCoef.H;
 		}
 
-		_timer.setInterval(_frame_wait * dirCoef / FrameWait.Multiplier);
+		_timer.interval = _frame_wait * dirCoef / FrameWait.Multiplier;
 	}
 
 	void gameOver(DeathBy d) {
@@ -44,7 +44,7 @@ class SnakeWindow : CuiWindow {
 
 		_timer.stop();
 
-		Console.setColor(fgColor.BrightRed);
+		Console.forecolor = Color.Red;
 		Console.putln("DEAD!");
 	}
 
@@ -52,7 +52,8 @@ class SnakeWindow : CuiWindow {
 	override void onInitialize() {
 		super.onInitialize();
 
-		Console.setColor(fgColor.White, bgColor.Black);
+		Console.forecolor = Color.White;
+		Console.backcolor = Color.Black;
 
 		string[] instructions = ["move: arrows/wasd", "stop: q or die", "quit: any key"];
 		foreach (uint y, string s; instructions) {

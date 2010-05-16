@@ -15,6 +15,8 @@ import djehuty;
 
 public import data.iterable;
 
+import io.console;
+
 class List(T) : Iterable!(T) {
 	this() {
 		_data.length = 10;
@@ -310,6 +312,7 @@ class List(T) : Iterable!(T) {
 
 	int opApply(int delegate(ref size_t, ref T) loopFunc) {
 		synchronized(this) {
+			Console.putln("opApply");
 			int ret;
 
 			for(size_t i = 0; i < _count; i++) {

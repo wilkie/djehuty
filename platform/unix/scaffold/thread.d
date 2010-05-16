@@ -24,13 +24,19 @@ import platform.vars.condition;
 import platform.vars.mutex;
 import platform.vars.semaphore;
 
+import binding.c;
+
 void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
 	timespec timetoexpire;
 
 	timetoexpire.tv_sec = (milliseconds / 1000);
 	timetoexpire.tv_nsec = (milliseconds % 1000) * 1000000;
 
-	nanosleep(&timetoexpire, null);
+	timespec remaining;
+
+	while(nanosleep(&timetoexpire, &remaining) != 0) {
+		timetoexpire = remaining;
+	}
 }
 
 extern (C)
@@ -108,6 +114,9 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars) {
 	sem_wait(&semVars.sem_id);
 }
 
+bool SemaphoreTry(ref SemaphorePlatformVars semVars) {
+	return (sem_trywait(&semVars.sem_id) == 0);
+}
 
 
 

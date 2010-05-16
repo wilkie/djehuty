@@ -75,6 +75,7 @@ private:
 		foreach(item; ms) {
 			foreach(feature; item) {
 				auto tester = new Test(item, feature);
+				Console.putln("Testing", " : ", item.name, " ", feature);
 				tester.run();
 				if (tester.failures > 0) {
 					Console.forecolor = Color.Red;

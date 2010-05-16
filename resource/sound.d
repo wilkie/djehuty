@@ -63,7 +63,7 @@ class Sound : Responder {
 		push(wavDevice = new Audio);
 
 		tmr = new Timer();
-		tmr.setInterval(250);
+		tmr.interval = 250;
 
 		push(tmr);
 
