@@ -24,7 +24,7 @@ struct Monitor {
 	Semaphore semaphore;
 	Thread owner;
 	ulong count;
-	}
+}
 
 void _d_monitorenter(Object h) {
 	// The monitor object is the second pointer in the object

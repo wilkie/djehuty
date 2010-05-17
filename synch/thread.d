@@ -79,23 +79,16 @@ class Thread {
 		_thread_callback = null;
 	}
 
-	// Description: This function will tell whether or not the current thread being executed is the thread created via this class.
-	// Returns: Will return true when this thread is the current thread executing and false otherwise.
-	bool isCurrent() {
-		if (_inited) {
-			return ThreadIsCurrent(_pfvars);
-		}
-
-		return false;
-	}
-
 	// Description: This function will yield the thread for a certain amount of time.
 	// milliseconds: The number of milliseconds to yield.
-	void sleep(ulong milliseconds) {
+	static void sleep(ulong milliseconds) {
 		// we are given a long for length, windows only has an int function
-		if (_inited) {
-			ThreadSleep(_pfvars, milliseconds);
-		}
+		ThreadSleep(milliseconds);
+	}
+
+	// Description: This function will yield the thread.
+	static void yield() {
+		ThreadYield();
 	}
 
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.

@@ -26,7 +26,11 @@ import platform.vars.semaphore;
 
 import binding.c;
 
-void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
+void ThreadYield() {
+	pthread_yield();
+}
+
+void ThreadSleep(ulong milliseconds) {
 	timespec timetoexpire;
 
 	timetoexpire.tv_sec = (milliseconds / 1000);

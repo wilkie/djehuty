@@ -1,0 +1,65 @@
+module specs.runtime.synchronized;
+
+import synch.thread;
+import io.console;
+
+describe runtime {
+	describe synchronized {
+		it should_block_threads {
+			// Lets not put it on the stack
+			static bool status = false;
+
+			// something to adhere to
+			class A {
+			}
+
+			A a = new A();
+
+			void foo(bool b) {
+				synchronized(a) {
+					status = true;
+				}
+			}
+
+			Thread t = new Thread(&foo);
+			synchronized(a) {
+				t.start();
+				Thread.sleep(500);
+				should(status == false);
+			}
+
+			while(status == false) {
+				// Constantly yield
+				Thread.yield();
+			}
+		}
+
+		it should_not_block_the_same_thread_twice {
+			static bool status = false;
+
+			// something to adhere to
+			class A {
+			}
+
+			void run(bool b) {
+				A a = new A();
+
+				void foo() {
+					synchronized(a) {
+						status = true;
+					}
+				}
+
+				synchronized(a) {
+					foo();
+				}				
+			}
+
+			Thread t = new Thread(&run);
+			t.start;
+
+			Thread.sleep(1000);
+			should(status == true);
+		}
+	}
+}
