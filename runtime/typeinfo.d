@@ -1,7 +1,5 @@
 module runtime.typeinfo;
 
-import core.definitions;
-
 struct OffsetTypeInfo {
 	size_t offset;
 	TypeInfo ti;
@@ -77,7 +75,7 @@ class TypeInfo {
 		return null;
 	}
 
-	ubyte[] init() {
+	void[] init() {
 		return null;
 	}
 

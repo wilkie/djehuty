@@ -17,6 +17,8 @@ import core.string;
 import core.date;
 import core.time;
 
+import binding.c;
+
 // Timing
 private {
 	struct tm {

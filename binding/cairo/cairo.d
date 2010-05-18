@@ -50,7 +50,7 @@ module binding.cairo.cairo;
  */
 
 public import binding.cairo.features;
-public import core.definitions;
+import binding.c;
 
 extern (C):
 int  cairo_version();
@@ -748,7 +748,7 @@ alias _cairo_font_face cairo_font_face_t;
 
 struct cairo_glyph_t
 {
-    Culong index;
+    Culong_t index;
     double x;
     double y;
 }
@@ -1007,7 +1007,7 @@ void  cairo_font_options_merge(cairo_font_options_t *options, cairo_font_options
 cairo_bool_t  cairo_font_options_equal(cairo_font_options_t *options, cairo_font_options_t *other);
 
 
-Culong  cairo_font_options_hash(cairo_font_options_t *options);
+Culong_t  cairo_font_options_hash(cairo_font_options_t *options);
 
 
 void  cairo_font_options_set_antialias(cairo_font_options_t *options, cairo_antialias_t antialias);

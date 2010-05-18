@@ -21,7 +21,7 @@ describe queue() {
 			should(list.peek() == item);
 		}
 
-		it should_an_a_list_to_list() {
+		it should_add_a_list_to_list() {
 			Queue!(int) list1 = new Queue!(int)();
 			Queue!(int) list2 = new Queue!(int)();
 			int item = 33;

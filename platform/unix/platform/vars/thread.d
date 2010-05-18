@@ -12,6 +12,10 @@ module platform.vars.thread;
 
 import platform.unix.common;
 
+import synch.thread;
+
 struct ThreadPlatformVars {
 	pthread_t id;
+	Thread thread;
+	void delegate() endCallback;
 }

@@ -13,6 +13,8 @@ import platform.unix.common;
 
 import platform.vars.file;
 
+import binding.c;
+
 import core.definitions;
 import core.string;
 import core.main;

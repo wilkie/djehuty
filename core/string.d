@@ -25,6 +25,8 @@ import math.currency;
 
 public import core.string;
 
+import binding.c;
+
 string toStrv(Variadic vars) {
 	string ret = "";
 	foreach(var; vars) {

@@ -24,8 +24,7 @@ class Bitmap : View {
 	this() {
 		super();
 
-		_buffer_mutex = new Semaphore;
-		_buffer_mutex.init(1);
+		_buffer_mutex = new Semaphore(1);
 	}
 
 	this(int width, int height) {

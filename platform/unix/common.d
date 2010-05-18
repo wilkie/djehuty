@@ -18,7 +18,7 @@ public import CairoX = binding.cairo.xlib;
 
 public import Pango = binding.pango.pango;
 
-public import binding.c;
+import binding.c;
 public import Curses = binding.ncurses.ncurses;
 
 extern(C):
@@ -486,6 +486,7 @@ extern (C):
 	int pthread_getattr_np(pthread_t, pthread_attr_t*);
 	int pthread_getconcurrency();
 	int pthread_getcpuclockid(pthread_t, clockid_t*);
+	int pthread_yield();
 
 	int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
 	int pthread_cond_destroy(pthread_cond_t *);

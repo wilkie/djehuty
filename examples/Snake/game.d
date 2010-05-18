@@ -100,8 +100,8 @@ private:
 		Console.putChar(t);
 	}
 
-	void drawTile(Posn p, Tile t, TileColor c) {
-		Console.setColor(c);
+	void drawTile(Posn p, Tile t, Color c) {
+		Console.forecolor = c;
 		drawTile(p, t);
 	}
 

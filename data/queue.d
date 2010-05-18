@@ -17,7 +17,7 @@ class Queue(T) : Iterable!(T) {
 	// data: The information you wish to store.  It must correspond to the type of data you specified in the declaration of the class.
 	void add(T data) {
 		synchronized(this) {
-			LinkedListNode* newNode = new LinkedListNode;
+			LinkedListNode* newNode = new LinkedListNode();
 			newNode.data = data;
 
 			if (_head is null) {

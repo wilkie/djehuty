@@ -64,19 +64,8 @@ import networking.ftp;
 import spec.specification;
 
 import data.queue2;
-import Math = tango.math.Math;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
-
-	override void onApplicationStart() {
-	}
-
-	override bool onSignal(Dispatcher dsp, uint signal) {
-		Console.putln("fire");
-		return true;
-	}
-
 	void foo(bool bar) {
 		Atomic.increment(fudge);
 		while(fudge < 9) {
@@ -93,4 +82,84 @@ class MyConsoleApp : Application {
 	ulong fudge;
 	ulong freak;
 	Queue2!(string) q;
+}
+
+import binding.c;
+
+class A {
+	this(int foo = 5) {
+		_foo = foo;
+		printf("class constructor %d\n", foo);
+	}
+
+	int foobar() {
+		return _foo;
+	}
+private:
+	int _foo;
+}
+
+
+import spec.modulespecification;
+
+import data.queue;
+
+class MyWindow : CuiWindow {
+	this() {
+		push (label = new CuiLabel(2,3, 10, "hello"));
+		tmr = new Timer;
+		tmr.interval = 10000;
+		push(tmr);
+		tmr.start;
+	}
+
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		if (dsp !is tmr) {
+			return false;
+		}
+
+		static int i = 0;
+		i++;
+		if (signal == 1) {
+			label.text = "fuck!" ~ toStr(i);
+		}
+		if (label.text.length > 4) {
+		redraw();
+			return true;
+		}
+		label.text = toStr(i);
+		redraw();
+		return true;
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.ctrl && key.code == Key.Q) {
+			Djehuty.app.exit(0);
+		}
+
+		tmr.stop();
+		tmr.start();
+	}
+
+	Timer tmr;
+	CuiLabel label;
+}
+
+class MyApp : CuiApplication {
+	override void onApplicationStart() {
+		push(new MyWindow);
+	}
+}
+
+void foo(bool stop) {
+	Console.putln("hello");
+	Console.putln("what is up?");
+}
+
+import math.random;
+static const int REPEATS = 10000;
+int main(string[] args) {
+	//auto app = new MyApp;
+	//app.run();
+	return 0;
 }

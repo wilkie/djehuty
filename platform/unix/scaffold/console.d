@@ -13,6 +13,7 @@ import djehuty;
 
 import platform.unix.common;
 import platform.unix.main;
+import binding.c;
 
 import platform.application;
 

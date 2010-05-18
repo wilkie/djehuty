@@ -11,22 +11,24 @@ import runtime.exception;
 import runtime.common;
 import runtime.gc;
 
-import io.console;
+import binding.c;
 
-//extern(C):
+extern(C):
 
 Object _d_allocclass(ClassInfo ci) {
-	return cast(Object)gc_malloc(ci.init.length, BlkAttr.FINALIZE | (ci.flags & 2 ? BlkAttr.NO_SCAN : 0));
+	return cast(Object)gc_malloc(ci.init.length, 0);
 }
 
-Object _d_newclass(ClassInfo ci) {
-	return null;
+void* _d_allocmemoryT(TypeInfo ti) {
+	return gc_malloc(ti.tsize(), 0);
 }
 
 void _d_delinterface(Interface*** p) {
 	if (p is null) {
 		return;
 	}
+
+	// I do not know...
 	Interface* pi = **p;
 	Object o = cast(Object)(p - pi.offset);
 	_d_delclass(o);
@@ -37,13 +39,21 @@ void _d_delclass(Object p) {
 		return;
 	}
 
+	// Object is a pointer to the object space
+	// So, the classinfo pointer is the first entry in the Object
+	// So, think of p as an Object*, and thus as a ClassInfo**
 	ClassInfo** pc = cast(ClassInfo**)p;
+
+	// Does the class have a classinfo pointer?
 	if (*pc !is null) {
 		ClassInfo c = **pc;
 		rt_finalize(cast(void*)p);
 
+		// Call the deallocator
 		if (c.deallocator !is null) {
-			//c.deallocator();
+			void function(Object) deallocator;
+			deallocator = cast(void function(Object))c.deallocator;
+			deallocator(p);
 			return;
 		}
 	}
@@ -55,11 +65,8 @@ void _d_delclass(Object p) {
 
 private template _newarray(bool initialize, bool withZero) {
 	void[] _newarray(TypeInfo ti, size_t length) {
-		Console.putln("hello");
-		if (cast(TypeInfo_Typedef)ti !is null) {
-//			ti = ti.next;
-		}
 		size_t elementSize = ti.next.tsize();
+		size_t returnLength = length;
 
 		// Check to see if the size of the array can fit
 		// within a size_t. If there is no overflow, then
@@ -93,10 +100,8 @@ private template _newarray(bool initialize, bool withZero) {
 					// Initialize all values we can
 					size_t initIndex = 0;
 
-//					foreach(size_t idx, ref element; ret) {
-					for(size_t idx = 0; idx < length; idx++) {
-//						element = init[initIndex];
-						ret[idx] = init[initIndex];
+					foreach(ref element; ret) {
+						element = init[initIndex];
 						initIndex++;
 						if (initIndex == init.length) {
 							initIndex = 0;
@@ -110,7 +115,7 @@ private template _newarray(bool initialize, bool withZero) {
 		// we do not initialize them. Falling through will
 		// work for those.
 
-		return ret;
+		return ret[0..returnLength];
 	}
 }
 
@@ -182,17 +187,17 @@ void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
 
 // Description: Will delete an array.
 // array: The array to delete.
-void _d_delarray(void[] array) {
+void _d_delarray(ubyte[] array) {
 	if (array !is null) {
-		gc_free(cast(ubyte*)array.ptr);
+		GarbageCollector.free(array);
 	}
 }
 
 // Description: Will simply remove the memory pointed to a ptr.
 // ptr: The pointer to the address to free.
-void _d_delmemory(void* ptr) {
+void _d_delmemory(ubyte* ptr) {
 	if (ptr !is null) {
-		gc_free(cast(ubyte*)ptr);
+		gc_free(ptr);
 	}
 }
 
@@ -203,20 +208,198 @@ void _d_callfinalizer(void* p) {
 void rt_finalize(void* p, bool det = true) {
 }
 
-byte[] _d_arraysetlengthT(TypeInfo ti, size_t newlength, void[]* p) {
-	return null;
+private template _arraysetlength(bool initWithZero) {
+	ubyte* _arraysetlength(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+		size_t elementSize = ti.next.tsize();
+
+		size_t newSize = length * elementSize;
+		size_t oldSize = oldLength * elementSize;
+		size_t memorySize;
+	   
+		if (oldData is null) {
+			memorySize = oldSize;
+		}
+		else {
+			memorySize = GarbageCollector.query(oldData[0..oldSize]);
+		}
+
+		ubyte[] newArray;
+
+		if (newSize == oldSize) {
+			return oldData;
+		}
+
+		if (newSize == 0) {
+			return null;
+		}
+
+		if (memorySize <= newSize) {
+			if (newSize < oldSize * 2) {
+				newSize = oldSize * 2;
+			}
+
+			newArray = GarbageCollector.malloc(newSize);
+
+			if (oldSize != 0) {
+				newArray[0..oldSize] = oldData[0..oldSize];
+			}
+		}
+		else {
+			// just resize
+			newArray = oldData[0..newSize];
+		}
+
+		// Initialize the new space
+		static if (initWithZero) {
+			// Initialize the remaining space with zero
+			newArray[oldSize..newSize] = 0;
+		}
+		else {
+			// Initialize the remaining space with the init value from ti
+			ubyte[] init = cast(ubyte[])ti.next.init();
+
+			// If there is no init vector, then just init to zero
+			if (init is null) {
+				newArray[oldSize..newSize] = 0;
+			}
+			else {
+				// Initialize all values we can
+				size_t initIndex = 0;
+
+				foreach(ref element; newArray[oldSize..newSize]) {
+					element = init[initIndex];
+					initIndex++;
+					if (initIndex == init.length) {
+						initIndex = 0;
+					}
+				}
+			}
+		}
+
+		return newArray.ptr;
+	}
 }
 
-byte[] _d_arraysetlengthiT(TypeInfo ti, size_t newlength, void[]* p) {
-	return null;
+// Description: This runtime function will be called when the length of an
+//   array is updated. It will allocate extra space if necessary and will
+//   initialize new entries to 0.
+// ti: The TypeInfo the represents the base type of the array.
+// length: The updated length for the array.
+// oldLength: The current length of the array.
+// oldData: The pointer to the current array data.
+// Returns: The updated pointer of the array data.
+ubyte* _d_arraysetlengthT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+	return _arraysetlength!(true)(ti, length, oldLength, oldData);
 }
 
-void[] _d_arrayappendT(TypeInfo ti, void[]* px, byte[] y) {
-	return null;
+// Description: This runtime function will be called when the length of an
+//   array is updated. It will allocate extra space if necessary and will
+//   initialize new entries to those indicated in the TypeInfo's init array.
+// ti: The TypeInfo the represents the base type of the array.
+// length: The updated length for the array.
+// oldLength: The current length of the array.
+// oldData: The pointer to the current array data.
+// Returns: The updated pointer of the array data.
+ubyte* _d_arraysetlengthiT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+	return _arraysetlength!(false)(ti, length, oldLength, oldData);
 }
 
-byte[] _d_arrayappendcTp(TypeInfo ti, ref byte[] x, void* argp) {
-	return null;
+// Description: This runtime function will append two arrays.
+// destArray: This is the array that will receive the concatonation.
+// srcArray: This is the array that will be concatonated.
+// Returns: The updated array.
+ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
+	size_t memorySize;
+	size_t elementSize = ti.next.tsize();
+
+	size_t oldLength = destArray.length;
+	size_t newSize = (destArray.length + srcArray.length) * elementSize;
+	size_t oldSize = oldLength * elementSize;
+
+	if (destArray is null) {
+		memorySize = oldSize;
+	}
+	else {
+		memorySize = GarbageCollector.query(destArray);
+	}
+
+	ubyte[] newArray;
+	if (memorySize <= newSize) {
+		if (newSize < oldSize * 2) {
+			newSize = oldSize * 2;
+		}
+		newArray = GarbageCollector.malloc(newSize);
+		if (oldSize > 0) {
+			newArray[0..oldSize] = destArray.ptr[0..oldSize];
+		}
+	}
+	else {
+		// just resize
+		newArray = destArray.ptr[0..newSize];
+	}
+	// Add element
+	for(uint destIdx = oldLength * elementSize; destIdx < newSize; ) {
+		for(uint srcIdx = 0; srcIdx < srcArray.length * elementSize; srcIdx++) {
+			newArray[destIdx] = srcArray[srcIdx];
+			destIdx++;
+		}
+	}
+
+	destArray = (newArray.ptr)[0..oldLength+srcArray.length];
+
+	return destArray;
+}
+
+// Description: This runtime function will append a single element to an
+//   array.
+// ti: The TypeInfo of the base type of this array.
+// array: The array to append the element.
+// element: The element to append.
+ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
+	if (element is null) {
+		return array;
+	}
+
+	size_t memorySize;
+	size_t elementSize = ti.next.tsize();
+
+	size_t oldLength = array.length;
+	size_t newSize = (array.length + 1) * elementSize;
+	size_t oldSize = oldLength * elementSize;
+
+	if (array is null || oldSize == 0) {
+		memorySize = oldSize;
+	}
+	else {
+		memorySize = GarbageCollector.query(array);
+	}
+
+	ubyte[] newArray;
+
+	if (memorySize <= newSize) {
+		if (newSize < oldSize * 2) {
+			newSize = oldSize * 2;
+		}
+		newArray = GarbageCollector.malloc(newSize);
+		if (oldSize > 0) {
+			newArray[0..oldSize] = array.ptr[0..oldSize];
+		}
+	}
+	else {
+		// just resize
+		newArray = array.ptr[0..newSize];
+	}
+
+	// Add element
+	for(uint i = 0; i < elementSize; i++) {
+		newArray[oldSize+i] = element[i];
+	}
+
+	// Update length
+	// Oddly, you have to also point the parameter array to the new array
+	newArray = newArray[0..oldLength+1];
+	array = newArray;
+	return newArray;
 }
 
 byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y) {
@@ -227,13 +410,11 @@ byte[] _d_arraycatnT(TypeInfo ti, uint n, ...) {
 	return null;
 }
 
-void[] _adDupT(TypeInfo ti, void[] a) {
+ubyte[] _adDupT(TypeInfo ti, ubyte[] a) {
 	ubyte[] ret = (cast(ubyte*)_d_newarrayvT(ti, a.length))[0..a.length*ti.next.tsize()];
-	ubyte[] array = (cast(ubyte*)a)[0..a.length*ti.next.tsize()];
+	ubyte[] array = a.ptr[0..a.length*ti.next.tsize()];
 
-	foreach(size_t idx, ref element; ret) {
-		element = array[idx];
-	}
+	ret[0..$] = array[0..$];
 
-	return ret;
+	return ret.ptr[0..a.length];
 }

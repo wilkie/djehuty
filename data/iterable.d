@@ -349,7 +349,7 @@ template member(T, S) {
 	T member(S value, T list) {
 		foreach(size_t i, S item; list) {
 			if (value == item) {
-				return cast(T)(list[i..list.length]);
+				return list[i..list.length];
 			}
 		}
 		return null;

@@ -17,6 +17,7 @@ import math.random;
 
 import core.util;
 import io.console;
+import binding.c;
 
 // Arrays in D are represented as such:
 
@@ -100,6 +101,10 @@ int _adEq(void[] a1, void[] a2, TypeInfo ti) {
 // Description: This runtime function sorts an array and is invoked with
 // the sort property: array.sort
 ubyte[] _adSort(ubyte[] array, TypeInfo ti) {
+	if (array is null) {
+		return null;
+	}
+
 	ubyte[] cmp = (array.ptr)[0..array.length * ti.tsize()];
 	_qsort(cmp, ti.tsize(), ti);
 	return array;
@@ -203,28 +208,27 @@ private template _array_init(T) {
 	}
 }
 
-/*
 void _d_array_init_i1(bool* array, size_t length, bool value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i8(ubyte[] array, ubyte value) {
+void _d_array_init_i8(ubyte* array, size_t length, ubyte value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i16(ushort[] array, ushort value) {
+void _d_array_init_i16(ushort* array, size_t length, ushort value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i32(uint[] array, uint value) {
+void _d_array_init_i32(uint* array, size_t length, uint value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_i64(ulong[] array, ulong value) {
+void _d_array_init_i64(ulong* array, size_t length, ulong value) {
 	_array_init(array[0..length], value);
 }
 
-void _d_array_init_float(float[] array, float value) {
+void _d_array_init_float(float* array, size_t length, float value) {
 	_array_init(array[0..length], value);
 }
 
@@ -233,6 +237,10 @@ void _d_array_init_double(double* array, size_t length, double value) {
 }
 
 void _d_array_init_pointer(void** array, size_t length, void* value) {
+	_array_init(array[0..length], value);
+}
+
+void _d_array_init_cdouble(cdouble* array, size_t length, cdouble value) {
 	_array_init(array[0..length], value);
 }
 
@@ -252,9 +260,7 @@ void _d_array_init_mem(ubyte* array, size_t length, ubyte* value, size_t valueLe
 		}
 	}
 }
-//*/
 
-/*
 size_t _d_array_cast_len(size_t length, size_t elementSize, size_t newElementSize) {
 	if (newElementSize == 1) {
 		return length * elementSize;
@@ -267,7 +273,7 @@ size_t _d_array_cast_len(size_t length, size_t elementSize, size_t newElementSiz
 }
 
 // Description: This runtime function will simply set the length to reflect storing a different type.
-void[] _d_arraycast(size_t toElementSize, size_t fromElementSize, void[] array) {
+ubyte[] _d_arraycast(size_t toElementSize, size_t fromElementSize, ubyte[] array) {
 	if (toElementSize == fromElementSize) {
 		return array;
 	}
@@ -287,9 +293,8 @@ void[] _d_arraycast(size_t toElementSize, size_t fromElementSize, void[] array) 
 	
 	size_t newLength = numbytes / toElementSize;
 
-	// Set the new length
-	*cast(size_t*)&array = newLength;
-	return array;
+	// Return the updated array length
+	return array.ptr[0..newLength];
 }
 
 byte[] _d_arraycopy(size_t size, byte[] from, byte[] to) {

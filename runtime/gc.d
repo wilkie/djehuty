@@ -10,9 +10,11 @@ module runtime.gc;
 
 import synch.atomic;
 
-extern(C):
+import System = scaffold.system;
 
-import scaffold.system;
+import binding.c;
+
+extern(C):
 
 void gc_init() {
 	GarbageCollector._initialize();
@@ -36,14 +38,17 @@ void gc_collect() {
 
 uint gc_getAttr(void* p) {
 	return 0;
+	//GarbageCollector.getAttr(p);
 }
 
 uint gc_setAttr(void* p, uint a) {
 	return 0;
+	//GarbageCollector.setAttr(p, a);
 }
 
 uint gc_clrAttr(void* p, uint a) {
 	return 0;
+	//GarbageCollector.clearAttr(p, a);
 }
 
 void* gc_malloc(size_t sz, uint ba = 0) {
@@ -109,15 +114,31 @@ static:
 	}
 
 	ubyte[] malloc(size_t length) {
-		return null;
+		ubyte[] ret = System.malloc(length + size_t.sizeof);
+		size_t* len = cast(size_t*)ret.ptr;
+		*len = length;
+		return ret[size_t.sizeof..$];
 	}
 
 	ubyte[] realloc(ubyte[] original, size_t length) {
-		return null;
+		size_t* oldlen = (cast(size_t*)original.ptr) - 1;
+		if (oldlen > _heapStart) {
+			if (*oldlen > length) {
+				return original[0..length];
+			}
+		}
+
+		ubyte[] newArray = malloc(length);
+		newArray[0..original.length] = original[0..original.length];
+		return newArray;
 	}
 
 	ubyte[] calloc(size_t length) {
-		return null;
+		ubyte[] ret = malloc(length);
+
+		ret[0..$] = 0;
+
+		return ret;
 	}
 
 	size_t extend(ubyte[] original, size_t max, size_t size) {
@@ -151,9 +172,23 @@ static:
 	void removeRange(ubyte[] range) {
 	}
 
+	size_t query(ubyte[] memory) {
+		if (memory is null) {
+			return 0;
+		}
+
+		size_t* oldlen = (cast(size_t*)memory.ptr) - 1;
+		if (oldlen > _heapStart) {
+			return *oldlen;
+		}
+		return memory.length;
+	}
+
 private:
 
 	void _initialize() {
+		ubyte[] foo = System.malloc(1);
+		_heapStart = cast(size_t*)foo.ptr;
 		_inited = 1;
 	}
 
@@ -163,4 +198,5 @@ private:
 
 	ulong _disabled;
 	bool _inited;
+	size_t* _heapStart;
 }

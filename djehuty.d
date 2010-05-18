@@ -1,5 +1,7 @@
 module djehuty;
 
+public import core.exception;
+public import core.error;
 public import core.definitions;
 public import core.string;
 public import core.unicode;
@@ -19,4 +21,3 @@ public import core.endian;
 public import core.variant;
 public import core.date;
 public import core.locale;
-public import core.exception;

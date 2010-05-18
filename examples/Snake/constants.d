@@ -1,4 +1,5 @@
 import io.console;
+import core.color;
 
 enum FrameWait : uint {
 	Init       = 1000,
@@ -25,10 +26,14 @@ enum Tile : dchar {
 	Void   = ' ',
 }
 
-enum TileColor : fgColor {
-	Head   = fgColor.BrightBlue,
-	Block  = fgColor.BrightCyan,
-	Food   = fgColor.BrightGreen,
-	Portal = fgColor.BrightRed,
+struct TileColor {
+	alias Color.Blue Head;
+	alias Color.Cyan Block;
+	alias Color.Green Food;
+	alias Color.Red Portal;
+//	static Color Head = Color.Blue;
+//	static Color Block = Color.Cyan;
+//	static Color Food = Color.Green;
+//	static Color Portal = Color.Red;
 }
 

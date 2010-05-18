@@ -25,7 +25,7 @@
 
 module binding.x.Xlib;
 public import binding.x.X;
-import core.definitions;
+import binding.c;
 
 const int XlibSpecificationRelease=6;
 version = X_HAVE_UTF8_STRING;
@@ -132,9 +132,9 @@ struct XPixmapFormatValues
 struct XGCValues
 {
 	GraphicFunction function_;		/* logical operation*/
-	Culong plane_mask;				/* plane mask */
-	Culong foreground;				/* foreground pixel */
-	Culong background;				/* background pixel */
+	Culong_t plane_mask;				/* plane mask */
+	Culong_t foreground;				/* foreground pixel */
+	Culong_t background;				/* background pixel */
 	int line_width;					/* line width */
 	LineStyle line_style;	 		/* LineSolid, LineOnOffDash, LineDoubleDash */
 	CapStyle cap_style;	  			/* CapNotLast, CapButt, CapRound, CapProjecting */
@@ -166,9 +166,9 @@ struct Visual
 	XExtData *ext_data;	/* hook for extension to hang data */
 	VisualID visualid;	/* visual id of this visual */
 	int class_;			/* class of screen (monochrome, etc.) */
-	Culong red_mask;
-	Culong green_mask;
-	Culong blue_mask;	/* mask values */
+	Culong_t red_mask;
+	Culong_t green_mask;
+	Culong_t blue_mask;	/* mask values */
 
 	int bits_per_rgb;	/* log base 2 of distinct color values */
 	int map_entries;	/* color map entries */
@@ -198,8 +198,8 @@ struct Screen{
 	Visual *root_visual;	/* root visual */
 	GC default_gc;			/* GC for the root root visual */
 	Colormap cmap;			/* default color map */
-	Culong white_pixel;
-	Culong black_pixel;		/* White and Black pixel values */
+	Culong_t white_pixel;
+	Culong_t black_pixel;		/* White and Black pixel values */
 	int max_maps, min_maps;	/* max and min color maps */
 	int backing_store;		/* Never, WhenMapped, Always */
 	Bool save_unders;
@@ -223,17 +223,17 @@ struct ScreenFormat
 struct  XSetWindowAttributes
 {
     Pixmap background_pixmap;	/* background or None or ParentRelative */
-    Culong background_pixel;		/* background pixel */
+    Culong_t background_pixel;		/* background pixel */
     Pixmap border_pixmap;		/* border of the window */
-    Culong border_pixel;			/* border pixel value */
+    Culong_t border_pixel;			/* border pixel value */
     BitGravity bit_gravity;		/* one of bit gravity values */
     BitGravity win_gravity;		/* one of the window gravity values */
     BackingStoreHint backing_store;		/* NotUseful, WhenMapped, Always */
-    Culong backing_planes;		/* planes to be preseved if possible */
-    Culong backing_pixel;			/* value to use in restoring planes */
+    Culong_t backing_planes;		/* planes to be preseved if possible */
+    Culong_t backing_pixel;			/* value to use in restoring planes */
     Bool save_under;			/* should bits under be saved? (popups) */
-    Clong event_mask;			/* set of events that should be saved */
-    Clong do_not_propagate_mask;/* set of events that should not propagate */
+    Clong_t event_mask;			/* set of events that should be saved */
+    Clong_t do_not_propagate_mask;/* set of events that should not propagate */
     Bool override_redirect;		/* Boolean value for override-redirect */
     Colormap colormap;			/* color map to be associated with window */
     Cursor cursor;				/* cursor to be displayed (or None) */
@@ -251,8 +251,8 @@ struct XWindowAttributes
     BitGravity bit_gravity;		/* one of bit gravity values */
     BitGravity win_gravity;		/* one of the window gravity values */
     BackingStoreHint backing_store;	/* NotUseful, WhenMapped, Always */
-    Culong backing_planes;		/* planes to be preserved if possible */
-    Culong backing_pixel;	/* value to be used when restoring planes */
+    Culong_t backing_planes;		/* planes to be preserved if possible */
+    Culong_t backing_pixel;	/* value to be used when restoring planes */
     Bool save_under;			/* Boolean, should bits under be saved? */
     Colormap colormap;			/* color map to be associated with window */
     Bool map_installed;		/* Boolean, is color map currently installed*/
@@ -303,9 +303,9 @@ struct XImage
     int depth;					/* depth of image */
     int bytes_per_line;			/* accelarator to next line */
     int bits_per_pixel;			/* bits per pixel (ZPixmap) */
-    Culong red_mask;	/* bits in z arrangment */
-    Culong green_mask;
-    Culong blue_mask;
+    Culong_t red_mask;	/* bits in z arrangment */
+    Culong_t green_mask;
+    Culong_t blue_mask;
     XPointer obdata;			/* hook for the object routines to hang on */
     struct f {				/* image manipulation routines */
 		XImage* function(
@@ -320,10 +320,10 @@ struct XImage
 			int					/* bitmap_pad */,
 			int					/* bytes_per_line */) create_image;
 		int  function(XImage *)destroy_image;
-		Culong function(XImage *, int, int)get_pixel;
-		int  function(XImage *, int, int, Culong)put_pixel;
+		Culong_t function(XImage *, int, int)get_pixel;
+		int  function(XImage *, int, int, Culong_t)put_pixel;
 		XImage function(XImage *, int, int, uint, uint)sub_image;
-		int function(XImage *, Clong)add_pixel;
+		int function(XImage *, Clong_t)add_pixel;
 	};
 };
 
@@ -343,7 +343,7 @@ struct XWindowChanges{
  */
 struct XColor
 {
-	Culong pixel;
+	Culong_t pixel;
 	ushort red, green, blue;
 	StoreColor flags;  /* do_red, do_green, do_blue */
 	byte pad;
@@ -399,7 +399,7 @@ struct XKeyboardState
 	int key_click_percent;
 	int bell_percent;
 	uint bell_pitch, bell_duration;
-	Culong led_mask;
+	Culong_t led_mask;
 	int global_auto_repeat;
 	byte auto_repeats[32];
 };
@@ -454,8 +454,8 @@ struct Display
 	_XPrivate *private9;
 	_XPrivate *private10;
 	int qlen;		/* Length of input event queue */
-	Culong last_request_read; /* seq number of last event read */
-	Culong request;	/* sequence number of last request. */
+	Culong_t last_request_read; /* seq number of last event read */
+	Culong_t request;	/* sequence number of last request. */
 	XPointer private11;
 	XPointer private12;
 	XPointer private13;
@@ -467,8 +467,8 @@ struct Display
 	int default_screen;	/* default screen for operations */
 	int nscreens;		/* number of screens on this server*/
 	Screen *screens;	/* pointer to list of screens */
-	Culong motion_buffer;	/* size of motion buffer */
-	Culong private16;
+	Culong_t motion_buffer;	/* size of motion buffer */
+	Culong_t private16;
 	int min_keycode;	/* minimum defined keycode */
 	int max_keycode;	/* maximum defined keycode */
 	XPointer private17;
@@ -488,7 +488,7 @@ struct XrmHashBucketRec{};
 struct XKeyEvent
 {
 	int type;			/* of event */
-	Culong serial;		/* # of last request processed by server */
+	Culong_t serial;		/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;	        /* "event" window it is reported relative to */
@@ -507,7 +507,7 @@ typedef XKeyEvent XKeyReleasedEvent;
 struct XButtonEvent
 {
 	int type;		/* of event */
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;	        /* "event" window it is reported relative to */
@@ -525,7 +525,7 @@ typedef XButtonEvent XButtonReleasedEvent;
 
 struct XMotionEvent{
 	int type;		/* of event */
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;	        /* "event" window reported relative to */
@@ -542,7 +542,7 @@ typedef XMotionEvent XPointerMovedEvent;
 
 struct XCrossingEvent{
 	int type;		/* of event */
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;	        /* "event" window reported relative to */
@@ -566,7 +566,7 @@ typedef XCrossingEvent XLeaveWindowEvent;
 
 struct XFocusChangeEvent{
 	int type;		/* FocusIn or FocusOut */
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;		/* window of event */
@@ -586,7 +586,7 @@ typedef XFocusChangeEvent XFocusOutEvent;
 struct XKeymapEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -596,7 +596,7 @@ struct XKeymapEvent
 struct XExposeEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -607,7 +607,7 @@ struct XExposeEvent
 
 struct XGraphicsExposeEvent{
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Drawable drawable;
@@ -620,7 +620,7 @@ struct XGraphicsExposeEvent{
 
 struct XNoExposeEvent{
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Drawable drawable;
@@ -630,7 +630,7 @@ struct XNoExposeEvent{
 
 struct XVisibilityEvent{
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -639,7 +639,7 @@ struct XVisibilityEvent{
 
 struct XCreateWindowEvent{
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window parent;		/* parent of the window */
@@ -653,7 +653,7 @@ struct XCreateWindowEvent{
 struct XDestroyWindowEvent
 {
 	int type;
-	Culong serial;		/* # of last request processed by server */
+	Culong_t serial;		/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -663,7 +663,7 @@ struct XDestroyWindowEvent
 struct XUnmapEvent
 {
 	int type;
-	Culong serial;		/* # of last request processed by server */
+	Culong_t serial;		/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -674,7 +674,7 @@ struct XUnmapEvent
 struct XMapEvent
 {
 	int type;
-	Culong serial;		/* # of last request processed by server */
+	Culong_t serial;		/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -685,7 +685,7 @@ struct XMapEvent
 struct XMapRequestEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window parent;
@@ -695,7 +695,7 @@ struct XMapRequestEvent
 struct XReparentEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -708,7 +708,7 @@ struct XReparentEvent
 struct XConfigureEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -723,7 +723,7 @@ struct XConfigureEvent
 struct XGravityEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -734,7 +734,7 @@ struct XGravityEvent
 struct XResizeRequestEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -744,7 +744,7 @@ struct XResizeRequestEvent
 struct  XConfigureRequestEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window parent;
@@ -754,13 +754,13 @@ struct  XConfigureRequestEvent
 	int border_width;
 	Window above;
 	WindowStackingMethod detail;		/* Above, Below, TopIf, BottomIf, Opposite */
-	Culong value_mask;
+	Culong_t value_mask;
 };
 
 struct XCirculateEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window event;
@@ -771,7 +771,7 @@ struct XCirculateEvent
 struct XCirculateRequestEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window parent;
@@ -782,7 +782,7 @@ struct XCirculateRequestEvent
 struct XPropertyEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -794,7 +794,7 @@ struct XPropertyEvent
 struct XSelectionClearEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -805,7 +805,7 @@ struct XSelectionClearEvent
 struct XSelectionRequestEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window owner;
@@ -819,7 +819,7 @@ struct XSelectionRequestEvent
 struct XSelectionEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window requestor;
@@ -832,7 +832,7 @@ struct XSelectionEvent
 struct XColormapEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -844,13 +844,13 @@ struct XColormapEvent
 union XClientMessageEvent_data{
 	byte b[20];
 	short s[10];
-	Clong l[5];
+	Clong_t l[5];
 	};
 
 struct XClientMessageEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;
@@ -862,7 +862,7 @@ struct XClientMessageEvent
 struct XMappingEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;	/* Display the event was read from */
 	Window window;		/* unused */
@@ -877,7 +877,7 @@ struct XErrorEvent
 	int type;
 	Display *display;	/* Display the event was read from */
 	XID resourceid;		/* resource id */
-	Culong serial;	/* serial number of failed request */
+	Culong_t serial;	/* serial number of failed request */
 	uint error_code;	/* error code of failed request */
 	ubyte request_code;	/* Major op-code of failed request */
 	ubyte minor_code;	/* Minor op-code of failed request */
@@ -886,7 +886,7 @@ struct XErrorEvent
 struct XAnyEvent
 {
 	int type;
-	Culong serial;	/* # of last request processed by server */
+	Culong_t serial;	/* # of last request processed by server */
 	Bool send_event;	/* true if this came from a SendEvent request */
 	Display *display;/* Display the event was read from */
 	Window window;	/* window on which event was requested in event mask */
@@ -956,7 +956,7 @@ struct XCharStruct
 struct XFontProp
 {
     Atom name;
-    Culong card32;
+    Culong_t card32;
 };
 
 struct XFontStruct{
@@ -1405,7 +1405,7 @@ extern XImage *XGetImage(
     int			/* y */,
     uint	/* width */,
     uint	/* height */,
-    Culong	/* plane_mask */,
+    Culong_t	/* plane_mask */,
     ImageFormat	/* format */
 );
 extern XImage *XGetSubImage(
@@ -1415,7 +1415,7 @@ extern XImage *XGetSubImage(
     int			/* y */,
     uint	/* width */,
     uint	/* height */,
-    Culong	/* plane_mask */,
+    Culong_t	/* plane_mask */,
     int			/* format */,
     XImage*		/* dest_image */,
     int			/* dest_x */,
@@ -1529,7 +1529,7 @@ extern Font XLoadFont(
 extern GC XCreateGC(
     Display*		/* display */,
     Drawable		/* d */,
-    Culong		/* valuemask */,
+    Culong_t		/* valuemask */,
     XGCValues*		/* values */
 );
 extern GContext XGContextFromGC(
@@ -1559,8 +1559,8 @@ extern Pixmap XCreatePixmapFromBitmapData(
     byte*		/* data */,
     uint		/* width */,
     uint		/* height */,
-    Culong		/* fg */,
-    Culong		/* bg */,
+    Culong_t		/* fg */,
+    Culong_t		/* bg */,
     uint		/* depth */
 );
 extern Window XCreateSimpleWindow(
@@ -1571,8 +1571,8 @@ extern Window XCreateSimpleWindow(
     uint		/* width */,
     uint		/* height */,
     uint		/* border_width */,
-    Culong		/* border */,
-    Culong		/* background */
+    Culong_t		/* border */,
+    Culong_t		/* background */
 );
 extern Window XGetSelectionOwner(
     Display*	/* display */,
@@ -1646,10 +1646,10 @@ extern KeySym *XGetKeyboardMapping(
 extern KeySym XStringToKeysym(
     char*	/* string */
 );
-extern Clong XMaxRequestSize(
+extern Clong_t XMaxRequestSize(
     Display*		/* display */
 );
-extern Clong XExtendedMaxRequestSize(
+extern Clong_t XExtendedMaxRequestSize(
     Display*		/* display */
 );
 extern char *XResourceManagerString(
@@ -1658,7 +1658,7 @@ extern char *XResourceManagerString(
 extern char *XScreenResourceString(
 	Screen*		/* screen */
 );
-extern Culong XDisplayMotionBufferSize(
+extern Culong_t XDisplayMotionBufferSize(
     Display*		/* display */
 );
 extern VisualID XVisualIDFromVisual(
@@ -1720,25 +1720,25 @@ extern GC XDefaultGC(
 extern GC XDefaultGCOfScreen(
     Screen*			/* screen */
 );
-extern Culong XBlackPixel(
+extern Culong_t XBlackPixel(
     Display*		/* display */,
     int				/* screen_number */
 );
-extern Culong XWhitePixel(
+extern Culong_t XWhitePixel(
     Display*		/* display */,
     int				/* screen_number */
 );
-extern Culong XAllPlanes();
-extern Culong XBlackPixelOfScreen(
+extern Culong_t XAllPlanes();
+extern Culong_t XBlackPixelOfScreen(
     Screen*			/* screen */
 );
-extern Culong XWhitePixelOfScreen(
+extern Culong_t XWhitePixelOfScreen(
     Screen*		/* screen */
 );
-extern Culong XNextRequest(
+extern Culong_t XNextRequest(
     Display*		/* display */
 );
-extern Culong XLastKnownRequestProcessed(
+extern Culong_t XLastKnownRequestProcessed(
     Display*		/* display */
 );
 extern char *XServerVendor(
@@ -1764,7 +1764,7 @@ extern Screen *XScreenOfDisplay(
 extern Screen *XDefaultScreenOfDisplay(
     Display*		/* display */
 );
-extern Clong XEventMaskOfScreen(
+extern Clong_t XEventMaskOfScreen(
     Screen*		/* screen */
 );
 
@@ -1897,9 +1897,9 @@ extern Status XAllocColorCells(
     Display*		/* display */,
     Colormap		/* colormap */,
     Bool	        /* contig */,
-    Culong*	/* plane_masks_return */,
+    Culong_t*	/* plane_masks_return */,
     uint	/* nplanes */,
-    Culong*	/* pixels_return */,
+    Culong_t*	/* pixels_return */,
     uint 	/* npixels */
 );
 
@@ -1907,14 +1907,14 @@ extern Status XAllocColorPlanes(
     Display*		/* display */,
     Colormap		/* colormap */,
     Bool		/* contig */,
-    Culong*	/* pixels_return */,
+    Culong_t*	/* pixels_return */,
     int			/* ncolors */,
     int			/* nreds */,
     int			/* ngreens */,
     int			/* nblues */,
-    Culong*	/* rmask_return */,
-    Culong*	/* gmask_return */,
-    Culong*	/* bmask_return */
+    Culong_t*	/* rmask_return */,
+    Culong_t*	/* gmask_return */,
+    Culong_t*	/* bmask_return */
 );
 
 extern Status XAllocNamedColor(
@@ -2148,7 +2148,7 @@ extern int XCopyPlane(
     uint			/* height */,
     int				/* dest_x */,
     int				/* dest_y */,
-    Culong			/* plane */
+    Culong_t			/* plane */
 );
 
 extern int XDefaultDepth(
@@ -2461,9 +2461,9 @@ extern int XFreeColormap(
 extern int XFreeColors(
     Display*	/* display */,
     Colormap	/* colormap */,
-    Culong*		/* pixels */,
+    Culong_t*		/* pixels */,
     int			/* npixels */,
-    Culong		/* planes */
+    Culong_t		/* planes */
 );
 
 extern int XFreeCursor(
@@ -2543,7 +2543,7 @@ extern int XGetErrorText(
 extern Bool XGetFontProperty(
     XFontStruct*/* font_struct */,
     Atom		/* atom */,
-    Culong*		/* value_return */
+    Culong_t*		/* value_return */
 );
 
 extern Status XGetGCValues(
@@ -2613,14 +2613,14 @@ extern int XGetWindowProperty(
     Display*	/* display */,
     Window		/* w */,
     Atom		/* property */,
-    Culong		/* long_offset */,
-    Culong		/* long_length */,
+    Culong_t		/* long_offset */,
+    Culong_t		/* long_length */,
     Bool		/* delete */,
     Atom		/* req_type */,
     Atom*		/* actual_type_return */,
     int*		/* actual_format_return */,
-    Culong*		/* nitems_return */,
-    Culong*		/* bytes_after_return */,
+    Culong_t*		/* nitems_return */,
+    Culong_t*		/* bytes_after_return */,
     ubyte**		/* prop_return */
 );
 
@@ -3090,7 +3090,7 @@ extern int XSetArcMode(
 extern int XSetBackground(
     Display*	/* display */,
     GC			/* gc */,
-    Culong		/* background */
+    Culong_t		/* background */
 );
 
 extern int XSetClipMask(
@@ -3163,7 +3163,7 @@ extern int XSetFontPath(
 extern int XSetForeground(
     Display*	/* display */,
     GC			/* gc */,
-    Culong		/* foreground */
+    Culong_t		/* foreground */
 );
 
 extern int XSetFunction(
@@ -3208,7 +3208,7 @@ extern int XSetModifierMapping(
 extern int XSetPlaneMask(
     Display*	/* display */,
     GC			/* gc */,
-    Culong		/* plane_mask */
+    Culong_t		/* plane_mask */
 );
 
 extern int XSetPointerMapping(
@@ -3235,10 +3235,10 @@ extern int XSetSelectionOwner(
 extern int XSetState(
     Display*		/* display */,
     GC			/* gc */,
-    Culong	/* foreground */,
-    Culong	/* background */,
+    Culong_t	/* foreground */,
+    Culong_t	/* background */,
     GraphicFunction			/* function */,
-    Culong	/* plane_mask */
+    Culong_t	/* plane_mask */
 );
 
 extern int XSetStipple(
@@ -3269,7 +3269,7 @@ extern int XSetTile(
 extern int XSetWindowBackground(
     Display*		/* display */,
     Window		/* w */,
-    Culong	/* background_pixel */
+    Culong_t	/* background_pixel */
 );
 
 extern int XSetWindowBackgroundPixmap(
@@ -3281,7 +3281,7 @@ extern int XSetWindowBackgroundPixmap(
 extern int XSetWindowBorder(
     Display*		/* display */,
     Window		/* w */,
-    Culong	/* border_pixel */
+    Culong_t	/* border_pixel */
 );
 
 extern int XSetWindowBorderPixmap(
@@ -3967,7 +3967,7 @@ align(1) struct XTextProperty {
 	char *value;	/* property data */
 	Atom encoding;		/* type of property */
 	int format;		/* 8, 16, or 32 */
-	Culong nitems;	/* number of items in value */
+	Culong_t nitems;	/* number of items in value */
 }
 
 struct XSizeHintsAspect {
@@ -3977,7 +3977,7 @@ struct XSizeHintsAspect {
 
 /* Values */
 struct XSizeHints {
-    Clong flags;    /* marks which fields in this structure are defined */
+    Clong_t flags;    /* marks which fields in this structure are defined */
     int x;
 	int y;    /* Obsolete */
     int width;

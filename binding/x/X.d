@@ -18,16 +18,17 @@
 */
 
 module binding.x.X;
-import core.definitions;
+
+import binding.c;
 
 const uint X_PROTOCOL=11;		/* current protocol version */
 const uint X_PROTOCOL_REVISION=0;		/* current minor version */
 
 /* Resources */
-alias Culong XID;
-alias Culong Mask;
-alias Culong VisualID;
-alias Culong Time;
+alias Culong_t XID;
+alias Culong_t Mask;
+alias Culong_t VisualID;
+alias Culong_t Time;
 
 alias XID Atom; //alias needed because of None invariant shared for Atom and XID
 alias XID Window;
@@ -87,7 +88,7 @@ const KeySym NoSymbol=0;
  /* Input Event Masks. Used as event-mask window attribute and as arguments
    to Grab requests.  Not to be confused with event names.  */
 
-enum EventMask:Clong
+enum EventMask:Clong_t
 {
 	NoEventMask				=0,
 	KeyPressMask			=1<<0,
@@ -385,7 +386,7 @@ enum WindowClass:int
 
 /* Window attributes for CreateWindow and ChangeWindowAttributes */
 
-enum WindowAttribute:Culong
+enum WindowAttribute:Culong_t
 {
 	CWBackPixmap		=1<<0,
 	CWBackPixel			=1<<1,
@@ -585,7 +586,7 @@ enum ArcMode:int
 };
 /* GC components: masks used in CreateGC, CopyGC, ChangeGC, OR'ed into
    GC.stateChanges */
-enum GCMask:Culong
+enum GCMask:Culong_t
 {
 	GCFunction			=1<<0,
 	GCPlaneMask			=1<<1,
@@ -684,7 +685,7 @@ enum LedMode:int
 };
 /* masks for ChangeKeyboardControl */
 
-enum KBMask:Culong
+enum KBMask:Culong_t
 {
 	KBKeyClickPercent	=1<<0,
 	KBBellPercent		=1<<1,
