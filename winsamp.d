@@ -161,5 +161,9 @@ static const int REPEATS = 10000;
 int main(string[] args) {
 	//auto app = new MyApp;
 	//app.run();
+	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
+	int[] foo = [1,3,-2,5,3,42];
+	putln(sort([1,3,-2,5,3,42]));
+	putln(sort(foob));
 	return 0;
 }
