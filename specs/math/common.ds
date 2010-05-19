@@ -1,0 +1,67 @@
+module specs.math.common;
+
+import math.common;
+
+describe common {
+	describe abs {
+		it should_work_for_a_negative_byte {
+			byte v = -1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_positive_byte {
+			byte v = 1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_negative_short {
+			short v = -1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_positive_short {
+			short v = 1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_negative_int {
+			int v = -1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_positive_int {
+			int v = 1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_negative_long {
+			long v = -1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_positive_long {
+			long v = 1;
+			should(abs(v) == 1);
+		}
+
+		it should_work_for_a_negative_float {
+			float v = -3.14;
+			should(abs(v) == cast(float)3.14);
+		}
+
+		it should_work_for_a_positive_float {
+			float v = 3.14;
+			should(abs(v) == cast(float)3.14);
+		}
+
+		it should_work_for_a_negative_double {
+			double v = -3.14;
+			should(abs(v) == cast(double)3.14);
+		}
+
+		it should_work_for_a_positive_double {
+			double v = 3.14;
+			should(abs(v) == cast(double)3.14);
+		}
+	}
+}
