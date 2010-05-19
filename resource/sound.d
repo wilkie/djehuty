@@ -27,7 +27,7 @@ import io.console;
 import decoders.audio.decoder;
 import decoders.audio.all;
 
-import math.common;
+import math.sqrt;
 
 // Section: Enums
 

@@ -1,5 +1,33 @@
 module math.mathobject;
 
+// Description: Will resolve to true when the object T inherits or is of type 
+//   MathObject.
+template IsMathObject(T) {
+	static if (T.stringof == "MathObject") {
+		const bool IsMathObject = true;
+	}
+	else static if (is(T : Object)) {
+		const bool IsMathObject = false;
+	}
+	else static if (is(T == class)) {
+		const bool IsMathObject = IsMathObject!(Super!(T));
+	}
+	else {
+		const bool IsMathObject = false;
+	}
+}
+
+// Description: Will resolve to true when the type T can be used as input into
+//   a math function.
+template IsMathType(T) {
+	static if (is(T : creal) || is(T : real) || is(T : double) || is(T : float) || IsIntType!(T) || IsMathObject!(T)) {
+		const bool IsMathType = true;
+	}
+	else {
+		const bool IsMathType = false;
+	}
+}
+
 // this is the root object for classes that want to overload math functionality
 class MathObject {
 

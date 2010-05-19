@@ -12,7 +12,9 @@ import core.string;
 import core.definitions;
 
 // Math common
-import math.common;
+import math.sqrt;
+import math.sin;
+import math.cos;
 import math.mathobject;
 
 import io.console;

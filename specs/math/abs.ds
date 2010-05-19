@@ -1,8 +1,8 @@
-module specs.math.common;
+module specs.math.abs;
 
-import math.common;
+import math.abs;
 
-describe common {
+describe math {
 	describe abs {
 		it should_work_for_a_negative_byte {
 			byte v = -1;
