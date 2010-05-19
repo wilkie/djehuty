@@ -24,7 +24,7 @@ struct Entry {
 }
 
 struct Bucket {
-	Entry[3] entries;
+	Entry[5] entries;
 	ulong usedCount;
 }
 
@@ -57,7 +57,7 @@ template _aaAccess(bool addKey, bool deleteKey) {
 				aa.keyTypeInfo = keyti;
 
 				// Set up the default buckets
-				static const int startingSize = 2048;
+				static const int startingSize = 3000;
 				aa.buckets = new Bucket[startingSize];
 				aa.range = startingSize;
 			}
