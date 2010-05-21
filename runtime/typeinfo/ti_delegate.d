@@ -7,7 +7,7 @@
 
 module runtime.typeinfo.ti_delegate;
 
-class TypeInfo_D : TypeInfo {
+class TypeInfo_Delegate : TypeInfo {
 	hash_t getHash(void *p) {
 		long l = *cast(long *)p;
 

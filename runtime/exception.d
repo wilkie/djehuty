@@ -7,27 +7,14 @@
 
 module runtime.exception;
 
-// Description: This class represents a recoverable failure.
-class Exception : Object {
-	char[] msg;
-
-	// Description: Will construct an Exception with the given descriptive message.
-	this(char[] msg) {
-		this.msg = msg;
-	}
-
-	char[] toString() {
-		return msg;
-	}
-}
+import core.exception;
 
 extern(C):
 
-void onFinalizeError(ClassInfo ci, Exception ex) {
-}
-
+// Description: This function will carefully throw an out of memory exception.
 void onOutOfMemoryError() {
-	throw cast(OutOfMemoryException)cast(void*)OutOfMemoryException.classinfo.init;
+	// Throw this without allocation
+	throw cast(MemoryException.OutOfMemory)cast(void*)MemoryException.OutOfMemory.classinfo.init;
 }
 
 void _d_throw_exception(Object e) {

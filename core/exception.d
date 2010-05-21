@@ -12,32 +12,104 @@ module core.exception;
 
 import core.string;
 import core.definitions;
+/*
+class Exception {
+	this(string msg, string file = "", ulong line = 0) {
+		_msg = msg.dup;
+		_file = file.dup;
+		_line = line;
+	}
 
-template CustomException(char[] name, char[] error, char[] error_more) {
-	const char[] CustomException = `
-		class `~name~` : Exception {
-			this() {
-				super("`~error~`");
-			}
+	string name() {
+		return this.classinfo.name.dup;
+	}
 
-			this(string msg) {
-				super("`~error~error_more~`" ~ msg);
-			}
+	string message() {
+		return _msg.dup;
+	}
+
+	string file() {
+		return _file;
+	}
+
+	ulong line() {
+		return _line;
+	}
+
+	string toString() {
+		return this.name() ~ " caught at " ~ _file ~ "@" ~ toStr(_line) ~ ": " ~ _msg;
+	}
+
+private:
+	char[] _msg;
+	char[] _file;
+	ulong _line;
+}
+*/
+
+// Exceptions for IO
+abstract class IOException : Exception {
+	this(string msg) {
+		super(msg);
+	}
+
+static:
+
+	class CreationFailure : IOException {
+		this(string filename) {
+			super(filename ~ " could not be created.");
 		}
-	`;
+	}
+
+	class ExistenceFailure : IOException {
+		this(string filename) {
+			super(filename ~ " not found.");
+		}
+	}
+
+	class PermissionFailure : IOException {
+		this(string filename) {
+			super(filename ~ " has the wrong permissions for the operation.");
+		}
+	}
 }
 
-// Exceptions for file IO
-
-mixin(CustomException!("FileNotFound", "File Not Found", ": "));
-
-mixin(CustomException!("DirectoryNotFound", "Directory Not Found", ": "));
-
 // Exceptions for data structures
+abstract class DataException : Exception {
+	this(string msg) {
+		super(msg);
+	}
 
-mixin(CustomException!("OutOfElements", "Out of Elements", " in "));
+static:
 
-mixin(CustomException!("OutOfBounds", "Out of Bounds", " in "));
+	class OutOfElements : DataException {
+		this(string objectName) {
+			super("Out of items in " ~ objectName);
+		}
+	}
 
-mixin(CustomException!("ElementNotFound", "Element Not Found", " in "));
+	class OutOfBounds : DataException {
+		this(string objectName) {
+			super("Index out of bounds in " ~ objectName);
+		}
+	}
 
+	class ElementNotFound : DataException {
+		this(string objectName) {
+			super("Element does not exist in " ~ objectName);
+		}
+	}
+}
+
+abstract class MemoryException : Exception {
+	this(string msg) {
+		super(msg);
+	}
+
+static:
+	class OutOfMemory : MemoryException {
+		this() {
+			super("Out of memory");
+		}
+	}
+}

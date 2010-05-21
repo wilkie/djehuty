@@ -161,38 +161,3 @@ int _d_obj_cmp(Object o1, Object o2) {
     return o1.opCmp(o2);
 }
 
-void _d_assert( char[] file, uint line ) {
-    onAssertError( file, line );
-}
-
-void _d_assert_msg( char[] msg, char[] file, uint line ) {
-    onAssertErrorMsg( file, line, msg );
-}
-
-void _d_array_bounds( char[] file, uint line ) {
-    onArrayBoundsError( file, line );
-}
-
-void _d_switch_error( char[] file, uint line ) {
-    onSwitchError( file, line );
-}
-
-private void onAssertError(char[] file, size_t line) {
-	//kprintfln!("Error in {}, line {}: assertion failed.")(file, line);
-	asm { l: hlt; jmp l; }
-}
-
-private void onAssertErrorMsg(char[] file, size_t line, char[] msg) {
-	//kprintfln!("Error in {}, line {}: assertion failed: \"{}\"")(file, line, msg);
-	asm { l: hlt; jmp l; }
-}
-
-private void onArrayBoundsError(char[] file, size_t line) {
-	//kprintfln!("Error in {}, line {}: array index out of bounds.")(file, line);
-	asm { l: hlt; jmp l; }
-}
-
-private void onSwitchError(char[] file, size_t line) {
-	//kprintfln!("Error in {}, line {}: switch has no case or default to handle the switched-upon value.")(file, line);
-	asm { l: hlt; jmp l; }
-}

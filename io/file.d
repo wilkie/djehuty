@@ -9,9 +9,7 @@
 
 module io.file;
 
-import core.stream;
-import core.string;
-import core.definitions;
+import djehuty;
 
 import platform.vars.file;
 
@@ -33,7 +31,7 @@ class File : Stream {
 		bool r = FileCreate(_pfvars, _name);
 
 		if (!r) {
-			throw new Exception("File Cannot be Created");
+			throw new IOException.CreationFailure(filename);
 		}
 
 		_length = 0;
