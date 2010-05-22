@@ -13,7 +13,6 @@ class Timer : Dispatcher {
 	}
 
 	this(ulong interval) {
-		this();
 		_interval = interval;
 	}
 
@@ -23,37 +22,36 @@ class Timer : Dispatcher {
 
 	// Description: This function will set the time interval to periodly call the timerProc() function.
 	// milliseconds: The number of milliseconds to wait before the next timer fire.
-	void setInterval(ulong milliseconds) {
+	void interval(ulong milliseconds) {
 		_interval = milliseconds;
+	}
+
+	ulong interval() {
+		return _interval;
 	}
 
 	// Description: This function will start the timer.
 	void start() {
 		//start the thread
-		if (_started) {
+		if (isRunning()) {
 			stop();
 		}
 
 		_thread = new timer_thread(this);
-
-		_started = true;
 
 		_thread.start();
 	}
 
 	// Description: This function will stop the timer when the timerProc returns.
 	void stop() {
-		if (!_started) {
-			return;
-		}
-
 		_thread._stop = true;
-		_started = false;
 	}
 
 	// Description: This function will return the state of the timer.
 	// Returns: Will return true if the timer is currently in the running state, false otherwise.
-	bool isRunning() { return _started; }
+	bool isRunning() {
+		return (_thread !is null && _thread._stop == false);
+	}
 
 	// Description: This function is called on every timer fire. It's normal operation is to call the callback provided by the callback property.  One can override to provide a class based timer procedure.
 	// Returns: If true is returned, the timer is stopped. Otherwise the timer will fire again after the interval depletes. Note: the time it takes to run the function is not accounted for in the interval at this time.
@@ -63,50 +61,31 @@ class Timer : Dispatcher {
 
 protected:
 
-	class timer_thread : Thread {
-		this() {
-			_inCall = new Semaphore(1);
-		}
-
-		this(Timer t) {
-			_timer = t;
-			this();
-		}
-
-		override void pleaseStop() {
-			if (!_stop) {
-				_timer.stop();
-			}
-			_stop = true;
-		}
-
-		override void stop() {
-			pleaseStop();
-			super.stop();
-		}
-
-		override void run() {
-			while (!_stop && _inited) {
-				sleep(_timer._interval);
-
-				_inCall.down();
-				if (_stop || !_inited) { break; }
-				if (_timer.fire() == false) { break; }
-				_inCall.up();
-			}
-
-			_stop = true;
-			_inCall.up();
-		}
-
-		bool _stop;
-		Timer _timer;
-		Semaphore _inCall;
-	}
-
-	bool _started = false;
 	ulong _interval = 0;
 
 	timer_thread _thread;
 }
+
+private class timer_thread : Thread {
+	this(Timer t) {
+		_timer = t;
+	}
+
+	override void run() {
+		while (_stop == false) {
+			sleep(_timer._interval);
+
+			if (_stop == true) { break; }
+			_timer.raiseSignal(1);
+
+//			if (_timer.fire() == false) { break; }
+		}
+
+		_stop = true;
+	}
+
+	bool _stop;
+	Timer _timer;
+}
+
 

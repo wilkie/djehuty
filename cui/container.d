@@ -84,7 +84,6 @@ class CuiContainer : CuiWidget {
 		}
 
 		// Should clear the rest of the space not used by a widget
-		static string spaces = "                                                                                                                  ";
 
 		Console.backcolor = Color.Gray;
 		for (uint i; i < this.height; i++) {
@@ -92,14 +91,7 @@ class CuiContainer : CuiWidget {
 			io.console.Console.backcolor = Color.Black;
 			uint numSpaces = this.width;
 
-			do {
-				uint pad = spaces.length;
-				if (numSpaces < pad) {
-					pad = numSpaces;
-				}
-				io.console.Console.put(spaces[0..pad]);
-				numSpaces -= pad;
-			} while (numSpaces > 0)
+			io.console.Console.put(" ".times(numSpaces));
 		}
 		io.console.Console.clipRestore();
 	}

@@ -11,9 +11,8 @@
 module core.exception;
 
 import core.string;
-import core.definitions;
-/*
-class Exception {
+
+class Exception : Object {
 	this(string msg, string file = "", ulong line = 0) {
 		_msg = msg.dup;
 		_file = file.dup;
@@ -24,7 +23,7 @@ class Exception {
 		return this.classinfo.name.dup;
 	}
 
-	string message() {
+	string msg() {
 		return _msg.dup;
 	}
 
@@ -45,7 +44,6 @@ private:
 	char[] _file;
 	ulong _line;
 }
-*/
 
 // Exceptions for IO
 abstract class IOException : Exception {
@@ -76,8 +74,8 @@ static:
 
 // Exceptions for data structures
 abstract class DataException : Exception {
-	this(string msg) {
-		super(msg);
+	this(string msg, string file = "", ulong line = 0) {
+		super(msg, file, line);
 	}
 
 static:
@@ -89,8 +87,8 @@ static:
 	}
 
 	class OutOfBounds : DataException {
-		this(string objectName) {
-			super("Index out of bounds in " ~ objectName);
+		this(string objectName, string file = "", ulong line = 0) {
+			super("Index out of bounds in " ~ objectName, file, line);
 		}
 	}
 

@@ -55,215 +55,17 @@ import cui.listbox;
 
 import math.fixed;
 import math.currency;
+import math.common;
 import math.integer;
 import parsing.d.parser;
 
 import networking.ftp;
-
-private template _switch_string(T) {
-	int _switch_string(T[][] table, T[] compare) {
-		if (table.length == 0) {
-			return -1;
-		}
-
-		TypeInfo ti = typeid(T[]);
-		// Binary search the table
-		size_t min = 0;
-		size_t max = table.length;
-
-		// Current comparing position
-		size_t cur;
-
-		// Temp for compare value
-		int cmp;
-
-		while(max > min) {
-			cur = (max + min) / 2;
-			cmp = ti.compare(&table[cur], &compare);
-
-			if (cmp == 0) {
-				return cur;
-			}
-			else if (cmp > 0) {
-				max = cur;
-			}		
-			else {
-				min = cur + 1;
-			}
-		}
-
-		return -1;
-	}
-}
-
 
 import spec.specification;
 
 import data.queue2;
 
 class MyConsoleApp : Application {
-	static this() { new MyConsoleApp(); }
-
-	override void onApplicationStart() {
-		q = new Queue2!(string);
-		Thread t = Thread.current;
-
-		ulong a, b, c;
-		a = 4;
-		b = 0b10011101_10110011_11100011_11011010;
-		c = 5;
-		Console.putln("{1}, {0}, {1}, {0:X}, {} {} {X8} {00.0000}".format(12, 11, 13, 3.4));
-		Console.putln(a,b,c);
-		Console.putln(Atomic.compareExchange(a,b,c));
-		Console.putln(a,b,c);
-
-		float d,e,f;
-		d = 1.0;
-		e = 1.1;
-		f = 2.234;
-		Console.putln(d,e,f);
-		Console.putln(Atomic.compareExchange(d,e,f));
-		Console.putln(d,e,f);
-
-		void* A=null;
-		void* B=cast(void*)0xfe;
-		void* C=cast(void*)0xff;
-
-		Console.putln(A,B,C);
-		Console.putln(Atomic.compareExchange(A,B,C));
-		Console.putln(A,B,C);
-
-		short g,h,i;
-		g = 3;
-		h = 4;
-		i = 4;		
-		Console.putln(g,h,i);
-		Console.putln(Atomic.compareExchange(g,h,i));
-		Console.putln(g,h,i);
-
-		Console.putln([1,2,3,4].rotate(2));
-		Console.putln("hello"c.dup.reverse);
-		/*Console.putln("he\u0364llo"c.dup.reverse);
-		Console.putln("hlle\u0364o"c.dup.reverse);
-		Console.putln("he\u0364po"c.dup.reverse);
-		Console.putln("he\u0364llo"w.dup.reverse);
-		Console.putln("he\u0364llo"d.dup.reverse);
-		Console.putln("he\u0364llo"d.dup.reverse());*/
-		Console.putln([1,2,3,4,5,6,7,8].dup.reverse());
-		Console.putln(new Fixed(3.5));
-		//Atomic.exchange(a,6);
-		Console.putln(a,b,c);
-		Console.putln("{c}".format(1500.42));
-		Locale.id = LocaleId.French_FR;
-		Console.putln("{c}".format(1500.42));
-		Console.putln(new Currency(150042,2));
-		t = new Thread(&foo);
-		t.start();
-
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		t = new Thread(&foo);
-		t.start();
-		Timer tmr = new Timer(250);
-		push(tmr);
-		tmr.start();
-		//while(freak < 9) {
-		//}
-		Console.forecolor = Color.White;
-		Console.putln("White");
-		Console.forecolor = Color.Red;
-		Console.putln("Red");
-		Console.forecolor = Color.Green;
-		Console.putln("Green");
-		Console.forecolor = Color.Blue;
-		Console.putln("Blue");
-		Console.forecolor = Color.Yellow;
-		Console.putln("Yellow");
-		Console.forecolor = Color.Magenta;
-		Console.putln("Magenta");
-		Console.forecolor = Color.Cyan;
-		Console.putln("Cyan");
-		Console.forecolor = Color.Gray;
-		Console.putln("Gray");
-		Console.forecolor = Color.DarkGray;
-		Console.putln("DarkGray");
-		Console.forecolor = Color.DarkRed;
-		Console.putln("DarkRed");
-		Console.forecolor = Color.DarkGreen;
-		Console.putln("DarkGreen");
-		Console.forecolor = Color.DarkBlue;
-		Console.putln("DarkBlue");
-		Console.forecolor = Color.DarkYellow;
-		Console.putln("DarkYellow");
-		Console.forecolor = Color.DarkMagenta;
-		Console.putln("DarkMagenta");
-		Console.forecolor = Color.DarkCyan;
-		Console.putln("DarkCyan");
-		Console.forecolor = Color.Black;
-		Console.putln("Black");
-		Console.forecolor = Color.Gray;
-		ulong foo = 45;
-		Console.putln(foo);
-		Atomic.add(foo, 45);
-		Console.putln(foo);
-		Console.putln(q);
-		
-		Console.putln([1,2,3,4].rotate(-1));
-
-		foreach_reverse(dchar d; "he\u0364llo"c) {
-			Console.putln(d);
-		}
-
-		Console.putln([3,2,1].sort);	
-		Console.putln([[1,2],[2,3],[3],[1],[0]].sort);
-
-		typedef int oneint = 3;
-		oneint fb;
-		oneint[] oneints = new oneint[10];
-		//Console.putln(oneints[0]);
-		//Console.putln(fb);
-
-		dstring[] fuzz = [
-			"abc",
-			"zzt"
-			"hello",
-		];
-
-		string foobe = "hello";
-
-		switch(foobe) {
-			case "abc":
-			case "zzt":
-				break;
-			case "hello":
-				Console.putln("yay");
-				break;
-			default:
-				break;
-		}
-
-		Console.putln(_switch_string(fuzz, "hello"d));
-
-		for(;;){}
-	}
-
-	override bool onSignal(Dispatcher dsp, uint signal) {
-		Console.putln("fire");
-		return true;
-	}
-
 	void foo(bool bar) {
 		Atomic.increment(fudge);
 		while(fudge < 9) {
@@ -280,4 +82,88 @@ class MyConsoleApp : Application {
 	ulong fudge;
 	ulong freak;
 	Queue2!(string) q;
+}
+
+import binding.c;
+
+class A {
+	this(int foo = 5) {
+		_foo = foo;
+		printf("class constructor %d\n", foo);
+	}
+
+	int foobar() {
+		return _foo;
+	}
+private:
+	int _foo;
+}
+
+
+import spec.modulespecification;
+
+import data.queue;
+
+class MyWindow : CuiWindow {
+	this() {
+		push (label = new CuiLabel(2,3, 10, "hello"));
+		tmr = new Timer;
+		tmr.interval = 10000;
+		push(tmr);
+		tmr.start;
+	}
+
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		if (dsp !is tmr) {
+			return false;
+		}
+
+		static int i = 0;
+		i++;
+		if (signal == 1) {
+			label.text = "fuck!" ~ toStr(i);
+		}
+		if (label.text.length > 4) {
+		redraw();
+			return true;
+		}
+		label.text = toStr(i);
+		redraw();
+		return true;
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.ctrl && key.code == Key.Q) {
+			Djehuty.app.exit(0);
+		}
+
+		tmr.stop();
+		tmr.start();
+	}
+
+	Timer tmr;
+	CuiLabel label;
+}
+
+class MyApp : CuiApplication {
+	override void onApplicationStart() {
+		push(new MyWindow);
+	}
+}
+
+void foo(bool stop) {
+	Console.putln("hello");
+	Console.putln("what is up?");
+}
+
+import math.random;
+static const int REPEATS = 10000;
+int main(string[] args) {
+	//auto app = new MyApp;
+	//app.run();
+	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
+	int[] foo = [1,3,-2,5,3,42];
+	putln(sort([1,3,-2,5,3,42]));
+	putln(sort(foob));
+	return 0;
 }

@@ -60,9 +60,6 @@ package:
 			throw new Exception("Framework Already Started");
 		}
 
-		// Constitute the main thread class
-		ThreadModuleInit();
-
 		// Check to make sure the app provided a suitable class to use
 		if (app is null) {
 			throw new Exception("No Application Class");
@@ -74,17 +71,6 @@ package:
 	}
 
 	void end(uint code = 0) {
-		// Tell all running threads that they should end to allow shutdown to commense
-		if (_threads !is null) {
-			_threadRegisterSemaphore.down();
-
-			foreach(th; _threads) {
-				th.pleaseStop();
-			}
-
-			_threadRegisterSemaphore.up();
-		}
-
 		// Reset colors to something sane
 		Console.forecolor = Color.White;
 		Console.backcolor = Color.Black;
@@ -96,43 +82,5 @@ package:
 
 	bool _hasStarted = false;
 
-	Thread[] _threads;
-
-	Semaphore _threadRegisterSemaphore;
-
 	Application app;
-}
-
-void RegisterThread(ref Thread thread) {
-	if (Djehuty._threadRegisterSemaphore is null) {
-		Djehuty._threadRegisterSemaphore = new Semaphore(1);
-	}
-
-	Djehuty._threadRegisterSemaphore.down();
-	Djehuty._threads ~= thread;
-	Djehuty._threadRegisterSemaphore.up();
-}
-
-void UnregisterThread(ref Thread thread)
-{
-	Djehuty._threadRegisterSemaphore.down();
-
-	if (Djehuty._threads !is null) {
-		foreach(i, th; Djehuty._threads) {
-			if (th is thread) {
-				if (Djehuty._threads.length == 1) {
-					Djehuty._threads = null;
-				}
-				else if (i >= Djehuty._threads.length - 1) {
-					Djehuty._threads = Djehuty._threads[0..i];
-				}
-				else {
-					Djehuty._threads = Djehuty._threads[0..i] ~ Djehuty._threads[i+1..$];
-				}
-				break;
-			}
-		}
-	}
-
-	Djehuty._threadRegisterSemaphore.up();
 }

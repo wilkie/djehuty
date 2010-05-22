@@ -12,110 +12,40 @@ module core.color;
 import platform.definitions;
 
 import core.definitions;
-import core.parameters;
 
 import core.util;
-
-// Color
-
-
-
-static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-	alias ubyte ColorComponent;
-	alias uint ColorValue;
-}
-else static if (Colorbpp == Parameter_Colorbpp.Color16bpp) {
-	alias ushort ColorComponent;
-	alias ulong ColorValue;
-}
-else {
-	alias ubyte ColorComponent;
-	alias uint ColorValue;
-	pragma(msg, "WARNING: Colorbpp parameter is not set!");
-}
-
-static if (ColorType == Parameter_ColorType.ColorRGBA) {
-	align(1) struct _comps {
-		ColorComponent r;
-		ColorComponent g;
-		ColorComponent b;
-		ColorComponent a;
-	}
-}
-else static if (ColorType == Parameter_ColorType.ColorBGRA) {
-	align(1) struct _comps{
-		ColorComponent b;
-		ColorComponent g;
-		ColorComponent r;
-		ColorComponent a;
-	}
-}
-else static if (ColorType == Parameter_ColorType.ColorABGR) {
-	align(1) struct _comps {
-		ColorComponent a;
-		ColorComponent b;
-		ColorComponent g;
-		ColorComponent r;
-	}
-}
-else static if (ColorType == Parameter_ColorType.ColorARGB) {
-	align(1) struct _comps {
-		ColorComponent a;
-		ColorComponent r;
-		ColorComponent g;
-		ColorComponent b;
-	}
-}
-else {
-	align(1) struct _comps {
-		ColorComponent r;
-		ColorComponent g;
-		ColorComponent b;
-		ColorComponent a;
-	}
-	pragma(msg, "WARNING: ColorType parameter is not set!");
-}
-
-
-// a small function to convert an 8bpp value into
-// the native bits per pixel (which is either 8bpp or 16bpp)
-template _8toNativebpp(double comp) {
-	const ColorComponent _8toNativebpp = cast(ColorComponent)(comp * cast(double)((1 << (ColorComponent.sizeof*8)) - 1));
-}
 
 // Section: Types
 
 // Description: This abstracts a color type.  Internally, the structure is different for each platform depending on the native component ordering and the bits per pixel for the platform.
-union Color {
+struct Color {
 public:
 
 	// -- Predefined values
 
 	// Description: Black!
-	static const Color Black 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Black 		= { _red: 0.0, _green: 0.0, _blue: 0.0, _alpha: 1.0 };
 
-	static const Color Green		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color Red		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color Blue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Green		= { _red: 0.0, _green: 1.0, _blue: 0.0, _alpha: 1.0 };
+	static const Color Red			= { _red: 1.0, _green: 0.0, _blue: 0.0, _alpha: 1.0 };
+	static const Color Blue 		= { _red: 0.0, _green: 0.0, _blue: 1.0, _alpha: 1.0 };
 
-	static const Color Magenta 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
-	static const Color Yellow 	= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color Cyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
+	static const Color Magenta 		= { _red: 1.0, _green: 0.0, _blue: 1.0, _alpha: 1.0 };
+	static const Color Yellow 		= { _red: 1.0, _green: 1.0, _blue: 0.0, _alpha: 1.0 };
+	static const Color Cyan 		= { _red: 0.0, _green: 1.0, _blue: 1.0, _alpha: 1.0 };
 
-	static const Color DarkGreen		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color DarkRed		= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color DarkBlue 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkGreen	= { _red: 0.0, _green: 0.5, _blue: 0.0, _alpha: 1.0 };
+	static const Color DarkRed		= { _red: 0.5, _green: 0.0, _blue: 0.0, _alpha: 1.0 };
+	static const Color DarkBlue 	= { _red: 0.0, _green: 0.0, _blue: 0.5, _alpha: 1.0 };
 
-	static const Color DarkMagenta 	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.0), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
-	static const Color DarkYellow 	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.0), a: _8toNativebpp!(1.0) } } };
-	static const Color DarkCyan 		= { _internal: { components: {r: _8toNativebpp!(0.0), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkMagenta 	= { _red: 0.5, _green: 0.0, _blue: 0.5, _alpha: 1.0 };
+	static const Color DarkYellow 	= { _red: 0.5, _green: 0.5, _blue: 0.0, _alpha: 1.0 };
+	static const Color DarkCyan 	= { _red: 0.0, _green: 0.5, _blue: 0.5, _alpha: 1.0 };
 
-	static const Color DarkGray	= { _internal: { components: {r: _8toNativebpp!(0.5), g: _8toNativebpp!(0.5), b: _8toNativebpp!(0.5), a: _8toNativebpp!(1.0) } } };
-	static const Color Gray 		= { _internal: { components: {r: _8toNativebpp!(0.75), g: _8toNativebpp!(0.75), b: _8toNativebpp!(0.75), a: _8toNativebpp!(1.0) } } };
+	static const Color DarkGray		= { _red: 0.5, _green: 0.5, _blue: 0.5, _alpha: 1.0 };
+	static const Color Gray 		= { _red: 0.8, _green: 0.8, _blue: 0.8, _alpha: 1.0 };
 
-	static const Color White 		= { _internal: { components: {r: _8toNativebpp!(1.0), g: _8toNativebpp!(1.0), b: _8toNativebpp!(1.0), a: _8toNativebpp!(1.0) } } };
-
-	// --
+	static const Color White 		= { _red: 1.0, _green: 1.0, _blue: 1.0, _alpha: 1.0 };
 
 	// Description: This function will set the color given the red, green, blue, and alpha components.
 	static Color fromRGBA(double r, double g, double b, double a) {
@@ -158,93 +88,51 @@ public:
 	}
 
 	double blue() {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return cast(double)_internal.components.b / cast(double)0xFF;
-		}
-		else {
-			return cast(double)_internal.components.b / cast(double)0xFFFF;
-		}
+		return _blue;
 	}
 
 	void blue(double val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.b = cast(ubyte)(0xffp0 * val);
-		}
-		else {
-			_internal.components.b = cast(ubyte)(0xffffp0 * val);
-		}
+		_blue = val;
+	}
+
+	void blue(ubyte val) {
+		_blue = cast(double)val/cast(double)ubyte.max;
 	}
 
 	double green() {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return cast(double)_internal.components.g / cast(double)0xFF;
-		}
-		else {
-			return cast(double)_internal.components.g / cast(double)0xFFFF;
-		}
+		return _green;
 	}
 
 	void green(ubyte val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.g = val;
-		}
-		else {
-			_internal.components.g = (cast(double)val / cast(double)0xFF) * 0xFFFF;
-		}
+		_green = cast(double)val / cast(double)ubyte.max;
 	}
 
 	void green(double val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.g = cast(ubyte)(0xffp0 * val);
-		}
-		else {
-			_internal.components.g = cast(ubyte)(0xffffp0 * val);
-		}
+		_green = val;
 	}
 
 	double red() {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return cast(double)_internal.components.r / cast(double)0xFF;
-		}
-		else {
-			return cast(double)_internal.components.r / cast(double)0xFFFF;
-		}
+		return _red;
 	}
 
 	void red(ubyte val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.r = val;
-		}
-		else {
-			_internal.components.r = (cast(double)val / cast(double)0xFF) * 0xFFFF;
-		}
+		_red = cast(double)val/cast(double)ubyte.max;
 	}
 
 	void red(double val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.r = cast(ubyte)(0xffp0 * val);
-		}
-		else {
-			_internal.components.r = cast(ubyte)(0xffffp0 * val);
-		}
+		_red = val;
 	}
 
 	double alpha() {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			return cast(double)_internal.components.a / cast(double)0xFF;
-		}
-		else {
-			return cast(double)_internal.components.a / cast(double)0xFFFF;
-		}
+		return _alpha;
 	}
 
 	void alpha(double val) {
-		static if (Colorbpp == Parameter_Colorbpp.Color8bpp) {
-			_internal.components.a = cast(ubyte)(0xffp0 * val);
-		}
-		else {
-			_internal.components.a = cast(ubyte)(0xffffp0 * val);
-		}
+		_alpha = val;
+	}
+
+	void alpha(ubyte val) {
+		_alpha = cast(double)val / cast(double)ubyte.max;
 	}
 
 	void hue(double val) {
@@ -298,19 +186,12 @@ public:
 		return _lum;
 	}
 
-	ColorValue value() {
-		return _internal.clr;
-	}
-
 private:
 
-	union internal {
-		_comps components;
-
-		ColorValue clr;
-	}
-
-	internal _internal;
+	double _red;
+	double _green;
+	double _blue;
+	double _alpha;
 
 	// cache HSL values
 	bool _hslValid;

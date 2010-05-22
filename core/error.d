@@ -10,7 +10,7 @@
 
 module core.error;
 
-import core.definitions;
+import core.exception;
 
 // Description: This is for non irrecoverable failure.
 class Error : Exception {
@@ -40,10 +40,22 @@ static:
 		}
 	}
 
+	class CyclicDependency : RuntimeError {
+		this(string moduleNameA, string moduleNameB) {
+			super("Cyclic Dependency detected between " ~ moduleNameA ~ " and " ~ moduleNameB, "", 0);
+		}
+	}
+
 	// Description: This Error is thrown when a switch statement does not have a default and there is no case available.
 	class NoDefaultCase : RuntimeError {
 		this(string file, ulong line) {
 			super("Switch has no default",file,line);
 		}
+	}
+
+	class NoCompare : RuntimeError {
+		this(string className) {
+			super("Class " ~ className ~ " needs an opCmp.", "", 0);
+		}	
 	}
 }

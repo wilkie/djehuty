@@ -2,14 +2,6 @@ module synch.thread;
 
 import gui.window;
 
-// Awww... my only runtime dependency
-version(Tango) {
-	import Tango = tango.core.Thread;
-}
-else {
-	import Phobos = std.thread;
-}
-
 import platform.vars.thread;
 
 import scaffold.thread;
@@ -30,8 +22,13 @@ class Thread {
 
 	// Description: Will create a normal thread that does not have any external callback functions.
 	this() {
-		stdThread = new overrideThread();
-		stdThread.thread = this;
+		// Check for creating thread
+		Thread callee = Thread.current();
+
+		if (callee is null) {
+			// We do not know this thread... add it
+			threadById[ThreadIdentifier()] = this;
+		}
 
 		startTime = time = System.time;
 	}
@@ -41,9 +38,6 @@ class Thread {
 		_thread_callback = callback;
 		_thread_f_callback = null;
 
-		stdThread = new overrideThread();
-		stdThread.thread = this;
-
 		startTime = time = System.time;
 	}
 
@@ -52,15 +46,12 @@ class Thread {
 		_thread_f_callback = callback;
 		_thread_callback = null;
 
-		stdThread = new overrideThread();
-		stdThread.thread = this;
+		startTime = time = System.time;
 	}
 
 	~this() {
 		stop();
 	}
-
-	// the common function for the thread
 
 	// Description: This will be called upon execution of the thread.  Normally, it will call the delegate, but if overriden, you can provide a function within the class to use as the execution space.
 	void run() {
@@ -88,48 +79,32 @@ class Thread {
 		_thread_callback = null;
 	}
 
-	// Description: This function will tell whether or not the current thread being executed is the thread created via this class.
-	// Returns: Will return true when this thread is the current thread executing and false otherwise.
-	bool isCurrentThread() {
-		if (_inited) {
-			return this is this.current(); //return ThreadIsCurrent(_pfvars);
-		}
-
-		return false;
-	}
-
 	// Description: This function will yield the thread for a certain amount of time.
 	// milliseconds: The number of milliseconds to yield.
-	void sleep(ulong milliseconds) {
+	static void sleep(ulong milliseconds) {
 		// we are given a long for length, windows only has an int function
-		if (_inited) {
-			ThreadSleep(_pfvars, milliseconds);
-		}
+		ThreadSleep(milliseconds);
+	}
+
+	// Description: This function will yield the thread.
+	static void yield() {
+		ThreadYield();
 	}
 
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.
 	void start() {
 		if (!_inited) {
-			RegisterThread(this);
-			//ThreadStart(_pfvars, this);
+			_inited = true;
+			_id = ThreadStart(_pfvars, this, &end);
 
 			startTime = time = System.time;
-
-			if (stdThread is null) {
-				stdThread = new overrideThread();
-			}
-
-			_inited = true;
-			stdThread.start();
 		}
 	}
 
 	// Description: This function will stop the thread prematurely.
 	void stop() {
 		if (_inited) {
-			//ThreadStop(_pfvars);
-			stdThread = null;
-			UnregisterThread(this);
+			ThreadStop(_pfvars);
 		}
 		_inited = false;
 	}
@@ -157,37 +132,27 @@ class Thread {
 	static Thread current() {
 		Thread ret;
 
-		version(LDC) {
-			if (Tango.Thread.getThis() in threadById) {
-				ret = threadById[Tango.Thread.getThis()];
-			}
-		}
-		else {
-			if (Phobos.Thread.getThis() in threadById) {
-				ret = threadById[Phobos.Thread.getThis()];
-			}
+		uint curID = ThreadIdentifier();
+
+		if (curID in threadById) {
+			return threadById[curID];
 		}
 
-		if (ret is null) {
-		}
-
-		return ret;
+		return null;
 	}
 
 protected:
 
+	void end() {
+		threadById[_id] = null;
+		_inited = false;
+	}
+
 	void delegate (bool) _thread_callback = null;
 	void function (bool) _thread_f_callback = null;
 
-	int _threadProc() {
-		run();
-
-		stdThread = null;
-
-		return 0;
-	}
-
 	bool _inited;
+	int _id;
 
 	long startTime;
 	long time;
@@ -196,100 +161,7 @@ protected:
 
 	ThreadPlatformVars _pfvars;
 
-	overrideThread stdThread;
-
-	version(GNU)
-	{
-	}
-	version(LDC)
-	{
-		alias Tango.Thread RuntimeThread;
-		class overrideThread : Tango.Thread
-		{
-			Thread thread;
-			RuntimeThread runtimeThread;
-
-			this() {
-				super(&run);
-			}
-
-			void run()
-			{
-				threadById[Tango.Thread.getThis()] = thread;
-
-				try {
-					thread.run();
-				}
-				catch (Object o) {
-					// Catch any unhandled exceptions
-					Debugger.raiseException(cast(Exception)o, thread.wnd, thread);
-				}
-
-				stdThread = null;
-
-				UnregisterThread(thread);
-
-				return;
-			}
-		}
-	}
-	else
-	{
-		alias Phobos.Thread RuntimeThread;
-		class overrideThread
-		{
-			Thread thread;
-			RuntimeThread runtimeThread;
-
-			this() {
-				runtimeThread = new Phobos.Thread(&run);
-			}
-
-			void start() {
-				runtimeThread.start();
-			}
-
-			int run() {
-				threadById[Phobos.Thread.getThis()] = thread;
-
-				try {
-					thread.run();
-				}
-				catch (Object o) {
-					// Catch any unhandled exceptions
-					Debugger.raiseException(cast(Exception)o, thread.wnd, thread);
-				}
-
-				stdThread = null;
-
-				UnregisterThread(thread);
-
-				return 0;
-			}
-		}
-	}
-
-	static Thread[RuntimeThread] threadById;
-}
-
-void ThreadModuleInit() {
-
-	// create a Thread for the main thread
-	Thread mainThread = new Thread();
-	mainThread._inited = true;
-
-	version(Tango) {
-		mainThread.stdThread.runtimeThread = Tango.Thread.getThis();
-	}
-	else {
-		mainThread.stdThread.runtimeThread = Phobos.Thread.getThis();
-	}
-
-	Thread.threadById[mainThread.stdThread.runtimeThread] = mainThread;
-}
-
-void ThreadUninit(ref Thread t) {
-	t._inited = false;
+	static Thread[uint] threadById;
 }
 
 void ThreadSetWindow(ref Thread t, Window w) {

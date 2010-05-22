@@ -14,6 +14,8 @@ import spec.logic;
 
 import djehuty;
 
+import io.console;
+
 class ItemSpecification {
 
 	this(string name) {
@@ -32,7 +34,7 @@ class ItemSpecification {
 	// Returns: When the test is successful, it returns true. It returns false otherwise.
 	bool test(string name) {
 		if (!(name in _tests)) {
-			throw new Exception("Unknown Test");
+			throw new Exception("Unknown Test::" ~ name);
 		}
 		it ret = _tests[name]();
 		return ret == it.does;
@@ -44,6 +46,7 @@ class ItemSpecification {
 
 	int opApply(int delegate(ref string) loopBody) {
 		foreach(test; _tests.keys) {
+//		Console.putln(".",test);
 			if (loopBody(test)) {
 				return 1;
 			}

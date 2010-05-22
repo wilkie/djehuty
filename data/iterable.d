@@ -2,6 +2,7 @@ module data.iterable;
 
 import djehuty;
 import io.console;
+import math.random;
 
 // Description: This template resolves to true when the type T is
 //   either an array or a class that inherits from Iterable.
@@ -96,6 +97,15 @@ template IterableType(T) {
 	}
 	else {
 		alias T IterableType;
+	}
+}
+
+template IterableReturn(T) {
+	static if (IsArray!(T)) {
+		alias IterableType!(T)[] IterableReturn;
+	}
+	else {
+		alias T IterableReturn;
 	}
 }
 
@@ -349,7 +359,7 @@ template member(T, S) {
 	T member(S value, T list) {
 		foreach(size_t i, S item; list) {
 			if (value == item) {
-				return cast(T)(list[i..list.length]);
+				return list[i..list.length];
 			}
 		}
 		return null;
@@ -682,7 +692,7 @@ template rotate(T) {
 // Returns: Simply returns the reference to the input.
 template reverse(T) {
 	static assert(IsIterable!(T), "reverse: " ~ T.stringof ~ " is not iterable.");
-	IterableType!(T)[] reverse(T list) {
+	IterableReturn!(T) reverse(T list) {
 		static if (IsCharType!(IterableType!(T))) {
 			// We are reversing a unicode string
 			return unicode_reverse(list);
@@ -825,4 +835,90 @@ private template unicode_reverse(T) {
 	}
 }
 
+// Description: This function will sort a list in place.
+// array: The array to sort.
+template sort(T) {
+	static assert(IsIterable!(T), "sort: " ~ T.stringof ~ " is not iterable.");
+	IterableReturn!(T) sort(T array, bool ascending = true) {
+		if (ascending) {
+			_sort!(T, true)(array, 0, array.length, new Random());
+		}
+		else {
+			_sort!(T, false)(array, 0, array.length, new Random());
+		}
+		return array;
+	}
+}
 
+private template _sort(T, bool ascending) {
+	void _sort(T array, size_t start, size_t end, Random random) {
+		if (array is null) {
+			return;
+		}
+
+		size_t length = end - start;
+
+		// Base case
+		if (length < 2) {
+			return;
+		}
+
+		// Select pivot
+		size_t element = start + cast(size_t)random.nextLong(length);
+
+		size_t last = end - 1;
+		// compare array[i..i+size] to array[element..element+size]
+		// if < and i < element
+		//    Just continue (this is normal)
+		// if < and i > element
+		//    Swap i and element ('i' can only be the next element, that is, element+size)
+		// if > and end == element
+		//    Swap i and element (This will place element to the left of 'i'), decrement end
+		// if > and end > element
+		//    Swap i with end, decrement end (this is normal)
+		for(size_t idx = start; idx <= last; idx++) {
+			if (idx == element) {
+				continue;
+			}
+
+			IterableType!(T) a = array[element];
+			IterableType!(T) b = array[idx];
+			int cmp = typeid(IterableType!(T)).compare(&a,&b);
+			if ((ascending && cmp > 0) || (!ascending && cmp < 0)) {
+				// array[idx] < array[element]
+				if (idx > element) {
+					// swap with element
+					IterableType!(T) tmp = array[idx];
+					array[idx] = array[element];
+					array[element] = tmp;
+
+					element = idx;
+				}
+			}
+			else if ((ascending && cmp < 0) || (!ascending && cmp > 0)) {
+				if (last > element) {
+					if (last != idx) {
+						// swap idx and last 
+						IterableType!(T) tmp = array[idx];
+						array[idx] = array[last];
+						array[last] = tmp;
+					}
+					// we need to compare with the item at last 
+					idx--;
+				}
+				else {
+					// swap with element
+					IterableType!(T) tmp = array[idx];
+					array[idx] = array[element];
+					array[element] = tmp;
+
+					element = idx;
+				}
+				last--;
+			}
+		}
+
+		_sort!(T, ascending)(array, start, element, random);
+		_sort!(T, ascending)(array, element+1, end, random);
+	}
+}

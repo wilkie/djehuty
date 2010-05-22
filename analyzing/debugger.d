@@ -17,6 +17,8 @@ import djehuty;
 
 import synch.thread;
 
+import binding.c;
+
 // Description: This class provides a set of functions to facilitate common
 //	debugging functions and capabilities to profile code.
 // Feature: Provides a method of logging all debug information to a file.
@@ -28,6 +30,9 @@ static:
 public:
 
 	void raiseException(Exception e, Window w = null, Thread t = null) {
+
+		printf("exception %s\n", e.msg.ptr);
+
 		if (_delegate !is null) {
 			// Wouldn't it be ridiculous if the handler threw an exception?
 			try {

@@ -9,27 +9,7 @@
 
 module platform.definitions;
 
-version(PlatformLinux)
-{
-
-
-import core.parameters;
-
-// String Representation
-alias char Char;
-
-// Color Representation
-static const Parameter_Colorbpp Colorbpp = Parameter_Colorbpp.Color8bpp;
-static const Parameter_ColorType ColorType = Parameter_ColorType.ColorBGRA;
-
-
-
-
-// Graphical Types
-//alias uint Pen;
-//alias uint Brush;
-//alias Pango.PangoFontDescription* Font;
-
+version(PlatformLinux): 
 
 // Common Fonts
 
@@ -39,10 +19,7 @@ const auto FontSans = "sans"c;
 const auto FontSerif = "serif"c;
 const auto FontSystem = "sans"c;
 
-
-
-
-import platform.unix.common;
+import X = binding.x.X;
 
 const uint KeyBackspace = X.XK_BackSpace;
 const uint KeyTab = X.XK_Tab;
@@ -160,4 +137,4 @@ const uint KeyRightControl = X.XK_Control_R; //0xA3
 const uint KeyLeftAlt = X.XK_Meta_L; //0xA4
 const uint KeyRightAlt = X.XK_Meta_R; //0xA5
 
-}
+

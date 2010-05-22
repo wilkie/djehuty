@@ -14,6 +14,8 @@ import platform.vars.cui;
 
 import io.console;
 
+import binding.c;
+
 // Description: This class represents a Text User Interface application (TUI).
 class CuiApplication : Application {
 public:
