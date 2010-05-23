@@ -11,6 +11,11 @@
 module binding.c;
 
 /* C long types */
+version(PlatformWindows) {
+}
+else {
+	pragma(lib, `"c"`);
+}
 
 version(GNU) {
 	import gcc.builtins;

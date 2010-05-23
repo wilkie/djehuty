@@ -133,3 +133,10 @@ ubyte[] calloc(size_t length) {
 void free(void[] memory) {
 	binding.c.free(memory.ptr);
 }
+
+long SystemExecute(string path) {
+	string newpath = path.dup;
+	newpath ~= '\0';
+
+	return binding.c.system(newpath.ptr);
+}

@@ -14,6 +14,13 @@ import binding.c;
 
 extern(System):
 
+version(PlatformWindows) {
+	pragma(lib, "ncurses.lib");
+}
+else {
+	pragma(lib, `"ncurses"`);
+}
+
 // << ncurses.h>> //
 
 // These correspond to the values retrieved from the headers I have referenced

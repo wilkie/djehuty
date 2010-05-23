@@ -14,6 +14,7 @@ version(PlatformWindows) {
 	pragma(lib, "glu32.lib");
 }
 else {
+	pragma(lib, `"GL"`);
 }
 
 // The functions supported by opengl

@@ -8,7 +8,7 @@ DFLAGS =
 # can be changed
 PLATFORM = WINDOWS
 
-LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -L-lncurses -J./tests
+LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncurses -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
 LFLAGS_WIN = -Iplatform/win -Icompiler
 
@@ -83,7 +83,7 @@ OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
 TOOLS_SOBEK = tools/sobek/main.d
-TOOLS_SESHAT = tools/seshat/main.d
+TOOLS_SESHAT = tools/seshat/main.d tools/seshat/options.d tools/seshat/dependencylist.d
 TOOLS_TESTS = runtests.d
 
 EXAMPLES_CUITETRIS = examples/CuiTetris/app.d examples/CuiTetris/gamewindow.d examples/CuiTetris/tetris.d examples/CuiTetris/gamecontrol.d
