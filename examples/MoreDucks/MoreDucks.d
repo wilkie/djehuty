@@ -33,7 +33,7 @@ class MyControl : Widget {
 					path = "ducks-cute.png";
 					break;
 			}
-			images[curImage] = new Image("examples/MoreDucks/" ~ path);
+			images[curImage] = new Image(path);
 		}
 		g.drawImage(this.left,this.top,images[curImage]);
 	}

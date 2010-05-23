@@ -9,31 +9,35 @@ import data.list;
 class DependencyList : List!(string) {
 	this(string path) {
 		super();
+		string location = "/media/MISC/djehuty-cvs/djehuty";
 
 		// Add runtime modules
-		add("runtime/apply.d");
-		add("runtime/array.d");
-		add("runtime/assocarray.d");
-		add("runtime/classinvariant.d");
-		add("runtime/common.d");
-		add("runtime/dstatic.d");
-		add("runtime/error.d");
-		add("runtime/exception.d");
-		add("runtime/gc.d");
-		add("runtime/lifetime.d");
-		add("runtime/main.d");
-		add("runtime/moduleinfo.d");
-		add("runtime/monitor.d");
-		add("runtime/switchstmt.d");
+		add(location ~ "/runtime/apply.d");
+		add(location ~ "/runtime/array.d");
+		add(location ~ "/runtime/assocarray.d");
+		add(location ~ "/runtime/classinvariant.d");
+		add(location ~ "/runtime/common.d");
+		add(location ~ "/runtime/dstatic.d");
+		add(location ~ "/runtime/error.d");
+		add(location ~ "/runtime/exception.d");
+		add(location ~ "/runtime/gc.d");
+		add(location ~ "/runtime/lifetime.d");
+		add(location ~ "/runtime/main.d");
+		add(location ~ "/runtime/moduleinfo.d");
+		add(location ~ "/runtime/monitor.d");
+		add(location ~ "/runtime/switchstmt.d");
 
 		// Add things the runtime depends on
 		// (should make a .dep file or something per module
-		add("synch/atomic.d");
-		add("synch/semaphore.d");
+		add(location ~ "/synch/atomic.d");
+		add(location ~ "/synch/semaphore.d");
+
+		// Add itself
+		add(path);
 
 		// Generate dependency list and compile main module
 		version(LDC) {
-			System.execute("ldc -deps=.deps " ~ path ~ " -d-version=PlatformLinux -Iplatform/unix -Icompiler -c -o-");
+			System.execute("ldc -deps=.deps " ~ path ~ " -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c -o-");
 
 			auto f = File.open(".deps");
 

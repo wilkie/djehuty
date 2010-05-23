@@ -71,6 +71,10 @@ class File : Stream {
 		return new File(filename);
 	}
 
+	static Time time(string filename) {
+		return FileTime(filename);
+	}
+
 	// Methods //
 
 	// Inherited Functionality
@@ -80,6 +84,10 @@ class File : Stream {
 	alias Stream.read read;
 
 	// Core Functionality
+
+	Time time() {
+		return File.time(_name);
+	}
 
 	// Description: Will close the file.  This is also done upon deconstruction of the class, for instance when it is garbage collected.
 	void close() {

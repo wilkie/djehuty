@@ -49,41 +49,46 @@ class Seshat : Application {
 				pc = " " ~ pc;
 			}
 
-			Console.putln(" : " ~ pc ~ " " ~ mod.replace('/', '.'));
+			Console.putln(" : " ~ pc ~ " " ~ mod);
 
 			// Compile each module in the list if necessary
 			string object = mod[0..$-2] ~ ".o";
 
 			// Check the file time of the object against the source.
 
-			// if (File.time(mod) > File.time(object)) {
-			//   builtList.add(mod);
-			//   compile
-			// }
+			auto sourceTime = File.time(mod);
+			auto objectTime = File.time(object);
+
+			if (objectTime is null || (sourceTime > objectTime)) {
+				builtList.add(mod);
+
+				// Compile
+				System.execute("ldc -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c " ~ mod ~ " -of" ~ object);
+			}
 
 			// Decide if this implies a library to link
-			if (mod.length > "binding/".length) {
-				if (mod[0..8] == "binding/") {
-					string bindpath = mod[8..$-2];
-					int pos = bindpath.find("/");
-					if (pos == -1) {
+			int bindpos = mod.find("binding/");
+			bindpos += 8;
+			if (bindpos > 7) {
+				string bindpath = mod[bindpos..$-2];
+				int pos = bindpath.find("/");
+				if (pos == -1) {
+					if (!linkingList.contains(bindpath)) {
+						linkingList.add(bindpath);
+					}
+				}
+				else {
+					bindpath = bindpath[0..pos];
+					auto f = File.open(mod[0..bindpos+bindpath.length] ~ "/link.txt");
+					if (f is null) {
 						if (!linkingList.contains(bindpath)) {
 							linkingList.add(bindpath);
 						}
 					}
 					else {
-						bindpath = bindpath[0..pos];
-						auto f = File.open("binding/" ~ bindpath ~ "/link.txt");
-						if (f is null) {
-							if (!linkingList.contains(bindpath)) {
-								linkingList.add(bindpath);
-							}
-						}
-						else {
-							foreach(line; f) {
-								if (!linkingList.contains(line)) {
-									linkingList.add(line);
-								}
+						foreach(line; f) {
+							if (!linkingList.contains(line)) {
+								linkingList.add(line);
 							}
 						}
 					}
@@ -108,7 +113,7 @@ class Seshat : Application {
 		putln(" : Linking " ~ moduleExecutable);
 		version(LDC) {
 			moduleObject = _options.path[0..$-2] ~ ".o";
-			string ldcCommand = "ldc -of" ~ moduleExecutable ~ " " ~ moduleObject;
+			string ldcCommand = "ldc -of" ~ moduleExecutable;
 			foreach(mod; _list) {
 				ldcCommand ~= " " ~ mod[0..$-2] ~ ".o";
 			}
