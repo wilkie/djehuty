@@ -67,7 +67,13 @@ class Seshat : Application {
 				builtList.add(mod);
 
 				// Compile
-				System.execute("ldc -d-version=PlatformLinux -I" ~ location ~ "/platform/unix -I" ~ location ~ "/compiler -c " ~ mod ~ " -of" ~ object);
+				long ret = System.execute("ldc -d-version=PlatformLinux -I" ~ location ~ "/platform/unix -I" ~ location ~ "/compiler -c " ~ mod ~ " -of" ~ object);
+				if (ret != 0) {
+					// Error
+					Console.forecolor = Color.Red;
+					Console.putln("Error: ldc returned error ", ret, ".");
+					return;
+				}
 			}
 
 			// Decide if this implies a library to link
@@ -129,7 +135,13 @@ class Seshat : Application {
 			}
 			ldcCommand ~= " -L-lpthread -L-lrt";
 			//putln(ldcCommand);
-			System.execute(ldcCommand);
+			long ret = System.execute(ldcCommand);
+			if (ret != 0) {
+				// Error
+				Console.forecolor = Color.Red;
+				Console.putln("Error: ldc returned error ", ret, ".");
+				return;
+			}
 		}
 	}
 

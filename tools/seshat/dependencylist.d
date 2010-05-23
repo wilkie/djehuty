@@ -3,10 +3,11 @@ module dependencylist;
 import djehuty;
 
 import io.file;
+import io.console;
 
 import data.list;
 
-const string location = "/media/MISC/djehuty-cvs/djehuty";
+const string location = "/home/dave/djehuty";
 
 class DependencyList : List!(string) {
 	this(string path) {
@@ -38,7 +39,13 @@ class DependencyList : List!(string) {
 
 		// Generate dependency list and compile main module
 		version(LDC) {
-			System.execute("ldc -deps=" ~ path[0..$-2] ~ ".dep " ~ path ~ " -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c -o-");
+			string cmd = "ldc -deps=" ~ path[0..$-2] ~ ".dep " ~ path ~ " -d-version=PlatformLinux -I" ~ location ~ "/platform/unix -I" ~ location ~ "/compiler -c -o-";
+			putln(cmd);
+			long ret = System.execute(cmd);
+			if (ret != 0) {
+				// Error
+				throw new Exception("LDC Error");
+			}
 
 			auto f = File.open(path[0..$-2] ~ ".dep");
 
