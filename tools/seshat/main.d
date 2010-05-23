@@ -49,7 +49,11 @@ class Seshat : Application {
 				pc = " " ~ pc;
 			}
 
-			Console.putln(" : " ~ pc ~ " " ~ mod);
+			string output = mod[0..$-2];
+			if (mod.length > location.length && mod[0..location.length] == location) {
+				output = mod[location.length+1..$-2];
+			}
+			Console.putln(" : " ~ pc ~ " " ~ output.replace('/', '.'));
 
 			// Compile each module in the list if necessary
 			string object = mod[0..$-2] ~ ".o";
@@ -63,7 +67,7 @@ class Seshat : Application {
 				builtList.add(mod);
 
 				// Compile
-				System.execute("ldc -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c " ~ mod ~ " -of" ~ object);
+				System.execute("ldc -d-version=PlatformLinux -I" ~ location ~ "/platform/unix -I" ~ location ~ "/compiler -c " ~ mod ~ " -of" ~ object);
 			}
 
 			// Decide if this implies a library to link

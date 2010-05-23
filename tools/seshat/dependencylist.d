@@ -6,10 +6,11 @@ import io.file;
 
 import data.list;
 
+const string location = "/media/MISC/djehuty-cvs/djehuty";
+
 class DependencyList : List!(string) {
 	this(string path) {
 		super();
-		string location = "/media/MISC/djehuty-cvs/djehuty";
 
 		// Add runtime modules
 		add(location ~ "/runtime/apply.d");
