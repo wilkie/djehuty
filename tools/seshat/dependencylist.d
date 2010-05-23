@@ -38,9 +38,9 @@ class DependencyList : List!(string) {
 
 		// Generate dependency list and compile main module
 		version(LDC) {
-			System.execute("ldc -deps=.deps " ~ path ~ " -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c -o-");
+			System.execute("ldc -deps=" ~ path[0..$-2] ~ ".dep " ~ path ~ " -d-version=PlatformLinux -I/media/MISC/djehuty-cvs/djehuty/platform/unix -I/media/MISC/djehuty-cvs/djehuty/compiler -c -o-");
 
-			auto f = File.open(".deps");
+			auto f = File.open(path[0..$-2] ~ ".dep");
 
 			foreach(line; f) {
 				Regex.eval(line, `[^:]*:[^:]*:[^\(]*\(([^\)]*)\)`);

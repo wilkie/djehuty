@@ -111,6 +111,9 @@ class Seshat : Application {
 		string moduleObject;
 		string moduleExecutable;
 		moduleExecutable = _options.path[0..$-2];
+		if (_options.file !is null) {
+			moduleExecutable = _options.file;
+		}
 		Console.forecolor = Color.Magenta;
 		Console.putln();
 		Console.putln(" -- Linking --");
