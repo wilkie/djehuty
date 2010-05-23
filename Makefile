@@ -82,6 +82,8 @@ OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
+TOOLS_SOBEK = tools/sobek/main.d
+TOOLS_SESHAT = tools/seshat/main.d
 TOOLS_TESTS = runtests.d
 
 EXAMPLES_CUITETRIS = examples/CuiTetris/app.d examples/CuiTetris/gamewindow.d examples/CuiTetris/tetris.d examples/CuiTetris/gamecontrol.d
@@ -199,6 +201,32 @@ ifeq ($(PLATFORM),WINDOWS)
 	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+endif
+endif
+
+sobek: lib
+
+ifeq (${MY_ARCH},Darwin)
+	for i in ${TOOLS_SOBEK}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/sobek -I./platform/osx; done
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/sobek/*.o` -o sobek $(LFLAGS_MAC) -ltango
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofsobek.exe $(TOOLS_SOBEK) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofsobek -d-version=PlatformLinux $(TOOLS_SOBEK) $(OBJS_LINUX)
+endif
+endif
+
+seshat: lib
+
+ifeq (${MY_ARCH},Darwin)
+	for i in ${TOOLS_SESHAT}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/seshat -I./platform/osx; done
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/seshat/*.o` -o seshat $(LFLAGS_MAC) -ltango
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofseshat.exe $(TOOLS_SESHAT) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofseshat -d-version=PlatformLinux $(TOOLS_SESHAT) $(OBJS_LINUX)
 endif
 endif
 
