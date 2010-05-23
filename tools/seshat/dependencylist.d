@@ -1,4 +1,4 @@
-module seshat.dependencylist;
+module dependencylist;
 
 import djehuty;
 

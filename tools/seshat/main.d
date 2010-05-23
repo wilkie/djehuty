@@ -2,8 +2,8 @@ import djehuty;
 
 import io.console;
 
-import seshat.options;
-import seshat.dependencylist;
+import options;
+import dependencylist;
 
 import data.list;
 import io.file;

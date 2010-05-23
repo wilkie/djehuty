@@ -1,4 +1,4 @@
-module seshat.options;
+module options;
 
 import djehuty;
 

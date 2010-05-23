@@ -135,7 +135,7 @@ Time FileTime(string path) {
 	}
 
 	tm time_struct;
-	gmtime_r(cast(time_t*)&inode.st_mtime, &time_struct);
+	gmtime_r(cast(time_t*)&inode.st_mtim, &time_struct);
 
 	// get microseconds
 	long micros;

@@ -215,24 +215,48 @@ align(2) struct struct_stat
 		uint st_rdev;
 		ulong[64] fuck;
 	}
-	else version(X86_64) {
+	else version(linux) {
 		ulong st_dev;
-		Culong_t st_ino;
-		Culong_t st_nlink;
-		uint st_mode;
+
+		version(X86) {
+			ubyte[4] __pad1;
+			uint __st_ino;
+			uint st_mode;
+			uint st_nlink;
+		} else version(X86_64) {
+			ulong st_ino;
+			ulong st_nlink;
+			uint st_mode;
+		} else {
+			static assert(false); // Unsupported architecture.
+		}
+
 		uint st_uid;
 		uint st_gid;
-		ubyte[4] __pad1;
-		Culong_t st_rdev;
-		Clong_t st_size;
+
+		version(X86_64)
+			ubyte[4] __pad0;
+
+		ulong st_rdev;
+
+		version(X86)
+			ubyte[4] __pad2;
+
+		long st_size;
 		Clong_t st_blksize;
-		Clong_t st_blocks;
-		Clong_t st_atime;
-		ubyte[8] __pad2;
-		Clong_t st_mtime;
-		ubyte[8] __pad3;
-		Clong_t st_ctime;
-		ubyte[32] __pad4;
+		long st_blocks;
+		timespec st_atim;
+		timespec st_mtim;
+		timespec st_ctim;
+
+		version(X86) {
+			ulong st_ino;
+		} else version (X86_64){
+			ubyte[24] __unused;
+		}
+	}
+	else {
+		static assert(false); // Unsupported OS.
 	}
 }
 
@@ -392,6 +416,34 @@ struct siginfo_t
 	ubyte[116] __pad1;
 }
 
+version(X86) {
+	version(linux) {
+		version = stat64;
+	}
+}
+
+version(stat64) {
+	extern (C) int fstat64(int, struct_stat*);
+	extern (C) int lstat64(in char*, struct_stat*);
+	extern (C) int stat64(in char*, struct_stat*);
+
+	int fstat(int f, struct_stat* s) {
+		return fstat64(f, s);
+	}
+
+	int lstat(in char* f, struct_stat* s) {
+		return lstat64(f, s);
+	}
+
+	int stat(in char* f, struct_stat* s) {
+		return stat64(f, s);
+	}
+} else {
+	extern (C) int fstat(int, struct_stat*);
+	extern (C) int lstat(in char*, struct_stat*);
+	extern (C) int stat(in char*, struct_stat*);
+}
+
 extern (C):
 
 	// DMD linux.d has dirent.h declarations
@@ -408,10 +460,7 @@ extern (C):
 	off_t lseek(int, off_t, int);
 	int access(in char *path, int mode);
 	int utime(char *path, utimbuf *buf);
-	int fstat(int, struct_stat*);
-	int stat(in char*, struct_stat*);
-	int	lstat(in char *, struct_stat *);
-	int	chmod(in char *, mode_t);
+	int chmod(in char *, mode_t);
 	int chdir(in char*);
 	int mkdir(in char*, mode_t);
 	int rmdir(in char*);
