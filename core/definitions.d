@@ -10,7 +10,6 @@
 
 module core.definitions;
 
-//import platform.definitions;
 public import platform.definitions;
 
 // Section: Types
@@ -142,120 +141,114 @@ struct Key {
 	bool alt;
 	bool shift;
 
-	const uint Backspace = KeyBackspace;
-	const uint Tab = KeyTab;
+	enum : uint {
+		Backspace,
+		Tab,
+		Pause,
+		Escape,
 
-	const uint Return = KeyReturn;
-	const uint Pause = KeyPause;
-	const uint Escape = KeyEscape;
-	const uint Space = KeySpace;
+		PageUp,
+		PageDown,
 
-	const uint PageUp = KeyPageUp;
-	const uint PageDown = KeyPageDown;
+		End,
+		Home,
 
-	const uint End = KeyEnd;
-	const uint Home = KeyHome;
+		Left,
+		Right,
+		Up,
+		Down,
 
-	const uint Left = KeyArrowLeft;
-	const uint Right = KeyArrowRight;
-	const uint Up = KeyArrowUp;
-	const uint Down = KeyArrowDown;
+		Insert,
+		Delete,
 
-	const uint Insert = KeyInsert;
-	const uint Delete = KeyDelete;
+		NumLock,
+		ScrollLock,
 
-	const uint NumLock = KeyNumLock;
-	const uint ScrollLock = KeyScrollLock;
+		LeftShift,
+		RightShift,
 
-	const uint LeftShift = KeyLeftShift;
-	const uint RightShift = KeyRightShift;
+		LeftControl,
+		RightControl,
 
-	const uint LeftControl = KeyLeftControl;
-	const uint RightControl = KeyRightControl;
+		LeftAlt,
+		RightAlt,
 
-	const uint LeftAlt = KeyLeftAlt;
-	const uint RightAlt = KeyRightAlt;
+		F1,
+		F2,
+		F3,
+		F4,
+		F5,
+		F6,
+		F7,
+		F8,
+		F9,
+		F10,
+		F11,
+		F12,
+		F13,
+		F14,
+		F15,
+		F16,
 
-	const uint Zero = Key0;
-	const uint One = Key1;
-	const uint Two = Key2;
-	const uint Three = Key3;
-	const uint Four = Key4;
-	const uint Five = Key5;
-	const uint Six = Key6;
-	const uint Seven = Key7;
-	const uint Eight = Key8;
-	const uint Nine = Key9;
+		Return,
+		Space,
 
-	const uint SingleQuote = KeySingleQuote;
-	const uint Quote = KeyQuote;
-	const uint Comma = KeyComma;
-	const uint Period = KeyPeriod;
-	const uint Foreslash = KeyForeslash;
-	const uint Backslash = KeyBackslash;
-	const uint LeftBracket = KeyLeftBracket;
-	const uint RightBracket = KeyRightBracket;
-	const uint Semicolon = KeySemicolon;
-	const uint Minus = KeyMinus;
-	const uint Equals = KeyEquals;
+		Zero,
+		One,
+		Two,
+		Three,
+		Four,
+		Five,
+		Six,
+		Seven,
+		Eight,
+		Nine,
 
-	const uint A = KeyA;
-	const uint B = KeyB;
-	const uint C = KeyC;
-	const uint D = KeyD;
-	const uint E = KeyE;
-	const uint F = KeyF;
-	const uint G = KeyG;
-	const uint H = KeyH;
-	const uint I = KeyI;
-	const uint J = KeyJ;
-	const uint K = KeyK;
-	const uint L = KeyL;
-	const uint M = KeyM;
-	const uint N = KeyN;
-	const uint O = KeyO;
-	const uint P = KeyP;
-	const uint Q = KeyQ;
-	const uint R = KeyR;
-	const uint S = KeyS;
-	const uint T = KeyT;
-	const uint U = KeyU;
-	const uint V = KeyV;
-	const uint W = KeyW;
-	const uint X = KeyX;
-	const uint Y = KeyY;
-	const uint Z = KeyZ;
+		SingleQuote,
+		Quote,
+		Comma,
+		Period,
+		Foreslash,
+		Backslash,
 
-	const uint F1 = KeyF1;
-	const uint F2 = KeyF2;
-	const uint F3 = KeyF3;
-	const uint F4 = KeyF4;
-	const uint F5 = KeyF5;
-	const uint F6 = KeyF6;
-	const uint F7 = KeyF7;
-	const uint F8 = KeyF8;
-	const uint F9 = KeyF9;
-	const uint F10 = KeyF10;
-	const uint F11 = KeyF11;
-	const uint F12 = KeyF12;
-	const uint F13 = KeyF13;
-	const uint F14 = KeyF14;
-	const uint F15 = KeyF15;
-	const uint F16 = KeyF16;
+		LeftBracket,
+		RightBracket,
+
+		Semicolon,
+		Minus,
+		Equals,
+
+		A,
+		B,
+		C,
+		D,
+		E,
+		F,
+		G,
+		H,
+		I,
+		J,
+		K,
+		L,
+		M,
+		N,
+		O,
+		P,
+		Q,
+		R,
+		S,
+		T,
+		U,
+		V,
+		W,
+		X,
+		Y,
+		Z,
+	}
 }
 
 // Default parameters
 const int Default = -1;
-
-// C Types
-version(X86) {
-	alias uint Culong;
-	alias int Clong;
-}
-else {
-	alias ulong Culong;
-	alias long Clong;
-}
 
 union CuiEventInfo {
 	Key key;

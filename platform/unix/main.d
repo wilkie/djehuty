@@ -18,24 +18,16 @@ import scaffold.directory;
 
 import platform.vars.window;
 
-import gui.application;
-import gui.window;
-
 import core.definitions;
 import core.main;
 import core.string;
 import core.arguments;
-
-import graphics.view;
 
 import synch.thread;
 
 import analyzing.debugger;
 
 import io.console;
-
-import cui.application;
-import cui.window;
 
 struct DjehutyPlatformVars {
 	X.Display* display;
@@ -99,28 +91,3 @@ void AppInit() {
 	// segfault handler
 	signal(SIGSEGV, &segfault_handler);
 }
-
-import binding.c;
-/*
-int main(string[] args){
-	try	{
-		printf("fudge\n");
-		AppInit();
-		printf("fudge\n");
-
-		Arguments argList = Arguments.instance();
-		foreach(arg; args) {
-			argList.add(arg);
-		}
-
-		ConsoleInit();
-		Djehuty.application.run();
-		ConsoleUninit();
-	}
-	catch(Object o)	{
-		Debugger.raiseException(cast(Exception)o);
-	}
-
-	return ApplicationController.instance.exitCode;
-//	return 0;
-}*/

@@ -20,7 +20,45 @@ import core.definitions;
 
 import platform.application;
 
+import cui.application;
+
 import binding.c;
+
+private {
+	winsize m_winsize_saved;
+	winsize m_winsize_working;
+}
+
+private extern(C) void size_sig_handler(int signal) {
+    ioctl(STDIN, TIOCGWINSZ, &m_winsize_working);
+
+    if (m_width != m_winsize_working.ws_col || m_height != m_winsize_working.ws_row) {
+        m_width = m_winsize_working.ws_col;
+        m_height = m_winsize_working.ws_row;
+
+        while (m_x >= m_width)
+        {
+            m_y++;
+            m_x -= m_width;
+        }
+
+        if (m_y >= m_height) { m_y = m_height-1; }
+        if (m_x < 0) { m_x = 0; }
+        if (m_y < 0) { m_y = 0; }
+
+        //reset (this will be retained when program exits)
+        m_winsize_saved = m_winsize_working;
+
+        //the window resized through the users actions, not through the class' resize()
+        //therefore don't change it back to anything on exit
+        m_winsize_state = false;
+    }
+
+    //fire Size event
+
+	//CuiApplication app = cast(CuiApplication)Djehuty.app;
+	//app.window.onResize();
+}
 
 void CuiStart(CuiPlatformVars* vars) {
 	Curses.savetty();

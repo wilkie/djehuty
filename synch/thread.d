@@ -1,7 +1,5 @@
 module synch.thread;
 
-import gui.window;
-
 import platform.vars.thread;
 
 import scaffold.thread;
@@ -157,13 +155,7 @@ protected:
 	long startTime;
 	long time;
 
-	Window wnd;
-
 	ThreadPlatformVars _pfvars;
 
 	static Thread[uint] threadById;
-}
-
-void ThreadSetWindow(ref Thread t, Window w) {
-	t.wnd = w;
 }

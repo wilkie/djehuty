@@ -13,14 +13,13 @@ import djehuty;
 
 import platform.unix.common;
 import platform.unix.main;
+
+import Curses = binding.ncurses.ncurses;
 import binding.c;
 
 import platform.application;
 
 import synch.thread;
-
-import cui.application;
-import cui.window;
 
 private int _toNearestConsoleColor(Color clr) {
 	// 16 colors on console
@@ -566,65 +565,18 @@ int m_height;
 
 bool m_winsize_state;
 
-
-
-
-const auto TIOCGWINSZ = 0x5413;
-const auto SIGWINCH = 28;
-
 //position tracking
 
 int m_x;
 int m_y;
-
-winsize m_winsize_saved;
-winsize m_winsize_working;
-
 termios m_term_info_saved;
 termios m_term_info_working;
-
-
 
 //signal handler for terminal Size
 
 extern(C) void close_sig_handler(int signal) {
-//	Djehuty.end(0);
-//	for(int i=0; i<256; i++) {
-//		printf("\x1B[48;5;%dma", i);
-//	}
 	ConsoleUninit();
 	exit(0);
-}
-
-extern(C) void size_sig_handler(int signal) {
-
-    ioctl(STDIN, TIOCGWINSZ, &m_winsize_working);
-
-    if (m_width != m_winsize_working.ws_col || m_height != m_winsize_working.ws_row) {
-        m_width = m_winsize_working.ws_col;
-        m_height = m_winsize_working.ws_row;
-
-        while (m_x >= m_width)
-        {
-            m_y++;
-            m_x -= m_width;
-        }
-
-        if (m_y >= m_height) { m_y = m_height-1; }
-        if (m_x < 0) { m_x = 0; }
-        if (m_y < 0) { m_y = 0; }
-
-        //reset (this will be retained when program exits)
-        m_winsize_saved = m_winsize_working;
-
-        //the window resized through the users actions, not through the class' resize()
-        //therefore don't change it back to anything on exit
-        m_winsize_state = false;
-    }
-
-    //fire Size event
-	CuiApplication app = cast(CuiApplication)Djehuty.app;
-	app.window.onResize();
 }
 
 void ConsoleInit() {

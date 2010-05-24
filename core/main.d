@@ -22,8 +22,6 @@ import io.console;
 import synch.semaphore;
 import synch.thread;
 
-import gui.apploop;
-
 // Section: Core
 
 // Description: This class is the main class for the framework. It provides base functionality.

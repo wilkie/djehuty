@@ -11,8 +11,6 @@ module analyzing.debugger;
 
 import io.console;
 
-import gui.window;
-
 import djehuty;
 
 import synch.thread;
@@ -29,7 +27,7 @@ class Debugger {
 static:
 public:
 
-	void raiseException(Exception e, Window w = null, Thread t = null) {
+	void raiseException(Exception e) {
 
 		printf("exception %s\n", e.msg.ptr);
 
@@ -48,13 +46,6 @@ public:
 		Console.putln("");
 		Console.forecolor = Color.Red;
 
-		if (t is null) {
-			Console.putln("Unhandled Main Exception: ");
-		}
-		else {
-			Console.putln("Unhandled Thread Exception: ");
-		}
-
 		string cause = e.toString();
 		if (cause == "null this") {
 			cause = "Null Pointer Exception";
@@ -67,22 +58,6 @@ public:
 			Console.putln("    file: ", e.file, " : ", e.line);
 		}
 		else {
-		}
-
-		if (w !is null) {
-			// get class name
-			ClassInfo ci = w.classinfo;
-			string className = ci.name.dup;
-
-			Console.putln("    window: ", className, " [", w.text, "]");
-		}
-
-		if (t !is null) {
-			// get class name
-			ClassInfo ci = t.classinfo;
-			string className = ci.name.dup;
-
-			Console.putln("    thread: ", className);
 		}
 
 		Console.forecolor = Color.White;

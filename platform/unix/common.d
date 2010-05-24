@@ -11,15 +11,7 @@
 
 module platform.unix.common;
 
-public import X = binding.x.Xlib;
-
-public import Cairo = binding.cairo.cairo;
-public import CairoX = binding.cairo.xlib;
-
-public import Pango = binding.pango.pango;
-
 import binding.c;
-public import Curses = binding.ncurses.ncurses;
 
 extern(C):
 
