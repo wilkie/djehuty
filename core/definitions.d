@@ -274,3 +274,27 @@ struct CuiEvent {
 	uint aux;
 }
 
+enum Month {
+	January,
+	February,
+	March,
+	April,
+	May,
+	June,
+	July,
+	August,
+	September,
+	October,
+	November,
+	December
+}
+
+enum Day {
+	Sunday,
+	Monday,
+	Tuesday,
+	Wednesday,
+	Thursday,
+	Friday,
+	Saturday
+}
