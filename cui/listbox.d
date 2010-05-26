@@ -12,6 +12,40 @@ import cui.widget;
 
 // Description: This console control abstracts a simple list of items.
 class CuiListBox : CuiWidget, Iterable!(string) {
+protected:
+
+	uint _pos = 0;
+	uint _firstVisible = 0;
+
+	char[] _spacestr;
+
+	List!(string) _list;
+	
+	Color _forecolor = Color.White;
+	Color _backcolor = Color.Black;
+
+	Color _selectedForecolor = Color.Yellow;
+	Color _selectedBackcolor = Color.Black;
+	void drawLine(uint pos) {
+		Console.position(0, pos - _firstVisible);
+
+		if(pos == _pos) {
+			Console.forecolor = _selectedForecolor;
+			Console.backcolor = _selectedBackcolor;
+		}
+		else {
+			Console.forecolor = _forecolor;
+			Console.backcolor = _backcolor;
+		}
+
+		Console.put(_list[pos]);
+
+		if(_list[pos].length < this.width) {
+			Console.putSpaces(this.width - _list[pos].length);
+		}
+	}
+
+public:
 	this( uint x, uint y, uint width, uint height ) {
 		super(x,y,width,height);
 
@@ -294,38 +328,4 @@ class CuiListBox : CuiWidget, Iterable!(string) {
 	void selectedBackcolor(Color value) {
 		_selectedBackcolor = value;
 	}
-
-protected:
-
-	void drawLine(uint pos) {
-		Console.position(0, pos - _firstVisible);
-
-		if(pos == _pos) {
-			Console.forecolor = _selectedForecolor;
-			Console.backcolor = _selectedBackcolor;
-		}
-		else {
-			Console.forecolor = _forecolor;
-			Console.backcolor = _backcolor;
-		}
-
-		Console.put(_list[pos]);
-
-		if(_list[pos].length < this.width) {
-			Console.putSpaces(this.width - _list[pos].length);
-		}
-	}
-
-	uint _pos = 0;
-	uint _firstVisible = 0;
-
-	char[] _spacestr;
-
-	List!(string) _list;
-	
-	Color _forecolor = Color.White;
-	Color _backcolor = Color.Black;
-
-	Color _selectedForecolor = Color.Yellow;
-	Color _selectedBackcolor = Color.Black;
 }

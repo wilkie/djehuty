@@ -13,8 +13,335 @@ import io.console;
 
 // Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
 class CuiWindow : Responder {
-	// Constructor
+private:
+	Color _bgClr = Color.Black;
 
+	// head and tail of the control linked list
+	CuiWidget _firstControl;	//head
+	CuiWidget _lastControl;	//tail
+
+	int _numControls = 0;
+
+	// Current Menu
+	Menu _menu;
+
+	// In a menu?
+	Menu _focusedMenu;
+	uint _focusedMenuIndex;
+
+	struct MenuContext {
+		Menu submenu;
+		Menu oldSelectedMenu;
+		uint oldSelectedIndex;
+		Menu oldFocusedMenu;
+		uint oldFocusedIndex;
+		Rect region;
+	}
+	
+	Menu _selectedMenu;
+	uint _selectedMenuIndex;
+
+	CuiContainer _controlContainer;
+
+	MenuContext[] _menus;
+
+	bool _cancelNextChar;
+	
+	bool _inited;	// Constructor
+
+	public Mouse mouseProps;
+
+	package void _onResize() {
+		if (_menu) {
+			_controlContainer.resize(this.width, this.height - 1);
+		}
+		else {
+			_controlContainer.resize(this.width, this.height);
+		}
+		onResize();
+	}
+
+	void _drawSubmenu() {
+		MenuContext context = _menus[$-1];
+
+		Menu mnu = context.submenu;
+		uint x = context.region.left;
+		uint y = context.region.top;
+
+		uint maxLength = context.region.right - context.region.left;
+
+		foreach(subItem; mnu) {
+			Console.position(x, y);
+			if (subItem is _selectedMenu) {
+				Console.forecolor = Color.White;
+				Console.backcolor = Color.Blue;
+			}
+			else {
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
+			}
+			Console.put(" ");
+			int padding = maxLength - subItem.displayText.length;
+
+			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
+			if (subItem is _selectedMenu) {
+				Console.forecolor = Color.White;
+				Console.backcolor = Color.Blue;
+			}
+			else {
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
+			}
+			Console.put(" ");
+			y++;
+		}
+	}
+
+	void _drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 0) {
+		if (mnuItem is _selectedMenu) {
+			Console.forecolor = Color.Gray;
+			Console.backcolor = Color.Blue;
+		}
+		else {
+			Console.forecolor = Color.Black;
+			Console.backcolor = Color.Gray;
+		}
+
+		if (mnuItem.hintPosition >= 0) {
+			if (mnuItem.hintPosition > 0) {
+				Console.put(mnuItem.displayText[0..mnuItem.hintPosition]);
+			}
+
+			if (mnuItem !is _selectedMenu) {
+				if (drawHints) {
+					Console.forecolor = Color.Blue;
+				}
+				else {
+					Console.forecolor = Color.DarkBlue;
+				}
+			}
+
+			Console.put(mnuItem.displayText[mnuItem.hintPosition]);
+
+			if (mnuItem !is _selectedMenu) {
+				Console.forecolor = Color.Black;
+				Console.backcolor = Color.White;
+			}
+			if (mnuItem.hintPosition < mnuItem.displayText.length) {
+				Console.put(mnuItem.displayText[mnuItem.hintPosition + 1..mnuItem.displayText.length]);
+			}
+		}
+		else {
+			Console.put(mnuItem.displayText);
+		}
+
+		// Padding
+		for (uint i; i < padding; i++) {
+			Console.put(" ");
+		}
+
+		if (mnuItem is _selectedMenu) {
+			Console.forecolor = Color.Black;
+			Console.backcolor = Color.White;
+		}
+	}
+
+	void _drawMenu(bool drawHints = false) {
+		if (_menu is null) {
+			return;
+		}
+
+		uint curWidth = this.width;
+
+		Console.position(0,0);
+		Console.forecolor = Color.Black;
+		Console.backcolor = Color.White;
+
+		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {
+			Console.forecolor = Color.White;
+			Console.backcolor = Color.Blue;
+		}
+		else {
+			Console.forecolor = Color.White;
+			Console.backcolor = Color.Blue;
+		}
+		Console.put(" ");
+		curWidth--;
+
+		foreach(i, mnuItem; _menu) {
+			if (curWidth > mnuItem.displayText.length) {
+				_drawMenuItem(mnuItem, drawHints, 0);
+				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
+					Console.forecolor = Color.White;
+					Console.backcolor = Color.Blue;
+					Console.put(" ");
+					Console.forecolor = Color.Black;
+					Console.backcolor = Color.White;
+				}
+				else {
+					Console.put(" ");
+				}
+				curWidth -= (mnuItem.displayText.length + 1);
+			}
+		}
+
+		bool drawCaption = false;
+		if (this.text !is null && curWidth >= (this.text.length + 1)) {
+			curWidth -= this.text.length + 1;
+			drawCaption = true;
+		}
+
+		if (curWidth > 0) {
+			for (; curWidth != 0; curWidth--) {
+				Console.put(" ");
+			}
+		}
+
+		if (drawCaption) {
+			Console.put(this.text, " ");
+		}
+	}
+
+	void _selectMenu(Menu mnu) {
+
+		// Switching focus to window
+		_controlContainer.onLostFocus();
+
+		// Do not show the cursor within a menu
+		Console.hideCaret();
+
+		// draw menu
+		if (_menu is null) {
+			return;
+		}
+
+		if (mnu.isChildOf(_menu)) {
+			// Find this menu is the root menu
+			_selectedMenu = mnu;
+			_selectedMenuIndex = 0;
+			_drawMenu();
+
+			if (mnu.length == 0) {
+				onMenu(mnu);
+				_selectedMenu = null;
+				_selectedMenuIndex = 0;
+				_drawMenu();
+				return;
+			}
+			else {
+				uint curPos = 1;
+
+				uint focusedIdx;
+
+				foreach(uint idx, mnuItem; _menu) {
+					if (mnuItem is mnu) {
+						focusedIdx = idx;
+						break;
+					}
+
+					curPos += mnuItem.displayText.length;
+					curPos ++;
+				}
+
+				_focusedMenuIndex = focusedIdx;
+				_focusedMenu = mnu;
+				_addSubmenuContext(curPos, 1, mnu);
+
+				if (mnu.length >  0) {
+					_selectedMenu = mnu[0];
+					_selectedMenuIndex = 0;
+				}
+				else {
+					_selectedMenu = null;
+				}
+
+				_drawSubmenu();
+			}
+		}
+	}
+	
+	void _addSubmenu() {
+		uint x;
+		uint y;
+
+		if (_menus.length == 0) {
+			return;
+		}
+
+		// This menu starts at the right of the current one + 2 (for the padding to either side)
+		x = _menus[$-1].region.right + 2;
+		y = _menus[$-1].region.top + _selectedMenuIndex;
+
+		_addSubmenuContext(x, y, _selectedMenu);
+		_focusedMenuIndex = _selectedMenuIndex;
+		_focusedMenu = _selectedMenu;
+
+		if (_focusedMenu.length >  0) {
+			_selectedMenu = _focusedMenu[0];
+			_selectedMenuIndex = 0;
+		}
+		else {
+			_selectedMenu = null;
+		}
+	}
+	
+	void _addSubmenuContext(uint x, uint y, Menu mnu) {
+		// get width of submenu
+		uint maxLength;
+		foreach(subItem; mnu) {
+			if (subItem.displayText.length > maxLength) {
+				maxLength = subItem.displayText.length;
+			}
+		}
+
+		MenuContext mnuContext;
+
+		mnuContext.submenu = mnu;
+
+		mnuContext.region.left = x;
+		mnuContext.region.right = x + maxLength;
+		mnuContext.region.top = y;
+		mnuContext.region.bottom = y + mnu.length;
+
+		mnuContext.oldSelectedMenu = _selectedMenu;
+		mnuContext.oldSelectedIndex = _selectedMenuIndex;
+		mnuContext.oldFocusedMenu = _focusedMenu;
+		mnuContext.oldFocusedIndex = _focusedMenuIndex;
+		
+		_menus ~= mnuContext;
+	}
+
+	void _removeMenuContext() {
+		if (_menus.length == 0) {
+			return;
+		}
+
+		MenuContext removed = _menus[$-1];
+		removed.region.right += 2;
+		_menus = _menus[0..$-1];
+
+		_selectedMenu = removed.oldSelectedMenu;
+		_selectedMenuIndex = removed.oldSelectedIndex;
+		_focusedMenu = removed.oldFocusedMenu;
+		_focusedMenuIndex = removed.oldFocusedIndex;
+
+		Console.clipClear();
+		Console.clipRect(0, 0, removed.region.left, this.height);
+		Console.clipRect(removed.region.left, 0, removed.region.right, removed.region.top);
+		Console.clipRect(removed.region.left, removed.region.bottom, removed.region.right, this.height);
+		Console.clipRect(removed.region.right, 0, this.width, this.height);
+
+		_controlContainer.onDraw();
+
+		Console.clipClear();
+
+		if (_menus.length > 0) {
+		//	_drawSubmenu();
+		}
+	}
+
+
+public:
 	this() {
 		this("CuiWindow");
 	}
@@ -430,332 +757,4 @@ class CuiWindow : Responder {
 		Console.clipClear();
 		redraw();
 	}
-
-	Mouse mouseProps;
-
-private:
-
-	package final void _onResize() {
-		if (_menu) {
-			_controlContainer.resize(this.width, this.height - 1);
-		}
-		else {
-			_controlContainer.resize(this.width, this.height);
-		}
-		onResize();
-	}
-
-	void _drawSubmenu() {
-		MenuContext context = _menus[$-1];
-
-		Menu mnu = context.submenu;
-		uint x = context.region.left;
-		uint y = context.region.top;
-
-		uint maxLength = context.region.right - context.region.left;
-
-		foreach(subItem; mnu) {
-			Console.position(x, y);
-			if (subItem is _selectedMenu) {
-				Console.forecolor = Color.White;
-				Console.backcolor = Color.Blue;
-			}
-			else {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			Console.put(" ");
-			int padding = maxLength - subItem.displayText.length;
-
-			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
-			if (subItem is _selectedMenu) {
-				Console.forecolor = Color.White;
-				Console.backcolor = Color.Blue;
-			}
-			else {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			Console.put(" ");
-			y++;
-		}
-	}
-
-	void _drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 0) {
-		if (mnuItem is _selectedMenu) {
-			Console.forecolor = Color.Gray;
-			Console.backcolor = Color.Blue;
-		}
-		else {
-			Console.forecolor = Color.Black;
-			Console.backcolor = Color.Gray;
-		}
-
-		if (mnuItem.hintPosition >= 0) {
-			if (mnuItem.hintPosition > 0) {
-				Console.put(mnuItem.displayText[0..mnuItem.hintPosition]);
-			}
-
-			if (mnuItem !is _selectedMenu) {
-				if (drawHints) {
-					Console.forecolor = Color.Blue;
-				}
-				else {
-					Console.forecolor = Color.DarkBlue;
-				}
-			}
-
-			Console.put(mnuItem.displayText[mnuItem.hintPosition]);
-
-			if (mnuItem !is _selectedMenu) {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			if (mnuItem.hintPosition < mnuItem.displayText.length) {
-				Console.put(mnuItem.displayText[mnuItem.hintPosition + 1..mnuItem.displayText.length]);
-			}
-		}
-		else {
-			Console.put(mnuItem.displayText);
-		}
-
-		// Padding
-		for (uint i; i < padding; i++) {
-			Console.put(" ");
-		}
-
-		if (mnuItem is _selectedMenu) {
-			Console.forecolor = Color.Black;
-			Console.backcolor = Color.White;
-		}
-	}
-
-	void _drawMenu(bool drawHints = false) {
-		if (_menu is null) {
-			return;
-		}
-
-		uint curWidth = this.width;
-
-		Console.position(0,0);
-		Console.forecolor = Color.Black;
-		Console.backcolor = Color.White;
-
-		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {
-			Console.forecolor = Color.White;
-			Console.backcolor = Color.Blue;
-		}
-		else {
-			Console.forecolor = Color.White;
-			Console.backcolor = Color.Blue;
-		}
-		Console.put(" ");
-		curWidth--;
-
-		foreach(i, mnuItem; _menu) {
-			if (curWidth > mnuItem.displayText.length) {
-				_drawMenuItem(mnuItem, drawHints, 0);
-				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
-					Console.forecolor = Color.White;
-					Console.backcolor = Color.Blue;
-					Console.put(" ");
-					Console.forecolor = Color.Black;
-					Console.backcolor = Color.White;
-				}
-				else {
-					Console.put(" ");
-				}
-				curWidth -= (mnuItem.displayText.length + 1);
-			}
-		}
-
-		bool drawCaption = false;
-		if (this.text !is null && curWidth >= (this.text.length + 1)) {
-			curWidth -= this.text.length + 1;
-			drawCaption = true;
-		}
-
-		if (curWidth > 0) {
-			for (; curWidth != 0; curWidth--) {
-				Console.put(" ");
-			}
-		}
-
-		if (drawCaption) {
-			Console.put(this.text, " ");
-		}
-	}
-
-	void _selectMenu(Menu mnu) {
-
-		// Switching focus to window
-		_controlContainer.onLostFocus();
-
-		// Do not show the cursor within a menu
-		Console.hideCaret();
-
-		// draw menu
-		if (_menu is null) {
-			return;
-		}
-
-		if (mnu.isChildOf(_menu)) {
-			// Find this menu is the root menu
-			_selectedMenu = mnu;
-			_selectedMenuIndex = 0;
-			_drawMenu();
-
-			if (mnu.length == 0) {
-				onMenu(mnu);
-				_selectedMenu = null;
-				_selectedMenuIndex = 0;
-				_drawMenu();
-				return;
-			}
-			else {
-				uint curPos = 1;
-
-				uint focusedIdx;
-
-				foreach(uint idx, mnuItem; _menu) {
-					if (mnuItem is mnu) {
-						focusedIdx = idx;
-						break;
-					}
-
-					curPos += mnuItem.displayText.length;
-					curPos ++;
-				}
-
-				_focusedMenuIndex = focusedIdx;
-				_focusedMenu = mnu;
-				_addSubmenuContext(curPos, 1, mnu);
-
-				if (mnu.length >  0) {
-					_selectedMenu = mnu[0];
-					_selectedMenuIndex = 0;
-				}
-				else {
-					_selectedMenu = null;
-				}
-
-				_drawSubmenu();
-			}
-		}
-	}
-	
-	void _addSubmenu() {
-		uint x;
-		uint y;
-
-		if (_menus.length == 0) {
-			return;
-		}
-
-		// This menu starts at the right of the current one + 2 (for the padding to either side)
-		x = _menus[$-1].region.right + 2;
-		y = _menus[$-1].region.top + _selectedMenuIndex;
-
-		_addSubmenuContext(x, y, _selectedMenu);
-		_focusedMenuIndex = _selectedMenuIndex;
-		_focusedMenu = _selectedMenu;
-
-		if (_focusedMenu.length >  0) {
-			_selectedMenu = _focusedMenu[0];
-			_selectedMenuIndex = 0;
-		}
-		else {
-			_selectedMenu = null;
-		}
-	}
-	
-	void _addSubmenuContext(uint x, uint y, Menu mnu) {
-		// get width of submenu
-		uint maxLength;
-		foreach(subItem; mnu) {
-			if (subItem.displayText.length > maxLength) {
-				maxLength = subItem.displayText.length;
-			}
-		}
-
-		MenuContext mnuContext;
-
-		mnuContext.submenu = mnu;
-
-		mnuContext.region.left = x;
-		mnuContext.region.right = x + maxLength;
-		mnuContext.region.top = y;
-		mnuContext.region.bottom = y + mnu.length;
-
-		mnuContext.oldSelectedMenu = _selectedMenu;
-		mnuContext.oldSelectedIndex = _selectedMenuIndex;
-		mnuContext.oldFocusedMenu = _focusedMenu;
-		mnuContext.oldFocusedIndex = _focusedMenuIndex;
-		
-		_menus ~= mnuContext;
-	}
-
-	void _removeMenuContext() {
-		if (_menus.length == 0) {
-			return;
-		}
-
-		MenuContext removed = _menus[$-1];
-		removed.region.right += 2;
-		_menus = _menus[0..$-1];
-
-		_selectedMenu = removed.oldSelectedMenu;
-		_selectedMenuIndex = removed.oldSelectedIndex;
-		_focusedMenu = removed.oldFocusedMenu;
-		_focusedMenuIndex = removed.oldFocusedIndex;
-
-		Console.clipClear();
-		Console.clipRect(0, 0, removed.region.left, this.height);
-		Console.clipRect(removed.region.left, 0, removed.region.right, removed.region.top);
-		Console.clipRect(removed.region.left, removed.region.bottom, removed.region.right, this.height);
-		Console.clipRect(removed.region.right, 0, this.width, this.height);
-
-		_controlContainer.onDraw();
-
-		Console.clipClear();
-
-		if (_menus.length > 0) {
-		//	_drawSubmenu();
-		}
-	}
-
-	Color _bgClr = Color.Black;
-
-	// head and tail of the control linked list
-	CuiWidget _firstControl;	//head
-	CuiWidget _lastControl;	//tail
-
-	int _numControls = 0;
-
-	// Current Menu
-	Menu _menu;
-
-	// In a menu?
-	Menu _focusedMenu;
-	uint _focusedMenuIndex;
-
-	struct MenuContext {
-		Menu submenu;
-		Menu oldSelectedMenu;
-		uint oldSelectedIndex;
-		Menu oldFocusedMenu;
-		uint oldFocusedIndex;
-		Rect region;
-	}
-	
-	Menu _selectedMenu;
-	uint _selectedMenuIndex;
-
-	CuiContainer _controlContainer;
-
-	MenuContext[] _menus;
-
-	bool _cancelNextChar;
-	
-	bool _inited;
 }

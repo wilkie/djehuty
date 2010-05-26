@@ -7,7 +7,7 @@ import io.console;
 
 import data.list;
 
-const string location = "/home/dave/djehuty";
+const string location = "/home/wilkie/djehuty";
 
 class DependencyList : List!(string) {
 	this(string path) {

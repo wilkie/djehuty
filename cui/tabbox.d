@@ -31,6 +31,25 @@ import io.console;
 //   (eventually.. like check the size when containers are switched to reduce overhead)
 
 class CuiTabBox : CuiContainer, Iterable!(CuiContainer) {
+protected:
+
+	override void _reportMove(uint x, uint y) {
+		_base_y++;
+		super._reportMove(x,y);
+	}
+	
+	uint _old_base_y;
+	size_t _curTab = 0;
+
+	List!(CuiContainer) _tabList;
+
+	Color _forecolor = Color.Gray;
+	Color _backcolor = Color.Black;
+
+	Color _selectedForecolor = Color.Yellow;
+	Color _selectedBackcolor = Color.Black;
+
+public:
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 		_tabList = new List!(CuiContainer);
@@ -332,22 +351,5 @@ class CuiTabBox : CuiContainer, Iterable!(CuiContainer) {
 		}
 	}	
 
-protected:
-
-	override void _reportMove(uint x, uint y) {
-		_base_y++;
-		super._reportMove(x,y);
-	}
-	
-	uint _old_base_y;
-	size_t _curTab = 0;
-
-	List!(CuiContainer) _tabList;
-
-	Color _forecolor = Color.Gray;
-	Color _backcolor = Color.Black;
-
-	Color _selectedForecolor = Color.Yellow;
-	Color _selectedBackcolor = Color.Black;
 }
 
