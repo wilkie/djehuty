@@ -102,7 +102,7 @@ void CuiEnd(CuiPlatformVars* vars) {
 	Curses.resetterm();
 }
 
-void CuiNextEvent(CuiEvent* evt, CuiPlatformVars* vars) {
+void CuiNextEvent(Event* evt, CuiPlatformVars* vars) {
 
 start:
 
@@ -117,7 +117,7 @@ start:
 
 	if (key.code == Curses.KEY_RESIZE) {
 		// Resize
-		evt.type = CuiEvent.Type.Size;
+		evt.type = Event.Size;
 		return;
 	}
 	else if (key.code == Curses.KEY_MOUSE) {
@@ -151,55 +151,55 @@ start:
 		}
 
 		if (event.bstate & Curses.BUTTON1_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
+			evt.type = Event.MouseDown;
 			evt.info.mouse.leftDown = true;
 			evt.aux = 0;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON2_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
+			evt.type = Event.MouseDown;
 			evt.info.mouse.rightDown = true;
 			evt.aux = 1;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON3_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
+			evt.type = Event.MouseDown;
 			evt.info.mouse.middleDown = true;
 			evt.aux = 2;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON4_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
+			evt.type = Event.MouseDown;
 			evt.aux = 3;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON5_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
+			evt.type = Event.MouseDown;
 			evt.aux = 4;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON1_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
+			evt.type = Event.MouseUp;
 			evt.aux = 0;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON2_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
+			evt.type = Event.MouseUp;
 			evt.aux = 1;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON3_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
+			evt.type = Event.MouseUp;
 			evt.aux = 2;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON4_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
+			evt.type = Event.MouseUp;
 			evt.aux = 3;
 			return;
 		}
 		else if (event.bstate & Curses.BUTTON5_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
+			evt.type = Event.MouseUp;
 			evt.aux = 4;
 			return;
 		}
@@ -208,13 +208,13 @@ start:
 			mouse_x = event.x;
 			mouse_y = event.y;
 
-			evt.type = CuiEvent.Type.MouseMove;
+			evt.type = Event.MouseMove;
 			return;
 		}
 		goto start;
 	}
 
-	evt.type = CuiEvent.Type.KeyDown;
+	evt.type = Event.KeyDown;
 	evt.info.key = key;
 	return;
 }

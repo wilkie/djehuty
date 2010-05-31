@@ -250,14 +250,15 @@ struct Key {
 // Default parameters
 const int Default = -1;
 
-union CuiEventInfo {
+union EventInfo {
 	Key key;
 	Mouse mouse;
 	Size size;
+	uint exitCode;
 }
 
-struct CuiEvent {
-	enum Type {
+struct Event {
+	enum : uint {
 		KeyDown,
 		KeyUp,
 		MouseDown,
@@ -269,8 +270,8 @@ struct CuiEvent {
 		Close,
 	}
 
-	Type type;
-	CuiEventInfo info;
+	uint type;
+	EventInfo info;
 	uint aux;
 }
 

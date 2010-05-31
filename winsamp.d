@@ -106,6 +106,7 @@ import data.queue;
 
 class MyWindow : CuiWindow {
 	this() {
+		visible = true;
 		push (label = new CuiLabel(2,3, 10, "hello"));
 		tmr = new Timer;
 		tmr.interval = 10000;
@@ -124,11 +125,9 @@ class MyWindow : CuiWindow {
 			label.text = "fuck!" ~ toStr(i);
 		}
 		if (label.text.length > 4) {
-		redraw();
 			return true;
 		}
 		label.text = toStr(i);
-		redraw();
 		return true;
 	}
 
@@ -159,11 +158,12 @@ void foo(bool stop) {
 import math.random;
 static const int REPEATS = 10000;
 int main(string[] args) {
-	//auto app = new MyApp;
-	//app.run();
+
 	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
 	int[] foo = [1,3,-2,5,3,42];
 	putln(sort([1,3,-2,5,3,42]));
 	putln(sort(foob));
+	auto app = new MyApp;
+	app.run();
 	return 0;
 }
