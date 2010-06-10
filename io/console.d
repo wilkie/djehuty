@@ -63,7 +63,7 @@ static:
 		lock();
 		scope(exit) unlock();
 
-		_position(coord.x, coord.y);
+		_position(cast(int)coord.x, cast(int)coord.y);
 	}
 
 	void position(uint[] coord) {
@@ -352,11 +352,11 @@ private:
 				int str_start = 0;
 
 				if (x < region.left) {
-					str_start = region.left - x;
+					str_start = cast(int)region.left - x;
 				}
 
 				int str_end;
-				str_end = region.right - x;
+				str_end = cast(int)region.right - x;
 
 				if (str_end > str.length) {
 					str_end = str.length;

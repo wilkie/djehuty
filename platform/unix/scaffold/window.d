@@ -155,9 +155,9 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 //	int x_return, y_return, width_return, height_return, grav_return;
 //	X.XSizeHints hints;
 //	X.XWMGeometry(_pfvars.display, _pfvars.screen, null, null, &hints, &x_return, &y_return, &width_return, &height_return, &grav_return);
-	if (window.position != WindowPosition.Default) {
+//	if (window.position != WindowPosition.Default) {
 		X.XMoveWindow(_pfvars.display, windowVars.window, w_x, w_y);
-	}
+//	}
 //	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
 
 	// Create View

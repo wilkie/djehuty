@@ -2,14 +2,13 @@ module cui.label;
 
 import djehuty;
 
-import io.console;
-
-import cui.widget;
+import cui.window;
+import cui.canvas;
 
 // Section: Console
 
 // Description: This console control abstracts a simple static text field.
-class CuiLabel : CuiWidget {
+class CuiLabel : CuiWindow {
 
 	this( uint x, uint y, uint width, string text,
 		  Color fgclr = Color.Blue,
@@ -22,19 +21,13 @@ class CuiLabel : CuiWidget {
 		_value = text.dup;
 	}
 
-	override void onAdd() {
-	}
-
-	override void onInit() {
-	}
-
 	// Properties
 
 	// Description: this peroperty sets the value of the field
 	// newValue: the new value of the field
 	void text(string newValue) {
 		_value = newValue.dup;
-		onDraw();
+		redraw();
 	}
 
 	// Description: this property returns the value of the field
@@ -46,7 +39,7 @@ class CuiLabel : CuiWidget {
 	// fgclr: the color to set the foreground to
 	void forecolor(Color fgclr) {
 		_forecolor = fgclr;
-		onDraw();
+		redraw();
 	}
 
 	// Description: this property returns the foreground color of the field
@@ -58,7 +51,7 @@ class CuiLabel : CuiWidget {
 	// bgclr: the color to set the background to
 	void backcolor(Color bgclr) {
 		_backcolor = bgclr;
-		onDraw();
+		redraw();
 	}
 
 	// Description: this property returns the background color of the field
@@ -66,22 +59,19 @@ class CuiLabel : CuiWidget {
 		return _backcolor;
 	}
 
-	override void onDraw() {
-		if (canDraw) {
-			Console.position(0, 0);
-			Console.forecolor = _forecolor;
-			Console.backcolor = _backcolor;
+	override void onDraw(CuiCanvas canvas) {
+		canvas.forecolor = _forecolor;
+		canvas.backcolor = _backcolor;
 
-			// draw as much as we can
+		// draw as much as we can
 
-			if (_value.length > this.width) {
-				Console.put((_value[0..width]));
-			}
-			else {
-				Console.put(_value);
-				for (uint i; i < this.width - _value.length; i++) {
-					Console.put(" ");
-				}
+		if (_value.length > this.width) {
+			canvas.write(_value[0..width]);
+		}
+		else {
+			canvas.write(_value);
+			for (uint i; i < this.width - _value.length; i++) {
+				canvas.write(" ");
 			}
 		}
 	}
