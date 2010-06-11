@@ -167,6 +167,9 @@ class MyApp : CuiApplication {
 	override void onApplicationStart() {
 		push(new MyWindow);
 		push(new MyWindow);
+		push(new MyWindow);
+		push(new MyWindow);
+		push(new MyWindow);
 	}
 }
 

@@ -27,8 +27,9 @@ private:
 	Semaphore _lock;
 
 	// Window list
-	CuiWindow _head;
-	CuiWindow _tail;
+	CuiWindow _head;		// The head of the list
+	CuiWindow _topMostEnd;	// The subsection where the top most end
+	CuiWindow _tail;		// The tail of the list
 
 	// Sibling list
 	CuiWindow _next;
@@ -104,15 +105,29 @@ public:
 	void height(int value) {
 	}
 
-	void reorder(int order) {
+	void reorder(WindowOrder order) {
 		// put on top
-		CuiWindow parent = this.parent();
+		if (order == WindowOrder.Top) {
+			CuiWindow parent = this.parent();
 
-		if (parent !is null) {
+			if (parent !is null && parent._head !is this && parent._tail !is this) {
+				// re-add this window to the head of the list
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._head;
+				this._prev = parent._tail;
+				parent._head._prev = this;
+				parent._tail._next = this;
+			}
+
 			parent._head = this;
-		}
+			if (parent._tail is this) {
+				parent._tail = parent._tail._prev;
+			}
 
-		redraw();
+			redraw();
+		}
 	}
 
 	void reposition(int left, int top, int width = -1, int height = -1) {

@@ -83,6 +83,13 @@ enum WindowPosition : int {
 	User,
 }
 
+enum WindowOrder {
+	TopMost,
+	Top,
+	Bottom,
+	BottomMost
+}
+
 // Window States
 
 // Description: This enum gives all possible window states.  Use the SetState() function within the BaseWindow class to set the state of the window to this value.
