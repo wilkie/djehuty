@@ -14,6 +14,7 @@ import cui.application;
 import cui.window;
 import cui.label;
 import cui.textfield;
+import cui.textbox;
 
 import synch.timer;
 import synch.thread;
@@ -92,32 +93,39 @@ import data.queue;
 
 class MyWindow : CuiDialog {
 	this() {
-		super("hello world", WindowStyle.Fixed, Color.DarkMagenta, WindowPosition.Center, 13, 10);
+		static int i = 0;
+		Color toPick;
+		switch(i%5) {
+			case 0:
+				toPick = Color.DarkMagenta;
+				break;
+			case 1:
+				toPick = Color.DarkGreen;
+				break;
+			case 2:
+				toPick = Color.DarkBlue;
+				break;
+			case 3:
+				toPick = Color.Black;
+				break;
+			case 4:
+				toPick = Color.DarkRed;
+			default:
+				break;
+		}
+		i++;
+		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
 		visible = true;
-//		tmr = new Timer;
-//		tmr.interval = 200;
-//		push(tmr);
-		push(lbl = new CuiLabel(0, 0, 10, "HELLO"));
-		lbl.visible = true;
-//		tmr.start;
-
-//		tmr = new Timer;
-//		tmr.interval = 200;
-//		push(tmr);
-//		tmr.start;
-
-//		tmr = new Timer;
-//		tmr.interval = 200;
-//		push(tmr);
-//		tmr.start;
+		box = new CuiTextBox(0,0,10,10);
+		box.lineNumbers = true;
+		box.visible = true;
+		box.backcolor = toPick;
+		box.backcolorNum = toPick;
+		push(box);
+	}
 	
-//		tmr = new Timer;
-//		tmr.interval = 200;
-//		push(tmr);
-//		tmr.start;
-		field = new CuiTextField(0,1,10,"HELLO");
-		field.visible = true;
-		push(field);
+	override void onResize() {
+		box.reposition(0,0,this.clientWidth,this.clientHeight);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
@@ -161,6 +169,7 @@ class MyWindow : CuiDialog {
 	Timer tmr;
 	CuiLabel lbl;
 	CuiTextField field;
+	CuiTextBox box;
 }
 
 class MyApp : CuiApplication {
@@ -168,10 +177,12 @@ class MyApp : CuiApplication {
 		push(new MyWindow);
 		push(new MyWindow);
 		push(new MyWindow);
-		push(new MyWindow);
 		auto w = new MyWindow();
 		push(w);
 		w.reorder(WindowOrder.BottomMost);
+		w = new MyWindow();
+		push(w);
+		w.reorder(WindowOrder.TopMost);
 	}
 }
 

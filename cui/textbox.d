@@ -14,11 +14,12 @@ import djehuty;
 
 import data.list;
 
-import cui.widget;
+import cui.canvas;
+import cui.window;
 
 import io.console;
 
-class CuiTextBox : CuiWidget {
+class CuiTextBox : CuiWindow {
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 
@@ -28,12 +29,6 @@ class CuiTextBox : CuiWidget {
 
 		_lines.add(newItem);
 		onLineChanged(_lines.length - 1);
-		for (int o; o < 500; o++) {
-			LineInfo subItem = new LineInfo();
-			subItem.value = new string(o);
-			_lines.add(subItem);
-			onLineChanged(_lines.length - 1);
-		}
 
 		_tabWidth = 4;
 		_lineCont = '$';
@@ -62,7 +57,7 @@ class CuiTextBox : CuiWidget {
 
 					onLineChanged(_row);
 
-					refresh();
+					redraw();
 					break;
 				}
 				else if (_column == 1) {
@@ -123,9 +118,7 @@ class CuiTextBox : CuiWidget {
 				_lineColumn = _column;
 
 				onLineChanged(_row);
-
-				drawLine(_row);
-				positionCaret();
+				redraw();
 				break;
 			case Key.Delete:
 				if (_column == _lines[_row].value.length) {
@@ -140,7 +133,7 @@ class CuiTextBox : CuiWidget {
 
 						onLineChanged(_row);
 
-						refresh();
+						redraw();
 					}
 				} else {
 					// Not the last column, so delete the character to the right.
@@ -159,7 +152,7 @@ class CuiTextBox : CuiWidget {
 						_formatIndex = calculateFormatIndex(_lines[_row], _column);
 					}
 
-					refresh();
+					redraw();
 				}
 				break;
 			case Key.Left:
@@ -239,7 +232,7 @@ class CuiTextBox : CuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				refresh();
+				redraw();
 				break;
 			case Key.PageDown:
 				_row += this.height;
@@ -257,7 +250,7 @@ class CuiTextBox : CuiWidget {
 				if (_column > _lines[_row].value.length) {
 					_column = _lines[_row].value.length;
 				}
-				refresh();
+				redraw();
 				break;
 			case Key.End:
 				_column = _lines[_row].value.length;
@@ -341,7 +334,10 @@ class CuiTextBox : CuiWidget {
 
 			onLineChanged(_row);
 
-			refresh();
+			calculateLineNumbersWidth();
+
+			positionCaret();
+			redraw();
 			return;
 		}
 
@@ -359,15 +355,13 @@ class CuiTextBox : CuiWidget {
 		_lineColumn = _column;
 
 		onLineChanged(_row);
-
-		drawLine(_row);
-
 		positionCaret();
+		redraw();
 	}
 
-	override void onGotFocus() {
-		positionCaret();
-	}
+	//override void onGotFocus() {
+	//	positionCaret();
+	//}
 
 	// Events
 
@@ -440,47 +434,40 @@ class CuiTextBox : CuiWidget {
 		calculateLineNumbersWidth();
 	}
 
-	void refresh() {
-		onDraw();
-		positionCaret();
-	}
-
-	override void onDraw() {
+	override void onDraw(CuiCanvas canvas) {
 		// Draw each line and pad any remaining spaces
-		Console.hideCaret();
-
 		uint i;
 
 		for (i = _firstVisible; i < _lines.length && i < _firstVisible + this.height; i++) {
 			// Draw line
-			drawLine(i);
+			drawLine(i, canvas);
 		}
 
 		for (; i < _firstVisible + this.height; i++) {
-			drawEmptyLine(i);
+			drawEmptyLine(i, canvas);
 		}
 	}
 
-	override bool isTabStop() {
-		return true;
-	}
+	//override bool isTabStop() {
+	//	return true;
+	//}
 
 protected:
 
-	void drawLine(uint lineNumber) {
-		Console.hideCaret();
-		Console.position(0, lineNumber - _firstVisible);
+	void drawLine(uint lineNumber, CuiCanvas canvas) {
+		canvas.position(0, lineNumber - _firstVisible);
 
 		if (_lineNumbers) {
 			if (_lineNumbersWidth == 0) {
 				calculateLineNumbersWidth();
 			}
-			string strLineNumber = new string(lineNumber);
-			Console.forecolor = _forecolorNum;
-			Console.backcolor = _backcolorNum;
-			Console.putSpaces(_lineNumbersWidth - 2 - strLineNumber.length);
-			Console.put(strLineNumber);
-			Console.put(": ");
+			string strLineNumber = toStr(lineNumber);
+			canvas.forecolor = _forecolorNum;
+			canvas.backcolor = _backcolorNum;
+
+			canvas.write(times(" ", _lineNumbersWidth - 2 - strLineNumber.length));
+			canvas.write(lineNumber);
+			canvas.write(": ");
 		}
 
 		uint[] formatTabExtension;
@@ -525,19 +512,19 @@ protected:
 
 		if (_lines[lineNumber].format is null) {
 			// No formatting, this line is just a simple regular line
-			Console.forecolor = _forecolor;
-			Console.backcolor = _backcolor;
+			canvas.forecolor = _forecolor;
+			canvas.backcolor = _backcolor;
 			if (_firstColumn >= _lines[lineNumber].value.length) {
 			}
 			else {
-				Console.put(visibleLine.substring(_firstColumn));
+				canvas.write(visibleLine.substring(_firstColumn));
 			}
 		}
 		else {
 			// Splitting up the line due to formatting
 			for (uint i = 0; i < _lines[lineNumber].format.length; i++) {
-				Console.forecolor = _lines[lineNumber].format[i].fgCol;
-				Console.backcolor = _lines[lineNumber].format[i].bgCol;
+				canvas.forecolor = _lines[lineNumber].format[i].fgCol;
+				canvas.backcolor = _lines[lineNumber].format[i].bgCol;
 				//Console.Console.put("[", _lines[lineNumber].format[i].length, "]");
 				uint formatLength = _lines[lineNumber].format[i].len + formatTabExtension[i];
 
@@ -545,18 +532,18 @@ protected:
 					// draw nothing
 				}
 				else if (pos >= _firstColumn) {
-					Console.put(visibleLine[pos..pos + formatLength]);
+					canvas.write(visibleLine[pos..pos + formatLength]);
 				}
 				else {
-					Console.put(visibleLine[_firstColumn..pos + formatLength]);
+					canvas.write(visibleLine[_firstColumn..pos + formatLength]);
 				}
 
 				pos += formatLength;
 			}
 		}
 
-		Console.forecolor = _forecolor;
-		Console.backcolor = _backcolor;
+		canvas.forecolor = _forecolor;
+		canvas.backcolor = _backcolor;
 		// Pad with spaces
 		uint num = (visibleLine.length - _firstColumn);
 		//uint num = (_lines[lineNumber].value.length - _firstColumn);
@@ -571,28 +558,27 @@ protected:
 		}
 		
 		if (num != 0) {
-			Console.putSpaces(num);
+			canvas.write(times(" ", num));
 		}
 
 		// Output the necessary line continuation symbols.
-		Console.forecolor = Color.White;
-		Console.backcolor = Color.Black;
+		canvas.forecolor = Color.White;
+		canvas.backcolor = _backcolor;
 		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
-			Console.position(_lineNumbersWidth, lineNumber - _firstVisible);
-			Console.put(_lineCont);
+			canvas.position(_lineNumbersWidth, lineNumber - _firstVisible);
+			canvas.write(_lineCont);
 		}
 		if (visibleLine.length > _firstColumn && visibleLine.length - _firstColumn > this.width - _lineNumbersWidth) {
-			Console.position(this.width - 1, lineNumber - _firstVisible);
-			Console.put(_lineCont);
+			canvas.position(this.width - 1, lineNumber - _firstVisible);
+			canvas.write(_lineCont);
 		}
 	}
 
-	void drawEmptyLine(uint lineNumber) {
-		Console.hideCaret();
-		Console.position(0, lineNumber - _firstVisible);
+	void drawEmptyLine(uint lineNumber, CuiCanvas canvas) {
+		canvas.position(0, lineNumber - _firstVisible);
 
 		// Pad with spaces
-		Console.putSpaces(this.width);
+		canvas.write(times(" ", this.width));
 	}
 
 	void positionCaret() {
@@ -646,7 +632,7 @@ protected:
 			shouldDraw = true;
 		}
 
-		if (this.top + (_row - _firstVisible) >= this.bottom) {
+		if ((_row - _firstVisible) >= this.height) {
 			// scroll vertically
 			if (_scrollV == ScrollType.Skip) {
 				_firstVisible = _row - this.height / 2;
@@ -660,22 +646,20 @@ protected:
 		}
 
 		if (shouldDraw) {
-			onDraw();
+			redraw();
 		}
 
 		_formatIndex = calculateFormatIndex(_lines[_row], _column);
 
 		// Is the caret on the screen?
-		if ((this.left + _lineNumbersWidth + (_column - _firstColumn) >= this.right) || (this.top + (_row - _firstVisible) >= this.bottom)) {
+		if ((_lineNumbersWidth + (_column - _firstColumn) >= this.width) || ((_row - _firstVisible) >= this.height)) {
 			// The caret is outside of the bounds of the widget
-			Console.hideCaret();
 		}
 		else {
 			// Move cursor to where the edit caret is
-			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces + (_firstColumn > 0 ? 1 : 0), _row - _firstVisible);
+//			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces + (_firstColumn > 0 ? 1 : 0), _row - _firstVisible);
 
 			// The caret is within the bounds of the widget
-			Console.showCaret();
 		}
 	}
 
@@ -701,7 +685,7 @@ protected:
 		if (_lineNumbers) {
 			// The width of the maximum line (in decimal as a string)
 			// summed with two for the ': '
-			_lineNumbersWidth = (new string(_lines.length)).length + 2;
+			_lineNumbersWidth = toStr(_lines.length-1).length + 2;
 		}
 		else {
 			_lineNumbers = 0;

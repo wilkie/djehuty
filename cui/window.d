@@ -108,6 +108,7 @@ public:
 	void height(int value) {
 	}
 
+	// TODO: Fix bugs with bottommost and topmost
 	void reorder(WindowOrder order) {
 		// put on top
 		CuiWindow parent = this.parent();
@@ -210,16 +211,19 @@ public:
 
 	void reposition(int left, int top, int width = -1, int height = -1) {
 		int w, h;
+		int oldW, oldH;
+		oldW = this.width();
+		oldH = this.height();
 
 		if (width == -1) {
-			w = this.width();
+			w = oldW;
 		}
 		else {
 			w = width;
 		}
 
 		if (height == -1) {
-			h = this.height();
+			h = oldH;
 		}
 		else {
 			h = height;
@@ -230,6 +234,9 @@ public:
 		_bounds.right = left + w;
 		_bounds.bottom = top + h;
 
+		if (oldW != w || oldH != h) {
+			onResize();
+		}
 		redraw();
 	}
 
@@ -253,6 +260,10 @@ public:
 	}
 
 	// Events
+
+	void onResize() {
+	}
+
 	void onKeyDown(Key key) {
 		// Pass this down to the focused window
 		if (_focusedWindow !is null) {

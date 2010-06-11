@@ -177,7 +177,12 @@ private:
 					// Take from the IN region next to it
 					uint left = regionSize - formatArray[i];
 
-					if (formatArray[i+1] <= left) {
+					if ((i + 1) >= formatArray.length) {
+						// There is not IN section after this OUT
+						// So, just update the OUT region
+						formatArray[i] = regionSize;
+					}
+					else if (formatArray[i+1] <= left) {
 						// OK! This IN section more than makes up for what is left
 						// Remove the IN section by adding the next OUT section to this
 						if ((i+2) < formatArray.length) {
