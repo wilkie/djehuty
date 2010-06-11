@@ -56,17 +56,17 @@ protected:
 
 	Coord[] quickHullCompute(Coord start, Coord end, Coord[] pts) {
 		// compute useful distance information
-		int distX = end.x - start.x;
-		int distY = end.y - start.y;
+		double distX = end.x - start.x;
+		double distY = end.y - start.y;
 
-		int maxDistance = 0;
-		int maxPoint = -1;
+		double maxDistance = 0;
+		uint maxPoint = -1;
 
 		Coord[] outerPoints;
 
 		// find most distant point
 		foreach(i, pt; pts) {
-			int distance = distX * (start.y - pt.y) - distY * (start.x - pt.x);
+			double distance = distX * (start.y - pt.y) - distY * (start.x - pt.x);
 
 			if (distance <= 0) {
 				continue;

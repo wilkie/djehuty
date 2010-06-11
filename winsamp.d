@@ -1,12 +1,6 @@
 import djehuty;
 
 import data.list;
-import gui.application;
-import gui.window;
-import gui.button;
-import gui.widget;
-import gui.listbox;
-
 import hashes.digest;
 
 import resource.menu;
@@ -20,8 +14,7 @@ import cui.application;
 import cui.window;
 import cui.label;
 import cui.textfield;
-import cui.tabbox;
-import cui.container;
+import cui.textbox;
 
 import synch.timer;
 import synch.thread;
@@ -43,15 +36,9 @@ import math.vector;
 
 import core.date;
 
-import cui.textfield;
 import core.application;
 
-import cui.textbox;
-import cui.codebox;
-
 import cui.dialog;
-import cui.filebox;
-import cui.listbox;
 
 import math.fixed;
 import math.currency;
@@ -104,31 +91,66 @@ import spec.modulespecification;
 
 import data.queue;
 
-class MyWindow : CuiWindow {
+class MyWindow : CuiDialog {
 	this() {
-		push (label = new CuiLabel(2,3, 10, "hello"));
-		tmr = new Timer;
-		tmr.interval = 10000;
-		push(tmr);
-		tmr.start;
+		static int i = 0;
+		Color toPick;
+		switch(i%5) {
+			case 0:
+				toPick = Color.DarkMagenta;
+				break;
+			case 1:
+				toPick = Color.DarkGreen;
+				break;
+			case 2:
+				toPick = Color.DarkBlue;
+				break;
+			case 3:
+				toPick = Color.Black;
+				break;
+			case 4:
+				toPick = Color.DarkRed;
+			default:
+				break;
+		}
+		i++;
+		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
+		visible = true;
+		box = new CuiTextBox(0,0,13,10);
+		box.lineNumbers = true;
+		box.visible = true;
+		box.backcolor = toPick;
+		box.backcolorNum = toPick;
+		push(box);
+	}
+	
+	override void onResize() {
+		box.reposition(0,0,this.clientWidth,this.clientHeight);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
-		if (dsp !is tmr) {
-			return false;
-		}
-
 		static int i = 0;
 		i++;
-		if (signal == 1) {
-			label.text = "fuck!" ~ toStr(i);
+		int a = i % 5;
+		switch(a) {
+			case 0:
+				lbl.forecolor = Color.Red;
+				break;
+			case 1:
+				lbl.forecolor = Color.Yellow;
+				break;
+			case 2:
+				lbl.forecolor = Color.Green;
+				break;
+			case 3:
+				lbl.forecolor = Color.Magenta;
+				break;
+			case 4:
+			default:
+				lbl.forecolor = Color.Blue;
+				break;
 		}
-		if (label.text.length > 4) {
-		redraw();
-			return true;
-		}
-		label.text = toStr(i);
-		redraw();
+		lbl.text = toStr(i);
 		return true;
 	}
 
@@ -136,18 +158,32 @@ class MyWindow : CuiWindow {
 		if (key.ctrl && key.code == Key.Q) {
 			Djehuty.app.exit(0);
 		}
-
-		tmr.stop();
-		tmr.start();
+		else if (key.alt && key.code == Key.Tab) {
+			Djehuty.app.exit(0);
+		}
+		else {
+			super.onKeyDown(key);
+		}
 	}
 
 	Timer tmr;
-	CuiLabel label;
+	CuiLabel lbl;
+	CuiTextField field;
+	CuiTextBox box;
 }
 
 class MyApp : CuiApplication {
 	override void onApplicationStart() {
 		push(new MyWindow);
+		push(new MyWindow);
+		push(new MyWindow);
+		auto w = new MyWindow();
+		push(w);
+		w.reorder(WindowOrder.BottomMost);
+		w = new MyWindow();
+		push(w);
+		w.text = "topmost";
+		w.reorder(WindowOrder.TopMost);
 	}
 }
 
@@ -159,11 +195,16 @@ void foo(bool stop) {
 import math.random;
 static const int REPEATS = 10000;
 int main(string[] args) {
-	//auto app = new MyApp;
-	//app.run();
+
+	Console.putln("he\u0364llo \u258c");
+	Console.putln("he\u0364llo \u258c");
+	Console.putln("he\u0364llo \u258c");
+	Console.putln("he\u0364llo \u258c");
 	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
 	int[] foo = [1,3,-2,5,3,42];
 	putln(sort([1,3,-2,5,3,42]));
 	putln(sort(foob));
+	auto app = new MyApp;
+	app.run();
 	return 0;
 }

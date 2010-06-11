@@ -4,8 +4,6 @@ import graphics.graphics;
 
 import synch.semaphore;
 
-import gui.window;
-
 import graphics.brush;
 import graphics.pen;
 import graphics.font;

@@ -300,9 +300,9 @@ private:
 						w_y >>= 1;
 					}
 
-					if (window.position != WindowPosition.Default) {
+//					if (window.position != WindowPosition.Default) {
 						X.XMoveWindow(_pfvars.display, windowVars.wm_parent, w_x, w_y);
-					}
+//					}
 
 					break;
 

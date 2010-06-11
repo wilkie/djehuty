@@ -73,7 +73,11 @@ extern(C) void mousetimerproc(sigval val) {
 
 	p_mouseProps = cast(Mouse*)val.sival_ptr;
 
-	p_mouseProps.clicks = 1;
+	p_mouseProps.clicks[0] = 1;
+	p_mouseProps.clicks[1] = 1;
+	p_mouseProps.clicks[2] = 1;
+	p_mouseProps.clicks[3] = 1;
+	p_mouseProps.clicks[4] = 1;
 }
 
 // segfault handler
@@ -87,6 +91,7 @@ void AppInit() {
 	// UTF-8 SUPPORT
 //	_pfvars.wm_name = X.XInternAtom(_pfvars.display, "_NET_WM_NAME\0"c.ptr, X.Bool.True);
 	setlocale(LC_CTYPE, "");
+	setlocale(LC_ALL,"");
 
 	// segfault handler
 	signal(SIGSEGV, &segfault_handler);

@@ -2,107 +2,68 @@ module cui.application;
 
 import cui.window;
 
-import core.application;
-import core.string;
-import core.event;
-import core.main;
-import core.definitions;
+import djehuty;
 
 import scaffold.cui;
 
 import platform.vars.cui;
 
-import io.console;
-
 import binding.c;
 
-// Description: This class represents a Text User Interface application (TUI).
+import data.list;
+
+import io.console;
+
 class CuiApplication : Application {
-public:
-
-	this() {
-		CuiStart(&_pfvars);
-		super();
-	}
-
-	this(string appName) {
-		CuiStart(&_pfvars);
-		super(appName);
-	}
-
-	override void push(Dispatcher dsp) {
-		super.push(dsp);
-
-		if (cast(CuiWindow)dsp !is null) {
-			setWindow(cast(CuiWindow)dsp);
-		}
-	}
-
-	CuiWindow window() {
-		return _curConsoleWindow;
-	}
-
-	override bool isZombie() {
-		return (_curConsoleWindow is null);
-	}
-
-protected:
-
-	CuiWindow _curConsoleWindow;
-
+private:
     CuiPlatformVars _pfvars;
 
-	override void shutdown() {
-		CuiEnd(&_pfvars);
-	}
+	CuiWindow _mainWindow;
 
-	override void start() {
-		eventLoop();
-	}
-
-	override void end(uint exitCode) {
-		_running = false;
-	}
-
-private:
-
-	void setWindow(CuiWindow window) {
-		_curConsoleWindow = window;
-
-		// Draw Window
-		window.onInitialize();
-	}
-
-	bool _running = true;
+	bool _running;
+	Mouse _mouse;
 
 	void eventLoop() {
+		_running = true;
 		while(_running) {
-			CuiEvent evt;
-			if (_curConsoleWindow is null) {
-				continue;
-			}
+			Event evt;
 
 			CuiNextEvent(&evt, &_pfvars);
 
 			switch(evt.type) {
-				case CuiEvent.Type.KeyDown:
-					_curConsoleWindow.onKeyDown(evt.info.key);
+				case Event.KeyDown:
+					_mainWindow.onKeyDown(evt.info.key);
 					dchar chr;
 					if (isPrintable(evt.info.key, chr)) {
-						_curConsoleWindow.onKeyChar(chr);
+						_mainWindow.onKeyChar(chr);
 					}
 					break;
-				case CuiEvent.Type.MouseDown:
+				case Event.MouseDown:
+					_mouse.x = evt.info.mouse.x;
+					_mouse.y = evt.info.mouse.y;
+					_mouse.clicks[evt.aux] = 1;
+					_mainWindow.onPrimaryDown(_mouse);
 					break;
-				case CuiEvent.Type.MouseUp:
+				case Event.MouseUp:
+					_mouse.x = evt.info.mouse.x;
+					_mouse.y = evt.info.mouse.y;
+					_mainWindow.onPrimaryUp(_mouse);
+					_mouse.clicks[evt.aux] = 0;
 					break;
-				case CuiEvent.Type.MouseMove:
+				case Event.MouseMove:
+					_mouse.x = evt.info.mouse.x;
+					_mouse.y = evt.info.mouse.y;
+					if (_mouse.clicks[0] > 0 || _mouse.clicks[1] > 0 || _mouse.clicks[2] > 0) {
+						_mainWindow.onDrag(_mouse);
+					}
+					else {
+						_mainWindow.onHover(_mouse);
+					}
 					break;
-				case CuiEvent.Type.Close:
-					this.exit(evt.aux);
+				case Event.Close:
+					this.exit(evt.info.exitCode);
 					break;
-				case CuiEvent.Type.Size:
-					_curConsoleWindow._onResize();
+				case Event.Size:
 					break;
 				default:
 					break;
@@ -110,10 +71,8 @@ private:
 		}
 	}
 
-	bool _inited;
-
 	bool isPrintable(Key key, out dchar chr) {
-				if (key.ctrl || key.alt) {
+		if (key.ctrl || key.alt) {
 			return false;
 		}
 
@@ -203,7 +162,7 @@ private:
 				chr = '}';
 			}
 			else {
-				chr = '}';
+				chr = ']';
 			}
 		}
 		else if (key.code == Key.Semicolon) {
@@ -268,6 +227,51 @@ private:
 		}
 
 		return true;
+	}
 
+	void _redraw() {
+		_mainWindow.redraw();
+	}
+
+protected:
+
+	override void shutdown() {
+		CuiEnd(&_pfvars);
+	}
+
+	override void start() {
+		eventLoop();
+	}
+
+	override void end(uint exitCode) {
+		_running = false;
+	}
+
+
+public:
+	this() {
+		CuiStart(&_pfvars);
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		_mainWindow.visible = true;
+		super();
+	}
+
+	this(string appName) {
+		CuiStart(&_pfvars);
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		_mainWindow.visible = true;
+		super(appName);
+	}
+
+	override void push(Dispatcher dsp) {
+		auto window = cast(CuiWindow)dsp;
+		if (window !is null) {
+			// Add to the window list
+			_mainWindow.push(window);
+			_redraw();
+		}
+		else {
+			super.push(dsp);
+		}
 	}
 }

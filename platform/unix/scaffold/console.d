@@ -20,6 +20,21 @@ import binding.c;
 import platform.application;
 
 import synch.thread;
+import synch.semaphore;
+
+private Semaphore foo = null;
+
+package void lock() {
+	if (foo is null) {
+		foo = new Semaphore(1);
+	}
+	foo.down();
+}
+
+package void unlock() {
+//	foo = foo;
+	foo.up();
+}
 
 private int _toNearestConsoleColor(Color clr) {
 	// 16 colors on console
@@ -121,19 +136,39 @@ void ConsoleSetColors(Color fg, Color bg) {
 		int idx = fgidx << 3;
 		idx |= bgidx;
 
+		lock();
 		if (bright) {
-			Curses.attron(Curses.A_BOLD);
+			Curses.wattron(Curses.stdscr, Curses.A_BOLD);
 		}
 		else {
-			Curses.attroff(Curses.A_BOLD);
+			Curses.wattroff(Curses.stdscr, Curses.A_BOLD);
 		}
 
 		Curses.init_pair(idx, fgidx, bgidx);
-		Curses.attron(Curses.COLOR_PAIR(idx));
+		Curses.wattron(Curses.stdscr, Curses.COLOR_PAIR(idx));
+		unlock();
 	}
 	else {
 		printf("\x1B[%d;%d;%dm", bright, 30 + fgidx, 40 + bgidx);
 	}
+}
+
+private int getChar() {
+	int ret;
+	while(true) {
+//		if (ftell(stdin) == 0) {
+			lock();
+			ret = Curses.wgetch(Curses.stdscr);
+			unlock();
+			if (ret != Curses.ERR) {
+				break;
+			}
+//			break;
+//		}
+	}
+
+	return ret;
+//	return Curses.getch();
 }
 
 //will return the next character pressed
@@ -143,7 +178,7 @@ Key consoleGetKey() {
 	ubyte[18] tmp;
 	uint count;
 
-	ret.code = Curses.getch();
+	ret.code = getChar();
 //	Curses.move(0,0);
 //	Console.put("                                                ");
 //	Curses.move(0,0);
@@ -197,7 +232,7 @@ Key consoleGetKey() {
 	}
 
 	// Escape sequence...
-	ret.code = Curses.getch();
+	ret.code = getChar();
 	//Console.put(ret.code, " ");
 
 	// Get extended commands
@@ -206,22 +241,22 @@ Key consoleGetKey() {
 		ret.code = Key.Escape;
 	}
 	else if (ret.code == '[') {
-		ret.code = Curses.getch();
+		ret.code = getChar();
 	//Console.put(ret.code, " ");
 		if (ret.code == '1') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 			if (ret.code == '~') {
 				ret.code = Key.Home;
 			}
 			else if (ret.code == '#') {
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 				if (ret.code == '~') {
 					ret.code = Key.F5;
 				}
 				else if (ret.code == ';') {
-					ret.code = Curses.getch();
+					ret.code = getChar();
 	//Console.put(ret.code, " ");
 					if (ret.code == '2') {
 						ret.shift = true;
@@ -230,13 +265,13 @@ Key consoleGetKey() {
 				}
 			}
 			else if (ret.code == '7') {
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 				if (ret.code == '~') {
 					ret.code = Key.F6;
 				}
 				else if (ret.code == ';') {
-					ret.code = Curses.getch();
+					ret.code = getChar();
 	//Console.put(ret.code, " ");
 					if (ret.code == '2') {
 						ret.shift = true;
@@ -246,7 +281,7 @@ Key consoleGetKey() {
 			}
 			else if (ret.code == ';') {
 				// Arrow Keys
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 				getModifiers(ret);
 	//Console.put(ret.code, " ");
@@ -265,18 +300,18 @@ Key consoleGetKey() {
 				}
 			}
 			else {
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 			}
 		}
 		else if (ret.code == '2') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 			if (ret.code == '~') {
 			}
 			else if (ret.code == ';') {
 				// Alt + Insert
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 				getModifiers(ret);
 	//Console.put(ret.code, " ");
@@ -286,33 +321,33 @@ Key consoleGetKey() {
 			}
 		}
 		else if (ret.code == '3') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '4') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '5') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '6') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 		}
 		else {
 		}
 	}
 	else if (ret.code == 'O') {
-		ret.code = Curses.getch();
+		ret.code = getChar();
 
 		// F1, F2, F3, F4
 		if (ret.code == '1') {
-			ret.code = Curses.getch();
+			ret.code = getChar();
 	//Console.put(ret.code, " ");
 			if (ret.code == ';') {
-				ret.code = Curses.getch();
+				ret.code = getChar();
 	//Console.put(ret.code, " ");
 				getModifiers(ret);
 	//Console.put(ret.code, " ");
@@ -378,7 +413,7 @@ void getModifiers(ref Key key) {
 	}
 
 	if (key.shift || key.alt || key.ctrl) {
-		key.code = Curses.getch();
+		key.code = getChar();
 	}
 }
 
@@ -596,8 +631,10 @@ void ConsoleUninit() {
 
 void ConsoleClear() {
 	if (ApplicationController.instance.usingCurses) {
-		Curses.clear();
-		Curses.refresh();
+		lock();
+		Curses.wclear(Curses.stdscr);
+		Curses.wrefresh(Curses.stdscr);
+		unlock();
 	}
 	else {
 		printf("\x1B[2J\x1B[0;0H");
@@ -608,16 +645,20 @@ void ConsoleSetRelative(int x, int y) {
 	int newx;
 	int newy;
 
+	lock();
 	Curses.getyx(Curses.stdscr, m_y, m_x);
 
 	newx = m_x + x;
 	newy = m_y + y;
 
-	Curses.move(newy, newx);
+	Curses.wmove(Curses.stdscr, newy, newx);
+	unlock();
 }
 
 void ConsoleGetPosition(uint* x, uint* y) {
+	lock();
 	Curses.getyx(Curses.stdscr, m_y, m_x);
+	unlock();
 	*x = m_x;
 	*y = m_y;
 }
@@ -631,24 +672,32 @@ void ConsoleSetPosition(uint x, uint y) {
 
     if (y < 0) { y = 0; }
 
-	Curses.move(y,x);
+	lock();
+	Curses.wmove(Curses.stdscr, y,x);
+	unlock();
 }
 
 void ConsoleHideCaret() {
+	lock();
 	printf("\x1B[?25l");
 	Curses.curs_set(0);
+	unlock();
 }
 
 void ConsoleShowCaret() {
+	lock();
 	printf("\x1B[?25h");
 	Curses.curs_set(1);
+	unlock();
 }
 
 void ConsoleSetHome() {
 	if (ApplicationController.instance.usingCurses) {
+		lock();
 		Curses.getyx(Curses.stdscr, m_y, m_x);
 		m_x = 0;
-		Curses.move(m_y, m_x);
+		Curses.wmove(Curses.stdscr, m_y, m_x);
+		unlock();
 	}
 	else {
 		printf("\x1B[0G");
@@ -656,23 +705,30 @@ void ConsoleSetHome() {
 }
 
 void ConsolePutString(char[] chrs) {
-	chrs ~= '\0';
+	lock();
 	Curses.getyx(Curses.stdscr, m_y, m_x);
 	char[] utf8 = chrs;
+	utf8 ~= '\0';
 	bool goBackOneLine = false;
 	if (ApplicationController.instance.usingCurses) {
 		for (uint i; i < utf8.length; i++) {
 			if (utf8[i] == '\r' || utf8[i] == '\n' || utf8[i] == '\0') {
-				if (i + m_x >= m_width) {
-					i = m_width - m_x;
+				if (utf8[0..i].utflen() + m_x >= m_width) {
+					utf8 = utf8.substring(0, m_width - m_x);
+					utf8 ~= '\0';
 					goBackOneLine = true;
 				}
-				utf8[i] = '\0';								
-				Curses.wprintw(Curses.stdscr, "%s", &utf8[0]);
-				if (goBackOneLine) {
-					ConsoleSetPosition(m_width - 1, m_y);
+				else {
+					utf8[i] = '\0';	
 				}
-				Curses.refresh();
+				Curses.wprintw(Curses.stdscr, "%s", utf8.ptr);
+				unlock();
+				if (goBackOneLine) {
+		//			ConsoleSetPosition(m_width - 1, m_y);
+				}
+				lock();
+				Curses.wrefresh(Curses.stdscr);
+				unlock();
 				return;
 			}
 		}
@@ -680,6 +736,7 @@ void ConsolePutString(char[] chrs) {
 	else {
 		printf("%s", utf8.ptr);
 	}
+	unlock();
 }
 
 void ConsolePutChar(dchar chr) {
@@ -692,8 +749,10 @@ void ConsolePutChar(dchar chr) {
 			ConsoleSetHome();
 		}
 		else {
+			lock();
 			Curses.wprintw(Curses.stdscr, "%s", chrs.ptr);
-			Curses.refresh();
+			Curses.wrefresh(Curses.stdscr);
+			unlock();
 		}
 	}
 	else {
@@ -702,11 +761,13 @@ void ConsolePutChar(dchar chr) {
 }
 
 void ConsoleGetSize(out uint width, out uint height) {
+	lock();
 	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
 
 	width = m_width;
 	height = m_height;
 
+	unlock();
 }
 
 void ConsoleGetChar(out dchar chr, out uint code) {

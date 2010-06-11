@@ -220,7 +220,7 @@ class Widget : Responder {
 
 	// Description: Will return a boolean value describing whether the point is within the region occupied by the control.
 	// Returns: Will return true when the point is within the region.
-	bool containsPoint(int x, int y) {
+	bool containsPoint(double x, double y) {
 		if (_x < x && _y < y &&
 			_b > y && _r > x) {
 			return true;
@@ -468,7 +468,7 @@ class Container : Widget, AbstractContainer
 		}
 	}
 
-	Widget controlAtPoint(int x, int y) {
+	Widget controlAtPoint(double x, double y) {
 		Widget ctrl = _firstControl;
 
 		if (ctrl !is null) {

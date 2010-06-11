@@ -8,7 +8,6 @@ import io.console;
 import platform.vars.menu;
 
 import scaffold.menu;
-import scaffold.window;
 
 // Section: Core/Resources
 

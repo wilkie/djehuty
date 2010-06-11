@@ -1,760 +1,526 @@
 module cui.window;
 
 import cui.application;
-import cui.widget;
-import cui.container;
-import cui.dialog;
+import cui.canvas;
 
 import djehuty;
 
 import resource.menu;
 
+import data.list;
+
 import io.console;
 
-// Description: This class abstacts the console window and allows for high level console operations which are abstracted away as controls.  It is the Window class for the console world.
+import synch.semaphore;
+
 class CuiWindow : Responder {
 private:
-	Color _bgClr = Color.Black;
+	bool _visible; // whether this window is drawn and can be interacted with
+	bool _focused; // whether this window is the foreground window
 
-	// head and tail of the control linked list
-	CuiWidget _firstControl;	//head
-	CuiWidget _lastControl;	//tail
+	CuiWindow _focusedWindow;
+	CuiWindow _dragWindow;
 
-	int _numControls = 0;
+	Rect _bounds;
+	Color _bg;
 
-	// Current Menu
-	Menu _menu;
+	Semaphore _lock;
 
-	// In a menu?
-	Menu _focusedMenu;
-	uint _focusedMenuIndex;
+	// Window list
+	CuiWindow _head;		// The head of the list
+	CuiWindow _topMostEnd;	// The subsection where the top most end
+	CuiWindow _bottomMostStart;	// The subsection where the bottom most start
 
-	struct MenuContext {
-		Menu submenu;
-		Menu oldSelectedMenu;
-		uint oldSelectedIndex;
-		Menu oldFocusedMenu;
-		uint oldFocusedIndex;
-		Rect region;
-	}
-	
-	Menu _selectedMenu;
-	uint _selectedMenuIndex;
+	// Sibling list
+	CuiWindow _next;
+	CuiWindow _prev;
 
-	CuiContainer _controlContainer;
-
-	MenuContext[] _menus;
-
-	bool _cancelNextChar;
-	
-	bool _inited;	// Constructor
-
-	public Mouse mouseProps;
-
-	package void _onResize() {
-		if (_menu) {
-			_controlContainer.resize(this.width, this.height - 1);
-		}
-		else {
-			_controlContainer.resize(this.width, this.height);
-		}
-		onResize();
-	}
-
-	void _drawSubmenu() {
-		MenuContext context = _menus[$-1];
-
-		Menu mnu = context.submenu;
-		uint x = context.region.left;
-		uint y = context.region.top;
-
-		uint maxLength = context.region.right - context.region.left;
-
-		foreach(subItem; mnu) {
-			Console.position(x, y);
-			if (subItem is _selectedMenu) {
-				Console.forecolor = Color.White;
-				Console.backcolor = Color.Blue;
-			}
-			else {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			Console.put(" ");
-			int padding = maxLength - subItem.displayText.length;
-
-			_drawMenuItem(subItem, false, maxLength - subItem.displayText.length);
-			if (subItem is _selectedMenu) {
-				Console.forecolor = Color.White;
-				Console.backcolor = Color.Blue;
-			}
-			else {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			Console.put(" ");
-			y++;
-		}
-	}
-
-	void _drawMenuItem(Menu mnuItem, bool drawHints = false, uint padding = 0) {
-		if (mnuItem is _selectedMenu) {
-			Console.forecolor = Color.Gray;
-			Console.backcolor = Color.Blue;
-		}
-		else {
-			Console.forecolor = Color.Black;
-			Console.backcolor = Color.Gray;
-		}
-
-		if (mnuItem.hintPosition >= 0) {
-			if (mnuItem.hintPosition > 0) {
-				Console.put(mnuItem.displayText[0..mnuItem.hintPosition]);
-			}
-
-			if (mnuItem !is _selectedMenu) {
-				if (drawHints) {
-					Console.forecolor = Color.Blue;
-				}
-				else {
-					Console.forecolor = Color.DarkBlue;
-				}
-			}
-
-			Console.put(mnuItem.displayText[mnuItem.hintPosition]);
-
-			if (mnuItem !is _selectedMenu) {
-				Console.forecolor = Color.Black;
-				Console.backcolor = Color.White;
-			}
-			if (mnuItem.hintPosition < mnuItem.displayText.length) {
-				Console.put(mnuItem.displayText[mnuItem.hintPosition + 1..mnuItem.displayText.length]);
-			}
-		}
-		else {
-			Console.put(mnuItem.displayText);
-		}
-
-		// Padding
-		for (uint i; i < padding; i++) {
-			Console.put(" ");
-		}
-
-		if (mnuItem is _selectedMenu) {
-			Console.forecolor = Color.Black;
-			Console.backcolor = Color.White;
-		}
-	}
-
-	void _drawMenu(bool drawHints = false) {
-		if (_menu is null) {
-			return;
-		}
-
-		uint curWidth = this.width;
-
-		Console.position(0,0);
-		Console.forecolor = Color.Black;
-		Console.backcolor = Color.White;
-
-		if (_menu.length > 0 && (_menu[0] is _selectedMenu)) {
-			Console.forecolor = Color.White;
-			Console.backcolor = Color.Blue;
-		}
-		else {
-			Console.forecolor = Color.White;
-			Console.backcolor = Color.Blue;
-		}
-		Console.put(" ");
-		curWidth--;
-
-		foreach(i, mnuItem; _menu) {
-			if (curWidth > mnuItem.displayText.length) {
-				_drawMenuItem(mnuItem, drawHints, 0);
-				if (mnuItem is _selectedMenu || (((i + 1) < _menu.length) && _menu[i+1] is _selectedMenu)) {
-					Console.forecolor = Color.White;
-					Console.backcolor = Color.Blue;
-					Console.put(" ");
-					Console.forecolor = Color.Black;
-					Console.backcolor = Color.White;
-				}
-				else {
-					Console.put(" ");
-				}
-				curWidth -= (mnuItem.displayText.length + 1);
-			}
-		}
-
-		bool drawCaption = false;
-		if (this.text !is null && curWidth >= (this.text.length + 1)) {
-			curWidth -= this.text.length + 1;
-			drawCaption = true;
-		}
-
-		if (curWidth > 0) {
-			for (; curWidth != 0; curWidth--) {
-				Console.put(" ");
-			}
-		}
-
-		if (drawCaption) {
-			Console.put(this.text, " ");
-		}
-	}
-
-	void _selectMenu(Menu mnu) {
-
-		// Switching focus to window
-		_controlContainer.onLostFocus();
-
-		// Do not show the cursor within a menu
-		Console.hideCaret();
-
-		// draw menu
-		if (_menu is null) {
-			return;
-		}
-
-		if (mnu.isChildOf(_menu)) {
-			// Find this menu is the root menu
-			_selectedMenu = mnu;
-			_selectedMenuIndex = 0;
-			_drawMenu();
-
-			if (mnu.length == 0) {
-				onMenu(mnu);
-				_selectedMenu = null;
-				_selectedMenuIndex = 0;
-				_drawMenu();
-				return;
-			}
-			else {
-				uint curPos = 1;
-
-				uint focusedIdx;
-
-				foreach(uint idx, mnuItem; _menu) {
-					if (mnuItem is mnu) {
-						focusedIdx = idx;
-						break;
-					}
-
-					curPos += mnuItem.displayText.length;
-					curPos ++;
-				}
-
-				_focusedMenuIndex = focusedIdx;
-				_focusedMenu = mnu;
-				_addSubmenuContext(curPos, 1, mnu);
-
-				if (mnu.length >  0) {
-					_selectedMenu = mnu[0];
-					_selectedMenuIndex = 0;
-				}
-				else {
-					_selectedMenu = null;
-				}
-
-				_drawSubmenu();
-			}
-		}
-	}
-	
-	void _addSubmenu() {
-		uint x;
-		uint y;
-
-		if (_menus.length == 0) {
-			return;
-		}
-
-		// This menu starts at the right of the current one + 2 (for the padding to either side)
-		x = _menus[$-1].region.right + 2;
-		y = _menus[$-1].region.top + _selectedMenuIndex;
-
-		_addSubmenuContext(x, y, _selectedMenu);
-		_focusedMenuIndex = _selectedMenuIndex;
-		_focusedMenu = _selectedMenu;
-
-		if (_focusedMenu.length >  0) {
-			_selectedMenu = _focusedMenu[0];
-			_selectedMenuIndex = 0;
-		}
-		else {
-			_selectedMenu = null;
-		}
-	}
-	
-	void _addSubmenuContext(uint x, uint y, Menu mnu) {
-		// get width of submenu
-		uint maxLength;
-		foreach(subItem; mnu) {
-			if (subItem.displayText.length > maxLength) {
-				maxLength = subItem.displayText.length;
-			}
-		}
-
-		MenuContext mnuContext;
-
-		mnuContext.submenu = mnu;
-
-		mnuContext.region.left = x;
-		mnuContext.region.right = x + maxLength;
-		mnuContext.region.top = y;
-		mnuContext.region.bottom = y + mnu.length;
-
-		mnuContext.oldSelectedMenu = _selectedMenu;
-		mnuContext.oldSelectedIndex = _selectedMenuIndex;
-		mnuContext.oldFocusedMenu = _focusedMenu;
-		mnuContext.oldFocusedIndex = _focusedMenuIndex;
-		
-		_menus ~= mnuContext;
-	}
-
-	void _removeMenuContext() {
-		if (_menus.length == 0) {
-			return;
-		}
-
-		MenuContext removed = _menus[$-1];
-		removed.region.right += 2;
-		_menus = _menus[0..$-1];
-
-		_selectedMenu = removed.oldSelectedMenu;
-		_selectedMenuIndex = removed.oldSelectedIndex;
-		_focusedMenu = removed.oldFocusedMenu;
-		_focusedMenuIndex = removed.oldFocusedIndex;
-
-		Console.clipClear();
-		Console.clipRect(0, 0, removed.region.left, this.height);
-		Console.clipRect(removed.region.left, 0, removed.region.right, removed.region.top);
-		Console.clipRect(removed.region.left, removed.region.bottom, removed.region.right, this.height);
-		Console.clipRect(removed.region.right, 0, this.width, this.height);
-
-		_controlContainer.onDraw();
-
-		Console.clipClear();
-
-		if (_menus.length > 0) {
-		//	_drawSubmenu();
-		}
-	}
-
+	bool _isTopMost;
+	bool _isBottomMost;
 
 public:
-	this() {
-		this("CuiWindow");
+	this(int x, int y, int width, int height, Color bg = Color.Black) {
+		_lock = new Semaphore(1);
+		_bounds.left = x;
+		_bounds.top = y;
+		_bounds.right = x + width;
+		_bounds.bottom = y + height;
+		_bg = bg;
 	}
 
-	this(Color bgClr) {
-		this(bgClr, "CuiWindow");
+	this(WindowPosition pos, int width, int height, Color bg = Color.Black) {
+		int x, y;
+		if (pos == WindowPosition.Center) {
+			x = (Console.width - width) / 2;
+			y = (Console.height - height) / 2;
+		}
+
+		this(x, y, width, height, bg);
 	}
 
-	this(Color bgClr, string name) {
-		Console.clipRect(0,0,this.width, this.height);
-		_bgClr = bgClr;
-		_controlContainer = new CuiContainer(0, 0, this.width, this.height);
-		_controlContainer.text = name.dup;
-		_controlContainer._window = this;
-		push(_controlContainer);
+	CuiWindow parent() {
+		return cast(CuiWindow)responder;
 	}
 
-	this(string name) {
-		Console.clipRect(0,0,this.width, this.height);
-		_controlContainer = new CuiContainer(0, 0, this.width, this.height);
-		_controlContainer.text = name.dup;
-		_controlContainer._window = this;
-		push(_controlContainer);
+	Color backcolor() {
+		return _bg;
+	}
+
+	void backcolor(Color value) {
+		_bg = value;
+	}
+
+	bool visible() {
+		return _visible;
+	}
+
+	void visible(bool value) {
+		_visible = value;
+	}
+
+	bool focused() {
+		return _focused;
+	}
+
+	void focused(bool value) {
+		_focused = value;
+	}
+
+	int left() {
+		return cast(int)_bounds.left;
+	}
+
+	int top() {
+		return cast(int)_bounds.top;
+	}
+
+	int width() {
+		return cast(int)(_bounds.right - _bounds.left);
+	}
+
+	void width(int value) {
+	}
+
+	int height() {
+		return cast(int)(_bounds.bottom - _bounds.top);
+	}
+
+	void height(int value) {
+	}
+
+	// TODO: Fix bugs with bottommost and topmost
+	void reorder(WindowOrder order) {
+		// put on top
+		CuiWindow parent = this.parent();
+		if (order == WindowOrder.Top && !_isTopMost) {
+			// Move this window to _topMostEnd
+			if (parent !is null && parent._topMostEnd !is this && parent._topMostEnd._prev !is this) {
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._topMostEnd;
+				this._prev = parent._topMostEnd._prev;
+				parent._topMostEnd._prev._next = this;
+				parent._topMostEnd._prev = this;
+			}
+
+			if (parent._head is parent._topMostEnd) {
+				parent._head = this;
+			}
+			parent._topMostEnd = this;
+		}
+		else if (order == WindowOrder.BottomMost) {
+			// Move this window just before _head
+			_isBottomMost = true;
+
+			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
+				// re-add this window to the head of the list
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._head;
+				this._prev = parent._head._prev;
+				parent._head._prev._next = this;
+				parent._head._prev = this;
+			}
+
+			if (parent._bottomMostStart is parent._head) {
+				parent._bottomMostStart = this;
+			}
+
+			if (parent._head is this) {
+				parent._head = this._next;
+			}
+
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = this._next;
+			}
+		}
+		else if (order == WindowOrder.Bottom && !_isBottomMost) {
+			// Move this window just before _bottomMostStart
+
+			if (parent._head is this) {
+				parent._head = this._next;
+			}
+
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = this._next;
+			}
+
+			if (parent !is null && parent._bottomMostStart._prev !is this && parent._bottomMostStart !is this) {
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._bottomMostStart;
+				this._prev = parent._bottomMostStart._prev;
+				parent._bottomMostStart._prev._next = this;
+				parent._bottomMostStart._prev = this;
+			}
+
+			if (parent._bottomMostStart is this) {
+				parent._bottomMostStart = this._next;
+			}
+		}
+		else if (order == WindowOrder.TopMost) {
+			// Move this window to _head
+			_isTopMost = true;
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = parent._topMostEnd._next;
+			}
+
+			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
+				// re-add this window to the head of the list
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._head;
+				this._prev = parent._head._prev;
+				parent._head._prev._next = this;
+				parent._head._prev = this;
+			}
+
+			if (parent._head is parent._topMostEnd) {
+				parent._topMostEnd = parent._topMostEnd._next;
+			}
+
+			parent._head = this;
+		}
+
+		redraw();
+	}
+
+	void reposition(int left, int top, int width = -1, int height = -1) {
+		int w, h;
+		int oldW, oldH;
+		oldW = this.width();
+		oldH = this.height();
+
+		if (width == -1) {
+			w = oldW;
+		}
+		else {
+			w = width;
+		}
+
+		if (height == -1) {
+			h = oldH;
+		}
+		else {
+			h = height;
+		}
+
+		_bounds.left = left;
+		_bounds.top = top;
+		_bounds.right = left + w;
+		_bounds.bottom = top + h;
+
+		if (oldW != w || oldH != h) {
+			onResize();
+		}
+		redraw();
+	}
+
+	void redraw() {
+		if (this.parent !is null) {
+			this.parent.redraw();
+		}
+		else {
+			static int i = 0;
+			_lock.down();
+			auto canvas = new CuiCanvas();
+			if (i == 1) {
+				for(;;) { canvas.position(0,0); canvas.write("a");}
+			}
+			i++;
+			canvas.position(0,0);
+			onDraw(canvas);
+			i--;
+			_lock.up();
+		}
 	}
 
 	// Events
 
-	void onInitialize() {
-		// go through control list, init
-
-		Console.backcolor = _bgClr;
-		Console.clear();
-		Console.clipRect(0,0,this.width, this.height);
-
-		_controlContainer.onInit();
-
-		_inited = true;
-		redraw();
-
-		_controlContainer.onGotFocus();
-	}
-
-	void onUninitialize() {
-	}
-
 	void onResize() {
 	}
 
-	void redraw() {
-		if (_inited == false) { return; }
-
-		Console.hideCaret();
-
-		Console.clipClear();
-		_controlContainer.onDraw();
-
-		_drawMenu();
-		Console.clipClear();
-	}
-
 	void onKeyDown(Key key) {
-		if (_focusedMenu !is null) {
-			if (_focusedMenu == _selectedMenu) {
-				// on the menu bar
-
-				if (key.code == Key.Down) {
-					// expand menu
-					if (_focusedMenu.length > 0) {
-						_selectMenu(_focusedMenu);
-					}
-				}
-				else if (key.code == Key.Up) {
-					// leave menu
-					_focusedMenu = null;
-					_selectedMenu = null;
-					_drawMenu();
-
-					// Focus on the current widget
-					_controlContainer.onGotFocus();
-				}
-				else if (key.code == Key.Left) {
-					if (_focusedMenuIndex != 0) {
-						_focusedMenuIndex--;
-						_selectedMenu = _menu[_focusedMenuIndex];
-						_focusedMenu = _selectedMenu;
-						_drawMenu();
-					}
-					else {
-						// leave menu
-						_focusedMenu = null;
-						_selectedMenu = null;
-						_drawMenu();
-
-						// Focus on the current widget
-						_controlContainer.onGotFocus();
-					}
-				}
-				else if (key.code == Key.Right) {
-					if ((_focusedMenuIndex + 1) < _menu.length) {
-						_focusedMenuIndex++;
-						_selectedMenu = _menu[_focusedMenuIndex];
-						_focusedMenu = _selectedMenu;
-						_drawMenu();
-					}
-				}
-				else if (key.code == Key.Return || key.code == Key.Space) {
-					// apply
-					if (_selectedMenu.length > 0) {
-						// it is a submenu
-						_selectMenu(_selectedMenu);
-					}
-					else {
-						// select the item
-						_cancelNextChar = true;
-						_focusedMenu = null;
-						Menu selected = _selectedMenu;
-						_selectedMenu = null;
-						_drawMenu();
-
-						onMenu(selected);
-
-						// Focus on the current widget
-						_controlContainer.onGotFocus();
-					}
-				}
-				else if (key.code >= Key.A || key.code <= Key.Z) {
-					// check for hint
-					char keychr = cast(char)(key.code - Key.A) + 'a';
-					foreach(mnu; _menu) {
-						if (mnu.hint == keychr) {
-							// Select this menu
-							_selectedMenu = mnu;
-
-							if (_selectedMenu.length > 0) {
-								// it is a submenu
-								_selectMenu(_selectedMenu);
-							}
-							else {
-								// select the item
-								_cancelNextChar = true;
-								_focusedMenu = null;
-								Menu selected = _selectedMenu;
-								_selectedMenu = null;
-								_drawMenu();
-		
-								onMenu(selected);
-		
-								// Focus on the current widget
-								_controlContainer.onGotFocus();
-							}
-
-							break;
-						}
-					}
-				}
-			}
-			else {
-				// within a submenu
-
-				if (key.code == Key.Down) {
-					size_t tmpIndex = _selectedMenuIndex;
-					tmpIndex++;
-					while (tmpIndex < _focusedMenu.length) {
-						if (_focusedMenu[tmpIndex].displayText().trim() != "") {
-							_selectedMenuIndex = tmpIndex;
-							_selectedMenu = _focusedMenu[_selectedMenuIndex];
-							_drawSubmenu();
-							return;
-						}
-						tmpIndex++;
-					}
-				}
-				else if (key.code == Key.Up) {
-					size_t tmpIndex = _selectedMenuIndex;
-					while (tmpIndex > 0) {
-						tmpIndex--;
-						if (_focusedMenu[tmpIndex].displayText().trim() != "") {
-							_selectedMenuIndex = tmpIndex;
-							_selectedMenu = _focusedMenu[_selectedMenuIndex];
-							_drawSubmenu();
-							return;
-						}
-					}
-					
-					if (_selectedMenuIndex > 0) {
-						_selectedMenuIndex--;
-						_selectedMenu = _focusedMenu[_selectedMenuIndex];
-						_drawSubmenu();
-					}
-				}
-				else if (key.code == Key.Left) {
-					// remove submenu
-					if (_selectedMenu is null) {
-					}
-					else {
-						_removeMenuContext();
-					}
-				}
-				else if (key.code == Key.Right) {
-					// add submenu
-					if (_selectedMenu.length > 0) {
-						_addSubmenu();
-						_drawSubmenu();
-					}
-				}
-				else if (key.code == Key.Return || key.code == Key.Space) {
-					// apply
-					if (_selectedMenu.length > 0) {
-						// it is a submenu
-						_addSubmenu();
-						_drawSubmenu();
-					}
-					else {
-						// select the item
-						_cancelNextChar = true;
-						_focusedMenu = null;
-						Menu selected = _selectedMenu;
-						_selectedMenu = null;
-						redraw();
-
-						onMenu(selected);
-
-						// Focus on the current widget
-						_controlContainer.onGotFocus();
-					}
-				}
-				else if (key.code >= Key.A && key.code <= Key.Z) {
-					char chr = cast(char)(key.code - Key.A) + 'a';
-					// Look for a hint
-					foreach(uint i, mnuItem; _focusedMenu) {
-						// Does the menu item have a hint?
-						if (mnuItem.hintPosition == -1) {
-							continue;
-						}
-
-						char hint = mnuItem.hint;
-
-						if (chr == hint) {
-							// This menu item is selected
-							_selectedMenuIndex = i;
-							_selectedMenu = mnuItem;
-							_drawSubmenu();
-							if (_selectedMenu.length > 0) {
-								// it is a submenu
-								_addSubmenu();
-								_drawSubmenu();
-							}
-							else {
-								// select the item
-								_cancelNextChar = true;
-								_focusedMenu = null;
-								Menu selected = _selectedMenu;
-								_selectedMenu = null;
-								redraw();
-		
-								onMenu(selected);
-
-								// Focus on the current widget
-								_controlContainer.onGotFocus();
-							}
-						}
-					}
-				}
-			}
-
-			// Do not pass the key off to a widget
-			return;
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow.onKeyDown(key);
 		}
-		else if (_menu !is null) {
-			if (key.alt) {
-				uint chr = key.code - Key.A;
-				if (chr <= Key.Z) {
-					// compare to menu hints
-					foreach(mnuItem; _menu) {
-						// Does the menu item have a hint?
-						if (mnuItem.hintPosition == -1) {
-							continue;
-						}
-
-						auto hint = mnuItem.displayText().lowercase()[mnuItem.hintPosition];
-						uint chr2 = cast(uint)(hint - 'a');
-
-						if (chr == chr2) {
-							// This menu item is selected
-							_selectMenu(mnuItem);
-
-							// Do not pass the key off to a widget
-							return;
-						}
-					}
-				}
-			}
-		}
-		
-		_controlContainer.onKeyDown(key);
-	}
-
-	void onMenu(Menu mnu) {
 	}
 
 	void onKeyChar(dchar keyChar) {
-		if (_focusedMenu !is null || _cancelNextChar) {
-			_cancelNextChar = false;
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow.onKeyChar(keyChar);
+		}
+	}
+
+	void onPrimaryDown(ref Mouse mouse) {
+		// Look at passing this message down
+		CuiWindow current = _head;
+
+		if (current is null) {
 			return;
 		}
-		_controlContainer.onKeyChar(keyChar);
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				_dragWindow = current;
+
+				if (_focusedWindow !is current) {
+					_focusedWindow = current;
+				}
+
+				current.onPrimaryDown(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
+			}
+			current = current._next;
+		} while(current !is _head);
 	}
 
-	void onPrimaryMouseDown() {
-		_controlContainer.onPrimaryMouseDown();
+	void onPrimaryUp(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+
+			int xdiff = _dragWindow.left;
+			int ydiff = _dragWindow.top;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow.onPrimaryUp(mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+
+			_dragWindow = null;
+			return;
+		}
+
+		CuiWindow current = _head;
+
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				current.onPrimaryUp(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
+			}
+			current = current._next;
+		} while(current !is _head);
 	}
 
-	void onPrimaryMouseUp() {
-		_controlContainer.onPrimaryMouseUp();
+	void onDrag(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) { 
+			int xdiff = _dragWindow.left;
+			int ydiff = _dragWindow.top;
+
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow.onDrag(mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+		}
 	}
 
-	void onSecondaryMouseDown() {
-		_controlContainer.onSecondaryMouseDown();
+	void onHover(ref Mouse mouse) {
+		// Look at passing this message down
+		CuiWindow current = _head;
+
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				current.onHover(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
+			}
+			current = current._next;
+		} while(current !is _head);
 	}
 
-	void onSecondaryMouseUp() {
-		_controlContainer.onSecondaryMouseUp();
+	void onDrawChildren(CuiCanvas canvas) {
+		// Subwindows
+		CuiWindow current = _head;
+
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (!(current.visible)) {
+				continue;
+			}
+
+			Rect rt;
+
+			// Draw
+			canvas.clipSave();
+
+			// Clip the regions around the subcurrent temporarily
+			rt.left = 0;
+			rt.top = 0;
+			rt.right = current.left;
+			rt.bottom = this.height;
+			canvas.clipRect(rt);
+
+			rt.left = current.left;
+			rt.top = 0;
+			rt.right = current.left + current.width;
+			rt.bottom = current.top;
+			canvas.clipRect(rt);
+
+			rt.left = current.left;
+			rt.top = current.top + current.height;
+			rt.right = current.left + current.width;
+			rt.bottom = this.height;
+			canvas.clipRect(rt);
+
+			rt.left = current.left + current.width;
+			rt.top = 0;
+			rt.right = this.width;
+			rt.bottom = this.height;
+			canvas.clipRect(rt);
+
+			// Tell the canvas where the top-left corner is
+			canvas.contextPush(current.left, current.top);
+
+			canvas.position(0,0);
+			current.onDraw(canvas);
+			canvas.clipRestore();
+
+			// Reset context
+			canvas.contextPop();
+
+			// Clip this current
+			rt.left = current.left;
+			rt.top = current.top;
+			rt.right = current.width + current.left;
+			rt.bottom = current.height + current.top;
+			canvas.clipRect(rt);
+
+			current = current._next;
+		} while(current !is _head);
 	}
 
-	void onTertiaryMouseDown() {
-		_controlContainer.onTertiaryMouseDown();
+	void onDraw(CuiCanvas canvas) {
+		// Draw subwindows
+		onDrawChildren(canvas);
+
+		// Paint the background of the window
+		canvas.backcolor = _bg;
+		int amt = this.width;
+		if (amt > Console.width) {
+			amt = Console.width;
+		}
+		if (amt < 0) {
+			return;
+		}
+		string line = times(" ", amt);
+		for(uint i = 0; i < this.height; i++) {
+			canvas.position(0,i);
+			canvas.write(line);
+		}
 	}
 
-	void onTertiaryMouseUp() {
-		_controlContainer.onTertiaryMouseUp();
-	}
-
-	void onOtherMouseDown(uint button) {
-//		if (_focused_control !is null) {
-//		}
-	}
-
-	void onOtherMouseUp(uint button) {
-//		if (_focused_control !is null) {
-//		}
-	}
-
-	void onMouseWheelY(uint amount) {
-		_controlContainer.onMouseWheelY(amount);
-	}
-
-	void onMouseWheelX(uint amount) {
-		_controlContainer.onMouseWheelX(amount);
-	}
-
-	void onMouseMove() {
-		_controlContainer.onMouseMove();
-	}
-
-	void text(string value) {
-		_controlContainer.text(value);
-	}
-
-	string text() {
-		return _controlContainer.text;
-	}
-
-	uint width() {
-		return Console.width();
-	}
-
-	uint height() {
-		return Console.height();
-	}
-
-	// Methods
-
+	// Signal Handler
 	override void push(Dispatcher dsp) {
-		if (dsp is _controlContainer) {
-			super.push(dsp);
+		super.push(dsp);
+
+		auto window = cast(CuiWindow)dsp;
+		if (window !is null) {
+			if (_head is null) {
+				_topMostEnd = window;
+				_bottomMostStart = window;
+				_head = window;
+
+				window._next = window;
+				window._prev = window;
+			}
+			else {
+				_topMostEnd._prev._next = window;
+				window._prev = _head._prev;
+				_topMostEnd._prev = window;
+				window._next = _head;
+				if (_bottomMostStart is _head) {
+					_bottomMostStart = window;
+				}
+				if (_topMostEnd is _head) {
+					_head = window;
+				}
+				_topMostEnd = window;
+			}
+
+			// Focus on this window (if it is visible)
+			if (window.visible) {
+				_focusedWindow = window;
+			}
+
+			redraw();
 		}
-		else if (cast(CuiWidget)dsp) {
-			_controlContainer.push(cast(CuiWidget)dsp);
-		}
-		else {
-			super.push(dsp);
-		}
-	}
-
-	Color backcolor() {
-		return _bgClr;
-	}
-
-	CuiApplication application() {
-		return cast(CuiApplication)this.responder;
-	}
-
-	bool isActive() {
-		return (application() !is null && application.window is this);
-	}
-
-	void menu(Menu mnu) {
-		_menu = mnu;
-		if (isActive) {
-			_drawMenu();
-		}
-		
-		// Turn off all rendering
-		Console.clipRect(0,0,this.width,this.height);
-
-		// Resize control container to take into account menubar
-		_controlContainer.resize(this.width, this.height-1);
-
-		// Move control container below the menu bar
-		_controlContainer.move(0,1);
-
-		// clear clipping region
-		Console.clipClear();
-		redraw();
 	}
 }

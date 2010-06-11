@@ -382,7 +382,7 @@ int find(string source, string search, uint start = 0) {
 }
 
 string times(string str, uint amount) {
-	if (amount == 0) {
+	if (amount <= 0) {
 		return "";
 	}
 

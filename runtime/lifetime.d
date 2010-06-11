@@ -249,6 +249,11 @@ private template _arraysetlength(bool initWithZero) {
 			newArray = oldData[0..newSize];
 		}
 
+		// No need to initialize for truncation.
+		if (newSize < oldSize) {
+			return newArray.ptr;
+		}
+
 		// Initialize the new space
 		static if (initWithZero) {
 			// Initialize the remaining space with zero
@@ -337,6 +342,7 @@ ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
 		// just resize
 		newArray = destArray.ptr[0..newSize];
 	}
+
 	// Add element
 	for(uint destIdx = oldLength * elementSize; destIdx < newSize; ) {
 		for(uint srcIdx = 0; srcIdx < srcArray.length * elementSize; srcIdx++) {
@@ -367,7 +373,7 @@ ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
 	size_t newSize = (array.length + 1) * elementSize;
 	size_t oldSize = oldLength * elementSize;
 
-	if (array is null || oldSize == 0) {
+	if (oldSize == 0) {
 		memorySize = oldSize;
 	}
 	else {
@@ -411,6 +417,10 @@ byte[] _d_arraycatnT(TypeInfo ti, uint n, ...) {
 }
 
 ubyte[] _adDupT(TypeInfo ti, ubyte[] a) {
+	if (a is null) {
+		return null;
+	}
+
 	ubyte[] ret = (cast(ubyte*)_d_newarrayvT(ti, a.length))[0..a.length*ti.next.tsize()];
 	ubyte[] array = a.ptr[0..a.length*ti.next.tsize()];
 

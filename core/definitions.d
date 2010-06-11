@@ -18,10 +18,10 @@ public import platform.definitions;
 struct Coord {
 
 	// Description: The x coordinate.
-	int x;
+	double x = 0;
 
 	// Description: The y coordinate.
-	int y;
+	double y = 0;
 
 }
 
@@ -29,10 +29,10 @@ struct Coord {
 struct Size {
 
 	// Description: The width of the measurement.
-	uint x;
+	double x = 0;
 
 	// Description: The height of the measurement.
-	uint y;
+	double y = 0;
 }
 
 
@@ -40,16 +40,16 @@ struct Size {
 struct Rect {
 
 	// Description: The x point of the top-left of the rectangle.
-	uint left;
+	double left = 0;
 
 	// Description: The y point of the top-left of the rectangle.
-	uint top;
+	double top = 0;
 
 	// Description: The y point of the bottom-right of the rectangle.
-	uint bottom;
+	double bottom = 0;
 
 	// Description: The x point of the bottom-right of the rectangle.
-	uint right;
+	double right = 0;
 	
 	// Description: This function will test whether another rectangle intersects (overlaps) this one.
 	// test: A rectangle to test.
@@ -77,14 +77,17 @@ enum WindowStyle : int {
 
 // Window Positions
 enum WindowPosition : int {
-	// Description: Will be placed according to the window manager.
-	Default,
-
 	// Description: Will be placed in the center of the default monitor.
 	Center,
 
-	// Description: Will be placed with the Window's x and y properties.
 	User,
+}
+
+enum WindowOrder {
+	TopMost,
+	Top,
+	Bottom,
+	BottomMost
 }
 
 // Window States
@@ -119,19 +122,12 @@ enum SystemColor : ubyte {
 // Description: This struct gives the state of the mouse input for a window.
 struct Mouse {
 	// Description: The x coordinate in coordination to the client area of the window of the mouse cursor.
-	int x;
+	double x = 0;
 	// Description: The y coordinate in coordination to the client area of the window of the mouse cursor.
-	int y;
+	double y = 0;
 
 	// Description: The number of clicks the user has done in a row.  1 is a single click.  2 is a double click, and so on.  You should use the mod operator to use this property properly.
-	int clicks;
-
-	// Description: Whether or not the primary button is down.
-	bool leftDown;
-	// Description: Whether or not the secondary button is down.
-	bool rightDown;
-	// Description: Whether or not the tertiary button is down.
-	bool middleDown;
+	int[5] clicks;
 }
 
 struct Key {
@@ -250,14 +246,15 @@ struct Key {
 // Default parameters
 const int Default = -1;
 
-union CuiEventInfo {
+union EventInfo {
 	Key key;
 	Mouse mouse;
 	Size size;
+	uint exitCode;
 }
 
-struct CuiEvent {
-	enum Type {
+struct Event {
+	enum : uint {
 		KeyDown,
 		KeyUp,
 		MouseDown,
@@ -269,8 +266,8 @@ struct CuiEvent {
 		Close,
 	}
 
-	Type type;
-	CuiEventInfo info;
+	uint type;
+	EventInfo info;
 	uint aux;
 }
 
