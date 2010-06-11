@@ -162,7 +162,7 @@ private:
 				chr = '}';
 			}
 			else {
-				chr = '}';
+				chr = ']';
 			}
 		}
 		else if (key.code == Key.Semicolon) {
