@@ -169,7 +169,9 @@ class MyApp : CuiApplication {
 		push(new MyWindow);
 		push(new MyWindow);
 		push(new MyWindow);
-		push(new MyWindow);
+		auto w = new MyWindow();
+		push(w);
+		w.reorder(WindowOrder.BottomMost);
 	}
 }
 

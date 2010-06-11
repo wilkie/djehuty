@@ -29,11 +29,14 @@ private:
 	// Window list
 	CuiWindow _head;		// The head of the list
 	CuiWindow _topMostEnd;	// The subsection where the top most end
-	CuiWindow _tail;		// The tail of the list
+	CuiWindow _bottomMostStart;	// The subsection where the bottom most start
 
 	// Sibling list
 	CuiWindow _next;
 	CuiWindow _prev;
+
+	bool _isTopMost;
+	bool _isBottomMost;
 
 public:
 	this(int x, int y, int width, int height, Color bg = Color.Black) {
@@ -107,27 +110,102 @@ public:
 
 	void reorder(WindowOrder order) {
 		// put on top
-		if (order == WindowOrder.Top) {
-			CuiWindow parent = this.parent();
+		CuiWindow parent = this.parent();
+		if (order == WindowOrder.Top && !_isTopMost) {
+			// Move this window to _topMostEnd
+			if (parent !is null && parent._topMostEnd !is this && parent._topMostEnd._prev !is this) {
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
 
-			if (parent !is null && parent._head !is this && parent._tail !is this) {
+				this._next = parent._topMostEnd;
+				this._prev = parent._topMostEnd._prev;
+				parent._topMostEnd._prev._next = this;
+				parent._topMostEnd._prev = this;
+			}
+
+			if (parent._head is parent._topMostEnd) {
+				parent._head = this;
+			}
+			parent._topMostEnd = this;
+		}
+		else if (order == WindowOrder.BottomMost) {
+			// Move this window just before _head
+			_isBottomMost = true;
+
+			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
 				// re-add this window to the head of the list
 				this._prev._next = this._next;
 				this._next._prev = this._prev;
 
 				this._next = parent._head;
-				this._prev = parent._tail;
+				this._prev = parent._head._prev;
+				parent._head._prev._next = this;
 				parent._head._prev = this;
-				parent._tail._next = this;
+			}
+
+			if (parent._bottomMostStart is parent._head) {
+				parent._bottomMostStart = this;
+			}
+
+			if (parent._head is this) {
+				parent._head = this._next;
+			}
+
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = this._next;
+			}
+		}
+		else if (order == WindowOrder.Bottom && !_isBottomMost) {
+			// Move this window just before _bottomMostStart
+
+			if (parent._head is this) {
+				parent._head = this._next;
+			}
+
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = this._next;
+			}
+
+			if (parent !is null && parent._bottomMostStart._prev !is this && parent._bottomMostStart !is this) {
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._bottomMostStart;
+				this._prev = parent._bottomMostStart._prev;
+				parent._bottomMostStart._prev._next = this;
+				parent._bottomMostStart._prev = this;
+			}
+
+			if (parent._bottomMostStart is this) {
+				parent._bottomMostStart = this._next;
+			}
+		}
+		else if (order == WindowOrder.TopMost) {
+			// Move this window to _head
+			_isTopMost = true;
+			if (parent._topMostEnd is this) {
+				parent._topMostEnd = parent._topMostEnd._next;
+			}
+
+			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
+				// re-add this window to the head of the list
+				this._prev._next = this._next;
+				this._next._prev = this._prev;
+
+				this._next = parent._head;
+				this._prev = parent._head._prev;
+				parent._head._prev._next = this;
+				parent._head._prev = this;
+			}
+
+			if (parent._head is parent._topMostEnd) {
+				parent._topMostEnd = parent._topMostEnd._next;
 			}
 
 			parent._head = this;
-			if (parent._tail is this) {
-				parent._tail = parent._tail._prev;
-			}
-
-			redraw();
 		}
+
+		redraw();
 	}
 
 	void reposition(int left, int top, int width = -1, int height = -1) {
@@ -405,18 +483,25 @@ public:
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
 			if (_head is null) {
+				_topMostEnd = window;
+				_bottomMostStart = window;
 				_head = window;
-				_tail = window;
 
 				window._next = window;
 				window._prev = window;
 			}
 			else {
-				_head._prev = window;
-				_tail._next = window;
+				_topMostEnd._prev._next = window;
+				window._prev = _head._prev;
+				_topMostEnd._prev = window;
 				window._next = _head;
-				window._prev = _tail;
-				_head = window;
+				if (_bottomMostStart is _head) {
+					_bottomMostStart = window;
+				}
+				if (_topMostEnd is _head) {
+					_head = window;
+				}
+				_topMostEnd = window;
 			}
 
 			// Focus on this window (if it is visible)

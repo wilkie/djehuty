@@ -103,7 +103,7 @@ public:
 	override void onPrimaryDown(ref Mouse mouse) {
 
 		// Move this window to the foreground
-		reorder(WindowOrder.Top);
+		reorder(WindowOrder.Bottom);
 
 		_dragPos.x = mouse.x;
 		_dragPos.y = mouse.y;
