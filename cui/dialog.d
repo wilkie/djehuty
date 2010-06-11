@@ -64,6 +64,15 @@ public:
 		push(_clientArea);
 	}
 
+	string text() {
+		return _title.dup;
+	}
+
+	void text(string value) {
+		_title = value.dup;
+		redraw();
+	}
+
 	int clientWidth() {
 		return width - 2;
 	}

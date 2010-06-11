@@ -116,7 +116,7 @@ class MyWindow : CuiDialog {
 		i++;
 		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
 		visible = true;
-		box = new CuiTextBox(0,0,10,10);
+		box = new CuiTextBox(0,0,13,10);
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
@@ -182,6 +182,7 @@ class MyApp : CuiApplication {
 		w.reorder(WindowOrder.BottomMost);
 		w = new MyWindow();
 		push(w);
+		w.text = "topmost";
 		w.reorder(WindowOrder.TopMost);
 	}
 }
