@@ -18,7 +18,6 @@ private:
 	bool _visible; // whether this window is drawn and can be interacted with
 	bool _focused; // whether this window is the foreground window
 
-	List!(CuiWindow) _window_list;
 	CuiWindow _focusedWindow;
 	CuiWindow _dragWindow;
 
@@ -27,10 +26,17 @@ private:
 
 	Semaphore _lock;
 
+	// Window list
+	CuiWindow _head;
+	CuiWindow _tail;
+
+	// Sibling list
+	CuiWindow _next;
+	CuiWindow _prev;
+
 public:
 	this(int x, int y, int width, int height, Color bg = Color.Black) {
 		_lock = new Semaphore(1);
-		_window_list = new List!(CuiWindow);
 		_bounds.left = x;
 		_bounds.top = y;
 		_bounds.right = x + width;
@@ -98,6 +104,17 @@ public:
 	void height(int value) {
 	}
 
+	void reorder(int order) {
+		// put on top
+		CuiWindow parent = this.parent();
+
+		if (parent !is null) {
+			parent._head = this;
+		}
+
+		redraw();
+	}
+
 	void reposition(int left, int top, int width = -1, int height = -1) {
 		int w, h;
 
@@ -159,25 +176,37 @@ public:
 
 	void onPrimaryDown(ref Mouse mouse) {
 		// Look at passing this message down
-		foreach(window; _window_list) {
-			if (window.left <= mouse.x
-			  && (window.left + window.width) > mouse.x
-			  && window.top <= mouse.y
-			  && (window.top + window.height) > mouse.y) {
+		CuiWindow current = _head;
 
-				int xdiff = window.left;
-				int ydiff = window.top;
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				_dragWindow = window;
-				window.onPrimaryDown(mouse);
+				_dragWindow = current;
+
+				if (_focusedWindow !is current) {
+					_focusedWindow = current;
+				}
+
+				current.onPrimaryDown(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-		}
+			current = current._next;
+		} while(current !is _head);
 	}
 
 	void onPrimaryUp(ref Mouse mouse) {
@@ -198,24 +227,31 @@ public:
 			return;
 		}
 
-		foreach(window; _window_list) {
-			if (window.left <= mouse.x
-			  && (window.left + window.width) > mouse.x
-			  && window.top <= mouse.y
-			  && (window.top + window.height) > mouse.y) {
+		CuiWindow current = _head;
 
-				int xdiff = window.left;
-				int ydiff = window.top;
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				window.onPrimaryUp(mouse);
+				current.onPrimaryUp(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-		}
+			current = current._next;
+		} while(current !is _head);
 	}
 
 	void onDrag(ref Mouse mouse) {
@@ -236,31 +272,43 @@ public:
 
 	void onHover(ref Mouse mouse) {
 		// Look at passing this message down
-		foreach(window; _window_list) {
-			if (window.left <= mouse.x
-			  && (window.left + window.width) > mouse.x
-			  && window.top <= mouse.y
-			  && (window.top + window.height) > mouse.y) {
+		CuiWindow current = _head;
 
-				int xdiff = window.left;
-				int ydiff = window.top;
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (current.left <= mouse.x
+			  && (current.left + current.width) > mouse.x
+			  && current.top <= mouse.y
+			  && (current.top + current.height) > mouse.y) {
+
+				int xdiff = current.left;
+				int ydiff = current.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				window.onHover(mouse);
+				current.onHover(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-		}
+			current = current._next;
+		} while(current !is _head);
 	}
 
 	void onDrawChildren(CuiCanvas canvas) {
 		// Subwindows
-		foreach(window; _window_list) {
+		CuiWindow current = _head;
 
-			if (!(window.visible)) {
+		if (current is null) {
+			return;
+		}
+
+		do {
+			if (!(current.visible)) {
 				continue;
 			}
 
@@ -269,48 +317,50 @@ public:
 			// Draw
 			canvas.clipSave();
 
-			// Clip the regions around the subwindow temporarily
+			// Clip the regions around the subcurrent temporarily
 			rt.left = 0;
 			rt.top = 0;
-			rt.right = window.left;
+			rt.right = current.left;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
-			rt.left = window.left;
+			rt.left = current.left;
 			rt.top = 0;
-			rt.right = window.left + window.width;
-			rt.bottom = window.top;
+			rt.right = current.left + current.width;
+			rt.bottom = current.top;
 			canvas.clipRect(rt);
 
-			rt.left = window.left;
-			rt.top = window.top + window.height;
-			rt.right = window.left + window.width;
+			rt.left = current.left;
+			rt.top = current.top + current.height;
+			rt.right = current.left + current.width;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
-			rt.left = window.left + window.width;
+			rt.left = current.left + current.width;
 			rt.top = 0;
 			rt.right = this.width;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
 			// Tell the canvas where the top-left corner is
-			canvas.contextPush(window.left, window.top);
+			canvas.contextPush(current.left, current.top);
 
 			canvas.position(0,0);
-			window.onDraw(canvas);
+			current.onDraw(canvas);
 			canvas.clipRestore();
 
 			// Reset context
 			canvas.contextPop();
 
-			// Clip this window
-			rt.left = window.left;
-			rt.top = window.top;
-			rt.right = window.width + window.left;
-			rt.bottom = window.height + window.top;
+			// Clip this current
+			rt.left = current.left;
+			rt.top = current.top;
+			rt.right = current.width + current.left;
+			rt.bottom = current.height + current.top;
 			canvas.clipRect(rt);
-		}
+
+			current = current._next;
+		} while(current !is _head);
 	}
 
 	void onDraw(CuiCanvas canvas) {
@@ -339,7 +389,20 @@ public:
 
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
-			_window_list.add(window);
+			if (_head is null) {
+				_head = window;
+				_tail = window;
+
+				window._next = window;
+				window._prev = window;
+			}
+			else {
+				_head._prev = window;
+				_tail._next = window;
+				window._next = _head;
+				window._prev = _tail;
+				_head = window;
+			}
 
 			// Focus on this window (if it is visible)
 			if (window.visible) {

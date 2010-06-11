@@ -101,6 +101,10 @@ public:
 	// Events
 
 	override void onPrimaryDown(ref Mouse mouse) {
+
+		// Move this window to the foreground
+		reorder(0);
+
 		_dragPos.x = mouse.x;
 		_dragPos.y = mouse.y;
 		if (mouse.y == 0) {
