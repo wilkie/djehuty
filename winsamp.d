@@ -180,6 +180,7 @@ class MyApp : CuiApplication {
 		auto w = new MyWindow();
 		push(w);
 		w.reorder(WindowOrder.BottomMost);
+		w.text = "bottommost";
 		w = new MyWindow();
 		push(w);
 		w.text = "topmost";

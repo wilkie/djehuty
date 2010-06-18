@@ -27,9 +27,9 @@ private:
 	Semaphore _lock;
 
 	// Window list
-	CuiWindow _head;		// The head of the list
-	CuiWindow _topMostEnd;	// The subsection where the top most end
-	CuiWindow _bottomMostStart;	// The subsection where the bottom most start
+	CuiWindow _head;			// The head of the list
+	CuiWindow _topMostHead;		// The subsection where the top most end
+	CuiWindow _bottomMostHead;	// The subsection where the bottom most start
 
 	// Sibling list
 	CuiWindow _next;
@@ -108,102 +108,127 @@ public:
 	void height(int value) {
 	}
 
-	// TODO: Fix bugs with bottommost and topmost
+	private void _remove() {
+		if (this._prev is this) {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = null;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = null;
+			}
+			else {
+				parent._head = null;
+			}
+		}
+		else {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = parent._topMostHead._next;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = parent._bottomMostHead._next;
+			}
+			else if (this is parent._head) {
+				parent._head = parent._head._next;
+			}
+
+			this._prev._next = this._next;
+			this._next._prev = this._prev;
+		}
+	}
+
 	void reorder(WindowOrder order) {
 		// put on top
 		CuiWindow parent = this.parent();
-		if (order == WindowOrder.Top && !_isTopMost) {
-			// Move this window to _topMostEnd
-			if (parent !is null && parent._topMostEnd !is this && parent._topMostEnd._prev !is this) {
-				this._prev._next = this._next;
-				this._next._prev = this._prev;
-
-				this._next = parent._topMostEnd;
-				this._prev = parent._topMostEnd._prev;
-				parent._topMostEnd._prev._next = this;
-				parent._topMostEnd._prev = this;
-			}
-
-			if (parent._head is parent._topMostEnd) {
-				parent._head = this;
-			}
-			parent._topMostEnd = this;
+		if (parent is null) {
+			return;
 		}
-		else if (order == WindowOrder.BottomMost) {
-			// Move this window just before _head
-			_isBottomMost = true;
 
-			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
-				// re-add this window to the head of the list
-				this._prev._next = this._next;
-				this._next._prev = this._prev;
-
-				this._next = parent._head;
-				this._prev = parent._head._prev;
-				parent._head._prev._next = this;
-				parent._head._prev = this;
+		// Function to remove from list
+		if (order == WindowOrder.Top) {
+			if (_isTopMost) {
+				return;
 			}
 
-			if (parent._bottomMostStart is parent._head) {
-				parent._bottomMostStart = this;
+			if (_isBottomMost) {
+				return;
 			}
 
 			if (parent._head is this) {
-				parent._head = this._next;
+				return;
 			}
 
-			if (parent._topMostEnd is this) {
-				parent._topMostEnd = this._next;
+			// Remove from the list it is already in
+			_remove();
+
+			if (parent._head is null) {
+				this._next = this;
+				this._prev = this;
 			}
-		}
-		else if (order == WindowOrder.Bottom && !_isBottomMost) {
-			// Move this window just before _bottomMostStart
-
-			if (parent._head is this) {
-				parent._head = this._next;
-			}
-
-			if (parent._topMostEnd is this) {
-				parent._topMostEnd = this._next;
-			}
-
-			if (parent !is null && parent._bottomMostStart._prev !is this && parent._bottomMostStart !is this) {
-				this._prev._next = this._next;
-				this._next._prev = this._prev;
-
-				this._next = parent._bottomMostStart;
-				this._prev = parent._bottomMostStart._prev;
-				parent._bottomMostStart._prev._next = this;
-				parent._bottomMostStart._prev = this;
-			}
-
-			if (parent._bottomMostStart is this) {
-				parent._bottomMostStart = this._next;
-			}
-		}
-		else if (order == WindowOrder.TopMost) {
-			// Move this window to _head
-			_isTopMost = true;
-			if (parent._topMostEnd is this) {
-				parent._topMostEnd = parent._topMostEnd._next;
-			}
-
-			if (parent !is null && parent._head !is this && parent._head._prev !is this) {
-				// re-add this window to the head of the list
-				this._prev._next = this._next;
-				this._next._prev = this._prev;
-
+			else {
 				this._next = parent._head;
 				this._prev = parent._head._prev;
+
 				parent._head._prev._next = this;
 				parent._head._prev = this;
-			}
-
-			if (parent._head is parent._topMostEnd) {
-				parent._topMostEnd = parent._topMostEnd._next;
 			}
 
 			parent._head = this;
+		}
+		else if (order == WindowOrder.BottomMost) {
+			if (_isBottomMost) {
+				return;
+			}
+
+			_isBottomMost = true;
+
+			if (parent._bottomMostHead is this) {
+				return;
+			}
+
+			// Remove from the list it is already in
+			_remove();
+
+			if (parent._bottomMostHead is null) {
+				this._next = this;
+				this._prev = this;
+			}
+			else {
+				this._prev = parent._bottomMostHead._prev;
+				this._next = parent._bottomMostHead;
+
+				parent._bottomMostHead._prev._next = this;
+				parent._bottomMostHead._prev = this;
+			}
+
+			parent._bottomMostHead = this;
+		}
+		else if (order == WindowOrder.TopMost) {
+			if (_isTopMost) {
+				return;
+			}
+
+			_isTopMost = true;
+
+			if (parent._topMostHead is this) {
+				return;
+			}
+
+			// Remove from the list it is already in
+			_remove();
+
+			if (parent._topMostHead is null) {
+				this._next = this;
+				this._prev = this;
+			}
+			else {
+				this._prev = parent._topMostHead._prev;
+				this._next = parent._topMostHead;
+
+				parent._topMostHead._prev._next = this;
+				parent._topMostHead._prev = this;
+			}
+
+			parent._topMostHead = this;
 		}
 
 		redraw();
@@ -280,37 +305,30 @@ public:
 
 	void onPrimaryDown(ref Mouse mouse) {
 		// Look at passing this message down
-		CuiWindow current = _head;
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
 
-		if (current is null) {
-			return;
-		}
-
-		do {
-			if (current.left <= mouse.x
-			  && (current.left + current.width) > mouse.x
-			  && current.top <= mouse.y
-			  && (current.top + current.height) > mouse.y) {
-
-				int xdiff = current.left;
-				int ydiff = current.top;
+				int xdiff = window.left;
+				int ydiff = window.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				_dragWindow = current;
+				_dragWindow = window;
 
-				if (_focusedWindow !is current) {
-					_focusedWindow = current;
+				if (_focusedWindow !is window) {
+					_focusedWindow = window;
 				}
 
-				current.onPrimaryDown(mouse);
+				window.onPrimaryDown(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-			current = current._next;
-		} while(current !is _head);
+		}
 	}
 
 	void onPrimaryUp(ref Mouse mouse) {
@@ -331,31 +349,24 @@ public:
 			return;
 		}
 
-		CuiWindow current = _head;
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
 
-		if (current is null) {
-			return;
-		}
-
-		do {
-			if (current.left <= mouse.x
-			  && (current.left + current.width) > mouse.x
-			  && current.top <= mouse.y
-			  && (current.top + current.height) > mouse.y) {
-
-				int xdiff = current.left;
-				int ydiff = current.top;
+				int xdiff = window.left;
+				int ydiff = window.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				current.onPrimaryUp(mouse);
+				window.onPrimaryUp(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-			current = current._next;
-		} while(current !is _head);
+		}
 	}
 
 	void onDrag(ref Mouse mouse) {
@@ -376,43 +387,64 @@ public:
 
 	void onHover(ref Mouse mouse) {
 		// Look at passing this message down
-		CuiWindow current = _head;
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
 
-		if (current is null) {
-			return;
-		}
-
-		do {
-			if (current.left <= mouse.x
-			  && (current.left + current.width) > mouse.x
-			  && current.top <= mouse.y
-			  && (current.top + current.height) > mouse.y) {
-
-				int xdiff = current.left;
-				int ydiff = current.top;
+				int xdiff = window.left;
+				int ydiff = window.top;
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				current.onHover(mouse);
+				window.onHover(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				break;
 			}
-			current = current._next;
-		} while(current !is _head);
+		}
+	}
+
+	int opApply(int delegate(ref CuiWindow window) loopBody) {
+		int ret;
+
+		CuiWindow current;
+		CuiWindow end;
+
+		for (int i = 0; i < 3; i++) {
+			if (i == 0) {
+				current = _topMostHead;
+			}
+			else if (i == 1) {
+				current = _head;
+			}
+			else {
+				current = _bottomMostHead;
+			}
+
+			end = current;
+
+			if (current is null) {
+				continue;
+			}
+
+			do {
+				ret = loopBody(current);
+				if (ret != 0) {
+					return ret;
+				}
+				current = current._next;
+			} while(current !is end);
+		}
+		return ret;
 	}
 
 	void onDrawChildren(CuiCanvas canvas) {
 		// Subwindows
-		CuiWindow current = _head;
-
-		if (current is null) {
-			return;
-		}
-
-		do {
-			if (!(current.visible)) {
+		foreach(window; this) {
+			if (!(window.visible)) {
 				continue;
 			}
 
@@ -421,50 +453,48 @@ public:
 			// Draw
 			canvas.clipSave();
 
-			// Clip the regions around the subcurrent temporarily
+			// Clip the regions around the subwindow temporarily
 			rt.left = 0;
 			rt.top = 0;
-			rt.right = current.left;
+			rt.right = window.left;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
-			rt.left = current.left;
+			rt.left = window.left;
 			rt.top = 0;
-			rt.right = current.left + current.width;
-			rt.bottom = current.top;
+			rt.right = window.left + window.width;
+			rt.bottom = window.top;
 			canvas.clipRect(rt);
 
-			rt.left = current.left;
-			rt.top = current.top + current.height;
-			rt.right = current.left + current.width;
+			rt.left = window.left;
+			rt.top = window.top + window.height;
+			rt.right = window.left + window.width;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
-			rt.left = current.left + current.width;
+			rt.left = window.left + window.width;
 			rt.top = 0;
 			rt.right = this.width;
 			rt.bottom = this.height;
 			canvas.clipRect(rt);
 
 			// Tell the canvas where the top-left corner is
-			canvas.contextPush(current.left, current.top);
+			canvas.contextPush(window.left, window.top);
 
 			canvas.position(0,0);
-			current.onDraw(canvas);
+			window.onDraw(canvas);
 			canvas.clipRestore();
 
 			// Reset context
 			canvas.contextPop();
 
-			// Clip this current
-			rt.left = current.left;
-			rt.top = current.top;
-			rt.right = current.width + current.left;
-			rt.bottom = current.height + current.top;
+			// Clip this window
+			rt.left = window.left;
+			rt.top = window.top;
+			rt.right = window.width + window.left;
+			rt.bottom = window.height + window.top;
 			canvas.clipRect(rt);
-
-			current = current._next;
-		} while(current !is _head);
+		}
 	}
 
 	void onDraw(CuiCanvas canvas) {
@@ -494,26 +524,19 @@ public:
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
 			if (_head is null) {
-				_topMostEnd = window;
-				_bottomMostStart = window;
-				_head = window;
-
 				window._next = window;
 				window._prev = window;
 			}
 			else {
-				_topMostEnd._prev._next = window;
 				window._prev = _head._prev;
-				_topMostEnd._prev = window;
 				window._next = _head;
-				if (_bottomMostStart is _head) {
-					_bottomMostStart = window;
-				}
-				if (_topMostEnd is _head) {
-					_head = window;
-				}
-				_topMostEnd = window;
+
+				_head._prev._next = window;
+				_head._prev = window;
 			}
+
+			// Set as new head
+			_head = window;
 
 			// Focus on this window (if it is visible)
 			if (window.visible) {
