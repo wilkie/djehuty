@@ -244,7 +244,7 @@ public:
 	// Drawing the window
 	void onDraw(CuiCanvas canvas) {
 		// Draw inside area
-		super.onDrawChildren(canvas);
+		onDrawChildren(canvas);
 
 		canvas.position(0, 0);
 

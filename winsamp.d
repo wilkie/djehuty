@@ -11,6 +11,7 @@ import resource.image;
 import resource.sound;
 
 import cui.application;
+import cui.tabbox;
 import cui.window;
 import cui.label;
 import cui.textfield;
@@ -116,16 +117,20 @@ class MyWindow : CuiDialog {
 		i++;
 		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
 		visible = true;
-		box = new CuiTextBox(0,0,13,10);
+		tabbox = new CuiTabBox(0,0,13,10);
+		tabbox.visible = true;
+/*		box = new CuiTextBox(0,0,13,10);
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
-		box.backcolorNum = toPick;
-		push(box);
+		box.backcolorNum = toPick;*/
+		push(tabbox);
+//		push(box);
 	}
 	
 	override void onResize() {
-		box.reposition(0,0,this.clientWidth,this.clientHeight);
+//		box.reposition(0,0,this.clientWidth,this.clientHeight);
+		tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
@@ -170,6 +175,7 @@ class MyWindow : CuiDialog {
 	CuiLabel lbl;
 	CuiTextField field;
 	CuiTextBox box;
+	CuiTabBox tabbox;
 }
 
 class MyApp : CuiApplication {

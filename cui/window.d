@@ -108,6 +108,58 @@ public:
 	void height(int value) {
 	}
 
+	// Description: This function returns the currently
+	//  focused window.
+	CuiWindow active() {
+		return _focusedWindow;
+	}
+
+	// Description: This function returns the next sibling window.
+	CuiWindow next() {
+		CuiWindow ret = _next;
+
+		if (_isTopMost) {
+			if (ret is parent._topMostHead) {
+				ret = parent._head;
+			}
+		}
+		else if (_isBottomMost) {
+			if (ret is parent._bottomMostHead) {
+				ret = parent._topMostHead;
+			}
+		}
+		else {
+			if (ret is parent._head) {
+				ret = parent._bottomMostHead;
+			}
+		}
+
+		return ret;
+	}
+
+	// Description: This function returns the previous sibling window.
+	CuiWindow previous() {
+		CuiWindow ret = _prev;
+
+		if (_isTopMost) {
+			if (this is parent._topMostHead) {
+				ret = parent._bottomMostHead;
+			}
+		}
+		else if (_isBottomMost) {
+			if (this is parent._bottomMostHead) {
+				ret = parent._head;
+			}
+		}
+		else {
+			if (this is parent._head) {
+				ret = parent._topMostHead;
+			}
+		}
+
+		return ret;
+	}
+
 	private void _remove() {
 		if (this._prev is this) {
 			if (this is parent._topMostHead) {
