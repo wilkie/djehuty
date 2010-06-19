@@ -115,15 +115,15 @@ class MyWindow : CuiDialog {
 				break;
 		}
 		i++;
-		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
+		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 30, 15);
 		visible = true;
 
-		tabbox = new CuiTabBox(0,0,13,10);
+		tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
 		tabbox.add("foo");
 		tabbox.add("bar");
 		tabbox.visible = true;
 
-		box = new CuiTextBox(0,0,13,10);
+		box = new CuiTextBox(0,0,tabbox.clientWidth(), tabbox.clientHeight());
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
