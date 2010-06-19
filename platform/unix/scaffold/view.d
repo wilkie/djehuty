@@ -27,6 +27,10 @@ import io.file;
 
 import gui.window;
 
+import Cairo = binding.cairo.cairo;
+import CairoX = binding.cairo.xlib;
+import Pango = binding.pango.pango;
+
 //import console.main;
 
 // views

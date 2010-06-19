@@ -142,7 +142,7 @@ class CuiWidget : Responder {
 protected:
 
 	bool canDraw() {
-		return _window !is null && _window.isActive;
+		return _window !is null && _window.focused;
 	}
 
 	// This stores the widget currently clipped by the Console's clipping region

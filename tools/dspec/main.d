@@ -56,7 +56,6 @@ private:
 }
 
 class Dspec : Application {
-	static this() { new Dspec(); }
 
 	this() {
 		super("djehuty-dspec");
@@ -93,4 +92,10 @@ class Dspec : Application {
 private:
 
 	Opts options;
+}
+
+int main(string[] args) {
+	auto app = new Dspec;
+	app.run();
+	return 0;
 }

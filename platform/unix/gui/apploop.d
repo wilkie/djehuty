@@ -72,6 +72,110 @@ class GuiApplicationController {
 
 private:
 
+	int[] _keySymToKeyCode = [
+		// Misc
+		(X.XK_BackSpace & 0x1ff): Key.Backspace,
+		(X.XK_Tab & 0x1ff): Key.Tab,
+		(X.XK_Return & 0x1ff): Key.Return,
+		(X.XK_Pause & 0x1ff): Key.Pause,
+		(X.XK_Escape & 0x1ff): Key.Escape,
+		(X.XK_Space & 0x1ff): Key.Space,
+		(X.XK_Prior & 0x1ff): Key.PageUp,
+		(X.XK_Next & 0x1ff): Key.PageDown,
+		(X.XK_End & 0x1ff): Key.End,
+		(X.XK_Home & 0x1ff): Key.Home,
+		(X.XK_Left & 0x1ff): Key.Left,
+		(X.XK_Right & 0x1ff): Key.Right,
+		(X.XK_Up & 0x1ff): Key.Up,
+		(X.XK_Down & 0x1ff): Key.Down,
+		(X.XK_Insert & 0x1ff): Key.Insert,
+		(X.XK_Delete & 0x1ff): Key.Delete,
+
+		// Numbers
+		0x30: Key.Zero,
+		0x31: Key.One,
+		0x32: Key.Two,
+		0x33: Key.Three,
+		0x34: Key.Four,
+		0x35: Key.Five,
+		0x36: Key.Six,
+		0x37: Key.Seven,
+		0x38: Key.Eight,
+		0x39: Key.Nine,
+
+		// Letters
+		0x41: Key.A,
+		0x42: Key.B,
+		0x43: Key.C,
+		0x44: Key.D,
+		0x45: Key.E,
+		0x46: Key.F,
+		0x47: Key.G,
+		0x48: Key.H,
+		0x49: Key.I,
+		0x4A: Key.J,
+		0x4B: Key.K,
+		0x4C: Key.L,
+		0x4D: Key.M,
+		0x4E: Key.N,
+		0x4F: Key.O,
+		0x50: Key.P,
+		0x51: Key.Q,
+		0x52: Key.R,
+		0x53: Key.S,
+		0x54: Key.T,
+		0x55: Key.U,
+		0x56: Key.V,
+		0x57: Key.W,
+		0x58: Key.X,
+		0x59: Key.Y,
+		0x5A: Key.Z,
+
+		// Printable
+
+		'`': Key.SingleQuote,
+		';': Key.Semicolon,
+		'[': Key.LeftBracket,
+		']': Key.RightBracket,
+		',': Key.Comma,
+		'.': Key.Period,
+		'/': Key.Foreslash,
+		'\\': Key.Backslash,
+		'\'': Key.Quote,
+		'-': Key.Minus,
+		'=': Key.Equals,
+
+		// Function Keys
+
+		(X.XK_F1 & 0x1ff): Key.F1,
+		(X.XK_F2 & 0x1ff): Key.F2,
+		(X.XK_F3 & 0x1ff): Key.F3,
+		(X.XK_F4 & 0x1ff): Key.F4,
+		(X.XK_F5 & 0x1ff): Key.F5,
+		(X.XK_F6 & 0x1ff): Key.F6,
+		(X.XK_F7 & 0x1ff): Key.F7,
+		(X.XK_F8 & 0x1ff): Key.F8,
+		(X.XK_F9 & 0x1ff): Key.F9,
+		(X.XK_F10 & 0x1ff): Key.F10,
+		(X.XK_F11 & 0x1ff): Key.F11,
+		(X.XK_F12 & 0x1ff): Key.F12,
+		(X.XK_F13 & 0x1ff): Key.F13,
+		(X.XK_F14 & 0x1ff): Key.F14,
+		(X.XK_F15 & 0x1ff): Key.F15,
+		(X.XK_F16 & 0x1ff): Key.F16,
+
+		// Meta Keys
+
+		(X.XK_Num_Lock & 0x1ff): Key.NumLock,
+		(X.XK_Scroll_Lock & 0x1ff): Key.ScrollLock,
+		(X.XK_Shift_L & 0x1ff): Key.LeftShift,
+		(X.XK_Shift_R & 0x1ff): Key.RightShift,
+		(X.XK_Control_L & 0x1ff): Key.LeftControl,
+		(X.XK_Control_R & 0x1ff): Key.RightControl,
+		(X.XK_Meta_L & 0x1ff): Key.LeftAlt,
+		(X.XK_Meta_R & 0x1ff): Key.RightAlt,
+	];
+
 	void mainloop() {
 
 		// for the iterator
@@ -196,9 +300,9 @@ private:
 						w_y >>= 1;
 					}
 
-					if (window.position != WindowPosition.Default) {
+//					if (window.position != WindowPosition.Default) {
 						X.XMoveWindow(_pfvars.display, windowVars.wm_parent, w_x, w_y);
-					}
+//					}
 
 					break;
 
@@ -403,6 +507,10 @@ private:
 							break;
 						}
 					}
+
+					Key key;
+					key.code = _keySymToKeyCode[(ksym & 0x1ff)];
+					window.onKeyDown(key);
 
 					if (keyCounter != _pfvars.numSysKeys) {
 					}

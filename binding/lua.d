@@ -15,6 +15,7 @@ version(PlatformWindows) {
 	pragma(lib, `"lua5.1.lib"`);
 }
 else {
+	pragma(lib, "lua");
 }
 
  // lib: liblua5.1

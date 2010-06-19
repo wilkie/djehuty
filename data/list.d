@@ -15,6 +15,8 @@ import djehuty;
 
 public import data.iterable;
 
+import io.console;
+
 class List(T) : Iterable!(T) {
 	this() {
 		_data.length = 10;
@@ -84,7 +86,12 @@ class List(T) : Iterable!(T) {
 					_resize();
 				}
 
-				if (idx >= _count) {
+				if (idx == _count) {
+					add(item);
+					return;
+				}
+
+				if (idx > _count) {
 					throw new DataException.OutOfBounds(this.classinfo.name);
 				}
 

@@ -29,7 +29,8 @@ import platform.vars.font;
 
 import graphics.region;
 
-import math.common;
+import math.cos;
+import math.sin;
 
 // Shapes
 

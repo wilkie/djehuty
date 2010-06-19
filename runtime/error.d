@@ -9,6 +9,9 @@ module runtime.error;
 
 import core.definitions;
 import core.exception;
+import core.error;
+
+extern(C):
 
 // Description: This is called when an assertion without a message fails.
 // file: The file that contains the error.
@@ -29,12 +32,12 @@ void _d_assert_msg(string msg, string file, uint line ) {
 // file: The file that contains the error.
 // line: The line number of the error.
 void _d_array_bounds(string file, uint line ) {
-	throw new DataException.OutOfBounds("Array");
+	throw new DataException.OutOfBounds("Array", file, line);
 }
 
 // Description: This is called when there is no valid case for the switch.
 // file: The file that contains the error.
 // line: The line number of the error.
 void _d_switch_error(string file, uint line ) {
-	throw RuntimeError.NoDefaultCase(file, line);
+	throw new RuntimeError.NoDefaultCase(file, line);
 }

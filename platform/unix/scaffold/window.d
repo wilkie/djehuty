@@ -22,6 +22,8 @@ import platform.unix.main;
 import graphics.view;
 import graphics.graphics;
 
+import binding.c;
+
 import core.color;
 import core.string;
 import core.main;
@@ -35,11 +37,11 @@ import gui.window;
 import io.console;
 
 struct MWMHints {
-	Clong flags;
-	Clong functions;
-	Clong decorations;
-	Clong input_mode;
-	Clong status;
+	Clong_t flags;
+	Clong_t functions;
+	Clong_t decorations;
+	Clong_t input_mode;
+	Clong_t status;
 }
 
 const int PROP_MWM_HINTS_ELEMENTS = 5;
@@ -153,9 +155,9 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 //	int x_return, y_return, width_return, height_return, grav_return;
 //	X.XSizeHints hints;
 //	X.XWMGeometry(_pfvars.display, _pfvars.screen, null, null, &hints, &x_return, &y_return, &width_return, &height_return, &grav_return);
-	if (window.position != WindowPosition.Default) {
+//	if (window.position != WindowPosition.Default) {
 		X.XMoveWindow(_pfvars.display, windowVars.window, w_x, w_y);
-	}
+//	}
 //	X.XMoveWindow(_pfvars.display, windowVars.wm_parent, window.x, window.y);
 
 	// Create View
@@ -325,7 +327,7 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 	Window wret;
 
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
-		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong*)&wret);
+		X.RootWindow(_pfvars.display, _pfvars.screen), x,y, &x, &y,cast(Culong_t*)&wret);
 }
 
 void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt) {
@@ -333,7 +335,7 @@ void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref
 	Window wret;
 
 	X.XTranslateCoordinates(_pfvars.display, windowVars.window,
-		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong*)&wret);
+		X.RootWindow(_pfvars.display, _pfvars.screen), pt.x, pt.y, &pt.x, &pt.y, cast(Culong_t*)&wret);
 }
 
 void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt) {

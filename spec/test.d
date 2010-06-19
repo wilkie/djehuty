@@ -32,7 +32,7 @@ class Test {
 			if (ps is null) {
 				ModuleSpecification ms = _ps.retrieve(name);
 				if (ms is null) {
-					throw new Exception("Unknown Test");
+					throw new Exception("Unknown Test :" ~ name);
 				}
 				test = new Test(ms);
 			}
@@ -45,7 +45,7 @@ class Test {
 			ItemSpecification item = _ms.retrieve(name);
 			
 			if (item is null) {
-				throw new Exception("Unknown Test");
+				throw new Exception("Unknown Test @" ~ name);
 			}
 			Test test = new Test(item);
 			test.run();
@@ -57,7 +57,7 @@ class Test {
 			// Off of Specification
 			PackageSpecification ps = Specification.traverse(name);
 			if (ps is null) {
-				throw new Exception("Unknown Test");
+				throw new Exception("Unknown Test #" ~ name);
 			}
 			Test test = new Test(ps);
 			test.run();

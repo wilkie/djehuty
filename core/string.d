@@ -25,6 +25,8 @@ import math.currency;
 
 public import core.string;
 
+import binding.c;
+
 string toStrv(Variadic vars) {
 	string ret = "";
 	foreach(var; vars) {
@@ -380,7 +382,7 @@ int find(string source, string search, uint start = 0) {
 }
 
 string times(string str, uint amount) {
-	if (amount == 0) {
+	if (amount <= 0) {
 		return "";
 	}
 
@@ -589,7 +591,9 @@ string formatv(string format, Variadic vars) {
 						while (dec.length < precision) {
 							dec ~= "0";
 						}
-						result ~= "." ~ dec;
+						if (dec.length > 0) {
+							result ~= "." ~ dec;
+						}
 					}
 					else if (formatDouble) {
 						result = dtoa(dvalue, base);
@@ -1016,6 +1020,25 @@ string[] pdtoa(double val, uint base = 10) {
 	while (roundUp) {
 		if (ret[0].length == 0 && ret[1].length == 0) {
 			return ["0",""];
+		}
+		else if (ret[1].length == 0) {
+			// round up integer part
+			foreach_reverse(size_t idx, ref chr; ret[0]) {
+				if (chr == '9') {
+					if (idx == 0) {
+						chr = '0';
+						ret[0] = "1" ~ ret[0];
+					}
+					else {
+						chr = '0';
+					}
+				}
+				else {
+					chr++;
+					break;
+				}
+			}
+			break;
 		}
 		else if (ret[1][$-1] == '9') {
 			ret[1] = ret[1][0..$-1];

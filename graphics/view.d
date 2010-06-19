@@ -4,8 +4,6 @@ import graphics.graphics;
 
 import synch.semaphore;
 
-import gui.window;
-
 import graphics.brush;
 import graphics.pen;
 import graphics.font;
@@ -21,10 +19,9 @@ import scaffold.view;
 class View {
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
-		_mutex = new Semaphore;
+		_mutex = new Semaphore(1);
 
 		_inited = false;
-		_mutex.init(1);
 
 		_graphics = new Graphics();
 

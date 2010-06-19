@@ -132,4 +132,8 @@ class System {
 	long time() {
 		return SystemTimeGet();
 	}
+
+	long execute(string path) {
+		return SystemExecute(path);
+	}
 }

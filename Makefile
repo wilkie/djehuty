@@ -8,9 +8,9 @@ DFLAGS =
 # can be changed
 PLATFORM = WINDOWS
 
-LFLAGS_LINUX = -Iplatform/unix -L-lX11 -L-lc -L-lm -L-lrt -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-lGL -L-llua5.1 -L-lncurses -J./tests
-LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1
-LFLAGS_WIN = -Iplatform/win
+LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests
+LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
+LFLAGS_WIN = -Iplatform/win -Icompiler
 
 ifeq (${MY_ARCH},MINGW32_NT-5.1)
 	OBJEXT = .obj
@@ -33,16 +33,17 @@ endif
 DFILES_PLATFORM_MAC = platform/osx/platform/application.d platform/osx/scaffold/system.d platform/osx/scaffold/thread.d platform/osx/scaffold/time.d platform/osx/scaffold/console.d platform/osx/platform/definitions.d platform/osx/common.d platform/osx/main.d platform/osx/scaffold/opengl.d platform/osx/scaffold/graphics.d platform/osx/scaffold/file.d platform/osx/scaffold/socket.d platform/osx/scaffold/window.d platform/osx/scaffold/color.d platform/osx/scaffold/menu.d platform/osx/scaffold/wave.d platform/osx/scaffold/view.d platform/osx/scaffold/directory.d platform/osx/gui/apploop.d binding/c.d binding/ncurses/ncurses.d platform/osx/scaffold/cui.d platform/osx/platform/vars/cui.d platform/osx/platform/vars/file.d platform/unix/common.d platform/osx/platform/vars/thread.d platform/osx/platform/vars/directory.d platform/osx/platform/vars/view.d platform/osx/platform/vars/semaphore.d platform/osx/platform/vars/condition.d platform/osx/platform/vars/window.d
 OBJC_FILES = platform/osx/objc/window.m platform/osx/objc/app.m platform/osx/objc/view.m
 
-DFILES_PLATFORM_UNIX = platform/unix/platform/application.d platform/unix/scaffold/system.d platform/unix/scaffold/thread.d platform/unix/scaffold/time.d platform/unix/scaffold/console.d platform/unix/platform/definitions.d platform/unix/common.d binding/cairo/cairo.d binding/x/Xlib.d binding/x/X.d platform/unix/main.d platform/unix/scaffold/opengl.d platform/unix/scaffold/graphics.d platform/unix/scaffold/file.d platform/unix/scaffold/socket.d platform/unix/scaffold/window.d platform/unix/scaffold/color.d platform/unix/scaffold/menu.d platform/unix/scaffold/wave.d platform/unix/scaffold/view.d platform/unix/scaffold/directory.d platform/unix/gui/apploop.d platform/unix/gui/osbutton.d binding/c.d binding/ncurses/ncurses.d platform/unix/scaffold/cui.d platform/unix/platform/vars/cui.d
+DFILES_PLATFORM_UNIX = platform/unix/platform/application.d platform/unix/scaffold/system.d platform/unix/scaffold/thread.d platform/unix/scaffold/time.d platform/unix/scaffold/console.d platform/unix/platform/definitions.d platform/unix/common.d binding/cairo/cairo.d binding/x/Xlib.d binding/x/X.d platform/unix/main.d platform/unix/scaffold/graphics.d platform/unix/scaffold/file.d platform/unix/scaffold/socket.d platform/unix/scaffold/color.d platform/unix/scaffold/menu.d platform/unix/scaffold/wave.d platform/unix/scaffold/view.d platform/unix/scaffold/directory.d binding/c.d binding/ncurses/ncurses.d platform/unix/scaffold/cui.d platform/unix/platform/vars/cui.d platform/unix/platform/vars/wave.d platform/unix/platform/vars/window.d platform/unix/platform/vars/menu.d platform/unix/platform/vars/view.d platform/unix/platform/vars/region.d platform/unix/platform/vars/brush.d platform/unix/platform/vars/pen.d platform/unix/platform/vars/font.d binding/pango/pango.d platform/unix/platform/vars/directory.d platform/unix/platform/vars/file.d platform/unix/platform/vars/thread.d platform/unix/platform/vars/mutex.d platform/unix/platform/vars/semaphore.d platform/unix/platform/vars/library.d platform/unix/platform/vars/socket.d platform/unix/platform/vars/condition.d binding/cairo/xlib.d binding/cairo/features.d binding/pango/font.d binding/pango/types.d binding/pango/context.d binding/pango/pbreak.d binding/pango/engine.d binding/pango/fontset.d binding/pango/coverage.d binding/pango/glyph.d binding/pango/matrix.d binding/pango/attributes.d binding/pango/layout.d binding/pango/cairo.d binding/pango/script.d binding/pango/gravity.d binding/pango/fontmap.d binding/pango/item.d binding/pango/tabs.d binding/pango/glyphitem.d compiler/ldc/vararg.d compiler/ldc/cstdarg.d
 DFILES_PLATFORM_WIN = binding/win32/gdipluscolormatrix.d binding/win32/gdiplusinit.d binding/win32/gdiplusmem.d binding/win32/gdiplusbase.d binding/win32/gdiplusflat.d binding/win32/gdiplusstringformat.d binding/win32/gdiplusmetafile.d binding/win32/gdipluslinecaps.d binding/win32/gdiplusimagecodec.d binding/win32/gdiplusgpstubs.d binding/win32/gdiplusfontfamily.d binding/win32/gdiplusfontcollection.d binding/win32/gdiplusfont.d binding/win32/gdiplusenums.d binding/win32/gdiplustypes.d binding/win32/gdiplusregion.d binding/win32/gdipluscolor.d binding/win32/gdiplusbitmap.d binding/win32/gdipluseffects.d binding/win32/gdipluscachedbitmap.d binding/win32/gdipluspath.d binding/win32/gdiplusbrush.d binding/win32/gdipluspen.d binding/win32/gdiplusgraphics.d binding/win32/ws2def.d binding/win32/winsock2.d binding/win32/inaddr.d binding/win32/mmsystem.d  binding/win32/wincon.d binding/win32/winbase.d binding/win32/winuser.d binding/win32/windef.d binding/win32/wingdi.d platform/win/platform/application.d platform/win/platform/vars/cui.d platform/win/scaffold/cui.d platform/win/scaffold/system.d platform/win/main.d platform/win/common.d platform/win/platform/vars/menu.d platform/win/platform/vars/view.d platform/win/platform/vars/semaphore.d platform/win/platform/vars/mutex.d platform/win/platform/vars/region.d platform/win/platform/vars/library.d platform/win/platform/vars/wave.d platform/win/platform/vars/pen.d platform/win/platform/vars/brush.d platform/win/platform/vars/window.d platform/win/platform/vars/file.d platform/win/platform/vars/directory.d platform/win/platform/vars/font.d platform/win/platform/vars/socket.d platform/win/scaffold/console.d platform/win/platform/definitions.d platform/win/scaffold/wave.d platform/win/scaffold/directory.d platform/win/scaffold/graphics.d platform/win/scaffold/thread.d platform/win/scaffold/menu.d platform/win/scaffold/window.d platform/win/scaffold/view.d platform/win/scaffold/color.d platform/win/scaffold/file.d platform/win/scaffold/socket.d platform/win/gui/osbutton.d platform/win/scaffold/time.d platform/win/widget.d platform/win/scaffold/opengl.d platform/win/widget.d platform/win/gui/apploop.d
 DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
 
 DFILES_ANALYZING = analyzing/debugger.d
 DFILES_LOCALES = locales/en_us.d locales/fr_fr.d locales/all.d
-DFILES_CORE = core/date.d core/locale.d core/variant.d core/exception.d core/event.d core/library.d core/system.d core/regex.d core/arguments.d core/definitions.d core/application.d core/time.d core/timezone.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d core/error.d
-DFILES_GUI = gui/container.d gui/trackbar.d gui/radiogroup.d gui/progressbar.d gui/togglefield.d gui/listfield.d gui/listbox.d gui/vscrollbar.d gui/hscrollbar.d gui/button.d gui/textfield.d gui/window.d gui/widget.d gui/application.d
+DFILES_CORE = core/date.d core/locale.d core/variant.d core/exception.d core/event.d core/library.d core/system.d core/regex.d core/arguments.d core/definitions.d core/application.d core/time.d core/timezone.d core/unicode.d core/endian.d core/stream.d core/string.d core/main.d core/color.d core/error.d core/util.d
+DFILES_GUI = gui/window.d
 DFILES_DATA = data/stack.d data/queue.d data/queue2.d data/fibonacci.d data/heap.d data/list.d data/iterable.d
-DFILES_RUNTIME = #runtime/array.d runtime/apply.d #runtime/lifetime.d runtime/gc.d runtime/exception.d
+DFILES_RUNTIME = runtime/dstatic.d runtime/switchstmt.d runtime/monitor.d runtime/array.d runtime/apply.d runtime/lifetime.d runtime/gc.d runtime/exception.d runtime/object.d runtime/typeinfo.d runtime/moduleinfo.d runtime/assocarray.d runtime/classinvariant.d runtime/error.d runtime/typeinfos/ti_array.d runtime/typeinfos/ti_array_bool.d runtime/typeinfos/ti_array_byte.d runtime/typeinfos/ti_array_cdouble.d runtime/typeinfos/ti_array_cfloat.d runtime/typeinfos/ti_array_char.d runtime/typeinfos/ti_array_creal.d runtime/typeinfos/ti_array_dchar.d runtime/typeinfos/ti_array_double.d runtime/typeinfos/ti_array_float.d runtime/typeinfos/ti_array_idouble.d runtime/typeinfos/ti_array_ifloat.d runtime/typeinfos/ti_array_int.d runtime/typeinfos/ti_array_ireal.d runtime/typeinfos/ti_array_long.d runtime/typeinfos/ti_array_object.d runtime/typeinfos/ti_array_real.d runtime/typeinfos/ti_array_short.d runtime/typeinfos/ti_array_ubyte.d runtime/typeinfos/ti_array_uint.d runtime/typeinfos/ti_array_ulong.d runtime/typeinfos/ti_array_ushort.d runtime/typeinfos/ti_array_void.d runtime/typeinfos/ti_array_wchar.d runtime/typeinfos/ti_assocarray.d runtime/typeinfos/ti_byte.d runtime/typeinfos/ti_cdouble.d runtime/typeinfos/ti_cfloat.d runtime/typeinfos/ti_char.d runtime/typeinfos/ti_creal.d runtime/typeinfos/ti_dchar.d runtime/typeinfos/ti_delegate.d runtime/typeinfos/ti_double.d runtime/typeinfos/ti_enum.d runtime/typeinfos/ti_float.d runtime/typeinfos/ti_function.d runtime/typeinfos/ti_idouble.d runtime/typeinfos/ti_ifloat.d runtime/typeinfos/ti_int.d runtime/typeinfos/ti_interface.d runtime/typeinfos/ti_ireal.d runtime/typeinfos/ti_long.d runtime/typeinfos/ti_object.d runtime/typeinfos/ti_ptr.d runtime/typeinfos/ti_real.d runtime/typeinfos/ti_short.d runtime/typeinfos/ti_staticarray.d runtime/typeinfos/ti_struct.d runtime/typeinfos/ti_tuple.d runtime/typeinfos/ti_typedef.d runtime/typeinfos/ti_ubyte.d runtime/typeinfos/ti_uint.d runtime/typeinfos/ti_ulong.d runtime/typeinfos/ti_ushort.d runtime/typeinfos/ti_void.d runtime/typeinfos/ti_wchar.d runtime/util.d runtime/common.d runtime/main.d
+
 DFILES_PARSING = parsing/d/trees.d parsing/d/addexprunit.d parsing/d/andexprunit.d parsing/d/assignexprunit.d parsing/d/blockstmtunit.d parsing/d/switchstmtunit.d parsing/d/casestmtunit.d parsing/d/defaultstmtunit.d parsing/d/breakstmtunit.d parsing/d/continuestmtunit.d parsing/d/gotostmtunit.d parsing/d/returnstmtunit.d parsing/d/volatilestmtunit.d parsing/d/throwstmtunit.d parsing/d/postfixexprlistunit.d parsing/d/cmpexprunit.d parsing/d/conditionalexprunit.d parsing/d/declarationunit.d parsing/d/expressionunit.d parsing/d/importdeclunit.d parsing/d/isexprunit.d parsing/d/lexer.d parsing/d/logicalandexprunit.d parsing/d/logicalorexprunit.d parsing/d/moduledeclunit.d parsing/d/moduleunit.d parsing/d/mulexprunit.d parsing/d/nodes.d parsing/d/orexprunit.d parsing/d/parser.d parsing/d/postfixexprunit.d parsing/d/primaryexprunit.d parsing/d/shiftexprunit.d parsing/d/staticunit.d parsing/d/declaratorunit.d parsing/d/declaratorsuffixunit.d parsing/d/declaratortypeunit.d parsing/d/tokens.d parsing/d/enumdeclunit.d parsing/d/typeunit.d parsing/d/enumbodyunit.d parsing/d/aggregatedeclunit.d parsing/d/aggregatebodyunit.d parsing/d/classbodyunit.d parsing/d/templatebodyunit.d parsing/d/interfacebodyunit.d parsing/d/classdeclunit.d parsing/d/interfacedeclunit.d parsing/d/constructorunit.d parsing/d/destructorunit.d parsing/d/parameterlistunit.d parsing/d/functionbodyunit.d parsing/d/staticifunit.d parsing/d/versionunit.d parsing/d/debugunit.d parsing/d/unittestunit.d parsing/d/parameterunit.d parsing/d/basictypeunit.d parsing/d/statementunit.d parsing/d/pragmastmtunit.d parsing/d/staticassertunit.d parsing/d/foreachstmtunit.d parsing/d/scopedstmtunit.d parsing/d/forstmtunit.d parsing/d/typedeclarationunit.d parsing/d/unaryexprunit.d parsing/d/xorexprunit.d parsing/ast.d parsing/lexer.d parsing/token.d parsing/parser.d parsing/options.d parsing/cfg.d parsing/parseunit.d
 DFILES = djehuty.d
 DFILES_BINARY_CODECS = decoders/binary/decoder.d decoders/binary/base64.d decoders/binary/yEnc.d decoders/binary/deflate.d decoders/binary/zlib.d
@@ -55,17 +56,17 @@ DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d resource
 DFILES_CODEC = decoders/decoder.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d
-DFILES_CUI = cui/filebox.d cui/container.d cui/dialog.d cui/window.d cui/application.d cui/widget.d cui/telnet.d cui/buffer.d cui/vt100.d cui/listbox.d cui/textfield.d cui/label.d cui/textbox.d cui/codebox.d cui/tabbox.d
+DFILES_CUI = cui/dialog.d cui/window.d cui/canvas.d cui/application.d cui/label.d cui/textfield.d cui/textbox.d
 DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/opengl/gl.d binding/opengl/glu.d binding/lua.d
-DFILES_INTERFACES = interfaces/container.d
-DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d
-DFILES_OPENGL = opengl/window.d opengl/texture.d opengl/light.d
+DFILES_INTERFACES = 
+DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d math/sin.d math/cos.d math/pow.d math/tan.d math/sqrt.d math/definitions.d math/abs.d
+DFILES_OPENGL = 
 DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d spec/test.d
 DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
 
 DFILES_RSC =
-DFILES_SPECS = .specs/runtime/array.d .specs/runtime/foreach.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d .specs/runtime/switch.d
+DFILES_SPECS = .specs/runtime/array.d .specs/runtime/foreach.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d .specs/runtime/switch.d .specs/runtime/synchronized.d .specs/math/abs.d
 
 SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_SCRIPTING) $(DFILES_BINDING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
 
@@ -81,6 +82,8 @@ OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
+TOOLS_SOBEK = tools/sobek/main.d
+TOOLS_SESHAT = tools/seshat/main.d tools/seshat/options.d tools/seshat/dependencylist.d
 TOOLS_TESTS = runtests.d
 
 EXAMPLES_CUITETRIS = examples/CuiTetris/app.d examples/CuiTetris/gamewindow.d examples/CuiTetris/tetris.d examples/CuiTetris/gamecontrol.d
@@ -109,7 +112,7 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),"WINDOWS")
 else
-		@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix
+		@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix -I./compiler
 endif
 endif
 
@@ -198,6 +201,32 @@ ifeq ($(PLATFORM),WINDOWS)
 	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+endif
+endif
+
+sobek: lib
+
+ifeq (${MY_ARCH},Darwin)
+	for i in ${TOOLS_SOBEK}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/sobek -I./platform/osx; done
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/sobek/*.o` -o sobek $(LFLAGS_MAC) -ltango
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofsobek.exe $(TOOLS_SOBEK) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofsobek -d-version=PlatformLinux $(TOOLS_SOBEK) $(OBJS_LINUX)
+endif
+endif
+
+seshat: lib
+
+ifeq (${MY_ARCH},Darwin)
+	for i in ${TOOLS_SESHAT}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/seshat -I./platform/osx; done
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/seshat/*.o` -o seshat $(LFLAGS_MAC) -ltango
+else
+ifeq ($(PLATFORM),WINDOWS)
+	@dmd.exe -w -version=PlatformWindows -ofseshat.exe $(TOOLS_SESHAT) $(OBJS_WIN) $(LFLAGS_WIN)
+else
+	@$(DC) $(LFLAGS_LINUX) -ofseshat -d-version=PlatformLinux $(TOOLS_SESHAT) $(OBJS_LINUX)
 endif
 endif
 

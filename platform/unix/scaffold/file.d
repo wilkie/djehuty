@@ -13,9 +13,9 @@ import platform.unix.common;
 
 import platform.vars.file;
 
-import core.definitions;
-import core.string;
-import core.main;
+import binding.c;
+
+import djehuty;
 
 import io.file;
 import io.console;
@@ -122,4 +122,25 @@ void FileRemove(ref FilePlatformVars fileVars, string fullPath) {
 	fn ~= '\0';
 
 	remove(fn.ptr);
+}
+
+Time FileTime(string path) {
+	string newPath = path.dup;
+	newPath ~= '\0';
+
+	struct_stat inode;
+
+	if (stat(newPath.ptr, &inode) == -1) {
+		return null;
+	}
+
+	tm time_struct;
+	gmtime_r(cast(time_t*)&inode.st_mtim.tv_sec, &time_struct);
+
+	// get microseconds
+	long micros;
+	micros = time_struct.tm_sec + (time_struct.tm_min * 60);
+	micros += time_struct.tm_hour * 60 * 60;
+	micros *= 1000000;
+	return new Time(micros);
 }

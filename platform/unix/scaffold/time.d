@@ -17,37 +17,7 @@ import core.string;
 import core.date;
 import core.time;
 
-// Timing
-private {
-	struct tm {
-		int tm_sec;
-		int tm_min;
-		int tm_hour;
-		int tm_mday;
-		int tm_mon;
-		int tm_year;
-		int tm_wday;
-		int tm_yday;
-		int tm_isdst;
-		char* tm_zone;
-		int tm_gmtoff;
-	}
-
-	extern(C) tm* gmtime(time_t* tim);
-	extern(C) tm* gmtime_r(time_t* tim, tm* output);
-	extern(C) tm* localtime(time_t* tim);
-	extern(C) tm* localtime_r(time_t* tim, tm* output);
-	extern(C) size_t strftime(char*, size_t, char*, tm*);
-	extern(C) void* memcpy(void*, void*, size_t);
-
-	extern(C) time_t mktime(tm*);
-
-	extern(C) void tzset();
-
-	extern(C) {
-		extern char* tzname[2];
-	}
-}
+import binding.c;
 
 string TimeZoneGet() {
 	int foo;

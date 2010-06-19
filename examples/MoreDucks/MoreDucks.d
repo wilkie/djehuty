@@ -33,7 +33,7 @@ class MyControl : Widget {
 					path = "ducks-cute.png";
 					break;
 			}
-			images[curImage] = new Image("examples/MoreDucks/" ~ path);
+			images[curImage] = new Image(path);
 		}
 		g.drawImage(this.left,this.top,images[curImage]);
 	}
@@ -82,7 +82,6 @@ private:
 
 class MyApp : GuiApplication {
 	// Start an application instance
-	static this() { new MyApp(); }
 
 	override void onApplicationStart() {
 		wnd = new MyWindow();
@@ -96,4 +95,10 @@ class MyApp : GuiApplication {
 
 private:
 	MyWindow wnd;
+}
+
+int main() {
+	auto app = new MyApp();
+	app.run();
+	return 0;
 }

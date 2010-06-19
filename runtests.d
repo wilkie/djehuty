@@ -41,8 +41,6 @@ private:
 
 // Do not change the class name, it is used in a test for djehuty proper!
 class DjehutyTester : Application {
-	static this() { new DjehutyTester(); }
-
 	void onApplicationStart() {
 		options = new Opts();
 
@@ -77,6 +75,7 @@ private:
 		foreach(item; ms) {
 			foreach(feature; item) {
 				auto tester = new Test(item, feature);
+//				Console.putln("Testing", " : ", item.name, " ", feature);
 				tester.run();
 				if (tester.failures > 0) {
 					Console.forecolor = Color.Red;
@@ -84,6 +83,8 @@ private:
 						Console.putln("FAILED ");
 					}
 					Console.putln(" ".times((packName ~ "." ~ ms.name).length), " : ", item.name, " ", feature);
+				}
+				else {
 				}
 				numFailures += tester.failures;
 				numSuccesses += tester.successes;
@@ -108,4 +109,10 @@ private:
 	}
 
 	Opts options;
+}
+
+int main() {
+	auto app = new DjehutyTester();
+	app.run();
+	return 0;
 }

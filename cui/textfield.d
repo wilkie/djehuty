@@ -13,17 +13,18 @@ import djehuty;
 
 import io.console;
 
-import cui.widget;
+import cui.window;
+import cui.canvas;
 
 // Section: Console
 
 // Description: This console control abstracts a simple one line text field.
-class CuiTextField : CuiWidget {
+class CuiTextField : CuiWindow {
 
 	// Constructors
 
 	this( uint x, uint y, uint width, string value = "") {
-		super(x,y,width,1);
+		super(x,y,width,1,Color.Black);
 
 		_max = width-2;
 
@@ -32,70 +33,60 @@ class CuiTextField : CuiWidget {
 
 	// Events
 
-	override void onAdd() {
+/*	override void onAdd() {
 	}
 
 	override void onInit() {
 		onDraw();
 	}
-
-
+*/
 	override void onKeyDown(Key key) {
-
-		Console.forecolor = _forecolor;
-		Console.backcolor = _backcolor;
+		forecolor = Color.Green;
 		if (key.code == Key.Backspace) {
 			if (_pos > 0) {
 				if (_pos == _max) {
-					Console.put(' ');
 					_value = _value.substring(0,_value.length-1);
 				}
 				else {
-					Console.put(cast(char)0x8);
-					Console.put(' ');
 					_value = _value.substring(0, _pos-1) ~ _value.substring(_pos);
 				}
 
-				Console.put(cast(char)0x8);
-
 				_pos--;
+				redraw();
 			}
 		}
 		else if (key.code == Key.Return) {
-			tabForward();
+			//tabForward();
 		}
 	}
 
 	override void onKeyChar(dchar keyChar) {
-
-		Console.forecolor = _forecolor;
-		Console.backcolor = _backcolor;
 		if (keyChar != 0x8 && keyChar != '\t' && keyChar != '\n' && keyChar != '\r') {
 			if (_pos <= _max) {
-				Console.put(keyChar);
 
 				_pos++;
 
-				if (_pos >= _max) {
+				if (_pos > _max) {
 					_pos = _max;
-					_value = _value.substring(0, _value.length-1) ~ Unicode.toUtf8([keyChar]);
-					Console.put(cast(char)(0x8));
+					_value = _value.substring(0, _value.utflen()-1) ~ Unicode.toUtf8([keyChar]);
 				}
 				else {
 					_value = _value.substring(0, _pos-1) ~ Unicode.toUtf8([keyChar]) ~ _value.substring(_pos-1);
 				}
+				redraw();
 			}
 		}
 	}
 
-	override void onGotFocus() {
+/*	override void onGotFocus() {
 		Console.showCaret();
 
-		positionCursor();
+		//positionCursor();
 
 		Console.forecolor = _forecolor;
 		Console.backcolor = _backcolor;
 	}
+*/
 
 	// Properties
 
@@ -109,7 +100,8 @@ class CuiTextField : CuiWidget {
 	// text: The new value for the field.
 	void text(string text) {
 		_value = text.dup;
-		onDraw();
+		redraw();
+		//onDraw();
 	}
 	
 	// Description: This property returns the current forecolor of the text in the field
@@ -122,7 +114,8 @@ class CuiTextField : CuiWidget {
 	// value: The new forecolor
 	void forecolor(Color value) {
 		_forecolor = value;
-		onDraw();
+		redraw();
+		//onDraw();
 	}
 	
 	// Description: This property returns the current backcolor of the text in the field
@@ -135,7 +128,8 @@ class CuiTextField : CuiWidget {
 	// value: The new backcolor
 	void backcolor(Color value) {
 		_backcolor = value;
-		onDraw();
+		redraw();
+		//onDraw();
 	}
 	
 	// Description: This property returns the current forecolor of the borders of the field
@@ -152,40 +146,43 @@ class CuiTextField : CuiWidget {
 
 	// Methods
 
-	override bool isTabStop() {
+/*	override bool isTabStop() {
 		return true;
 	}
+	*/
 
-	override void onDraw() {
-		if (canDraw) {
-			Console.position(this.left, this.top);
-			Console.forecolor = _color;
-			Console.backcolor = Color.Black;
-			Console.put("[");
+	override void onPrimaryDown(ref Mouse mouse) {
+		forecolor = Color.Red;
+	}
 
-			Console.forecolor = _forecolor;
-			Console.backcolor = _backcolor;
+	override void onDraw(CuiCanvas canvas) {
+		canvas.position(0,0);
+		canvas.forecolor = _color;
+		canvas.backcolor = Color.Black;
+		canvas.write("[");
 
-			foreach(chr; _value.substring(0,_max)) {
-				Console.put(chr);
-			}
+		canvas.forecolor = _forecolor;
+		canvas.backcolor = _backcolor;
 
-			_pos = _value.length;
-			if (_pos > _max) {
-				_pos = _max;
-			}
-
-			for (int i=_value.length; i<_max; i++) {
-				Console.put(' ');
-			}
-
-			Console.forecolor = _color;
-			Console.backcolor = Color.Black;
-
-			Console.put("]");
-
-			positionCursor();
+		foreach(chr; _value.substring(0,_max)) {
+			canvas.write(chr);
 		}
+
+		_pos = _value.length;
+		if (_pos > _max) {
+			_pos = _max;
+		}
+
+		for (int i=_value.utflen(); i<_max; i++) {
+			canvas.write(" ");
+		}
+
+		canvas.forecolor = _color;
+		canvas.backcolor = Color.Black;
+
+		canvas.write("]");
+
+		//positionCursor();
 	}
 
 protected:

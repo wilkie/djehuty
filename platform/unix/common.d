@@ -11,15 +11,7 @@
 
 module platform.unix.common;
 
-public import X = binding.x.Xlib;
-
-public import Cairo = binding.cairo.cairo;
-public import CairoX = binding.cairo.xlib;
-
-public import Pango = binding.pango.pango;
-
-public import binding.c;
-public import Curses = binding.ncurses.ncurses;
+import binding.c;
 
 extern(C):
 
@@ -535,6 +527,7 @@ extern (C):
 	int pthread_getattr_np(pthread_t, pthread_attr_t*);
 	int pthread_getconcurrency();
 	int pthread_getcpuclockid(pthread_t, clockid_t*);
+	int pthread_yield();
 
 	int pthread_cond_init(pthread_cond_t *, pthread_condattr_t *);
 	int pthread_cond_destroy(pthread_cond_t *);
@@ -1138,4 +1131,36 @@ enum
 	SOCK_DGRAM = 2,
 	SOCK_STREAM = 1,
 }
+
+// Timing
+//private {
+	struct tm {
+		int tm_sec;
+		int tm_min;
+		int tm_hour;
+		int tm_mday;
+		int tm_mon;
+		int tm_year;
+		int tm_wday;
+		int tm_yday;
+		int tm_isdst;
+		char* tm_zone;
+		int tm_gmtoff;
+	}
+
+	extern(C) tm* gmtime(time_t* tim);
+	extern(C) tm* gmtime_r(time_t* tim, tm* output);
+	extern(C) tm* localtime(time_t* tim);
+	extern(C) tm* localtime_r(time_t* tim, tm* output);
+	extern(C) size_t strftime(char*, size_t, char*, tm*);
+	extern(C) void* memcpy(void*, void*, size_t);
+
+	extern(C) time_t mktime(tm*);
+
+	extern(C) void tzset();
+
+	extern(C) {
+		extern char* tzname[2];
+	}
+//}
 

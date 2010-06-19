@@ -21,7 +21,12 @@ import io.wavelet;
 import io.audio;
 import io.console;
 
-import math.common;
+import math.pow;
+import math.abs;
+import math.sin;
+import math.cos;
+import math.tan;
+import math.definitions;
 
 // initialize the array to zero
 typedef double zerodouble = 0.0;
