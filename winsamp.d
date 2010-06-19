@@ -117,20 +117,25 @@ class MyWindow : CuiDialog {
 		i++;
 		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
 		visible = true;
+
 		tabbox = new CuiTabBox(0,0,13,10);
+		tabbox.add("foo");
+		tabbox.add("bar");
 		tabbox.visible = true;
-/*		box = new CuiTextBox(0,0,13,10);
+
+		box = new CuiTextBox(0,0,13,10);
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
-		box.backcolorNum = toPick;*/
+		box.backcolorNum = toPick;
+		tabbox.push(box);
 		push(tabbox);
-//		push(box);
 	}
 	
 	override void onResize() {
 //		box.reposition(0,0,this.clientWidth,this.clientHeight);
 		tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
+		box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {

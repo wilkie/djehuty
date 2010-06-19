@@ -73,19 +73,19 @@ public:
 		redraw();
 	}
 
-	int clientWidth() {
+	override int clientWidth() {
 		return width - 2;
 	}
 
-	void clientWidth(int value) {
+	override void clientWidth(int value) {
 		width = (value + 2);
 	}
 
-	int clientHeight() {
+	override int clientHeight() {
 		return height - 2;
 	}
 
-	void clientHeight(int value) {
+	override void clientHeight(int value) {
 		height = value + 2;
 	}
 

@@ -79,11 +79,22 @@ public:
 	}
 
 	bool focused() {
-		return _focused;
+		if (parent is null) {
+			return false;
+		}
+
+		return parent._focusedWindow is this;
 	}
 
 	void focused(bool value) {
-		_focused = value;
+		if (parent is null) {
+			return;
+		}
+
+		if (value == true) {
+			parent._focusedWindow = this;
+		}
+		// TODO: value = false?
 	}
 
 	int left() {
@@ -99,6 +110,7 @@ public:
 	}
 
 	void width(int value) {
+		reposition(this.left(), this.top(), value, this.height());
 	}
 
 	int height() {
@@ -106,6 +118,23 @@ public:
 	}
 
 	void height(int value) {
+		reposition(this.left(), this.top(), this.width(), value);
+	}
+
+	int clientWidth() {
+		return width();
+	}
+
+	void clientWidth(int value) {
+		width(value);
+	}
+
+	int clientHeight() {
+		return height();
+	}
+
+	void clientHeight(int value) {
+		height(value);
 	}
 
 	// Description: This function returns the currently
