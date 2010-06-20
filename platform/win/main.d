@@ -107,7 +107,7 @@ extern (C) void _moduleCtor();
 extern (C) void _moduleUnitTests();
 
 // The windows entry point
-extern (Windows)
+/*extern (Windows)
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
 	int result;
@@ -145,3 +145,4 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
     return result;
 }
+*/

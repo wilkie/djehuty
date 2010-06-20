@@ -70,53 +70,53 @@ void memset(void *addr, int val, uint numBytes) {
      }
 }
 
-	// Some uniformly distributed hash function
-	// Reference: http://www.concentric.net/~Ttwang/tech/inthash.htm
-	hash_t hash(hash_t value) {
-		static if (hash_t.sizeof == 4) {
-			// 32 bit hash function
-			// The commented lines are equivalent to the following line
+// Some uniformly distributed hash function
+// Reference: http://www.concentric.net/~Ttwang/tech/inthash.htm
+hash_t hash(hash_t value) {
+	static if (hash_t.sizeof == 4) {
+		// 32 bit hash function
+		// The commented lines are equivalent to the following line
 
-			int c2 = 0x27d4eb2d;	// A prime number or odd constant
+		int c2 = 0x27d4eb2d;	// A prime number or odd constant
 
-			value = (value ^ 61) ^ (value >>> 16);
+		value = (value ^ 61) ^ (value >>> 16);
 
-			// value = value * 9
-			value = value + (value << 3);
+		// value = value * 9
+		value = value + (value << 3);
 
-			value = value ^ (value >>> 4);
+		value = value ^ (value >>> 4);
 
-			value = value * c2;
+		value = value * c2;
 
-			value = value ^ (value >>> 15);
+		value = value ^ (value >>> 15);
 
-			return value;
-		}
-		else static if (hash_t.sizeof == 8) {
-			// 64 bit hash function
-			// The commented lines are equivalent to the following line
-
-			// value = (value << 21) - value - 1;
-			// NOTE: ~value == -value - 1
-			value = ~value + (value << 21);
-
-			value = value ^ (value >>> 24);
-
-			// value = value * 265; // That is, value * (1 + 8 + 256)
-			value = (value + (value >> 3)) + (value << 8);
-
-			value = value ^ (value >>> 14);
-
-			// value = value * 21; // That is, value * (1 + 4 + 16)
-			value = (value + (value << 2)) + (value << 4);
-
-			value = value ^ (value >>> 28);
-			value = value + (value << 31);
-
-			return value;
-		}
-		else {
-			static assert(false, "Need a hash function.");
-		}
+		return value;
 	}
+	else static if (hash_t.sizeof == 8) {
+		// 64 bit hash function
+		// The commented lines are equivalent to the following line
+
+		// value = (value << 21) - value - 1;
+		// NOTE: ~value == -value - 1
+		value = ~value + (value << 21);
+
+		value = value ^ (value >>> 24);
+
+		// value = value * 265; // That is, value * (1 + 8 + 256)
+		value = (value + (value >> 3)) + (value << 8);
+
+		value = value ^ (value >>> 14);
+
+		// value = value * 21; // That is, value * (1 + 4 + 16)
+		value = (value + (value << 2)) + (value << 4);
+
+		value = value ^ (value >>> 28);
+		value = value + (value << 31);
+
+		return value;
+	}
+	else {
+		static assert(false, "Need a hash function.");
+	}
+}
 

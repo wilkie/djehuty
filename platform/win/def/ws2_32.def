@@ -1,0 +1,19 @@
+LIBRARY 'ws2_32.dll'
+EXETYPE NT
+SUBSYSTEM WINDOWS
+EXPORTS
+
+_send@16 = send
+_recv@16 = recv
+_WSACleanup@0 = WSACleanup
+_closesocket@4 = closesocket
+_accept@12 = accept
+_listen@8 = listen
+_bind@12 = bind
+_htons@4 = htons
+_inet_addr@4 = inet_addr
+_socket@12 = socket
+_WSAStartup@8 = WSAStartup
+_connect@12 = connect
+_GetAddrInfoW@16 = GetAddrInfoW
+_GetAddrInfo@16 = GetAddrInfo

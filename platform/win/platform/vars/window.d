@@ -25,7 +25,7 @@ import gui.window;
 import binding.opengl.gl;
 import binding.opengl.glu;
 
-import opengl.window;
+//import opengl.window;
 
 import synch.thread;
 
@@ -135,9 +135,9 @@ struct WindowPlatformVars {
 
 
 	void gameLoopCallResize() {
-		GLWindow glWindow = cast(GLWindow)windowClass;
+		//GLWindow glWindow = cast(GLWindow)windowClass;
 
-		glWindow.onDraw(getDeltaTime());
+		//glWindow.onDraw(getDeltaTime());
 
 		// Now, we can swap the buffers
 		SwapBuffers(windhDC);
@@ -260,7 +260,7 @@ struct WindowPlatformVars {
 
 		initTime();
 
-		GLWindow glWindow = cast(GLWindow)windowClass;
+//		GLWindow glWindow = cast(GLWindow)windowClass;
 
 		MSG msg;
 		for (;;)
@@ -284,7 +284,7 @@ struct WindowPlatformVars {
 				// This will need work to support multiple GL windows
 				// For now, one is supported
 
-				glWindow.onDraw(getDeltaTime());
+	//			glWindow.onDraw(getDeltaTime());
 
 				// Now, we can swap the buffers
 				SwapBuffers(windhDC);

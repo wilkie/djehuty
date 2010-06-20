@@ -44,6 +44,8 @@ else {
 }
 
 alias va_list Cva_list;
+alias va_start Cva_start;
+alias va_end Cva_end;
 
 /* stdout */
 

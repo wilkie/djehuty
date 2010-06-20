@@ -52,3 +52,6 @@ class TypeInfo_Class : TypeInfo {
 		return 1;
 	}
 }
+
+class TypeInfo_C : TypeInfo_Class {
+}

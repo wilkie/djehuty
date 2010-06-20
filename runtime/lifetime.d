@@ -15,8 +15,15 @@ import binding.c;
 
 extern(C):
 
+int printf(char*, ...);
+
 Object _d_allocclass(ClassInfo ci) {
-	return cast(Object)gc_malloc(ci.init.length, 0);
+	byte[] mem = cast(byte[])GarbageCollector.malloc(ci.init.length);
+
+    // Initialize it
+    mem[0..$] = ci.init[];
+
+    return cast(Object)mem.ptr;
 }
 
 void* _d_allocmemoryT(TypeInfo ti) {
@@ -106,7 +113,7 @@ private template _newarray(bool initialize, bool withZero) {
 						if (initIndex == init.length) {
 							initIndex = 0;
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -123,9 +130,9 @@ private template _newarray(bool initialize, bool withZero) {
 //  given, and will initialize it to the default value.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void* _d_newarrayT(TypeInfo ti, size_t length) {
+void[] _d_newarrayT(TypeInfo ti, size_t length) {
 	// Use the template, initialize the array with 0
-	return _newarray!(true, true)(ti, length).ptr;
+	return _newarray!(true, true)(ti, length);
 }
 
 // Description: Will allocate a new array of type ti with the length
@@ -134,17 +141,17 @@ void* _d_newarrayT(TypeInfo ti, size_t length) {
 //   The init() function within the TypeInfo will be used to initialize
 //   the array.
 // length: The number of elements in the array to be allocated.
-void* _d_newarrayiT(TypeInfo ti, size_t length) {
-	return _newarray!(true, false)(ti, length).ptr;
+void[] _d_newarrayiT(TypeInfo ti, size_t length) {
+	return _newarray!(true, false)(ti, length);
 }
 
 // Description: Will allocate a uninitialized array of type ti with
 //   the length given.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void*_d_newarrayvT(TypeInfo ti, size_t length) {
+void[] _d_newarrayvT(TypeInfo ti, size_t length) {
 	// Use the template, but do not initialize
-	return _newarray!(false, false)(ti, length).ptr;
+	return _newarray!(false, false)(ti, length);
 }
 
 template _newarraym(bool initialize, bool withZero) {
@@ -173,16 +180,16 @@ template _newarraym(bool initialize, bool withZero) {
 	}
 }
 
-void* _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(true, true)(ti, dimensions).ptr;
+void[] _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(true, true)(ti, dimensions);
 }
 
-void* _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(true, false)(ti, dimensions).ptr;
+void[] _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(true, false)(ti, dimensions);
 }
 
-void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(false, false)(ti, dimensions).ptr;
+void[] _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
+	return _newarraym!(false, false)(ti, dimensions);
 }
 
 // Description: Will delete an array.

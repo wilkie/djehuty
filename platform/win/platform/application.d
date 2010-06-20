@@ -34,6 +34,7 @@ enum : uint
 }
 
 //XXX:CommCtrl.h
+pragma(lib, "comctl32.lib");
 extern(System) void InitCommonControls();
 
 // The main ApplicationController
