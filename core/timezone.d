@@ -16,8 +16,6 @@ import Scaffold = scaffold.time;
 import core.definitions;
 import core.string;
 
-import io.console;
-
 class TimeZone {
 
 	// Description: This will construct a TimeZone for the current location.

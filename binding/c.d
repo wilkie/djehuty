@@ -35,16 +35,15 @@ else {
 
 version(GNU) {
 	private import std.c.stdarg;
-	alias va_list Cva_list;
 }
 else version(LDC) {
 	private import ldc.cstdarg;
-	alias va_list Cva_list;
 }
 else {
-	static assert(false, "Compiler not supported.");
-	// public import std.c.stdarg
+	private import dmd.cstdarg;
 }
+
+alias va_list Cva_list;
 
 /* stdout */
 

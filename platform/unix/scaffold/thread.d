@@ -54,7 +54,7 @@ void *_djehuty_unix_thread_proc(void* udata) {
 	return null;
 }
 
-long ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
+uint ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
 	threadVars.thread = thread;
 	threadVars.endCallback = endCallback;
 

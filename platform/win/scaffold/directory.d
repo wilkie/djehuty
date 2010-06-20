@@ -13,7 +13,10 @@ module scaffold.directory;
 pragma(lib, "netapi32.lib");
 pragma(lib, "mpr.lib");
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.winbase;
+import binding.win32.windef;
 
 import platform.vars.directory;
 

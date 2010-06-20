@@ -30,7 +30,7 @@ class TypeInfo {
 		string other = this.toString();
 		TypeInfo str = typeid(string);
 
-		str.compare(&t, &other);
+		return str.compare(&t, &other);
 	}
 
 	int opEquals(Object o) {

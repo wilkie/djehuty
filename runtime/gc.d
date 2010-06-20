@@ -124,7 +124,8 @@ static:
 		size_t* oldlen = (cast(size_t*)original.ptr) - 1;
 		if (oldlen > _heapStart) {
 			if (*oldlen > length) {
-				return original[0..length];
+				alias length innerLength;
+				return original[0..innerLength];
 			}
 		}
 

@@ -266,4 +266,6 @@ private int _rempio2(double x, double[] y) {
 
 		return n;
 	}
+
+	return n;
 }

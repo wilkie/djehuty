@@ -10,7 +10,8 @@
 
 module platform.win.main;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.windef;
 
 import core.arguments;
 import core.string;

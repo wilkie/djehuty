@@ -20,6 +20,9 @@ import platform.vars.font;
 import platform.vars.pen;
 import platform.vars.region;
 
+import math.cos;
+import math.sin;
+
 import Gdiplus = binding.win32.gdiplus;
 
 import core.string;
@@ -31,7 +34,11 @@ import core.unicode;
 import graphics.region;
 
 import platform.win.main;
-import platform.win.common;
+
+import binding.win32.wingdi;
+import binding.win32.winuser;
+import binding.win32.windef;
+import binding.win32.winbase;
 
 import io.console;
 
@@ -159,12 +166,11 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 
 // Text Colors
 void setTextBackgroundColor(ViewPlatformVars* viewVars, in Color textColor) {
-	SetBkColor(viewVars.dc, textColor.value);
+	SetBkColor(viewVars.dc, _colorToInt(textColor));
 }
 
 void setTextColor(ViewPlatformVars* viewVars, in Color textColor) {
-	//platform.win.common.SetTextColor(viewVars.dc, ColorGetValue(textColor));
-	Gdiplus.GdipCreateSolidFill(textColor.value, &viewVars.curTextBrush);
+	Gdiplus.GdipCreateSolidFill(_colorToInt(textColor), &viewVars.curTextBrush);
 }
 
 // Text States
@@ -237,8 +243,7 @@ void destroyFont(FontPlatformVars* font) {
 // Brushes
 
 void createBrush(BrushPlatformVars* brush, in Color clr) {
-	//brush.brushHandle = CreateSolidBrush(clr.value);
-	Gdiplus.GdipCreateSolidFill(clr.value, &brush.handle);
+	Gdiplus.GdipCreateSolidFill(_colorToInt(clr), &brush.handle);
 }
 
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
@@ -257,6 +262,18 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 	Gdiplus.GdipCreateTexture(viewVarsSrc.image, Gdiplus.WrapMode.WrapModeTile, &brush.handle);
 }
 
+private int _colorToInt(Color clr) {
+	int value;
+	int r,g,b,a;
+	r = cast(int)(clr.red * 255);
+	g = cast(int)(clr.green * 255);
+	b = cast(int)(clr.blue * 255);
+	a = cast(int)(clr.alpha * 255);
+
+	value = a | (b << 8) | (g << 16) | (r << 24);
+	return value;
+}
+
 // PathBrush
 
 void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, double[] points, Color[] clrs, double angle, double width) {
@@ -266,12 +283,12 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 	INT clr2 = 0xFFFFFFFF;
 
 	if (points.length == 1) {
-		clr1 = clrs[0].value;
-		clr2 = clrs[0].value;
+		clr1 = _colorToInt(clrs[0]);
+		clr2 = _colorToInt(clrs[0]);
 	}
 	else if (points.length > 1) {
-		clr1 = clrs[0].value;
-		clr2 = clrs[$-1].value;
+		clr1 = _colorToInt(clrs[0]);
+		clr2 = _colorToInt(clrs[$-1]);
 
 		//
 		// use these 1d points and the angle to
@@ -289,7 +306,7 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 		Gdiplus.REAL[] blendPositions = new Gdiplus.REAL[points.length];
 		INT count = clrs.length;
 		for (size_t i = 0; i < count; i++) {
-			argbs[i] = clrs[i].value;
+			argbs[i] = _colorToInt(clrs[i]);
 			blendPositions[i] = points[i];
 		}
 		Gdiplus.GdipSetLinePresetBlend(brush.handle, argbs.ptr, blendPositions.ptr, count);
@@ -299,7 +316,7 @@ void createGradientBrush(BrushPlatformVars* brush, double origx, double origy, d
 // Pens
 
 void createPen(PenPlatformVars* pen, in Color clr, double width) {
-    Gdiplus.GdipCreatePen1(clr.value, width, Gdiplus.Unit.UnitWorld, &pen.handle);
+    Gdiplus.GdipCreatePen1(_colorToInt(clr), width, Gdiplus.Unit.UnitWorld, &pen.handle);
 	//pen.penHandle = platform.win.common.CreatePen(0,1,pen.clr);
 }
 
@@ -406,8 +423,8 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 	POINT[] pts = new POINT[](rgn.length);
 
 	foreach(i, pt; rgn) {
-		pts[i].x = pt.x + x;
-		pts[i].y = pt.y + y;
+		pts[i].x = cast(int)pt.x + x;
+		pts[i].y = cast(int)pt.y + y;
 	}
 
 	// call the platform to create a region object from the points

@@ -106,7 +106,7 @@ struct WindowPlatformVars {
 		if (pleaseStop) {
 			return;
 		}
-		
+
 		wstring oldTitleW = Unicode.toUtf16(oldTitle.dup);
 		oldTitleW ~='\0';
 
@@ -117,10 +117,10 @@ struct WindowPlatformVars {
 		}
 
 		// create the window's view object
-		windowClass.onInitialize();
+//		windowClass.onInitialize();
 
 		// call the onAdd() event
-		windowClass.onAdd();
+//		windowClass.onAdd();
 
 		MSG msg;
 		while (GetMessageW(&msg, cast(HWND) hWnd, 0, 0)) {
@@ -246,10 +246,10 @@ struct WindowPlatformVars {
 		}
 
 		// create the window's view object
-		windowClass.onInitialize();
+//		windowClass.onInitialize();
 
 		// call the onAdd() event
-		windowClass.onAdd();
+//		windowClass.onAdd();
 
 		_TimeInfo tInfo;
 

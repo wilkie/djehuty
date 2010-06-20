@@ -12,7 +12,11 @@ module scaffold.socket;
 
 pragma(lib, "WS2_32.lib");
 
-import platform.win.common;
+import binding.win32.ws2def;
+import binding.win32.winsock2;
+import binding.win32.windef;
+import binding.win32.winnt;
+
 import platform.win.main;
 
 import platform.vars.socket;

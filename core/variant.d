@@ -14,19 +14,15 @@ import core.string;
 import core.definitions;
 import core.unicode;
 
-import io.console;
-
 // Imposed variadic
 version(LDC) {
 	public import ldc.vararg;
 	public import C = ldc.cstdarg;
 }
 else {
-	public import std.stdarg;
-	public import C = std.c.stdarg;
+	public import dmd.stdarg;
+	public import C = dmd.cstdarg;
 }
-
-//import std.stdio;
 
 enum Type {
 

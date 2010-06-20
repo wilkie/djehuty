@@ -10,7 +10,7 @@
 
 module platform.vars.semaphore;
 
-import platform.win.common;
+import binding.win32.winnt;
 
 struct SemaphorePlatformVars {
 	HANDLE _semaphore;

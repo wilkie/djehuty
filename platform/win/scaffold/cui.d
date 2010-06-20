@@ -17,7 +17,12 @@ import io.console;
 import core.main;
 import core.definitions;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.windef;
+import binding.win32.wincon;
+import binding.win32.winuser;
+import binding.win32.winbase;
+
 import platform.win.main;
 
 import platform.vars.cui;
@@ -30,7 +35,7 @@ void CuiStart(CuiPlatformVars* vars) {
 	// Window Resize Detect Thread (Silly)
 	static ResizeThread t;
 
-	vars.events = new Queue!(CuiEvent)();
+	vars.events = new Queue!(Event)();
 
 	// get handle to standard out
 	vars.stdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -59,7 +64,7 @@ void CuiStart(CuiPlatformVars* vars) {
 	SetConsoleCtrlHandler(cast(PHANDLER_ROUTINE)&consoleProc, TRUE);
 }
 
-void CuiNextEvent(CuiEvent* evt, CuiPlatformVars* vars) {
+void CuiNextEvent(Event* evt, CuiPlatformVars* vars) {
 	while (vars.events.length == 0) {
 		grabEvent(vars);
 	}
@@ -105,8 +110,8 @@ private {
 					_console_y = cinfo.srWindow.Bottom - cinfo.srWindow.Top;
 
 					//(cast(CuiApplication)Djehuty.app).window.onResize();
-					CuiEvent resizeEvent;
-					resizeEvent.type = CuiEvent.Type.Size;
+					Event resizeEvent;
+					resizeEvent.type = Event.Size;
 					resizeEvent.info.size.x = _console_x;
 					resizeEvent.info.size.y = _console_y;
 					vars.events.add(resizeEvent);
@@ -129,8 +134,8 @@ private {
 			case CTRL_CLOSE_EVENT:
 				Console.putln("Ctrl-Close event");
 
-				CuiEvent evt;
-				evt.type = CuiEvent.Type.Close;
+				Event evt;
+				evt.type = Event.Close;
 				evt.aux = 0;
 
 				ResizeThread.vars.events.add(evt);
@@ -147,7 +152,7 @@ private {
 				return FALSE;
 
 			case CTRL_SHUTDOWN_EVENT:
-				printf( "Ctrl-Shutdown event\n\n" );
+				Console.putln( "Ctrl-Shutdown event\n\n" );
 				return FALSE;
 
 			default:
@@ -172,7 +177,7 @@ private {
 
 		for (uint i=0; i < cNumRead; i++) {
 
-			CuiEvent evt;
+			Event evt;
 
 			switch(vars.irInBuf[i].EventType) {
 				case KEY_EVENT: // keyboard input
@@ -213,14 +218,14 @@ private {
 
 						// The Current Console View Receives the Event
 
-						evt.type = CuiEvent.Type.KeyDown;
+						evt.type = Event.KeyDown;
 						vars.events.add(evt);
 					}
 					else {
 						// KeyUp
 
 						// The Current Console View Receives the Event
-						evt.type = CuiEvent.Type.KeyUp;
+						evt.type = Event.KeyUp;
 						vars.events.add(evt);
 					}
                     break;
@@ -255,13 +260,13 @@ private {
 					if (vars.irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) {
 						if (!(last_state & FROM_LEFT_1ST_BUTTON_PRESSED)) {
 							curbutton = 1;
-							evt.info.mouse.leftDown = true;
+							evt.info.mouse.clicks[0] = 1;
 						}
 					}
 					else {
 						if (last_state & FROM_LEFT_1ST_BUTTON_PRESSED) {
 							curbutton = 1;
-							evt.info.mouse.leftDown = false;
+							evt.info.mouse.clicks[0] = 0;
 							isPressed = false;
 						}
 					}
@@ -269,13 +274,13 @@ private {
 					if (vars.irInBuf[i].Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED) {
 						if (!(last_state & RIGHTMOST_BUTTON_PRESSED)) {
 							curbutton = 5;
-							evt.info.mouse.rightDown = true;
+							evt.info.mouse.clicks[1] = 1;
 						}
 					}
 					else {
 						if (last_state & RIGHTMOST_BUTTON_PRESSED) {
 							curbutton = 5;
-							evt.info.mouse.rightDown = false;
+							evt.info.mouse.clicks[1] = 0;
 							isPressed = false;
 						}
 					}
@@ -283,7 +288,7 @@ private {
 					last_state = vars.irInBuf[i].Event.MouseEvent.dwButtonState;
 
 					if (isPressed == false) {
-						evt.type = CuiEvent.Type.MouseUp;
+						evt.type = Event.MouseUp;
 						if (curbutton == 1) {
 							_last_was_mousepress = true;
 							evt.aux = 0;
@@ -301,7 +306,7 @@ private {
 						}
 					}
 					else if (curbutton > 0) {
-						evt.type = CuiEvent.Type.MouseDown;
+						evt.type = Event.MouseDown;
 						if (curbutton == 1) {
 							_last_was_mousepress = true;
 							evt.aux = 0;
@@ -322,7 +327,7 @@ private {
 						switch(vars.irInBuf[i].Event.MouseEvent.dwEventFlags) {
 							case MOUSE_MOVED:
 								if (isMovement && !_last_was_mousepress) {
-									evt.type = CuiEvent.Type.MouseMove;
+									evt.type = Event.MouseMove;
 									vars.events.add(evt);
 								}
 								_last_was_mousepress = false;
@@ -332,7 +337,7 @@ private {
 
 								delta /= 120;
 
-								evt.type = CuiEvent.Type.MouseWheelY;
+								evt.type = Event.MouseWheelY;
 								evt.aux = delta;
 								vars.events.add(evt);
 								break;
@@ -341,7 +346,7 @@ private {
 
 								delta /= 120;
 
-								evt.type = CuiEvent.Type.MouseWheelX;
+								evt.type = Event.MouseWheelX;
 								evt.aux = delta;
 								vars.events.add(evt);
 								break;

@@ -10,8 +10,10 @@
 
 module scaffold.system;
 
-import platform.win.common;
-import platform.win.main;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.winbase;
 
 import platform.application;
 
@@ -219,4 +221,11 @@ ubyte[] calloc(size_t length) {
 
 void free(void[] memory) {
 	binding.c.free(memory.ptr);
+}
+
+long SystemExecute(string path) {
+	string newpath = path.dup;
+	newpath ~= '\0';
+
+	return binding.c.system(newpath.ptr);
 }

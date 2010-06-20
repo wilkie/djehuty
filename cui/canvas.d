@@ -1,3 +1,5 @@
+module cui.canvas;
+
 import djehuty;
 
 import scaffold.console;

@@ -19,11 +19,7 @@ import core.variant;
 
 import data.iterable;
 
-import io.console;
-
 import math.currency;
-
-public import core.string;
 
 import binding.c;
 

@@ -10,7 +10,10 @@
 
 module scaffold.console;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.wincon;
+import binding.win32.winnt;
+import binding.win32.winbase;
 
 import core.main;
 import core.unicode;
@@ -18,9 +21,6 @@ import core.string;
 import core.color;
 
 import synch.thread;
-
-import cui.application;
-import cui.window;
 
 private int _toNearestConsoleColor(Color clr) {
 	// 16 colors on console
@@ -137,7 +137,7 @@ BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE,
 ];
 
 // I subclass the console window to detect resizes
-extern(Windows)
+/*extern(Windows)
 int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch(uMsg)
@@ -150,9 +150,9 @@ int ConsoleProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 	}
 	return CallWindowProcW(_console_oldproc, hWnd, uMsg, wParam, lParam);
-}
+}*/
 
-static WNDPROC _console_oldproc = null;
+//static WNDPROC _console_oldproc = null;
 
 
 ushort _curAttribs;
@@ -432,6 +432,9 @@ void ConsolePutChar(dchar chr) {
 	SetConsoleCursorPosition( hStdout, coordScreen );*/
 }
 
+void ConsoleInit() {
+}
+
 void ConsoleGetChar(out dchar chr, out uint code) {
 	// get handle to standard in
 	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -448,7 +451,7 @@ void ConsoleGetChar(out dchar chr, out uint code) {
 				irInBuf.ptr, // buffer to read into
 				128,         // size of read buffer
 				&cNumRead) ){// number of records read
-			printf("Fatal Error: Cannot Read from Console Event Buffer\n");
+			throw new Exception("Fatal Error: Cannot Read from Console Event Buffer\n");
 		}
 
 		for (i=0; i<cNumRead; i++) {

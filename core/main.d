@@ -10,14 +10,14 @@
 
 module core.main;
 
+import io.console;
+
 import core.string;
 import core.arguments;
 import core.application;
 import core.locale;
 import core.system;
 import core.color;
-
-import io.console;
 
 import synch.semaphore;
 import synch.thread;

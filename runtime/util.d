@@ -1,5 +1,7 @@
 module runtime.util;
 
+import runtime.types;
+
 int memcmp(void* a, void* b, size_t n) {
 	ubyte* str_a = cast(ubyte*)a;
 	ubyte* str_b = cast(ubyte*)b;
@@ -19,7 +21,7 @@ int memcmp(void* a, void* b, size_t n) {
 char[] itoa(char[] buf, char base, long d) {
 	size_t p = buf.length - 1;
 	size_t startIdx = 0;
-	ulong ud = d;
+	ulong ud = cast(ulong)d;
 	bool negative = false;
 
 	int divisor = 10;
@@ -27,15 +29,22 @@ char[] itoa(char[] buf, char base, long d) {
 	// If %d is specified and D is minus, put `-' in the head.
 	if(base == 'd' && d < 0) {
 		negative = true;
-		ud = -d;
+		ud = cast(ulong)-d;
 	}
 	else if(base == 'x')
 		divisor = 16;
 
 	// Divide UD by DIVISOR until UD == 0.
 	do {
-		int remainder = ud % divisor;
-		buf[p--] = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
+		int remainder = cast(int)(ud % divisor);
+		char nextChar;
+		if (remainder < 10) {
+			nextChar = remainder + '0';
+		}
+		else {
+			nextChar = (remainder - 10) + 'a';
+		}
+		buf[p--] = nextChar;
 	}
 	while (ud /= divisor)
 

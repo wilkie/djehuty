@@ -10,7 +10,10 @@
 
 module platform.vars.wave;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.windef;
+import binding.win32.mmsystem;
 
 import core.stream;
 

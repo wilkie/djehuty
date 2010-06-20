@@ -1,6 +1,9 @@
 module platform.application;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.windef;
+import binding.win32.winuser;
+import binding.win32.winbase;
 
 import core.arguments;
 import core.string;
@@ -222,7 +225,7 @@ private:
 
 	void initCommon() {
 		// set buffer to print without newline
-		setvbuf (stdout, null, _IONBF, 0);
+		//setvbuf (stdout, null, _IONBF, 0);
 		//SetConsoleOutputCP(65001);
 
 		getWindowsVersion();

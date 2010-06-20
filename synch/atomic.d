@@ -354,7 +354,22 @@ naked;
 		}
 		else {
 			// Atomic Increment (using compareExchange)
-			add(reference, 1);
+			add(reference, cast(ulong)1);
+		}
+	}
+
+	void increment(ref uint reference) {
+		version(X86_64) {
+			asm {
+				naked;
+				lock;
+				inc [RDI];
+				ret;
+			}
+		}
+		else {
+			// Atomic Increment (using compareExchange)
+			add(reference, cast(uint)1);
 		}
 	}
 
@@ -370,6 +385,21 @@ naked;
 		else {
 			// Atomic Decrement (using compareExchange)
 			add(reference, cast(ulong)(-1));
+		}
+	}
+
+	void decrement(ref uint reference) {
+		version(X86_64) {
+			asm {
+				naked;
+				lock;
+				dec [RDI];
+				ret;
+			}
+		}
+		else {
+			// Atomic Decrement (using compareExchange)
+			add(reference, cast(uint)(-1));
 		}
 	}
 
@@ -553,7 +583,30 @@ naked;
 				if (compareExchange(reference, oldVal, newVal)) {
 					return;
 				}
-			}			
+			}
+		}
+	}
+
+	void add(ref uint reference, uint value) {
+		version(X86_64) {
+			asm {
+				naked;
+				lock;
+				xadd [RDI], RSI;
+				ret;
+			}
+		}
+		else {
+			// Atomic Addition (using compareExchange)
+			uint oldVal;
+			uint newVal;
+			for(;;) {
+				oldVal = reference;
+				newVal = oldVal + value;
+				if (compareExchange(reference, oldVal, newVal)) {
+					return;
+				}
+			}
 		}
 	}
 

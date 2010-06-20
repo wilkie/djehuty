@@ -10,7 +10,7 @@
 
 module platform.vars.file;
 
-import platform.win.common;
+import binding.win32.winnt;
 
 struct FilePlatformVars {
     HANDLE f;

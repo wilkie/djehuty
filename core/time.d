@@ -6,8 +6,6 @@ import core.string;
 import core.definitions;
 import core.timezone;
 
-import io.console;
-
 // Section: Types
 // Description: This struct stores a description of time.
 class Time {

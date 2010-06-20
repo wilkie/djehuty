@@ -91,7 +91,7 @@ class ArrayInfo(char[] TYPE) : TypeInfo {
 		ubyte* str = cast(ubyte*)s.ptr;
 		hash_t hash = 0;
 
-		while(1) {
+		do {
 			switch (len) {
 				case 0:
 					return hash;
@@ -129,7 +129,7 @@ class ArrayInfo(char[] TYPE) : TypeInfo {
 					len -= 8;
 					break;
 			}
-		}
+		} while (len > 0);
 
 		return hash;
 	}

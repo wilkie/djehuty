@@ -10,7 +10,8 @@
 
 module platform.vars.mutex;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.winbase;
 
 struct MutexPlatformVars {
 	CRITICAL_SECTION* _mutex;
