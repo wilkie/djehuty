@@ -18,22 +18,7 @@ import io.console;
 
 // Description: This class represents a region that is convex.
 class ConvexHull : Region {
-
-	// Description: This will construct an empty ConvexHull.
-	this() {
-	}
-
-	// Description: This will construct a ConvexHull for the given Region.
-	// region: The class representing the region to use.
-	this(Region region) {
-		quickHull(region[]);
-	}
-
-	this(Coord[] points) {
-		quickHull(points);
-	}
-
-protected:
+private:
 
 	// Description: This function will build the internal array of points using the given array of points
 	void quickHull(Coord[] pts) {
@@ -98,4 +83,19 @@ protected:
 	}
 
 	Coord center;
+
+public:
+	// Description: This will construct an empty ConvexHull.
+	this() {
+	}
+
+	// Description: This will construct a ConvexHull for the given Region.
+	// region: The class representing the region to use.
+	this(Region region) {
+		quickHull(region[]);
+	}
+
+	this(Coord[] points) {
+		quickHull(points);
+	}
 }

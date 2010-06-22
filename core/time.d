@@ -9,7 +9,12 @@ import core.timezone;
 // Section: Types
 // Description: This struct stores a description of time.
 class Time {
+protected:
 
+	// Description: The microsecond.
+	long _micros;
+
+public:
 	// Description: This will construct a Time object that will represent midnight.
 	this() {
 	}
@@ -224,9 +229,4 @@ class Time {
 	void opSubAssign(Time o) {
 		_micros -= o._micros;
 	}
-
-protected:
-
-	// Description: The microsecond.
-	long _micros;
 }

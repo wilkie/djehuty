@@ -338,6 +338,64 @@ private {
 
 // Description: This is the MPEG Layer 2 audio codec.
 class MP2Decoder : AudioDecoder {
+protected:
+
+	bool accepted;
+
+	uint mpeg_header;
+	uint known_sync_bits;
+
+	ushort crc;
+
+	uint audioDataLength;
+
+	ubyte audioData[];
+	QuantizationClass* allocClass[2][32];
+	uint scfsi[2][32];
+
+	uint scalefactor[2][3][32];
+	uint samplecode;
+	uint sample[2][3][32];
+
+	double quantSample[2][3][32];
+
+	uint channels;
+
+	uint samplesLeft;
+
+	uint bufferSize;
+	AudioFormat wf;
+
+	Time bufferTime;
+
+	long posOfFirstFrame;
+
+
+	// bit building
+	ubyte* curByte;
+	uint curPos;
+
+	MP2HeaderInformation header;
+
+	align(1) struct ID3HeaderInformation {
+		ubyte[3] signature;
+		ubyte[2] ver;
+		ubyte flags;
+		ubyte[4] len;
+	}
+
+	ID3HeaderInformation id3;
+	
+	uint id3length;
+
+	int bufOffset[2] = [64,64];
+
+	zerodouble BB[2][2*512];
+
+	// Import common lookup tables
+	import decoders.audio.mpegCommon;
+
+public:
 	override string name() {
 		return "MPEG Layer 2";
 	}
@@ -1663,60 +1721,4 @@ class MP2Decoder : AudioDecoder {
 		return tme;
 	}
 
-protected:
-
-	bool accepted;
-
-	uint mpeg_header;
-	uint known_sync_bits;
-
-	ushort crc;
-
-	uint audioDataLength;
-
-	ubyte audioData[];
-	QuantizationClass* allocClass[2][32];
-	uint scfsi[2][32];
-
-	uint scalefactor[2][3][32];
-	uint samplecode;
-	uint sample[2][3][32];
-
-	double quantSample[2][3][32];
-
-	uint channels;
-
-	uint samplesLeft;
-
-	uint bufferSize;
-	AudioFormat wf;
-
-	Time bufferTime;
-
-	long posOfFirstFrame;
-
-
-	// bit building
-	ubyte* curByte;
-	uint curPos;
-
-	MP2HeaderInformation header;
-
-	align(1) struct ID3HeaderInformation {
-		ubyte[3] signature;
-		ubyte[2] ver;
-		ubyte flags;
-		ubyte[4] len;
-	}
-
-	ID3HeaderInformation id3;
-	
-	uint id3length;
-
-	int bufOffset[2] = [64,64];
-
-	zerodouble BB[2][2*512];
-
-	// Import common lookup tables
-	import decoders.audio.mpegCommon;
 }

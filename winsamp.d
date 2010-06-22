@@ -54,6 +54,11 @@ import spec.specification;
 import data.queue2;
 
 class MyConsoleApp : Application {
+
+	ulong fudge;
+	ulong freak;
+	Queue2!(string) q;
+
 	void foo(bool bar) {
 		Atomic.increment(fudge);
 		while(fudge < 9) {
@@ -66,15 +71,12 @@ class MyConsoleApp : Application {
 		q.remove();
 		Atomic.increment(freak);
 	}
-
-	ulong fudge;
-	ulong freak;
-	Queue2!(string) q;
 }
 
 import binding.c;
 
 class A {
+	int _foo;
 	this(int foo = 5) {
 		_foo = foo;
 		printf("class constructor %d\n", foo);
@@ -83,8 +85,6 @@ class A {
 	int foobar() {
 		return _foo;
 	}
-private:
-	int _foo;
 }
 
 
@@ -93,6 +93,12 @@ import spec.modulespecification;
 import data.queue;
 
 class MyWindow : CuiDialog {
+	Timer tmr;
+	CuiLabel lbl;
+	CuiTextField field;
+	CuiTextBox box;
+	CuiTabBox tabbox;
+
 	this() {
 		static int i = 0;
 		Color toPick;
@@ -175,12 +181,6 @@ class MyWindow : CuiDialog {
 			super.onKeyDown(key);
 		}
 	}
-
-	Timer tmr;
-	CuiLabel lbl;
-	CuiTextField field;
-	CuiTextBox box;
-	CuiTabBox tabbox;
 }
 
 class MyApp : CuiApplication {

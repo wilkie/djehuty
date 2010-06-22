@@ -16,6 +16,28 @@ import djehuty;
 public import data.iterable;
 
 class List(T) : Iterable!(T) {
+protected:
+
+	T _nullValue() {
+		T val;
+		return val;
+	}
+
+	void _resize() {
+		T[] temp = _data;
+		if (_data.length == 0) {
+			_data = new T[10];
+		}
+		else {
+			_data = new T[_data.length*2];
+		}
+		_data[0..temp.length] = temp[0..$];
+	}
+
+	T[] _data;
+	size_t _count;
+
+public:
 	this() {
 		_data = new T[10];
 		_count = 0;
@@ -399,25 +421,4 @@ class List(T) : Iterable!(T) {
 
 		return ret;
 	}
-
-protected:
-
-	T _nullValue() {
-		T val;
-		return val;
-	}
-
-	void _resize() {
-		T[] temp = _data;
-		if (_data.length == 0) {
-			_data = new T[10];
-		}
-		else {
-			_data = new T[_data.length*2];
-		}
-		_data[0..temp.length] = temp[0..$];
-	}
-
-	T[] _data;
-	size_t _count;
 }

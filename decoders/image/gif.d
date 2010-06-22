@@ -19,9 +19,6 @@ import core.definitions;
 import decoders.image.decoder;
 import decoders.decoder;
 
-// For debugging
-import io.console;
-
 // The structures define structures found in the standard and utilized
 // when reading the file or stream.
 private {
@@ -68,8 +65,7 @@ private {
 		short output;
 	}
 
-	const ubyte gifMasks[] =
-	[
+	const ubyte gifMasks[] = [
 
 	/* STARTBYTE, INTERMEDIATE BYTE, LAST BYTE */
 	/* 8 STEPS PER BIT COUNT */
@@ -100,7 +96,7 @@ private {
 	];
 
 	//global constants
-	const int _djehuty_image_gif_size_of_global_color_table_ref[] = [2,4,8,16,32,64,128,256];
+	const int[] _djehuty_image_gif_size_of_global_color_table_ref = [2,4,8,16,32,64,128,256];
 
 	// _decoder States
 	const auto GIF_STATE_INIT						= 0;
@@ -119,49 +115,144 @@ private {
 
 // Description: The GIF Codec
 class GIFDecoder : ImageDecoder {
-	override string name() {
-		return "Graphics Interchange Format";
-	}
+private:
 
-	override StreamData decode(Stream stream, ref Bitmap view) {
-		ImageFrameDescription imageDesc;
+	uint gifIsFirst;
 
-		// will read headers and such
+	uint gifFirstTime;
+	uint gifFirstClear;
+	Color gifFirstClearColor;
 
-		StreamData ret = StreamData.Accepted;
+	uint gifHeadersLoaded;
 
-		ret = _decoder(stream, view, imageDesc);
+	ubyte gifMaskStart;
+	ubyte gifMaskIntermediate;
+	ubyte gifMaskEnd;
 
-		if (ret == StreamData.Accepted) {
-			// the image frame will be next
-			// stop, since we got what we needed
-			// which is the first frame
+	// starting index into the array
+	ubyte* gifCurMaskArray;
+	// current index within subsection
+	uint gifCurMaskIndex;
+	uint gifCurMaskIndexComp;
 
-			// but this signals that we have more than one frame
-			return StreamData.Accepted;
+	//the pointer to the current color table in use
+	uint* gifCurColorTable;
+
+	uint[4096] gifUncompressed;
+
+	uint gifCodeSize;
+	uint gifStartCodeSize;
+
+	_djehuty_image_gif_header gifHeader;
+	_djehuty_image_gif_logical_screen gifScreen;
+	_djehuty_image_gif_image_descriptor gifImage;
+
+	_djehuty_image_gif_color[256] gifGlobalColorTable;
+	uint[256] gifGlobalColorTableComputed;
+	uint gifGlobalColorTableSize;
+
+	_djehuty_image_gif_color[256] gifLocalColorTable;
+	uint[256] gifLocalColorTableComputed;
+	uint gifLocalColorTableSize;
+
+	_djehuty_image_gif_graphics_extension gifGraphicControl;
+
+	_djehuty_image_gif_lzw_dictionary_entry[4096] gifDictionary;
+	uint gifDictionarySize;
+
+	uint gifVersion;
+
+	uint gifIsInterlaced;
+
+	uint gifBlockSize;
+	uint gifLastBlockSize;
+
+	uint gifBlockCounter;
+
+	ushort gifCurCode;
+	ushort gifClearCode;
+	ushort gifEOICode;
+
+	ubyte[259] gifImageData; //256 of block, 3 more for extra padding
+	ubyte gifImageLeftOver;
+	uint gifBlockCount;
+
+	ubyte gifExtensionIntroducer;
+	ubyte gifExtensionLabel;
+
+	int gifInterlaceState;
+
+	ushort lzw_nextEntry;
+	ushort lzw_curEntry;
+	ushort lzw_isFirstEntry;
+
+	uint* ptr_start;		//ptr of the first pixel
+
+	uint* ptr;			//current ptr in image data
+	uint* ptr_max_line;	//ptr of the next line
+	uint* ptr_max_page;	//ptr outside of image bounds
+
+	uint ptrLine;		//the current scan line of the image (y)
+	uint ptrPos;		//the current pixel of the line (x)
+
+	void _interlaceIncrement() {
+		//ptr will be at the end of the current row
+		//essentially in the beginning of the next row
+
+		//if it had gone through row 0, it will now be
+		//in row 1, and as such, will only have to
+		//increment n-1 rows, where n is the number of
+		//rows that the current state is interlaced
+
+		switch (gifInterlaceState) {
+		case 0:
+		case 1:
+			//increase 8 lines
+			ptrLine += 7;
+			ptr += (7 * gifImage.gifImageWidth);
+			break;
+		case 2:
+			//increase 4 lines
+			ptrLine += 3;
+			ptr += (3 * gifImage.gifImageWidth);
+			break;
+		case 3:
+			//increase 2 lines
+			ptrLine ++;
+			ptr += (gifImage.gifImageWidth);
+			break;
+		default:
+			//eh?
+			break;
 		}
 
-		return ret;
-	}
+		if (ptr >= ptr_max_page) {
+			//we start over again
+			gifInterlaceState++;
 
-	override StreamData decodeFrame(Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
-		// will read headers and such
-
-		StreamData ret = _decoder(stream, view, imageDesc);
-
-		if (ret == StreamData.Complete) {
-			// we are done
-			imageDesc.clearFirst = gifFirstClear;
-			imageDesc.clearColor = gifFirstClearColor;
-			imageDesc.time = gifFirstTime;
-
-			return StreamData.Complete;
+			switch(gifInterlaceState) {
+			case 1:
+				//start at row 4
+				ptrLine = 4;
+				ptr = ptr_start + (gifImage.gifImageWidth * 4);
+				break;
+			case 2:
+				//start at row 2
+				ptrLine = 2;
+				ptr = ptr_start + (gifImage.gifImageWidth * 2);
+				break;
+			case 3:
+				//start at row 1
+				ptrLine = 1;
+				ptr = ptr_start + (gifImage.gifImageWidth);
+				break;
+			default:
+				//eh?
+				break;
+			}
 		}
-
-		return ret;
+		ptr_max_line = ptr + gifImage.gifImageWidth;
 	}
-
-protected:
 
 	StreamData _decoder(ref Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
 		uint q;
@@ -1206,141 +1297,48 @@ protected:
 		}
 		return StreamData.Invalid;
 	}
+public:
 
-	void _interlaceIncrement() {
-		//ptr will be at the end of the current row
-		//essentially in the beginning of the next row
-
-		//if it had gone through row 0, it will now be
-		//in row 1, and as such, will only have to
-		//increment n-1 rows, where n is the number of
-		//rows that the current state is interlaced
-
-		switch (gifInterlaceState) {
-		case 0:
-		case 1:
-			//increase 8 lines
-			ptrLine += 7;
-			ptr += (7 * gifImage.gifImageWidth);
-			break;
-		case 2:
-			//increase 4 lines
-			ptrLine += 3;
-			ptr += (3 * gifImage.gifImageWidth);
-			break;
-		case 3:
-			//increase 2 lines
-			ptrLine ++;
-			ptr += (gifImage.gifImageWidth);
-			break;
-		default:
-			//eh?
-			break;
-		}
-
-		if (ptr >= ptr_max_page) {
-			//we start over again
-			gifInterlaceState++;
-
-			switch(gifInterlaceState) {
-			case 1:
-				//start at row 4
-				ptrLine = 4;
-				ptr = ptr_start + (gifImage.gifImageWidth * 4);
-				break;
-			case 2:
-				//start at row 2
-				ptrLine = 2;
-				ptr = ptr_start + (gifImage.gifImageWidth * 2);
-				break;
-			case 3:
-				//start at row 1
-				ptrLine = 1;
-				ptr = ptr_start + (gifImage.gifImageWidth);
-				break;
-			default:
-				//eh?
-				break;
-			}
-		}
-		ptr_max_line = ptr + gifImage.gifImageWidth;
+	override string name() {
+		return "Graphics Interchange Format";
 	}
 
-	uint gifIsFirst;
+	override StreamData decode(Stream stream, ref Bitmap view) {
+		ImageFrameDescription imageDesc;
 
-	uint gifFirstTime;
-	uint gifFirstClear;
-	Color gifFirstClearColor;
+		// will read headers and such
 
-	uint gifHeadersLoaded;
+		StreamData ret = StreamData.Accepted;
 
-	ubyte gifMaskStart;
-	ubyte gifMaskIntermediate;
-	ubyte gifMaskEnd;
+		ret = _decoder(stream, view, imageDesc);
 
-	// starting index into the array
-	ubyte* gifCurMaskArray;
-	// current index within subsection
-	uint gifCurMaskIndex;
-	uint gifCurMaskIndexComp;
+		if (ret == StreamData.Accepted) {
+			// the image frame will be next
+			// stop, since we got what we needed
+			// which is the first frame
 
-	//the pointer to the current color table in use
-	uint* gifCurColorTable;
+			// but this signals that we have more than one frame
+			return StreamData.Accepted;
+		}
 
-	uint gifUncompressed[4096];
+		return ret;
+	}
 
-	uint gifCodeSize;
-	uint gifStartCodeSize;
+	override StreamData decodeFrame(Stream stream, ref Bitmap view, ref ImageFrameDescription imageDesc) {
+		// will read headers and such
 
-	_djehuty_image_gif_header gifHeader;
-	_djehuty_image_gif_logical_screen gifScreen;
-	_djehuty_image_gif_image_descriptor gifImage;
+		StreamData ret = _decoder(stream, view, imageDesc);
 
-	_djehuty_image_gif_color gifGlobalColorTable[256];
-	uint gifGlobalColorTableComputed[256];
-	uint gifGlobalColorTableSize;
+		if (ret == StreamData.Complete) {
+			// we are done
+			imageDesc.clearFirst = gifFirstClear;
+			imageDesc.clearColor = gifFirstClearColor;
+			imageDesc.time = gifFirstTime;
 
-	_djehuty_image_gif_color gifLocalColorTable[256];
-	uint gifLocalColorTableComputed[256];
-	uint gifLocalColorTableSize;
+			return StreamData.Complete;
+		}
 
-	_djehuty_image_gif_graphics_extension gifGraphicControl;
+		return ret;
+	}
 
-	_djehuty_image_gif_lzw_dictionary_entry gifDictionary[4096];
-	uint gifDictionarySize;
-
-	uint gifVersion;
-
-	uint gifIsInterlaced;
-
-	uint gifBlockSize;
-	uint gifLastBlockSize;
-
-	uint gifBlockCounter;
-
-	ushort gifCurCode;
-	ushort gifClearCode;
-	ushort gifEOICode;
-
-	ubyte gifImageData[259]; //256 of block, 3 more for extra padding
-	ubyte gifImageLeftOver;
-	uint gifBlockCount;
-
-	ubyte gifExtensionIntroducer;
-	ubyte gifExtensionLabel;
-
-	int gifInterlaceState;
-
-	ushort lzw_nextEntry;
-	ushort lzw_curEntry;
-	ushort lzw_isFirstEntry;
-
-	uint* ptr_start;		//ptr of the first pixel
-
-	uint* ptr;			//current ptr in image data
-	uint* ptr_max_line;	//ptr of the next line
-	uint* ptr_max_page;	//ptr outside of image bounds
-
-	uint ptrLine;		//the current scan line of the image (y)
-	uint ptrPos;		//the current pixel of the line (x)
 }

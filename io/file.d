@@ -21,6 +21,15 @@ import io.directory;
 
 // Description: This class wraps common file operations within the context of a Stream.
 class File : Stream {
+protected:
+
+	bool _inited = false;
+	FilePlatformVars _pfvars;
+
+	Directory _path;
+	string _name;
+
+public:
 	// Description: Will open the file located at the _path at filename.  The internal pointer will point to the beginning of the file.
 	// filename: The file to open.
 	this(string filename) {
@@ -376,14 +385,6 @@ class File : Stream {
 
 		return ret;
 	}
-
-protected:
-
-	bool _inited = false;
-	FilePlatformVars _pfvars;
-
-	Directory _path;
-	string _name;
 }
 
 // Section: Core/Streams

@@ -26,6 +26,17 @@ import scaffold.directory;
 
 // Description: This class represents a file system directory.
 class Directory {
+protected:
+
+	string _name;
+	string _path;
+	Directory _parent;
+
+	bool _isRoot;
+
+	DirectoryPlatformVars _pfVars;
+public:
+
 	// Description: This constructor will create a Directory object that represents the root.
 	this() {
 		_isRoot = true;
@@ -244,14 +255,4 @@ class Directory {
 	override char[] toString() {
 		return this.path.dup;
 	}
-
-protected:
-
-	string _name;
-	string _path;
-	Directory _parent;
-
-	bool _isRoot;
-
-	DirectoryPlatformVars _pfVars;
 }

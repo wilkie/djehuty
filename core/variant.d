@@ -62,7 +62,21 @@ enum Type {
 }
 
 struct Variant {
+private:
+	Type _type = Type.Reference;
 
+	bool _isArray = false;
+	uint _depth = 0;
+
+	bool _isHash = false;
+	size_t _size = null.sizeof;
+
+	TypeInfo _tiRoot;
+	TypeInfo _ti;
+
+	VariantData _data = {reference:null};
+
+public:
 	Type type() {
 		return _type;
 	}
@@ -474,20 +488,6 @@ struct Variant {
 		}
 		return "foo";
 	}
-
-private:
-	Type _type = Type.Reference;
-
-	bool _isArray = false;
-	uint _depth = 0;
-
-	bool _isHash = false;
-	size_t _size = null.sizeof;
-
-	TypeInfo _tiRoot;
-	TypeInfo _ti;
-
-	VariantData _data = {reference:null};
 }
 
 union VariantData {

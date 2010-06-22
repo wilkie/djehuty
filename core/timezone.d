@@ -17,7 +17,13 @@ import core.definitions;
 import core.string;
 
 class TimeZone {
+protected:
 
+	string _name = "";
+	string _utc = "";
+	int _offset_in_minutes;
+
+public:
 	// Description: This will construct a TimeZone for the current location.
 	this() {
 		this(Scaffold.TimeZoneGet());
@@ -80,12 +86,6 @@ class TimeZone {
 	long utcOffset() {
 		return cast(long)_offset_in_minutes * 60L * 1000000L;
 	}
-
-protected:
-
-	string _name = "";
-	string _utc = "";
-	int _offset_in_minutes;
 }
 
 

@@ -21,6 +21,10 @@ import scaffold.view;
 import io.console;
 
 class Bitmap : View {
+private:
+	Semaphore _buffer_mutex;
+
+public:
 	this() {
 		super();
 
@@ -62,7 +66,4 @@ class Bitmap : View {
 		_buffer_mutex.up();
 	}
 
-private:
-
-	Semaphore _buffer_mutex;
 }

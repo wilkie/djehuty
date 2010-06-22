@@ -12,6 +12,16 @@ import scaffold.socket;
 
 // Description: This class wraps networking calls and represents the information stream as a Stream class.  This is a low-level implementation of a socket.  Note: no rewind or seek operations will have any affect.
 class Socket : Stream {
+protected:
+
+    bool _inited = false;
+    string _hostname = null;
+
+    ulong _port = 0;
+
+    SocketPlatformVars _pfvars;
+
+public:
 	~this() {
 		close();
 	}
@@ -214,18 +224,7 @@ class Socket : Stream {
 		if (_inited) { return 0; }
 
 		return _port;
-    }
-
-protected:
-
-    bool _inited = false;
-    string _hostname = null;
-
-    ulong _port = 0;
-
-    SocketPlatformVars _pfvars;
-
-}
+    }}
 
 class SocketReader : Socket {
 }

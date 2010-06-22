@@ -13,6 +13,15 @@ import graphics.bitmap;
 import graphics.view;
 
 class Brush {
+private:
+
+	package BrushPlatformVars _pfvars;
+
+	// tied to a view?
+	package View _view; // will be null if no view is tied with it
+
+public:
+
 	this() {
 		this(Color.White);
 	}
@@ -78,12 +87,4 @@ class Brush {
 	static Brush Blue() {
 		return new Brush(Color.Blue);
 	}
-
-private:
-
-	package BrushPlatformVars _pfvars;
-
-	// tied to a view?
-	package View _view; // will be null if no view is tied with it
-
 }

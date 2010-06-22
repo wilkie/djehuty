@@ -9,7 +9,6 @@ import core.definitions;
 import decoders.image.decoder;
 import decoders.decoder;
 
-
 // Section: Codecs/Image
 
 private {
@@ -68,6 +67,82 @@ private {
 
 // Description: The BMP Codec
 class BMPDecoder : ImageDecoder {
+private:
+	static const auto BMP_STATE_INIT						= 0;
+
+	static const auto BMP_STATE_READ_HEADERS				= 1;
+	static const auto BMP_STATE_READ_BITMAP_SIZE			= 2;
+
+	static const auto BMP_STATE_READ_OSX_1					= 3;
+	static const auto BMP_STATE_READ_OSX_2					= 4;
+	static const auto BMP_STATE_READ_WIN					= 5;
+
+	static const auto BMP_STATE_READ_WIN_PALETTE			= 6;
+	static const auto BMP_STATE_READ_OSX_1_PALETTE			= 7;
+	static const auto BMP_STATE_READ_OSX_2_PALETTE			= 8;
+
+	static const auto BMP_STATE_DECODE_WIN_1BPP			= 9;
+	static const auto BMP_STATE_DECODE_WIN_2BPP			= 10;
+	static const auto BMP_STATE_DECODE_WIN_4BPP			= 11;
+	static const auto BMP_STATE_DECODE_WIN_8BPP			= 12;
+	static const auto BMP_STATE_DECODE_WIN_16BPP			= 13;
+	static const auto BMP_STATE_DECODE_WIN_24BPP			= 14;
+	static const auto BMP_STATE_DECODE_WIN_32BPP			= 15;
+
+	static const auto BMP_STATE_RENDER_WIN_1BPP			= 16;
+	static const auto BMP_STATE_RENDER_WIN_2BPP			= 17;
+	static const auto BMP_STATE_RENDER_WIN_4BPP			= 18;
+	static const auto BMP_STATE_RENDER_WIN_8BPP			= 19;
+	static const auto BMP_STATE_RENDER_WIN_16BPP			= 20;
+	static const auto BMP_STATE_RENDER_WIN_24BPP			= 21;
+	static const auto BMP_STATE_RENDER_WIN_32BPP			= 22;
+
+	static const auto BMP_STATE_DECODE_OS2_1_1BPP			= 40;
+
+	static const auto BMP_STATE_DECODE_OS2_2_1BPP			= 80;
+
+
+
+
+	static const ubyte _djehuty_convert_16_of_6_to_32[64] = [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 45, 49, 53, 57, 61,
+														65, 69, 73, 77, 81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125,
+														130, 134, 138, 142, 146, 150, 154, 158, 162, 166, 170, 174, 178, 182, 186,
+														190, 194, 198, 202, 206, 210, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 255];
+
+	static const ubyte[32] _djehuty_convert_16_of_5_to_32 = [0, 8, 16, 25, 33, 41, 49, 58, 66, 74, 82, 90, 99, 107, 115, 123,
+														132, 140, 148, 156, 165, 173, 181, 189, 197, 206, 214, 222, 230, 239, 247, 255];
+
+	_djehuty_image_bitmap_file_header bf;
+	_djehuty_image_bitmap_info_header bi;
+	_djehuty_image_os2_1_bitmap_info_header os2_1_bi;
+	_djehuty_image_os2_2_bitmap_info_header os2_2_bi;
+
+	uint biSize;
+
+	uint paletteNumColors;
+	uint[256] palette;
+
+	int bytesPerRow;
+	int bytesForPadding;
+
+	ubyte fileData[];
+	ubyte* fileDataPtr;
+	ubyte* fileDataEndPtr;
+	ubyte* fileDataCurPtr;
+	int fileDataToSkip;
+
+	uint ptrLine;		//the current scan line of the image (y)
+	uint ptrPos;		//the current pixel of the line (x)
+
+	uint byteData;
+	uint byteCounter;
+
+	ulong bitmapDataLen;
+
+	ulong fileSize;	
+	
+public:
+
 	override string name() {
 		return "Bitmap";
 	}
@@ -1769,78 +1844,4 @@ class BMPDecoder : ImageDecoder {
 		return StreamData.Invalid;
 	}
 
-private:
-	static const auto BMP_STATE_INIT						= 0;
-
-	static const auto BMP_STATE_READ_HEADERS				= 1;
-	static const auto BMP_STATE_READ_BITMAP_SIZE			= 2;
-
-	static const auto BMP_STATE_READ_OSX_1					= 3;
-	static const auto BMP_STATE_READ_OSX_2					= 4;
-	static const auto BMP_STATE_READ_WIN					= 5;
-
-	static const auto BMP_STATE_READ_WIN_PALETTE			= 6;
-	static const auto BMP_STATE_READ_OSX_1_PALETTE			= 7;
-	static const auto BMP_STATE_READ_OSX_2_PALETTE			= 8;
-
-	static const auto BMP_STATE_DECODE_WIN_1BPP			= 9;
-	static const auto BMP_STATE_DECODE_WIN_2BPP			= 10;
-	static const auto BMP_STATE_DECODE_WIN_4BPP			= 11;
-	static const auto BMP_STATE_DECODE_WIN_8BPP			= 12;
-	static const auto BMP_STATE_DECODE_WIN_16BPP			= 13;
-	static const auto BMP_STATE_DECODE_WIN_24BPP			= 14;
-	static const auto BMP_STATE_DECODE_WIN_32BPP			= 15;
-
-	static const auto BMP_STATE_RENDER_WIN_1BPP			= 16;
-	static const auto BMP_STATE_RENDER_WIN_2BPP			= 17;
-	static const auto BMP_STATE_RENDER_WIN_4BPP			= 18;
-	static const auto BMP_STATE_RENDER_WIN_8BPP			= 19;
-	static const auto BMP_STATE_RENDER_WIN_16BPP			= 20;
-	static const auto BMP_STATE_RENDER_WIN_24BPP			= 21;
-	static const auto BMP_STATE_RENDER_WIN_32BPP			= 22;
-
-	static const auto BMP_STATE_DECODE_OS2_1_1BPP			= 40;
-
-	static const auto BMP_STATE_DECODE_OS2_2_1BPP			= 80;
-
-
-
-
-	static const ubyte _djehuty_convert_16_of_6_to_32[64] = (0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 45, 49, 53, 57, 61,
-														65, 69, 73, 77, 81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125,
-														130, 134, 138, 142, 146, 150, 154, 158, 162, 166, 170, 174, 178, 182, 186,
-														190, 194, 198, 202, 206, 210, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 255);
-
-	static const ubyte _djehuty_convert_16_of_5_to_32[32] = (0, 8, 16, 25, 33, 41, 49, 58, 66, 74, 82, 90, 99, 107, 115, 123,
-														132, 140, 148, 156, 165, 173, 181, 189, 197, 206, 214, 222, 230, 239, 247, 255);
-protected:
-
-	_djehuty_image_bitmap_file_header bf;
-	_djehuty_image_bitmap_info_header bi;
-	_djehuty_image_os2_1_bitmap_info_header os2_1_bi;
-	_djehuty_image_os2_2_bitmap_info_header os2_2_bi;
-
-	uint biSize;
-
-	uint paletteNumColors;
-	uint palette[256];
-
-	int bytesPerRow;
-	int bytesForPadding;
-
-	ubyte fileData[];
-	ubyte* fileDataPtr;
-	ubyte* fileDataEndPtr;
-	ubyte* fileDataCurPtr;
-	int fileDataToSkip;
-
-	uint ptrLine;		//the current scan line of the image (y)
-	uint ptrPos;		//the current pixel of the line (x)
-
-	uint byteData;
-	uint byteCounter;
-
-	ulong bitmapDataLen;
-
-	ulong fileSize;
 }

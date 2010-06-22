@@ -26,7 +26,12 @@ enum LocaleId : uint {
 
 class Locale {
 static:
+private:
 
+	LocaleId _localeId = LocaleId.English_US;
+	LocaleInterface _localeEngine;
+
+public:
 	LocaleId id() {
 		return _localeId;
 	}
@@ -63,11 +68,6 @@ static:
 	string formatDate(Date date) {
 		return _localeEngine.formatDate(date);
 	}
-
-private:
-
-	LocaleId _localeId = LocaleId.English_US;
-	LocaleInterface _localeEngine;
 }
 
 interface LocaleInterface {

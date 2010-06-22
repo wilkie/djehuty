@@ -19,6 +19,149 @@ import core.util;
 
 // Description: This abstracts a color type.  Internally, the structure is different for each platform depending on the native component ordering and the bits per pixel for the platform.
 struct Color {
+private:
+
+	double _red;
+	double _green;
+	double _blue;
+	double _alpha;
+
+	// cache HSL values
+	bool _hslValid;
+	double _hue;
+	double _sat;
+	double _lum;
+
+	void _calculateFromHSL() {
+		if (_sat == 0) {
+			this.red = _lum;
+			this.blue = _lum;
+			this.green = _lum;
+			return;
+		}
+
+		double p;
+		double q;
+		if (_lum < 0.5) {
+			q = _lum * (1.0 + _sat);
+		}
+		else {
+			q = _lum + _sat - (_lum * _sat);
+		}
+
+		p = (2.0 * _lum) - q;
+
+		double[3] ctmp;
+
+		ctmp[0] = _hue + (1.0/3.0);
+		ctmp[1] = _hue;
+		ctmp[2] = _hue - (1.0/3.0);
+
+		for(size_t i = 0; i < 3; i++) {
+			if (ctmp[i] < 0) {
+				ctmp[i] += 1.0;
+			}
+			else if (ctmp[i] > 1) {
+				ctmp[i] -= 1.0;
+			}
+
+			if (ctmp[i] < (1.0 / 6.0)) {
+				ctmp[i] = p + ((q - p) * 6.0 * ctmp[i]);
+			}
+			else if (ctmp[i] < 0.5) {
+				ctmp[i] = q;
+			}
+			else if (ctmp[i] < (2.0 / 3.0)) {
+				ctmp[i] = p + (q - p) * ((2.0 / 3.0) - ctmp[i]) * 6.0;
+			}
+			else {
+				ctmp[i] = p;
+			}
+		}
+
+		this.red = ctmp[0];
+		this.green = ctmp[1];
+		this.blue = ctmp[2];
+	}
+
+	void _calculateHSL() {
+		// find min and max values
+
+		double min, max;
+		double r,g,b;
+		r = this.red;
+		g = this.green;
+		b = this.blue;
+
+		uint maxColor;
+
+		if (r<=g && r<=b) {
+			min = r;
+			if (g<b) {
+				max = b;
+				maxColor = 2;
+			}
+			else {
+				max = g;
+				maxColor = 1;
+			}
+		}
+		else if (g<=b && g<=r) {
+			min = g;
+			if (r<b) {
+				max = b;
+				maxColor = 2;
+			}
+			else {
+				max = r;
+				maxColor = 0;
+			}
+		}
+		else {
+			min = b;
+			if (r<g) {
+				max = g;
+				maxColor = 1;
+			}
+			else {
+				max = r;
+				maxColor = 0;
+			}
+		}
+
+		// find luminance
+		_lum = (max + min) * 0.5;
+
+		if (max == min) {
+			_sat = 0;
+			_hue = 0;
+			_hslValid = true;
+			return;
+		}
+
+		// find the saturation
+		if (_lum < 0.5) {
+			_sat = (max - min) / (max + min);
+		}
+		else {
+			_sat = (max - min) / (2.0 - max - min);
+		}
+
+		// find hue
+		if (maxColor == 0) {
+			_hue = (g - b) / (max - min);
+		}
+		else if (maxColor == 1){
+			_hue = 2.0 + (b - r) / (max - min);
+		}
+		else {
+			_hue = 4.0 + (r - g) / (max - min);
+		}
+		_hue /= 6.0;
+		_hslValid = true;
+	}
+
+	
 public:
 
 	// -- Predefined values
@@ -184,147 +327,5 @@ public:
 
 		_calculateHSL();
 		return _lum;
-	}
-
-private:
-
-	double _red;
-	double _green;
-	double _blue;
-	double _alpha;
-
-	// cache HSL values
-	bool _hslValid;
-	double _hue;
-	double _sat;
-	double _lum;
-
-	void _calculateFromHSL() {
-		if (_sat == 0) {
-			this.red = _lum;
-			this.blue = _lum;
-			this.green = _lum;
-			return;
-		}
-
-		double p;
-		double q;
-		if (_lum < 0.5) {
-			q = _lum * (1.0 + _sat);
-		}
-		else {
-			q = _lum + _sat - (_lum * _sat);
-		}
-
-		p = (2.0 * _lum) - q;
-
-		double[3] ctmp;
-
-		ctmp[0] = _hue + (1.0/3.0);
-		ctmp[1] = _hue;
-		ctmp[2] = _hue - (1.0/3.0);
-
-		for(size_t i = 0; i < 3; i++) {
-			if (ctmp[i] < 0) {
-				ctmp[i] += 1.0;
-			}
-			else if (ctmp[i] > 1) {
-				ctmp[i] -= 1.0;
-			}
-
-			if (ctmp[i] < (1.0 / 6.0)) {
-				ctmp[i] = p + ((q - p) * 6.0 * ctmp[i]);
-			}
-			else if (ctmp[i] < 0.5) {
-				ctmp[i] = q;
-			}
-			else if (ctmp[i] < (2.0 / 3.0)) {
-				ctmp[i] = p + (q - p) * ((2.0 / 3.0) - ctmp[i]) * 6.0;
-			}
-			else {
-				ctmp[i] = p;
-			}
-		}
-
-		this.red = ctmp[0];
-		this.green = ctmp[1];
-		this.blue = ctmp[2];
-	}
-
-	void _calculateHSL() {
-		// find min and max values
-
-		double min, max;
-		double r,g,b;
-		r = this.red;
-		g = this.green;
-		b = this.blue;
-
-		uint maxColor;
-
-		if (r<=g && r<=b) {
-			min = r;
-			if (g<b) {
-				max = b;
-				maxColor = 2;
-			}
-			else {
-				max = g;
-				maxColor = 1;
-			}
-		}
-		else if (g<=b && g<=r) {
-			min = g;
-			if (r<b) {
-				max = b;
-				maxColor = 2;
-			}
-			else {
-				max = r;
-				maxColor = 0;
-			}
-		}
-		else {
-			min = b;
-			if (r<g) {
-				max = g;
-				maxColor = 1;
-			}
-			else {
-				max = r;
-				maxColor = 0;
-			}
-		}
-
-		// find luminance
-		_lum = (max + min) * 0.5;
-
-		if (max == min) {
-			_sat = 0;
-			_hue = 0;
-			_hslValid = true;
-			return;
-		}
-
-		// find the saturation
-		if (_lum < 0.5) {
-			_sat = (max - min) / (max + min);
-		}
-		else {
-			_sat = (max - min) / (2.0 - max - min);
-		}
-
-		// find hue
-		if (maxColor == 0) {
-			_hue = (g - b) / (max - min);
-		}
-		else if (maxColor == 1){
-			_hue = 2.0 + (b - r) / (max - min);
-		}
-		else {
-			_hue = 4.0 + (r - g) / (max - min);
-		}
-		_hue /= 6.0;
-		_hslValid = true;
 	}
 }

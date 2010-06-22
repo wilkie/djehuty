@@ -27,20 +27,6 @@ import synch.thread;
 // Description: This class is the main class for the framework. It provides base functionality.
 class Djehuty {
 static:
-public:
-
-	void application(Application application) {
-		if (app !is null) {
-			throw new Exception("Application Already Spawned");
-		}
-
-		app = application;
-	}
-
-	Application application() {
-		return app;
-	}
-
 package:
 
 	void start() {
@@ -81,4 +67,18 @@ package:
 	bool _hasStarted = false;
 
 	Application app;
+
+public:
+
+	void application(Application application) {
+		if (app !is null) {
+			throw new Exception("Application Already Spawned");
+		}
+
+		app = application;
+	}
+
+	Application application() {
+		return app;
+	}
 }

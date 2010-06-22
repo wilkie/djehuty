@@ -131,9 +131,9 @@ private template _newarray(bool initialize, bool withZero) {
 //  given, and will initialize it to the default value.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void[] _d_newarrayT(TypeInfo ti, size_t length) {
+void* _d_newarrayT(TypeInfo ti, size_t length) {
 	// Use the template, initialize the array with 0
-	return _newarray!(true, true)(ti, length);
+	return _newarray!(true, true)(ti, length).ptr;
 }
 
 // Description: Will allocate a new array of type ti with the length
@@ -142,17 +142,17 @@ void[] _d_newarrayT(TypeInfo ti, size_t length) {
 //   The init() function within the TypeInfo will be used to initialize
 //   the array.
 // length: The number of elements in the array to be allocated.
-void[] _d_newarrayiT(TypeInfo ti, size_t length) {
-	return _newarray!(true, false)(ti, length);
+void* _d_newarrayiT(TypeInfo ti, size_t length) {
+	return _newarray!(true, false)(ti, length).ptr;
 }
 
 // Description: Will allocate a uninitialized array of type ti with
 //   the length given.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void[] _d_newarrayvT(TypeInfo ti, size_t length) {
+void* _d_newarrayvT(TypeInfo ti, size_t length) {
 	// Use the template, but do not initialize
-	return _newarray!(false, false)(ti, length);
+	return _newarray!(false, false)(ti, length).ptr;
 }
 
 template _newarraym(bool initialize, bool withZero) {

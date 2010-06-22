@@ -16,7 +16,19 @@ import platform.vars.region;
 import scaffold.graphics;
 
 class Region {
+protected:
 
+	// Whether or not the platform's realization of the state of this region
+	// is valid
+	package bool platformDirty = true;
+
+	// Platform specific denotation of the region
+	package RegionPlatformVars _pfvars;
+
+	// The collection of points
+	Coord[] _points;
+
+public:
 	this() {
 	}
 
@@ -80,16 +92,4 @@ class Region {
 	Coord[] opSlice() {
 		return points;
 	}
-
-protected:
-
-	// Whether or not the platform's realization of the state of this region
-	// is valid
-	package bool platformDirty = true;
-
-	// Platform specific denotation of the region
-	package RegionPlatformVars _pfvars;
-
-	// The collection of points
-	Coord[] _points;
 }

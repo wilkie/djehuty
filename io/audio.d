@@ -58,7 +58,14 @@ struct AudioInfo {
 
 // Description: This class provides a low-level interface to an audio device.
 class Audio : Dispatcher {
+protected:
 
+	WavePlatformVars _pfvars;
+	AudioFormat _format;
+
+	bool _opened;
+
+public:
 	enum Signal {
 		BufferPlayed,
 	}
@@ -139,13 +146,6 @@ class Audio : Dispatcher {
 		}
 		return WaveGetPosition(this, _pfvars);
 	}
-
-protected:
-
-	WavePlatformVars _pfvars;
-	AudioFormat _format;
-
-	bool _opened;
 }
 
 void WaveFireCallback(ref Audio w) {
