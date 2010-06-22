@@ -29,8 +29,7 @@ import platform.vars.thread;
 import platform.vars.condition;
 
 extern(Windows)
-DWORD _win_djehuty_thread_proc(void* udata)
-{
+DWORD _win_djehuty_thread_proc(void* udata) {
 	ThreadPlatformVars* threadVars = cast(ThreadPlatformVars*)udata;
 	Thread t = threadVars.thread;
 
@@ -38,23 +37,23 @@ DWORD _win_djehuty_thread_proc(void* udata)
 
 	threadVars.thread = null;
 
+	threadVars.endCallback();
 	return 0;
 }
 
-uint ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback)
-{
+uint ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
+	threadVars.endCallback = endCallback;
 	threadVars.threadHnd = CreateThread(null, 0, &_win_djehuty_thread_proc, cast(void*)&threadVars, 0, &threadVars.id);
 	return threadVars.id;
 }
 
-void ThreadStop(ref ThreadPlatformVars threadVars)
-{
-	if (threadVars.id == GetCurrentThreadId())
-	{ // soft exit if called from the created thread
+void ThreadStop(ref ThreadPlatformVars threadVars) {
+	if (threadVars.id == GetCurrentThreadId()) {
+		// soft exit if called from the created thread
 		ExitThread(0);
 	}
-	else
-	{ // hard exit if called from another thread
+	else {
+		// hard exit if called from another thread
 		TerminateThread(threadVars.threadHnd, 0);
 	}
 
@@ -72,16 +71,12 @@ void ThreadSleep(ulong milliseconds) {
 }
 
 void ThreadYield() {
+	SwitchToThread();
 }
 
 uint ThreadIdentifier() {
-	return 0;
+	return GetCurrentThreadId();
 }
-
-//bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
-//{
-//	return threadVars.thread_id == GetCurrentThreadId();
-//}
 
 
 

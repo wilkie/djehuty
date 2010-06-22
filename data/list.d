@@ -17,14 +17,12 @@ public import data.iterable;
 
 class List(T) : Iterable!(T) {
 	this() {
-		_data.length = 10;
-		_data = new T[_data.length];
+		_data = new T[10];
 		_count = 0;
 	}
 
 	this(int size) {
-		_data.length = size;
-		_data = new T[_data.length];
+		_data = new T[size];
 		_count = 0;
 	}
 
@@ -407,15 +405,6 @@ protected:
 	T _nullValue() {
 		T val;
 		return val;
-/*		static if (IsArray!(T) || IsClass!(T)) {
-			return null;
-		}
-		else static if (IsStruct!(T)) {
-			return *(new T);
-		}
-		else {
-			return 0;
-		}*/
 	}
 
 	void _resize() {

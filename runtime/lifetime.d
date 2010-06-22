@@ -15,8 +15,6 @@ import binding.c;
 
 extern(C):
 
-int printf(char*, ...);
-
 Object _d_allocclass(ClassInfo ci) {
 	byte[] mem = cast(byte[])GarbageCollector.malloc(ci.init.length);
 
@@ -27,7 +25,9 @@ Object _d_allocclass(ClassInfo ci) {
 }
 
 void* _d_allocmemoryT(TypeInfo ti) {
-	return gc_malloc(ti.tsize(), 0);
+	byte[] mem = cast(byte[])GarbageCollector.malloc(ti.tsize());
+	mem[0..$] = cast(byte[])ti.init()[0..ti.tsize()];
+	return mem.ptr;
 }
 
 void _d_delinterface(Interface*** p) {
@@ -72,7 +72,8 @@ void _d_delclass(Object p) {
 
 private template _newarray(bool initialize, bool withZero) {
 	void[] _newarray(TypeInfo ti, size_t length) {
-		size_t elementSize = ti.next.tsize();
+		auto element_ti = ti.next();
+		size_t elementSize = element_ti.tsize();
 		size_t returnLength = length;
 
 		// Check to see if the size of the array can fit
@@ -222,7 +223,7 @@ private template _arraysetlength(bool initWithZero) {
 		size_t newSize = length * elementSize;
 		size_t oldSize = oldLength * elementSize;
 		size_t memorySize;
-	   
+
 		if (oldData is null) {
 			memorySize = oldSize;
 		}
@@ -368,17 +369,16 @@ ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
 // ti: The TypeInfo of the base type of this array.
 // array: The array to append the element.
 // element: The element to append.
-ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
+ubyte[] arrayAppend(TypeInfo ti, ref ubyte[] array, ubyte[] element) {
 	if (element is null) {
 		return array;
 	}
 
 	size_t memorySize;
-	size_t elementSize = ti.next.tsize();
 
 	size_t oldLength = array.length;
-	size_t newSize = (array.length + 1) * elementSize;
-	size_t oldSize = oldLength * elementSize;
+	size_t newSize = (array.length + 1) * element.length;
+	size_t oldSize = oldLength * element.length;
 
 	if (oldSize == 0) {
 		memorySize = oldSize;
@@ -404,7 +404,7 @@ ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
 	}
 
 	// Add element
-	for(uint i = 0; i < elementSize; i++) {
+	for(uint i = 0; i < element.length; i++) {
 		newArray[oldSize+i] = element[i];
 	}
 
@@ -412,7 +412,40 @@ ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
 	// Oddly, you have to also point the parameter array to the new array
 	newArray = newArray[0..oldLength+1];
 	array = newArray;
+
 	return newArray;
+}
+
+version(DigitalMars) {
+	ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ...) {
+		ubyte* element;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(TypeInfo)(q, ti);
+
+		// Account for the ref ubyte[] parameter
+		q += size_t.sizeof;
+
+		// Get element
+		element = cast(ubyte*)(q);
+
+		// Get the element size
+		size_t elementSize = ti.next.tsize();
+
+		// Send to safe version in runtime
+		// Stupid variadic DMD bullshits
+		return arrayAppend(ti, array, element[0..elementSize]);
+	}
+}
+else {
+	ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ubyte* element) {
+		// Get the element size
+		size_t elementSize = ti.next.tsize();
+
+		// Send to safe version in runtime
+		return arrayAppend(ti, array, element[0..elementSize]);
+	}
 }
 
 byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y) {

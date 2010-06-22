@@ -32,8 +32,19 @@ void _moduleUnitTests() {
 }
 
 // This is already implemented as some other function
-ubyte* _aaGetRvalue(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
-	return _aaIn(*aa, keyti, pkey);
+ubyte* _aaGetRvalue(AssocArrayHolder aa, TypeInfo keyti, size_t valuesize, ...) {
+	AssocArray* arrayPointer = aa.assocArray;
+
+	ubyte* pkey;
+
+	// Fucking variadics
+	Cva_list q;
+	Cva_start!(size_t)(q, valuesize);
+
+	// Get element
+	pkey = cast(ubyte*)(q);
+
+	return _aaAccess!(false, false)(arrayPointer, keyti, 0, pkey);
 }
 
 // Silly unnecessary function that uses variadics

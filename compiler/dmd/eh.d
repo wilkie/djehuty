@@ -7,7 +7,10 @@
 
 extern(System):
 
+import binding.c;
+
 void _d_throw(Object o) {
+	printf("EXCEPTION!\n");
 }
 
 extern(C):

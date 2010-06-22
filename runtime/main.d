@@ -17,6 +17,8 @@ import core.arguments;
 
 import synch.thread;
 
+import synch.atomic;
+
 import scaffold.console;
 
 // The user supplied D entry
@@ -175,43 +177,30 @@ private extern(C) int main(int argc, char** argv) {
 
 	int exitCode = -1;
 
-	//try {
+	try {
 		moduleInfoInitialize();
 		moduleIndependentConstructors();
 
 		int numDtors = 0;
-		//moduleConstructors(null, ModuleInfo._modules, numDtors);
+		moduleConstructors(null, ModuleInfo._modules, numDtors);
 
 		ModuleInfo._dtors = ModuleInfo._dtors[0..numDtors];
 
 		// Gather arguments
-		int[] foobar = new int[3];
-		foobar[0] = 2;
-		foobar[1] = 3;
-		foobar[2] = 4;
+		Arguments argList = Arguments.instance();
 
-	//	foobar = [2,3,4];
-
-		foreach(foo; foobar) {
-			printf("%d\n", foo);
+		auto arglist = argv[0..argc];
+		foreach(cstr; arglist) {
+			string arg = cstr[0..strlen(cstr)];
+			argList.add(arg);
 		}
-		printf("hello\n");
-		printf("%d\n", exitCode);
-		printf("%s\n", argv[0]);
-
-//		Arguments argList = Arguments.instance();
-//		foreach(cstr; argv[0..argc]) {
-//			string arg = cstr[0..strlen(cstr)];
-//			printf("%s\n", arg.ptr);
-//			argList.add(arg);
-//		}
 
 		// Initialize the console
-//		ConsoleInit();
+		ConsoleInit();
 
 		// Make an instance for the main thread
-//		Thread mainThread = new Thread();
-/*
+		Thread mainThread = new Thread();
+
 		// Run main
 		exitCode = main(argList.array);
 
@@ -219,17 +208,17 @@ private extern(C) int main(int argc, char** argv) {
 		ConsoleUninit();
 
 		// Run the module destructors
-		moduleDestructors();*/
-	//}
-	//catch(Object o) {
+		moduleDestructors();
+	}
+	catch(Object o) {
 		/*
 		Debugger.raiseException(cast(Exception)o);
 		*/
-	//}
+	}
 
 	// Terminate the garbage collector
-	//gc_term();
+	gc_term();
 
 	// End the application
-	return 0;
+	return exitCode;
 }
