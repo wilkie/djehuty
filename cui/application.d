@@ -8,8 +8,6 @@ import scaffold.cui;
 
 import platform.vars.cui;
 
-import binding.c;
-
 import data.list;
 
 import io.console;

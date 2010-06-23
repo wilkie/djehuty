@@ -18,6 +18,8 @@ import core.definitions;
 // Supported Locales
 import locales.all;
 
+import binding.c;
+
 enum LocaleId : uint {
 	English_US,
 	English_GB,

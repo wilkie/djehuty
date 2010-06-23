@@ -13,6 +13,8 @@ import io.console;
 
 import synch.semaphore;
 
+import binding.c;
+
 class CuiWindow : Responder {
 private:
 	bool _visible; // whether this window is drawn and can be interacted with
@@ -351,16 +353,10 @@ public:
 			this.parent.redraw();
 		}
 		else {
-			static int i = 0;
 			_lock.down();
 			auto canvas = new CuiCanvas();
-			if (i == 1) {
-				for(;;) { canvas.position(0,0); canvas.write("a");}
-			}
-			i++;
 			canvas.position(0,0);
 			onDraw(canvas);
-			i--;
 			_lock.up();
 		}
 	}

@@ -11,9 +11,6 @@ module platform.definitions;
 
 import platform.win.common;
 
-// String Representation
-alias wchar Char;
-
 // Common Fonts
 
 const string FontMonospace = "Courier";

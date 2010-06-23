@@ -32,7 +32,7 @@ package:
 	void start() {
 		// Get default locale
 		Locale.id = System.Locale.id;
-		
+
 		// Allow console output
 		Console.unlock();
 

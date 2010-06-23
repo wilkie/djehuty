@@ -131,9 +131,17 @@ private template _newarray(bool initialize, bool withZero) {
 //  given, and will initialize it to the default value.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void* _d_newarrayT(TypeInfo ti, size_t length) {
-	// Use the template, initialize the array with 0
-	return _newarray!(true, true)(ti, length).ptr;
+version(DigitalMars) {
+	void[] _d_newarrayT(TypeInfo ti, size_t length) {
+		// Use the template, initialize the array with 0
+		return _newarray!(true, true)(ti, length);
+	}
+}
+else {
+	void* _d_newarrayT(TypeInfo ti, size_t length) {
+		// Use the template, initialize the array with 0
+		return _newarray!(true, true)(ti, length).ptr;
+	}
 }
 
 // Description: Will allocate a new array of type ti with the length
@@ -142,17 +150,32 @@ void* _d_newarrayT(TypeInfo ti, size_t length) {
 //   The init() function within the TypeInfo will be used to initialize
 //   the array.
 // length: The number of elements in the array to be allocated.
-void* _d_newarrayiT(TypeInfo ti, size_t length) {
-	return _newarray!(true, false)(ti, length).ptr;
+version(DigitalMars) {
+	void[] _d_newarrayiT(TypeInfo ti, size_t length) {
+		return _newarray!(true, false)(ti, length);
+	}
+}
+else {
+	void* _d_newarrayiT(TypeInfo ti, size_t length) {
+		return _newarray!(true, false)(ti, length).ptr;
+	}
 }
 
 // Description: Will allocate a uninitialized array of type ti with
 //   the length given.
 // ti: The TypeInfo object that represents the array to be allocated.
 // length: The number of elements in the array to be allocated.
-void* _d_newarrayvT(TypeInfo ti, size_t length) {
-	// Use the template, but do not initialize
-	return _newarray!(false, false)(ti, length).ptr;
+version(DigitalMars) {
+	void[] _d_newarrayvT(TypeInfo ti, size_t length) {
+		// Use the template, but do not initialize
+		return _newarray!(false, false)(ti, length);
+	}
+}
+else {
+	void* _d_newarrayvT(TypeInfo ti, size_t length) {
+		// Use the template, but do not initialize
+		return _newarray!(false, false)(ti, length).ptr;
+	}
 }
 
 template _newarraym(bool initialize, bool withZero) {
@@ -181,21 +204,90 @@ template _newarraym(bool initialize, bool withZero) {
 	}
 }
 
-void[] _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(true, true)(ti, dimensions);
+version(DigitalMars) {
+	void[] _d_newarraymT(TypeInfo ti, size_t ndims, ...) {
+		size_t[] dimensions = new size_t[ndims];
+
+		size_t* dimensionPointer;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(size_t)(q, ndims);
+
+		// Get element
+		dimensionPointer = cast(size_t*)(q);
+
+		foreach(ref dimension; dimensions) {
+			dimension = *dimensionPointer;
+			dimensionPointer++;
+		}
+
+		return _newarraym!(true, true)(ti, dimensions);
+	}
+}
+else {
+	void[] _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, true)(ti, dimensions);
+	}
 }
 
-void[] _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(true, false)(ti, dimensions);
+version(DigitalMars) {
+	void[] _d_newarraymiT(TypeInfo ti, size_t ndims, ...) {
+		size_t[] dimensions = new size_t[ndims];
+
+		size_t* dimensionPointer;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(size_t)(q, ndims);
+
+		// Get element
+		dimensionPointer = cast(size_t*)(q);
+
+		foreach(ref dimension; dimensions) {
+			dimension = *dimensionPointer;
+			dimensionPointer++;
+		}
+
+		return _newarraym!(true, false)(ti, dimensions);
+	}
+}
+else {
+	void[] _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, false)(ti, dimensions);
+	}
 }
 
-void[] _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
-	return _newarraym!(false, false)(ti, dimensions);
+version(DigitalMars) {
+	void[] _d_newarraymvT(TypeInfo ti, size_t ndims, ...) {
+		size_t[] dimensions = new size_t[ndims];
+
+		size_t* dimensionPointer;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(size_t)(q, ndims);
+
+		// Get element
+		dimensionPointer = cast(size_t*)(q);
+
+		foreach(ref dimension; dimensions) {
+			dimension = *dimensionPointer;
+			dimensionPointer++;
+		}
+
+		return _newarraym!(false, false)(ti, dimensions);
+	}
+}
+else {
+	void[] _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(false, false)(ti, dimensions);
+	}
 }
 
 // Description: Will delete an array.
 // array: The array to delete.
-void _d_delarray(ubyte[] array) {
+void _d_delarray(ref ubyte[] array) {
 	if (array !is null) {
 		GarbageCollector.free(array);
 	}
@@ -217,24 +309,24 @@ void rt_finalize(void* p, bool det = true) {
 }
 
 private template _arraysetlength(bool initWithZero) {
-	ubyte* _arraysetlength(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+	ubyte[] _arraysetlength(TypeInfo ti, size_t length, ubyte[] oldArray) {
 		size_t elementSize = ti.next.tsize();
 
 		size_t newSize = length * elementSize;
-		size_t oldSize = oldLength * elementSize;
+		size_t oldSize = oldArray.length * elementSize;
 		size_t memorySize;
 
-		if (oldData is null) {
+		if (oldArray is null) {
 			memorySize = oldSize;
 		}
 		else {
-			memorySize = GarbageCollector.query(oldData[0..oldSize]);
+			memorySize = GarbageCollector.query(oldArray[0..oldSize]);
 		}
 
 		ubyte[] newArray;
 
 		if (newSize == oldSize) {
-			return oldData;
+			return oldArray;
 		}
 
 		if (newSize == 0) {
@@ -249,17 +341,17 @@ private template _arraysetlength(bool initWithZero) {
 			newArray = GarbageCollector.malloc(newSize);
 
 			if (oldSize != 0) {
-				newArray[0..oldSize] = oldData[0..oldSize];
+				newArray[0..oldSize] = oldArray[0..oldSize];
 			}
 		}
 		else {
 			// just resize
-			newArray = oldData[0..newSize];
+			newArray = oldArray[0..newSize];
 		}
 
 		// No need to initialize for truncation.
 		if (newSize < oldSize) {
-			return newArray.ptr;
+			return newArray;
 		}
 
 		// Initialize the new space
@@ -289,7 +381,7 @@ private template _arraysetlength(bool initWithZero) {
 			}
 		}
 
-		return newArray.ptr;
+		return newArray;
 	}
 }
 
@@ -301,8 +393,15 @@ private template _arraysetlength(bool initWithZero) {
 // oldLength: The current length of the array.
 // oldData: The pointer to the current array data.
 // Returns: The updated pointer of the array data.
-ubyte* _d_arraysetlengthT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
-	return _arraysetlength!(true)(ti, length, oldLength, oldData);
+version(DigitalMars) {
+	ubyte[] _d_arraysetlengthT(TypeInfo ti, size_t length, ref ubyte[] array) {
+		return _arraysetlength!(true)(ti, length, array);
+	}
+}
+else {
+	ubyte* _d_arraysetlengthT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+		return _arraysetlength!(true)(ti, length, oldData[0..oldLength]).ptr;
+	}
 }
 
 // Description: This runtime function will be called when the length of an
@@ -313,8 +412,15 @@ ubyte* _d_arraysetlengthT(TypeInfo ti, size_t length, size_t oldLength, ubyte* o
 // oldLength: The current length of the array.
 // oldData: The pointer to the current array data.
 // Returns: The updated pointer of the array data.
-ubyte* _d_arraysetlengthiT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
-	return _arraysetlength!(false)(ti, length, oldLength, oldData);
+version(DigitalMars) {
+	ubyte[] _d_arraysetlengthiT(TypeInfo ti, size_t length, ref ubyte[] array) {
+		return _arraysetlength!(false)(ti, length, array);
+	}
+}
+else {
+	ubyte* _d_arraysetlengthiT(TypeInfo ti, size_t length, size_t oldLength, ubyte* oldData) {
+		return _arraysetlength!(false)(ti, length, oldData[0..oldLength]).ptr;
+	}
 }
 
 // Description: This runtime function will append two arrays.
@@ -416,6 +522,37 @@ ubyte[] arrayAppend(TypeInfo ti, ref ubyte[] array, ubyte[] element) {
 	return newArray;
 }
 
+// Description: This runtime function will concatenate a series of arrays.
+// ti: The TypeInfo of the base type of this array.
+// array: The array to append the element.
+// element: The element to append.
+ubyte[] arrayConcatenate(TypeInfo ti, ubyte[][] sources) {
+	size_t elementSize = ti.next.tsize();
+
+	size_t newSize = 0;
+	size_t actualSize = 0;
+
+	foreach(src; sources) {
+		newSize += (src.length * elementSize);
+		actualSize += src.length;
+	}
+
+	newSize *= 2;
+
+	ubyte[] newArray;
+
+	newArray = GarbageCollector.malloc(newSize);
+
+	size_t currentPosition = 0;
+	foreach(src; sources) {
+		size_t size = src.length * elementSize;
+		newArray[currentPosition..currentPosition + size] = src.ptr[0..size];
+		currentPosition += size;
+	}
+
+	return newArray[0..actualSize];
+}
+
 version(DigitalMars) {
 	ubyte[] _d_arrayappendcT(TypeInfo ti, ref ubyte[] array, ...) {
 		ubyte* element;
@@ -435,7 +572,9 @@ version(DigitalMars) {
 
 		// Send to safe version in runtime
 		// Stupid variadic DMD bullshits
-		return arrayAppend(ti, array, element[0..elementSize]);
+		auto ret = arrayAppend(ti, array, element[0..elementSize]);
+		
+		return ret;
 	}
 }
 else {
@@ -448,12 +587,28 @@ else {
 	}
 }
 
-byte[] _d_arraycatT(TypeInfo ti, byte[] x, byte[] y) {
-	return null;
+ubyte[] _d_arraycatT(TypeInfo ti, ubyte[] x, ubyte[] y) {
+	return arrayConcatenate(ti, [x, y]);
 }
 
-byte[] _d_arraycatnT(TypeInfo ti, uint n, ...) {
-	return null;
+ubyte[] _d_arraycatnT(TypeInfo ti, uint n, ...) {
+	ubyte[]* ptr;
+
+	// Fucking variadics
+	Cva_list q;
+	Cva_start!(uint)(q, n);
+
+	// Get element
+	ptr = cast(ubyte[]*)(q);
+
+	ubyte[][] elements = new ubyte[][n];
+
+	foreach(ref element; elements) {
+		element = *ptr;
+		ptr++;
+	}
+
+	return arrayConcatenate(ti, elements);
 }
 
 ubyte[] _adDupT(TypeInfo ti, ubyte[] a) {
@@ -461,10 +616,12 @@ ubyte[] _adDupT(TypeInfo ti, ubyte[] a) {
 		return null;
 	}
 
-	ubyte[] ret = (cast(ubyte*)_d_newarrayvT(ti, a.length))[0..a.length*ti.next.tsize()];
-	ubyte[] array = a.ptr[0..a.length*ti.next.tsize()];
+	size_t elementSize = ti.next.tsize();
 
-	ret[0..$] = array[0..$];
+	ubyte[] ret = cast(ubyte[])_newarray!(false, false)(ti, a.length);
+	ubyte[] array = a.ptr[0..a.length*elementSize];
 
-	return ret.ptr[0..a.length];
+	ret.ptr[0..ret.length*elementSize] = array.ptr[0..array.length*elementSize];
+
+	return ret;
 }

@@ -41,9 +41,6 @@ extern(System) void InitCommonControls();
 class ApplicationController {
 
 	this() {
-		// Read and formalize the command arguments
-		parseCommandLine();
-
 		// some common initialization
 		initCommon();
 	}

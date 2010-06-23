@@ -169,8 +169,6 @@ version(Windows) {
 	}
 }
 
-extern(C) int printf(char*, ...);
-
 private extern(C) int main(int argc, char** argv) {
 	// Initialize the garbage collector
 	gc_init();

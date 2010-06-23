@@ -124,7 +124,7 @@ class MyWindow : CuiDialog {
 		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 30, 15);
 		visible = true;
 
-		tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
+		/*tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
 		tabbox.add("foo");
 		tabbox.add("bar");
 		tabbox.visible = true;
@@ -133,19 +133,21 @@ class MyWindow : CuiDialog {
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
-		box.backcolorNum = toPick;
-		tabbox.push(box);
-		push(tabbox);
+		box.backcolorNum = toPick;*/
+
+		//tabbox.push(box);
+
+		//push(tabbox);
 	}
 	
 	override void onResize() {
 //		box.reposition(0,0,this.clientWidth,this.clientHeight);
-		tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
-		box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
+		//tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
+		//box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
-		static int i = 0;
+		/*static int i = 0;
 		i++;
 		int a = i % 5;
 		switch(a) {
@@ -166,7 +168,7 @@ class MyWindow : CuiDialog {
 				lbl.forecolor = Color.Blue;
 				break;
 		}
-		lbl.text = toStr(i);
+		lbl.text = toStr(i);*/
 		return true;
 	}
 
@@ -207,16 +209,20 @@ void foo(bool stop) {
 import math.random;
 static const int REPEATS = 10000;
 int main(string[] args) {
-
 	Console.putln("he\u0364llo \u258c");
 	Console.putln("he\u0364llo \u258c");
 	Console.putln("he\u0364llo \u258c");
 	Console.putln("he\u0364llo \u258c");
 	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
 	int[] foo = [1,3,-2,5,3,42];
+	foo ~= [3,4];
+	foo ~= 5;
+	foo = foo ~ [-1,-3] ~ [100] ~ [652, 23, 552,9];
+	putln(foo.sort);
 	putln(sort([1,3,-2,5,3,42]));
 	putln(sort(foob));
-//	auto app = new MyApp;
-//	app.run();
+
+	auto app = new MyApp;
+	app.run();
 	return 0;
 }

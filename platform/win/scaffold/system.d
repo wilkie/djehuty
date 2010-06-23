@@ -156,9 +156,7 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, string procName) {
 	return cast(void*)GetProcAddressW(vars.hmodule, pn.ptr);
 }
 
-LocaleId SystemGetLocaleId() {
-	ApplicationController app = ApplicationController.instance();
-	
+LocaleId SystemGetLocaleId() {	
 	LCID lcid = GetUserDefaultLCID();
 	if (lcid == 0x1000) {
 		// LOCALE_CUSTOM_UNSPECIFIED

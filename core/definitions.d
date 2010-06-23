@@ -138,6 +138,8 @@ struct Key {
 	bool shift;
 
 	enum : uint {
+		Invalid,
+
 		Backspace,
 		Tab,
 		Pause,
@@ -159,6 +161,7 @@ struct Key {
 
 		NumLock,
 		ScrollLock,
+		CapsLock,
 
 		LeftShift,
 		RightShift,

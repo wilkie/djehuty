@@ -11,6 +11,10 @@ import binding.c;
 
 void _d_throw(Object o) {
 	printf("EXCEPTION!\n");
+	printf("EXCEPTION!\n");
+	printf("EXCEPTION!\n");
+	printf("EXCEPTION!\n");
+	printf("EXCEPTION!\n");
 }
 
 extern(C):
