@@ -22,7 +22,30 @@ import data.list;
 
 // Description: This class represents a Random number generator.
 class Random {
+protected:
+	const auto MODULUS		= 2147483647;
+	const auto MULTIPLIER	= 48271;
+	const auto CHECK		= 399268537;
+	const auto A256			= 22925;
+	const auto DEFAULT		= 123456789;
 
+	uint _state = DEFAULT;
+
+	void mutateState() {
+		const uint Q = MODULUS / MULTIPLIER;
+		const uint R = MODULUS % MULTIPLIER;
+		uint t;
+
+		t = MULTIPLIER * (_state % Q) - R * (_state / Q);
+		if (t > 0) {
+			_state = t;
+		}
+		else {
+			_state = t + MODULUS;
+		}
+	}
+
+public:
 	// Description: This will set up a new random number generator and will seed
 	//   with the system time.
 	this() {
@@ -101,26 +124,4 @@ class Random {
 		}
 	}
 
-protected:
-	const auto MODULUS		= 2147483647;
-	const auto MULTIPLIER	= 48271;
-	const auto CHECK		= 399268537;
-	const auto A256			= 22925;
-	const auto DEFAULT		= 123456789;
-
-	uint _state = DEFAULT;
-
-	void mutateState() {
-		const uint Q = MODULUS / MULTIPLIER;
-		const uint R = MODULUS % MULTIPLIER;
-		uint t;
-
-		t = MULTIPLIER * (_state % Q) - R * (_state / Q);
-		if (t > 0) {
-			_state = t;
-		}
-		else {
-			_state = t + MODULUS;
-		}
-	}
 }

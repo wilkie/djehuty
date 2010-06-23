@@ -97,6 +97,349 @@ class FtpServer {
 }
 
 class FtpClient : Dispatcher {
+protected:
+	//Description: control connection thread	
+	void cthreadProc(bool pleaseStop){
+
+		if (pleaseStop) {
+			return;
+		}
+	
+		string response;
+		while (!pleaseStop) {
+			
+			if (!_cskt.readLine(response)) {
+				break;
+			}
+	
+			Console.putln(response);		
+			
+			ushort code;
+			response.nextInt(code);
+			response = response[toStr(code).length+1..$];
+		
+
+			switch (code)
+			{
+				case Code.OK:// 200
+				//	raiseSignal(Signal.OK);
+					_busy.up();
+					break; 
+				case Code.SRNU: // 220
+					//enter username 
+					_cskt.write("USER " ~ _username ~ "\n");					
+					break;
+				case Code.UNOKA: // 331
+					//enter password for username
+					_cskt.write("PASS " ~ _password ~ "\n");
+					
+					break; 
+				case Code.USERLOG: // 230 
+					//user logged in 
+					_busy.up();
+				//	raiseSignal(Signal.Authenticated);
+					break; 
+				case Code.PATHCR: // 257
+					string[] temp = split(response, " ");
+					_reply = temp[0][1..($-1)] ~ "/";
+					_busy.up();
+					break;
+				case Code.FSOK:  // 150
+					//get size of file
+					
+					break; 
+				case Code.CDC: // 226
+					//transfer complete
+					_dskt.close();
+					_busy.up();
+					//		Console.putln("transfer complete");
+					break; 
+				case Code.PASS: //227
+					//break apart and determine port
+					string[] s = response.split("(,)");
+					_host = s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
+					ushort port1,port2;
+					s[5].nextInt(port1);
+					s[6].nextInt(port2);
+					_dataport = (256 * port1) + port2;			
+
+					
+					// Raise signal
+				//	raiseSignal(Signal.PassiveMode);
+					_busy.up();
+					break;
+				case Code.RFAOK: //250 
+				
+				//	Console.putln("Current directory successful");
+		//			raiseSignal(Signal.CurDirSuc);
+					_busy.up();
+					break; 
+				case Code.NLI: //530
+
+					throw new Exception("Login Incorrect");
+					//raiseSignal(Signal.LoginIncorrect);
+				case Code.RFAPFI: //350
+					_busy.up();
+
+					break;	
+				case Code.DIRE: //521
+					//directory already exists which is a fine result for us
+					_busy.up();
+			
+					break;
+				case Code.RANTFUA:
+
+					throw new Exception("File does not exist on server");
+				default:
+					break;
+			}
+
+
+
+		}
+
+
+	}
+
+	//Description: data connection thread
+	void dthreadProc(bool pleaseStop) {
+		if (pleaseStop)	{
+			return;
+		}
+	
+		string response;
+		ulong check;
+		File f;
+		
+		switch (_datamode)
+		{
+			case DataMode.GetFile:
+				f = new File(_filename);
+				do {
+					check = _dskt.readAny(f,100);
+				}while(check != 0);
+				f.close();
+			break;
+			case DataMode.SendFile:	
+				f = File.open(_filename);
+				if (f is null)
+				{
+					throw new Exception("File does not exist on local machine");
+				}
+	   			check = _dskt.write(f,cast(uint)f.length);
+				f.close();
+			break;
+			case DataMode.PrintFile:
+				_reply = "";
+				while (_dskt.readLine(response))
+				{
+					_reply ~= response ~ "\n";
+				}		
+
+			break;
+
+			default: 
+				//probably bad
+			break;
+		}
+		_dskt.close();
+
+		//done transfer close connection 
+	}
+
+	Socket _cskt;
+	Socket _dskt;
+
+	string _host;
+	string _username;
+	string _password;
+	string _filename;
+	string _reply;
+
+	ushort _dataport;
+	ushort _datamode;
+
+	Semaphore _busy;
+
+	bool _connected = false;
+
+	Thread _cthread;
+	Thread _dthread;
+
+	class FtpDirectory : Directory {
+	protected:
+
+		bool _isRoot;
+		string _path;
+		string _name;
+		FtpDirectory _parent;
+
+	public:
+		this(string path) {
+			if (_path is null) {
+				_path = "";
+			}
+			_path = path.dup;
+			if (_path == "" || _path == "/") {
+				_name = "";
+				_isRoot = true;
+			}
+			else {
+				// retrieve _name
+				foreach_reverse(int i, chr; _path) {
+					if (chr == '/' && i < _path.length - 1) {
+						_name = _path[i+1.._path.length].dup;
+						break;
+					}
+				}
+			}
+			if (!isDirectory(_path))
+			{
+				throw new Exception("Ftp Directory does not exist");
+			}
+		}
+
+		bool isDir(string _name) {
+			return isDirectory(_path ~ "/" ~ _name);
+		}
+
+		void move(string path) {
+			rename_file(_path,path);
+		}
+
+		void copy(string path) {
+			Directory temp = System.FileSystem.tempDir();
+			get_file(_path,temp.path() ~ "/");
+			Directory copy_dir = Directory.open(temp.path() ~ "/" ~ _name);
+
+			foreach_reverse(int i, chr; path) {
+				if (chr == '/' && i < path.length - 1) {
+					_name = path[i+1..path.length].dup;
+					break;
+				}
+			}
+			copy_dir.name(_name);
+			_path = path;
+			_parent = null;
+			send_file(copy_dir.path(), parent().path() ~ "/");
+		}
+
+		void copy(Directory to, string newName = null) {
+			if (newName is null) { newName = _name; } 
+			
+			copy(to.path() ~ "/" ~ newName);
+		}
+
+		string name() {
+			return _name;
+		}
+
+		string path() {
+			return _path;
+		}
+
+		void name(string newName) {
+			// Rename directory
+			
+			if (isRoot){
+				//XXX Exception
+			}
+			else {
+				string temppath = this.parent().path ~ "/" ~ newName;
+		
+				rename_file(_path,temppath);
+	
+				_path = temppath;
+				_name = newName;	
+			}
+
+		}
+
+		File openFile(string filename) {
+			// return a ftpfile
+
+			// an ftpfile that will read from the file
+			// on the server
+			FtpFile ret;
+			return ret;
+		}
+
+		File createFile(string filename) {
+			// return a ftpfile that will write to
+			// a location on the server when closed
+
+			// basically, an empty ftpfile (no read)
+			FtpFile ret;
+			return ret;
+		}
+
+		Directory parent() {
+			// go up the directory
+			if (isRoot) { return null; }
+
+			if (_parent is null) {
+				Console.putln(_path);
+
+				foreach_reverse(int i, chr; _path) {
+					if (chr == '/')	{
+						// truncate
+						Console.putln(_path[0..i]);
+						_parent = new FtpDirectory(_path[0..i]);
+						return _parent;
+					}
+				}
+			}
+
+			return _parent;
+		}
+
+		Directory traverse(string directoryName) {
+			if (isDir(directoryName)) {
+				FtpDirectory ret = new FtpDirectory(_path ~ "/" ~ directoryName);
+				ret._parent = this;
+				return ret;
+			}
+			return null;
+		}
+
+		bool isRoot() {
+			return _isRoot;
+		}
+
+		string[] list() {
+			string[] retstring;
+			
+			string[] cur_files = split(list_directory(_path,1),'\n');
+				
+			foreach(c;cur_files)
+			{
+				string[] temp = split(c,'/');
+				retstring ~= temp[$-1];
+			}
+			
+			return retstring;
+		}
+
+		bool opEquals(Directory d) {
+			return _path == d.path();
+		}
+
+		bool opEquals(string d) {
+			return _path == d;
+		}
+
+		// this should work:
+		alias Object.opEquals opEquals;
+
+		override char[] toString() {
+			return this.path.dup;
+		}
+	}
+
+	class FtpFile : File {
+	}
+
+public:
 	enum Signal {
 		Authenticated = 0,
 		PassiveMode = 1,
@@ -361,348 +704,4 @@ class FtpClient : Dispatcher {
 		return true;
 	}
 
-
-
-
-protected:
-	//Description: control connection thread	
-	void cthreadProc(bool pleaseStop){
-
-		if (pleaseStop) {
-			return;
-		}
-	
-		string response;
-		while (!pleaseStop) {
-			
-			if (!_cskt.readLine(response)) {
-				break;
-			}
-	
-			Console.putln(response);		
-			
-			ushort code;
-			response.nextInt(code);
-			response = response[toStr(code).length+1..$];
-		
-
-			switch (code)
-			{
-				case Code.OK:// 200
-				//	raiseSignal(Signal.OK);
-					_busy.up();
-					break; 
-				case Code.SRNU: // 220
-					//enter username 
-					_cskt.write("USER " ~ _username ~ "\n");					
-					break;
-				case Code.UNOKA: // 331
-					//enter password for username
-					_cskt.write("PASS " ~ _password ~ "\n");
-					
-					break; 
-				case Code.USERLOG: // 230 
-					//user logged in 
-					_busy.up();
-				//	raiseSignal(Signal.Authenticated);
-					break; 
-				case Code.PATHCR: // 257
-					string[] temp = split(response, " ");
-					_reply = temp[0][1..($-1)] ~ "/";
-					_busy.up();
-					break;
-				case Code.FSOK:  // 150
-					//get size of file
-					
-					break; 
-				case Code.CDC: // 226
-					//transfer complete
-					_dskt.close();
-					_busy.up();
-					//		Console.putln("transfer complete");
-					break; 
-				case Code.PASS: //227
-					//break apart and determine port
-					string[] s = response.split("(,)");
-					_host = s[1] ~ "." ~ s[2]~ "." ~ s[3] ~ "."  ~ s[4]; 
-					ushort port1,port2;
-					s[5].nextInt(port1);
-					s[6].nextInt(port2);
-					_dataport = (256 * port1) + port2;			
-
-					
-					// Raise signal
-				//	raiseSignal(Signal.PassiveMode);
-					_busy.up();
-					break;
-				case Code.RFAOK: //250 
-				
-				//	Console.putln("Current directory successful");
-		//			raiseSignal(Signal.CurDirSuc);
-					_busy.up();
-					break; 
-				case Code.NLI: //530
-
-					throw new Exception("Login Incorrect");
-					//raiseSignal(Signal.LoginIncorrect);
-				case Code.RFAPFI: //350
-					_busy.up();
-
-					break;	
-				case Code.DIRE: //521
-					//directory already exists which is a fine result for us
-					_busy.up();
-			
-					break;
-				case Code.RANTFUA:
-
-					throw new Exception("File does not exist on server");
-				default:
-					break;
-			}
-
-
-
-		}
-
-
-	}
-
-	//Description: data connection thread
-	void dthreadProc(bool pleaseStop) {
-		if (pleaseStop)	{
-			return;
-		}
-	
-		string response;
-		ulong check;
-		File f;
-		
-		switch (_datamode)
-		{
-			case DataMode.GetFile:
-				f = new File(_filename);
-				do {
-					check = _dskt.readAny(f,100);
-				}while(check != 0);
-				f.close();
-			break;
-			case DataMode.SendFile:	
-				f = File.open(_filename);
-				if (f is null)
-				{
-					throw new Exception("File does not exist on local machine");
-				}
-	   			check = _dskt.write(f,cast(uint)f.length);
-				f.close();
-			break;
-			case DataMode.PrintFile:
-				_reply = "";
-				while (_dskt.readLine(response))
-				{
-					_reply ~= response ~ "\n";
-				}		
-
-			break;
-
-			default: 
-				//probably bad
-			break;
-		}
-		_dskt.close();
-
-		//done transfer close connection 
-	}
-
-	Socket _cskt;
-	Socket _dskt;
-
-	string _host;
-	string _username;
-	string _password;
-	string _filename;
-	string _reply;
-
-	ushort _dataport;
-	ushort _datamode;
-
-	Semaphore _busy;
-
-	bool _connected = false;
-
-	Thread _cthread;
-	Thread _dthread;
-
-	class FtpDirectory : Directory {
-
-		this(string path) {
-			if (_path is null) {
-				_path = "";
-			}
-			_path = path.dup;
-			if (_path == "" || _path == "/") {
-				_name = "";
-				_isRoot = true;
-			}
-			else {
-				// retrieve _name
-				foreach_reverse(int i, chr; _path) {
-					if (chr == '/' && i < _path.length - 1) {
-						_name = _path[i+1.._path.length].dup;
-						break;
-					}
-				}
-			}
-			if (!isDirectory(_path))
-			{
-				throw new Exception("Ftp Directory does not exist");
-			}
-		}
-
-		bool isDir(string _name) {
-			return isDirectory(_path ~ "/" ~ _name);
-		}
-
-		void move(string path) {
-			rename_file(_path,path);
-		}
-
-		void copy(string path) {
-			Directory temp = System.FileSystem.tempDir();
-			get_file(_path,temp.path() ~ "/");
-			Directory copy_dir = Directory.open(temp.path() ~ "/" ~ _name);
-
-			foreach_reverse(int i, chr; path) {
-				if (chr == '/' && i < path.length - 1) {
-					_name = path[i+1..path.length].dup;
-					break;
-				}
-			}
-			copy_dir.name(_name);
-			_path = path;
-			_parent = null;
-			send_file(copy_dir.path(), parent().path() ~ "/");
-		}
-
-		void copy(Directory to, string newName = null) {
-			if (newName is null) { newName = _name; } 
-			
-			copy(to.path() ~ "/" ~ newName);
-		}
-
-		string name() {
-			return _name;
-		}
-
-		string path() {
-			return _path;
-		}
-
-		void name(string newName) {
-			// Rename directory
-			
-			if (isRoot){
-				//XXX Exception
-			}
-			else {
-				string temppath = this.parent().path ~ "/" ~ newName;
-		
-				rename_file(_path,temppath);
-	
-				_path = temppath;
-				_name = newName;	
-			}
-
-		}
-
-		File openFile(string filename) {
-			// return a ftpfile
-
-			// an ftpfile that will read from the file
-			// on the server
-			FtpFile ret;
-			return ret;
-		}
-
-		File createFile(string filename) {
-			// return a ftpfile that will write to
-			// a location on the server when closed
-
-			// basically, an empty ftpfile (no read)
-			FtpFile ret;
-			return ret;
-		}
-
-		Directory parent() {
-			// go up the directory
-			if (isRoot) { return null; }
-
-			if (_parent is null) {
-				Console.putln(_path);
-
-				foreach_reverse(int i, chr; _path) {
-					if (chr == '/')	{
-						// truncate
-						Console.putln(_path[0..i]);
-						_parent = new FtpDirectory(_path[0..i]);
-						return _parent;
-					}
-				}
-			}
-
-			return _parent;
-		}
-
-		Directory traverse(string directoryName) {
-			if (isDir(directoryName)) {
-				FtpDirectory ret = new FtpDirectory(_path ~ "/" ~ directoryName);
-				ret._parent = this;
-				return ret;
-			}
-			return null;
-		}
-
-		bool isRoot() {
-			return _isRoot;
-		}
-
-		string[] list() {
-			string[] retstring;
-			
-			string[] cur_files = split(list_directory(_path,1),'\n');
-				
-			foreach(c;cur_files)
-			{
-				string[] temp = split(c,'/');
-				retstring ~= temp[$-1];
-			}
-			
-			return retstring;
-		}
-
-		bool opEquals(Directory d) {
-			return _path == d.path();
-		}
-
-		bool opEquals(string d) {
-			return _path == d;
-		}
-
-		// this should work:
-		alias Object.opEquals opEquals;
-
-		override char[] toString() {
-			return this.path.dup;
-		}
-
-	protected:
-
-		bool _isRoot;
-		string _path;
-		string _name;
-		FtpDirectory _parent;
-	}
-
-	class FtpFile : File {
-	}
 }

@@ -65,5 +65,4 @@ public:
 		ViewUnlockBytes(&_pfvars);
 		_buffer_mutex.up();
 	}
-
 }

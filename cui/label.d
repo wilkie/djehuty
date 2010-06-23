@@ -9,7 +9,14 @@ import cui.canvas;
 
 // Description: This console control abstracts a simple static text field.
 class CuiLabel : CuiWindow {
+private:
 
+	Color _forecolor = Color.Blue;
+	Color _backcolor = Color.Black;
+
+	string _value;
+
+public:
 	this( uint x, uint y, uint width, string text,
 		  Color fgclr = Color.Blue,
 		  Color bgclr = Color.Black ) {
@@ -75,13 +82,4 @@ class CuiLabel : CuiWindow {
 			}
 		}
 	}
-
-protected:
-
-private:
-
-	Color _forecolor = Color.Blue;
-	Color _backcolor = Color.Black;
-
-	string _value;
 }

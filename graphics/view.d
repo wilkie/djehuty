@@ -18,7 +18,6 @@ import scaffold.view;
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
 class View {
 protected:
-
 	package ViewPlatformVars _pfvars;
 
 	bool _inited = false;
@@ -172,5 +171,4 @@ public:
 	uint rgbTouint(uint r, uint g, uint b) {
 		return ViewRGBAToInt32(&_pfvars,r,g,b);
 	}
-
 }

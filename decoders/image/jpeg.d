@@ -297,7 +297,7 @@ private {
 // Description: The JPEG Codec
 
 class JPEGDecoder : ImageDecoder {
-protected:
+private:
 
 	JPEG_RENDER_INFO jpeg_vars;
 
@@ -1564,5 +1564,4 @@ public:
 		}
 		return StreamData.Invalid;
 	}
-
 }

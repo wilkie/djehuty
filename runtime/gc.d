@@ -96,9 +96,24 @@ struct Pool {
 }
 
 class GarbageCollector {
-public:
 static:
+private:
 
+	void _initialize() {
+		ubyte[] foo = System.malloc(1);
+		_heapStart = cast(size_t*)foo.ptr;
+		_inited = 1;
+	}
+
+	void _terminate() {
+		_inited = 0;
+	}
+
+	ulong _disabled;
+	bool _inited;
+	size_t* _heapStart;
+
+public:
 	void enable() {
 		Atomic.decrement(_disabled);
 	}
@@ -184,20 +199,4 @@ static:
 		}
 		return memory.length;
 	}
-
-private:
-
-	void _initialize() {
-		ubyte[] foo = System.malloc(1);
-		_heapStart = cast(size_t*)foo.ptr;
-		_inited = 1;
-	}
-
-	void _terminate() {
-		_inited = 0;
-	}
-
-	ulong _disabled;
-	bool _inited;
-	size_t* _heapStart;
 }

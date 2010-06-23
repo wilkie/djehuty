@@ -11,7 +11,12 @@ import binding.c;
 
 // Description: This class abstracts a counting semaphore.
 class Semaphore {
+protected:
 
+	SemaphorePlatformVars _pfvars;
+	bool _inited = false;
+
+public:
 	~this() {
 		if (_inited) {
 			SemaphoreUninit(_pfvars);
@@ -54,9 +59,4 @@ class Semaphore {
 	bool tryDown() {
 		return SemaphoreTry(_pfvars);
 	}
-
-protected:
-
-	SemaphorePlatformVars _pfvars;
-	bool _inited = false;
 }

@@ -6,21 +6,29 @@ import core.definitions;
 import io.console;
 
 class GrammarPhrase {
+protected:
+
+	string _rule;
+
+public:
 	this(string rule) {
 		Console.putln(rule);
 
 		_rule = rule;
 	}
-
-protected:
-
-	string _rule;
 }
 
 
 
 
+
 class GrammarRule {
+protected:
+
+	GrammarPhrase _left;
+	GrammarPhrase _right;
+
+public:
 	this(string rule) {
 		Console.putln(rule);
 
@@ -33,11 +41,6 @@ class GrammarRule {
 		_left = new GrammarPhrase(rule.substring(0, divider).trim());
 		_right = new GrammarPhrase(rule.substring(divider+2).trim());
 	}
-
-protected:
-
-	GrammarPhrase _left;
-	GrammarPhrase _right;
 }
 
 

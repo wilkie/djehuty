@@ -13,6 +13,103 @@ import scaffold.menu;
 
 // Description: This class provides an abstract to a dropdown menu.  The Window class uses this to provide a menubar for a window.
 class Menu {
+private:
+
+	string _value;
+	string _displayValue;
+	int _hintPosition;
+	Menu[] _subitems;
+	Menu[] _parents;
+
+	uint _flags;
+
+	MenuPlatformVars _pfvars;
+
+	void _addParent(ref Menu parent) {
+		foreach(ent; _parents) {
+			if (ent is parent) {
+				return;
+			}
+		}
+
+		_parents ~= parent;
+	}
+
+	void _updateChild(ref Menu child) {
+		uint pos = 0;
+		foreach(sitm; _subitems) {
+			if (sitm is child) {
+				MenuUpdate(cast(void*)this, &_pfvars, &child._pfvars, child.text, pos, (child.length > 0));
+			}
+			pos++;
+		}
+	}
+
+	// check to ensure that we will not create a recursive menu structure
+	bool _checkForRecursive(ref Menu inMenu) {
+		foreach(sitm; _subitems) {
+			if (sitm is inMenu) {
+				return true;
+			}
+			else {
+				if (sitm._checkForRecursive(inMenu)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	void _updateDisplay() {
+		// get the value
+		int curPos = 0;
+		int ampPos = int.max;
+
+		string itemText = "";
+
+		_hintPosition = -1;
+
+		while(ampPos != -1) {
+			ampPos = _value.find("&", curPos);
+
+			if (ampPos == -1) {
+				itemText ~= _value.substring(curPos);
+			}
+			else {
+				itemText ~= _value.substring(curPos, ampPos - curPos);
+				if ((ampPos < _value.length) && (_value[ampPos+1] == '&')) {
+					// This is an actual amp
+					itemText ~= "&";
+					ampPos++;
+				}
+				else {
+					// The next letter is the hint
+					if (ampPos < _value.length) {
+						_hintPosition = itemText.length;
+					}
+				}
+			}
+			curPos = ampPos + 1;
+		}
+
+		_displayValue = itemText;
+	}
+
+	void _updateItem() {
+		// Get the working text
+		_updateDisplay();
+
+		// for each parent, update their lists as well
+		foreach(ent; _parents) {
+			ent._updateChild(this);
+		}
+	}
+
+	MenuPlatformVars* platformVars() {
+		return &_pfvars;
+	}
+
+public:
 
 	// -- constructors -- //
 
@@ -129,102 +226,6 @@ class Menu {
 		}
 
 		return ret;
-	}
-
-protected:
-
-	string _value;
-	string _displayValue;
-	int _hintPosition;
-	Menu[] _subitems;
-	Menu[] _parents;
-
-	uint _flags;
-
-	MenuPlatformVars _pfvars;
-
-	void _addParent(ref Menu parent) {
-		foreach(ent; _parents) {
-			if (ent is parent) {
-				return;
-			}
-		}
-
-		_parents ~= parent;
-	}
-
-	void _updateChild(ref Menu child) {
-		uint pos = 0;
-		foreach(sitm; _subitems) {
-			if (sitm is child) {
-				MenuUpdate(cast(void*)this, &_pfvars, &child._pfvars, child.text, pos, (child.length > 0));
-			}
-			pos++;
-		}
-	}
-
-	// check to ensure that we will not create a recursive menu structure
-	bool _checkForRecursive(ref Menu inMenu) {
-		foreach(sitm; _subitems) {
-			if (sitm is inMenu) {
-				return true;
-			}
-			else {
-				if (sitm._checkForRecursive(inMenu)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	void _updateDisplay() {
-		// get the value
-		int curPos = 0;
-		int ampPos = int.max;
-
-		string itemText = "";
-
-		_hintPosition = -1;
-
-		while(ampPos != -1) {
-			ampPos = _value.find("&", curPos);
-
-			if (ampPos == -1) {
-				itemText ~= _value.substring(curPos);
-			}
-			else {
-				itemText ~= _value.substring(curPos, ampPos - curPos);
-				if ((ampPos < _value.length) && (_value[ampPos+1] == '&')) {
-					// This is an actual amp
-					itemText ~= "&";
-					ampPos++;
-				}
-				else {
-					// The next letter is the hint
-					if (ampPos < _value.length) {
-						_hintPosition = itemText.length;
-					}
-				}
-			}
-			curPos = ampPos + 1;
-		}
-
-		_displayValue = itemText;
-	}
-
-	void _updateItem() {
-		// Get the working text
-		_updateDisplay();
-
-		// for each parent, update their lists as well
-		foreach(ent; _parents) {
-			ent._updateChild(this);
-		}
-	}
-
-	MenuPlatformVars* platformVars() {
-		return &_pfvars;
 	}
 }
 

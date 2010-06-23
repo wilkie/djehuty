@@ -14,7 +14,11 @@ import djehuty;
 
 class Specification {
 static:
+private:
 
+	PackageSpecification[string] _packages;
+
+public:
 	string name() {
 		return Djehuty.app.name; 
 	}
@@ -54,8 +58,4 @@ static:
 
 		return ret;
 	}
-
-private:
-
-	PackageSpecification[string] _packages;
 }

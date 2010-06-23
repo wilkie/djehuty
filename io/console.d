@@ -24,7 +24,6 @@ enum ConsoleEvent : uint {
 // Description: This class abstracts simple console operations.
 class Console {
 static:
-
 private:
 
 	Color _fgcolor = Color.White;

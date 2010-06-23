@@ -33,21 +33,87 @@ import math.sqrt;
 
 // Section: Core/Resources
 
+// Description: The state of a Sound object indicates the state of the audio it is in charge of playing.
+enum State {
+	// Description: Indicates that the Sound object is currently paused.
+	Paused,
+	// Description: Indicates that the Sound object is currently stopped.
+	Stopped,
+	// Description: Indicates that the Sound object is currently playing.
+	Playing,
+}
+
 // Description: This class will abstract away the low-level Audio class.  It can load an audio file and control its playback with simple and common interactions.
 class Sound : Responder {
+private:
 
-	enum Signal {
-		StateChanged,
+	Wavelet buffers[2];
+	uint bufferIndex;
+
+	ulong curPos;
+
+	AudioDecoder _curCodec;
+	Stream inStream;
+
+	Audio wavDevice;
+	AudioFormat wavFormat;
+	AudioInfo wavInfo;
+
+	State _state;
+
+	string _name;
+
+	// the time that the audio device has is the amount of data
+	// that has been fed to the audio device
+
+	// this may be different to our perception of how much of a
+	// particular file or stream has been played
+	Time _synch;
+
+	bool _doneBuffering;
+
+	int curDecoder;
+
+	Thread _audioLoader;
+
+	void _bufferCallback() {
+		//	Console.putln("Callback");
+		if (_state == State.Stopped) { return; }
+		if (_doneBuffering) {
+			//Console.putln("Done");
+			_state = State.Stopped;
+			raiseSignal(Signal.StateChanged);
+			return;
+		}
+
+		buffers[bufferIndex].rewind();
+		buffers[bufferIndex].resize(1728 * 40);
+		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
+
+		// send the next buffer
+		if (ret == StreamData.Complete) {
+			//Console.putln("Sound : Decoded Last Buffer");
+			wavDevice.sendBuffer(buffers[bufferIndex], true);
+
+			_doneBuffering = true;
+		}
+		else {
+		//	Console.putln("Sound : Decoded Buffer");
+			wavDevice.sendBuffer(buffers[bufferIndex]);
+		}
+
+
+		if (bufferIndex == 0) {
+			bufferIndex = 1;
+		}
+		else {
+			bufferIndex = 0;
+		}
 	}
 
-	// Description: The state of a Sound object indicates the state of the audio it is in charge of playing.
-	enum State {
-		// Description: Indicates that the Sound object is currently paused.
-		Paused,
-		// Description: Indicates that the Sound object is currently stopped.
-		Stopped,
-		// Description: Indicates that the Sound object is currently playing.
-		Playing,
+public:
+	enum Signal {
+		StateChanged,
 	}
 
 	// Only temporary.. the user will be expected to do this themselves.
@@ -295,71 +361,5 @@ class Sound : Responder {
 		}
 
 		return ret;
-	}
-
-protected:
-
-	Wavelet buffers[2];
-	uint bufferIndex;
-
-	ulong curPos;
-
-	AudioDecoder _curCodec;
-	Stream inStream;
-
-	Audio wavDevice;
-	AudioFormat wavFormat;
-	AudioInfo wavInfo;
-
-	State _state;
-
-	string _name;
-
-	// the time that the audio device has is the amount of data
-	// that has been fed to the audio device
-
-	// this may be different to our perception of how much of a
-	// particular file or stream has been played
-	Time _synch;
-
-	bool _doneBuffering;
-
-	int curDecoder;
-
-	Thread _audioLoader;
-
-	void _bufferCallback() {
-		//	Console.putln("Callback");
-		if (_state == State.Stopped) { return; }
-		if (_doneBuffering) {
-			//Console.putln("Done");
-			_state = State.Stopped;
-			raiseSignal(Signal.StateChanged);
-			return;
-		}
-
-		buffers[bufferIndex].rewind();
-		buffers[bufferIndex].resize(1728 * 40);
-		StreamData ret = _curCodec.decode(inStream, buffers[bufferIndex], wavInfo);
-
-		// send the next buffer
-		if (ret == StreamData.Complete) {
-			//Console.putln("Sound : Decoded Last Buffer");
-			wavDevice.sendBuffer(buffers[bufferIndex], true);
-
-			_doneBuffering = true;
-		}
-		else {
-		//	Console.putln("Sound : Decoded Buffer");
-			wavDevice.sendBuffer(buffers[bufferIndex]);
-		}
-
-
-		if (bufferIndex == 0) {
-			bufferIndex = 1;
-		}
-		else {
-			bufferIndex = 0;
-		}
 	}
 }

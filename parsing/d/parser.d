@@ -27,6 +27,10 @@ import djehuty;
 import io.console;
 
 class DParser : Parser {
+private:
+	DLexer _lexer;
+
+public:
 	this(Stream stream) {
 		super(stream);
 		_lexer = new DLexer(stream);
@@ -37,7 +41,4 @@ class DParser : Parser {
 		parseUnit.lexer = _lexer;
 		return parseUnit.parse();
 	}
-
-private:
-	DLexer _lexer;
 }

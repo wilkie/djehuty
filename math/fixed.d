@@ -14,7 +14,11 @@ import djehuty;
 
 // Description: This class provides a fixed point arithmetic type.
 class Fixed {
+protected:
+	long _whole;
+	long _scale;
 
+public:
 	this(long whole, long scale) {
 		_whole = whole;
 		_scale = scale;
@@ -136,8 +140,4 @@ class Fixed {
 		}
 		_whole /= fixed._whole;
 	}
-
-protected:
-	long _whole;
-	long _scale;
 }

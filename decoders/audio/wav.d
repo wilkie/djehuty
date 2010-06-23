@@ -29,7 +29,52 @@ import io.console;
 
 // Description: This is the Microsoft Wave file codec.
 class WAVDecoder : AudioDecoder {
+private:
 
+	align(2) struct _djehuty_wave_riff_header {
+		uint magic;
+		uint filesize;
+		uint rifftype;
+	}
+
+	align(2) struct _djehuty_wave_chunk_header {
+		uint chunkID;
+		uint chunkSize;
+	}
+
+	struct _djehuty_wave_format_chunk {
+		ushort compressionCode;
+		ushort numChannels;
+		uint sampleRate;
+		uint avgBytesPerSecond;
+		ushort blockAlign;
+		ushort significantBitsPerSample;
+		ushort extraBytes;
+	}
+
+	const auto WAVE_STATE_INIT 			= 0;
+	const auto WAVE_STATE_READ_RIFF		= 1;
+	const auto WAVE_STATE_READ_CHUNK	= 2;
+	const auto WAVE_STATE_SKIP_CHUNK	= 3;
+
+	const auto WAVE_STATE_CHUNK_FMT		= 4;
+	const auto WAVE_STATE_CHUNK_DATA	= 5;
+
+	_djehuty_wave_riff_header RIFFHeader;
+	_djehuty_wave_format_chunk FMTHeader;
+
+
+	_djehuty_wave_chunk_header curChunk;
+
+	bool formatHeaderFound = false;
+	uint dataToRead = 0;
+
+	AudioDecoder embeddedCodec;
+
+	AudioFormat wf;
+	Time bufferTime;
+
+public:
 	override string name() {
 		return "Microsoft Wave";
 	}
@@ -389,51 +434,4 @@ class WAVDecoder : AudioDecoder {
 		Time tme = Time.init;
 		return tme;
 	}
-
-private:
-
-	align(2) struct _djehuty_wave_riff_header {
-		uint magic;
-		uint filesize;
-		uint rifftype;
-	}
-
-	align(2) struct _djehuty_wave_chunk_header {
-		uint chunkID;
-		uint chunkSize;
-	}
-
-	struct _djehuty_wave_format_chunk {
-		ushort compressionCode;
-		ushort numChannels;
-		uint sampleRate;
-		uint avgBytesPerSecond;
-		ushort blockAlign;
-		ushort significantBitsPerSample;
-		ushort extraBytes;
-	}
-
-	const auto WAVE_STATE_INIT 			= 0;
-	const auto WAVE_STATE_READ_RIFF		= 1;
-	const auto WAVE_STATE_READ_CHUNK	= 2;
-	const auto WAVE_STATE_SKIP_CHUNK	= 3;
-
-	const auto WAVE_STATE_CHUNK_FMT		= 4;
-	const auto WAVE_STATE_CHUNK_DATA	= 5;
-
-protected:
-
-	_djehuty_wave_riff_header RIFFHeader;
-	_djehuty_wave_format_chunk FMTHeader;
-
-
-	_djehuty_wave_chunk_header curChunk;
-
-	bool formatHeaderFound = false;
-	uint dataToRead = 0;
-
-	AudioDecoder embeddedCodec;
-
-	AudioFormat wf;
-	Time bufferTime;
 }

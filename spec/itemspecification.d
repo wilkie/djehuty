@@ -17,7 +17,13 @@ import djehuty;
 import io.console;
 
 class ItemSpecification {
+private:
 
+	string _name;
+
+	it function()[string] _tests;
+
+public:
 	this(string name) {
 		_name = name.dup;
 	}
@@ -67,11 +73,5 @@ class ItemSpecification {
 
 		return ret;
 	}
-
-private:
-
-	string _name;
-
-	it function()[string] _tests;
 }
 

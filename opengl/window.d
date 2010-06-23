@@ -25,6 +25,19 @@ import platform.vars.window;
 import scaffold.opengl;
 
 class GLWindow : Window {
+protected:
+
+	// the texture coordinates currently in use
+	GLdouble _tu0 = 0.0;
+	GLdouble _tu1 = 0.0;
+	GLdouble _tv0 = 0.0;
+	GLdouble _tv1 = 0.0;
+
+	Texture _bindedTexture;
+
+	double _aspectRatio;
+
+public:
 
 	this(string windowTitle, WindowStyle windowStyle, int x, int y, int width, int height) {
 		super(windowTitle, windowStyle, Color.Black, x, y, width, height);
@@ -151,18 +164,4 @@ class GLWindow : Window {
 
 		glPopMatrix();
 	}
-
-
-protected:
-
-	// the texture coordinates currently in use
-	GLdouble _tu0 = 0.0;
-	GLdouble _tu1 = 0.0;
-	GLdouble _tv0 = 0.0;
-	GLdouble _tv1 = 0.0;
-
-	Texture _bindedTexture;
-
-	double _aspectRatio;
-
 }

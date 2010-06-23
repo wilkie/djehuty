@@ -14,11 +14,14 @@ import djehuty;
 
 // Description: This class holds the computed digest from a hashing algorithm.
 class Digest {
+private:
+
+	uint[] data;
+
+public:
 	this (uint[] newData...) {
 		data = newData.dup;
 	}
-
-	uint[] data;
 
 	override string toString() {
 		string ret = "";

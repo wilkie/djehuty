@@ -19,66 +19,19 @@ import core.unicode;
 import io.socket;
 import io.console;
 
-class HTTPHeader
-{
+class HTTPHeader {
 protected:
 
 	string _httpVersion;
 }
 
-class HTTPServer
-{
+class HTTPServer {
 }
 
 // Section: Sockpuppets
 
 // Description: This class facilitates a client connection to a HTTP Server.
-class HTTPClient
-{
-	this()
-	{
-		_skt = new Socket;
-		_thread = new Thread;
-		_buffer = new Stream();
-
-		_thread.callback = &_recvFunc;
-	}
-
-	~this()
-	{
-		_skt.close();
-	}
-
-	bool connect(string hostname, ushort port = 80)
-	{
-		_connected = _skt.connect(hostname, port);
-
-		if (_connected)
-		{
-			_thread.start();
-		}
-
-		return _connected;
-	}
-
-	void get(string path)
-	{
-		// send a get request
-		string sendstr = "GET " ~ Unicode.toUtf8(path) ~ " HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
-//			char[] sendstr = "GET /news/news.php HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
-		_skt.write(cast(ubyte*)sendstr.ptr, sendstr.length);
-	}
-
-	void setDelegate(void delegate(Stream) callback)
-	{
-		_callback = callback;
-	}
-
-	void close()
-	{
-		_skt.close();
-	}
-
+class HTTPClient {
 protected:
 
 	const auto downloadBuffer = 1024*128;
@@ -332,4 +285,38 @@ protected:
 	bool _connected;
 
 	void delegate(Stream) _callback;
+
+public:
+	this() {
+		_skt = new Socket;
+		_thread = new Thread;
+		_buffer = new Stream();
+
+		_thread.callback = &_recvFunc;
+	}
+
+	bool connect(string hostname, ushort port = 80) {
+		_connected = _skt.connect(hostname, port);
+
+		if (_connected) {
+			_thread.start();
+		}
+
+		return _connected;
+	}
+
+	void get(string path) {
+		// send a get request
+		string sendstr = "GET " ~ Unicode.toUtf8(path) ~ " HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
+//			char[] sendstr = "GET /news/news.php HTTP/1.1\r\nHost: www.wilkware.com\r\nUser-Agent: DjehutyApp\r\nConnection: Keep-Alive\r\n\r\n";
+		_skt.write(cast(ubyte*)sendstr.ptr, sendstr.length);
+	}
+
+	void setDelegate(void delegate(Stream) callback) {
+		_callback = callback;
+	}
+
+	void close() {
+		_skt.close();
+	}
 }

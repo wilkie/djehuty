@@ -15,6 +15,33 @@ import spec.modulespecification;
 import djehuty;
 
 class PackageSpecification {
+private:
+
+	string _toString(string padding) {
+		string ret = padding ~ _name ~ "\n";
+
+		foreach(pack; _packages.values.sort) {
+			ret ~= pack._toString(padding ~ "  ");
+		}
+
+		foreach(mod; _modules.values.sort) {
+			ret ~= padding ~ "  " ~ mod.name ~ "\n";
+			foreach(item; mod) {
+				foreach(spec; item) {
+					ret ~= padding ~ "    " ~ item.name ~ " " ~ spec ~ "\n";
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	string _name;
+
+	ModuleSpecification _modules[string];
+	PackageSpecification _packages[string];
+
+public:
 	this(string name) {
 		_name = name.dup;
 	}
@@ -73,30 +100,4 @@ class PackageSpecification {
 		//     Item should do that
 		return _toString("");
 	}
-
-private:
-
-	string _toString(string padding) {
-		string ret = padding ~ _name ~ "\n";
-
-		foreach(pack; _packages.values.sort) {
-			ret ~= pack._toString(padding ~ "  ");
-		}
-
-		foreach(mod; _modules.values.sort) {
-			ret ~= padding ~ "  " ~ mod.name ~ "\n";
-			foreach(item; mod) {
-				foreach(spec; item) {
-					ret ~= padding ~ "    " ~ item.name ~ " " ~ spec ~ "\n";
-				}
-			}
-		}
-
-		return ret;
-	}
-
-	string _name;
-
-	ModuleSpecification _modules[string];
-	PackageSpecification _packages[string];
 }

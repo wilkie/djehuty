@@ -9,23 +9,11 @@ module core.event;
 
 // Description: This class represents an object that can dispatch signals.
 class Dispatcher : Object {
+private:
 
-	void onPush(Responder rsp) {
-	}
-
-	// Description: This function will set the responder that will receive
-	//	signals raised by this class.
-	// rsp: The class that will respond to the signal.
-	void responder(Responder rsp) {
-		_responder = rsp;
-	}
-	
-	Responder responder() {
-		return _responder;
-	}
+	Responder _responder;
 
 protected:
-
 	// Description: This function will emit a signal to the Responder that
 	//	is listening to this Dispatcher.
 	// signal: The identifier for the signal.
@@ -43,9 +31,20 @@ protected:
 		return true;
 	}
 	
-private:
+public:
+	void onPush(Responder rsp) {
+	}
 
-	Responder _responder;
+	// Description: This function will set the responder that will receive
+	//	signals raised by this class.
+	// rsp: The class that will respond to the signal.
+	void responder(Responder rsp) {
+		_responder = rsp;
+	}
+	
+	Responder responder() {
+		return _responder;
+	}
 }
 
 // Description: This class represents an object that can respond to signals.

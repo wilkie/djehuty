@@ -10,6 +10,11 @@ import scaffold.thread;
 
 // Description: This class provides a simple mutex, also known as a binary semaphore.  This is provided as a means to manually lock critical sections.  It is initially unlocked.
 class Mutex {
+protected:
+
+	MutexPlatformVars _pfvars;
+
+public:
 	this() {
 		MutexInit(_pfvars);
 	}
@@ -39,8 +44,4 @@ class Mutex {
 	void wait(Waitable forObject) {
 		wait(forObject.waitCondition());
 	}
-
-protected:
-
-	MutexPlatformVars _pfvars;
 }

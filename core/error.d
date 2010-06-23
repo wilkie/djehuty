@@ -17,9 +17,6 @@ class Error : Exception {
 	this(string msg, string file = "", ulong line = 0) {
 		super(msg, file, line);
 	}
-
-private:
-//	Error _next;
 }
 
 abstract class RuntimeError : Error {

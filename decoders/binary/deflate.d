@@ -201,7 +201,7 @@ private {
 
 // Description: This represents the DEFLATE Codec.
 class DEFLATEDecoder : BinaryDecoder {
-protected:
+private:
 
 	// the bit mask to get the bit
 	ubyte deflateCurMask;
