@@ -346,6 +346,10 @@ private {
 							isMovement = true;
 						}
 					}
+					
+					// Set mouse coordinates to the current position
+					evt.info.mouse.x = last_x;
+					evt.info.mouse.y = last_y;
 
 					if (vars.irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) {
 						if (!(last_state & FROM_LEFT_1ST_BUTTON_PRESSED)) {
