@@ -209,12 +209,13 @@ private:
 		bool isOut = true;
 		uint pos = 0;
 
+		ConsoleSetPosition(x, y);
 		for (uint i; i < formatArray.length; i++, isOut = !isOut) {
 			if (isOut) {
 				ConsolePutString(str.substring(pos, formatArray[i]));
 			}
 			else {
-				ConsoleSetRelative(formatArray[i], 0);
+				ConsoleSetPosition(x + pos + formatArray[i], y);
 			}
 			pos += formatArray[i];
 		}
@@ -224,9 +225,15 @@ private:
 	void _position(int x, int y) {
 		_xposition = x;
 		_yposition = y;
-		if (x >= 0 || y >= 0) {
-			ConsoleSetPosition(x, y);
-		}
+
+		uint cw, ch;
+		ConsoleGetSize(cw, ch);
+
+		if (y < 0) { y = 0; }
+		if (x < 0) { x = 0; }
+		if (x >= cw) { x = cw-1; }
+		if (y >= ch) { y = ch-1; }
+		ConsoleSetPosition(x, y);
 	}
 
 public:
@@ -238,13 +245,13 @@ public:
 	uint width() {
 		uint consolewidth, consoleheight;
 		ConsoleGetSize(consolewidth, consoleheight);
-		return consolewidth - cast(int)_topleft.x;
+		return consolewidth;
 	}
 
 	uint height() {
 		uint consolewidth, consoleheight;
 		ConsoleGetSize(consolewidth, consoleheight);
-		return consoleheight - cast(int)_topleft.y;
+		return consoleheight;
 	}
 
 	// Context functions

@@ -223,6 +223,8 @@ int main(string[] args) {
 	putln(sort(foob));
 
 	auto app = new MyApp;
+	
+//	putln(Console.width, "x", Console.height);
 	app.run();
 	return 0;
 }

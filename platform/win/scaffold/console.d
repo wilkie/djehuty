@@ -243,8 +243,7 @@ void ConsoleClear() {
 	SetConsoleCursorPosition( hStdout, coordScreen );
 }
 
-
-
+// deprecated
 void ConsoleGetPosition(uint* x, uint* y) {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -264,21 +263,20 @@ void ConsoleSetPosition(uint x, uint y) {
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-	if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
-	{
+	if( !GetConsoleScreenBufferInfo( hStdout, &csbi )) {
 	   return;
 	}
 
 	COORD coordScreen = {cast(short)(csbi.srWindow.Left + x),cast(short)(csbi.srWindow.Top + y)};   // home for the cursor
 
-	if (coordScreen.X >= csbi.srWindow.Right)
-	{
-		coordScreen.X = cast(short)(csbi.srWindow.Right-1);
+	if (coordScreen.X >= csbi.srWindow.Right) {
+		coordScreen.X = cast(short)(csbi.srWindow.Right);
 	}
 
 	SetConsoleCursorPosition( hStdout, coordScreen );
 }
 
+// deprecated
 void ConsoleSetHome() {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -293,57 +291,8 @@ void ConsoleSetHome() {
 	SetConsoleCursorPosition( hStdout, coordScreen );
 }
 
+// deprecated
 void ConsoleSetRelative(int x, int y) {
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if( !GetConsoleScreenBufferInfo( hStdout, &csbi )) {
-	   return;
-	}
-
-	COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + x),cast(short)(csbi.dwCursorPosition.Y + y)};   // home for the cursor
-
-	if (coordScreen.X >= csbi.srWindow.Right) {
-		coordScreen.X = cast(short)(csbi.srWindow.Right-1);
-	}
-
-	if (coordScreen.X < csbi.srWindow.Left) {
-		coordScreen.X = csbi.srWindow.Left;
-	}
-
-	/* if (coordScreen.Y >= csbi.srWindow.Bottom) {
-		// scroll down the difference
-		uint diff = coordScreen.Y - csbi.srWindow.Bottom;
-
-		diff++;
-
-		SMALL_RECT rt;
-
-		rt.Left = csbi.srWindow.Left;
-		rt.Right = csbi.srWindow.Right;
-		rt.Top = cast(short)(csbi.srWindow.Top-diff);
-		rt.Bottom = cast(short)(csbi.srWindow.Bottom-diff);
-
-		SetConsoleWindowInfo(hStdout, 1, &rt);
-	} */
-
-	SetConsoleCursorPosition( hStdout, coordScreen );
-/*
-	if (x < 0) {
-		// move left
-	}
-	else if (x > 0) {
-		// move right
-	}
-
-	if (y < 0) {
-		// move up
-	}
-	else if (y > 0) {
-		// move down
-	} */
-
 }
 
 void ConsoleHideCaret() {
@@ -381,17 +330,13 @@ void ConsolePutString(char[] chrs) {
 
 	// print line by line
 
-	string str = chrs.dup;
-
-	//wstring str = Unicode.toUtf16(chrs);
-
-	uint len = str.length;
+	uint len = utflen(chrs);
 
 	uint pos = 0;
 	while (len > 0) {
 		uint curlen = w - x;
 		if (len > curlen) {
-			wstring toprint = Unicode.toUtf16((str[pos..pos+curlen]));
+			wstring toprint = Unicode.toUtf16(chrs.substring(pos, curlen));
 			WriteConsoleW(hStdout, toprint.ptr, toprint.length, &numCharsWritten, null);
 			len -= curlen;
 			pos += curlen;
@@ -401,14 +346,15 @@ void ConsolePutString(char[] chrs) {
 			}
 		}
 		else {
-			wstring toprint = Unicode.toUtf16((str[pos..str.length]));
+			wstring toprint = Unicode.toUtf16(chrs.substring(pos));
 			WriteConsoleW(hStdout, toprint.ptr, toprint.length, &numCharsWritten, null);
-			x += str.length - pos;
+			x += len - pos;
 			len = 0;
 		}
 	}
 }
 
+// deprecated
 void ConsolePutChar(dchar chr) {
 	ConsolePutString([ chr ]);
 /*	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -433,6 +379,7 @@ void ConsolePutChar(dchar chr) {
 }
 
 void ConsoleInit() {
+     ConsoleHideCaret();
 }
 
 void ConsoleGetChar(out dchar chr, out uint code) {

@@ -121,7 +121,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
+	@compiler/dmd/bin/dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
 else
 endif
 endif
@@ -131,7 +131,7 @@ endif
 ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -I. -Iplatform/win -unittest $<
+	@compiler/dmd/bin/dmd.exe -w -c -of$@ -J./tests $(DFLAGS) -version=PlatformWindows -I. -Iplatform/win -unittest $<
 else
 endif
 endif
