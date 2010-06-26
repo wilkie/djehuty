@@ -226,7 +226,12 @@ int main(string[] args) {
 	auto app = new MyApp;
 
 //	putln(Console.width, "x", Console.height);
-	app.run();
+//	app.run();
 
+	bool i = false;
+	Console.putln(i);
+
+	Atomic.compareExchange(i, cast(typeof(i))false, cast(typeof(i))true);
+	Console.putln(i);
 	return 0;
 }

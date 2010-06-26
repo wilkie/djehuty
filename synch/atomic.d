@@ -22,11 +22,14 @@ static:
 		bool compareExchange(ref T reference, T compare, T exchange) {
 			static if (is(T : Object) || is(T : void*)) {
 				static if ((void*).sizeof == 4) {
-					return compareExchangeI(cast(uint*)&reference, compare, exchange);
+					return compareExchangeI(cast(uint*)&reference, cast(uint)compare, cast(uint)exchange);
 				}
 				else static if ((void*).sizeof == 8) {
-					return compareExchangeL(cast(ulong*)&reference, compare, exchange);
+					return compareExchangeL(cast(ulong*)&reference, cast(ulong)compare, cast(ulong)exchange);
 				}
+			}
+			else static if (is(T == bool)) {
+				return compareExchangeB(cast(ubyte*)&reference, cast(ubyte)compare, cast(ubyte)exchange);
 			}
 			else static if (is(T == ubyte) || is(T == byte)) {
 				return compareExchangeB(cast(ubyte*)&reference, compare, exchange);
