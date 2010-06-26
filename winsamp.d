@@ -139,7 +139,7 @@ class MyWindow : CuiDialog {
 
 		//push(tabbox);
 	}
-	
+
 	override void onResize() {
 //		box.reposition(0,0,this.clientWidth,this.clientHeight);
 		//tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
@@ -173,6 +173,7 @@ class MyWindow : CuiDialog {
 	}
 
 	override void onKeyDown(Key key) {
+		redraw();
 		if (key.ctrl && key.code == Key.Q) {
 			Djehuty.app.exit(0);
 		}
@@ -223,8 +224,9 @@ int main(string[] args) {
 	putln(sort(foob));
 
 	auto app = new MyApp;
-	
+
 //	putln(Console.width, "x", Console.height);
 	app.run();
+
 	return 0;
 }

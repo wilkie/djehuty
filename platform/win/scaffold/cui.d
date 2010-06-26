@@ -92,9 +92,9 @@ private {
 
 		VK_LCONTROL: Key.LeftControl,
 		VK_RCONTROL: Key.RightControl,
-		
+
 		VK_CAPITAL: Key.CapsLock,
-		
+
 		VK_PAUSE: Key.Pause,
 		VK_ESCAPE: Key.Escape,
 		VK_SPACE: Key.Space,
@@ -150,7 +150,7 @@ private {
 		0x58: Key.X,
 		0x59: Key.Y,
 		0x5A: Key.Z,
-		
+
 		VK_OEM_3: Key.SingleQuote,
 		VK_OEM_1: Key.Semicolon,
 		VK_OEM_4: Key.LeftBracket,

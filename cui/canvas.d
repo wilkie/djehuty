@@ -366,7 +366,6 @@ public:
 	Coord position() {
 		synchronized(this) {
 			Coord ret;
-			//ConsoleGetPosition(cast(uint*)&ret.x, cast(uint*)&ret.y);
 			ret.x = _xposition;
 			ret.y = _yposition;
 			ret.x -= _topleft.x;

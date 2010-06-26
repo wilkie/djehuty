@@ -357,29 +357,11 @@ void ConsolePutString(char[] chrs) {
 // deprecated
 void ConsolePutChar(dchar chr) {
 	ConsolePutString([ chr ]);
-/*	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
-	   return;
-
-	DWORD ret;
-
-	WriteConsoleOutputAttribute(hStdout, &_curAttribs, 1, csbi.dwCursorPosition, &ret);
-
-	dstring chrs32 = [ chr ];
-	wstring chrs = Unicode.toUtf16(chrs32);
-
-	WriteConsoleOutputCharacterW(hStdout, chrs.ptr, chrs.length, csbi.dwCursorPosition, &ret);
-
-	COORD coordScreen = {cast(short)(csbi.dwCursorPosition.X + 1),cast(short)(csbi.dwCursorPosition.Y)};   // home for the cursor
-
-	SetConsoleCursorPosition( hStdout, coordScreen );*/
 }
 
 void ConsoleInit() {
      ConsoleHideCaret();
+     SetConsoleOutputCP(65001);
 }
 
 void ConsoleGetChar(out dchar chr, out uint code) {
@@ -421,9 +403,6 @@ void ConsoleGetChar(out dchar chr, out uint code) {
 					}
 					else {
 						// KeyUp
-
-						// The Current Console View Receives the Event
-						//ConsoleWindowonKeyUp( irInBuf[i].Event.KeyEvent.wVirtualKeyCode );
 					}
 					break;
 
