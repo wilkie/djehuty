@@ -26,8 +26,6 @@ private:
 	Rect _bounds;
 	Color _bg;
 
-	Semaphore _lock;
-
 	// Window list
 	CuiWindow _head;			// The head of the list
 	CuiWindow _topMostHead;		// The subsection where the top most end
@@ -41,8 +39,12 @@ private:
 	bool _isBottomMost;
 
 public:
+
+	enum Signal {
+		NeedRedraw
+	}
+
 	this(int x, int y, int width, int height, Color bg = Color.Black) {
-		_lock = new Semaphore(1);
 		_bounds.left = x;
 		_bounds.top = y;
 		_bounds.right = x + width;
@@ -349,15 +351,15 @@ public:
 	}
 
 	void redraw() {
+		if (!this.visible) {
+			return;
+		}
+
 		if (this.parent !is null) {
 			this.parent.redraw();
 		}
 		else {
-			_lock.down();
-			auto canvas = new CuiCanvas();
-			canvas.position(0,0);
-			onDraw(canvas);
-			_lock.up();
+			raiseSignal(Signal.NeedRedraw);
 		}
 	}
 

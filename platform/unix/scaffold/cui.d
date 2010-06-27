@@ -221,3 +221,7 @@ start:
 	evt.info.key = key;
 	return;
 }
+
+// Will swap to display the backbuffer
+void CuiSwapBuffers(CuiPlatformVars* vars) {
+}

@@ -11,6 +11,7 @@
 module scaffold.cui;
 
 import synch.thread;
+import synch.atomic;
 
 import io.console;
 
@@ -37,6 +38,10 @@ void CuiStart(CuiPlatformVars* vars) {
 
 	vars.events = new Queue!(Event)();
 
+    // Create buffers
+	vars.buffers[0] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, null, CONSOLE_TEXTMODE_BUFFER, null);
+	vars.buffers[1] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, null, CONSOLE_TEXTMODE_BUFFER, null);
+
 	// get handle to standard out
 	vars.stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -45,13 +50,30 @@ void CuiStart(CuiPlatformVars* vars) {
 
 	// Turn off automatic line advancement
 	DWORD consoleMode;
-	GetConsoleMode(vars.stdout, &consoleMode);
+	GetConsoleMode(vars.buffers[0], &consoleMode);
 	consoleMode &= ~(0x2);
-	SetConsoleMode(vars.stdout, consoleMode);
+	SetConsoleMode(vars.buffers[0], consoleMode);
+
+	GetConsoleMode(vars.buffers[1], &consoleMode);
+	consoleMode &= ~(0x2);
+	SetConsoleMode(vars.buffers[1], consoleMode);
+
+	CONSOLE_CURSOR_INFO ccinfo;
+
+	GetConsoleCursorInfo(vars.buffers[0], &ccinfo);
+	ccinfo.bVisible = FALSE;
+	SetConsoleCursorInfo(vars.buffers[0], &ccinfo);
+
+	GetConsoleCursorInfo(vars.buffers[1], &ccinfo);
+	ccinfo.bVisible = FALSE;
+	SetConsoleCursorInfo(vars.buffers[1], &ccinfo);
+
+	SetStdHandle(STD_OUTPUT_HANDLE, vars.buffers[1]);
+	SetConsoleActiveScreenBuffer(vars.buffers[0]);
 
 	// Setup mouse handling
 	if (!SetConsoleMode(vars.stdin, ENABLE_MOUSE_INPUT)) {
-		Console.putln("Fatal Error: Cannot Set the Console Mode");
+		throw new Exception("Fatal Error: Cannot Set the Console Mode");
     }
 
 	// Spawn a thread to detect window resizes
@@ -73,7 +95,8 @@ void CuiNextEvent(Event* evt, CuiPlatformVars* vars) {
 }
 
 void CuiEnd(CuiPlatformVars* vars) {
-	ConsoleClear();
+	// Return to the user's screen
+	SetConsoleActiveScreenBuffer(vars.stdout);
 }
 
 private {
@@ -112,7 +135,7 @@ private {
 		
 		VK_INSERT: Key.Insert,
 		VK_DELETE: Key.Delete,
-		
+
 		0x30: Key.Zero,
 		0x31: Key.One,
 		0x32: Key.Two,
@@ -331,22 +354,18 @@ private {
 					bool isPressed = true;
 					bool isMovement = false;
 
-					CONSOLE_SCREEN_BUFFER_INFO cinfo;
-
-					GetConsoleScreenBufferInfo(vars.stdout, &cinfo);
-
 					if (!(vars.irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED ||
 						  vars.irInBuf[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED )) {
-						if (last_x != vars.irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left) {
-							last_x = vars.irInBuf[i].Event.MouseEvent.dwMousePosition.X - cinfo.srWindow.Left;
+						if (last_x != vars.irInBuf[i].Event.MouseEvent.dwMousePosition.X) {
+							last_x = vars.irInBuf[i].Event.MouseEvent.dwMousePosition.X;
 							isMovement = true;
 						}
-						if (last_y != vars.irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top) {
-							last_y = vars.irInBuf[i].Event.MouseEvent.dwMousePosition.Y - cinfo.srWindow.Top;
+						if (last_y != vars.irInBuf[i].Event.MouseEvent.dwMousePosition.Y) {
+							last_y = vars.irInBuf[i].Event.MouseEvent.dwMousePosition.Y;
 							isMovement = true;
 						}
 					}
-					
+
 					// Set mouse coordinates to the current position
 					evt.info.mouse.x = last_x;
 					evt.info.mouse.y = last_y;
@@ -459,4 +478,11 @@ private {
             }
 		}
 	}
+}
+
+// Will swap to display the backbuffer
+void CuiSwapBuffers(CuiPlatformVars* vars) {
+	Atomic.increment(vars.bufferIndex);
+	SetStdHandle(STD_OUTPUT_HANDLE, vars.buffers[vars.bufferIndex%2]);
+	SetConsoleActiveScreenBuffer(vars.buffers[(vars.bufferIndex-1)%2]);
 }

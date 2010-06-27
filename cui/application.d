@@ -1,6 +1,7 @@
 module cui.application;
 
 import cui.window;
+import cui.canvas;
 
 import djehuty;
 
@@ -12,9 +13,13 @@ import data.list;
 
 import io.console;
 
+import synch.semaphore;
+
 class CuiApplication : Application {
 private:
     CuiPlatformVars _pfvars;
+
+	Semaphore _lock;
 
 	CuiWindow _mainWindow;
 
@@ -247,10 +252,29 @@ protected:
 
 
 public:
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		auto window = cast(CuiWindow)dsp;
+		if (window !is null) {
+			if (signal == CuiWindow.Signal.NeedRedraw) {
+				_lock.down();
+				auto canvas = new CuiCanvas();
+				canvas.position(0,0);
+				_mainWindow.onDraw(canvas);
+
+				CuiSwapBuffers(&_pfvars);
+				_lock.up();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	this() {
+		_lock = new Semaphore(1);
 		CuiStart(&_pfvars);
 		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
 		_mainWindow.visible = true;
+		push(_mainWindow);
 		super();
 	}
 
@@ -263,10 +287,10 @@ public:
 
 	override void push(Dispatcher dsp) {
 		auto window = cast(CuiWindow)dsp;
-		if (window !is null) {
+		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
 			_mainWindow.push(window);
-			_redraw();
+			_mainWindow.redraw();
 		}
 		else {
 			super.push(dsp);

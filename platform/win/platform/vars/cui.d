@@ -26,6 +26,9 @@ struct CuiPlatformVars {
 	// Standard in and out
 	HANDLE stdin;
 	HANDLE stdout;
+	
+	HANDLE[2] buffers;
+	size_t bufferIndex;
 
 	// Input state
 	INPUT_RECORD irInBuf[128];

@@ -360,7 +360,6 @@ void ConsolePutChar(dchar chr) {
 }
 
 void ConsoleInit() {
-     ConsoleHideCaret();
      SetConsoleOutputCP(65001);
 }
 

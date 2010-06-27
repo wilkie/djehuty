@@ -110,7 +110,6 @@ public:
 	// Events
 
 	override void onPrimaryDown(ref Mouse mouse) {
-
 		// Move this window to the foreground
 		reorder(WindowOrder.Top);
 
@@ -188,7 +187,7 @@ public:
 					reposition(this.left, this.top, this.width, this.height + ydiff);
 					xdiff = 0;
 					ydiff = 0;
-					
+
 					updateDragPosX = true;
 					updateDragPosY = this.height != h;
 					break;

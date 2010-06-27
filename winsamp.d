@@ -124,7 +124,7 @@ class MyWindow : CuiDialog {
 		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 30, 15);
 		visible = true;
 
-		/*tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
+	/*	tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
 		tabbox.add("foo");
 		tabbox.add("bar");
 		tabbox.visible = true;
@@ -133,11 +133,21 @@ class MyWindow : CuiDialog {
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
-		box.backcolorNum = toPick;*/
+		box.backcolorNum = toPick;
 
-		//tabbox.push(box);
+	*/
 
-		//push(tabbox);
+//		tabbox.push(box);
+
+	//	push(tabbox);
+
+		lbl = new CuiLabel(0, 0, 10, "Hello", Color.Red, Color.Black);
+		lbl.visible = true;
+		push(lbl);
+		
+		field = new CuiTextField(0, 1, 10, "Hello");
+		field.visible = true;
+		push(field);
 	}
 
 	override void onResize() {
@@ -226,12 +236,13 @@ int main(string[] args) {
 	auto app = new MyApp;
 
 //	putln(Console.width, "x", Console.height);
-//	app.run();
+	app.run();
 
-	bool i = false;
+/*	bool i = false;
 	Console.putln(i);
 
 	Atomic.compareExchange(i, cast(typeof(i))false, cast(typeof(i))true);
-	Console.putln(i);
+	Console.putln(i);*/
+
 	return 0;
 }
