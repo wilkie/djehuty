@@ -94,11 +94,7 @@ public:
 	override void push(Dispatcher dsp) {
 		CuiWindow window = cast(CuiWindow)dsp;
 
-		if (window is _clientArea) {
-			// Quietly pass through`
-			super.push(dsp);
-		}
-		else if (window !is null) {
+		if (window !is null && window !is _clientArea) {
 			_clientArea.push(dsp);
 		}
 		else {
@@ -155,12 +151,12 @@ public:
 		}
 	}
 
-	override void reposition(int left, int top, int width = -1, int height = -1) {
+	override void reposition(int left, int top, int width = int.min, int height = int.min) {
 		// Resize subwindow
-		if (width == -1) {
+		if (width == int.min) {
 			width = this.width;
 		}
-		if (height == -1) {
+		if (height == int.min) {
 			height = this.height;
 		}
 		if (width < 2) {
@@ -242,9 +238,6 @@ public:
 
 	// Drawing the window
 	void onDraw(CuiCanvas canvas) {
-		// Draw inside area
-		onDrawChildren(canvas);
-
 		canvas.position(0, 0);
 
 		static const string TITLE_BAR_CHAR = "\u2550";
@@ -275,7 +268,7 @@ public:
 			canvas.write(" ");
 		}
 		// Draw a section of pretty characters
-		for(uint i = title.utflen() + 1; i < this.clientWidth-1; i++) {
+		for(int i = title.utflen() + 1; i < this.clientWidth-1; i++) {
 			canvas.write(TITLE_BAR_CHAR);
 		}
 

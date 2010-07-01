@@ -121,7 +121,7 @@ class MyWindow : CuiDialog {
 				break;
 		}
 		i++;
-		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 30, 15);
+		super("untitled", WindowStyle.Fixed, toPick, 4,4, 30, 15);
 		visible = true;
 
 	/*	tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
@@ -201,14 +201,8 @@ class MyApp : CuiApplication {
 		push(new MyWindow);
 		push(new MyWindow);
 		push(new MyWindow);
-		auto w = new MyWindow();
-		push(w);
-		w.reorder(WindowOrder.BottomMost);
-		w.text = "bottommost";
-		w = new MyWindow();
-		push(w);
-		w.text = "topmost";
-		w.reorder(WindowOrder.TopMost);
+		push(new MyWindow);
+		push(new MyWindow);
 	}
 }
 
@@ -246,3 +240,4 @@ int main(string[] args) {
 
 	return 0;
 }
+

@@ -6,6 +6,7 @@ import cui.canvas;
 import djehuty;
 
 import scaffold.cui;
+import scaffold.console;
 
 import platform.vars.cui;
 
@@ -23,7 +24,9 @@ private:
 
 	CuiWindow _mainWindow;
 
-	bool _running;
+	bool _running = false;
+	bool _allowRedraw = false;
+	bool _needRedraw = false;
 	Mouse _mouse;
 
 	void eventLoop() {
@@ -33,6 +36,7 @@ private:
 
 			CuiNextEvent(&evt, &_pfvars);
 
+			_allowRedraw = false;
 			switch(evt.type) {
 				case Event.KeyDown:
 					_mainWindow.onKeyDown(evt.info.key);
@@ -70,6 +74,11 @@ private:
 					break;
 				default:
 					break;
+			}
+			_allowRedraw = true;
+			if (_needRedraw) {
+				_needRedraw = false;
+				_redraw();
 			}
 		}
 	}
@@ -233,7 +242,14 @@ private:
 	}
 
 	void _redraw() {
-		_mainWindow.redraw();
+		_lock.down();
+		auto canvas = new CuiCanvas();
+		canvas.position(0,0);
+		_mainWindow.onDrawChildren(canvas);
+		_mainWindow.onDraw(canvas);
+
+		CuiSwapBuffers(&_pfvars);
+		_lock.up();
 	}
 
 protected:
@@ -243,6 +259,8 @@ protected:
 	}
 
 	override void start() {
+		_allowRedraw = true;
+		_redraw();
 		eventLoop();
 	}
 
@@ -256,13 +274,12 @@ public:
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
 			if (signal == CuiWindow.Signal.NeedRedraw) {
-				_lock.down();
-				auto canvas = new CuiCanvas();
-				canvas.position(0,0);
-				_mainWindow.onDraw(canvas);
-
-				CuiSwapBuffers(&_pfvars);
-				_lock.up();
+				if (!_allowRedraw) {
+					_needRedraw = true;
+				}
+				else {
+					_redraw();
+				}
 				return true;
 			}
 		}

@@ -69,12 +69,20 @@ void CuiStart(CuiPlatformVars* vars) {
 	SetConsoleCursorInfo(vars.buffers[1], &ccinfo);
 
 	SetStdHandle(STD_OUTPUT_HANDLE, vars.buffers[1]);
-	SetConsoleActiveScreenBuffer(vars.buffers[0]);
+	SetConsoleActiveScreenBuffer(vars.buffers[1]);
 
 	// Setup mouse handling
 	if (!SetConsoleMode(vars.stdin, ENABLE_MOUSE_INPUT)) {
 		throw new Exception("Fatal Error: Cannot Set the Console Mode");
     }
+
+	uint cw, ch;
+	ConsoleGetSize(cw, ch);
+	screen = new CHAR_INFO[cw*ch];
+	before = new CHAR_INFO[cw*ch];
+
+	affect.Right = 0;
+	affect.Bottom = 0;
 
 	// Spawn a thread to detect window resizes
 	//t = new ResizeThread();
@@ -482,7 +490,54 @@ private {
 
 // Will swap to display the backbuffer
 void CuiSwapBuffers(CuiPlatformVars* vars) {
-	Atomic.increment(vars.bufferIndex);
-	SetStdHandle(STD_OUTPUT_HANDLE, vars.buffers[vars.bufferIndex%2]);
-	SetConsoleActiveScreenBuffer(vars.buffers[(vars.bufferIndex-1)%2]);
+/*	DWORD numCharsWritten;
+	static char foo = 'a';
+	WriteConsole(vars.buffers[1], &foo, 1, &numCharsWritten, null);
+	foo++;*/
+
+//	Atomic.increment(vars.bufferIndex);
+
+	COORD buffsize;
+	uint cw, ch;
+	ConsoleGetSize(cw, ch);
+	buffsize.X = cast(short)cw;
+	buffsize.Y = cast(short)ch;
+
+	SetConsoleActiveScreenBuffer(vars.buffers[0]);
+
+	short x, y;
+	foreach(size_t idx, chr; before) {
+		if ((screen[idx].Char.UnicodeChar != chr.Char.UnicodeChar)
+		  || (screen[idx].Attributes != chr.Attributes)) {
+			if (affect.Left > x) {
+				affect.Left = cast(short)x;
+			}
+			if (affect.Right < x) {
+				affect.Right = cast(short)x;
+			}
+			if (affect.Top > y) {
+				affect.Top = cast(short)y;
+			}
+			if (affect.Bottom < y) {
+				affect.Bottom = cast(short)y;
+			}
+		}
+		x++;
+		if (x == cw) {
+			x = 0;
+			y++;
+		}
+	}
+
+	COORD buffcoord;
+	buffcoord.X = affect.Left;
+	buffcoord.Y = affect.Top;
+
+	WriteConsoleOutputW(vars.buffers[0], screen.ptr, buffsize, buffcoord, &affect);
+	before[0..$] = screen[0..$];
+
+	affect.Left = 0;
+	affect.Top = 0;
+	affect.Right = 0;
+	affect.Bottom = 0;
 }

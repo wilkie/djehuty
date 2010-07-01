@@ -31,7 +31,9 @@ struct CuiPlatformVars {
 	size_t bufferIndex;
 
 	// Input state
-	INPUT_RECORD irInBuf[128];
+	INPUT_RECORD[128] irInBuf;
+
+	CHAR_INFO[][] screen;
 
 	Queue!(Event) events;
 }

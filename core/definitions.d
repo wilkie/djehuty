@@ -26,14 +26,7 @@ struct Coord {
 }
 
 // Description: This struct stores an x any y, or a width and height, useful for some measurements.
-struct Size {
-
-	// Description: The width of the measurement.
-	double x = 0;
-
-	// Description: The height of the measurement.
-	double y = 0;
-}
+alias Coord Size;
 
 
 // Description: This struct stores a description of a rectangle.

@@ -22,6 +22,12 @@ import core.color;
 
 import synch.thread;
 
+CHAR_INFO[] before;
+CHAR_INFO[] screen;
+SMALL_RECT affect;
+
+int attribs;
+
 private int _toNearestConsoleColor(Color clr) {
 	// 16 colors on console
 	// For each channel, it can be 00, 88, or ff
@@ -101,7 +107,7 @@ private int _toNearestConsoleColor(Color clr) {
 				if (ret > 6) {
 					ret += 2;
 				}
-			}	
+			}
 		}
 	}
 
@@ -176,16 +182,22 @@ void ConsoleSetColors(Color fg, Color bg) {
 	int fgidx = _toNearestConsoleColor(fg);
 	int bgidx = _toNearestConsoleColor(bg);
 	int bright = 0;
+	bgidx %= 8;
 	if (fgidx > 7) {
 		fgidx %= 8;
 		bright = 1;
 	}
+	attribs = cast(ushort)(_fgclrvalues[fgidx] | _bgclrvalues[bgidx] | (FOREGROUND_INTENSITY * cast(ushort)bright));
+
+	/*int fgidx = _toNearestConsoleColor(fg);
+	int bgidx = _toNearestConsoleColor(bg);
+	int bright = 0;
 	bgidx %= 8;
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	_curAttribs = cast(ushort)(_fgclrvalues[fgidx] | _bgclrvalues[bgidx] | (FOREGROUND_INTENSITY * cast(ushort)bright));
 
-	SetConsoleTextAttribute(hStdout, _curAttribs);
+	SetConsoleTextAttribute(hStdout, _curAttribs);*/
 }
 
 void ConsoleSetSize(uint width, uint height) {
@@ -198,10 +210,11 @@ void ConsoleGetSize(out uint width, out uint height) {
 
 	GetConsoleScreenBufferInfo(hStdout, &cinfo);
 
-	width = cinfo.srWindow.Right - cinfo.srWindow.Left + 1;
-	height = cinfo.srWindow.Bottom - cinfo.srWindow.Top + 1;
+	width = cinfo.srWindow.Right + 1;
+	height = cinfo.srWindow.Bottom + 1;
 }
 
+// deprecated
 void ConsoleClear() {
 	DWORD cCharsWritten;
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -324,33 +337,34 @@ void ConsolePutString(char[] chrs) {
 
 	uint numCharsWritten;
 
-	uint x, y, w, h;
-	ConsoleGetPosition(&x,&y);
-	ConsoleGetSize(w,h);
+	if (screen !is null) {
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		int x,y;
 
-	// print line by line
+		if( !GetConsoleScreenBufferInfo( hStdout, &csbi ))
+		   return;
 
-	uint len = utflen(chrs);
+		x = csbi.dwCursorPosition.X;
+		y = csbi.dwCursorPosition.Y;
 
-	uint pos = 0;
-	while (len > 0) {
-		uint curlen = w - x;
-		if (len > curlen) {
-			wstring toprint = Unicode.toUtf16(chrs.substring(pos, curlen));
-			WriteConsoleW(hStdout, toprint.ptr, toprint.length, &numCharsWritten, null);
-			len -= curlen;
-			pos += curlen;
-			x = 0;
-			if (y <= h) {
-				y++;
+		uint width = csbi.srWindow.Right + 1;
+		uint height = csbi.srWindow.Bottom + 1;
+
+		size_t pos = (y * width) + x;
+
+		auto wstr = Unicode.toUtf16(chrs);
+
+//		WriteConsoleW(hStdout, wstr.ptr, wstr.length, &numCharsWritten, null);
+		foreach(wchr; wstr) {
+			if (Unicode.isStartChar(wchr)) {
+				screen[pos].Char.UnicodeChar = wchr;
+				screen[pos].Attributes = cast(ushort)attribs;
 			}
+			pos++;
 		}
-		else {
-			wstring toprint = Unicode.toUtf16(chrs.substring(pos));
-			WriteConsoleW(hStdout, toprint.ptr, toprint.length, &numCharsWritten, null);
-			x += len - pos;
-			len = 0;
-		}
+	}
+	else {
+		WriteConsole(hStdout, chrs.ptr, chrs.length, &numCharsWritten, null);
 	}
 }
 

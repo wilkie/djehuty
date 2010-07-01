@@ -17,6 +17,8 @@ import binding.c;
 
 class CuiWindow : Responder {
 private:
+	int foo = 0;
+
 	bool _visible; // whether this window is drawn and can be interacted with
 	bool _focused; // whether this window is the foreground window
 
@@ -37,6 +39,23 @@ private:
 
 	bool _isTopMost;
 	bool _isBottomMost;
+
+	bool _needsRedraw;
+	bool _dirty;
+
+	void _redraw() {
+		if (!this.visible) {
+			return;
+		}
+		_needsRedraw = true;
+
+		if (this.parent !is null) {
+			this.parent._redraw();
+		}
+		else {
+			raiseSignal(Signal.NeedRedraw);
+		}
+	}
 
 public:
 
@@ -316,27 +335,34 @@ public:
 			parent._topMostHead = this;
 		}
 
-		redraw();
+		parent.redraw();
 	}
 
-	void reposition(int left, int top, int width = -1, int height = -1) {
+	void reposition(int left, int top, int width = int.min, int height = int.min) {
 		int w, h;
 		int oldW, oldH;
 		oldW = this.width();
 		oldH = this.height();
 
-		if (width == -1) {
+		if (width == int.min) {
 			w = oldW;
 		}
 		else {
 			w = width;
 		}
 
-		if (height == -1) {
+		if (height == int.min) {
 			h = oldH;
 		}
 		else {
 			h = height;
+		}
+
+		if (w < 0) {
+			w = 0;
+		}
+		if (h < 0) {
+			h = 0;
 		}
 
 		_bounds.left = left;
@@ -347,7 +373,7 @@ public:
 		if (oldW != w || oldH != h) {
 			onResize();
 		}
-		redraw();
+		parent.redraw();
 	}
 
 	void redraw() {
@@ -355,12 +381,8 @@ public:
 			return;
 		}
 
-		if (this.parent !is null) {
-			this.parent.redraw();
-		}
-		else {
-			raiseSignal(Signal.NeedRedraw);
-		}
+		_dirty = true;
+		_redraw();
 	}
 
 	// Events
@@ -450,7 +472,7 @@ public:
 
 	void onDrag(ref Mouse mouse) {
 		// Look at passing this message down
-		if (_dragWindow !is null) { 
+		if (_dragWindow !is null) {
 			int xdiff = _dragWindow.left;
 			int ydiff = _dragWindow.top;
 
@@ -529,43 +551,59 @@ public:
 
 			Rect rt;
 
-			// Draw
-			canvas.clipSave();
+			// If this window is dirty, then we must also redraw all child windows
+			if (this._dirty) {
+				window._needsRedraw = true;
+				window._dirty = true;
+			}
 
-			// Clip the regions around the subwindow temporarily
-			rt.left = 0;
-			rt.top = 0;
-			rt.right = window.left;
-			rt.bottom = this.height;
-			canvas.clipRect(rt);
+			if (window._needsRedraw) {
+				window._needsRedraw = false;
 
-			rt.left = window.left;
-			rt.top = 0;
-			rt.right = window.left + window.width;
-			rt.bottom = window.top;
-			canvas.clipRect(rt);
+				// Draw
+				canvas.clipSave();
 
-			rt.left = window.left;
-			rt.top = window.top + window.height;
-			rt.right = window.left + window.width;
-			rt.bottom = this.height;
-			canvas.clipRect(rt);
+				// Clip the regions around the subwindow temporarily
+				rt.left = 0;
+				rt.top = 0;
+				rt.right = window.left;
+				rt.bottom = this.height;
+				canvas.clipRect(rt);
 
-			rt.left = window.left + window.width;
-			rt.top = 0;
-			rt.right = this.width;
-			rt.bottom = this.height;
-			canvas.clipRect(rt);
+				rt.left = window.left;
+				rt.top = 0;
+				rt.right = window.left + window.width;
+				rt.bottom = window.top;
+				canvas.clipRect(rt);
 
-			// Tell the canvas where the top-left corner is
-			canvas.contextPush(window.left, window.top);
+				rt.left = window.left;
+				rt.top = window.top + window.height;
+				rt.right = window.left + window.width;
+				rt.bottom = this.height;
+				canvas.clipRect(rt);
 
-			canvas.position(0,0);
-			window.onDraw(canvas);
-			canvas.clipRestore();
+				rt.left = window.left + window.width;
+				rt.top = 0;
+				rt.right = this.width;
+				rt.bottom = this.height;
+				canvas.clipRect(rt);
 
-			// Reset context
-			canvas.contextPop();
+				// Tell the canvas where the top-left corner is
+				canvas.contextPush(window.left, window.top);
+
+				window.onDrawChildren(canvas);
+
+				if (window._dirty) {
+					canvas.position(0,0);
+					window.onDraw(canvas);
+					window._dirty = false;
+				}
+
+				canvas.clipRestore();
+
+				// Reset context
+				canvas.contextPop();
+			}
 
 			// Clip this window
 			rt.left = window.left;
@@ -577,8 +615,9 @@ public:
 	}
 
 	void onDraw(CuiCanvas canvas) {
-		// Draw subwindows
-		onDrawChildren(canvas);
+		if (!_dirty) {
+			return;
+		}
 
 		// Paint the background of the window
 		canvas.backcolor = _bg;
@@ -589,11 +628,16 @@ public:
 		if (amt < 0) {
 			return;
 		}
-		string line = times(" ", amt);
+
+		const string bgchr = " ";
+
+		string line = times(bgchr, amt);
 		for(uint i = 0; i < this.height; i++) {
 			canvas.position(0,i);
 			canvas.write(line);
 		}
+
+		_dirty = false;
 	}
 
 	// Signal Handler

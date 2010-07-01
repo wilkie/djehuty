@@ -67,6 +67,8 @@ private:
 
 		// Quick out... no clipping region, just draw the string
 		if (_clippingRegions.length == 0) {
+			ConsoleSetPosition(x,y);
+//			ConsolePutString(times("x", r-x));
 			ConsolePutString(str);
 			return;
 		}
@@ -77,6 +79,8 @@ private:
 
 		// We start with everything drawn
 		uint[] formatArray = [str.length, 0];
+
+		auto strutflength = utflen(str);
 
 		foreach(region; _clippingRegions) {
 
@@ -98,14 +102,20 @@ private:
 				int str_end;
 				str_end = regionright - x;
 
-				if (str_end > str.utflen()) {
-					str_end = str.utflen();
+				if (str_end > strutflength) {
+					str_end = strutflength;
 				}
 
 				uint str_length = str_end - str_start;
 
 				if (str_length <= 0) {
 					continue;
+				}
+
+				if (str_length == strutflength) {
+					// it is completely within a clipping region
+					// so, quit!
+					return;
 				}
 
 				// We must now go through the format array
