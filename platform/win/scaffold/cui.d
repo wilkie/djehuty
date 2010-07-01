@@ -79,10 +79,6 @@ void CuiStart(CuiPlatformVars* vars) {
 	uint cw, ch;
 	ConsoleGetSize(cw, ch);
 	screen = new CHAR_INFO[cw*ch];
-	before = new CHAR_INFO[cw*ch];
-
-	affect.Right = 0;
-	affect.Bottom = 0;
 
 	// Spawn a thread to detect window resizes
 	//t = new ResizeThread();
@@ -495,49 +491,25 @@ void CuiSwapBuffers(CuiPlatformVars* vars) {
 	WriteConsole(vars.buffers[1], &foo, 1, &numCharsWritten, null);
 	foo++;*/
 
-//	Atomic.increment(vars.bufferIndex);
+	Atomic.increment(vars.bufferIndex);
 
-	COORD buffsize;
 	uint cw, ch;
 	ConsoleGetSize(cw, ch);
+
+	COORD buffsize;
 	buffsize.X = cast(short)cw;
 	buffsize.Y = cast(short)ch;
 
-	SetConsoleActiveScreenBuffer(vars.buffers[0]);
-
-	short x, y;
-	foreach(size_t idx, chr; before) {
-		if ((screen[idx].Char.UnicodeChar != chr.Char.UnicodeChar)
-		  || (screen[idx].Attributes != chr.Attributes)) {
-			if (affect.Left > x) {
-				affect.Left = cast(short)x;
-			}
-			if (affect.Right < x) {
-				affect.Right = cast(short)x;
-			}
-			if (affect.Top > y) {
-				affect.Top = cast(short)y;
-			}
-			if (affect.Bottom < y) {
-				affect.Bottom = cast(short)y;
-			}
-		}
-		x++;
-		if (x == cw) {
-			x = 0;
-			y++;
-		}
-	}
+	SMALL_RECT affect;
+	affect.Left = 0;
+	affect.Top = 0;
+	affect.Right = cast(short)cw;
+	affect.Bottom = cast(short)ch;
 
 	COORD buffcoord;
 	buffcoord.X = affect.Left;
 	buffcoord.Y = affect.Top;
 
-	WriteConsoleOutputW(vars.buffers[0], screen.ptr, buffsize, buffcoord, &affect);
-	before[0..$] = screen[0..$];
-
-	affect.Left = 0;
-	affect.Top = 0;
-	affect.Right = 0;
-	affect.Bottom = 0;
+	WriteConsoleOutputW(vars.buffers[vars.bufferIndex%2], screen.ptr, buffsize, buffcoord, &affect);
+	SetConsoleActiveScreenBuffer(vars.buffers[vars.bufferIndex%2]);
 }

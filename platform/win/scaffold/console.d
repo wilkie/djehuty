@@ -22,9 +22,7 @@ import core.color;
 
 import synch.thread;
 
-CHAR_INFO[] before;
 CHAR_INFO[] screen;
-SMALL_RECT affect;
 
 int attribs;
 

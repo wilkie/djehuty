@@ -202,7 +202,10 @@ class MyApp : CuiApplication {
 		push(new MyWindow);
 		push(new MyWindow);
 		push(new MyWindow);
-		push(new MyWindow);
+		auto w = new MyWindow();
+		w.text = "topmost";
+		push(w);
+		w.reorder(WindowOrder.TopMost);
 	}
 }
 
