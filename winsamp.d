@@ -123,29 +123,30 @@ class MyWindow : CuiDialog {
 		i++;
 		super("untitled", WindowStyle.Fixed, toPick, 4,4, 30, 15);
 		visible = true;
-/*
+
 		tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
+
 		tabbox.add("foo");
 		tabbox.add("bar");
+
 		tabbox.visible = true;
 
 		box = new CuiTextBox(0,0,tabbox.clientWidth(), tabbox.clientHeight());
-		box.lineNumbers = true;
+//		box.lineNumbers = true;
 		box.visible = true;
-		box.backcolor = toPick;
-		box.backcolorNum = toPick;
+	//	box.backcolor = toPick;
+		//box.backcolorNum = toPick;
 
+//		push(box);
 
+//		tabbox.push(box);
+//		push(tabbox);
 
-		tabbox.push(box);
-
-		push(tabbox);*/
-
-		lbl = new CuiLabel(0, 0, 10, "Hello", Color.Red, Color.Black);
+		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
 		lbl.visible = true;
 		push(lbl);
-		
-		field = new CuiTextField(0, 1, 10, "Hello");
+
+		field = new CuiTextField(0, 3, 10, "Hello");
 		field.visible = true;
 		push(field);
 	}
@@ -240,6 +241,10 @@ int main(string[] args) {
 
 	Atomic.compareExchange(i, cast(typeof(i))false, cast(typeof(i))true);
 	Console.putln(i);*/
+
+	putln(foo.length);
+	foo.length = foo.length + 2;
+	putln(foo.length);
 
 	return 0;
 }

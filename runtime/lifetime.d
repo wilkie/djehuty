@@ -381,7 +381,7 @@ private template _arraysetlength(bool initWithZero) {
 			}
 		}
 
-		return newArray;
+		return newArray[0..length];
 	}
 }
 
@@ -394,8 +394,9 @@ private template _arraysetlength(bool initWithZero) {
 // oldData: The pointer to the current array data.
 // Returns: The updated pointer of the array data.
 version(DigitalMars) {
-	ubyte[] _d_arraysetlengthT(TypeInfo ti, size_t length, ref ubyte[] array) {
-		return _arraysetlength!(true)(ti, length, array);
+	ubyte[] _d_arraysetlengthT(TypeInfo ti, size_t newLength, ref ubyte[] array) {
+		array = _arraysetlength!(true)(ti, newLength, array)[0..newLength];
+		return array;
 	}
 }
 else {
@@ -413,8 +414,9 @@ else {
 // oldData: The pointer to the current array data.
 // Returns: The updated pointer of the array data.
 version(DigitalMars) {
-	ubyte[] _d_arraysetlengthiT(TypeInfo ti, size_t length, ref ubyte[] array) {
-		return _arraysetlength!(false)(ti, length, array);
+	ubyte[] _d_arraysetlengthiT(TypeInfo ti, size_t newLength, ref ubyte[] array) {
+		array = _arraysetlength!(false)(ti, newLength, array)[0..newLength];
+		return array;
 	}
 }
 else {
