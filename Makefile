@@ -320,7 +320,7 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	rm -f $(OBJS_WIN)
-	cp compiler/dmd/_minit.obj compiler/dmd/minit.obj
+	cp compiler/dmd/bin/_minit.obj compiler/dmd/minit.obj
 else
 	rm -f $(OBJS_LINUX)
 endif

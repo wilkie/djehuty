@@ -123,8 +123,8 @@ class MyWindow : CuiDialog {
 		i++;
 		super("untitled", WindowStyle.Fixed, toPick, 4,4, 30, 15);
 		visible = true;
-
-	/*	tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
+/*
+		tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
 		tabbox.add("foo");
 		tabbox.add("bar");
 		tabbox.visible = true;
@@ -135,11 +135,11 @@ class MyWindow : CuiDialog {
 		box.backcolor = toPick;
 		box.backcolorNum = toPick;
 
-	*/
 
-//		tabbox.push(box);
 
-	//	push(tabbox);
+		tabbox.push(box);
+
+		push(tabbox);*/
 
 		lbl = new CuiLabel(0, 0, 10, "Hello", Color.Red, Color.Black);
 		lbl.visible = true;
