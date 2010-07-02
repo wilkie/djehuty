@@ -59,7 +59,7 @@ DFILES_CONSOLE = console/prompt.d
 DFILES_CUI = cui/dialog.d cui/window.d cui/canvas.d cui/application.d cui/label.d cui/textfield.d cui/textbox.d cui/tabbox.d
 DFILES_SCRIPTING = scripting/lua.d
 DFILES_BINDING = binding/opengl/gl.d binding/opengl/glu.d binding/lua.d
-DFILES_INTERFACES = 
+DFILES_INTERFACES =
 DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d math/sin.d math/cos.d math/pow.d math/tan.d math/sqrt.d math/definitions.d math/abs.d
 DFILES_OPENGL = 
 DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d spec/test.d
@@ -172,10 +172,10 @@ endif
 
 	@echo linking...
 ifeq (${MY_ARCH},MINGW32_NT-6.0)
-	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
+	@compiler/dmd/bin/3 -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
 endif
 ifeq (${MY_ARCH},MINGW32_NT-6.1)
-	@dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformXOmB -unittest app.d djehutyxomb.lib
 endif
 
 $(DFILES_SPECS):
@@ -198,7 +198,7 @@ ifeq (${MY_ARCH},Darwin)
 	@$(OBJCC) -m32 $(OBJS_MAC) winsamp.o -o winsamp $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
+	compiler/dmd/bin/dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
 endif
@@ -211,7 +211,7 @@ ifeq (${MY_ARCH},Darwin)
 	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/sobek/*.o` -o sobek $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofsobek.exe $(TOOLS_SOBEK) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofsobek.exe $(TOOLS_SOBEK) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofsobek -d-version=PlatformLinux $(TOOLS_SOBEK) $(OBJS_LINUX)
 endif
@@ -224,7 +224,7 @@ ifeq (${MY_ARCH},Darwin)
 	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/seshat/*.o` -o seshat $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofseshat.exe $(TOOLS_SESHAT) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofseshat.exe $(TOOLS_SESHAT) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofseshat -d-version=PlatformLinux $(TOOLS_SESHAT) $(OBJS_LINUX)
 endif
@@ -239,7 +239,7 @@ ifeq (${MY_ARCH},Darwin)
 	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/dspec/*.o` -o dspec $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofdspec -d-version=PlatformLinux $(TOOLS_DSPEC) $(OBJS_LINUX)
 endif
@@ -252,7 +252,7 @@ ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofdscribe.exe $(TOOLS_DSCRIBE) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofdscribe -d-version=PlatformLinux $(TOOLS_DSCRIBE) $(OBJS_LINUX)
 endif
@@ -266,7 +266,7 @@ ifeq (${MY_ARCH},Darwin)
 	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/CuiTetris/*.o` -o cuitetris $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofcuitetris.exe $(EXAMPLES_CUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofcuitetris.exe $(EXAMPLES_CUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofcuitetris -d-version=PlatformLinux $(EXAMPLES_CUITETRIS) $(OBJS_LINUX)
 endif
@@ -280,7 +280,7 @@ ifeq (${MY_ARCH},Darwin)
 	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/MoreDucks/*.o` -o moreducks $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofmoreducks -d-version=PlatformLinux $(EXAMPLES_MOREDUCKS) $(OBJS_LINUX)
 endif
@@ -293,7 +293,7 @@ ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o snake $(OBJS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofsnake.exe $(EXAMPLES_SNAKE) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofsnake.exe $(EXAMPLES_SNAKE) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofsnake -d-version=PlatformLinux $(EXAMPLES_SNAKE) $(OBJS_LINUX)
 endif
@@ -306,7 +306,7 @@ ifeq (${MY_ARCH},Darwin)
 	@$(OBJCC) -m32 $(OBJS_MAC) runtests.o -o runtests $(LFLAGS_MAC) -ltango
 else
 ifeq ($(PLATFORM),WINDOWS)
-	@dmd.exe -w -version=PlatformWindows -ofruntests.exe $(TOOLS_TESTS) $(OBJS_WIN) $(LFLAGS_WIN)
+	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofruntests.exe $(TOOLS_TESTS) $(OBJS_WIN) $(LFLAGS_WIN)
 else
 	@$(DC) $(LFLAGS_LINUX) -ofruntests -d-version=PlatformLinux $(TOOLS_TESTS) $(OBJS_LINUX)
 endif
