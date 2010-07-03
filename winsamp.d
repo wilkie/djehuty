@@ -137,7 +137,7 @@ class MyWindow : CuiDialog {
 	//	box.backcolor = toPick;
 		//box.backcolorNum = toPick;
 
-//		push(box);
+	push(box);
 
 //		tabbox.push(box);
 //		push(tabbox);
@@ -218,23 +218,9 @@ void foo(bool stop) {
 import math.random;
 static const int REPEATS = 10000;
 int main(string[] args) {
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
-	int[] foo = [1,3,-2,5,3,42];
-	foo ~= [3,4];
-	foo ~= 5;
-	foo = foo ~ [-1,-3] ~ [100] ~ [652, 23, 552,9];
-	putln(foo.sort);
-	putln(sort([1,3,-2,5,3,42]));
-	putln(sort(foob));
 
 	auto app = new MyApp;
-
-//	putln(Console.width, "x", Console.height);
-	app.run();
+	app.run(); //*/
 
 /*	bool i = false;
 	Console.putln(i);
@@ -242,9 +228,16 @@ int main(string[] args) {
 	Atomic.compareExchange(i, cast(typeof(i))false, cast(typeof(i))true);
 	Console.putln(i);*/
 
-	putln(foo.length);
-	foo.length = foo.length + 2;
-	putln(foo.length);
+
+//	auto	box = new CuiTextBox(0,0,10, 10);
+//		box.lineNumbers = true;
+	//	box.visible = true;
+	//	box.backcolor = toPick;
+		//box.backcolorNum = toPick;
+//box.onDraw(null);
+	auto c = "\t";
+	bool foo = ("\t"c == c);
+	putln(foo);
 
 	return 0;
 }

@@ -50,7 +50,7 @@ protected:
 		string visibleLine = "";
 
 		if (_tabWidth > 0) {
-			for (uint i = 0; i < actualLine.length; i++) {
+			for (uint i = 0; i < actualLine.utflen(); i++) {
 				while (curFormat + 1 < formatTabExtension.length && untilNextFormat == 0) {
 					++curFormat;
 					untilNextFormat = _lines[lineNumber].format[curFormat].len;

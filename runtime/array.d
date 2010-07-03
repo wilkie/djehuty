@@ -16,8 +16,6 @@ import runtime.common;
 import math.random;
 
 import core.util;
-import io.console;
-import binding.c;
 
 // Arrays in D are represented as such:
 
@@ -82,20 +80,22 @@ void[] _adReverse(ubyte[] array, size_t elementSize) {
 
 // Description: This runtime function will compare two arrays.
 // Returns: 0 when equal, positive when first array is larger, negative otherwise.
-int _adCmp(void[] a1, void[] a2, TypeInfo ti) {
-	return ti.compare(&a1, &a2);
+int _adCmp(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+	TypeInfo_Array tia = new TypeInfo_Array(ti);
+	return tia.compare(&a1, &a2);
 }
 
 // Description: This runtime function will compare two utf8 arrays.
 // Returns: 0 when equal, positive when first array is larger, negative otherwise.
-int _adCmpChar(void[] a1, void[] a2) {
+int _adCmpChar(ubyte[] a1, ubyte[] a2) {
 	return _adCmp(a1, a2, typeid(char));
 }
 
 // Description: This runtime function will compare two arrays for equality.
 // Returns: 1 when equal, 0 otherwise
-int _adEq(void[] a1, void[] a2, TypeInfo ti) {
-	return ti.equals(&a1, &a2);
+int _adEq(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+	TypeInfo_Array tia = new TypeInfo_Array(ti);
+	return tia.equals(&a1, &a2);
 }
 
 // Description: This runtime function sorts an array and is invoked with

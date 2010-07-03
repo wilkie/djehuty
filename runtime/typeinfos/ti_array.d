@@ -10,6 +10,13 @@ module runtime.typeinfos.ti_array;
 class TypeInfo_Array : TypeInfo {
 	char[] toString() { return value.toString() ~ "[]"; }
 
+	this() {
+	}
+	
+	this(TypeInfo ti) {
+		value = ti;
+	}
+
 	int opEquals(Object o) {
 		TypeInfo_Array c;
 
@@ -35,8 +42,9 @@ class TypeInfo_Array : TypeInfo {
 			return 0;
 		size_t sz = value.tsize();
 		for (size_t i = 0; i < a1.length; i++) {
-			if (!value.equals(a1.ptr + i * sz, a2.ptr + i * sz))
+			if (!value.equals(a1.ptr + i * sz, a2.ptr + i * sz)) {
 				return 0;
+			}
 		}
 		return 1;
 	}

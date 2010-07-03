@@ -426,8 +426,8 @@ else {
 }
 
 // Description: This runtime function will append two arrays.
-// destArray: This is the array that will receive the concatonation.
-// srcArray: This is the array that will be concatonated.
+// destArray: This is the array that will receive the concatenation.
+// srcArray: This is the array that will be concatenated.
 // Returns: The updated array.
 ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
 	size_t memorySize;
@@ -575,7 +575,7 @@ version(DigitalMars) {
 		// Send to safe version in runtime
 		// Stupid variadic DMD bullshits
 		auto ret = arrayAppend(ti, array, element[0..elementSize]);
-		
+
 		return ret;
 	}
 }

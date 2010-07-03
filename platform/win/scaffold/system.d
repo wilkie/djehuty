@@ -186,7 +186,12 @@ LocaleId SystemGetLocaleId() {
 private import binding.c;
 
 ubyte[] malloc(size_t length) {
-	ubyte* ret = cast(ubyte*)binding.c.malloc(length);
+	static HANDLE heap = null;
+	if (heap is null) {
+		heap = GetProcessHeap();
+	}
+//	ubyte* ret = cast(ubyte*)binding.c.malloc(length);
+	ubyte* ret = cast(ubyte*)HeapAlloc(heap, 0, length);
 
 	// Error, probably out of memory.
 	if (ret is null) {
@@ -207,7 +212,12 @@ ubyte[] realloc(ubyte[] original, size_t length) {
 }
 
 ubyte[] calloc(size_t length) {
-	ubyte* ret = cast(ubyte*)binding.c.calloc(length);
+	static HANDLE heap = null;
+	if (heap is null) {
+		heap = GetProcessHeap();
+	}
+//	ubyte* ret = cast(ubyte*)binding.c.calloc(length);
+	ubyte* ret = cast(ubyte*)HeapAlloc(heap, HEAP_ZERO_MEMORY, length);
 
 	// Error, probably out of memory.
 	if (ret is null) {
