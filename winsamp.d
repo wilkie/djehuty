@@ -132,15 +132,15 @@ class MyWindow : CuiDialog {
 		tabbox.visible = true;
 
 		box = new CuiTextBox(0,0,tabbox.clientWidth(), tabbox.clientHeight());
-//		box.lineNumbers = true;
+		box.lineNumbers = true;
 		box.visible = true;
-	//	box.backcolor = toPick;
-		//box.backcolorNum = toPick;
+		box.backcolor = toPick;
+		box.backcolorNum = toPick;
 
-	push(box);
+//	push(box);
 
-//		tabbox.push(box);
-//		push(tabbox);
+		tabbox.push(box);
+		push(tabbox);
 
 		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
 		lbl.visible = true;
@@ -152,9 +152,9 @@ class MyWindow : CuiDialog {
 	}
 
 	override void onResize() {
-//		box.reposition(0,0,this.clientWidth,this.clientHeight);
-		//tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
-		//box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
+		box.reposition(0,0,this.clientWidth,this.clientHeight);
+		tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
+		box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
