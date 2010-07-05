@@ -158,15 +158,15 @@ public:
 		this.active.reposition(0, 1, clientWidth(), clientHeight());
 	}
 
-	override void push(Dispatcher dsp) {
+	override void push(Dispatcher dsp, SignalHandler handler = null) {
 		CuiWindow window = cast(CuiWindow)dsp;
-		
+
 		if (window !is null) {
 			// Push the window to the focused window
-			this.active.push(dsp);
+			this.active.push(dsp, handler);
 		}
 		else {
-			super.push(dsp);
+			super.push(dsp, handler);
 		}
 	}
 }

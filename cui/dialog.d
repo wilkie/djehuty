@@ -91,15 +91,15 @@ public:
 
 	// Signal
 
-	override void push(Dispatcher dsp) {
+	override void push(Dispatcher dsp, SignalHandler handler = null) {
 		CuiWindow window = cast(CuiWindow)dsp;
 
 		if (window !is null && window !is _clientArea) {
-			_clientArea.push(dsp);
+			_clientArea.push(dsp, handler);
 		}
 		else {
 			// Pass through so it calls this class
-			super.push(dsp);
+			super.push(dsp, handler);
 		}
 	}
 

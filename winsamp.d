@@ -16,6 +16,7 @@ import cui.window;
 import cui.label;
 import cui.textfield;
 import cui.textbox;
+import cui.button;
 
 import synch.timer;
 import synch.thread;
@@ -123,28 +124,6 @@ class MyWindow : CuiDialog {
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
-		/*static int i = 0;
-		i++;
-		int a = i % 5;
-		switch(a) {
-			case 0:
-				lbl.forecolor = Color.Red;
-				break;
-			case 1:
-				lbl.forecolor = Color.Yellow;
-				break;
-			case 2:
-				lbl.forecolor = Color.Green;
-				break;
-			case 3:
-				lbl.forecolor = Color.Magenta;
-				break;
-			case 4:
-			default:
-				lbl.forecolor = Color.Blue;
-				break;
-		}
-		lbl.text = toStr(i);*/
 		return true;
 	}
 
@@ -162,10 +141,20 @@ class MyWindow : CuiDialog {
 	}
 }
 
+class A {
+	bool onSignal(Dispatcher dsp, uint signal) {
+		auto button = cast(CuiButton)dsp;
+		button.text = "Hello!";
+		return true;
+	}
+}
+
 int main(string[] args) {
 	auto app = new CuiApplication("MyApp");
 	app.push(new CuiLabel(0, 3, 10, "Hello", Color.Red, Color.Black));
 	app.push(new MyWindow());
+	auto a = new A();
+	app.push(new CuiButton(5,5, 10, 3, "Button"), &a.onSignal);
 	app.run();
 	return 0;
 }

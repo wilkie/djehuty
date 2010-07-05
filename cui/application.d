@@ -304,15 +304,15 @@ public:
 		super(appName);
 	}
 
-	override void push(Dispatcher dsp) {
+	override void push(Dispatcher dsp, SignalHandler handler = null) {
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
-			_mainWindow.push(window);
+			_mainWindow.push(window, handler);
 			_mainWindow.redraw();
 		}
 		else {
-			super.push(dsp);
+			super.push(dsp, handler);
 		}
 	}
 }
