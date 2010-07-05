@@ -7,7 +7,7 @@
  *
  */
 
-module networking.http;
+module net.http;
 
 import core.string;
 import core.definitions;

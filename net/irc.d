@@ -7,7 +7,7 @@
  *
  */
 
-module networking.irc;
+module net.irc;
 
 import core.string;
 import core.stream;

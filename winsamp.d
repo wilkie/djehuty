@@ -22,7 +22,8 @@ import synch.timer;
 import synch.thread;
 import synch.atomic;
 
-import networking.irc;
+import net.irc;
+import net.ftp;
 
 import io.console;
 
@@ -47,8 +48,6 @@ import math.currency;
 import math.common;
 import math.integer;
 import parsing.d.parser;
-
-import networking.ftp;
 
 import spec.specification;
 
@@ -142,7 +141,7 @@ class MyWindow : CuiDialog {
 }
 
 class A {
-	bool onSignal(Dispatcher dsp, uint signal) {
+	bool buttonHandler(Dispatcher dsp, uint signal) {
 		auto button = cast(CuiButton)dsp;
 		button.text = "Hello!";
 		return true;
@@ -154,7 +153,7 @@ int main(string[] args) {
 	app.push(new CuiLabel(0, 3, 10, "Hello", Color.Red, Color.Black));
 	app.push(new MyWindow());
 	auto a = new A();
-	app.push(new CuiButton(5,5, 10, 3, "Button"), &a.onSignal);
+	app.push(new CuiButton(5,5, 10, 3, "Button"), &a.buttonHandler);
 	app.run();
 	return 0;
 }

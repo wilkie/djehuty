@@ -1,13 +1,13 @@
 /*
- *ftp.d
+ * ftp.d
  *
- *This file implements the ftp standard
+ * This file implements the ftp standard.
  *
- *Author: Brad Kuhlman
+ * Author: Brad Kuhlman
  *
  */
 
-module networking.ftp;
+module net.ftp;
 
 import djehuty;
 
