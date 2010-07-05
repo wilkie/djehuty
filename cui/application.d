@@ -296,9 +296,11 @@ public:
 	}
 
 	this(string appName) {
+		_lock = new Semaphore(1);
 		CuiStart(&_pfvars);
 		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
 		_mainWindow.visible = true;
+		push(_mainWindow);
 		super(appName);
 	}
 

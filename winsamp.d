@@ -53,48 +53,13 @@ import spec.specification;
 
 import data.queue2;
 
-class MyConsoleApp : Application {
-
-	ulong fudge;
-	ulong freak;
-	Queue2!(string) q;
-
-	void foo(bool bar) {
-		Atomic.increment(fudge);
-		while(fudge < 9) {
-		}
-		q.add("foobara");
-		q.add("foobarb");
-		q.remove();
-		q.add("foobarc");
-		q.add("foobard");
-		q.remove();
-		Atomic.increment(freak);
-	}
-}
-
-import binding.c;
-
-class A {
-	int _foo;
-	this(int foo = 5) {
-		_foo = foo;
-		printf("class constructor %d\n", foo);
-	}
-
-	int foobar() {
-		return _foo;
-	}
-}
-
-
 import spec.modulespecification;
 
 import data.queue;
 
 class MyWindow : CuiDialog {
 	Timer tmr;
-	CuiLabel lbl;
+//	CuiLabel lbl;
 	CuiTextField field;
 	CuiTextBox box;
 	CuiTabBox tabbox;
@@ -142,9 +107,9 @@ class MyWindow : CuiDialog {
 		tabbox.push(box);
 		push(tabbox);
 
-		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
-		lbl.visible = true;
-		push(lbl);
+//		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
+//		lbl.visible = true;
+//		push(lbl);
 
 		field = new CuiTextField(0, 3, 10, "Hello");
 		field.visible = true;
@@ -197,48 +162,10 @@ class MyWindow : CuiDialog {
 	}
 }
 
-class MyApp : CuiApplication {
-	override void onApplicationStart() {
-		push(new MyWindow);
-		push(new MyWindow);
-		push(new MyWindow);
-		push(new MyWindow);
-		auto w = new MyWindow();
-		w.text = "topmost";
-		push(w);
-		w.reorder(WindowOrder.TopMost);
-	}
-}
-
-void foo(bool stop) {
-	Console.putln("hello");
-	Console.putln("what is up?");
-}
-
-import math.random;
-static const int REPEATS = 10000;
 int main(string[] args) {
-
-	auto app = new MyApp;
-	app.run(); //*/
-
-/*	bool i = false;
-	Console.putln(i);
-
-	Atomic.compareExchange(i, cast(typeof(i))false, cast(typeof(i))true);
-	Console.putln(i);*/
-
-
-//	auto	box = new CuiTextBox(0,0,10, 10);
-//		box.lineNumbers = true;
-	//	box.visible = true;
-	//	box.backcolor = toPick;
-		//box.backcolorNum = toPick;
-//box.onDraw(null);
-	auto c = "\t";
-	bool foo = ("\t"c == c);
-	putln(foo);
-
+	auto app = new CuiApplication("MyApp");
+	app.push(new CuiLabel(0, 3, 10, "Hello", Color.Red, Color.Black));
+	app.push(new MyWindow());
+	app.run();
 	return 0;
 }
-

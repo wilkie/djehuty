@@ -19,7 +19,7 @@ class CuiWindow : Responder {
 private:
 	int foo = 0;
 
-	bool _visible; // whether this window is drawn and can be interacted with
+	bool _visible = true; // whether this window is drawn and can be interacted with
 	bool _focused; // whether this window is the foreground window
 
 	CuiWindow _focusedWindow;
