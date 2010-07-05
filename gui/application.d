@@ -27,12 +27,6 @@ import scaffold.window;
 
 class GuiApplication : Application {
 protected:
-	package Window _windowListHead = null;
-	package Window _windowListTail = null;
-
-	package int _windowCount;
-	package int _windowVisibleCount;
-
 	override void start() {
 		_appController.start();
 	}
@@ -43,91 +37,32 @@ protected:
 
 private:
 
-	GuiApplicationController _appController;
+	Window _mainWindow;
 
-	// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
-	// window: An instance of a Window class, or any the inherit from Window.
-	void addWindow(Window window) {
-		WindowPlatformVars* wpv = &window._pfvars;
-
-		synchronized {
-			// update the window linked list
-			updateWindowList(window);
-
-			// increase global window count
-			_windowCount++;
-
-			// create the window through platform calls
-			WindowCreate(window, wpv);
-		}
-
-		if (window.visible) {
-			WindowSetVisible(window, wpv, true);
-		}
-	}
-
-	void updateWindowList(Window window) {
-		window._inited = true;
-
-		if (_windowListHead is null)
-		{
-			_windowListHead = window;
-			_windowListTail = window;
-
-			window._nextWindow = window;
-			window._prevWindow = window;
-		}
-		else
-		{
-			window._nextWindow = _windowListHead;
-			window._prevWindow = _windowListTail;
-
-			_windowListHead._prevWindow = window;
-			_windowListTail._nextWindow = window;
-
-			_windowListHead = window;
-		}
-
-		if (window._visible)
-		{
-			_windowVisibleCount++;
-		}
-	}
-
-	package void destroyAllWindows()
-	{
-		Window w = _windowListHead;
-
-		if (w is null) { return; }
-
-		Window tmp = w;
-
-		_windowListHead = null;
-		_windowListTail = null;
-
-		do
-		{
-			w.remove();
-
-			w = w._nextWindow;
-
-		} while (w !is tmp)
-
-		_windowCount = 0;
-		_windowVisibleCount = 0;
-	}
 public:
 
 	// Constructors
 
 	this() {
-		_appController = new GuiApplicationController();
+		_lock = new Semaphore(1);
+		//CuiStart(&_pfvars);
+		_mainWindow = new Window(0, 0, 0, 0);
+		_mainWindow.visible = true;
+		push(_mainWindow);
 		super();
 	}
 
+	this(string appName) {
+		//CuiStart(&_pfvars);
+		_mainWindow = new Window(0, 0, 0, 0);
+		_mainWindow.visible = true;
+		super(appName);
+	}
+
 	override void push(Dispatcher dsp) {
-		if (cast(Window)dsp !is null) {
-			addWindow(cast(Window)dsp);
+		auto window = cast(Window)dsp;
+		if (window !is null) {
+			_mainWindow.push(dsp);
 		}
 
 		super.push(dsp);
@@ -135,21 +70,9 @@ public:
 
 	// Properties
 
-	int numWindows() {
-		return _windowCount;
-	}
-
-	int numVisible() {
-		return _windowVisibleCount;
-	}
-
 	// Methods
 
 	override bool isZombie() {
-		return _windowVisibleCount == 0;
-	}
-
-	Window firstWindow() {
-		return _windowListHead;
+		return 1 == 0;
 	}
 }

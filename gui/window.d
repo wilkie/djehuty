@@ -12,6 +12,8 @@ module gui.window;
 
 import djehuty;
 
+import scaffold.window;
+
 class Window : Responder {
 private:
 	bool _visible;
@@ -24,6 +26,25 @@ private:
 	Window _dragWindow;
 
 public:
+
+	this(double x, double y, double width, double height, Color bg = Color.Black) {
+		_bounds.left = x;
+		_bounds.top = y;
+		_bounds.right = x + width;
+		_bounds.bottom = y + height;
+		_bg = bg;
+	}
+
+	this(WindowPosition pos, double width, double height, Color bg = Color.Black) {
+		double x, y;
+		if (pos == WindowPosition.Center) {
+			x = (System.Display.width - width) / 2;
+			y = (System.Display.height - height) / 2;
+		}
+
+		this(x, y, width, height, bg);
+	}
+
 	Window parent() {
 		return cast(Window)this.responder();
 	}
@@ -293,6 +314,10 @@ public:
 
 		auto window = cast(Window)dsp;
 		if (window !is null) {
+			auto parentApp = cast(Application)this.parent;
+			if (parentApp !is null) {
+			}
+
 			// Focus on this window (if it is visible)
 			if (window.visible) {
 				_focusedWindow = window;
@@ -301,7 +326,4 @@ public:
 			redraw();
 		}
 	}
-}
-
-class WindowView {
 }
