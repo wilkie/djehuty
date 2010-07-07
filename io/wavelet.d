@@ -20,6 +20,18 @@ enum Interpolate {
 
 // Description: This class represents an audio buffer.  You can do simple transforms on the audio data using the provided methods.  It is essentially a Stream, and you can read and write to the buffer in the same fashion.
 class Wavelet : Stream {
+private:
+
+	// Reference to the Audio Format
+	// of this collection of samples
+
+	// This is used for playback and is
+	// also used for calculations and
+	// transformations
+
+	AudioFormat _fmt;
+
+public:
 	// Constructors //
 
 	// Description: Will create a small buffer.  This will presumedly be resized.
@@ -166,17 +178,6 @@ class Wavelet : Stream {
 
 		return ret.fft();
 	}
-
-private:
-
-	// Reference to the Audio Format
-	// of this collection of samples
-
-	// This is used for playback and is
-	// also used for calculations and
-	// transformations
-
-	AudioFormat _fmt;
 }
 
 //alias WaveletImpl!(StreamAccess.AllAccess) Wavelet;

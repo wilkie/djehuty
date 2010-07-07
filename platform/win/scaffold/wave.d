@@ -12,7 +12,10 @@ module scaffold.wave;
 
 pragma(lib, "winmm.lib");
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.mmsystem;
+import binding.win32.winbase;
+
 import platform.win.main;
 
 import platform.vars.wave;
@@ -21,6 +24,7 @@ import core.stream;
 import core.time;
 import core.main;
 import core.definitions;
+import core.string;
 
 import synch.thread;
 import synch.semaphore;
@@ -170,7 +174,7 @@ void WaveCloseDevice(ref Audio wave, ref WavePlatformVars waveVars) {
 
 		Console.putln("Audio : Calling Work Thread");
 		if ( SetEvent(waveVars.event) == 0 ) {
-	        printf("SetEvent failed (%d)\n", GetLastError());
+	        throw new Exception(format("SetEvent failed ({d})\n",GetLastError()));
 	        //return;
 	    }
 

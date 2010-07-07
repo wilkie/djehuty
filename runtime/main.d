@@ -17,6 +17,8 @@ import core.arguments;
 
 import synch.thread;
 
+import synch.atomic;
+
 import scaffold.console;
 
 // The user supplied D entry
@@ -28,30 +30,44 @@ int main(char[][] args);
 // Returns: The error code for the application.
 import binding.c;
 
+// Silly DMD bullshits
+version(Windows) {
+	extern(C) ModuleInfo[] _moduleinfo_array;
+	extern(C) void _minit();
+}
+
 // Initializes data structures to aid in calling module constructors
 private void moduleInfoInitialize() {
+
 	// Take the linked list of modules and load them into an array
 	ModuleReference* mod = _Dmodule_ref;
 
-	size_t moduleCount = 0;
-	while(mod !is null) {
-		mod = mod.next;
-		moduleCount++;
+	// Silly DMD bullshits
+	version(Windows) {
+		_minit();
+		ModuleInfo._modules = _moduleinfo_array.dup;
+		ModuleInfo._dtors = new ModuleInfo[_moduleinfo_array.length];
 	}
+	else {
+		size_t moduleCount = 0;
+		while(mod !is null) {
+			mod = mod.next;
+			moduleCount++;
+		}
 
-	ModuleInfo._modules = new ModuleInfo[moduleCount];
+		ModuleInfo._modules = new ModuleInfo[moduleCount];
 
-	mod = _Dmodule_ref;
+		mod = _Dmodule_ref;
 
-	size_t idx = 0;
-	while(mod !is null) {
-		ModuleInfo._modules[idx] = mod.mod;
-		idx++;
-		mod = mod.next;
+		size_t idx = 0;
+		while(mod !is null) {
+			ModuleInfo._modules[idx] = mod.mod;
+			idx++;
+			mod = mod.next;
+		}
+
+		ModuleInfo._dtors = new ModuleInfo[moduleCount];
 	}
-
-	ModuleInfo._dtors = new ModuleInfo[moduleCount];
-	
 }
 
 // Those module constructors that do not depend on other
@@ -126,6 +142,33 @@ private size_t strlen(char* cstr) {
 	return ret;
 }
 
+version(Windows) {
+	extern(System) wchar* GetCommandLineW();
+	extern(System) wchar* CommandLineToArgvW(wchar*, int*);
+
+	private extern(System)
+	int WinMain(int hInstance, int hPrevInstance, char* lpCmdLine, int nCmdShow) {
+			wchar* cmdline = GetCommandLineW();
+
+		// count the number of arguments
+		// and convert to utf8 arguments
+		char*[] argv;
+		int pos = 0;
+		int start = 0;
+		while(cmdline[pos] != '\0') {
+			if (cmdline[pos] == '\n' || cmdline[pos] == ' ' || cmdline[pos] == '\t') {
+				char[] str = new char[pos - start];
+				str = cast(char[])cmdline[start..pos];
+				argv ~= str.ptr;
+				start = pos+1;
+			}
+			pos++;
+		}
+
+		return main(argv.length, argv.ptr);
+	}
+}
+
 private extern(C) int main(int argc, char** argv) {
 	// Initialize the garbage collector
 	gc_init();
@@ -143,8 +186,11 @@ private extern(C) int main(int argc, char** argv) {
 
 		// Gather arguments
 		Arguments argList = Arguments.instance();
-		foreach(cstr; argv[0..argc]) {
-			argList.add(cstr[0..strlen(cstr)]);
+
+		auto arglist = argv[0..argc];
+		foreach(cstr; arglist) {
+			string arg = cstr[0..strlen(cstr)];
+			argList.add(arg);
 		}
 
 		// Initialize the console
@@ -163,7 +209,9 @@ private extern(C) int main(int argc, char** argv) {
 		moduleDestructors();
 	}
 	catch(Object o) {
+		/*
 		Debugger.raiseException(cast(Exception)o);
+		*/
 	}
 
 	// Terminate the garbage collector

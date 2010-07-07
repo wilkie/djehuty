@@ -9,7 +9,11 @@ module math.matrix;
 import math.vector;
 
 class Matrix(T) {
+protected:
 
+	T[][] _data;
+
+public:
 	// Description: Creates a Matrix class based upon the 2 dimensional array of values given.
 	// Note: The array dimensions must be balanced.
 	this(T[][] operands...) {
@@ -220,10 +224,6 @@ class Matrix(T) {
 
 		return new Vector!(T)(comps);
 	}
-
-protected:
-
-	T[][] _data;
 }
 
 /*

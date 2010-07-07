@@ -9,6 +9,79 @@ import djehuty;
 import io.console;
 
 class ParseUnit {
+private:
+	uint _firstLine;
+	uint _firstColumn;
+
+	uint _lastLine;
+	uint _lastColumn;
+
+	uint _state;
+
+	Lexer _lexer;
+	AbstractSyntaxTree _tree;
+	AbstractSyntaxTree _root;
+	static bool _error;
+	Token current;
+
+	void _printerror(string msg, string desc, string[] usages, uint line, uint column) {
+		Console.putln("Syntax Error: file.d");
+		Console.putln("   Line: ", line, ": ", _lexer.line(line));
+		uint position = column;
+		position = position + toStr(line).length + 10;
+		for (uint i; i < position; i++) {
+			Console.put(" ");
+		}
+		Console.putln("^");
+		Console.forecolor = Color.Gray;
+		Console.putln(" Reason: ", msg);
+		if (desc !is null) {
+			Console.putln("   Hint: ", desc);
+		}
+		if (usages !is null) {
+			Console.putln("  Usage: ", usages[0]);
+			foreach(usage; usages[1..$]) {
+				Console.putln("         ", usage);
+			}
+		}
+		_error = true;
+	}
+
+protected:
+
+	uint state() {
+		return _state;
+	}
+
+	void state(uint value) {
+		_state = value;
+	}
+
+	void root(AbstractSyntaxTree ast) {
+		_root = ast;
+	}
+
+	AbstractSyntaxTree root() {
+		return _root;
+	}
+
+	final void errorAtStart(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, _firstLine, _firstColumn);
+	}
+
+	final void errorAtPrevious(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, _lastLine, _lastColumn);
+	}
+
+	final void error(string msg, string desc = null, string[] usages = null) {
+		_printerror(msg, desc, usages, current.line, current.column);
+	}
+
+	bool tokenFound(Token token) {
+		return true;
+	}
+
+public:
 	final AbstractSyntaxTree parse() {
 		// get class name
 		ClassInfo ci = this.classinfo;
@@ -63,77 +136,5 @@ class ParseUnit {
 
 	void lexer(Lexer val) {
 		_lexer = val;
-	}
-
-protected:
-
-	uint state() {
-		return _state;
-	}
-
-	void state(uint value) {
-		_state = value;
-	}
-
-	void root(AbstractSyntaxTree ast) {
-		_root = ast;
-	}
-
-	AbstractSyntaxTree root() {
-		return _root;
-	}
-
-	final void errorAtStart(string msg, string desc = null, string[] usages = null) {
-		_printerror(msg, desc, usages, _firstLine, _firstColumn);
-	}
-
-	final void errorAtPrevious(string msg, string desc = null, string[] usages = null) {
-		_printerror(msg, desc, usages, _lastLine, _lastColumn);
-	}
-
-	final void error(string msg, string desc = null, string[] usages = null) {
-		_printerror(msg, desc, usages, current.line, current.column);
-	}
-
-	bool tokenFound(Token token) {
-		return true;
-	}
-
-private:
-	uint _firstLine;
-	uint _firstColumn;
-
-	uint _lastLine;
-	uint _lastColumn;
-
-	uint _state;
-
-	Lexer _lexer;
-	AbstractSyntaxTree _tree;
-	AbstractSyntaxTree _root;
-	static bool _error;
-	Token current;
-
-	void _printerror(string msg, string desc, string[] usages, uint line, uint column) {
-		Console.putln("Syntax Error: file.d");
-		Console.putln("   Line: ", line, ": ", _lexer.line(line));
-		uint position = column;
-		position = position + toStr(line).length + 10;
-		for (uint i; i < position; i++) {
-			Console.put(" ");
-		}
-		Console.putln("^");
-		Console.forecolor = Color.Gray;
-		Console.putln(" Reason: ", msg);
-		if (desc !is null) {
-			Console.putln("   Hint: ", desc);
-		}
-		if (usages !is null) {
-			Console.putln("  Usage: ", usages[0]);
-			foreach(usage; usages[1..$]) {
-				Console.putln("         ", usage);
-			}
-		}
-		_error = true;
 	}
 }

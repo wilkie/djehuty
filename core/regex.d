@@ -105,7 +105,339 @@ string _9() {
 }
 
 class Regex {
+private:
 
+	// Common
+
+	static string[][Thread] regexRefs;
+	static uint[Thread] regexPos;
+
+	// For backtracking regex operations
+
+	struct GroupInfo {
+		int startPos;
+		int endPos;
+		int strStartPos;
+		int strPos;
+		int parent;
+		int unionPos;
+		int groupId;
+	}
+
+	struct RegexInfo {
+
+		// This hash table contains information about a grouping
+		// for a specific position in the regex.
+		GroupInfo[int] groupInfo;
+
+		// This hash table contains information that aids operators
+		// for a specific position in the regex.
+		int[int] operatorFlag;
+
+		// This structure hopes to minimize work already done by merely setting
+		// a flag whenever a position in each string is reached. Since this
+		// denotes that the regex will be parsing from the same state, and the
+		// regex is pure, it will not have to repeat the work.
+		int[][] memoizer;
+	}
+
+
+	bool _DFARules;
+
+	struct DFAGroupInfo {
+		bool hasKleene;
+		int endPos;
+	}
+
+	DFAGroupInfo[int] _groupInfo;
+
+	void fillGroupInfo() {
+		_groupInfo = null;
+
+		dchar ch;
+
+		List!(int) groupStack = new List!(int);
+
+		for (uint i; i < regularExpression.length; i++) {
+			Console.putln("foo ", i);
+			ch = regularExpression[i];
+			switch (ch) {
+				case '\0':
+					return;
+				case '\\':
+					i++;
+					continue;
+				case '(':
+					groupStack.add(cast(int)i);
+					DFAGroupInfo dgi;
+					_groupInfo[i] = dgi;
+					break;
+				case ')':
+					int startPos = groupStack.remove();
+					if (startPos in _groupInfo) {
+						_groupInfo[startPos].endPos = i;
+						if ((i + 1 < regularExpression.length) && regularExpression[i+1] == '*') {
+							Console.putln("HAS KLEENE");
+							_groupInfo[startPos].hasKleene = true;
+							i++;
+						}
+					}
+					break;
+				default:
+					if (groupStack.empty()) {
+						Console.putln("NULLED");
+						_groupInfo = null;
+					}
+					break;
+			}
+		}
+	}
+
+	State buildDFA(string regex) {
+		fillGroupInfo();
+		uint regexPos = 0;
+		List!(State) current = new List!(State);
+		return buildDFA(regex, regexPos, current);
+	}
+
+	State buildDFA(string regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
+		State startState = new State();
+		Console.putln("Start State: ", startState.id);
+
+		uint groupPos = regexPos - 1;
+
+		dchar lastChar = '\0';
+		dchar thisChar;
+		dchar lastConcatChar = '\0';
+
+		enum Operation {
+			None,
+			Kleene,
+			Concat
+		}
+
+		Operation lastOp = Operation.None;
+
+		List!(State) old = current.dup();
+		current.add(startState);
+
+		if (regexPos < regex.length) {
+			lastChar = regex[regexPos];
+			if (lastChar == '*') {
+				// error
+			}
+			else if (lastChar == '(') {
+				// group
+				regexPos++;
+				buildDFA(regex, regexPos, current);
+				if (regex[regexPos] == '*') {
+					Console.putln("Inner Group Kleened");
+					lastOp = Operation.Kleene;
+				}
+			}
+			else {
+				lastConcatChar = lastChar;
+			}
+			regexPos++;
+		}
+
+		while (regexPos <= regex.length) {
+			if (regexPos == regex.length) {
+				thisChar = '\0';
+			}
+			else {
+				thisChar = regex[regexPos];
+			}
+
+			if (thisChar == '*') {
+				// Kleene Star
+				//Console.putln("Kleene (", lastChar, ")");
+				if (lastChar == ')') {
+					Console.putln("Kleene Group End, connecting ", lastConcatChar, " to ", startState.id);
+					foreach(state; current) {
+						State ret = concat(state, lastConcatChar, startState);
+						if (ret is startState && startState.id <= state.id) {
+							state.backwardList.add(lastConcatChar);
+							Link link = new Link();
+							link.from = state;
+							link.transition = lastConcatChar;
+							startState.incomingList.add(link);
+						}
+					}
+					old.add(startState);
+					current = old;
+					State.printall();
+					return startState;
+				}
+				else {
+					// Single Character Kleene
+					// ex. "a*" => [p] -> 'a' -> [p]
+					Console.putln("Single Character Kleene (", lastConcatChar, ")");
+
+					List!(State) newStateList = current.dup;
+					State loopState;
+					foreach(state; current) {
+						if (state.backwardList.empty) {
+							while (lastConcatChar in state.transitions) {
+								state = concat(state, lastConcatChar, state);
+							}
+
+							state.transitions[lastConcatChar] = state;
+							state.backwardList.add(lastConcatChar);
+						}
+						else {
+							if (loopState is null) {
+								loopState = new State();
+								loopState.transitions[lastConcatChar] = loopState;
+								loopState.backwardList.add(lastConcatChar);
+							}
+							State ret = concat(state, lastConcatChar, loopState);
+						}
+					}
+
+					current = newStateList;
+
+					if (loopState !is null) {
+						current.add(loopState);
+					}
+
+					//Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
+				}
+				lastOp = Operation.Kleene;
+				lastConcatChar = '\0';
+			}
+			else {
+				// concatenation
+				if (lastConcatChar != '\0' && thisChar != ')') {
+					Console.putln("-=-=-=-=-");
+					Console.putln("boo: ", lastOp == Operation.Kleene);
+					State concatState;
+					List!(State) newStateList = new List!(State);
+					foreach(state; current) {
+						State ret = concat(state, lastConcatChar, concatState, lastOp == Operation.Kleene);
+						if (ret !is concatState && ret !is null) {
+							newStateList.add(ret);
+						}
+					}
+					if (concatState !is null) {
+						newStateList.add(concatState);
+					}
+					current = newStateList;
+					Console.putln("Concat Character (", lastConcatChar, ")");
+					State.printall();
+					Console.putln("-=-=-=-=-");
+					foreach(state; current) {
+						Console.put(state.id, " ... ");
+					}
+					Console.putln;
+					lastOp = Operation.Concat;
+				}
+
+				if (thisChar == '(') {
+					// group start
+					Console.putln("Inner Group Found");
+					regexPos+=1;
+					buildDFA(regex, regexPos, current, false);
+					if (regex[regexPos] == '*') {
+						Console.putln("Inner Group Kleened");
+						lastOp = Operation.Kleene;
+					}
+					lastConcatChar = '\0';
+				}
+				else if (thisChar != ')') {
+					lastConcatChar = thisChar;
+				}
+			}
+
+			//Console.putln("lastChar = ", thisChar);
+			lastChar = thisChar;
+
+			regexPos++;
+		}
+
+		foreach(state; current) {
+			isolate(state);
+			state.accept = true;
+		}
+
+		Console.putln("Done");
+		State.printall();
+
+		return startState;
+	}
+
+	State concat(State start, dchar transition, ref State to, bool doNotUnroll = false) {
+		if (to !is null) {
+			Console.putln(start.id, " to ", to.id);
+		}
+		else {
+			Console.putln(start.id, " to null");
+		}
+
+		if ((to is null) || (to.id > start.id)) {
+			if (!doNotUnroll) {
+				isolate(start);
+				unroll(start);
+				isolate(start);
+			}
+		}
+
+		if (transition in start.transitions) {
+			return start.transitions[transition];
+		}
+		else {
+			if (to is null) {
+				to = new State();
+			}
+			start.transitions[transition] = to;
+		}
+
+		return to;
+	}
+
+	void unroll(State state) {
+		Console.putln("unrolling ", state.id);
+		foreach(backwardTrans; state.backwardList) {
+			State newState = new State();
+			State destState = state.transitions[backwardTrans];
+
+			state.transitions[backwardTrans] = newState;
+			foreach(transition; destState.transitions.keys) {
+				State toState = destState.transitions[transition];
+				newState.transitions[transition] = toState;
+				newState.backwardList.add(transition);
+				Link link = new Link();
+				link.from = newState;
+				link.transition = transition;
+				toState.incomingList.add(link);
+/*
+				if (toState is state) {
+					Link link = new Link();
+					link.from = newState;
+					link.transition = transition;
+					state.incomingList.add(link);
+				}
+*/
+			}
+		}
+		state.backwardList = new List!(dchar);
+	}
+
+	void isolate(State state) {
+		Console.putln("isolating ", state.id);
+		foreach(link; state.incomingList) {
+			unroll(link.from);
+		}
+		state.incomingList = new List!(Link);
+	}
+
+	public static void test() {
+	}
+
+	static void my_unroll(State state, dchar chr) {
+	}
+
+public:
 	// Description: This constructor will create an instance of a Regex that will efficiently compute the regular expression given.
 	// regex: The regular expression to utilize.
 	this(string regex) {
@@ -1367,336 +1699,5 @@ protected:
 
 		// Go through the regular expression and build the DFAs
 		startingState = buildDFA(regularExpression);
-	}
-
-private:
-
-	bool _DFARules;
-
-	struct DFAGroupInfo {
-		bool hasKleene;
-		int endPos;
-	}
-
-	DFAGroupInfo[int] _groupInfo;
-
-	void fillGroupInfo() {
-		_groupInfo = null;
-
-		dchar ch;
-
-		List!(int) groupStack = new List!(int);
-
-		for (uint i; i < regularExpression.length; i++) {
-			Console.putln("foo ", i);
-			ch = regularExpression[i];
-			switch (ch) {
-				case '\0':
-					return;
-				case '\\':
-					i++;
-					continue;
-				case '(':
-					groupStack.add(cast(int)i);
-					DFAGroupInfo dgi;
-					_groupInfo[i] = dgi;
-					break;
-				case ')':
-					int startPos = groupStack.remove();
-					if (startPos in _groupInfo) {
-						_groupInfo[startPos].endPos = i;
-						if ((i + 1 < regularExpression.length) && regularExpression[i+1] == '*') {
-							Console.putln("HAS KLEENE");
-							_groupInfo[startPos].hasKleene = true;
-							i++;
-						}
-					}
-					break;
-				default:
-					if (groupStack.empty()) {
-						Console.putln("NULLED");
-						_groupInfo = null;
-					}
-					break;
-			}
-		}
-	}
-
-	State buildDFA(string regex) {
-		fillGroupInfo();
-		uint regexPos = 0;
-		List!(State) current = new List!(State);
-		return buildDFA(regex, regexPos, current);
-	}
-
-	State buildDFA(string regex, ref uint regexPos, ref List!(State) current, bool isKleene = false) {
-		State startState = new State();
-		Console.putln("Start State: ", startState.id);
-
-		uint groupPos = regexPos - 1;
-
-		dchar lastChar = '\0';
-		dchar thisChar;
-		dchar lastConcatChar = '\0';
-
-		enum Operation {
-			None,
-			Kleene,
-			Concat
-		}
-
-		Operation lastOp = Operation.None;
-
-		List!(State) old = current.dup();
-		current.add(startState);
-
-		if (regexPos < regex.length) {
-			lastChar = regex[regexPos];
-			if (lastChar == '*') {
-				// error
-			}
-			else if (lastChar == '(') {
-				// group
-				regexPos++;
-				buildDFA(regex, regexPos, current);
-				if (regex[regexPos] == '*') {
-					Console.putln("Inner Group Kleened");
-					lastOp = Operation.Kleene;
-				}
-			}
-			else {
-				lastConcatChar = lastChar;
-			}
-			regexPos++;
-		}
-
-		while (regexPos <= regex.length) {
-			if (regexPos == regex.length) {
-				thisChar = '\0';
-			}
-			else {
-				thisChar = regex[regexPos];
-			}
-
-			if (thisChar == '*') {
-				// Kleene Star
-				//Console.putln("Kleene (", lastChar, ")");
-				if (lastChar == ')') {
-					Console.putln("Kleene Group End, connecting ", lastConcatChar, " to ", startState.id);
-					foreach(state; current) {
-						State ret = concat(state, lastConcatChar, startState);
-						if (ret is startState && startState.id <= state.id) {
-							state.backwardList.add(lastConcatChar);
-							Link link = new Link();
-							link.from = state;
-							link.transition = lastConcatChar;
-							startState.incomingList.add(link);
-						}
-					}
-					old.add(startState);
-					current = old;
-					State.printall();
-					return startState;
-				}
-				else {
-					// Single Character Kleene
-					// ex. "a*" => [p] -> 'a' -> [p]
-					Console.putln("Single Character Kleene (", lastConcatChar, ")");
-
-					List!(State) newStateList = current.dup;
-					State loopState;
-					foreach(state; current) {
-						if (state.backwardList.empty) {
-							while (lastConcatChar in state.transitions) {
-								state = concat(state, lastConcatChar, state);
-							}
-
-							state.transitions[lastConcatChar] = state;
-							state.backwardList.add(lastConcatChar);
-						}
-						else {
-							if (loopState is null) {
-								loopState = new State();
-								loopState.transitions[lastConcatChar] = loopState;
-								loopState.backwardList.add(lastConcatChar);
-							}
-							State ret = concat(state, lastConcatChar, loopState);
-						}
-					}
-
-					current = newStateList;
-
-					if (loopState !is null) {
-						current.add(loopState);
-					}
-
-					//Console.putln("Done Single Character Kleene (", lastConcatChar, ")");
-				}
-				lastOp = Operation.Kleene;
-				lastConcatChar = '\0';
-			}
-			else {
-				// concatenation
-				if (lastConcatChar != '\0' && thisChar != ')') {
-					Console.putln("-=-=-=-=-");
-					Console.putln("boo: ", lastOp == Operation.Kleene);
-					State concatState;
-					List!(State) newStateList = new List!(State);
-					foreach(state; current) {
-						State ret = concat(state, lastConcatChar, concatState, lastOp == Operation.Kleene);
-						if (ret !is concatState && ret !is null) {
-							newStateList.add(ret);
-						}
-					}
-					if (concatState !is null) {
-						newStateList.add(concatState);
-					}
-					current = newStateList;
-					Console.putln("Concat Character (", lastConcatChar, ")");
-					State.printall();
-					Console.putln("-=-=-=-=-");
-					foreach(state; current) {
-						Console.put(state.id, " ... ");
-					}
-					Console.putln;
-					lastOp = Operation.Concat;
-				}
-
-				if (thisChar == '(') {
-					// group start
-					Console.putln("Inner Group Found");
-					regexPos+=1;
-					buildDFA(regex, regexPos, current, false);
-					if (regex[regexPos] == '*') {
-						Console.putln("Inner Group Kleened");
-						lastOp = Operation.Kleene;
-					}
-					lastConcatChar = '\0';
-				}
-				else if (thisChar != ')') {
-					lastConcatChar = thisChar;
-				}
-			}
-
-			//Console.putln("lastChar = ", thisChar);
-			lastChar = thisChar;
-
-			regexPos++;
-		}
-
-		foreach(state; current) {
-			isolate(state);
-			state.accept = true;
-		}
-
-		Console.putln("Done");
-		State.printall();
-
-		return startState;
-	}
-
-	State concat(State start, dchar transition, ref State to, bool doNotUnroll = false) {
-		if (to !is null) {
-			Console.putln(start.id, " to ", to.id);
-		}
-		else {
-			Console.putln(start.id, " to null");
-		}
-
-		if ((to is null) || (to.id > start.id)) {
-			if (!doNotUnroll) {
-				isolate(start);
-				unroll(start);
-				isolate(start);
-			}
-		}
-
-		if (transition in start.transitions) {
-			return start.transitions[transition];
-		}
-		else {
-			if (to is null) {
-				to = new State();
-			}
-			start.transitions[transition] = to;
-		}
-
-		return to;
-	}
-
-	void unroll(State state) {
-		Console.putln("unrolling ", state.id);
-		foreach(backwardTrans; state.backwardList) {
-			State newState = new State();
-			State destState = state.transitions[backwardTrans];
-
-			state.transitions[backwardTrans] = newState;
-			foreach(transition; destState.transitions.keys) {
-				State toState = destState.transitions[transition];
-				newState.transitions[transition] = toState;
-				newState.backwardList.add(transition);
-				Link link = new Link();
-				link.from = newState;
-				link.transition = transition;
-				toState.incomingList.add(link);
-/*
-				if (toState is state) {
-					Link link = new Link();
-					link.from = newState;
-					link.transition = transition;
-					state.incomingList.add(link);
-				}
-*/
-			}
-		}
-		state.backwardList = new List!(dchar);
-	}
-
-	void isolate(State state) {
-		Console.putln("isolating ", state.id);
-		foreach(link; state.incomingList) {
-			unroll(link.from);
-		}
-		state.incomingList = new List!(Link);
-	}
-
-	public static void test() {
-	}
-
-	static void my_unroll(State state, dchar chr) {
-	}
-
-	// Common
-
-	static string[][Thread] regexRefs;
-	static uint[Thread] regexPos;
-
-	// For backtracking regex operations
-
-	struct GroupInfo {
-		int startPos;
-		int endPos;
-		int strStartPos;
-		int strPos;
-		int parent;
-		int unionPos;
-		int groupId;
-	}
-
-	struct RegexInfo {
-
-		// This hash table contains information about a grouping
-		// for a specific position in the regex.
-		GroupInfo[int] groupInfo;
-
-		// This hash table contains information that aids operators
-		// for a specific position in the regex.
-		int[int] operatorFlag;
-
-		// This structure hopes to minimize work already done by merely setting
-		// a flag whenever a position in each string is reached. Since this
-		// denotes that the regex will be parsing from the same state, and the
-		// regex is pure, it will not have to repeat the work.
-		int[][] memoizer;
 	}
 }

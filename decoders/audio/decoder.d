@@ -24,6 +24,25 @@ import io.console;
 
 // Description: The interface to an audio codec.
 abstract class AudioDecoder : Decoder {
+protected:
+
+
+	// For some decoders to aid in seeks
+	// through the stream
+	struct SeekPointer {
+		Time time;
+		ulong streamPosition;
+
+		void* metaData; // maybe a place for metadata
+	}
+	SeekPointer seekLUT[];
+
+	// current time frame
+	Time curTime;
+	Time toSeek;
+	bool isSeek;
+	bool isSeekBack; // whether we are seeking backward
+
 public:
 
 	this() {
@@ -50,22 +69,4 @@ public:
 		return curTime;
 	}
 
-protected:
-
-
-	// For some decoders to aid in seeks
-	// through the stream
-	struct SeekPointer {
-		Time time;
-		ulong streamPosition;
-
-		void* metaData; // maybe a place for metadata
-	}
-	SeekPointer seekLUT[];
-
-	// current time frame
-	Time curTime;
-	Time toSeek;
-	bool isSeek;
-	bool isSeekBack; // whether we are seeking backward
 }

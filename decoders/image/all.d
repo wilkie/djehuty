@@ -18,8 +18,8 @@ public import decoders.image.jpeg;
 // MNG
 // PCX
 // RAW
-
 StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap view) {
+	/*
 	StreamData ret;
 
 	ulong pos = stream.position;
@@ -51,6 +51,7 @@ StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap
 	}
 
 	imageCodec = null;
+*/
 	return StreamData.Invalid;
 }
 

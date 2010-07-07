@@ -32,6 +32,81 @@ import decoders.image.all;
 //   as long as it has a decoder.  So far, I have BMP, PNG, and GIF (animated as well).  Animated
 //   Images are supported, but you will have to load them a frame at a time.
 class Image {
+protected:
+
+	Bitmap _view;
+	ImageFrameDescription _frameDesc;
+
+	ImageDecoder _curCodec;
+
+	// Information about the frames
+	uint _frameCount;
+	uint _frameIdx;
+
+	// Whether or not this image has frames
+	bool _hasFrames;
+	ImageFrameDescription[] _frameDescs;
+	Bitmap[] _frames;
+
+	Bitmap _curView;
+	ImageFrameDescription _curFrameDesc;
+
+	//Semaphore _loaded;
+
+	StreamData _stream(Stream stream) {
+		StreamData ret = StreamData.Invalid;
+
+		if (_curView is null) {
+			_curView = new Bitmap();
+			_curFrameDesc = ImageFrameDescription.init;
+		}
+
+		if (!_hasFrames) {
+			if (_curCodec is null) {
+				ret = runAllDecoders(_curCodec, stream, _curView);
+			}
+			else {
+				ret = _curCodec.decode(stream, _curView);
+			}
+
+			if (ret == StreamData.Accepted) {
+				// This means the image decoder is indeed the correct choice
+				// and that this image contains multiple frames.
+				_hasFrames = true;		
+			}
+			else if (ret != StreamData.Invalid) {
+				_view = _curView;
+			}
+		}
+
+		if (_hasFrames) {
+			ret = StreamData.Accepted;
+			while(ret == StreamData.Accepted) {
+				if (_curView is null) {
+					_curView = new Bitmap();
+					_curFrameDesc = ImageFrameDescription.init;
+				}
+				ret = _curCodec.decodeFrame(stream, _curView, _curFrameDesc);
+				if (ret == StreamData.Accepted || ret == StreamData.Complete) {
+					// Frame was decoded.
+					_frames ~= _curView;
+					_frameDescs ~= _curFrameDesc;
+					if (_view is null) {
+						_view = new Bitmap(_curView.width, _curView.height);
+						Graphics g = _view.lock();
+						g.drawView(0,0,_curView);
+						_view.unlock();
+					}
+					_curView = null;
+					_frameCount++;
+				}	
+			}
+		}
+
+		return ret;
+	}
+
+public:
 	this() {
 		//_loaded = new Semaphore();
 		//_loaded.init(1);
@@ -149,80 +224,6 @@ class Image {
 		else {
 			_view = _frames[_frameIdx];
 		}
-	}
-
-protected:
-
-	Bitmap _view;
-	ImageFrameDescription _frameDesc;
-
-	ImageDecoder _curCodec;
-
-	// Information about the frames
-	uint _frameCount;
-	uint _frameIdx;
-
-	// Whether or not this image has frames
-	bool _hasFrames;
-	ImageFrameDescription[] _frameDescs;
-	Bitmap[] _frames;
-
-	Bitmap _curView;
-	ImageFrameDescription _curFrameDesc;
-
-	//Semaphore _loaded;
-
-	StreamData _stream(Stream stream) {
-		StreamData ret = StreamData.Invalid;
-
-		if (_curView is null) {
-			_curView = new Bitmap();
-			_curFrameDesc = ImageFrameDescription.init;
-		}
-
-		if (!_hasFrames) {
-			if (_curCodec is null) {
-				ret = runAllDecoders(_curCodec, stream, _curView);
-			}
-			else {
-				ret = _curCodec.decode(stream, _curView);
-			}
-
-			if (ret == StreamData.Accepted) {
-				// This means the image decoder is indeed the correct choice
-				// and that this image contains multiple frames.
-				_hasFrames = true;		
-			}
-			else if (ret != StreamData.Invalid) {
-				_view = _curView;
-			}
-		}
-
-		if (_hasFrames) {
-			ret = StreamData.Accepted;
-			while(ret == StreamData.Accepted) {
-				if (_curView is null) {
-					_curView = new Bitmap();
-					_curFrameDesc = ImageFrameDescription.init;
-				}
-				ret = _curCodec.decodeFrame(stream, _curView, _curFrameDesc);
-				if (ret == StreamData.Accepted || ret == StreamData.Complete) {
-					// Frame was decoded.
-					_frames ~= _curView;
-					_frameDescs ~= _curFrameDesc;
-					if (_view is null) {
-						_view = new Bitmap(_curView.width, _curView.height);
-						Graphics g = _view.lock();
-						g.drawView(0,0,_curView);
-						_view.unlock();
-					}
-					_curView = null;
-					_frameCount++;
-				}	
-			}
-		}
-
-		return ret;
 	}
 }
 

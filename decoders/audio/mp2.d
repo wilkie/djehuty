@@ -347,6 +347,18 @@ protected:
 	uint mpeg_header;
 	uint known_sync_bits;
 
+<<<<<<< HEAD:decoders/audio/mp2.d
+=======
+// Description: This is the MPEG Layer 2 audio codec.
+class MP2Decoder : AudioDecoder {
+protected:
+
+	bool accepted;
+
+	uint mpeg_header;
+	uint known_sync_bits;
+
+>>>>>>> 7168ba66303a9911bd72a3752dc0134777b0ea6e:decoders/audio/mp2.d
 	ushort crc;
 
 	uint audioDataLength;
@@ -1722,4 +1734,8 @@ public:
 		Time tme = Time.init;
 		return tme;
 	}
+<<<<<<< HEAD:decoders/audio/mp2.d
+=======
+
+>>>>>>> 7168ba66303a9911bd72a3752dc0134777b0ea6e:decoders/audio/mp2.d
 }

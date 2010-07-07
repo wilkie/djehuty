@@ -26,43 +26,6 @@ import platform.vars.window;
 import scaffold.window;
 
 class GuiApplication : Application {
-public:
-
-	// Constructors
-
-	this() {
-		_appController = new GuiApplicationController();
-		super();
-	}
-
-	override void push(Dispatcher dsp) {
-		if (cast(Window)dsp !is null) {
-			addWindow(cast(Window)dsp);
-		}
-
-		super.push(dsp);
-	}
-
-	// Properties
-
-	int numWindows() {
-		return _windowCount;
-	}
-
-	int numVisible() {
-		return _windowVisibleCount;
-	}
-
-	// Methods
-
-	override bool isZombie() {
-		return _windowVisibleCount == 0;
-	}
-
-	Window firstWindow() {
-		return _windowListHead;
-	}
-
 protected:
 	package Window _windowListHead = null;
 	package Window _windowListTail = null;
@@ -152,5 +115,41 @@ private:
 
 		_windowCount = 0;
 		_windowVisibleCount = 0;
+	}
+public:
+
+	// Constructors
+
+	this() {
+		_appController = new GuiApplicationController();
+		super();
+	}
+
+	override void push(Dispatcher dsp) {
+		if (cast(Window)dsp !is null) {
+			addWindow(cast(Window)dsp);
+		}
+
+		super.push(dsp);
+	}
+
+	// Properties
+
+	int numWindows() {
+		return _windowCount;
+	}
+
+	int numVisible() {
+		return _windowVisibleCount;
+	}
+
+	// Methods
+
+	override bool isZombie() {
+		return _windowVisibleCount == 0;
+	}
+
+	Window firstWindow() {
+		return _windowListHead;
 	}
 }

@@ -18,6 +18,8 @@ import core.definitions;
 // Supported Locales
 import locales.all;
 
+import binding.c;
+
 enum LocaleId : uint {
 	English_US,
 	English_GB,
@@ -26,7 +28,12 @@ enum LocaleId : uint {
 
 class Locale {
 static:
+private:
 
+	LocaleId _localeId = LocaleId.English_US;
+	LocaleInterface _localeEngine;
+
+public:
 	LocaleId id() {
 		return _localeId;
 	}
@@ -63,11 +70,6 @@ static:
 	string formatDate(Date date) {
 		return _localeEngine.formatDate(date);
 	}
-
-private:
-
-	LocaleId _localeId = LocaleId.English_US;
-	LocaleInterface _localeEngine;
 }
 
 interface LocaleInterface {

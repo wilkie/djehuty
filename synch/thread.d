@@ -17,8 +17,28 @@ import io.console;
 
 // Description: This class represents a thread.  You can create and override the call function to use, or use a delegate to specify an external function to call.
 class Thread {
+protected:
 
+	void end() {
+		threadById[_id] = null;
+		_inited = false;
+	}
+
+	void delegate (bool) _thread_callback = null;
+	void function (bool) _thread_f_callback = null;
+
+	bool _inited;
+	int _id;
+
+	long startTime;
+	long time;
+
+	ThreadPlatformVars _pfvars;
+
+	static Thread[uint] threadById;
 	// Description: Will create a normal thread that does not have any external callback functions.
+
+public:
 	this() {
 		// Check for creating thread
 		Thread callee = Thread.current();
@@ -138,24 +158,4 @@ class Thread {
 
 		return null;
 	}
-
-protected:
-
-	void end() {
-		threadById[_id] = null;
-		_inited = false;
-	}
-
-	void delegate (bool) _thread_callback = null;
-	void function (bool) _thread_f_callback = null;
-
-	bool _inited;
-	int _id;
-
-	long startTime;
-	long time;
-
-	ThreadPlatformVars _pfvars;
-
-	static Thread[uint] threadById;
 }

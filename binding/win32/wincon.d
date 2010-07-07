@@ -13,7 +13,7 @@ module binding.win32.wincon;
 
 import binding.win32.windef;
 import binding.win32.winnt;
-import binding.win32.wingdi;
+import binding.win32.wingdi : LF_FACESIZE;
 import binding.win32.winbase;
 
 extern(System):

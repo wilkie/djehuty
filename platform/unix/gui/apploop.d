@@ -30,46 +30,6 @@ import core.definitions;
 import io.console;
 
 class GuiApplicationController {
-
-	// The initial entry for the gui application
-	this() {
-		// this code is executed at initialization of the application
-		auto foo = X.XInitThreads();
-		_pfvars.running = true;
-
-		//ATTEMPT TO USE GTK
-		//int argc = 0;
-		//char* argv[] = ("", null);
-
-		//char** argv_ptr = &argv;
-
-		//use X11
-		_pfvars.display = X.XOpenDisplay(null);
-
-		_pfvars.screen = X.XDefaultScreen(_pfvars.display);
-		_pfvars.visual = X.XDefaultVisual(_pfvars.display, _pfvars.screen);
-
-		//set up click timer
-		_pfvars.clickTimerevp.sigev_notify = SIGEV_THREAD;
-		_pfvars.clickTimerevp._sigev_un._sigev_thread._function = &mousetimerproc;
-
-		//get Atoms
-		_pfvars.wm_destroy_window = X.XInternAtom(_pfvars.display, "WM_DELETE_WINDOW\0"c.ptr, X.Bool.True);
-		_pfvars.private_data = X.XInternAtom(_pfvars.display, "DJEHUTY_PRIVATE_DATA\0"c.ptr, X.Bool.True);
-		_pfvars.x_settings = X.XInternAtom(_pfvars.display, "_XSETTINGS_SETTINGS\0"c.ptr, X.Bool.False);
-
-		//	_pfvars.utf8string = X.XInternAtom(_pfvars.display, "UTF8_STRING\0"c.ptr, X.Bool.True);
-
-	}
-
-	void start() {
-		mainloop();
-	}
-
-	void end(uint code) {
-		_pfvars.running = false;
-	}
-
 private:
 
 	int[] _keySymToKeyCode = [
@@ -537,5 +497,45 @@ private:
 			}
 		}
 		X.XCloseDisplay(_pfvars.display);
+	}
+
+public:
+	// The initial entry for the gui application
+	this() {
+		// this code is executed at initialization of the application
+		auto foo = X.XInitThreads();
+		_pfvars.running = true;
+
+		//ATTEMPT TO USE GTK
+		//int argc = 0;
+		//char* argv[] = ("", null);
+
+		//char** argv_ptr = &argv;
+
+		//use X11
+		_pfvars.display = X.XOpenDisplay(null);
+
+		_pfvars.screen = X.XDefaultScreen(_pfvars.display);
+		_pfvars.visual = X.XDefaultVisual(_pfvars.display, _pfvars.screen);
+
+		//set up click timer
+		_pfvars.clickTimerevp.sigev_notify = SIGEV_THREAD;
+		_pfvars.clickTimerevp._sigev_un._sigev_thread._function = &mousetimerproc;
+
+		//get Atoms
+		_pfvars.wm_destroy_window = X.XInternAtom(_pfvars.display, "WM_DELETE_WINDOW\0"c.ptr, X.Bool.True);
+		_pfvars.private_data = X.XInternAtom(_pfvars.display, "DJEHUTY_PRIVATE_DATA\0"c.ptr, X.Bool.True);
+		_pfvars.x_settings = X.XInternAtom(_pfvars.display, "_XSETTINGS_SETTINGS\0"c.ptr, X.Bool.False);
+
+		//	_pfvars.utf8string = X.XInternAtom(_pfvars.display, "UTF8_STRING\0"c.ptr, X.Bool.True);
+
+	}
+
+	void start() {
+		mainloop();
+	}
+
+	void end(uint code) {
+		_pfvars.running = false;
 	}
 }

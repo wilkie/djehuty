@@ -17,6 +17,45 @@ import scaffold.view;
 
 // Description: This class implements and abstracts a view, which is a drawing canvas.  With this class, one can create off-screen buffers.
 class View {
+protected:
+	package ViewPlatformVars _pfvars;
+
+	bool _inited = false;
+
+	package bool _locked = false;
+
+	int _width = 0;
+	int _height = 0;
+
+	bool _hasAlpha = false;
+
+	bool _forcenopremultiply = false;
+
+	package Graphics _graphics = null;
+
+	Semaphore _mutex;
+
+	void _destroy() {
+		ViewDestroy(this, &_pfvars);
+
+		_inited = false;
+
+		_width = 0;
+		_height = 0;
+	}
+
+	void _platformCreate() {
+		ViewCreate(this, &_pfvars);
+	}
+
+	// Retained Objects
+
+	// (null : no object)
+
+	package Brush _brush;
+	package Pen _pen;
+
+public:
 	// Description: This will instantiate an uninitialized view.  It will need to be created with the create() function in order to fully use.
 	this() {
 		_mutex = new Semaphore(1);
@@ -132,43 +171,4 @@ class View {
 	uint rgbTouint(uint r, uint g, uint b) {
 		return ViewRGBAToInt32(&_pfvars,r,g,b);
 	}
-
-protected:
-
-	package ViewPlatformVars _pfvars;
-
-	bool _inited = false;
-
-	package bool _locked = false;
-
-	int _width = 0;
-	int _height = 0;
-
-	bool _hasAlpha = false;
-
-	bool _forcenopremultiply = false;
-
-	package Graphics _graphics = null;
-
-	Semaphore _mutex;
-
-	void _destroy() {
-		ViewDestroy(this, &_pfvars);
-
-		_inited = false;
-
-		_width = 0;
-		_height = 0;
-	}
-
-	void _platformCreate() {
-		ViewCreate(this, &_pfvars);
-	}
-
-	// Retained Objects
-
-	// (null : no object)
-
-	package Brush _brush;
-	package Pen _pen;
 }

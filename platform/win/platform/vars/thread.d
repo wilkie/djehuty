@@ -10,5 +10,14 @@
 
 module platform.vars.thread;
 
+import synch.thread;
+
+import binding.win32.winnt;
+import binding.win32.windef;
+
 struct ThreadPlatformVars {
+	DWORD id;
+	HANDLE threadHnd;
+	Thread thread;
+	void delegate() endCallback;
 }

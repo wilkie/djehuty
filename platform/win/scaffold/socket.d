@@ -12,8 +12,10 @@ module scaffold.socket;
 
 pragma(lib, "WS2_32.lib");
 
-import platform.win.common;
-import platform.win.main;
+import binding.win32.ws2def;
+import binding.win32.winsock2;
+import binding.win32.windef;
+import binding.win32.winnt;
 
 import platform.vars.socket;
 
@@ -21,8 +23,6 @@ import core.string;
 import core.main;
 import core.definitions;
 import core.unicode;
-
-import io.console;
 
 //XXX: WS2tcpip.h
 
@@ -63,7 +63,7 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort
 		}
 		else
 		{
-			Console.putln("wsastartup, error");
+			//Console.putln("wsastartup, error");
 			return false;
 		}
 	}
@@ -91,7 +91,7 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort
 	if (iResult)
 	{
 		//file an error event
-		Console.putln("getaddrinfow, error");
+		//Console.putln("getaddrinfow, error");
 		return false;
 	}
 
@@ -106,7 +106,7 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort
 		if (sockVars.init_ref == 0)
 			{ WSACleanup(); }
 
-		Console.putln("socket, error");
+		//Console.putln("socket, error");
 		return false;
 	}
 
@@ -120,7 +120,7 @@ bool SocketOpen(ref SocketPlatformVars sockVars, ref string hostname, ref ushort
 		{
 			WSACleanup();
 		}
-		Console.putln("connect, error");
+		//Console.putln("connect, error");
 
 		return false;
 	}

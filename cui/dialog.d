@@ -73,44 +73,39 @@ public:
 		redraw();
 	}
 
-	int clientWidth() {
+	override int clientWidth() {
 		return width - 2;
 	}
 
-	void clientWidth(int value) {
+	override void clientWidth(int value) {
 		width = (value + 2);
 	}
 
-	int clientHeight() {
+	override int clientHeight() {
 		return height - 2;
 	}
 
-	void clientHeight(int value) {
+	override void clientHeight(int value) {
 		height = value + 2;
 	}
 
 	// Signal
 
-	override void push(Dispatcher dsp) {
+	override void push(Dispatcher dsp, SignalHandler handler = null) {
 		CuiWindow window = cast(CuiWindow)dsp;
 
-		if (window is _clientArea) {
-			// Quietly pass through`
-			super.push(dsp);
-		}
-		else if (window !is null) {
-			_clientArea.push(dsp);
+		if (window !is null && window !is _clientArea) {
+			_clientArea.push(dsp, handler);
 		}
 		else {
 			// Pass through so it calls this class
-			super.push(dsp);
+			super.push(dsp, handler);
 		}
 	}
 
 	// Events
 
 	override void onPrimaryDown(ref Mouse mouse) {
-
 		// Move this window to the foreground
 		reorder(WindowOrder.Top);
 
@@ -156,12 +151,12 @@ public:
 		}
 	}
 
-	override void reposition(int left, int top, int width = -1, int height = -1) {
+	override void reposition(int left, int top, int width = int.min, int height = int.min) {
 		// Resize subwindow
-		if (width == -1) {
+		if (width == int.min) {
 			width = this.width;
 		}
-		if (height == -1) {
+		if (height == int.min) {
 			height = this.height;
 		}
 		if (width < 2) {
@@ -188,7 +183,7 @@ public:
 					reposition(this.left, this.top, this.width, this.height + ydiff);
 					xdiff = 0;
 					ydiff = 0;
-					
+
 					updateDragPosX = true;
 					updateDragPosY = this.height != h;
 					break;
@@ -243,9 +238,6 @@ public:
 
 	// Drawing the window
 	void onDraw(CuiCanvas canvas) {
-		// Draw inside area
-		super.onDrawChildren(canvas);
-
 		canvas.position(0, 0);
 
 		static const string TITLE_BAR_CHAR = "\u2550";
@@ -276,7 +268,7 @@ public:
 			canvas.write(" ");
 		}
 		// Draw a section of pretty characters
-		for(uint i = title.utflen() + 1; i < this.clientWidth-1; i++) {
+		for(int i = title.utflen() + 1; i < this.clientWidth-1; i++) {
 			canvas.write(TITLE_BAR_CHAR);
 		}
 

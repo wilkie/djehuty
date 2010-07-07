@@ -10,7 +10,11 @@
 
 module scaffold.view;
 
-import platform.win.common;
+import binding.win32.wingdi;
+import binding.win32.winnt;
+import binding.win32.windef;
+import binding.win32.winuser;
+
 import platform.win.main;
 
 import Gdiplus = binding.win32.gdiplus;
@@ -73,7 +77,7 @@ void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Win
 
 	viewVars.dc = CreateCompatibleDC(dc);
 
-	HBITMAP bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
+	HBITMAP bmp = null; //CreateCompatibleBitmap(dc, view.width(), view.height());
 
 	ReleaseDC(null, dc);
 

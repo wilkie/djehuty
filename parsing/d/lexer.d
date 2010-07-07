@@ -12,7 +12,92 @@ import data.stack;
 import io.console;
 
 class DLexer : Lexer {
+private:
 
+	void _error(string msg) {
+		Console.forecolor = Color.Red;
+		Console.putln("Lexical Error: file.d @ ", _lineNumber+1, ":", _pos+1, " - ", msg);
+		Console.putln();
+	}
+
+	// Describe the number lexer states
+	enum LexerState : uint {
+		Normal,
+		String,
+		Comment,
+		Identifier,
+		Integer,
+		FloatingPoint
+	}
+
+	LexerState state;
+	bool inEscape;
+
+	// Describe the string lexer states
+	enum StringType : uint {
+		DoubleQuote,		// "..."
+		WhatYouSeeQuote,	// `...`
+		RawWhatYouSeeQuote,	// r"..."
+		Character,			// '.'
+	}
+
+	StringType inStringType;
+
+	// Describe the comment lexer states
+	enum CommentType : uint {
+		BlockComment,
+		LineComment,
+		NestedComment
+	}
+
+	CommentType inCommentType;
+	string cur_string;
+
+	Stream _stream;
+	string _line;
+	size_t _lineNumber;
+	size_t _pos;
+
+	static const DToken[] tokenMapping = [
+		'!':DToken.Bang,
+		':':DToken.Colon,
+		';':DToken.Semicolon,
+		'.':DToken.Dot,
+		',':DToken.Comma,
+		'(':DToken.LeftParen,
+		')':DToken.RightParen,
+		'{':DToken.LeftCurly,
+		'}':DToken.RightCurly,
+		'[':DToken.LeftBracket,
+		']':DToken.RightBracket,
+		'<':DToken.LessThan,
+		'>':DToken.GreaterThan,
+		'=':DToken.Assign,
+		'+':DToken.Add,
+		'-':DToken.Sub,
+		'~':DToken.Cat,
+		'*':DToken.Mul,
+		'/':DToken.Div,
+		'^':DToken.Xor,
+		'|':DToken.Or,
+		'&':DToken.And,
+		'%':DToken.Mod,
+		];
+
+	int cur_base;
+	ulong cur_integer;
+	bool cur_integer_signed;
+	ulong cur_decimal;
+	ulong cur_exponent;
+	ulong cur_denominator;
+	bool inDecimal;
+	bool inExponent;
+
+	string[] _lines;
+
+	Stack!(Token) _bank;
+
+public:
 	this(Stream stream) {
 		super(stream);
 		_bank = new Stack!(Token);
@@ -883,90 +968,5 @@ class DLexer : Lexer {
 		}
 
 		return ret;
-	}
-
-private:
-
-	void _error(string msg) {
-		Console.forecolor = Color.Red;
-		Console.putln("Lexical Error: file.d @ ", _lineNumber+1, ":", _pos+1, " - ", msg);
-		Console.putln();
-	}
-
-	// Describe the number lexer states
-	enum LexerState : uint {
-		Normal,
-		String,
-		Comment,
-		Identifier,
-		Integer,
-		FloatingPoint
-	}
-
-	LexerState state;
-	bool inEscape;
-
-	// Describe the string lexer states
-	enum StringType : uint {
-		DoubleQuote,		// "..."
-		WhatYouSeeQuote,	// `...`
-		RawWhatYouSeeQuote,	// r"..."
-		Character,			// '.'
-	}
-
-	StringType inStringType;
-
-	// Describe the comment lexer states
-	enum CommentType : uint {
-		BlockComment,
-		LineComment,
-		NestedComment
-	}
-
-	CommentType inCommentType;
-	string cur_string;
-
-	Stream _stream;
-	string _line;
-	size_t _lineNumber;
-	size_t _pos;
-
-	static const DToken[] tokenMapping = [
-		'!':DToken.Bang,
-		':':DToken.Colon,
-		';':DToken.Semicolon,
-		'.':DToken.Dot,
-		',':DToken.Comma,
-		'(':DToken.LeftParen,
-		')':DToken.RightParen,
-		'{':DToken.LeftCurly,
-		'}':DToken.RightCurly,
-		'[':DToken.LeftBracket,
-		']':DToken.RightBracket,
-		'<':DToken.LessThan,
-		'>':DToken.GreaterThan,
-		'=':DToken.Assign,
-		'+':DToken.Add,
-		'-':DToken.Sub,
-		'~':DToken.Cat,
-		'*':DToken.Mul,
-		'/':DToken.Div,
-		'^':DToken.Xor,
-		'|':DToken.Or,
-		'&':DToken.And,
-		'%':DToken.Mod,
-		];
-
-	int cur_base;
-	ulong cur_integer;
-	bool cur_integer_signed;
-	ulong cur_decimal;
-	ulong cur_exponent;
-	ulong cur_denominator;
-	bool inDecimal;
-	bool inExponent;
-
-	string[] _lines;
-
-	Stack!(Token) _bank;
+	}	
 }

@@ -42,4 +42,10 @@ class TypeInfo_Pointer : TypeInfo {
 	uint flags() {
 		return 1;
 	}
+
+    TypeInfo next() {
+		return m_next;
+	}
+
+    TypeInfo m_next;
 }

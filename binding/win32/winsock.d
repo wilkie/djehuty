@@ -751,13 +751,13 @@ u_short ntohs (u_short netshort);
 
 int recv (
                      SOCKET s,
-					 char * buf,
+					 byte * buf,
                      int len,
                      int flags);
 
 int recvfrom (
                          SOCKET s,
-						 char * buf,
+						 byte * buf,
                          int len,
                          int flags,
 						 sockaddr * from,
@@ -772,13 +772,13 @@ int select (
 
 int send (
                      SOCKET s,
-                     char * buf,
+                     byte * buf,
                      int len,
                      int flags);
 
 int sendto (
                        SOCKET s,
-                       char * buf,
+                       byte * buf,
                        int len,
                        int flags,
                        sockaddr *to,
@@ -901,7 +901,7 @@ int WSAAsyncSelect(
 
 int WSARecvEx (
                           SOCKET s,
-						  char * buf,
+						  byte * buf,
                           int len,
                           int *flags);
 

@@ -33,184 +33,6 @@ static const bool flagCheckForMenuRecursion = true;
 // Feature: All languages can be supported eventually. (Scalablity)
 // Feature: Supports a resource file up to 4 gigabytes, supports a file with at least 1000 languages! (Scalablity)
 class Resource {
-
-	// Description: Will create the object and then load the file specified.
-	// filename: The path and filename of the resource file.
-	this(string filename) {
-		open(filename);
-	}
-
-	// Description: Will create the object using the specified array as the resource database. This is for static resource information stored within the executable.
-	// fromArray: The byte array to stream from.
-	this(ubyte[] fromArray) {
-		_file = new Stream(fromArray);
-
-		_stream();
-	}
-
-	// Methods //
-
-	// Description: Will open the filename specified.
-	// filename: The path and filename of the resource file.
-	void open(string filename) {
-		_filename = filename.dup;
-
-		_open();
-	}
-
-	// Description: Will close the file.
-	void close() {
-		_file = null;
-	}
-
-	// Description: Will set the current language to the one given by the parameter if it exists within the file.
-	// langID: The standard language ID for the language you wish to use.
-	void language(uint langID) {
-		// check for validity
-		if (_file is null) { return; }
-
-		if (_langTable is null || _langTable.length == 0) { return; }
-
-		foreach(int i, uint lang; _langTable) {
-			if (lang == langID) {
-				_langIndex = i;
-				return;
-			}
-		}
-
-		// error: unknown language
-		return;
-	}
-
-	// -- //
-
-	// Description: Will traverse the resource stream and grab the String from the file.
-	// resourceID: The specific String resource to grab.
-	// Returns: The String resource.
-	string loadString(uint resourceID) {
-		Console.putln("loading string...");
-
-		// get the string from the file for the current language
-		if (_file is null) { return null; }
-
-		if (resourceID > _stringOffsets.length) { return null; }
-
-		if (_stringAccessed[resourceID] !is null) { return _stringAccessed[resourceID]; }
-
-		_file.rewind();
-		//Console.putln("cur pos: ", _file.getPosition());
-
-		ulong skipLen = void;
-		uint langOffset = void;
-
-		// Get the language offset we need!
-
-		if (_langIndex > 0) {
-			skipLen = _stringOffsets[resourceID];
-			skipLen += uint.sizeof * (_langIndex-1);
-			//Console.putln("skip: ", skipLen);
-			_file.skip(skipLen);
-
-			_file.read(langOffset);
-			skipLen = langOffset - skipLen - 4;
-			//Console.putln("skip: ", skipLen);
-		}
-		else {
-			skipLen = _stringOffsets[resourceID];
-			skipLen += uint.sizeof * (_numLang-1);
-			//Console.putln("skip: ", skipLen);
-		}
-
-		_file.skip(skipLen);
-
-		// read in string length
-
-		uint stringLen;
-
-		//Console.putln("cur pos: ", _file.getPosition());
-
-		_file.read(stringLen);
-
-		//Console.putln("string length: ", stringLen);
-
-		dchar stringarr[] = new dchar[stringLen];
-
-		_file.read(stringarr.ptr, stringLen * 4);
-
-		string s = Unicode.toUtf8(stringarr);
-
-		_stringAccessed[resourceID] = s;
-
-		return s;
-	}
-
-	// Description: Will traverse the resource stream and grab the Image from the file.
-	// resourceID: The specific Image resource to grab.
-	// Returns: The decoded Image resource.
-	Image loadImage(uint resourceID) {
-		Console.putln("loading image...");
-
-		// get the image from the file
-		if (_file is null) { return null; }
-
-		if (resourceID > _imageOffsets.length) { return null; }
-
-		if (_imageAccessed[resourceID] !is null) { return _imageAccessed[resourceID]; }
-
-		_file.rewind();
-		//Console.putln("cur pos: ", _file.getPosition());
-
-		ulong skipLen = void;
-		uint langOffset = void;
-
-		// Get the language offset we need!
-
-		if (_langIndex > 0) {
-			skipLen = _imageOffsets[resourceID];
-			skipLen += uint.sizeof * (_langIndex-1);
-			//Console.putln("skip: ", skipLen);
-			_file.skip(skipLen);
-
-			_file.read(langOffset);
-			skipLen = langOffset - skipLen - 4;
-			//Console.putln("skip: ", skipLen);
-		}
-		else {
-			skipLen = _imageOffsets[resourceID];
-			skipLen += uint.sizeof * (_numLang-1);
-			//Console.putln("skip: ", skipLen);
-		}
-
-		_file.skip(skipLen);
-
-		// read in string length
-
-		uint fileLen;
-
-		//Console.putln("cur pos: ", _file.getPosition());
-
-		_file.read(fileLen);
-
-		//Console.putln("image file length: ", fileLen);
-
-		Image img = new Image();
-
-		img.load(_file);
-
-		_imageAccessed[resourceID] = img;
-
-		return img;
-	}
-
-	// Description: Will traverse the resource stream and grab the Menu and any associated Menu classes from the file.
-	// resourceID: The specific Menu resource to grab.
-	// Returns: The Menu resource with any sub menus it needs allocated and appended.
-	Menu loadMenu(uint resourceID) {
-		Console.putln("loading menu...");
-
-		return _loadMenu(resourceID, null);
-	}
-
 private:
 
 	string _filename;
@@ -530,5 +352,183 @@ private:
 
 		// set _langID to the first language (default)
 		_langIndex = 0;
+	}
+
+public:
+	// Description: Will create the object and then load the file specified.
+	// filename: The path and filename of the resource file.
+	this(string filename) {
+		open(filename);
+	}
+
+	// Description: Will create the object using the specified array as the resource database. This is for static resource information stored within the executable.
+	// fromArray: The byte array to stream from.
+	this(ubyte[] fromArray) {
+		_file = new Stream(fromArray);
+
+		_stream();
+	}
+
+	// Methods //
+
+	// Description: Will open the filename specified.
+	// filename: The path and filename of the resource file.
+	void open(string filename) {
+		_filename = filename.dup;
+
+		_open();
+	}
+
+	// Description: Will close the file.
+	void close() {
+		_file = null;
+	}
+
+	// Description: Will set the current language to the one given by the parameter if it exists within the file.
+	// langID: The standard language ID for the language you wish to use.
+	void language(uint langID) {
+		// check for validity
+		if (_file is null) { return; }
+
+		if (_langTable is null || _langTable.length == 0) { return; }
+
+		foreach(int i, uint lang; _langTable) {
+			if (lang == langID) {
+				_langIndex = i;
+				return;
+			}
+		}
+
+		// error: unknown language
+		return;
+	}
+
+	// -- //
+
+	// Description: Will traverse the resource stream and grab the String from the file.
+	// resourceID: The specific String resource to grab.
+	// Returns: The String resource.
+	string loadString(uint resourceID) {
+		Console.putln("loading string...");
+
+		// get the string from the file for the current language
+		if (_file is null) { return null; }
+
+		if (resourceID > _stringOffsets.length) { return null; }
+
+		if (_stringAccessed[resourceID] !is null) { return _stringAccessed[resourceID]; }
+
+		_file.rewind();
+		//Console.putln("cur pos: ", _file.getPosition());
+
+		ulong skipLen = void;
+		uint langOffset = void;
+
+		// Get the language offset we need!
+
+		if (_langIndex > 0) {
+			skipLen = _stringOffsets[resourceID];
+			skipLen += uint.sizeof * (_langIndex-1);
+			//Console.putln("skip: ", skipLen);
+			_file.skip(skipLen);
+
+			_file.read(langOffset);
+			skipLen = langOffset - skipLen - 4;
+			//Console.putln("skip: ", skipLen);
+		}
+		else {
+			skipLen = _stringOffsets[resourceID];
+			skipLen += uint.sizeof * (_numLang-1);
+			//Console.putln("skip: ", skipLen);
+		}
+
+		_file.skip(skipLen);
+
+		// read in string length
+
+		uint stringLen;
+
+		//Console.putln("cur pos: ", _file.getPosition());
+
+		_file.read(stringLen);
+
+		//Console.putln("string length: ", stringLen);
+
+		dchar stringarr[] = new dchar[stringLen];
+
+		_file.read(stringarr.ptr, stringLen * 4);
+
+		string s = Unicode.toUtf8(stringarr);
+
+		_stringAccessed[resourceID] = s;
+
+		return s;
+	}
+
+	// Description: Will traverse the resource stream and grab the Image from the file.
+	// resourceID: The specific Image resource to grab.
+	// Returns: The decoded Image resource.
+	Image loadImage(uint resourceID) {
+		Console.putln("loading image...");
+
+		// get the image from the file
+		if (_file is null) { return null; }
+
+		if (resourceID > _imageOffsets.length) { return null; }
+
+		if (_imageAccessed[resourceID] !is null) { return _imageAccessed[resourceID]; }
+
+		_file.rewind();
+		//Console.putln("cur pos: ", _file.getPosition());
+
+		ulong skipLen = void;
+		uint langOffset = void;
+
+		// Get the language offset we need!
+
+		if (_langIndex > 0) {
+			skipLen = _imageOffsets[resourceID];
+			skipLen += uint.sizeof * (_langIndex-1);
+			//Console.putln("skip: ", skipLen);
+			_file.skip(skipLen);
+
+			_file.read(langOffset);
+			skipLen = langOffset - skipLen - 4;
+			//Console.putln("skip: ", skipLen);
+		}
+		else {
+			skipLen = _imageOffsets[resourceID];
+			skipLen += uint.sizeof * (_numLang-1);
+			//Console.putln("skip: ", skipLen);
+		}
+
+		_file.skip(skipLen);
+
+		// read in string length
+
+		uint fileLen;
+
+		//Console.putln("cur pos: ", _file.getPosition());
+
+		_file.read(fileLen);
+
+		//Console.putln("image file length: ", fileLen);
+
+		Image img = new Image();
+
+		img.load(_file);
+
+		_imageAccessed[resourceID] = img;
+
+		return img;
+	}
+
+	// Description: Will traverse the resource stream and grab the Menu and any associated Menu classes from the file.
+	// resourceID: The specific Menu resource to grab.
+	// Returns: The Menu resource with any sub menus it needs allocated and appended.
+	Menu loadMenu(uint resourceID) {
+		Console.putln("loading menu...");
+
+		return _loadMenu(resourceID, null);
 	}
 }

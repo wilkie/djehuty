@@ -7,7 +7,7 @@
  *
  */
 
-module networking.irc;
+module net.irc;
 
 import core.string;
 import core.stream;
@@ -18,10 +18,8 @@ import core.unicode;
 import io.socket;
 import io.console;
 
-struct IRC
-{
-	struct Command
-	{
+struct IRC {
+	struct Command {
 		char[] prefix;
 		char[] command;
 		char[] params[16];
@@ -31,8 +29,7 @@ struct IRC
 		uint paramCount;
 	}
 
-	enum Response
-	{
+	enum Response {
 		None				= 300,
 		UserHost			= 302,
 		IsOn				= 303,
@@ -125,8 +122,7 @@ struct IRC
 		AdminEmail			= 259
 	}
 
-	enum Error
-	{
+	enum Error {
 		NoSuchNick			= 401,
 		NoSuchServer		= 402,
 		NoSuchChannel		= 403,
@@ -176,110 +172,10 @@ struct IRC
 		UsersDoNotMatch		= 502,
 	}
 
-	class Server
-	{
+	class Server {
 	}
 
-	class Client
-	{
-		this()
-		{
-			_skt = new Socket();
-			_thread = new Thread();
-			_buffer = new Stream();
-
-			_thread.callback = &_recvFunc;
-		}
-
-		~this()
-		{
-			close();
-		}
-
-		void setDelegate(void delegate(Command) callback)
-		{
-			_callback = callback;
-		}
-
-		void authenticate(string nickname, string realname)
-		{
-			if (_connected)
-			{
-//				_skt.writeUtf8("PASS hashmash\r\n");
-				_skt.writeUtf8("NICK " ~ Unicode.toUtf8(nickname) ~ "\r\n");
-				_skt.writeUtf8("USER " ~ Unicode.toUtf8(nickname) ~ " 0 * :" ~ Unicode.toUtf8(realname) ~ "\r\n");
-			}
-		}
-
-		bool connect(string hostname, ushort port = 6667)
-		{
-			_connected = _skt.connect(hostname, port);
-
-			if (_connected)
-			{
-				_thread.start();
-			}
-
-			return _connected;
-		}
-
-		void join(string channel)
-		{
-			if (_connected)
-			{
-				_skt.writeUtf8("JOIN " ~ Unicode.toUtf8(channel) ~ "\r\n");
-			}
-		}
-
-		void quit()
-		{
-			if (_connected)
-			{
-				_skt.writeUtf8("QUIT\r\n");
-			}
-		}
-
-		void close()
-		{
-			quit();
-			_skt.close();
-		}
-
-		void sendPong(string server)
-		{
-			if (_connected)
-			{
-				_skt.writeUtf8("PONG " ~ server ~ "\r\n");
-			}
-		}
-
-		void sendMessage(string to, string message)
-		{
-			if (_connected)
-			{
-				_skt.writeUtf8("PRIVMSG " ~ to ~ " :" ~ message ~ "\r\n");
-			}
-		}
-
-		void OnPing(string server)
-		{
-			Console.put("ping! " ~ server);
-			sendPong(server);
-		}
-
-		void OnReceiveMessage(string to, string from, string message)
-		{
-			int pos = from.find("!");
-			if (pos > 0) {
-				from = from.substring(0, pos);
-			}
-			Console.put("Message Received");
-			Console.put("from: " ~ from);
-			Console.put("message: " ~ message);
-		}
-
-
-
+	class Client {
 	protected:
 
 		const auto downloadBuffer = 1024*128;
@@ -440,6 +336,84 @@ struct IRC
 			}
 		}
 
+	public:
+		this() {
+			_skt = new Socket();
+			_thread = new Thread();
+			_buffer = new Stream();
+
+			_thread.callback = &_recvFunc;
+		}
+
+		~this() {
+			close();
+		}
+
+		void setDelegate(void delegate(Command) callback) {
+			_callback = callback;
+		}
+
+		void authenticate(string nickname, string realname) {
+			if (_connected) {
+//				_skt.writeUtf8("PASS hashmash\r\n");
+				_skt.writeUtf8("NICK " ~ Unicode.toUtf8(nickname) ~ "\r\n");
+				_skt.writeUtf8("USER " ~ Unicode.toUtf8(nickname) ~ " 0 * :" ~ Unicode.toUtf8(realname) ~ "\r\n");
+			}
+		}
+
+		bool connect(string hostname, ushort port = 6667) {
+			_connected = _skt.connect(hostname, port);
+
+			if (_connected) {
+				_thread.start();
+			}
+
+			return _connected;
+		}
+
+		void join(string channel) {
+			if (_connected) {
+				_skt.writeUtf8("JOIN " ~ Unicode.toUtf8(channel) ~ "\r\n");
+			}
+		}
+
+		void quit() {
+			if (_connected) {
+				_skt.writeUtf8("QUIT\r\n");
+			}
+		}
+
+		void close() {
+			quit();
+			_skt.close();
+		}
+
+		void sendPong(string server) {
+			if (_connected) {
+				_skt.writeUtf8("PONG " ~ server ~ "\r\n");
+			}
+		}
+
+		void sendMessage(string to, string message) {
+			if (_connected) {
+				_skt.writeUtf8("PRIVMSG " ~ to ~ " :" ~ message ~ "\r\n");
+			}
+		}
+
+		void OnPing(string server) {
+			Console.put("ping! " ~ server);
+			sendPong(server);
+		}
+
+		void OnReceiveMessage(string to, string from, string message) {
+			int pos = from.find("!");
+			if (pos > 0) {
+				from = from.substring(0, pos);
+			}
+			Console.put("Message Received");
+			Console.put("from: " ~ from);
+			Console.put("message: " ~ message);
+		}
 
 	}
 }

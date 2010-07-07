@@ -8,6 +8,33 @@ import data.list;
 
 // Description: This template class abstracts the queue data structure. T is the type you wish to store.
 class Queue(T) : Iterable!(T) {
+protected:
+
+	// the contents of a node
+	struct LinkedListNode {
+		LinkedListNode* next;
+		LinkedListNode* prev;
+		T data;
+	}
+
+	// the _head and _tail of the list
+	LinkedListNode* _head = null;
+	LinkedListNode* _tail = null;
+
+	// the _last accessed node is cached
+	LinkedListNode* _last = null;
+	size_t _lastIndex = 0;
+
+	// the number of items in the list
+	size_t _count;
+
+	// Returns a null value for T
+	T _nullValue() {
+		T val;
+		return val;
+	}
+
+public:
 	this() {
 	}
 
@@ -514,31 +541,5 @@ class Queue(T) : Iterable!(T) {
 		Queue!(T) ret = this.dup();
 		ret.add(item);
 		return ret;
-	}
-
-protected:
-
-	// the contents of a node
-	struct LinkedListNode {
-		LinkedListNode* next;
-		LinkedListNode* prev;
-		T data;
-	}
-
-	// the _head and _tail of the list
-	LinkedListNode* _head = null;
-	LinkedListNode* _tail = null;
-
-	// the _last accessed node is cached
-	LinkedListNode* _last = null;
-	size_t _lastIndex = 0;
-
-	// the number of items in the list
-	size_t _count;
-
-	// Returns a null value for T
-	T _nullValue() {
-		T val;
-		return val;
 	}
 }

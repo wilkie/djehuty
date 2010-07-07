@@ -32,8 +32,13 @@ struct AssocArray {
 	Bucket[] buckets;
 	size_t valuesize;
 	size_t range;
-	size_t items;
+ 	size_t items;
 	TypeInfo keyTypeInfo;
+}
+
+// for DMD bullshits
+struct AssocArrayHolder {
+	AssocArray* assocArray;
 }
 
 // Description: This runtime function will determine the number of entries in
@@ -45,8 +50,8 @@ size_t _aaLen(ref AssocArray aa) {
 
 template _aaAccess(bool addKey, bool deleteKey) {
 	ubyte* _aaAccess(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
-					
-		// If we can update the array to add the key, 
+
+		// If we can update the array to add the key,
 		// and the array does not exist, then create it!
 		static if (addKey) {
 			if (aa is null) {
@@ -63,7 +68,7 @@ template _aaAccess(bool addKey, bool deleteKey) {
 			}
 		}
 		else {
-			// If the array does not exist, the item can't... 
+			// If the array does not exist, the item can't...
 			// so just return null
 			if (aa is null) {
 				return null;
@@ -93,8 +98,10 @@ template _aaAccess(bool addKey, bool deleteKey) {
 					static if (deleteKey) {
 						entry.key = null;
 						entry.value = null;
-						Atomic.decrement(aa.buckets[bucketIndex].usedCount);
-						Atomic.decrement(aa.items);
+						//Atomic.decrement(aa.buckets[bucketIndex].usedCount);
+						aa.buckets[bucketIndex].usedCount--;
+						//Atomic.decrement(aa.items);
+						aa.items--;
 					}
 
 					// Return a reference to the value
@@ -120,15 +127,18 @@ template _aaAccess(bool addKey, bool deleteKey) {
 			}
 
 			// Scan for the empty item
-			Atomic.increment(aa.buckets[bucketIndex].usedCount);
-			Atomic.increment(aa.items);
+			//Atomic.increment(aa.buckets[bucketIndex].usedCount);
+			aa.buckets[bucketIndex].usedCount++;
+			//Atomic.increment(aa.items);
+			aa.items++;
+
 			foreach(ref entry; aa.buckets[bucketIndex].entries) {
 				if (entry.key is null) {
 					// Add item here by allocating memory for the key and value
 					entry.hash = hash;
-					entry.key = GarbageCollector.malloc(keyti.tsize()); 
+					entry.key = GarbageCollector.malloc(keyti.tsize());
 					entry.value = GarbageCollector.malloc(valuesize);
-					
+
 					// Insert the key into the table
 					entry.key[0..keyti.tsize()] = pkey[0..keyti.tsize()];
 
@@ -148,24 +158,76 @@ template _aaAccess(bool addKey, bool deleteKey) {
 //   in an associative array at a particular key and add the entry if
 //   it does not exist.
 // Returns: A pointer to the value associated with the given key.
-ubyte* _aaGet(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
-	return _aaAccess!(true, false)(aa, keyti, valuesize, pkey);
+version(DigitalMars) {
+	ubyte* _aaGet(AssocArrayHolder* holder, TypeInfo keyti, size_t valuesize, ...) {
+		ubyte* pkey;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(size_t)(q, valuesize);
+
+		// Get element
+		pkey = cast(ubyte*)(q);
+
+		return _aaAccess!(true, false)(holder.assocArray, keyti, valuesize, pkey);
+	}
+}
+else {
+	ubyte* _aaGet(ref AssocArray* aa, TypeInfo keyti, size_t valuesize, ubyte* pkey) {
+		return _aaAccess!(true, false)(aa, keyti, valuesize, pkey);
+	}
 }
 
 // Description: This runtime function will get a pointer to a value in an
 //   associative array indexed by a key. Invoked via "aa[key]" and "key in aa".
 // Returns: null when the value is not in aa, the pointer to the value
 //   otherwise.
-ubyte* _aaIn(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
-	AssocArray* arrayPointer = &aa;
-	return _aaAccess!(false, false)(arrayPointer, keyti, 0, pkey);
+version(DigitalMars) {
+	ubyte* _aaIn(AssocArrayHolder aa, TypeInfo keyti, ...) {
+		AssocArray* arrayPointer = aa.assocArray;
+
+		ubyte* pkey;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(TypeInfo)(q, keyti);
+
+		// Get element
+		pkey = cast(ubyte*)(q);
+
+		return _aaAccess!(false, false)(arrayPointer, keyti, 0, pkey);
+	}
+}
+else {
+	ubyte* _aaIn(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
+		AssocArray* arrayPointer = &aa;
+		return _aaAccess!(false, false)(arrayPointer, keyti, 0, pkey);
+	}
 }
 
 // Description: This runtime function will delete a value with the given key.
 //   It will do nothing if the value does not exist.
-void _aaDel(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
-	AssocArray* arrayPointer = &aa;
-	_aaAccess!(false, true)(arrayPointer, keyti, 0, pkey);
+version(DigitalMars) {
+	void _aaDel(ref AssocArrayHolder aa, TypeInfo keyti, ...) {
+		AssocArray* arrayPointer = aa.assocArray;
+
+		ubyte* pkey;
+
+		// Fucking variadics
+		Cva_list q;
+		Cva_start!(TypeInfo)(q, keyti);
+
+		// Get element
+		pkey = cast(ubyte*)(q);
+
+		_aaAccess!(false, true)(arrayPointer, keyti, 0, pkey);
+	}
+}
+else {
+	void _aaDel(ref AssocArray aa, TypeInfo keyti, ubyte* pkey) {
+		AssocArray* arrayPointer = &aa;
+		_aaAccess!(false, true)(arrayPointer, keyti, 0, pkey);
+	}
 }
 
 // Description: This runtime function will produce an array of keys of an
@@ -251,8 +313,10 @@ AssocArray* _aaRehash(ref AssocArray* aa, TypeInfo keyti) {
 				element.key = null;
 				element.value = null;
 
-				Atomic.decrement(aa.buckets[rehashBucketIndex].usedCount);
-				Atomic.increment(aa.buckets[newBucketIndex].usedCount);
+				//Atomic.decrement(aa.buckets[rehashBucketIndex].usedCount);
+				aa.buckets[rehashBucketIndex].usedCount--;
+				//Atomic.increment(aa.buckets[newBucketIndex].usedCount);
+				aa.buckets[newBucketIndex].usedCount++;
 			}
 		}
 	}

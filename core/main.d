@@ -10,14 +10,14 @@
 
 module core.main;
 
+import io.console;
+
 import core.string;
 import core.arguments;
 import core.application;
 import core.locale;
 import core.system;
 import core.color;
-
-import io.console;
 
 import synch.semaphore;
 import synch.thread;
@@ -27,26 +27,12 @@ import synch.thread;
 // Description: This class is the main class for the framework. It provides base functionality.
 class Djehuty {
 static:
-public:
-
-	void application(Application application) {
-		if (app !is null) {
-			throw new Exception("Application Already Spawned");
-		}
-
-		app = application;
-	}
-
-	Application application() {
-		return app;
-	}
-
 package:
 
 	void start() {
 		// Get default locale
 		Locale.id = System.Locale.id;
-		
+
 		// Allow console output
 		Console.unlock();
 
@@ -81,4 +67,18 @@ package:
 	bool _hasStarted = false;
 
 	Application app;
+
+public:
+
+	void application(Application application) {
+		if (app !is null) {
+			throw new Exception("Application Already Spawned");
+		}
+
+		app = application;
+	}
+
+	Application application() {
+		return app;
+	}
 }

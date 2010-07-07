@@ -20,18 +20,7 @@ import scaffold.system;
 
 // Description: This class will allow runtime linking to dynamic libraries.
 class Library {
-
-	// Description: This constructor will dynamically load the library found at the given framework path.
-	// path: The path to the library in question.
-	this(string path) {
-		SystemLoadLibrary(_pfvars, path);
-	}
-
-	~this() {
-		SystemFreeLibrary(_pfvars);
-	}
-
-protected:
+private:
 
 	// Description: This function can only be called within an instance of the class. It will give the function pointer to the procedure specified by proc and null when the procedure cannot be found.
 	// proc: The name of the procedure to call upon.
@@ -52,4 +41,15 @@ protected:
 	final void*[string] _funcs;
 
 	LibraryPlatformVars _pfvars;
+
+public:
+	// Description: This constructor will dynamically load the library found at the given framework path.
+	// path: The path to the library in question.
+	this(string path) {
+		SystemLoadLibrary(_pfvars, path);
+	}
+
+	~this() {
+		SystemFreeLibrary(_pfvars);
+	}
 }

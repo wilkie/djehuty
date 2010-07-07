@@ -9,6 +9,13 @@ import core.event;
 
 // Description: This class offers an abstraction to a periodic timer.  This is implemented currently as a yielding thread.
 class Timer : Dispatcher {
+protected:
+
+	ulong _interval = 0;
+
+	timer_thread _thread;
+
+public:
 	this() {
 	}
 
@@ -58,12 +65,6 @@ class Timer : Dispatcher {
 	bool fire() {
 		return raiseSignal(0);
 	}
-
-protected:
-
-	ulong _interval = 0;
-
-	timer_thread _thread;
 }
 
 private class timer_thread : Thread {

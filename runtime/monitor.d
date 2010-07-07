@@ -34,7 +34,7 @@ void _d_monitorenter(Object h) {
 		monitor.semaphore = new Semaphore(1);
 		monitor.owner = Thread.current;
 		monitor.count = 1;
-		// TODO: Should be an atomic exchange with null, and if it fails then 
+		// TODO: Should be an atomic exchange with null, and if it fails then
 		// proceed to use that object.
 		*(cast(Monitor**)h + 1) = monitor;
 		monitor.semaphore.down();

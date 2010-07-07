@@ -8,6 +8,68 @@ import spec.itemspecification;
 import spec.specification;
 
 class Test {
+private:
+
+	void _run(Test original, string padding = "") {
+		if (_ps !is null) {
+			// Run all packages and modules in package specification
+			foreach(PackageSpecification ps; _ps) {
+				Test test = new Test(ps);
+				test._run(original, padding ~ "  ");
+			}
+
+			foreach(ModuleSpecification ms; _ps) {
+				Test test = new Test(ms);
+				test._run(original, padding ~ "  ");
+			}
+		}
+		else if (_ms !is null) {
+			// Run all items in module specification
+			foreach(ItemSpecification item; _ms) {
+				Test test = new Test(item);
+				test._run(original, padding ~ "  ");
+			}
+		}
+		else if (_item !is null) {
+			if (_feature !is null) {
+				if (_item.test(_feature)) {
+					original._numSuccess++;
+				}
+				else {
+					original._numFail++;
+				}
+			}
+			else {
+				// Run all requirements in item specification
+				foreach(item; _item) {
+					if (_item.test(item)) {
+						original._numSuccess++;
+					}
+					else {
+						original._numFail++;
+					}
+				}
+			}
+		}
+		else {
+			// Run all packages in Specification
+			foreach(PackageSpecification ps; Specification) {
+				Test test = new Test(ps);
+				test._run(original, padding ~ "  ");
+			}
+		}
+	}
+
+	int _numSuccess;
+	int _numFail;
+
+	ModuleSpecification _ms;
+	PackageSpecification _ps;
+	ItemSpecification _item;
+
+	string _feature;
+
+public:
 
 	this(PackageSpecification ps) {
 		_ps = ps;
@@ -78,66 +140,6 @@ class Test {
 	}
 
 private:
-
-	void _run(Test original, string padding = "") {
-		if (_ps !is null) {
-			// Run all packages and modules in package specification
-			foreach(PackageSpecification ps; _ps) {
-				Test test = new Test(ps);
-				test._run(original, padding ~ "  ");
-			}
-
-			foreach(ModuleSpecification ms; _ps) {
-				Test test = new Test(ms);
-				test._run(original, padding ~ "  ");
-			}
-		}
-		else if (_ms !is null) {
-			// Run all items in module specification
-			foreach(ItemSpecification item; _ms) {
-				Test test = new Test(item);
-				test._run(original, padding ~ "  ");
-			}
-		}
-		else if (_item !is null) {
-			if (_feature !is null) {
-				if (_item.test(_feature)) {
-					original._numSuccess++;
-				}
-				else {
-					original._numFail++;
-				}
-			}
-			else {
-				// Run all requirements in item specification
-				foreach(item; _item) {
-					if (_item.test(item)) {
-						original._numSuccess++;
-					}
-					else {
-						original._numFail++;
-					}
-				}
-			}
-		}
-		else {
-			// Run all packages in Specification
-			foreach(PackageSpecification ps; Specification) {
-				Test test = new Test(ps);
-				test._run(original, padding ~ "  ");
-			}
-		}
-	}
-
-	int _numSuccess;
-	int _numFail;
-
-	ModuleSpecification _ms;
-	PackageSpecification _ps;
-	ItemSpecification _item;
-
-	string _feature;
-
 static:
 
 	bool _inRun;

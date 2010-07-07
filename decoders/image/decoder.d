@@ -18,7 +18,6 @@ struct ImageFrameDescription {
 }
 
 abstract class ImageDecoder : Decoder {
-public:
 	StreamData decode(Stream stream, ref Bitmap view) {
 		return StreamData.Invalid;
 	}

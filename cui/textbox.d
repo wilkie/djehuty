@@ -20,6 +20,360 @@ import cui.window;
 import io.console;
 
 class CuiTextBox : CuiWindow {
+protected:
+
+	void drawLine(uint lineNumber, CuiCanvas canvas) {
+		canvas.position(0, lineNumber - _firstVisible);
+
+		if (_lineNumbers) {
+			if (_lineNumbersWidth == 0) {
+				calculateLineNumbersWidth();
+			}
+			string strLineNumber = toStr(lineNumber);
+			canvas.forecolor = _forecolorNum;
+			canvas.backcolor = _backcolorNum;
+
+			canvas.write(times(" ", _lineNumbersWidth - 2 - strLineNumber.length));
+			canvas.write(lineNumber);
+			canvas.write(": ");
+		}
+
+		uint[] formatTabExtension;
+		uint curFormat, untilNextFormat;
+
+		if (_lines[lineNumber].format !is null) {
+			formatTabExtension.length = _lines[lineNumber].format.length;
+			untilNextFormat = _lines[lineNumber].format[0].len;
+		}
+
+		string actualLine = _lines[lineNumber].value;
+		string visibleLine = "";
+
+		if (_tabWidth > 0) {
+			for (uint i = 0; i < actualLine.utflen(); i++) {
+				while (curFormat + 1 < formatTabExtension.length && untilNextFormat == 0) {
+					++curFormat;
+					untilNextFormat = _lines[lineNumber].format[curFormat].len;
+				}
+				if (curFormat < formatTabExtension.length)
+					untilNextFormat--;
+				string c = actualLine.charAt(i);
+				if ("\t" == c) {
+					uint tabSpaces = _tabWidth - visibleLine.length % _tabWidth;
+					if (curFormat < formatTabExtension.length)
+						formatTabExtension[curFormat] += tabSpaces - 1;
+					visibleLine ~= " ".times(tabSpaces);
+				} else {
+					visibleLine ~= c;
+				}
+			}
+		} else {
+			visibleLine = actualLine;
+		}
+
+		uint pos = 0;
+		// Make space for the line continuation symbol
+		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
+			visibleLine = visibleLine.insertAt(" ", _firstColumn);
+			pos++;
+		}
+
+		if (_lines[lineNumber].format is null) {
+			// No formatting, this line is just a simple regular line
+			canvas.forecolor = _forecolor;
+			canvas.backcolor = _backcolor;
+			if (_firstColumn >= _lines[lineNumber].value.length) {
+			}
+			else {
+				canvas.write(visibleLine.substring(_firstColumn));
+			}
+		}
+		else {
+			// Splitting up the line due to formatting
+			for (uint i = 0; i < _lines[lineNumber].format.length; i++) {
+				canvas.forecolor = _lines[lineNumber].format[i].fgCol;
+				canvas.backcolor = _lines[lineNumber].format[i].bgCol;
+				//Console.Console.put("[", _lines[lineNumber].format[i].length, "]");
+				uint formatLength = _lines[lineNumber].format[i].len + formatTabExtension[i];
+
+				if (formatLength + pos < _firstColumn) {
+					// draw nothing
+				}
+				else if (pos >= _firstColumn) {
+					canvas.write(visibleLine[pos..pos + formatLength]);
+				}
+				else {
+					canvas.write(visibleLine[_firstColumn..pos + formatLength]);
+				}
+
+				pos += formatLength;
+			}
+		}
+
+		canvas.forecolor = _forecolor;
+		canvas.backcolor = _backcolor;
+		// Pad with spaces
+		uint num = (visibleLine.length - _firstColumn);
+		//uint num = (_lines[lineNumber].value.length - _firstColumn);
+		if (_firstColumn >= _lines[lineNumber].value.length) {
+			num = this.width - _lineNumbersWidth;
+		}
+		else if (num > this.width - _lineNumbersWidth) {
+			num = 0;
+		}
+		else {
+			num = (this.width - _lineNumbersWidth) - num;
+		}
+		
+		if (num != 0) {
+			canvas.write(times(" ", num));
+		}
+
+		// Output the necessary line continuation symbols.
+		canvas.forecolor = Color.White;
+		canvas.backcolor = _backcolor;
+		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
+			canvas.position(_lineNumbersWidth, lineNumber - _firstVisible);
+			canvas.write(_lineCont);
+		}
+		if (visibleLine.length > _firstColumn && visibleLine.length - _firstColumn > this.width - _lineNumbersWidth) {
+			canvas.position(this.width - 1, lineNumber - _firstVisible);
+			canvas.write(_lineCont);
+		}
+	}
+
+	void drawEmptyLine(uint lineNumber, CuiCanvas canvas) {
+		canvas.position(0, lineNumber - _firstVisible);
+
+		// Pad with spaces
+		canvas.write(times(" ", this.width));
+	}
+
+	void positionCaret() {
+		bool shouldDraw;
+
+		// Count the tabs to the left of the caret.
+		uint leftTabSpaces = 0;
+		if (_tabWidth > 0) {
+			for (uint i = 0; i < _column; i++) {
+				if ("\t" == _lines[_row].value.charAt(i)) {
+					leftTabSpaces += _tabWidth - (i + leftTabSpaces) % _tabWidth - 1;
+				}
+			}
+		}
+
+		if (_column < _firstColumn) {
+			// scroll horizontally
+			if (_scrollH == ScrollType.Skip) {
+				// If scrolling left, go to the start of the line and let the next section do the work.
+				if (_column + leftTabSpaces < _firstColumn)
+					_firstColumn = 0;
+			} else { // ScrollType.Step
+				_firstColumn = _column + leftTabSpaces;
+				if (_firstColumn <= 1)
+					_firstColumn = 0;
+			}
+			shouldDraw = true;
+		}
+
+		// _firstColumn > 0 means the characters are shifted 1 to the right thanks to the line continuation symbol
+		if (_column + leftTabSpaces - _firstColumn + (_firstColumn > 0 ? 1 : 0) >= this.width - _lineNumbersWidth - 1) {
+			// scroll horizontally
+			if (_scrollH == ScrollType.Skip) {
+				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) / 2;
+			} else { // ScrollType.Step
+				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) + 3;
+			}
+			shouldDraw = true;
+		}
+
+		if (_row < _firstVisible) {
+			// scroll vertically
+			if (_scrollV == ScrollType.Skip) {
+				// If scrolling up, go to the first row and let the next section do the work.
+				_firstVisible = 0;
+			} else { // ScrollType.Step
+				_firstVisible = _row;
+				if (_firstVisible < 0)
+					_firstVisible = 0;
+			}
+			shouldDraw = true;
+		}
+
+		if ((_row - _firstVisible) >= this.height) {
+			// scroll vertically
+			if (_scrollV == ScrollType.Skip) {
+				_firstVisible = _row - this.height / 2;
+			} else { // ScrollType.Step
+				_firstVisible = _row - this.height + 1;
+			}
+			if (_firstVisible >= _lines.length) {
+				_firstVisible = _lines.length - 1;
+			}
+			shouldDraw = true;
+		}
+
+		if (shouldDraw) {
+			redraw();
+		}
+
+		_formatIndex = calculateFormatIndex(_lines[_row], _column);
+
+		// Is the caret on the screen?
+		if ((_lineNumbersWidth + (_column - _firstColumn) >= this.width) || ((_row - _firstVisible) >= this.height)) {
+			// The caret is outside of the bounds of the widget
+		}
+		else {
+			// Move cursor to where the edit caret is
+//			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces + (_firstColumn > 0 ? 1 : 0), _row - _firstVisible);
+
+			// The caret is within the bounds of the widget
+		}
+	}
+
+
+	// Description: Calculates the formatIndex given a LineInfo and column.
+	// Returns: The calculated formatIndex.
+	int calculateFormatIndex(LineInfo line, int column) {
+		int formatIndex = 0;
+		if (line.format !is null) {
+			uint pos;
+			for (uint i = 0; i < line.format.length; i++) {
+				pos += line.format[i].len;
+				if (pos >= column) {
+					formatIndex = i;
+					break;
+				}
+			}
+		}
+		return formatIndex;
+	}
+
+	void calculateLineNumbersWidth() {
+		if (_lineNumbers) {
+			// The width of the maximum line (in decimal as a string)
+			// summed with two for the ': '
+			_lineNumbersWidth = toStr(_lines.length-1).length + 2;
+		}
+		else {
+			_lineNumbers = 0;
+		}
+	}
+
+	// The behavior when a line is scrolled via the keyboard.
+	enum ScrollType {
+		Step,
+		Skip,
+	}
+
+	// The formatting of a line segment
+	static class LineFormat {
+		this () {}
+		this (Color f, Color b, uint l) {
+			fgCol = f;
+			bgCol = b;
+			len = l;
+		}
+
+		LineFormat dup() {
+			return new LineFormat(fgCol, bgCol, len);
+		}
+
+		int opEquals(LineFormat lf) {
+			return cast(int)(this.fgCol == lf.fgCol && this.bgCol == lf.bgCol);
+		}
+
+		Color fgCol;
+		Color bgCol;
+		uint len;
+	}
+
+	// The information about each line
+	class LineInfo {
+		this() {
+		}
+
+		this(string v, LineFormat[] f) {
+			value = v;
+			format = f;
+			this();
+		}
+
+		LineInfo dup() {
+			return new LineInfo(this.value, this.format.dup);
+		}
+
+		void opCatAssign(LineInfo li) {
+			if (this.format !is null && li.format !is null) {
+				// Merge format lines
+				if (this.format[$-1] == li.format[0]) {
+					this.format[$-1].len += li.format[0].len;
+					this.format ~= li.format[1..$];
+				} else {
+					this.format ~= li.format;
+				}
+			} else if (this.format !is null) {
+				// Make a format for the 2nd line
+				this.format ~= [new LineFormat(_forecolor, _backcolor, li.value.length)];
+			} else if (li.format !is null) {
+				// Make a format for the 1st line
+				this.format = [new LineFormat(_forecolor, _backcolor, this.value.length)] ~ li.format;
+			} else {
+				// Ignore formats if none exist
+			}
+
+			this.value ~= li.value;
+		}
+
+		LineInfo opCat(LineInfo li) {
+			LineInfo li_new = this.dup();
+			li_new ~= li;
+			return li_new;
+		}
+
+		string value;
+		LineFormat[] format;
+	}
+
+	// Stores the buffer of lines
+	List!(LineInfo) _lines;
+
+	// The top left corner
+	int _firstVisible;	// Row
+	int _firstColumn;	// Column
+
+	// The current caret position
+	int _row;
+	int _column;
+
+	// The current caret position within the format array
+	int _formatIndex;
+
+	// The column that the caret is in while pressing up and down or scrolling.
+	int _lineColumn;
+
+	// Whether or not line numbers are rendered
+	bool _lineNumbers;
+
+	// The width of the line numbers column
+	uint _lineNumbersWidth;
+
+	// The width of a single tab character expressed in spaces
+	uint _tabWidth;
+
+	// The default text colors
+ 	Color _forecolor = Color.Gray;
+	Color _backcolor = Color.Black;
+	Color _forecolorNum = Color.DarkYellow;
+	Color _backcolorNum = Color.Black;
+
+	// The symbol to use to show a line continuation
+	dchar _lineCont;
+
+	// How to scroll horizontally and vertically
+	ScrollType _scrollH, _scrollV;
+
+public:
 	this(uint x, uint y, uint width, uint height) {
 		super(x,y,width,height);
 
@@ -452,356 +806,4 @@ class CuiTextBox : CuiWindow {
 	//	return true;
 	//}
 
-protected:
-
-	void drawLine(uint lineNumber, CuiCanvas canvas) {
-		canvas.position(0, lineNumber - _firstVisible);
-
-		if (_lineNumbers) {
-			if (_lineNumbersWidth == 0) {
-				calculateLineNumbersWidth();
-			}
-			string strLineNumber = toStr(lineNumber);
-			canvas.forecolor = _forecolorNum;
-			canvas.backcolor = _backcolorNum;
-
-			canvas.write(times(" ", _lineNumbersWidth - 2 - strLineNumber.length));
-			canvas.write(lineNumber);
-			canvas.write(": ");
-		}
-
-		uint[] formatTabExtension;
-		uint curFormat, untilNextFormat;
-
-		if (_lines[lineNumber].format !is null) {
-			formatTabExtension.length = _lines[lineNumber].format.length;
-			untilNextFormat = _lines[lineNumber].format[0].len;
-		}
-
-		string actualLine = _lines[lineNumber].value;
-		string visibleLine = "";
-
-		if (_tabWidth > 0) {
-			for (uint i = 0; i < actualLine.length; i++) {
-				while (curFormat + 1 < formatTabExtension.length && untilNextFormat == 0) {
-					++curFormat;
-					untilNextFormat = _lines[lineNumber].format[curFormat].len;
-				}
-				if (curFormat < formatTabExtension.length)
-					untilNextFormat--;
-				string c = actualLine.charAt(i);
-				if ("\t" == c) {
-					uint tabSpaces = _tabWidth - visibleLine.length % _tabWidth;
-					if (curFormat < formatTabExtension.length)
-						formatTabExtension[curFormat] += tabSpaces - 1;
-					visibleLine ~= " ".times(tabSpaces);
-				} else {
-					visibleLine ~= c;
-				}
-			}
-		} else {
-			visibleLine = actualLine;
-		}
-
-		uint pos = 0;
-		// Make space for the line continuation symbol
-		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
-			visibleLine = visibleLine.insertAt(" ", _firstColumn);
-			pos++;
-		}
-
-		if (_lines[lineNumber].format is null) {
-			// No formatting, this line is just a simple regular line
-			canvas.forecolor = _forecolor;
-			canvas.backcolor = _backcolor;
-			if (_firstColumn >= _lines[lineNumber].value.length) {
-			}
-			else {
-				canvas.write(visibleLine.substring(_firstColumn));
-			}
-		}
-		else {
-			// Splitting up the line due to formatting
-			for (uint i = 0; i < _lines[lineNumber].format.length; i++) {
-				canvas.forecolor = _lines[lineNumber].format[i].fgCol;
-				canvas.backcolor = _lines[lineNumber].format[i].bgCol;
-				//Console.Console.put("[", _lines[lineNumber].format[i].length, "]");
-				uint formatLength = _lines[lineNumber].format[i].len + formatTabExtension[i];
-
-				if (formatLength + pos < _firstColumn) {
-					// draw nothing
-				}
-				else if (pos >= _firstColumn) {
-					canvas.write(visibleLine[pos..pos + formatLength]);
-				}
-				else {
-					canvas.write(visibleLine[_firstColumn..pos + formatLength]);
-				}
-
-				pos += formatLength;
-			}
-		}
-
-		canvas.forecolor = _forecolor;
-		canvas.backcolor = _backcolor;
-		// Pad with spaces
-		uint num = (visibleLine.length - _firstColumn);
-		//uint num = (_lines[lineNumber].value.length - _firstColumn);
-		if (_firstColumn >= _lines[lineNumber].value.length) {
-			num = this.width - _lineNumbersWidth;
-		}
-		else if (num > this.width - _lineNumbersWidth) {
-			num = 0;
-		}
-		else {
-			num = (this.width - _lineNumbersWidth) - num;
-		}
-		
-		if (num != 0) {
-			canvas.write(times(" ", num));
-		}
-
-		// Output the necessary line continuation symbols.
-		canvas.forecolor = Color.White;
-		canvas.backcolor = _backcolor;
-		if (visibleLine.length > _firstColumn && _firstColumn > 0) {
-			canvas.position(_lineNumbersWidth, lineNumber - _firstVisible);
-			canvas.write(_lineCont);
-		}
-		if (visibleLine.length > _firstColumn && visibleLine.length - _firstColumn > this.width - _lineNumbersWidth) {
-			canvas.position(this.width - 1, lineNumber - _firstVisible);
-			canvas.write(_lineCont);
-		}
-	}
-
-	void drawEmptyLine(uint lineNumber, CuiCanvas canvas) {
-		canvas.position(0, lineNumber - _firstVisible);
-
-		// Pad with spaces
-		canvas.write(times(" ", this.width));
-	}
-
-	void positionCaret() {
-		bool shouldDraw;
-
-		// Count the tabs to the left of the caret.
-		uint leftTabSpaces = 0;
-		if (_tabWidth > 0) {
-			for (uint i = 0; i < _column; i++) {
-				if ("\t" == _lines[_row].value.charAt(i)) {
-					leftTabSpaces += _tabWidth - (i + leftTabSpaces) % _tabWidth - 1;
-				}
-			}
-		}
-
-		if (_column < _firstColumn) {
-			// scroll horizontally
-			if (_scrollH == ScrollType.Skip) {
-				// If scrolling left, go to the start of the line and let the next section do the work.
-				if (_column + leftTabSpaces < _firstColumn)
-					_firstColumn = 0;
-			} else { // ScrollType.Step
-				_firstColumn = _column + leftTabSpaces;
-				if (_firstColumn <= 1)
-					_firstColumn = 0;
-			}
-			shouldDraw = true;
-		}
-
-		// _firstColumn > 0 means the characters are shifted 1 to the right thanks to the line continuation symbol
-		if (_column + leftTabSpaces - _firstColumn + (_firstColumn > 0 ? 1 : 0) >= this.width - _lineNumbersWidth - 1) {
-			// scroll horizontally
-			if (_scrollH == ScrollType.Skip) {
-				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) / 2;
-			} else { // ScrollType.Step
-				_firstColumn = _column + leftTabSpaces - (this.width - _lineNumbersWidth) + 3;
-			}
-			shouldDraw = true;
-		}
-
-		if (_row < _firstVisible) {
-			// scroll vertically
-			if (_scrollV == ScrollType.Skip) {
-				// If scrolling up, go to the first row and let the next section do the work.
-				_firstVisible = 0;
-			} else { // ScrollType.Step
-				_firstVisible = _row;
-				if (_firstVisible < 0)
-					_firstVisible = 0;
-			}
-			shouldDraw = true;
-		}
-
-		if ((_row - _firstVisible) >= this.height) {
-			// scroll vertically
-			if (_scrollV == ScrollType.Skip) {
-				_firstVisible = _row - this.height / 2;
-			} else { // ScrollType.Step
-				_firstVisible = _row - this.height + 1;
-			}
-			if (_firstVisible >= _lines.length) {
-				_firstVisible = _lines.length - 1;
-			}
-			shouldDraw = true;
-		}
-
-		if (shouldDraw) {
-			redraw();
-		}
-
-		_formatIndex = calculateFormatIndex(_lines[_row], _column);
-
-		// Is the caret on the screen?
-		if ((_lineNumbersWidth + (_column - _firstColumn) >= this.width) || ((_row - _firstVisible) >= this.height)) {
-			// The caret is outside of the bounds of the widget
-		}
-		else {
-			// Move cursor to where the edit caret is
-//			Console.position(_lineNumbersWidth + (_column - _firstColumn) + leftTabSpaces + (_firstColumn > 0 ? 1 : 0), _row - _firstVisible);
-
-			// The caret is within the bounds of the widget
-		}
-	}
-
-
-	// Description: Calculates the formatIndex given a LineInfo and column.
-	// Returns: The calculated formatIndex.
-	int calculateFormatIndex(LineInfo line, int column) {
-		int formatIndex = 0;
-		if (line.format !is null) {
-			uint pos;
-			for (uint i = 0; i < line.format.length; i++) {
-				pos += line.format[i].len;
-				if (pos >= column) {
-					formatIndex = i;
-					break;
-				}
-			}
-		}
-		return formatIndex;
-	}
-
-	void calculateLineNumbersWidth() {
-		if (_lineNumbers) {
-			// The width of the maximum line (in decimal as a string)
-			// summed with two for the ': '
-			_lineNumbersWidth = toStr(_lines.length-1).length + 2;
-		}
-		else {
-			_lineNumbers = 0;
-		}
-	}
-
-	// The behavior when a line is scrolled via the keyboard.
-	enum ScrollType {
-		Step,
-		Skip,
-	}
-
-	// The formatting of a line segment
-	static class LineFormat {
-		this () {}
-		this (Color f, Color b, uint l) {
-			fgCol = f;
-			bgCol = b;
-			len = l;
-		}
-
-		LineFormat dup() {
-			return new LineFormat(fgCol, bgCol, len);
-		}
-
-		int opEquals(LineFormat lf) {
-			return cast(int)(this.fgCol == lf.fgCol && this.bgCol == lf.bgCol);
-		}
-
-		Color fgCol;
-		Color bgCol;
-		uint len;
-	}
-
-	// The information about each line
-	class LineInfo {
-		this() {
-		}
-
-		this(string v, LineFormat[] f) {
-			value = v;
-			format = f;
-			this();
-		}
-
-		LineInfo dup() {
-			return new LineInfo(this.value, this.format.dup);
-		}
-
-		void opCatAssign(LineInfo li) {
-			if (this.format !is null && li.format !is null) {
-				// Merge format lines
-				if (this.format[$-1] == li.format[0]) {
-					this.format[$-1].len += li.format[0].len;
-					this.format ~= li.format[1..$];
-				} else {
-					this.format ~= li.format;
-				}
-			} else if (this.format !is null) {
-				// Make a format for the 2nd line
-				this.format ~= [new LineFormat(_forecolor, _backcolor, li.value.length)];
-			} else if (li.format !is null) {
-				// Make a format for the 1st line
-				this.format = [new LineFormat(_forecolor, _backcolor, this.value.length)] ~ li.format;
-			} else {
-				// Ignore formats if none exist
-			}
-
-			this.value ~= li.value;
-		}
-
-		LineInfo opCat(LineInfo li) {
-			LineInfo li_new = this.dup();
-			li_new ~= li;
-			return li_new;
-		}
-
-		string value;
-		LineFormat[] format;
-	}
-
-	// Stores the buffer of lines
-	List!(LineInfo) _lines;
-
-	// The top left corner
-	int _firstVisible;	// Row
-	int _firstColumn;	// Column
-
-	// The current caret position
-	int _row;
-	int _column;
-
-	// The current caret position within the format array
-	int _formatIndex;
-
-	// The column that the caret is in while pressing up and down or scrolling.
-	int _lineColumn;
-
-	// Whether or not line numbers are rendered
-	bool _lineNumbers;
-
-	// The width of the line numbers column
-	uint _lineNumbersWidth;
-
-	// The width of a single tab character expressed in spaces
-	uint _tabWidth;
-
-	// The default text colors
- 	Color _forecolor = Color.Gray;
-	Color _backcolor = Color.Black;
-	Color _forecolorNum = Color.DarkYellow;
-	Color _backcolorNum = Color.Black;
-
-	// The symbol to use to show a line continuation
-	dchar _lineCont;
-
-	// How to scroll horizontally and vertically
-	ScrollType _scrollH, _scrollV;
 }

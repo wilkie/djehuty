@@ -64,6 +64,43 @@ enum StreamAccess : int {
 // Description: A stream class!
 // Feature: Provides a nice interface to any read, write, and append operation on any type of input output device.
 class Stream {
+protected:
+
+	const uint ReadFlag = 1;
+	const uint UpdateFlag = 2;
+	const uint AppendFlag = (4 | UpdateFlag);
+	const uint AllocFlag = (8 | AppendFlag);
+
+	const uint AppendOnlyFlag = 4;
+	const uint AllocOnlyFlag = 8;
+
+	ubyte _data[] = null;
+
+	ulong _length = 0;
+	ulong _capacity = 100000;
+
+	ubyte* _pos = null;
+	ulong _curpos = 0;
+
+	void readFrom(void* buffer, ulong pos, ulong len) {
+		(cast(ubyte*)buffer)[0..cast(uint)len] = _data[cast(uint)pos..cast(uint)pos+cast(uint)len];
+	}
+
+	void resize() {
+		_capacity += 150000;
+
+		ubyte tmp[] = new ubyte[cast(uint)_capacity];
+
+		if (_length != 0) {
+			tmp[0..cast(uint)_length] = _data[0..cast(uint)_length];
+		}
+
+		//writeln(_data.length, tmp.length);
+
+		_data = tmp;
+		_pos = &_data[cast(uint)_curpos];
+	}
+
 public:
 
 	// Description: This will create the stream using a default capacity.
@@ -800,42 +837,6 @@ public:
 		return _data[0..cast(uint)_length];
 	}
 
-protected:
-
-	const uint ReadFlag = 1;
-	const uint UpdateFlag = 2;
-	const uint AppendFlag = (4 | UpdateFlag);
-	const uint AllocFlag = (8 | AppendFlag);
-
-	const uint AppendOnlyFlag = 4;
-	const uint AllocOnlyFlag = 8;
-
-	void readFrom(void* buffer, ulong pos, ulong len) {
-		(cast(ubyte*)buffer)[0..cast(uint)len] = _data[cast(uint)pos..cast(uint)pos+cast(uint)len];
-	}
-
-	void resize() {
-		_capacity += 150000;
-
-		ubyte tmp[] = new ubyte[cast(uint)_capacity];
-
-		if (_length != 0) {
-			tmp[0..cast(uint)_length] = _data[0..cast(uint)_length];
-		}
-
-		//writeln(_data.length, tmp.length);
-
-		_data = tmp;
-		_pos = &_data[cast(uint)_curpos];
-	}
-
-	ubyte _data[] = null;
-
-	ulong _length = 0;
-	ulong _capacity = 100000;
-
-	ubyte* _pos = null;
-	ulong _curpos = 0;
 }
 
 class Buffer : Stream {

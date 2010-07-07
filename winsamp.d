@@ -11,16 +11,19 @@ import resource.image;
 import resource.sound;
 
 import cui.application;
+import cui.tabbox;
 import cui.window;
 import cui.label;
 import cui.textfield;
 import cui.textbox;
+import cui.button;
 
 import synch.timer;
 import synch.thread;
 import synch.atomic;
 
-import networking.irc;
+import net.irc;
+import net.ftp;
 
 import io.console;
 
@@ -46,52 +49,21 @@ import math.common;
 import math.integer;
 import parsing.d.parser;
 
-import networking.ftp;
-
 import spec.specification;
 
 import data.queue2;
-
-class MyConsoleApp : Application {
-	void foo(bool bar) {
-		Atomic.increment(fudge);
-		while(fudge < 9) {
-		}
-		q.add("foobara");
-		q.add("foobarb");
-		q.remove();
-		q.add("foobarc");
-		q.add("foobard");
-		q.remove();
-		Atomic.increment(freak);
-	}
-
-	ulong fudge;
-	ulong freak;
-	Queue2!(string) q;
-}
-
-import binding.c;
-
-class A {
-	this(int foo = 5) {
-		_foo = foo;
-		printf("class constructor %d\n", foo);
-	}
-
-	int foobar() {
-		return _foo;
-	}
-private:
-	int _foo;
-}
-
 
 import spec.modulespecification;
 
 import data.queue;
 
 class MyWindow : CuiDialog {
+	Timer tmr;
+//	CuiLabel lbl;
+	CuiTextField field;
+	CuiTextBox box;
+	CuiTabBox tabbox;
+
 	this() {
 		static int i = 0;
 		Color toPick;
@@ -114,47 +86,48 @@ class MyWindow : CuiDialog {
 				break;
 		}
 		i++;
-		super("untitled", WindowStyle.Fixed, toPick, WindowPosition.Center, 13, 10);
+		super("untitled", WindowStyle.Fixed, toPick, 4,4, 30, 15);
 		visible = true;
-		box = new CuiTextBox(0,0,13,10);
+
+		tabbox = new CuiTabBox(0,0,this.clientWidth(),this.clientHeight());
+
+		tabbox.add("foo");
+		tabbox.add("bar");
+
+		tabbox.visible = true;
+
+		box = new CuiTextBox(0,0,tabbox.clientWidth(), tabbox.clientHeight());
 		box.lineNumbers = true;
 		box.visible = true;
 		box.backcolor = toPick;
 		box.backcolorNum = toPick;
-		push(box);
+
+//	push(box);
+
+		tabbox.push(box);
+		push(tabbox);
+
+//		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
+//		lbl.visible = true;
+//		push(lbl);
+
+		field = new CuiTextField(0, 3, 10, "Hello");
+		field.visible = true;
+		push(field);
 	}
-	
+
 	override void onResize() {
 		box.reposition(0,0,this.clientWidth,this.clientHeight);
+		tabbox.reposition(0, 0, this.clientWidth, this.clientHeight);
+		box.reposition(0, 0, tabbox.clientWidth(), tabbox.clientHeight());
 	}
 
 	override bool onSignal(Dispatcher dsp, uint signal) {
-		static int i = 0;
-		i++;
-		int a = i % 5;
-		switch(a) {
-			case 0:
-				lbl.forecolor = Color.Red;
-				break;
-			case 1:
-				lbl.forecolor = Color.Yellow;
-				break;
-			case 2:
-				lbl.forecolor = Color.Green;
-				break;
-			case 3:
-				lbl.forecolor = Color.Magenta;
-				break;
-			case 4:
-			default:
-				lbl.forecolor = Color.Blue;
-				break;
-		}
-		lbl.text = toStr(i);
 		return true;
 	}
 
 	override void onKeyDown(Key key) {
+		redraw();
 		if (key.ctrl && key.code == Key.Q) {
 			Djehuty.app.exit(0);
 		}
@@ -165,46 +138,22 @@ class MyWindow : CuiDialog {
 			super.onKeyDown(key);
 		}
 	}
-
-	Timer tmr;
-	CuiLabel lbl;
-	CuiTextField field;
-	CuiTextBox box;
 }
 
-class MyApp : CuiApplication {
-	override void onApplicationStart() {
-		push(new MyWindow);
-		push(new MyWindow);
-		push(new MyWindow);
-		auto w = new MyWindow();
-		push(w);
-		w.reorder(WindowOrder.BottomMost);
-		w = new MyWindow();
-		push(w);
-		w.text = "topmost";
-		w.reorder(WindowOrder.TopMost);
+class A {
+	bool buttonHandler(Dispatcher dsp, uint signal) {
+		auto button = cast(CuiButton)dsp;
+		button.text = "Hello!";
+		return true;
 	}
 }
 
-void foo(bool stop) {
-	Console.putln("hello");
-	Console.putln("what is up?");
-}
-
-import math.random;
-static const int REPEATS = 10000;
 int main(string[] args) {
-
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	Console.putln("he\u0364llo \u258c");
-	List!(int) foob = new List!(int)([1,3,-2,5,3,42]);
-	int[] foo = [1,3,-2,5,3,42];
-	putln(sort([1,3,-2,5,3,42]));
-	putln(sort(foob));
-	auto app = new MyApp;
+	auto app = new CuiApplication("MyApp");
+	app.push(new CuiLabel(0, 3, 10, "Hello", Color.Red, Color.Black));
+	app.push(new MyWindow());
+	auto a = new A();
+	app.push(new CuiButton(5,5, 10, 3, "Button"), &a.buttonHandler);
 	app.run();
 	return 0;
 }

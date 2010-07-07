@@ -10,8 +10,10 @@
 
 module scaffold.system;
 
-import platform.win.common;
-import platform.win.main;
+import binding.win32.windef;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.winbase;
 
 import platform.application;
 
@@ -154,9 +156,7 @@ void* SystemLoadLibraryProc(ref LibraryPlatformVars vars, string procName) {
 	return cast(void*)GetProcAddressW(vars.hmodule, pn.ptr);
 }
 
-LocaleId SystemGetLocaleId() {
-	ApplicationController app = ApplicationController.instance();
-	
+LocaleId SystemGetLocaleId() {	
 	LCID lcid = GetUserDefaultLCID();
 	if (lcid == 0x1000) {
 		// LOCALE_CUSTOM_UNSPECIFIED
@@ -186,7 +186,12 @@ LocaleId SystemGetLocaleId() {
 private import binding.c;
 
 ubyte[] malloc(size_t length) {
-	ubyte* ret = cast(ubyte*)binding.c.malloc(length);
+	static HANDLE heap = null;
+	if (heap is null) {
+		heap = GetProcessHeap();
+	}
+//	ubyte* ret = cast(ubyte*)binding.c.malloc(length);
+	ubyte* ret = cast(ubyte*)HeapAlloc(heap, 0, length);
 
 	// Error, probably out of memory.
 	if (ret is null) {
@@ -207,7 +212,12 @@ ubyte[] realloc(ubyte[] original, size_t length) {
 }
 
 ubyte[] calloc(size_t length) {
-	ubyte* ret = cast(ubyte*)binding.c.calloc(length);
+	static HANDLE heap = null;
+	if (heap is null) {
+		heap = GetProcessHeap();
+	}
+//	ubyte* ret = cast(ubyte*)binding.c.calloc(length);
+	ubyte* ret = cast(ubyte*)HeapAlloc(heap, HEAP_ZERO_MEMORY, length);
 
 	// Error, probably out of memory.
 	if (ret is null) {
@@ -219,4 +229,11 @@ ubyte[] calloc(size_t length) {
 
 void free(void[] memory) {
 	binding.c.free(memory.ptr);
+}
+
+long SystemExecute(string path) {
+	string newpath = path.dup;
+	newpath ~= '\0';
+
+	return binding.c.system(newpath.ptr);
 }

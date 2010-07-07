@@ -25,6 +25,10 @@ import binding.c;
 //	extracted. (Usability)
 class Debugger {
 static:
+protected:
+
+	void delegate(Exception) _delegate;
+
 public:
 
 	void raiseException(Exception e) {
@@ -73,8 +77,4 @@ public:
 
 	void raiseSignal(uint signal) {
 	}
-
-protected:
-
-	void delegate(Exception) _delegate;
 }

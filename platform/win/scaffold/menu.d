@@ -10,7 +10,7 @@
 
 module scaffold.menu;
 
-import scaffold.window;
+//import scaffold.window;
 
 import binding.win32.windef;
 import binding.win32.winnt;
@@ -91,5 +91,5 @@ void WindowSetMenu(MenuPlatformVars* mnuVars, ref Window wnd, WindowPlatformVars
 	SetMenu(windowVars.hWnd, mnuVars.hMenu);
 
 	// resize to adapt client area
-	WindowRebound(wnd,windowVars);
+//	WindowRebound(wnd,windowVars);
 }

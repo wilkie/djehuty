@@ -20,6 +20,42 @@ import core.definitions;
 
 // Description: This represents the ZLIB Codec.
 class ZLIBDecoder : BinaryDecoder {
+private:
+
+	const auto ZLIB_STATE_INIT						= 0;
+
+	const auto ZLIB_STATE_READ_HEADER				= 1;
+	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
+	const auto ZLIB_STATE_READ_ADLER32				= 3;
+
+	align(1) struct _zlib_cmf_flg_header {
+		ubyte zlibCMF;
+		ubyte zlibFLG;
+	}
+
+	// CMF, FLG
+	_zlib_cmf_flg_header zlibStreamHeader;
+
+	// CM
+	ubyte zlibCompressionMethod;
+
+	// CINFO
+	ubyte zlibCompressionInfo;
+
+	// FDICT
+	ubyte zlibIsDictionary;
+
+	//FLEVEL
+	ubyte zlibCompressionLevel;
+
+	//FCHECK
+	ubyte zlibFCHECK;
+
+
+	// USED WHEN STREAMING THE DECODER
+	DEFLATEDecoder deflateDecompressor;
+
+public:
 	StreamData decode(Stream stream, Stream toStream) {
 		for (;;) {
 			switch (decoderState) {
@@ -143,41 +179,4 @@ class ZLIBDecoder : BinaryDecoder {
 		
 		return StreamData.Invalid;
 	}
-
-private:
-
-	const auto ZLIB_STATE_INIT						= 0;
-
-	const auto ZLIB_STATE_READ_HEADER				= 1;
-	const auto ZLIB_STATE_STREAM_DEFLATE			= 2;
-	const auto ZLIB_STATE_READ_ADLER32				= 3;
-
-	align(1) struct _zlib_cmf_flg_header {
-		ubyte zlibCMF;
-		ubyte zlibFLG;
-	}
-protected:
-
-	// CMF, FLG
-	_zlib_cmf_flg_header zlibStreamHeader;
-
-	// CM
-	ubyte zlibCompressionMethod;
-
-	// CINFO
-	ubyte zlibCompressionInfo;
-
-	// FDICT
-	ubyte zlibIsDictionary;
-
-	//FLEVEL
-	ubyte zlibCompressionLevel;
-
-	//FCHECK
-	ubyte zlibFCHECK;
-
-
-	// USED WHEN STREAMING THE DECODER
-	DEFLATEDecoder deflateDecompressor;
-
 }

@@ -1,0 +1,6 @@
+LIBRARY 'comctl32.dll'
+EXETYPE NT
+SUBSYSTEM WINDOWS
+EXPORTS
+
+_InitCommonControls@0 = InitCommonControls

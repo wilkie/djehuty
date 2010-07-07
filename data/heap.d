@@ -34,84 +34,7 @@ interface HeapInterface(T, bool minHeap = MinHeap) {
 }
 
 class PriorityQueue(T, bool minHeap = MinHeap) : HeapInterface!(T, minHeap) {
-
-	this() {
-		_length = 0;
-	}
-
-	template add(R) { 
-		void add(R item) {
-
-			// determine location for data:
-			size_t idx = _length + 1;
-
-			// check for bounds
-			while (idx >= _data.length) {
-				_resize();
-			}
-
-			// add data:
-
-			static if (IsArray!(R)) {
-				_data[idx] = item.dup;
-			}
-			else {
-				_data[idx] = cast(T)item;
-			}
-
-			_length++;
-
-			// bubble data up:
-			_bubbleUp(idx);
-		}
-	}
-
-	T remove() {
-		T ret;
-
-		if (empty()) {
-			// XXX: Throw Tree Exception
-			return ret;
-		}
-
-		ret = _data[1];
-
-		// take last item, place at root:
-		_data[1] = _data[_length];
-		_length--;
-
-		// bubble data down:
-		_bubbleDown(1);
-
-		// return saved temp
-		return ret;
-	}
-
-	T peek() {
-		T ret;
-
-		if (empty()) {
-			// XXX: Throw Tree Exception
-			return ret;
-		}
-
-		return _data[1];
-	}
-
-	bool empty() {
-		return _length == 0;
-	}
-
-	void clear() {
-		_length = 0;
-		_data = null;
-	}
-
-	size_t length() {
-		return _length;
-	}
-
-protected:
+private:
 
 	void _bubbleUp(size_t idx) {
 		if (idx <= 1) {
@@ -204,4 +127,81 @@ protected:
 
 	size_t _length;
 	T[] _data;
+
+public:
+	this() {
+		_length = 0;
+	}
+
+	template add(R) { 
+		void add(R item) {
+
+			// determine location for data:
+			size_t idx = _length + 1;
+
+			// check for bounds
+			while (idx >= _data.length) {
+				_resize();
+			}
+
+			// add data:
+
+			static if (IsArray!(R)) {
+				_data[idx] = item.dup;
+			}
+			else {
+				_data[idx] = cast(T)item;
+			}
+
+			_length++;
+
+			// bubble data up:
+			_bubbleUp(idx);
+		}
+	}
+
+	T remove() {
+		T ret;
+
+		if (empty()) {
+			// XXX: Throw Tree Exception
+			return ret;
+		}
+
+		ret = _data[1];
+
+		// take last item, place at root:
+		_data[1] = _data[_length];
+		_length--;
+
+		// bubble data down:
+		_bubbleDown(1);
+
+		// return saved temp
+		return ret;
+	}
+
+	T peek() {
+		T ret;
+
+		if (empty()) {
+			// XXX: Throw Tree Exception
+			return ret;
+		}
+
+		return _data[1];
+	}
+
+	bool empty() {
+		return _length == 0;
+	}
+
+	void clear() {
+		_length = 0;
+		_data = null;
+	}
+
+	size_t length() {
+		return _length;
+	}
 }

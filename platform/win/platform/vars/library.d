@@ -10,7 +10,7 @@
 
 module platform.vars.library;
 
-import platform.win.common;
+import binding.win32.windef;
 
 struct LibraryPlatformVars {
 	HMODULE hmodule;

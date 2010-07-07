@@ -18,6 +18,15 @@ import scaffold.thread;
 import synch.mutex;
 
 class Condition {
+package:
+
+	void wait(ref MutexPlatformVars mutexVars) {
+		ConditionWait(_pfvars, mutexVars);
+	}
+
+	ConditionPlatformVars _pfvars;
+
+public:
 	this() {
 		ConditionInit(_pfvars);
 	}
@@ -29,14 +38,6 @@ class Condition {
 	void wait() {
 		ConditionWait(_pfvars);
 	}
-
-package:
-
-	void wait(ref MutexPlatformVars mutexVars) {
-		ConditionWait(_pfvars, mutexVars);
-	}
-
-	ConditionPlatformVars _pfvars;
 }
 
 interface Waitable {
