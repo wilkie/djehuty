@@ -17,6 +17,7 @@ import cui.label;
 import cui.textfield;
 import cui.textbox;
 import cui.button;
+import cui.canvas;
 
 import synch.timer;
 import synch.thread;
@@ -148,12 +149,228 @@ class A {
 	}
 }
 
+dchar[][] world;
+
+import math.random;
+
+class Rogue : CuiWindow {
+	int worldX, worldY;
+	int playerX, playerY;
+
+	class Enemy {
+		int hp;
+
+		int x;
+		int y;
+
+		bool stunned;
+	}
+
+	static int _w = 250;
+	static int _h = 250;
+
+	List!(Enemy) enemies;
+	Random rnd;
+
+	this() {
+		enemies = new List!(Enemy)();
+
+		rnd = new Random();
+		world = new dchar[][](_w,_h);
+		for(int x = 0; x < _w; x++) {
+			for(int y = 0; y < _h; y++) {
+				int foo = rnd.next(5);
+				if (foo < 4) {
+					world[x][y] = '.';
+				}
+				else {
+					world[x][y] = '|';
+				}
+			}
+		}
+		playerX = Console.width / 2;
+		playerY = Console.height / 2;
+		super(0,0,Console.width, Console.height);
+
+		for(int i = 0; i < 100; i++) {
+			addEnemy(10);
+		}
+	}
+
+	override void onDraw(CuiCanvas canvas) {
+		// Draw view of the world
+		canvas.forecolor = Color.White;
+		canvas.backcolor = Color.Black;
+		canvas.position(0,0);
+		for(int y = worldY; y < worldY + this.height && y < _h; y++) {
+			if (y < 0) {
+				continue;
+			}
+			canvas.position(0,y-worldY);
+			string str = "";
+			for(int x = worldX; x < worldX + this.width && x < _w; x++) {
+				if (x == playerX && y == playerY) {
+					str ~= "@";
+				}
+				else if (x < 0) {
+					str ~= " ";
+				}
+				else {
+					str ~= world[x][y];
+				}
+			}
+			canvas.write(str);
+		}
+
+		canvas.forecolor = Color.Red;
+		foreach(size_t index, Enemy enemy; enemies) {
+			if (enemy.x >= worldX && enemy.x < worldX + Console.width) {
+				if (enemy.y >= worldY && enemy.y < worldY + Console.height) {
+					int rx, ry;
+					rx = enemy.x - worldX;
+					ry = enemy.y - worldY;
+
+					canvas.position(rx, ry);
+					canvas.write("d");
+				}
+			}
+		}
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.ctrl && key.code == Key.Q) {
+			Djehuty.app.exit(0);
+		}
+		else if (key.code == Key.Left) {
+			movePlayer(-1, 0);
+		}
+		else if (key.code == Key.Right) {
+			movePlayer(1, 0);
+		}
+		else if (key.code == Key.Up) {
+			movePlayer(0, -1);
+		}
+		else if (key.code == Key.Down) {
+			movePlayer(0, 1);
+		}
+		else {
+			super.onKeyDown(key);
+		}
+		update();
+	}
+
+	void movePlayer(int rx, int ry) {
+		playerX += rx;
+		playerY += ry;
+
+		if (playerY < 0) { playerY = 0; }
+		if (playerX < 0) { playerX = 0; }
+		if (playerY >= _w) { playerY = _w-1; }
+		if (playerX >= _h) { playerX = _h-1; }
+
+		if (world[playerX][playerY] == '|') {
+			playerY -= ry;
+			playerX -= rx;
+		}
+		else {
+			// Enemy
+			foreach(size_t i, Enemy enemy; enemies) {
+				if (enemy.x == playerX && enemy.y == playerY) {
+					enemy.stunned = true;
+					enemy.hp--;
+					if (enemy.hp <= 0) {
+						enemies.remove(enemy);
+					}
+					playerY -= ry;
+					playerX -= rx;
+					break;
+				}
+			}
+		}
+
+		worldY = playerY - (Console.height/2);
+		worldX = playerX - (Console.width/2);
+
+		if (worldX < 0) { worldX = 0; }
+		if (worldY < 0) { worldY = 0; }
+		if (worldX > _w - Console.width) { worldX = _w - Console.width; }
+		if (worldY > _h - Console.height) { worldY = _h - Console.height; }
+
+		redraw();
+	}
+
+	void moveEnemy(Enemy e, int rx, int ry) {
+		e.x += rx;
+		e.y += ry;
+
+		if (e.y < 0) { e.y = 0; }
+		if (e.x < 0) { e.x = 0; }
+		if (e.y >= _h) { e.y = _h-1; }
+		if (e.x >= _w) { e.x = _w-1; }
+
+		if (world[e.x][e.y] == '|') {
+			e.y -= ry;
+			e.x -= rx;
+		}
+		else if (e.x == playerX && e.y == playerY) {
+			// Hit the player
+			e.y -= ry;
+			e.x -= rx;
+		}
+	}
+
+	void addEnemy(int hp) {
+		Enemy e = new Enemy();
+		e.x = rnd.next(_w);
+		e.y = rnd.next(_h);
+
+		e.hp = hp;
+
+		enemies.add(e);
+	}
+
+	void update() {
+		foreach(enemy; enemies) {
+			if (enemy.stunned) {
+				enemy.stunned = false;
+				continue;
+			}
+			int dir = rnd.next(4);
+			switch(dir) {
+				case 0:
+					moveEnemy(enemy, -1, 0);
+					break;
+				case 1:
+					moveEnemy(enemy, 1, 0);
+					break;
+				case 2:
+					moveEnemy(enemy, 0, -1);
+					break;
+				case 3:
+					moveEnemy(enemy, 0, 1);
+				default:
+					break;
+			}
+		}
+	}
+}
+
 int main(string[] args) {
+	auto foo = new List!(int)();
+	foo.add(3);
+	foo.add(4);
+	putln(foo);
+	foo.remove(3);
+	putln(foo);
+	int[] foor = new int[5];
+	foor[0] = 3;
+	foor[1] = 4;
+	foor = foor[0..1] ~ foor[2..$];
+	foreach(size_t index, element; foor[0..1]) {
+		putln(index, ", ", element);
+	}
 	auto app = new CuiApplication("MyApp");
-	app.push(new CuiLabel(0, 3, 10, "Hello", Color.Red, Color.Black));
-	app.push(new MyWindow());
-	auto a = new A();
-	app.push(new CuiButton(5,5, 10, 3, "Button"), &a.buttonHandler);
+	app.push(new Rogue());
 	app.run();
 	return 0;
 }

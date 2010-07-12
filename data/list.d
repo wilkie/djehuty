@@ -147,9 +147,8 @@ public:
 	T remove(T value) {
 		synchronized(this) {
 			foreach(size_t index, item; _data[0.._count]) {
-				if (value == item) {
-					scope(exit) _data = _data[0..index] ~ _data[index+1..$];
-					return _data[index];
+				if (value is item) {
+					return removeAt(index);
 				}
 			}
 			return _nullValue();
@@ -167,8 +166,9 @@ public:
 			}
 
 			_count--;
-			scope(exit) _data = _data[0..index] ~ _data[index+1..$];
-			return _data[index];
+			T ret = _data[index];
+			_data = _data[0..index] ~ _data[index+1..$];
+			return ret;
 		}
 	}
 
