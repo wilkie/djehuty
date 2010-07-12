@@ -302,7 +302,6 @@ protected:
 	ushort chunkType;
 	ushort chunkLength;
 
-<<<<<<< HEAD:decoders/image/jpeg.d
 	ushort bytesToRead;
 
 	JFIF_HEADER jfif;
@@ -368,81 +367,6 @@ protected:
 	uint cur_block_x;
 	uint cur_block_y;
 
-=======
-class JPEGDecoder : ImageDecoder {
-private:
-
-	JPEG_RENDER_INFO jpeg_vars;
-
-	ushort chunkType;
-	ushort chunkLength;
-
-	ushort bytesToRead;
-
-	JFIF_HEADER jfif;
-
-	JPEG_SOF sof;
-	SCAN_COMPONENT_SELECTOR[] sof_comp;
-
-	JPEG_SOS sos;
-	JPEG_SOS_COMPONENTS sos_comp;
-	JPEG_SOS_SELECTOR sos_sel;
-
-	HUFFMAN_TABLE HT_DC[4];
-	HUFFMAN_TABLE HT_AC[4];
-
-	HUFFMAN_TABLE* cur_ht;
-
-	int quantization_destination;
-	int quantization_precision;
-	ushort[64][4] quantization_table;
-
-	uint actual_image_width;
-	uint actual_image_height;
-
-	uint block_width;
-	uint block_height;
-
-	ubyte Hmajor;
-	ubyte Vmajor;
-
-	ubyte[] cb_upsample_lookup;
-	ubyte[] cr_upsample_lookup;
-
-	uint component_counter;
-	uint component_sample_counter;
-
-	int data_start_pos;
-
-
-	ubyte cur_bit_pos;
-	ubyte cur_byte;
-	ushort huffman_code;
-	uint huffman_bits;
-
-	uint bits_to_read;
-	ushort bits_read;
-	uint first_bit;
-
-	uint cur_ac;
-
-	ubyte* intermediate_imgPos_Start;
-	ubyte* intermediate_imgPos_Start_MCU;
-	ubyte* intermediate_imgPos;
-
-	uint image_ptr_offset;
-	ulong image_length;
-
-	uint imgylinemovement;
-	uint imgylinemovement_block;
-
-	uint imgylinemovement_block_start;
-	uint imgxlinemovement_block_start;
-
-	uint cur_block_x;
-	uint cur_block_y;
-
->>>>>>> 7168ba66303a9911bd72a3752dc0134777b0ea6e:decoders/image/jpeg.d
 public:
 	override string name() {
 		return "Joint Picture Experts Group";

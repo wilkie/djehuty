@@ -30,35 +30,9 @@ private:
 	TabInfo[] _tabs;
 	int _active;
 
-<<<<<<< HEAD:cui/tabbox.d
-class CuiTabBox : CuiContainer, Iterable!(CuiContainer) {
-protected:
-
-	override void _reportMove(uint x, uint y) {
-		_base_y++;
-		super._reportMove(x,y);
-	}
-	
-	uint _old_base_y;
-	size_t _curTab = 0;
-
-	List!(CuiContainer) _tabList;
-
-	Color _forecolor = Color.Gray;
-	Color _backcolor = Color.Black;
-
-	Color _selectedForecolor = Color.Yellow;
-	Color _selectedBackcolor = Color.Black;
-
-public:
-	this(uint x, uint y, uint width, uint height) {
-		super(x,y,width,height);
-		_tabList = new List!(CuiContainer);
-=======
 public:
 	this(int x, int y, int width, int height) {
 		super(x, y, width, height);
->>>>>>> 7168ba66303a9911bd72a3752dc0134777b0ea6e:cui/tabbox.d
 	}
 
 	void title(string value) {
@@ -195,37 +169,4 @@ public:
 			super.push(dsp, handler);
 		}
 	}
-<<<<<<< HEAD:cui/tabbox.d
-	
-	bool isTabStop() {
-		return true;
-	}
-	
-// properties
-	
-	size_t current() {
-		return _curTab;
-	}
-	
-	void current(size_t cur) {
-		if(cur < _tabList.length()) {
-			if (_curTab == cur) {
-				return;
-			}
-			_tabList[_curTab].onLostFocus();
-			_curTab = cur;
-
-			if((_tabList[_curTab].width != this.width 
-			  || _tabList[_curTab].height != (this.height-1))) {
-				_tabList[_curTab].resize(width, height-1);
-			}
-
-			onDraw();
-
-			_tabList[_curTab].onGotFocus();
-		}
-	}	
-
-=======
->>>>>>> 7168ba66303a9911bd72a3752dc0134777b0ea6e:cui/tabbox.d
 }
