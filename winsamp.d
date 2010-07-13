@@ -164,13 +164,19 @@ class Rogue : CuiWindow {
 		int y;
 
 		bool stunned;
+		Color color;
+		dchar image;
 	}
 
 	static int _w = 250;
 	static int _h = 250;
+	
+	static int playerHP = 10;
 
 	List!(Enemy) enemies;
 	Random rnd;
+	
+	CuiLabel hp;
 
 	this() {
 		enemies = new List!(Enemy)();
@@ -195,6 +201,16 @@ class Rogue : CuiWindow {
 		for(int i = 0; i < 100; i++) {
 			addEnemy(10);
 		}
+
+		push(hp = new CuiLabel(0,0,10,"HP: " ~ toStr(playerHP), Color.Yellow));
+	}
+
+	void hitPlayer(int hp) {
+		playerHP -= hp;
+		if (playerHP < 0) {
+			playerHP = 0;
+		}
+		this.hp.text = "HP: " ~ toStr(playerHP);
 	}
 
 	override void onDraw(CuiCanvas canvas) {
@@ -230,8 +246,9 @@ class Rogue : CuiWindow {
 					rx = enemy.x - worldX;
 					ry = enemy.y - worldY;
 
+					canvas.forecolor = enemy.color;
 					canvas.position(rx, ry);
-					canvas.write("d");
+					canvas.write(enemy.image);
 				}
 			}
 		}
@@ -314,6 +331,7 @@ class Rogue : CuiWindow {
 		}
 		else if (e.x == playerX && e.y == playerY) {
 			// Hit the player
+			hitPlayer(1);
 			e.y -= ry;
 			e.x -= rx;
 		}
@@ -325,6 +343,12 @@ class Rogue : CuiWindow {
 		e.y = rnd.next(_h);
 
 		e.hp = hp;
+		e.color.red = rnd.nextDouble() % 1.0;
+		e.color.green = rnd.nextDouble() % 1.0;
+		e.color.blue = rnd.nextDouble() % 1.0;
+		e.color.alpha = 1.0;
+
+		e.image = 'a' + rnd.next(26);
 
 		enemies.add(e);
 	}
