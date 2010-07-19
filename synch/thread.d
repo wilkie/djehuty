@@ -17,7 +17,7 @@ import io.console;
 
 // Description: This class represents a thread.  You can create and override the call function to use, or use a delegate to specify an external function to call.
 class Thread {
-protected:
+private:
 
 	void end() {
 		threadById[_id] = null;
