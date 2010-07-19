@@ -25,7 +25,7 @@ import io.console;
 import analyzing.debugger;
 
 // Description: This class represents the application instance.
-abstract class Application : Responder {
+class Application : Responder {
 protected:
 	string _appName;
 	Arguments _arguments;
