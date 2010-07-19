@@ -8,8 +8,8 @@ import cui.canvas;
 class CuiButton : CuiWindow {
 private:
 
-	Color _bg;
-	Color _fg;
+	Color _bg = Color.Gray;
+	Color _fg = Color.Blue;
 
 	bool _pressed;
 
@@ -17,24 +17,24 @@ private:
 
 public:
 	enum Signal {
-		Pressed
+		Pressed,
+		Released
 	}
 
-	this(int x, int y, int width, int height, string text, Color fg = Color.Blue, Color bg = Color.Gray) {
+	this(int x, int y, int width, int height, string text = "") {
 		_text = text.dup;
-		_bg = bg;
-		_fg = fg;
 		super(x, y, width, height);
 	}
 
 	void onPrimaryDown(ref Mouse mouse) {
+		raiseSignal(Signal.Pressed);
 		_pressed = true;
 		redraw();
 	}
 
 	void onPrimaryUp(ref Mouse mouse) {
-		raiseSignal(Signal.Pressed);
 		_pressed = false;
+		raiseSignal(Signal.Released);
 		redraw();
 	}
 
@@ -79,15 +79,33 @@ public:
 			canvas.write(BORDER_RIGHT_CHAR);
 		}
 	}
-	
+
 	// Properties
-	
+
 	string text() {
 		return _text.dup;
 	}
-	
+
 	void text(string value) {
 		_text = value.dup;
+		redraw();
+	}
+	
+	Color forecolor() {
+		return _fg;
+	}
+	
+	void forecolor(Color value) {
+		_fg = value;
+		redraw();
+	}
+	
+	Color backcolor() {
+		return _bg;
+	}
+	
+	void backcolor(Color value) {
+		_bg = value;
 		redraw();
 	}
 }
