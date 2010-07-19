@@ -18,6 +18,8 @@ import cui.textfield;
 import cui.textbox;
 import cui.button;
 import cui.canvas;
+import cui.progressbar;
+import cui.scrollbar;
 
 import synch.timer;
 import synch.thread;
@@ -175,8 +177,9 @@ class Rogue : CuiWindow {
 
 	List!(Enemy) enemies;
 	Random rnd;
-	
+
 	CuiLabel hp;
+	CuiProgressBar bar;
 
 	this() {
 		enemies = new List!(Enemy)();
@@ -203,6 +206,8 @@ class Rogue : CuiWindow {
 		}
 
 		push(hp = new CuiLabel(0,0,10,"HP: " ~ toStr(playerHP), Color.Yellow));
+		push(bar = new CuiProgressBar(10, 0, Console.width - 10, 1));
+		bar.value = 1.0;
 	}
 
 	void hitPlayer(int hp) {
@@ -210,6 +215,7 @@ class Rogue : CuiWindow {
 		if (playerHP < 0) {
 			playerHP = 0;
 		}
+		this.bar.value = cast(double)playerHP / 10.0;
 		this.hp.text = "HP: " ~ toStr(playerHP);
 	}
 
@@ -379,22 +385,29 @@ class Rogue : CuiWindow {
 	}
 }
 
-int main(string[] args) {
-	auto foo = new List!(int)();
-	foo.add(3);
-	foo.add(4);
-	putln(foo);
-	foo.remove(3);
-	putln(foo);
-	int[] foor = new int[5];
-	foor[0] = 3;
-	foor[1] = 4;
-	foor = foor[0..1] ~ foor[2..$];
-	foreach(size_t index, element; foor[0..1]) {
-		putln(index, ", ", element);
+class C {
+	bool timerProc(Dispatcher dsp, uint signal) {
+		Console.putln("asdf");
+		return false;
 	}
+}
+
+void foobarfunc(bool f) {
+}
+
+int main(string[] args) {
+//  	auto app = new Application("MyApp");
+// 	Timer tmr = new Timer();
+// 	tmr.interval = 250;
+// 	C a = new C();
+// 	app.push(tmr, &a.timerProc);
+// 	tmr.stop();
+// 	tmr.start();
+// 	Thread.sleep(1000);
+	//*/
 	auto app = new CuiApplication("MyApp");
 	app.push(new Rogue());
-	app.run();
+	app.push(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
+	app.run();//*/
 	return 0;
 }
