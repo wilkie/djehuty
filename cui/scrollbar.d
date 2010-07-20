@@ -106,20 +106,20 @@ public:
 		_orientation = orientation;
 
 		if (_orientation == Orientation.Horizontal) {
-			_minusButton = new CuiButton(0, 0, this.height*2, this.height, "<");
+			_minusButton = new CuiButton(0, 0, this.height, this.height, "\u2190");
 			_minusButton.forecolor = _buttonForecolor;
 			_minusButton.backcolor = _buttonBackcolor;
 
-			_plusButton = new CuiButton(this.width - (this.height*2), 0, this.height*2, this.height, ">");
+			_plusButton = new CuiButton(this.width - this.height, 0, this.height, this.height, "\u2192");
 			_plusButton.forecolor = _buttonForecolor;
 			_plusButton.backcolor = _buttonBackcolor;
 		}
 		else {
-			_minusButton = new CuiButton(0, 0, this.width, this.width, "^");
+			_minusButton = new CuiButton(0, 0, this.width, this.width, "\u2191");
 			_minusButton.forecolor = _buttonForecolor;
 			_minusButton.backcolor = _buttonBackcolor;
 
-			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "v");
+			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "\u2193");
 			_plusButton.forecolor = _buttonForecolor;
 			_plusButton.backcolor = _buttonBackcolor;
 		}
@@ -169,7 +169,7 @@ public:
 
 		if (_orientation == Orientation.Horizontal) {
 			// Buttons are square
-			int buttonWidth = this.height*2;
+			int buttonWidth = _plusButton.width;
 
 			for(int i = 0; i < this.height; i++) {
 				canvas.position(buttonWidth, i);
@@ -193,7 +193,20 @@ public:
 		}
 		else {
 			// Buttons are square
-			int buttonHeight = this.width;
+			int buttonHeight = _plusButton.height;
+
+			for(int i = buttonHeight; i < (this.height - buttonHeight); i++) {
+				canvas.position(0,i);
+				if (i == _thumbPos + buttonHeight) {
+					canvas.forecolor = _thumbForecolor;
+					canvas.backcolor = _thumbBackcolor;
+				}
+				else if (i == buttonHeight || (i == (buttonHeight + _thumbPos + _thumbSize))) {
+					canvas.backcolor = _areaBackcolor;
+				}
+
+				canvas.write(times(" ", this.width));
+			}
 		}
 	}
 
