@@ -23,8 +23,8 @@ private:
 	Orientation _orientation;
 
 	// Various colors
-	Color _buttonBackcolor = Color.Gray;
-	Color _buttonForecolor = Color.Blue;
+	Color _buttonBackcolor = Color.Blue;
+	Color _buttonForecolor = Color.Gray;
 
 	Color _thumbBackcolor = Color.Blue;
 	Color _thumbForecolor = Color.Gray;

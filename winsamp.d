@@ -407,8 +407,8 @@ int main(string[] args) {
 	//*/
 	auto app = new CuiApplication("MyApp");
 	app.push(new Rogue());
-	app.push(new CuiScrollBar(0,0,25,5,Orientation.Horizontal));
-	app.push(new CuiScrollBar(0,5,5,25,Orientation.Vertical));
+	app.push(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
+	app.push(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
 	app.run();//*/
 	return 0;
 }
