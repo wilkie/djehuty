@@ -59,7 +59,9 @@ public:
 
 		for(uint i = 0; i < this.height; i++) {
 			canvas.position(0, i);
-			canvas.write(BORDER_LEFT_CHAR);
+			if (this.width > 2) {
+				canvas.write(BORDER_LEFT_CHAR);
+			}
 
 			if (i == textY) {
 				for(uint x = 1; x < textX; x++) {
@@ -76,7 +78,12 @@ public:
 				}
 			}
 
-			canvas.write(BORDER_RIGHT_CHAR);
+			if (this.width > 2) {
+				canvas.write(BORDER_RIGHT_CHAR);
+			}
+			else {
+				canvas.write("  ");
+			}
 		}
 	}
 
@@ -90,7 +97,7 @@ public:
 		_text = value.dup;
 		redraw();
 	}
-	
+
 	Color forecolor() {
 		return _fg;
 	}
