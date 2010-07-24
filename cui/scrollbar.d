@@ -85,6 +85,10 @@ private:
 
 public:
 
+	enum Signal {
+		Changed
+	}
+
 	// Description: This function will create a scrollbar widget that will
 	//  go in the direction indicated by orientation.
 	// x: The x coordinate of the widget.
@@ -128,8 +132,7 @@ public:
 	}
 
 	bool timerProc(Dispatcher dsp, uint signal) {
-		_value += _timerDifference;
-		redraw();
+		this.value = this.value + _timerDifference;
 		return false;
 	}
 
@@ -146,11 +149,7 @@ public:
 				_timer.stop();
 				break;
 			case CuiButton.Signal.Pressed:
-				_value += direction * _smallChange;
-				if (_value < _min) {
-					_value = _min;
-				}
-				redraw();
+				this.value = this.value + direction * _smallChange;
 
 				// Set a timer
 				_timerDifference = direction * _smallChange;
@@ -221,6 +220,64 @@ public:
 	// value: The new orientation.
 	void orientation(Orientation value) {
 		_orientation = value;
+		redraw();
+	}
+	
+	// Description: This function will get the value.
+	// Returns: The current value.
+	long value() {
+		return _value;
+	}
+
+	// Description: This function will set the value.
+	// value: The new value.
+	void value(long value) {
+		_value = value;
+		if (_value > _max) {
+			_value = _max;
+		}
+		else if (_value < _min) {
+			_value = _min;
+		}
+		raiseSignal(CuiScrollBar.Signal.Changed);
+		redraw();
+	}
+
+	// Description: This function will get the maximum value.
+	// Returns: The maximum value.
+	long max() {
+		return _max;
+	}
+
+	// Description: This function will set the maximum value.
+	// value: The new maximum value.
+	void max(long value) {
+		_max = value;
+		if (_max <= _min) {
+			_max = _min;
+		}
+		if (_value >= _max) {
+			_value = _max;
+		}
+		redraw();
+	}
+
+	// Description: This function will get the maximum value.
+	// Returns: The maximum value.
+	long min() {
+		return _min;
+	}
+
+	// Description: This function will set the minimum value.
+	// value: The new minimum value.
+	void min(long value) {
+		_min = value;
+		if (_max <= _min) {
+			_min = _max;
+		}
+		if (_value <= _min) {
+			_value = _min;
+		}
 		redraw();
 	}
 }
