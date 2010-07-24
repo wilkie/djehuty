@@ -30,7 +30,7 @@ private:
 	Color _thumbForecolor = Color.Gray;
 
 	Color _areaBackcolor = Color.White;
-	
+
 	// The timer foo
 	long _timerDifference;	// the amount to add to _value
 	Timer _timer;			// the timer for holding down the buttons
@@ -93,12 +93,11 @@ public:
 	// height: The height of the widget.
 	// orientation: Whether the bar is horizontal or vertical.
 	this(int x, int y, int width, int height, Orientation orientation) {
-
 		super(x, y, width, height);
-		
+
 		_timer = new Timer();
 		_timerDifference = 0;
-		
+
 		_timer.interval = 250;
 
 		push(_timer, &timerProc);
