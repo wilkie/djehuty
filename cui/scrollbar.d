@@ -19,6 +19,9 @@ import synch.timer;
 class CuiScrollBar : CuiWindow {
 private:
 
+	// The time inbetween updates when the buttons are held down.
+	static const int _timerInterval = 150;
+
 	// The orientation
 	Orientation _orientation;
 
@@ -49,6 +52,7 @@ private:
 	CuiButton _minusButton;
 	CuiButton _plusButton;
 
+	// This function computes where the thumb bar is and how large it is.
 	void computeThumbBounds() {
 		// Thumb area size is the area that represents a large change
 		long area = _max - _min;
@@ -64,7 +68,7 @@ private:
 		int barLength;
 
 		if (_orientation == Orientation.Horizontal) {
-			barLength = this.width - (this.height * 4);
+			barLength = this.width - (this.height * 2);
 		}
 		else {
 			barLength = this.height - (this.width * 2);
@@ -81,54 +85,6 @@ private:
 		if (_thumbPos < 0) {
 			_thumbPos = 0;
 		}
-	}
-
-public:
-
-	enum Signal {
-		Changed
-	}
-
-	// Description: This function will create a scrollbar widget that will
-	//  go in the direction indicated by orientation.
-	// x: The x coordinate of the widget.
-	// y: The y coordinate of the widget.
-	// width: The width of the widget.
-	// height: The height of the widget.
-	// orientation: Whether the bar is horizontal or vertical.
-	this(int x, int y, int width, int height, Orientation orientation) {
-		super(x, y, width, height);
-
-		_timer = new Timer();
-		_timerDifference = 0;
-
-		_timer.interval = 250;
-
-		push(_timer, &timerProc);
-
-		_orientation = orientation;
-
-		if (_orientation == Orientation.Horizontal) {
-			_minusButton = new CuiButton(0, 0, this.height, this.height, "\u2190");
-			_minusButton.forecolor = _buttonForecolor;
-			_minusButton.backcolor = _buttonBackcolor;
-
-			_plusButton = new CuiButton(this.width - this.height, 0, this.height, this.height, "\u2192");
-			_plusButton.forecolor = _buttonForecolor;
-			_plusButton.backcolor = _buttonBackcolor;
-		}
-		else {
-			_minusButton = new CuiButton(0, 0, this.width, this.width, "\u2191");
-			_minusButton.forecolor = _buttonForecolor;
-			_minusButton.backcolor = _buttonBackcolor;
-
-			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "\u2193");
-			_plusButton.forecolor = _buttonForecolor;
-			_plusButton.backcolor = _buttonBackcolor;
-		}
-
-		push(_minusButton, &buttonHandler);
-		push(_plusButton, &buttonHandler);
 	}
 
 	bool timerProc(Dispatcher dsp, uint signal) {
@@ -159,6 +115,54 @@ public:
 				break;
 		}
 		return true;
+	}
+
+public:
+
+	enum Signal {
+		Changed
+	}
+
+	// Description: This function will create a scrollbar widget that will
+	//  go in the direction indicated by orientation.
+	// x: The x coordinate of the widget.
+	// y: The y coordinate of the widget.
+	// width: The width of the widget.
+	// height: The height of the widget.
+	// orientation: Whether the bar is horizontal or vertical.
+	this(int x, int y, int width, int height, Orientation orientation) {
+		super(x, y, width, height);
+
+		_timer = new Timer();
+		_timerDifference = 0;
+
+		_timer.interval = _timerInterval;
+
+		push(_timer, &timerProc);
+
+		_orientation = orientation;
+
+		if (_orientation == Orientation.Horizontal) {
+			_minusButton = new CuiButton(0, 0, this.height, this.height, "\u2190");
+			_minusButton.forecolor = _buttonForecolor;
+			_minusButton.backcolor = _buttonBackcolor;
+
+			_plusButton = new CuiButton(this.width - this.height, 0, this.height, this.height, "\u2192");
+			_plusButton.forecolor = _buttonForecolor;
+			_plusButton.backcolor = _buttonBackcolor;
+		}
+		else {
+			_minusButton = new CuiButton(0, 0, this.width, this.width, "\u2191");
+			_minusButton.forecolor = _buttonForecolor;
+			_minusButton.backcolor = _buttonBackcolor;
+
+			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "\u2193");
+			_plusButton.forecolor = _buttonForecolor;
+			_plusButton.backcolor = _buttonBackcolor;
+		}
+
+		push(_minusButton, &buttonHandler);
+		push(_plusButton, &buttonHandler);
 	}
 
 	override void onDraw(CuiCanvas canvas) {
@@ -222,7 +226,7 @@ public:
 		_orientation = value;
 		redraw();
 	}
-	
+
 	// Description: This function will get the value.
 	// Returns: The current value.
 	long value() {
@@ -278,6 +282,34 @@ public:
 		if (_value <= _min) {
 			_value = _min;
 		}
+		redraw();
+	}
+
+	// Description: This function will get the amount that is scrolled when the buttons are pressed.
+	// Returns: The amount that will be scrolled.
+	long smallChange() {
+		return _smallChange;
+	}
+
+	// Description: This function will set the amount that is scrolled when the buttons are pressed.
+	// value: The new amount to scroll.
+	void smallChange(long value) {
+		_smallChange = value;
+		redraw();
+	}
+
+	// Description: This function will get the amount that is scrolled when a page is scrolled. This
+	//  is whenever the inner area is clicked or page up or page down is pressed.
+	// Returns: The amount that will be scrolled.
+	long largeChange() {
+		return _largeChange;
+	}
+
+	// Description: This function will set the amount that is scrolled when a page is scrolled. This
+	//  is whenever the inner area is clicked or page up or page down is pressed.
+	// value: The new amount to scroll.
+	void largeChange(long value) {
+		_largeChange = value;
 		redraw();
 	}
 }
