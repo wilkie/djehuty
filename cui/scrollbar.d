@@ -221,17 +221,20 @@ public:
 			int diff;
 			int buttonSize;
 			int barSize;
+			int mousePos;
+
 			if (_orientation == Orientation.Horizontal) {
-				diff = cast(int)mouse.x - _timerLastPos;
+				mousePos = cast(int)mouse.x;
 				buttonSize = _plusButton.width;
 				barSize = this.width - (buttonSize*2);
 			}
 			else {
-				diff = cast(int)mouse.y - _timerLastPos;
+				mousePos = cast(int)mouse.y;
 				buttonSize = _plusButton.height;
 				barSize = this.height - (buttonSize*2);
 			}
 
+			diff = mousePos - _timerLastPos;
 			if (diff == 0) {
 				return;
 			}
@@ -253,6 +256,14 @@ public:
 			}
 			else if (newThumbPos > thumbArea) {
 				newThumbPos = thumbArea;
+			}
+
+			// Ensure that we are moving the thumb bar to the mouse position
+			if (mousePos < buttonSize && _thumbPos == newThumbPos) {
+				return;
+			}
+			else if (mousePos >= buttonSize + barSize && _thumbPos == newThumbPos) {
+				return;
 			}
 
 			double percent = cast(double)newThumbPos / cast(double)thumbArea;
