@@ -49,47 +49,57 @@ private:
 	long _smallChange = 1;
 	long _largeChange = 5;
 
+	// Thumb foo
+
 	int _thumbSize;
 	int _thumbPos;
+	bool _thumbDragged;
 
 	CuiButton _minusButton;
 	CuiButton _plusButton;
 
 	// This function computes where the thumb bar is and how large it is.
 	void computeThumbBounds() {
+		computeThumbBounds(_value);
+	}
+
+	void computeThumbBounds(long withValue) {
 		// Thumb area size is the area that represents a large change
 		long area = _max - _min;
-		long pos = _value - _min;
+		long pos = withValue - _min;
 
-		double filled = cast(double)pos / cast(double)area;
+		double percent = cast(double)pos / cast(double)area;
 
 		double largeChangeArea = cast(double)_largeChange / cast(double)area;
 
 		// The thumb size is the width of the bar area (the width of the
 		// widget minus the width of both buttons) times the percentage
 		// of the large change area.
-		int barLength;
+		int barSize;
 
 		if (_orientation == Orientation.Horizontal) {
-			barLength = this.width - (this.height * 2);
+			barSize = this.width - (this.height * 2);
 		}
 		else {
-			barLength = this.height - (this.width * 2);
+			barSize = this.height - (this.width * 2);
 		}
 
-		_thumbSize = cast(int)(barLength * largeChangeArea);
+		_thumbSize = cast(int)(barSize * largeChangeArea);
 
 		if (_thumbSize < 1) {
 			_thumbSize = 1;
 		}
 
+		int thumbArea = barSize - _thumbSize;
+
 		// Thumb position
-		_thumbPos = cast(int)((barLength - _thumbSize) * filled);
+		_thumbPos = cast(int)(thumbArea * percent);
 		if (_thumbPos < 0) {
 			_thumbPos = 0;
 		}
 	}
 
+	// This will be called when the timer signals.
 	bool timerProc(Dispatcher dsp, uint signal) {
 		if (_timerIsLarge) {
 			// if the cursor is now over the thumb bar, stop!
@@ -108,6 +118,7 @@ private:
 		return false;
 	}
 
+	// This will be called when the button signals an action.
 	bool buttonHandler(Dispatcher dsp, uint signal) {
 		long direction = 1;
 
@@ -134,6 +145,9 @@ private:
 		return true;
 	}
 
+	// This helper function will take a position and report which section of the bar
+	// is at that position. 0 will be the thumb (no movement), -1 is to the left of the
+	// thumb (negative movement) and 1 is to the right (positive movement)
 	int componentAtPosition(int mousePos) {
 		// get thumb bounds
 		computeThumbBounds();
@@ -196,7 +210,85 @@ public:
 		push(_plusButton, &buttonHandler);
 	}
 
+	override void onDrag(ref Mouse mouse) {
+		super.onDrag(mouse);
+
+		if (_thumbDragged) {
+			// get thumb bounds
+			computeThumbBounds();
+
+			// need the difference since the last movement
+			int diff;
+			int buttonSize;
+			int barSize;
+			if (_orientation == Orientation.Horizontal) {
+				diff = cast(int)mouse.x - _timerLastPos;
+				buttonSize = _plusButton.width;
+				barSize = this.width - (buttonSize*2);
+			}
+			else {
+				diff = cast(int)mouse.y - _timerLastPos;
+				buttonSize = _plusButton.height;
+				barSize = this.height - (buttonSize*2);
+			}
+
+			if (diff == 0) {
+				return;
+			}
+
+			// Now move the thumb bar to that position
+
+			// |....|xxx|....| - visual representation, x = thumb bar
+
+			// |-------------| - width (barSize)
+			// |---------|     - width of the area (thumbArea)
+			// ^--- minimum thumb position (0)
+			//           ^--- maximum thumb position (thumbArea)
+
+			int thumbArea = barSize - _thumbSize;
+			int newThumbPos = _thumbPos + diff;
+
+			if (newThumbPos < 0) {
+				newThumbPos = 0;
+			}
+			else if (newThumbPos > thumbArea) {
+				newThumbPos = thumbArea;
+			}
+
+			double percent = cast(double)newThumbPos / cast(double)thumbArea;
+
+			long newValue;
+
+			double change = 0.5 * (1.0 / thumbArea);
+
+			// Keep adjusting the value until it lines up correctly
+			// We adjust using the percentage of the scrolling space that makes up
+			// a half of a character cell.
+			while(_thumbPos != newThumbPos) {
+				newValue = cast(long)(percent * cast(double)(_max - _min) + cast(double)_min);
+				computeThumbBounds(newValue);
+				if (_thumbPos < newThumbPos) {
+					percent += change;
+				}
+				else if (_thumbPos > newThumbPos) {
+					percent -= change;
+				}
+			}
+
+			this.value = newValue;
+		}
+
+		// update to the current position
+		if (_orientation == Orientation.Horizontal) {
+			_timerLastPos = cast(int)mouse.x;
+		}
+		else {
+			_timerLastPos = cast(int)mouse.y;
+		}
+	}
+
 	override void onPrimaryUp(ref Mouse mouse) {
+		_thumbDragged = false;
 		_timer.stop();
 		super.onPrimaryUp(mouse);
 	}
@@ -223,6 +315,8 @@ public:
 
 			if (comp == 0) {
 				// thumb bar
+				_thumbDragged = true;
+				_timerLastPos = mousePos;
 			}
 			else {
 				// Mouse is clicked to the left or right of the thumb bar
@@ -234,6 +328,7 @@ public:
 				_timer.start();
 			}
 		}
+
 		super.onPrimaryDown(mouse);
 	}
 
