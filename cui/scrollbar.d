@@ -22,6 +22,13 @@ private:
 	// The time inbetween updates when the buttons are held down.
 	static const int _timerInterval = 150;
 
+	// The timer foo
+	bool _timerIsLarge;		// if using _largeChange
+	bool _timerIncreasing;	// if scrolling in a positive direction
+	int _timerLastPos;		// the last pos
+
+	Timer _timer;			// the timer for holding down the buttons
+
 	// The orientation
 	Orientation _orientation;
 
@@ -34,17 +41,13 @@ private:
 
 	Color _areaBackcolor = Color.White;
 
-	// The timer foo
-	long _timerDifference;	// the amount to add to _value
-	Timer _timer;			// the timer for holding down the buttons
-
 	// These store the value
 	long _max = 100;
 	long _min = 0;
 	long _value = 50;
 
 	long _smallChange = 1;
-	long _largeChange = 50;
+	long _largeChange = 5;
 
 	int _thumbSize;
 	int _thumbPos;
@@ -88,7 +91,20 @@ private:
 	}
 
 	bool timerProc(Dispatcher dsp, uint signal) {
-		this.value = this.value + _timerDifference;
+		if (_timerIsLarge) {
+			// if the cursor is now over the thumb bar, stop!
+			int comp = componentAtPosition(_timerLastPos);
+			if (comp == 0) {
+				return true;
+			}
+			this.value = this.value + (comp * _largeChange);
+		}
+		else if (_timerIncreasing) {
+			this.value = this.value + _smallChange;
+		}
+		else {
+			this.value = this.value - _smallChange;
+		}
 		return false;
 	}
 
@@ -108,13 +124,30 @@ private:
 				this.value = this.value + direction * _smallChange;
 
 				// Set a timer
-				_timerDifference = direction * _smallChange;
+				_timerIsLarge = false;
+				_timerIncreasing = direction == 1;
 				_timer.start();
 				break;
 			default:
 				break;
 		}
 		return true;
+	}
+
+	int componentAtPosition(int mousePos) {
+		// get thumb bounds
+		computeThumbBounds();
+
+		if (mousePos > _thumbPos && mousePos <= _thumbPos + _thumbSize) {
+			// Mouse is clicked inside of the thumb bar
+			return 0;
+		}
+		else if (mousePos <= _thumbPos) {
+			return -1;
+		}
+		else {
+			return 1;
+		}
 	}
 
 public:
@@ -134,8 +167,6 @@ public:
 		super(x, y, width, height);
 
 		_timer = new Timer();
-		_timerDifference = 0;
-
 		_timer.interval = _timerInterval;
 
 		push(_timer, &timerProc);
@@ -164,37 +195,43 @@ public:
 		push(_minusButton, &buttonHandler);
 		push(_plusButton, &buttonHandler);
 	}
-	
-	override void onPrimaryDown(ref Mouse mouse) {
-		// get thumb bounds
-		computeThumbBounds();
 
-		int mousePos = 0;
-		int buttonSize = 0;
-		int barExtent = 0;
+	override void onPrimaryUp(ref Mouse mouse) {
+		_timer.stop();
+		super.onPrimaryUp(mouse);
+	}
+
+	override void onPrimaryDown(ref Mouse mouse) {
+		int mousePos;
+		int buttonSize;
+		int barExtent;
 
 		if (_orientation == Orientation.Horizontal) {
-			buttonSize = _plusButton.width;
 			mousePos = cast(int)mouse.x;
+			buttonSize = _plusButton.width;
 			barExtent = this.width - buttonSize;
 		}
 		else {
-			buttonSize = _plusButton.height;
 			mousePos = cast(int)mouse.y;
+			buttonSize = _plusButton.height;
 			barExtent = this.height - buttonSize;
 		}
 
 		if (mousePos >= buttonSize && mousePos < barExtent) {
-			// Mouse is clicked inside the area of the bar
-			if (mousePos > _thumbPos && mousePos <= _thumbPos + _thumbSize) {
-				// Mouse is clicked inside of the thumb bar
-			}
-			else if (mousePos <= _thumbPos) {
-				// Mouse is clicked to the left of the thumb bar
-				this.value = this.value - _largeChange;
+			// inside the bar
+			int comp = componentAtPosition(mousePos);
+
+			if (comp == 0) {
+				// thumb bar
 			}
 			else {
-				this.value = this.value + _largeChange;
+				// Mouse is clicked to the left or right of the thumb bar
+				this.value = this.value + (comp * _largeChange);
+				_timerLastPos = mousePos;
+
+				// Set a timer
+				_timerIsLarge = true;
+				_timer.start();
 			}
 		}
 		super.onPrimaryDown(mouse);
