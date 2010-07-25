@@ -44,7 +44,7 @@ private:
 	long _value = 50;
 
 	long _smallChange = 1;
-	long _largeChange = 5;
+	long _largeChange = 50;
 
 	int _thumbSize;
 	int _thumbPos;
@@ -163,6 +163,41 @@ public:
 
 		push(_minusButton, &buttonHandler);
 		push(_plusButton, &buttonHandler);
+	}
+	
+	override void onPrimaryDown(ref Mouse mouse) {
+		// get thumb bounds
+		computeThumbBounds();
+
+		int mousePos = 0;
+		int buttonSize = 0;
+		int barExtent = 0;
+
+		if (_orientation == Orientation.Horizontal) {
+			buttonSize = _plusButton.width;
+			mousePos = cast(int)mouse.x;
+			barExtent = this.width - buttonSize;
+		}
+		else {
+			buttonSize = _plusButton.height;
+			mousePos = cast(int)mouse.y;
+			barExtent = this.height - buttonSize;
+		}
+
+		if (mousePos >= buttonSize && mousePos < barExtent) {
+			// Mouse is clicked inside the area of the bar
+			if (mousePos > _thumbPos && mousePos <= _thumbPos + _thumbSize) {
+				// Mouse is clicked inside of the thumb bar
+			}
+			else if (mousePos <= _thumbPos) {
+				// Mouse is clicked to the left of the thumb bar
+				this.value = this.value - _largeChange;
+			}
+			else {
+				this.value = this.value + _largeChange;
+			}
+		}
+		super.onPrimaryDown(mouse);
 	}
 
 	override void onDraw(CuiCanvas canvas) {
