@@ -247,6 +247,10 @@ public:
 			//           ^--- maximum thumb position (thumbArea)
 
 			int thumbArea = barSize - _thumbSize;
+			if (thumbArea <= 0) {
+				return;
+			}
+
 			int newThumbPos = _thumbPos + diff;
 
 			if (newThumbPos < 0) {
@@ -276,6 +280,9 @@ public:
 			while(_thumbPos != newThumbPos) {
 				newValue = cast(long)(percent * cast(double)(_max - _min) + cast(double)_min);
 				computeThumbBounds(newValue);
+				if (_max == _min) {
+					break;
+				}
 				if (_thumbPos < newThumbPos) {
 					percent += change;
 				}
