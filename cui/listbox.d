@@ -34,6 +34,14 @@ private:
 	size_t _selIndex = size_t.max;
 	size_t _firstVisible;
 
+	bool _scrolled(Dispatcher dsp, uint signal) {
+		if (signal == CuiScrollBar.Signal.Changed) {
+			_firstVisible = cast(size_t)_scrollbar.value;
+			redraw();
+		}
+		return true;
+	}
+
 public:
 
 	enum Signal {
@@ -50,9 +58,9 @@ public:
 
 		// Create the vertical scroll bar for the list
 		_scrollbar = new CuiScrollBar(width-1, 0, 1, height, Orientation.Vertical);
-		push(_scrollbar);
+		push(_scrollbar, &_scrolled);
 	}
-	
+
 	// Events
 
 	override void onDraw(CuiCanvas canvas) {
