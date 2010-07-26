@@ -43,6 +43,143 @@ private:
 	bool _needsRedraw;
 	bool _dirty;
 
+	// Event dispatchers
+
+	void _dispatchKeyDown(Key key) {
+		onKeyDown(key);
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow._dispatchKeyDown(key);
+		}
+	}
+
+	void _dispatchKeyChar(dchar chr) {
+		onKeyChar(chr);
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow._dispatchKeyChar(chr);
+		}
+	}
+
+	void _dispatchPrimaryDown(ref Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				int xdiff = window.left;
+				int ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				_dragWindow = window;
+
+				if (_focusedWindow !is window) {
+					_focusedWindow = window;
+				}
+
+				window._dispatchPrimaryDown(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onPrimaryDown(mouse);
+	}
+
+	void _dispatchPrimaryUp(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+
+			int xdiff = _dragWindow.left;
+			int ydiff = _dragWindow.top;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow._dispatchPrimaryUp(mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+
+			_dragWindow = null;
+			return;
+		}
+
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				int xdiff = window.left;
+				int ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchPrimaryUp(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onPrimaryUp(mouse);
+	}
+
+	void _dispatchDrag(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+			int xdiff = _dragWindow.left;
+			int ydiff = _dragWindow.top;
+
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow._dispatchDrag(mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+			return;
+		}
+
+		// End up handling it in the main window
+		onDrag(mouse);
+	}
+
+	void _dispatchHover(ref Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				int xdiff = window.left;
+				int ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchHover(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onHover(mouse);
+	}
+
+	// master redraw function
+
 	void _redraw() {
 		if (!this.visible) {
 			return;
@@ -55,6 +192,164 @@ private:
 		else {
 			raiseSignal(Signal.NeedRedraw);
 		}
+	}
+
+	bool isPrintable(Key key, out dchar chr) {
+		if (key.ctrl || key.alt) {
+			return false;
+		}
+
+		if (key.code >= Key.A && key.code <= Key.Z) {
+			if (key.shift) {
+				chr = (key.code - Key.A) + 'A';
+			}
+			else {
+				chr = (key.code - Key.A) + 'a';
+			}
+		}
+		else if (key.code >= Key.Zero && key.code <= Key.Nine) {
+			if (key.shift) {
+				switch (key.code) {
+					case Key.Zero:
+						chr = ')';
+						break;
+					case Key.One:
+						chr = '!';
+						break;
+					case Key.Two:
+						chr = '@';
+						break;
+					case Key.Three:
+						chr = '#';
+						break;
+					case Key.Four:
+						chr = '$';
+						break;
+					case Key.Five:
+						chr = '%';
+						break;
+					case Key.Six:
+						chr = '^';
+						break;
+					case Key.Seven:
+						chr = '&';
+						break;
+					case Key.Eight:
+						chr = '*';
+						break;
+					case Key.Nine:
+						chr = '(';
+						break;
+					default:
+						return false;
+				}
+			}
+			else {
+				chr = (key.code - Key.Zero) + '0';
+			}
+		}
+		else if (key.code == Key.SingleQuote) {
+			if (key.shift) {
+				chr = '~';
+			}
+			else {
+				chr = '`';
+			}
+		}
+		else if (key.code == Key.Minus) {
+			if (key.shift) {
+				chr = '_';
+			}
+			else {
+				chr = '-';
+			}
+		}
+		else if (key.code == Key.Equals) {
+			if (key.shift) {
+				chr = '+';
+			}
+			else {
+				chr = '=';
+			}
+		}
+		else if (key.code == Key.LeftBracket) {
+			if (key.shift) {
+				chr = '{';
+			}
+			else {
+				chr = '[';
+			}
+		}
+		else if (key.code == Key.RightBracket) {
+			if (key.shift) {
+				chr = '}';
+			}
+			else {
+				chr = ']';
+			}
+		}
+		else if (key.code == Key.Semicolon) {
+			if (key.shift) {
+				chr = ':';
+			}
+			else {
+				chr = ';';
+			}
+		}
+		else if (key.code == Key.Comma) {
+			if (key.shift) {
+				chr = '<';
+			}
+			else {
+				chr = ',';
+			}
+		}
+		else if (key.code == Key.Period) {
+			if (key.shift) {
+				chr = '>';
+			}
+			else {
+				chr = '.';
+			}
+		}
+		else if (key.code == Key.Foreslash) {
+			if (key.shift) {
+				chr = '?';
+			}
+			else {
+				chr = '/';
+			}
+		}
+		else if (key.code == Key.Backslash) {
+			if (key.shift) {
+				chr = '|';
+			}
+			else {
+				chr = '\\';
+			}
+		}
+		else if (key.code == Key.Quote) {
+			if (key.shift) {
+				chr = '"';
+			}
+			else {
+				chr = '\'';
+			}
+		}
+		else if (key.code == Key.Tab && !key.shift) {
+			chr = '\t';
+		}
+		else if (key.code == Key.Space) {
+			chr = ' ';
+		}
+		else if (key.code == Key.Return && !key.shift) {
+			chr = '\r';
+		}
+		else {
+			return false;
+		}
+
+		return true;
 	}
 
 public:
@@ -387,159 +682,67 @@ public:
 
 	// Events
 
+	void onEvent(ref Event evt) {
+		Mouse _mouse;
+		switch(evt.type) {
+			case Event.KeyDown:
+				_dispatchKeyDown(evt.info.key);
+				dchar chr;
+				if (isPrintable(evt.info.key, chr)) {
+					_dispatchKeyChar(chr);
+				}
+				break;
+			case Event.MouseDown:
+				_mouse.x = evt.info.mouse.x;
+				_mouse.y = evt.info.mouse.y;
+				_mouse.clicks[evt.aux] = 1;
+				_dispatchPrimaryDown(_mouse);
+				break;
+			case Event.MouseUp:
+				_mouse.x = evt.info.mouse.x;
+				_mouse.y = evt.info.mouse.y;
+				_dispatchPrimaryUp(_mouse);
+				_mouse.clicks[evt.aux] = 0;
+				break;
+			case Event.MouseMove:
+				_mouse.x = evt.info.mouse.x;
+				_mouse.y = evt.info.mouse.y;
+				if (_mouse.clicks[0] > 0 || _mouse.clicks[1] > 0 || _mouse.clicks[2] > 0) {
+					_dispatchDrag(_mouse);
+				}
+				else {
+					_dispatchHover(_mouse);
+				}
+				break;
+/*			case Event.Close:
+				this.exit(evt.info.exitCode);
+				break;*/
+			case Event.Size:
+				break;
+			default:
+				break;
+		}
+	}
+
 	void onResize() {
 	}
 
 	void onKeyDown(Key key) {
-		// Pass this down to the focused window
-		if (_focusedWindow !is null) {
-			_focusedWindow.onKeyDown(key);
-		}
 	}
 
 	void onKeyChar(dchar keyChar) {
-		// Pass this down to the focused window
-		if (_focusedWindow !is null) {
-			_focusedWindow.onKeyChar(keyChar);
-		}
 	}
 
 	void onPrimaryDown(ref Mouse mouse) {
-		// Look at passing this message down
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				int xdiff = window.left;
-				int ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				_dragWindow = window;
-
-				if (_focusedWindow !is window) {
-					_focusedWindow = window;
-				}
-
-				window.onPrimaryDown(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
 	}
 
 	void onPrimaryUp(ref Mouse mouse) {
-		// Look at passing this message down
-		if (_dragWindow !is null) {
-
-			int xdiff = _dragWindow.left;
-			int ydiff = _dragWindow.top;
-			mouse.x -= xdiff;
-			mouse.y -= ydiff;
-
-			_dragWindow.onPrimaryUp(mouse);
-
-			mouse.x += xdiff;
-			mouse.y += ydiff;
-
-			_dragWindow = null;
-			return;
-		}
-
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				int xdiff = window.left;
-				int ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				window.onPrimaryUp(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
 	}
 
 	void onDrag(ref Mouse mouse) {
-		// Look at passing this message down
-		if (_dragWindow !is null) {
-			int xdiff = _dragWindow.left;
-			int ydiff = _dragWindow.top;
-
-			mouse.x -= xdiff;
-			mouse.y -= ydiff;
-
-			_dragWindow.onDrag(mouse);
-
-			mouse.x += xdiff;
-			mouse.y += ydiff;
-		}
 	}
 
 	void onHover(ref Mouse mouse) {
-		// Look at passing this message down
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				int xdiff = window.left;
-				int ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				window.onHover(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
-	}
-
-	int opApply(int delegate(ref CuiWindow window) loopBody) {
-		int ret;
-
-		CuiWindow current;
-		CuiWindow end;
-
-		for (int i = 0; i < 3; i++) {
-			if (i == 0) {
-				current = _topMostHead;
-			}
-			else if (i == 1) {
-				current = _head;
-			}
-			else {
-				current = _bottomMostHead;
-			}
-
-			end = current;
-
-			if (current is null) {
-				continue;
-			}
-
-			do {
-				ret = loopBody(current);
-				if (ret != 0) {
-					return ret;
-				}
-				current = current._next;
-			} while(current !is end);
-		}
-		return ret;
 	}
 
 	void onDrawChildren(CuiCanvas canvas) {
@@ -638,6 +841,42 @@ public:
 		}
 
 		_dirty = false;
+	}
+
+	// Methods
+
+	int opApply(int delegate(ref CuiWindow window) loopBody) {
+		int ret;
+
+		CuiWindow current;
+		CuiWindow end;
+
+		for (int i = 0; i < 3; i++) {
+			if (i == 0) {
+				current = _topMostHead;
+			}
+			else if (i == 1) {
+				current = _head;
+			}
+			else {
+				current = _bottomMostHead;
+			}
+
+			end = current;
+
+			if (current is null) {
+				continue;
+			}
+
+			do {
+				ret = loopBody(current);
+				if (ret != 0) {
+					return ret;
+				}
+				current = current._next;
+			} while(current !is end);
+		}
+		return ret;
 	}
 
 	// Signal Handler
