@@ -211,8 +211,6 @@ public:
 	}
 
 	override void onDrag(ref Mouse mouse) {
-		super.onDrag(mouse);
-
 		if (_thumbDragged) {
 			// get thumb bounds
 			computeThumbBounds();
@@ -301,7 +299,6 @@ public:
 	override void onPrimaryUp(ref Mouse mouse) {
 		_thumbDragged = false;
 		_timer.stop();
-		super.onPrimaryUp(mouse);
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
@@ -339,8 +336,6 @@ public:
 				_timer.start();
 			}
 		}
-
-		super.onPrimaryDown(mouse);
 	}
 
 	override void onDraw(CuiCanvas canvas) {

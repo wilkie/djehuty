@@ -15,9 +15,11 @@ import synch.semaphore;
 
 import binding.c;
 
+import binding.win32.wincon;
+
 class CuiWindow : Responder {
 private:
-	int foo = 0;
+	Mouse _mouse;
 
 	bool _visible = true; // whether this window is drawn and can be interacted with
 	bool _focused; // whether this window is the foreground window
@@ -45,7 +47,7 @@ private:
 
 	// Event dispatchers
 
-	void _dispatchKeyDown(Key key) {
+	final void _dispatchKeyDown(Key key) {
 		onKeyDown(key);
 		// Pass this down to the focused window
 		if (_focusedWindow !is null) {
@@ -53,7 +55,7 @@ private:
 		}
 	}
 
-	void _dispatchKeyChar(dchar chr) {
+	final void _dispatchKeyChar(dchar chr) {
 		onKeyChar(chr);
 		// Pass this down to the focused window
 		if (_focusedWindow !is null) {
@@ -61,7 +63,7 @@ private:
 		}
 	}
 
-	void _dispatchPrimaryDown(ref Mouse mouse) {
+	final void _dispatchPrimaryDown(ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
 			if (window.left <= mouse.x
@@ -92,7 +94,7 @@ private:
 		onPrimaryDown(mouse);
 	}
 
-	void _dispatchPrimaryUp(ref Mouse mouse) {
+	final void _dispatchPrimaryUp(ref Mouse mouse) {
 		// Look at passing this message down
 		if (_dragWindow !is null) {
 
@@ -133,7 +135,7 @@ private:
 		onPrimaryUp(mouse);
 	}
 
-	void _dispatchDrag(ref Mouse mouse) {
+	final void _dispatchDrag(ref Mouse mouse) {
 		// Look at passing this message down
 		if (_dragWindow !is null) {
 			int xdiff = _dragWindow.left;
@@ -153,7 +155,7 @@ private:
 		onDrag(mouse);
 	}
 
-	void _dispatchHover(ref Mouse mouse) {
+	final void _dispatchHover(ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
 			if (window.left <= mouse.x
@@ -683,7 +685,6 @@ public:
 	// Events
 
 	void onEvent(ref Event evt) {
-		Mouse _mouse;
 		switch(evt.type) {
 			case Event.KeyDown:
 				_dispatchKeyDown(evt.info.key);
