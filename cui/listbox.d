@@ -42,6 +42,16 @@ private:
 		return true;
 	}
 
+	void _setScrollBarValues() {
+		if (_list.length() <= this.height) {
+			_scrollbar.max = 0;
+		}
+		else {
+			_scrollbar.max = _list.length() - this.height;
+		}
+		_scrollbar.largeChange = this.height - 1;
+	}
+
 public:
 
 	enum Signal {
@@ -102,22 +112,26 @@ public:
 
 	void add(string item) {
 		_list.add(item);
+		_setScrollBarValues();
 		redraw();
 	}
 
 	void addAt(string item, size_t idx) {
 		_list.addAt(item, idx);
+		_setScrollBarValues();
 		redraw();
 	}
 
 	override string remove() {
 		string ret = _list.remove();
+		_setScrollBarValues();
 		redraw();
 		return ret;
 	}
 
 	override string removeAt(size_t idx) {
 		string ret = _list.removeAt(idx);
+		_setScrollBarValues();
 		redraw();
 		return ret;
 	}
@@ -155,6 +169,7 @@ public:
 
 	override void clear() {
 		_list.clear();
+		_setScrollBarValues();
 		redraw();
 	}
 
@@ -191,35 +206,56 @@ public:
 	}
 
 	override int opApplyReverse(int delegate(ref string) loopFunc) {
-		return _list.opApplyReverse(loopFunc);
+		auto ret = _list.opApplyReverse(loopFunc);
+		_setScrollBarValues();
+		redraw();
+		return ret;
 	}
 
 	override int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
-		return _list.opApplyReverse(loopFunc);
+		auto ret = _list.opApplyReverse(loopFunc);
+		_setScrollBarValues();
+		redraw();
+		return ret;
 	}
 
 	override Iterable!(string) opCat(string[] list) {
-		return _list.opCat(list);
+		auto ret = _list.opCat(list);
+		_setScrollBarValues();
+		redraw();
+		return ret;
 	}
 
 	override Iterable!(string) opCat(Iterable!(string) list) {
-		return _list.opCat(list);
+		auto ret = _list.opCat(list);
+		_setScrollBarValues();
+		redraw();
+		return ret;
 	}
 
 	override Iterable!(string) opCat(string item) {
-		return _list.opCat(item);
+		auto ret = _list.opCat(item);
+		_setScrollBarValues();
+		redraw();
+		return ret;
 	}
 
 	override void opCatAssign(string[] list) {
 		_list.opCatAssign(list);
+		_setScrollBarValues();
+		redraw();
 	}
 
 	override void opCatAssign(Iterable!(string) list) {
 		_list.opCatAssign(list);
+		_setScrollBarValues();
+		redraw();
 	}
 
 	override void opCatAssign(string item) {
 		_list.opCatAssign(item);
+		_setScrollBarValues();
+		redraw();
 	}
 
 	// Properties
