@@ -36,6 +36,10 @@ private:
 
 public:
 
+	enum Signal {
+		Changed
+	}
+
 	// Description: This constructor will create a new listbox widget of the
 	//  specified dimensions at the specified location.
 	this(int x, int y, int width, int height) {
@@ -79,10 +83,10 @@ public:
 			}
 		}
 	}
-	
+
 	override void onPrimaryDown(ref Mouse mouse) {
 		size_t newSelection = _firstVisible + cast(int)mouse.y;
-		
+
 		this.selected = newSelection;
 	}
 
@@ -225,6 +229,7 @@ public:
 			index = size_t.max;
 		}
 		_selIndex = index;
+		raiseSignal(CuiListBox.Signal.Changed);
 		redraw();
 	}
 }
