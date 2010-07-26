@@ -44,7 +44,7 @@ private:
 	// These store the value
 	long _max = 100;
 	long _min = 0;
-	long _value = 50;
+	long _value = 0;
 
 	long _smallChange = 1;
 	long _largeChange = 5;
