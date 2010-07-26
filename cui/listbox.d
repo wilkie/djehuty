@@ -103,9 +103,7 @@ public:
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
-		size_t newSelection = _firstVisible + cast(int)mouse.y;
-
-		this.selected = newSelection;
+		this.selected = _firstVisible + cast(int)mouse.y;
 	}
 
 	// Methods (Iterable)
