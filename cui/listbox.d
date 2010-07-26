@@ -225,11 +225,70 @@ public:
 	// Description: This function will set the index of the item that is currently selected.
 	// index: The index of the item that is to be selected. An invalid index will select nothing.
 	void selected(size_t index) {
+		// For invalid indices, just unselect
 		if (index >= _list.length()) {
 			index = size_t.max;
 		}
+
+		// Set the selected index to that of the index given
 		_selIndex = index;
+
+		// Fire a signal
 		raiseSignal(CuiListBox.Signal.Changed);
+
+		// Refresh the display
+		redraw();
+	}
+
+	// Description: This function will get the foreground color for the list.
+	// Returns: The current foreground color.
+	Color forecolor() {
+		return _fg;
+	}
+
+	// Description: This function will set the foreground color for the list.
+	// value: The new color to set to be the foreground color.
+	void forecolor(Color value) {
+		_fg = value;
+		redraw();
+	}
+
+	// Description: This function will get the background color for the list.
+	// Returns: The current background color.
+	Color backcolor() {
+		return _bg;
+	}
+
+	// Description: This function will set the background color for the list.
+	// value: The new color to set to be the background color.
+	void backcolor(Color value) {
+		_bg = value;
+		redraw();
+	}
+
+	// Description: This function will get the foreground color for the selected items of the list.
+	// Returns: The current foreground color.
+	Color selectedForecolor() {
+		return _selfg;
+	}
+
+	// Description: This function will set the foreground color for the selected items of the list.
+	// value: The new color to set to be the foreground color.
+	void selectedForecolor(Color value) {
+		_selfg = value;
+		redraw();
+	}
+
+	// Description: This function will get the background color for the selected items of the list.
+	// Returns: The current background color.
+	Color selectedBackcolor() {
+		return _selbg;
+	}
+
+	// Description: This function will set the background color for the selected items of the list.
+	// value: The new color to set to be the background color.
+	void selectedBackcolor(Color value) {
+		_selbg = value;
 		redraw();
 	}
 }
