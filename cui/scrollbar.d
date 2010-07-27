@@ -16,6 +16,8 @@ import cui.button;
 
 import synch.timer;
 
+import binding.win32.wincon;
+
 class CuiScrollBar : CuiWindow {
 private:
 
@@ -66,6 +68,12 @@ private:
 	void computeThumbBounds(long withValue) {
 		// Thumb area size is the area that represents a large change
 		long area = _max - _min;
+		if (withValue > _max) {
+			withValue = _max;
+		}
+		else if (withValue < _min) {
+			withValue = _min;
+		}
 		long pos = withValue - _min;
 
 		double percent = cast(double)pos / cast(double)area;
@@ -276,13 +284,13 @@ public:
 
 			double percent = cast(double)newThumbPos / cast(double)thumbArea;
 
-			long newValue;
+			long newValue = this.value;
 
-			double change = 0.5 * (1.0 / thumbArea);
+			double change = 0.25 * (1.0 / cast(double)thumbArea);
 
 			// Keep adjusting the value until it lines up correctly
 			// We adjust using the percentage of the scrolling space that makes up
-			// a half of a character cell.
+			// a quarter of a character cell.
 			while(_thumbPos != newThumbPos) {
 				newValue = cast(long)(percent * cast(double)(_max - _min) + cast(double)_min);
 				computeThumbBounds(newValue);
