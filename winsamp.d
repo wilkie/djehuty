@@ -416,6 +416,9 @@ int main(string[] args) {
 	lb.add("foo");
 	lb.add("bar");
 	lb.add("meh");
+	for(int i = 0; i < 34; i++) {
+		lb.add("item " ~ toStr(i));
+	}
 	app.run();//*/
 	return 0;
 }

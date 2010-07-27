@@ -70,11 +70,6 @@ private:
 
 		double percent = cast(double)pos / cast(double)area;
 
-		double largeChangeArea = 1.0;
-		if (area != 0) {
-			largeChangeArea = cast(double)_largeChange / cast(double)area;
-		}
-
 		// The thumb size is the width of the bar area (the width of the
 		// widget minus the width of both buttons) times the percentage
 		// of the large change area.
@@ -87,7 +82,15 @@ private:
 			barSize = this.height - (this.width * 2);
 		}
 
-		_thumbSize = cast(int)(barSize * largeChangeArea);
+		double largeChangeArea = 1.0;
+		if (area != 0) {
+			largeChangeArea = cast(double)_largeChange / (cast(double)area + cast(double)_largeChange);
+		}
+		if (largeChangeArea > 1.0) {
+			largeChangeArea = 1.0;
+		}
+
+		_thumbSize = cast(int)(cast(double)barSize * largeChangeArea);
 
 		if (_thumbSize < 1) {
 			_thumbSize = 1;
