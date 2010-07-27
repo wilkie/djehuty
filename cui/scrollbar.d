@@ -16,8 +16,6 @@ import cui.button;
 
 import synch.timer;
 
-import binding.win32.wincon;
-
 class CuiScrollBar : CuiWindow {
 private:
 
