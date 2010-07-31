@@ -395,8 +395,7 @@ private template _arraysetlength(bool initWithZero) {
 // Returns: The updated pointer of the array data.
 version(DigitalMars) {
 	ubyte[] _d_arraysetlengthT(TypeInfo ti, size_t newLength, ref ubyte[] array) {
-		array = _arraysetlength!(true)(ti, newLength, array)[0..newLength];
-		return array;
+		return _arraysetlength!(true)(ti, newLength, array)[0..newLength];
 	}
 }
 else {
@@ -460,11 +459,10 @@ ubyte[] _d_arrayappendT(TypeInfo ti, ref ubyte[] destArray, ubyte[] srcArray) {
 	}
 
 	// Add element
-	for(uint destIdx = oldLength * elementSize; destIdx < newSize; ) {
-		for(uint srcIdx = 0; srcIdx < srcArray.length * elementSize; srcIdx++) {
-			newArray[destIdx] = srcArray[srcIdx];
-			destIdx++;
-		}
+	uint destIdx = oldSize;
+	for(uint srcIdx = 0; srcIdx < srcArray.length * elementSize && destIdx < newSize; srcIdx++) {
+		newArray[destIdx] = srcArray[srcIdx];
+		destIdx++;
 	}
 
 	destArray = (newArray.ptr)[0..oldLength+srcArray.length];
@@ -623,7 +621,7 @@ ubyte[] _adDupT(TypeInfo ti, ubyte[] a) {
 	ubyte[] ret = cast(ubyte[])_newarray!(false, false)(ti, a.length);
 	ubyte[] array = a.ptr[0..a.length*elementSize];
 
-	ret.ptr[0..ret.length*elementSize] = array.ptr[0..array.length*elementSize];
+	ret.ptr[0..a.length*elementSize] = array.ptr[0..a.length*elementSize];
 
 	return ret;
 }
