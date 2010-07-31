@@ -32,11 +32,9 @@ private:
 	Color _selfg = Color.Black;
 
 	size_t _selIndex = size_t.max;
-	size_t _firstVisible;
 
 	bool _scrolled(Dispatcher dsp, uint signal) {
 		if (signal == CuiScrollBar.Signal.Changed) {
-			_firstVisible = cast(size_t)_scrollbar.value;
 			redraw();
 		}
 		return true;
@@ -80,7 +78,7 @@ public:
 		for(int i = 0; i < this.height; i++) {
 			canvas.position(0, i);
 
-			size_t pos = _firstVisible + i;
+			size_t pos = cast(size_t)_scrollbar.value + i;
 			if (pos < _list.length()) {
 				string item = _list.peekAt(pos);
 				if (item.length < this.width-1) {
@@ -103,7 +101,30 @@ public:
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
-		this.selected = _firstVisible + cast(int)mouse.y;
+		this.selected = cast(size_t)_scrollbar.value + cast(size_t)mouse.y;
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Up) {
+			if (this.selected == 0) {
+				return;
+			}
+
+			this.selected = this.selected - 1;
+			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
+				_scrollbar.value = this.selected;
+			}
+		}
+		else if (key.code == Key.Down) {
+			if (this.selected == _list.length() - 1) {
+				return;
+			}
+
+			this.selected = this.selected + 1;
+			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
+				_scrollbar.value = this.selected - this.height + 1;
+			}
+		}
 	}
 
 	// Methods (Iterable)
