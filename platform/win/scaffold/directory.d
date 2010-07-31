@@ -431,7 +431,7 @@ string[] DirectoryList(ref DirectoryPlatformVars dirVars, string path) {
 
 		while(logicaldrives != 0) {
 			if ((logicaldrives & 1) == 1) {
-				list ~= curDrive;
+				list ~= curDrive.dup;
 			}
 
 			if (curDrive[0] == 'z') { break; }

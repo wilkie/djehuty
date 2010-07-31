@@ -21,6 +21,7 @@ import cui.canvas;
 import cui.progressbar;
 import cui.scrollbar;
 import cui.listbox;
+import cui.filebox;
 
 import synch.timer;
 import synch.thread;
@@ -410,6 +411,7 @@ int main(string[] args) {
 	app.push(new Rogue());
 	app.push(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
 	app.push(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
+	app.push(new CuiFileBox(30,10,20,20));
 	auto lb = new CuiListBox(10, 10, 20, 20);
 	app.push(lb);
 	lb.add("hello");

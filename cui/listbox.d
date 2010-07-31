@@ -47,6 +47,11 @@ private:
 		else {
 			_scrollbar.max = _list.length() - this.height;
 		}
+
+		if (_scrollbar.value > _scrollbar.max) {
+			_scrollbar.value = _scrollbar.max;
+		}
+
 		_scrollbar.largeChange = this.height - 1;
 	}
 
@@ -189,6 +194,7 @@ public:
 	override void clear() {
 		_list.clear();
 		_setScrollBarValues();
+		this.selected = int.max;
 		redraw();
 	}
 
@@ -284,7 +290,7 @@ public:
 	size_t selected() {
 		return _selIndex;
 	}
-	
+
 	// Description: This function will set the index of the item that is currently selected.
 	// index: The index of the item that is to be selected. An invalid index will select nothing.
 	void selected(size_t index) {
