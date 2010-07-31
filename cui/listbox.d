@@ -122,7 +122,7 @@ public:
 
 			this.selected = this.selected + 1;
 			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
-				_scrollbar.value = this.selected - this.height + 1;
+				_scrollbar.value = cast(long)this.selected - cast(long)this.height + 1;
 			}
 		}
 	}
