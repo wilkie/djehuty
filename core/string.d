@@ -389,6 +389,22 @@ string times(string str, int amount) {
 	return ret;
 }
 
+bool beginsWith(string str, string find) {
+	if (str.length < find.length) {
+		return false;
+	}
+
+	return str[0..find.length] == find;
+}
+
+bool endsWith(string str, string find) {
+	if (str.length < find.length) {
+		return false;
+	}
+	
+	return str[str.length-find.length..str.length] == find;
+}
+
 string format(string format, ...) {
 	Variadic vars = new Variadic(_arguments, _argptr);
 	return formatv(format, vars);
