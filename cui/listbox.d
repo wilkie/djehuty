@@ -110,22 +110,38 @@ public:
 	}
 
 	override void onKeyDown(Key key) {
-		if (key.code == Key.Up) {
-			if (this.selected == 0) {
-				return;
+		if (key.code == Key.Up || key.code == Key.PageUp) {
+			long newIndex = this.selected;
+			if (key.code == Key.Up) {
+				newIndex--;
+			}
+			else {
+				newIndex -= _scrollbar.largeChange;
 			}
 
-			this.selected = this.selected - 1;
+			if (newIndex < 0) {
+				newIndex = 0;
+			}
+
+			this.selected = cast(size_t)newIndex;
 			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
 				_scrollbar.value = this.selected;
 			}
 		}
-		else if (key.code == Key.Down) {
-			if (this.selected == _list.length() - 1) {
-				return;
+		else if (key.code == Key.Down || key.code == Key.PageDown) {
+			long newIndex = this.selected;
+			if (key.code == Key.Down) {
+				newIndex++;
+			}
+			else {
+				newIndex += _scrollbar.largeChange;
 			}
 
-			this.selected = this.selected + 1;
+			if (newIndex > _list.length() - 1) {
+				newIndex = _list.length() - 1;
+			}
+
+			this.selected = cast(size_t)newIndex;
 			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
 				_scrollbar.value = cast(long)this.selected - cast(long)this.height + 1;
 			}
