@@ -30,6 +30,28 @@ private:
 		}
 		this.selected = 0;
 	}
+	
+	void _traverse(size_t idx) {
+		if (idx != int.max) {
+			string curitem = this.peekAt(idx);
+
+			bool traversed = true;
+			if (curitem == "..") {
+				_path = _path.parent;
+			}
+			else if (_path.isDir(curitem)) {
+				_path = _path.traverse(curitem);
+			}
+			else {
+				traversed = false;
+			}
+
+			if (traversed) {
+				this.clear();
+				_loadPath();
+			}
+		}
+	}
 
 public:
 	this(uint x, uint y, uint width, uint height) {
@@ -39,29 +61,16 @@ public:
 		_loadPath();
 	}
 
+	override void onPrimaryDown(ref Mouse mouse) {
+		if (mouse.clicks[0] > 1) {
+			_traverse(this.selected);
+		}
+		super.onPrimaryDown(mouse);
+	}
+
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Return) {
-			size_t idx = this.selected;
-			if (idx != int.max) {
-				string curitem = this.peekAt(idx);
-
-				bool traversed = true;
-				if (curitem == "..") {
-					_path = _path.parent;
-				}
-				else if (_path.isDir(curitem)) {
-					_path = _path.traverse(curitem);
-				}
-				else {
-					traversed = false;
-				}
-
-				if (traversed) {
-					this.clear();
-					_loadPath();
-					return;
-				}
-			}
+			_traverse(this.selected);
 		}
 		super.onKeyDown(key);
 	}

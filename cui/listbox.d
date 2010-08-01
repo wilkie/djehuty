@@ -12,6 +12,7 @@ import djehuty;
 import cui.window;
 import cui.scrollbar;
 import cui.canvas;
+import cui.label;
 
 import data.list;
 
@@ -22,6 +23,12 @@ private:
 
 	// Actual List
 	List!(string) _list;
+
+	// For searching the list incrementally
+	List!(string) _searchList;
+	List!(size_t) _searchIndices;
+	string _searchTerm;
+	CuiLabel _searchLabel;
 
 	// Colors
 	Color _bg = Color.Black;
@@ -54,6 +61,18 @@ private:
 
 		_scrollbar.largeChange = this.height - 1;
 	}
+	
+	void _cancelSearch() {
+		_searchLabel.visible = false;
+		_searchTerm = null;
+	}
+	
+	void _resetSearch() {
+		_searchList = new List!(string)();
+		_searchIndices = new List!(size_t)();
+		_searchList.addList(_list);
+		_searchIndices.addList(range(0, _searchList.length()));
+	}
 
 public:
 
@@ -72,6 +91,11 @@ public:
 		// Create the vertical scroll bar for the list
 		_scrollbar = new CuiScrollBar(width-1, 0, 1, height, Orientation.Vertical);
 		push(_scrollbar, &_scrolled);
+
+		_searchLabel = new CuiLabel(0, height-1, width-1, "");
+		_searchLabel.visible = false;
+		_searchLabel.forecolor = Color.White;
+		push(_searchLabel);
 	}
 
 	// Events
@@ -106,11 +130,16 @@ public:
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
+		// cancel any search
+		_cancelSearch();
+
+		// the calculation is easy... the index of the first visible + the mouse y coordinate
 		this.selected = cast(size_t)_scrollbar.value + cast(size_t)mouse.y;
 	}
 
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Up || key.code == Key.PageUp) {
+			// get the new selected index
 			long newIndex = this.selected;
 			if (key.code == Key.Up) {
 				newIndex--;
@@ -119,16 +148,19 @@ public:
 				newIndex -= _scrollbar.largeChange;
 			}
 
+			// bounds check
 			if (newIndex < 0) {
 				newIndex = 0;
 			}
 
+			// set (and then account for the scroll bar so that it is actually visible)
 			this.selected = cast(size_t)newIndex;
 			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
 				_scrollbar.value = this.selected;
 			}
 		}
 		else if (key.code == Key.Down || key.code == Key.PageDown) {
+			// get the new selected index
 			long newIndex = this.selected;
 			if (key.code == Key.Down) {
 				newIndex++;
@@ -137,13 +169,66 @@ public:
 				newIndex += _scrollbar.largeChange;
 			}
 
+			// bounds check
 			if (newIndex > _list.length() - 1) {
 				newIndex = _list.length() - 1;
 			}
 
+			// set (and then account for the scroll bar so that it is actually visible)
 			this.selected = cast(size_t)newIndex;
 			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
 				_scrollbar.value = cast(long)this.selected - cast(long)this.height + 1;
+			}
+		}
+
+		if (key.code == Key.Backspace) {
+			if (_searchTerm.length <= 1) {
+				_cancelSearch();
+			}
+			else {
+				_searchTerm = _searchTerm.substring(0, _searchTerm.length-1);
+				_searchLabel.text = "/" ~ _searchTerm;
+				_resetSearch(); // Have to include some items we dropped...
+			}
+		}
+		else if ((!key.printable && key.code != Key.LeftShift && key.code != Key.RightShift) || key.code == Key.Return) {
+			// cancel any search
+			_cancelSearch();
+		}
+	}
+
+	override void onKeyChar(dchar chr) {
+		if (chr == '\r' || chr == '\n') {
+			_cancelSearch();
+			return;
+		}
+
+		// Search for the term in the list when entered
+		if (_searchTerm is null) {
+			// Reset to include all items in the search
+			_resetSearch();
+			_searchLabel.text = "/";
+			_searchLabel.visible = true;
+		}
+
+		_searchTerm ~= chr;
+		_searchLabel.text = "/" ~ _searchTerm;
+
+		for(size_t i = 0; i < _searchList.length(); i++) {
+			string element = _searchList.peekAt(i);
+			if (element.beginsWith(_searchTerm)) {
+				// oh good...
+				this.selected = _searchIndices.peekAt(i);
+				if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height - 1) {
+					_scrollbar.value = cast(long)this.selected - ((cast(long)this.height)/2) + 1;
+				}
+				break;
+			}
+			else {
+				// remove this item
+				_searchList.removeAt(i);
+				_searchIndices.removeAt(i);
+				i--;
 			}
 		}
 	}
