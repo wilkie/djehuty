@@ -388,6 +388,7 @@ public:
 
 	void backcolor(Color value) {
 		_bg = value;
+		redraw();
 	}
 
 	bool visible() {
@@ -396,6 +397,9 @@ public:
 
 	void visible(bool value) {
 		_visible = value;
+		if (parent !is null) {
+			parent.redraw();
+		}
 	}
 
 	bool focused() {
@@ -687,9 +691,10 @@ public:
 	void onEvent(ref Event evt) {
 		switch(evt.type) {
 			case Event.KeyDown:
-				_dispatchKeyDown(evt.info.key);
 				dchar chr;
-				if (isPrintable(evt.info.key, chr)) {
+				evt.info.key.printable = isPrintable(evt.info.key, chr);
+				_dispatchKeyDown(evt.info.key);
+				if (evt.info.key.printable) {
 					_dispatchKeyChar(chr);
 				}
 				break;

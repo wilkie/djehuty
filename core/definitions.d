@@ -136,6 +136,8 @@ struct Key {
 	bool ctrl;
 	bool alt;
 	bool shift;
+	
+	bool printable;
 
 	enum : uint {
 		Invalid,
