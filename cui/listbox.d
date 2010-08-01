@@ -129,6 +129,16 @@ public:
 		}
 	}
 
+	override void onScrollY(ref Mouse mouse, int delta) {
+		delta = -delta;
+
+		// void out the current search
+		_cancelSearch();
+
+		// get the new selected index
+		_scrollbar.value = _scrollbar.value + cast(long)delta;
+	}
+
 	override void onPrimaryDown(ref Mouse mouse) {
 		// cancel any search
 		_cancelSearch();

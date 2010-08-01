@@ -135,6 +135,56 @@ private:
 		onPrimaryUp(mouse);
 	}
 
+	final void _dispatchScrollX(ref Mouse mouse, int delta) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				int xdiff = window.left;
+				int ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchScrollX(mouse, delta);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onScrollX(mouse, delta);
+	}
+
+	final void _dispatchScrollY(ref Mouse mouse, int delta) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				int xdiff = window.left;
+				int ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchScrollY(mouse, delta);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onScrollY(mouse, delta);
+	}
+
 	final void _dispatchDrag(ref Mouse mouse) {
 		// Look at passing this message down
 		if (_dragWindow !is null) {
@@ -710,6 +760,16 @@ public:
 				_dispatchPrimaryUp(_mouse);
 				_mouse.clicks[evt.aux] = 0;
 				break;
+			case Event.MouseWheelX:
+				_mouse.x = evt.info.mouse.x;
+				_mouse.y = evt.info.mouse.y;
+				_dispatchScrollX(_mouse, evt.aux);
+				break;
+			case Event.MouseWheelY:
+				_mouse.x = evt.info.mouse.x;
+				_mouse.y = evt.info.mouse.y;
+				_dispatchScrollY(_mouse, evt.aux);
+				break;
 			case Event.MouseMove:
 				_mouse.x = evt.info.mouse.x;
 				_mouse.y = evt.info.mouse.y;
@@ -743,6 +803,12 @@ public:
 	}
 
 	void onPrimaryUp(ref Mouse mouse) {
+	}
+	
+	void onScrollX(ref Mouse mouse, int delta) {
+	}
+
+	void onScrollY(ref Mouse mouse, int delta) {
 	}
 
 	void onDrag(ref Mouse mouse) {
