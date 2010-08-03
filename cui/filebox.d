@@ -30,12 +30,13 @@ private:
 		}
 		this.selected = 0;
 	}
-	
-	void _traverse(size_t idx) {
+
+	bool _traverse(size_t idx) {
+		bool traversed = false;
 		if (idx != int.max) {
 			string curitem = this.peekAt(idx);
 
-			bool traversed = true;
+			traversed = true;
 			if (curitem == "..") {
 				_path = _path.parent;
 			}
@@ -51,6 +52,8 @@ private:
 				_loadPath();
 			}
 		}
+		
+		return traversed;
 	}
 
 public:
@@ -63,14 +66,18 @@ public:
 
 	override void onPrimaryDown(ref Mouse mouse) {
 		if (mouse.clicks[0] > 1) {
-			_traverse(this.selected);
+			if (_traverse(this.selected)) {
+				return;
+			}
 		}
 		super.onPrimaryDown(mouse);
 	}
 
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Return) {
-			_traverse(this.selected);
+			if (_traverse(this.selected)) {
+				return;
+			}
 		}
 		super.onKeyDown(key);
 	}
