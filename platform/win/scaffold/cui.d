@@ -390,7 +390,6 @@ private {
 						}
 
 						_lastTime = timeGetTime();
-						SetConsoleTitleA((toStr(clicks) ~ "\0").ptr);
 					}
 						
 					if (isMovement) {
