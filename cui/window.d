@@ -751,7 +751,7 @@ public:
 			case Event.MouseDown:
 				_mouse.x = evt.info.mouse.x;
 				_mouse.y = evt.info.mouse.y;
-				_mouse.clicks[evt.aux] = 1;
+				_mouse.clicks[] = evt.info.mouse.clicks[];
 				_dispatchPrimaryDown(_mouse);
 				break;
 			case Event.MouseUp:
