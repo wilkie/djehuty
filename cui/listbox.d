@@ -136,7 +136,7 @@ public:
 		_cancelSearch();
 
 		// get the new selected index
-		_scrollbar.value = _scrollbar.value + cast(long)delta;
+		_scrollbar.value = _scrollbar.value + (cast(long)delta * 3);
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
