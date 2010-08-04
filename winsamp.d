@@ -414,10 +414,14 @@ int main(string[] args) {
 	app.push(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
 	app.push(new CuiFileBox(30,10,20,20));
 	auto lb = new CuiListBox(10, 10, 20, 20);
-	auto tf = new CuiToggleField(10,9,20,1);
+	auto tf = new CuiToggleField(10,8,20,1);
+	auto tf2 = new CuiToggleField(10,9,20,1);
+	tf.add(tf2);
 	app.push(tf);
+	app.push(tf2);
 	app.push(lb);
 	tf.text = "option 1";
+	tf2.text = "option 2";
 	lb.add("hello");
 	lb.add("foo");
 	lb.add("bar");

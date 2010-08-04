@@ -16,8 +16,14 @@ import cui.label;
 class CuiToggleField : CuiWindow {
 private:
 
+	// Label for the text display
 	CuiLabel _label;
+
+	// The state of the widget
 	bool _toggled;
+
+	// To handle grouping
+	CuiToggleField _next;
 
 public:
 
@@ -35,21 +41,50 @@ public:
 
 	override void onDraw(CuiCanvas canvas) {
 		canvas.position(0, (this.height-1) / 2);
-		if (_toggled) {
-			canvas.write("[x]");
+		if (_next !is null) {
+			if (_toggled) {
+				canvas.write("(o)");
+			}
+			else {
+				canvas.write("( )");
+			}
 		}
 		else {
-			canvas.write("[ ]");
+			if (_toggled) {
+				canvas.write("[x]");
+			}
+			else {
+				canvas.write("[ ]");
+			}
 		}
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
 		if (mouse.x < 3) {
+			// Cannot untoggle an option via the mouse.
+			if (_toggled && this._next !is null) {
+				return;
+			}
 			this.toggled = !this.toggled;
 			redraw();
 		}
 	}
-	
+
+	// Methods
+
+	// Description: This will add to the option group.
+	// field: The field to group with the current one.
+	void add(CuiToggleField field) {
+		if (this._next is null) {
+			field._next = this;
+		}
+		else {
+			field._next = this._next;
+		}
+		this._next = field;
+		this.toggled = true;
+	}
+
 	// Properties
 
 	// Description: This property holds the current toggled state.
@@ -59,11 +94,23 @@ public:
 	}
 
 	void toggled(bool value) {
-		_toggled = value;
-		raiseSignal(CuiToggleField.Signal.Changed);
-		redraw();
+		if (_toggled != value) {
+			_toggled = value;
+
+			// untoggle every field in the group
+			if (value == true) {
+				auto current = this._next;
+				while(current !is this && current !is null) {
+					current.toggled = false;
+					current = current._next;
+				}
+			}
+
+			raiseSignal(CuiToggleField.Signal.Changed);
+			redraw();
+		}
 	}
-	
+
 	// Description: This property holds the text for the toggle field.
 	// value: The text that will be displayed with the field.
 	string text() {
