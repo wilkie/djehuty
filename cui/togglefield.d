@@ -24,6 +24,7 @@ private:
 
 	// To handle grouping
 	CuiToggleField _next;
+	CuiToggleField _prev;
 
 public:
 
@@ -75,14 +76,40 @@ public:
 	// Description: This will add to the option group.
 	// field: The field to group with the current one.
 	void add(CuiToggleField field) {
-		if (this._next is null) {
-			field._next = this;
+		synchronized(this) {
+			if (this._next is null) {
+				field._next = this;
+			}
+			else {
+				field._next = this._next;
+				this._next._prev = field;
+			}
+			field._prev = this;
+
+			this._next = field;
+			this.toggled = true;
 		}
-		else {
-			field._next = this._next;
+	}
+
+	// Description: This will remove the togglefield from whatever group it is
+	//  currently in.
+	void remove() {
+		synchronized(this) {
+			if (this._next is null) {
+				return;
+			}
+
+			if (this._next._next is this) {
+				this._next._next = null;
+			}
+			else {
+				this._next._prev = this._prev;
+				this._prev._next = this._next;
+			}
+
+			this._next = null;
 		}
-		this._next = field;
-		this.toggled = true;
+		redraw();
 	}
 
 	// Properties

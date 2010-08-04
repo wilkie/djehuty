@@ -417,6 +417,8 @@ int main(string[] args) {
 	auto tf = new CuiToggleField(10,8,20,1);
 	auto tf2 = new CuiToggleField(10,9,20,1);
 	tf.add(tf2);
+	tf.remove();
+	tf.add(tf2);
 	app.push(tf);
 	app.push(tf2);
 	app.push(lb);
