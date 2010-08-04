@@ -149,6 +149,11 @@ public:
 
 	override void onKeyDown(Key key) {
 		if (key.code == Key.Up || key.code == Key.PageUp) {
+			// must have a selection...
+			if (this.selected == size_t.max) {
+				return;
+			}
+
 			// get the new selected index
 			long newIndex = this.selected;
 			if (key.code == Key.Up) {
@@ -170,6 +175,11 @@ public:
 			}
 		}
 		else if (key.code == Key.Down || key.code == Key.PageDown) {
+			// must have a selection...
+			if (this.selected == size_t.max) {
+				return;
+			}
+
 			// get the new selected index
 			long newIndex = this.selected;
 			if (key.code == Key.Down) {
