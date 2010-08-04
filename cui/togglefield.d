@@ -29,7 +29,7 @@ public:
 	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
 
-		_label = new CuiLabel(4, 0, width-4, "hello");
+		_label = new CuiLabel(4, 0, width-4, "");
 		push(_label);
 	}
 
@@ -62,5 +62,15 @@ public:
 		_toggled = value;
 		raiseSignal(CuiToggleField.Signal.Changed);
 		redraw();
+	}
+	
+	// Description: This property holds the text for the toggle field.
+	// value: The text that will be displayed with the field.
+	string text() {
+		return _label.text;
+	}
+
+	void text(string value) {
+		_label.text = value;
 	}
 }
