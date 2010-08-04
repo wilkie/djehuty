@@ -81,4 +81,16 @@ public:
 		}
 		super.onKeyDown(key);
 	}
+
+	// Description: This property represents the current path being listed.
+	// Returns: A string representing the path of the directory.
+	string path() {
+		return _path.path;
+	}
+
+	void path(string value) {
+		_path = Directory.open(value);
+		_loadPath();
+		redraw();
+	}
 }
