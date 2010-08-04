@@ -21,6 +21,10 @@ private:
 
 public:
 
+	enum Signal {
+		Changed
+	}
+
 	// Description: This constructor will create a new toggle field widget.
 	this(int x, int y, int width, int height) {
 		super(x,y,width,height);
@@ -41,7 +45,7 @@ public:
 
 	override void onPrimaryDown(ref Mouse mouse) {
 		if (mouse.x < 3) {
-			_toggled = !_toggled;
+			this.toggled = !this.toggled;
 			redraw();
 		}
 	}
@@ -56,6 +60,7 @@ public:
 
 	void toggled(bool value) {
 		_toggled = value;
+		raiseSignal(CuiToggleField.Signal.Changed);
 		redraw();
 	}
 }
