@@ -17,10 +17,20 @@ import data.iterable;
 
 import djehuty;
 
+private class _CuiListFieldBox : CuiListBox {
+	this(int x, int y, int width, int height) {
+		super(x, y, width, height);
+	}
+
+	override void onLostFocus() {
+		this.parent.pull(this);
+	}
+}
+
 class CuiListField : CuiWindow, Iterable!(string) {
 private:
 
-	CuiListBox _list;
+	_CuiListFieldBox _list;
 	CuiButton _button;
 	CuiLabel _label;
 
@@ -48,7 +58,7 @@ public:
 	this(int x, int y, int width) {
 		super(x, y, width, 1);
 
-		_list = new CuiListBox(x+1, y+1, width-1, 10);
+		_list = new _CuiListFieldBox(x+1, y+1, width-1, 10);
 		_button = new CuiButton(width-1, 0, 1, 1, "\u2193");
 		_label = new CuiLabel(0, 0, width-1, "hello");
 		
