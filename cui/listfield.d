@@ -59,9 +59,6 @@ public:
 		push(_label);
 	}
 
-	override void onDraw(CuiCanvas canvas) {
-	}
-
 	// Methods (Iterable)
 
 	void add(string item) {
