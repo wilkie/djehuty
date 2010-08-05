@@ -65,7 +65,7 @@ public:
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
-		if (mouse.clicks[0] > 1) {
+		if ((mouse.clicks[0] % 2) == 0) {
 			if (_traverse(this.selected)) {
 				return;
 			}
