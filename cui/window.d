@@ -69,7 +69,8 @@ private:
 			if (window.left <= mouse.x
 					&& (window.left + window.width) > mouse.x
 					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
 
 				int xdiff = window.left;
 				int ydiff = window.top;
@@ -116,7 +117,8 @@ private:
 			if (window.left <= mouse.x
 					&& (window.left + window.width) > mouse.x
 					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
 
 				int xdiff = window.left;
 				int ydiff = window.top;
@@ -141,7 +143,8 @@ private:
 			if (window.left <= mouse.x
 					&& (window.left + window.width) > mouse.x
 					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
 
 				int xdiff = window.left;
 				int ydiff = window.top;
@@ -166,7 +169,8 @@ private:
 			if (window.left <= mouse.x
 					&& (window.left + window.width) > mouse.x
 					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
 
 				int xdiff = window.left;
 				int ydiff = window.top;
@@ -211,7 +215,8 @@ private:
 			if (window.left <= mouse.x
 					&& (window.left + window.width) > mouse.x
 					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
 
 				int xdiff = window.left;
 				int ydiff = window.top;
