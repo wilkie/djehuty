@@ -80,7 +80,11 @@ private:
 				_dragWindow = window;
 
 				if (_focusedWindow !is window) {
+					if (_focusedWindow !is null) {
+						_focusedWindow.onLostFocus();
+					}
 					_focusedWindow = window;
+					_focusedWindow.onGotFocus();
 				}
 
 				window._dispatchPrimaryDown(mouse);
@@ -796,6 +800,12 @@ public:
 	}
 
 	void onResize() {
+	}
+
+	void onGotFocus() {
+	}
+
+	void onLostFocus() {
 	}
 
 	void onKeyDown(Key key) {
