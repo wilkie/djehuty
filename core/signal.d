@@ -1,11 +1,11 @@
 /*
- * event.d
+ * signal.d
  *
- * This module implements the event dispatching mechanism.
+ * This module implements the signal dispatching mechanism.
  *
  */
 
-module core.event;
+module core.signal;
 
 alias bool delegate(Dispatcher dsp, uint signal) SignalHandler;
 

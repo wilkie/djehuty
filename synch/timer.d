@@ -3,7 +3,7 @@ module synch.timer;
 import synch.thread;
 import synch.semaphore;
 
-import core.event;
+import core.signal;
 
 // Section: Core/Synchronization
 

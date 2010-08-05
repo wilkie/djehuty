@@ -12,7 +12,7 @@ module io.audio;
 
 import core.stream;
 import core.time;
-import core.event;
+import core.signal;
 
 import synch.semaphore;
 

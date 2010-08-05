@@ -15,7 +15,7 @@ import core.unicode;
 import core.system;
 import core.main;
 import core.arguments;
-import core.event;
+import core.signal;
 import core.definitions;
 
 import platform.application;

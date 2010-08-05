@@ -12,7 +12,7 @@ module resource.sound;
 
 import core.time;
 import core.string;
-import core.event;
+import core.signal;
 import core.definitions;
 import core.stream;
 

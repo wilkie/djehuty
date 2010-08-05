@@ -5,7 +5,7 @@ public import core.error;
 public import core.definitions;
 public import core.string;
 public import core.unicode;
-public import core.event;
+public import core.signal;
 public import core.application;
 public import core.regex;
 public import core.system;
