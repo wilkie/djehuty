@@ -29,7 +29,7 @@ public:
 		_timer = new Timer();
 		_timer.interval = 100;
 
-		push(_timer);
+		attach(_timer);
 
 		_timer.start();
 	}

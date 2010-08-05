@@ -87,7 +87,7 @@ public:
 		}
 
 		// Push the tab as a subwindow to this widget
-		super.push(newTab);
+		super.attach(newTab);
 	}
 
 	override void onDraw(CuiCanvas canvas) {
@@ -158,15 +158,15 @@ public:
 		this.active.reposition(0, 1, clientWidth(), clientHeight());
 	}
 
-	override void push(Dispatcher dsp, SignalHandler handler = null) {
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		CuiWindow window = cast(CuiWindow)dsp;
 
 		if (window !is null) {
 			// Push the window to the focused window
-			this.active.push(dsp, handler);
+			this.active.attach(dsp, handler);
 		}
 		else {
-			super.push(dsp, handler);
+			super.attach(dsp, handler);
 		}
 	}
 }

@@ -90,12 +90,12 @@ public:
 
 		// Create the vertical scroll bar for the list
 		_scrollbar = new CuiScrollBar(width-1, 0, 1, height, Orientation.Vertical);
-		push(_scrollbar, &_scrolled);
+		attach(_scrollbar, &_scrolled);
 
 		_searchLabel = new CuiLabel(0, height-1, width-1, "");
 		_searchLabel.visible = false;
 		_searchLabel.forecolor = Color.White;
-		push(_searchLabel);
+		attach(_searchLabel);
 	}
 
 	// Events

@@ -195,7 +195,7 @@ public:
 		_timer = new Timer();
 		_timer.interval = _timerInterval;
 
-		push(_timer, &timerProc);
+		attach(_timer, &timerProc);
 
 		_orientation = orientation;
 
@@ -218,8 +218,8 @@ public:
 			_plusButton.backcolor = _buttonBackcolor;
 		}
 
-		push(_minusButton, &buttonHandler);
-		push(_plusButton, &buttonHandler);
+		attach(_minusButton, &buttonHandler);
+		attach(_plusButton, &buttonHandler);
 	}
 
 	override void onDrag(ref Mouse mouse) {

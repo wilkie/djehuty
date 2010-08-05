@@ -288,8 +288,8 @@ public:
 	}
 
 	// Signal Handler
-	override void push(Dispatcher dsp, SignalHandler handler = null) {
-		super.push(dsp, handler);
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		super.attach(dsp, handler);
 
 		auto window = cast(Window)dsp;
 		if (window !is null) {

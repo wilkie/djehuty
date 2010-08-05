@@ -23,7 +23,7 @@ private class _CuiListFieldBox : CuiListBox {
 	}
 
 	override void onLostFocus() {
-		this.parent.pull(this);
+		this.parent.detach(this);
 	}
 }
 
@@ -36,7 +36,7 @@ private:
 
 	bool listHandler(Dispatcher dsp, uint signal) {
 		if (signal == CuiListBox.Signal.Changed) {
-			this.parent.pull(_list);
+			this.parent.detach(_list);
 			_label.text = _list.peekAt(_list.selected);
 			raiseSignal(CuiListField.Signal.Changed);
 		}
@@ -47,7 +47,7 @@ private:
 	bool buttonHandler(Dispatcher dsp, uint signal) {
 		if (signal == CuiButton.Signal.Pressed) {
 			if (this.parent !is null) {
-				this.parent.push(_list, &listHandler);
+				this.parent.attach(_list, &listHandler);
 			}
 		}
 		return true;
@@ -70,8 +70,8 @@ public:
 		_button.forecolor = Color.Gray;
 		_button.backcolor = Color.Blue;
 
-		push(_button, &buttonHandler);
-		push(_label);
+		attach(_button, &buttonHandler);
+		attach(_label);
 	}
 
 	// Methods (Iterable)

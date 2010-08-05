@@ -97,7 +97,7 @@ public:
 		CuiStart(&_pfvars);
 		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
 		_mainWindow.visible = true;
-		push(_mainWindow);
+		attach(_mainWindow);
 		super();
 	}
 
@@ -106,19 +106,19 @@ public:
 		CuiStart(&_pfvars);
 		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
 		_mainWindow.visible = true;
-		push(_mainWindow);
+		attach(_mainWindow);
 		super(appName);
 	}
 
-	override void push(Dispatcher dsp, SignalHandler handler = null) {
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
-			_mainWindow.push(window, handler);
+			_mainWindow.attach(window, handler);
 			_mainWindow.redraw();
 		}
 		else {
-			super.push(dsp, handler);
+			super.attach(dsp, handler);
 		}
 	}
 }

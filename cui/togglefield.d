@@ -37,7 +37,7 @@ public:
 		super(x,y,width,height);
 
 		_label = new CuiLabel(4, 0, width-4, "");
-		push(_label);
+		attach(_label);
 	}
 
 	override void onDraw(CuiCanvas canvas) {

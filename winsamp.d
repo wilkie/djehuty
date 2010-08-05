@@ -112,8 +112,8 @@ class MyWindow : CuiDialog {
 
 //	push(box);
 
-		tabbox.push(box);
-		push(tabbox);
+		tabbox.attach(box);
+		attach(tabbox);
 
 //		lbl = new CuiLabel(0, 2, 10, "Hello", Color.Red, Color.Black);
 //		lbl.visible = true;
@@ -121,7 +121,7 @@ class MyWindow : CuiDialog {
 
 		field = new CuiTextField(0, 3, 10, "Hello");
 		field.visible = true;
-		push(field);
+		attach(field);
 	}
 
 	override void onResize() {
@@ -210,8 +210,8 @@ class Rogue : CuiWindow {
 			addEnemy(10);
 		}
 
-		push(hp = new CuiLabel(0,0,10,"HP: " ~ toStr(playerHP), Color.Yellow));
-		push(bar = new CuiProgressBar(10, 0, Console.width - 10, 1));
+		attach(hp = new CuiLabel(0,0,10,"HP: " ~ toStr(playerHP), Color.Yellow));
+		attach(bar = new CuiProgressBar(10, 0, Console.width - 10, 1));
 		bar.value = 1.0;
 	}
 
@@ -411,19 +411,19 @@ int main(string[] args) {
 // 	Thread.sleep(1000);
 	//*/
 	auto app = new CuiApplication("MyApp");
-	app.push(new Rogue());
-	app.push(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
-	app.push(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
-	app.push(new CuiFileBox(30,10,20,20));
+	app.attach(new Rogue());
+	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
+	app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
+	app.attach(new CuiFileBox(30,10,20,20));
 	auto lb = new CuiListBox(10, 10, 20, 20);
 	auto tf = new CuiToggleField(10,8,20,1);
 	auto tf2 = new CuiToggleField(10,9,20,1);
 	tf.add(tf2);
 	tf.remove();
 	tf.add(tf2);
-	app.push(tf);
-	app.push(tf2);
-	app.push(lb);
+	app.attach(tf);
+	app.attach(tf2);
+	app.attach(lb);
 	tf.text = "option 1";
 	tf2.text = "option 2";
 	lb.add("hello");
@@ -442,7 +442,7 @@ int main(string[] args) {
 	for(int i = 0; i < 34; i++) {
 		lf.add("item " ~ toStr(i));
 	}
-	app.push(lf);
+	app.attach(lf);
 
 	app.run();//*/
 	return 0;

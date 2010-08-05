@@ -34,7 +34,7 @@ public:
 		return true;
 	}
 
-	void onPush(Responder rsp) {
+	void onAttach(Responder rsp) {
 	}
 
 	// Description: This function will set the responder that will receive
@@ -66,18 +66,18 @@ public:
 	}
 
 	// Description: This function will attach the specified Dispatcher to this
-	//	Responder. It fires an onPush event for the Dispatcher as well.
-	void push(Dispatcher dsp, SignalHandler handler = null) {
+	//	Responder. It fires an onAttach event for the Dispatcher as well.
+	void attach(Dispatcher dsp, SignalHandler handler = null) {
 		dsp.responder = this;
 		if (handler is null) {
 			handler = &onSignal;
 		}
 		dsp.handler = handler;
-		dsp.onPush(this);
+		dsp.onAttach(this);
 	}
 	
 	// Description: This function will detach the specified Dispatcher.
-	void pull(Dispatcher dsp) {
+	void detach(Dispatcher dsp) {
 		if (dsp.responder is this) {
 			dsp.responder = null;
 		}

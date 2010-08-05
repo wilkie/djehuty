@@ -58,8 +58,8 @@ class MyWindow : Window {
 	}
 
 	override void onAdd() {
-		push(imageBox = new MyControl());
-		push(button = new Button(1,1,358,48,"MORE DUCKS!"));
+		attach(imageBox = new MyControl());
+		attach(button = new Button(1,1,358,48,"MORE DUCKS!"));
 	}
 
 	override bool onSignal(Dispatcher d, uint signal) {

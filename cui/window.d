@@ -967,8 +967,8 @@ public:
 	}
 
 	// Signal Handler
-	override void push(Dispatcher dsp, SignalHandler handler = null) {
-		super.push(dsp, handler);
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		super.attach(dsp, handler);
 
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null && window.parent is this && window._next is null) {
@@ -996,7 +996,7 @@ public:
 		}
 	}
 
-	override void pull(Dispatcher dsp) {
+	override void detach(Dispatcher dsp) {
 		auto window = cast(CuiWindow)dsp;
 
 		if (window !is null && window.parent is this) {
@@ -1054,6 +1054,6 @@ public:
 		}
 
 		// perform default behavior
-		super.pull(dsp);
+		super.detach(dsp);
 	}
 }
