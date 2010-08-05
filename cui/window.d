@@ -961,7 +961,7 @@ public:
 		super.push(dsp, handler);
 
 		auto window = cast(CuiWindow)dsp;
-		if (window !is null) {
+		if (window !is null && window.parent is this && window._next is null) {
 			if (_head is null) {
 				window._next = window;
 				window._prev = window;
