@@ -38,6 +38,7 @@ private:
 		if (signal == CuiListBox.Signal.Changed) {
 			this.parent.pull(_list);
 			_label.text = _list.peekAt(_list.selected);
+			raiseSignal(CuiListField.Signal.Changed);
 		}
 		return true;
 	}
@@ -53,6 +54,10 @@ private:
 	}
 
 public:
+
+	enum Signal {
+		Changed
+	}
 
 	// Description: This constructor will create a new listfield.
 	this(int x, int y, int width) {
