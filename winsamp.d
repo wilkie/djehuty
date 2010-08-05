@@ -24,6 +24,7 @@ import cui.listbox;
 import cui.filebox;
 import cui.togglefield;
 import cui.spinner;
+import cui.listfield;
 
 import synch.timer;
 import synch.thread;
@@ -432,6 +433,17 @@ int main(string[] args) {
 	for(int i = 0; i < 34; i++) {
 		lb.add("item " ~ toStr(i));
 	}
+
+	auto lf = new CuiListField(0, 0, 20);
+	lf.add("hello");
+	lf.add("foo");
+	lf.add("bar");
+	lf.add("meh");
+	for(int i = 0; i < 34; i++) {
+		lf.add("item " ~ toStr(i));
+	}
+	app.push(lf);
+
 	app.run();//*/
 	return 0;
 }
