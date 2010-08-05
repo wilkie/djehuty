@@ -75,4 +75,11 @@ public:
 		dsp.handler = handler;
 		dsp.onPush(this);
 	}
+	
+	// Description: This function will detach the specified Dispatcher.
+	void pull(Dispatcher dsp) {
+		if (dsp.responder is this) {
+			dsp.responder = null;
+		}
+	}
 }
