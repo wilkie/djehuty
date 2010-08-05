@@ -23,6 +23,7 @@ import cui.scrollbar;
 import cui.listbox;
 import cui.filebox;
 import cui.togglefield;
+import cui.spinner;
 
 import synch.timer;
 import synch.thread;
@@ -428,6 +429,7 @@ int main(string[] args) {
 	lb.add("foo");
 	lb.add("bar");
 	lb.add("meh");
+	app.push(new CuiSpinner(25,25));
 	for(int i = 0; i < 34; i++) {
 		lb.add("item " ~ toStr(i));
 	}
