@@ -27,11 +27,11 @@ import scaffold.window;
 
 class GuiApplication : Application {
 protected:
-	package Window _windowListHead = null;
-	package Window _windowListTail = null;
+	Window _windowListHead = null;
+	Window _windowListTail = null;
 
-	package int _windowCount;
-	package int _windowVisibleCount;
+	int _windowCount;
+	int _windowVisibleCount;
 
 	override void start() {
 		_appController.start();

@@ -17,6 +17,7 @@ import core.main;
 import core.arguments;
 import core.signal;
 import core.definitions;
+import core.color;
 
 import platform.application;
 
@@ -26,7 +27,7 @@ import analyzing.debugger;
 
 // Description: This class represents the application instance.
 class Application : Responder {
-protected:
+private:
 	string _appName;
 	Arguments _arguments;
 
@@ -35,32 +36,7 @@ protected:
 		return false;
 	}
 
-	void shutdown() {
-	}
-
-	void start() {
-	}
-
-	void end(uint exitCode) {
-	}
-
-private:
-
 	ApplicationController _platformAppController;
-
-	// Silly wrapper to call start() due to a compiler bug
-	package final void onPreApplicationStart() {
-		_platformAppController = ApplicationController.instance;
-		_platformAppController.start();
-	}
-
-	package final void onPostApplicationEnd(uint exitCode) {
-		end(exitCode);
-		if (_platformAppController !is null) {
-			_platformAppController.exitCode = exitCode;
-			_platformAppController.end();
-		}
-	}
 
 public:
 	this() {
@@ -115,8 +91,13 @@ public:
 		static bool _run = false;
 		if (!_run) {
 			Djehuty.start();
+
+			_platformAppController = ApplicationController.instance;
+			_platformAppController.start();
+
+			onApplicationStart();
+
 			_run = true;
-			start();
 			
 			// If no event controllers are in play, then end
 			if (isZombie) {
@@ -143,7 +124,15 @@ public:
 	}
 
 	void exit(uint code) {
-		shutdown();
-		Djehuty.end(code);
+		// Reset colors to something sane
+		Console.forecolor = Color.White;
+		Console.backcolor = Color.Black;
+
+		onApplicationEnd();
+
+		if (_platformAppController !is null) {
+			_platformAppController.exitCode = code;
+			_platformAppController.end();
+		}
 	}
 }

@@ -18,7 +18,7 @@ import synch.semaphore;
 
 class CuiApplication : Application {
 private:
-    CuiPlatformVars _pfvars;
+	CuiPlatformVars _pfvars;
 
 	Semaphore _lock;
 
@@ -48,6 +48,7 @@ private:
 	}
 
 	void _redraw() {
+		Console.putln("eh");
 		_lock.down();
 		auto canvas = new CuiCanvas();
 		canvas.position(0,0);
@@ -58,24 +59,52 @@ private:
 		_lock.up();
 	}
 
-protected:
+public:
 
-	override void shutdown() {
-		CuiEnd(&_pfvars);
+	this() {
+		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
+		super();
 	}
 
-	override void start() {
+	this(string appName) {
+		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
+		super(appName);
+	}
+
+	override void exit(uint code) {
+		_running = false;
+		CuiEnd(&_pfvars);
+		
+		super.exit(code);
+	}
+	
+	override bool isZombie() {
+		return _mainWindow.windowCount == 0;
+	}
+	
+	override void run() {
+		super.run();
+
 		_allowRedraw = true;
-		_redraw();
+
+		if (_needRedraw) {
+			_needRedraw = false;
+			_redraw();
+		}
+
 		eventLoop();
 	}
 
-	override void end(uint exitCode) {
-		_running = false;
-	}
-
-
-public:
 	override bool onSignal(Dispatcher dsp, uint signal) {
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
@@ -90,24 +119,6 @@ public:
 			}
 		}
 		return false;
-	}
-
-	this() {
-		_lock = new Semaphore(1);
-		CuiStart(&_pfvars);
-		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
-		_mainWindow.visible = true;
-		attach(_mainWindow);
-		super();
-	}
-
-	this(string appName) {
-		_lock = new Semaphore(1);
-		CuiStart(&_pfvars);
-		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
-		_mainWindow.visible = true;
-		attach(_mainWindow);
-		super(appName);
 	}
 
 	override void attach(Dispatcher dsp, SignalHandler handler = null) {

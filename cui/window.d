@@ -44,6 +44,8 @@ private:
 
 	bool _needsRedraw;
 	bool _dirty;
+	
+	int _count;
 
 	// Event dispatchers
 
@@ -598,6 +600,9 @@ public:
 			this._prev._next = this._next;
 			this._next._prev = this._prev;
 		}
+
+		this._prev = null;
+		this._next = null;
 	}
 
 	void reorder(WindowOrder order) {
@@ -992,6 +997,8 @@ public:
 				_focusedWindow = window;
 			}
 
+			_count++;
+
 			redraw();
 		}
 	}
@@ -1001,59 +1008,27 @@ public:
 
 		if (window !is null && window.parent is this) {
 			// remove this window from the list
+			_count--;
 
 			// Focus on this window (if it is visible)
 			if (_focusedWindow is window) {
 				_focusedWindow = _focusedWindow._next;
 			}
-
-			if (window._isTopMost) {
-				if (_topMostHead._next is _topMostHead) {
-					// this is the last window
-					_topMostHead = null;
-				}
-				else {
-					if (_topMostHead is window) {
-						_topMostHead = _topMostHead._next;
-					}
-				}
-			}
-			else if (window._isBottomMost) {
-				if (_bottomMostHead._next is _bottomMostHead) {
-					// this is the last window
-					_bottomMostHead = null;
-				}
-				else {
-					if (_bottomMostHead is window) {
-						_bottomMostHead = _bottomMostHead._next;
-					}
-				}
-			}
-			else {
-				if (_head._next is _head) {
-					// this is the last window
-					_head = null;
-				}
-				else {
-					// remove
-				
-					if (_head is window) {
-						_head = _head._next;
-					}
-				}
-			}
-
-			// remove window from the list
-			window._next._prev = window._prev;
-			window._prev._next = window._next;
-
-			window._next = null;
-			window._prev = null;
+			
+			window._remove();
 
 			redraw();
 		}
 
 		// perform default behavior
 		super.detach(dsp);
+	}
+
+	// Properties
+
+	// Description: This property will give you the number of windows attached
+	//  to this window.
+	int windowCount() {
+		return _count;
 	}
 }
