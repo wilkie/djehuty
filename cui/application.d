@@ -48,7 +48,6 @@ private:
 	}
 
 	void _redraw() {
-		Console.putln("eh");
 		_lock.down();
 		auto canvas = new CuiCanvas();
 		canvas.position(0,0);
