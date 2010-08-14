@@ -10,7 +10,8 @@
 
 module platform.vars.socket;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winsock2;
 
 struct SocketPlatformVars {
 	SOCKET m_skt;

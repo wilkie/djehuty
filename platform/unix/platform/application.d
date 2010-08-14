@@ -3,6 +3,13 @@ module platform.application;
 import binding.c;
 
 class ApplicationController {
+private:
+
+	bool _usingCurses;
+	uint _exitCode;
+	static ApplicationController _app;
+	
+public:
 	this() {
 	}
 
@@ -35,10 +42,4 @@ class ApplicationController {
 	void usingCurses(bool value) {
 		_usingCurses = value;
 	}
-
-private:
-
-	bool _usingCurses;
-	uint _exitCode;
-	static ApplicationController _app;
 }

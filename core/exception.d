@@ -10,9 +10,13 @@
 
 module core.exception;
 
-import core.string;
-
 class Exception : Object {
+private:
+	char[] _msg;
+	char[] _file;
+	ulong _line;
+
+public:
 	this(string msg, string file = "", ulong line = 0) {
 		_msg = msg.dup;
 		_file = file.dup;
@@ -36,13 +40,8 @@ class Exception : Object {
 	}
 
 	string toString() {
-		return this.name() ~ " caught at " ~ _file ~ "@" ~ toStr(_line) ~ ": " ~ _msg;
+		return this.name() ~ " caught at " ~ _file ~ "@" ~ ": " ~ _msg;
 	}
-
-private:
-	char[] _msg;
-	char[] _file;
-	ulong _line;
 }
 
 // Exceptions for IO

@@ -16,6 +16,11 @@ import djehuty;
 import io.console;
 
 class ModuleSpecification {
+private:
+	string _name;
+	ItemSpecification[string] _tests;
+
+public:
 	this(string name) {
 		_name = name.dup;
 	}
@@ -47,8 +52,4 @@ class ModuleSpecification {
 		}
 		return 1;
 	}
-
-private:
-	string _name;
-	ItemSpecification[string] _tests;
 }

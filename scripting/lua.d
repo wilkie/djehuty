@@ -22,6 +22,26 @@ import io.console;
 
 // A Helper class
 class LuaScript {
+protected:
+	lua_State* L;
+
+	string luaToString(int numArg) {
+		char* str = lua_tostring(L, numArg);
+
+		int len;
+		char* ptr = str;
+
+		while (*ptr != '\0') {
+			ptr++;
+			len++;
+		}
+
+		char[] DStr = str[0..len];
+
+		return DStr;
+	}
+
+public:
 
 	alias lua_CFunction Callback;
 
@@ -80,24 +100,5 @@ class LuaScript {
 			Console.forecolor = Color.White;
 			lua_settop(L, 0); // remove error message
 		}
-	}
-
-protected:
-	lua_State* L;
-
-	string luaToString(int numArg) {
-		char* str = lua_tostring(L, numArg);
-
-		int len;
-		char* ptr = str;
-
-		while (*ptr != '\0') {
-			ptr++;
-			len++;
-		}
-
-		char[] DStr = str[0..len];
-
-		return DStr;
 	}
 }

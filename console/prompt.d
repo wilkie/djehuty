@@ -12,6 +12,20 @@ import data.queue;
 
 // Description: This class provides a line input field for a console application.  This class can buffer the previous lines much like that of a modern shell.
 class Prompt {
+protected:
+
+	// the prompt string, for instance "# " or "C:\>"
+	string _prompt;
+	Color _promptClr = Color.Gray;
+	Color _clr = Color.Gray;
+
+	Queue!(string) _lineBuffer;
+	int _bufferSize;
+	int _bufferPos;
+
+	uint _pos;
+
+private:
 	// TODO: Allow ANSI emulated prompt strings
 	this() {
 		_prompt = "";
@@ -282,17 +296,4 @@ class Prompt {
 
 		return line;
 	}
-
-protected:
-
-	// the prompt string, for instance "# " or "C:\>"
-	string _prompt;
-	Color _promptClr = Color.Gray;
-	Color _clr = Color.Gray;
-
-	Queue!(string) _lineBuffer;
-	int _bufferSize;
-	int _bufferPos;
-
-	uint _pos;
 }

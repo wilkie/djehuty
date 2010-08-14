@@ -96,9 +96,26 @@ struct Pool {
 }
 
 class GarbageCollector {
-public:
 static:
+private:
 
+	void _initialize() {
+		ubyte[] foo = System.malloc(1);
+		_heapStart = cast(size_t*)foo.ptr;
+		_heapEnd = cast(size_t*)(foo.ptr + 1);
+		_inited = 1;
+	}
+
+	void _terminate() {
+		_inited = 0;
+	}
+
+	ulong _disabled;
+	bool _inited;
+	size_t* _heapStart;
+	size_t* _heapEnd;
+
+public:
 	void enable() {
 		Atomic.decrement(_disabled);
 	}
@@ -117,19 +134,25 @@ static:
 		ubyte[] ret = System.malloc(length + size_t.sizeof);
 		size_t* len = cast(size_t*)ret.ptr;
 		*len = length;
+		ubyte* end = ret.ptr + length + size_t.sizeof;
+		if (end > cast(ubyte*)_heapEnd) {
+			_heapEnd = cast(size_t*)end;
+		}
 		return ret[size_t.sizeof..$];
 	}
 
 	ubyte[] realloc(ubyte[] original, size_t length) {
 		size_t* oldlen = (cast(size_t*)original.ptr) - 1;
-		if (oldlen > _heapStart) {
+		if (oldlen > _heapStart && oldlen < _heapEnd) {
 			if (*oldlen > length) {
-				return original[0..length];
+				alias length innerLength;
+				return original[0..innerLength];
 			}
 		}
 
 		ubyte[] newArray = malloc(length);
 		newArray[0..original.length] = original[0..original.length];
+
 		return newArray;
 	}
 
@@ -178,25 +201,10 @@ static:
 		}
 
 		size_t* oldlen = (cast(size_t*)memory.ptr) - 1;
-		if (oldlen > _heapStart) {
+
+		if (oldlen > _heapStart && oldlen < _heapEnd) {
 			return *oldlen;
 		}
 		return memory.length;
 	}
-
-private:
-
-	void _initialize() {
-		ubyte[] foo = System.malloc(1);
-		_heapStart = cast(size_t*)foo.ptr;
-		_inited = 1;
-	}
-
-	void _terminate() {
-		_inited = 0;
-	}
-
-	ulong _disabled;
-	bool _inited;
-	size_t* _heapStart;
 }

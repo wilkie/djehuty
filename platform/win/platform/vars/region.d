@@ -10,7 +10,7 @@
 
 module platform.vars.region;
 
-import platform.win.common;
+import binding.win32.windef;
 
 struct RegionPlatformVars {
 	HRGN regionHandle;

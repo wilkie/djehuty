@@ -8,6 +8,10 @@ import data.list;
 
 // Description: This class holds the command line arguments that were passed into the app and will aid in parsing them.
 class Arguments : List!(string) {
+protected:
+
+	static Arguments appInstance;
+
 public:
 
 	this() {
@@ -20,8 +24,4 @@ public:
 
 		return appInstance;
 	}
-
-protected:
-
-	static Arguments appInstance;
 }

@@ -9,7 +9,8 @@
 
 module scaffold.color;
 
-import platform.win.common;
+import binding.win32.winuser;
+
 import platform.win.main;
 
 import core.color;

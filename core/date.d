@@ -7,31 +7,6 @@
 
 module core.date;
 
-enum Month {
-	January,
-	February,
-	March,
-	April,
-	May,
-	June,
-	July,
-	August,
-	September,
-	October,
-	November,
-	December
-}
-
-enum Day {
-	Sunday,
-	Monday,
-	Tuesday,
-	Wednesday,
-	Thursday,
-	Friday,
-	Saturday
-}
-
 import scaffold.time;
 
 import core.string;
@@ -43,7 +18,13 @@ import core.locale;
 import core.timezone;
 
 class Date {
+private:
 
+	Month _month;
+	uint _day;
+	uint _year;
+
+public:
 	this() {
 		DateGet(_month, _day, _year);
 	}
@@ -228,17 +209,4 @@ class Date {
 	string toString() {
 		return Locale.formatDate(this);
 	}
-
-private:
-
-	Month _month;
-	uint _day;
-	uint _year;
-
-	class _Now : Date {
-		this() {
-		}
-	}
-
-	static _Now _now;
 }

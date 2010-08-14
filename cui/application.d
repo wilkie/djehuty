@@ -1,273 +1,134 @@
 module cui.application;
 
 import cui.window;
+import cui.canvas;
 
-import core.application;
-import core.string;
-import core.event;
-import core.main;
-import core.definitions;
+import djehuty;
 
 import scaffold.cui;
+import scaffold.console;
 
 import platform.vars.cui;
 
+import data.list;
+
 import io.console;
 
-import binding.c;
+import synch.semaphore;
 
-// Description: This class represents a Text User Interface application (TUI).
 class CuiApplication : Application {
+private:
+	CuiPlatformVars _pfvars;
+
+	Semaphore _lock;
+
+	CuiWindow _mainWindow;
+
+	bool _running = false;
+	bool _allowRedraw = false;
+	bool _needRedraw = false;
+	Mouse _mouse;
+
+	void eventLoop() {
+		_running = true;
+		while(_running) {
+			Event evt;
+
+			CuiNextEvent(&evt, &_pfvars);
+
+			_allowRedraw = false;
+			_mainWindow.onEvent(evt);
+			_allowRedraw = true;
+
+			if (_needRedraw) {
+				_needRedraw = false;
+				_redraw();
+			}
+		}
+	}
+
+	void _redraw() {
+		_lock.down();
+		auto canvas = new CuiCanvas();
+		canvas.position(0,0);
+		_mainWindow.onDrawChildren(canvas);
+		_mainWindow.onDraw(canvas);
+
+		CuiSwapBuffers(&_pfvars);
+		_lock.up();
+	}
+
 public:
 
 	this() {
 		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
 		super();
 	}
 
 	this(string appName) {
 		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
 		super(appName);
 	}
 
-	override void push(Dispatcher dsp) {
-		super.push(dsp);
-
-		if (cast(CuiWindow)dsp !is null) {
-			setWindow(cast(CuiWindow)dsp);
-		}
-	}
-
-	CuiWindow window() {
-		return _curConsoleWindow;
-	}
-
-	override bool isZombie() {
-		return (_curConsoleWindow is null);
-	}
-
-protected:
-
-	CuiWindow _curConsoleWindow;
-
-    CuiPlatformVars _pfvars;
-
-	override void shutdown() {
+	override void exit(uint code) {
+		_running = false;
 		CuiEnd(&_pfvars);
+		
+		super.exit(code);
 	}
+	
+	override bool isZombie() {
+		return _mainWindow.windowCount == 0;
+	}
+	
+	override void run() {
+		super.run();
 
-	override void start() {
+		_allowRedraw = true;
+
+		if (_needRedraw) {
+			_needRedraw = false;
+			_redraw();
+		}
+
 		eventLoop();
 	}
 
-	override void end(uint exitCode) {
-		_running = false;
-	}
-
-private:
-
-	void setWindow(CuiWindow window) {
-		_curConsoleWindow = window;
-
-		// Draw Window
-		window.onInitialize();
-	}
-
-	bool _running = true;
-
-	void eventLoop() {
-		while(_running) {
-			CuiEvent evt;
-			if (_curConsoleWindow is null) {
-				continue;
-			}
-
-			CuiNextEvent(&evt, &_pfvars);
-
-			switch(evt.type) {
-				case CuiEvent.Type.KeyDown:
-					_curConsoleWindow.onKeyDown(evt.info.key);
-					dchar chr;
-					if (isPrintable(evt.info.key, chr)) {
-						_curConsoleWindow.onKeyChar(chr);
-					}
-					break;
-				case CuiEvent.Type.MouseDown:
-					break;
-				case CuiEvent.Type.MouseUp:
-					break;
-				case CuiEvent.Type.MouseMove:
-					break;
-				case CuiEvent.Type.Close:
-					this.exit(evt.aux);
-					break;
-				case CuiEvent.Type.Size:
-					_curConsoleWindow._onResize();
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	bool _inited;
-
-	bool isPrintable(Key key, out dchar chr) {
-				if (key.ctrl || key.alt) {
-			return false;
-		}
-
-		if (key.code >= Key.A && key.code <= Key.Z) {
-			if (key.shift) {
-				chr = (key.code - Key.A) + 'A';
-			}
-			else {
-				chr = (key.code - Key.A) + 'a';
-			}
-		}
-		else if (key.code >= Key.Zero && key.code <= Key.Nine) {
-			if (key.shift) {
-				switch (key.code) {
-					case Key.Zero:
-						chr = ')';
-						break;
-					case Key.One:
-						chr = '!';
-						break;
-					case Key.Two:
-						chr = '@';
-						break;
-					case Key.Three:
-						chr = '#';
-						break;
-					case Key.Four:
-						chr = '$';
-						break;
-					case Key.Five:
-						chr = '%';
-						break;
-					case Key.Six:
-						chr = '^';
-						break;
-					case Key.Seven:
-						chr = '&';
-						break;
-					case Key.Eight:
-						chr = '*';
-						break;
-					case Key.Nine:
-						chr = '(';
-						break;
-					default:
-						return false;
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		auto window = cast(CuiWindow)dsp;
+		if (window !is null) {
+			if (signal == CuiWindow.Signal.NeedRedraw) {
+				if (!_allowRedraw) {
+					_needRedraw = true;
 				}
-			}
-			else {
-				chr = (key.code - Key.Zero) + '0';
-			}
-		}
-		else if (key.code == Key.SingleQuote) {
-			if (key.shift) {
-				chr = '~';
-			}
-			else {
-				chr = '`';
+				else {
+					_redraw();
+				}
+				return true;
 			}
 		}
-		else if (key.code == Key.Minus) {
-			if (key.shift) {
-				chr = '_';
-			}
-			else {
-				chr = '-';
-			}
-		}
-		else if (key.code == Key.Equals) {
-			if (key.shift) {
-				chr = '+';
-			}
-			else {
-				chr = '=';
-			}
-		}
-		else if (key.code == Key.LeftBracket) {
-			if (key.shift) {
-				chr = '{';
-			}
-			else {
-				chr = '[';
-			}
-		}
-		else if (key.code == Key.RightBracket) {
-			if (key.shift) {
-				chr = '}';
-			}
-			else {
-				chr = '}';
-			}
-		}
-		else if (key.code == Key.Semicolon) {
-			if (key.shift) {
-				chr = ':';
-			}
-			else {
-				chr = ';';
-			}
-		}
-		else if (key.code == Key.Comma) {
-			if (key.shift) {
-				chr = '<';
-			}
-			else {
-				chr = ',';
-			}
-		}
-		else if (key.code == Key.Period) {
-			if (key.shift) {
-				chr = '>';
-			}
-			else {
-				chr = '.';
-			}
-		}
-		else if (key.code == Key.Foreslash) {
-			if (key.shift) {
-				chr = '?';
-			}
-			else {
-				chr = '/';
-			}
-		}
-		else if (key.code == Key.Backslash) {
-			if (key.shift) {
-				chr = '|';
-			}
-			else {
-				chr = '\\';
-			}
-		}
-		else if (key.code == Key.Quote) {
-			if (key.shift) {
-				chr = '"';
-			}
-			else {
-				chr = '\'';
-			}
-		}
-		else if (key.code == Key.Tab && !key.shift) {
-			chr = '\t';
-		}
-		else if (key.code == Key.Space) {
-			chr = ' ';
-		}
-		else if (key.code == Key.Return && !key.shift) {
-			chr = '\r';
+		return false;
+	}
+
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		auto window = cast(CuiWindow)dsp;
+		if (window !is null && window !is _mainWindow) {
+			// Add to the window list
+			_mainWindow.attach(window, handler);
+			_mainWindow.redraw();
 		}
 		else {
-			return false;
+			super.attach(dsp, handler);
 		}
-
-		return true;
-
 	}
 }

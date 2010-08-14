@@ -12,15 +12,14 @@ module scaffold.time;
 
 pragma(lib, "winmm.lib");
 
-import platform.win.common;
+import binding.win32.winbase;
+import binding.win32.mmsystem;
 
 import core.date;
 import core.definitions;
 import core.string;
 
 // Timing
-
-import io.console;
 
 string TimeZoneGet() {
 	TIME_ZONE_INFORMATION tzi;

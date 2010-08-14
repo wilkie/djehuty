@@ -12,8 +12,6 @@ module scaffold.opengl;
 
 import binding.opengl.gl;
 
-import opengl.window;
-
 import binding.win32.wingdi;
 import binding.win32.windef;
 

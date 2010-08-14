@@ -18,22 +18,7 @@ import io.console;
 
 // Description: This class represents a region that is convex.
 class ConvexHull : Region {
-
-	// Description: This will construct an empty ConvexHull.
-	this() {
-	}
-
-	// Description: This will construct a ConvexHull for the given Region.
-	// region: The class representing the region to use.
-	this(Region region) {
-		quickHull(region[]);
-	}
-
-	this(Coord[] points) {
-		quickHull(points);
-	}
-
-protected:
+private:
 
 	// Description: This function will build the internal array of points using the given array of points
 	void quickHull(Coord[] pts) {
@@ -56,17 +41,17 @@ protected:
 
 	Coord[] quickHullCompute(Coord start, Coord end, Coord[] pts) {
 		// compute useful distance information
-		int distX = end.x - start.x;
-		int distY = end.y - start.y;
+		double distX = end.x - start.x;
+		double distY = end.y - start.y;
 
-		int maxDistance = 0;
-		int maxPoint = -1;
+		double maxDistance = 0;
+		uint maxPoint = -1;
 
 		Coord[] outerPoints;
 
 		// find most distant point
 		foreach(i, pt; pts) {
-			int distance = distX * (start.y - pt.y) - distY * (start.x - pt.x);
+			double distance = distX * (start.y - pt.y) - distY * (start.x - pt.x);
 
 			if (distance <= 0) {
 				continue;
@@ -98,4 +83,19 @@ protected:
 	}
 
 	Coord center;
+
+public:
+	// Description: This will construct an empty ConvexHull.
+	this() {
+	}
+
+	// Description: This will construct a ConvexHull for the given Region.
+	// region: The class representing the region to use.
+	this(Region region) {
+		quickHull(region[]);
+	}
+
+	this(Coord[] points) {
+		quickHull(points);
+	}
 }

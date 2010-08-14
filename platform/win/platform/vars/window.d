@@ -25,7 +25,7 @@ import gui.window;
 import binding.opengl.gl;
 import binding.opengl.glu;
 
-import opengl.window;
+//import opengl.window;
 
 import synch.thread;
 
@@ -106,7 +106,7 @@ struct WindowPlatformVars {
 		if (pleaseStop) {
 			return;
 		}
-		
+
 		wstring oldTitleW = Unicode.toUtf16(oldTitle.dup);
 		oldTitleW ~='\0';
 
@@ -117,10 +117,10 @@ struct WindowPlatformVars {
 		}
 
 		// create the window's view object
-		windowClass.onInitialize();
+//		windowClass.onInitialize();
 
 		// call the onAdd() event
-		windowClass.onAdd();
+//		windowClass.onAdd();
 
 		MSG msg;
 		while (GetMessageW(&msg, cast(HWND) hWnd, 0, 0)) {
@@ -135,9 +135,9 @@ struct WindowPlatformVars {
 
 
 	void gameLoopCallResize() {
-		GLWindow glWindow = cast(GLWindow)windowClass;
+		//GLWindow glWindow = cast(GLWindow)windowClass;
 
-		glWindow.onDraw(getDeltaTime());
+		//glWindow.onDraw(getDeltaTime());
 
 		// Now, we can swap the buffers
 		SwapBuffers(windhDC);
@@ -246,10 +246,10 @@ struct WindowPlatformVars {
 		}
 
 		// create the window's view object
-		windowClass.onInitialize();
+//		windowClass.onInitialize();
 
 		// call the onAdd() event
-		windowClass.onAdd();
+//		windowClass.onAdd();
 
 		_TimeInfo tInfo;
 
@@ -260,7 +260,7 @@ struct WindowPlatformVars {
 
 		initTime();
 
-		GLWindow glWindow = cast(GLWindow)windowClass;
+//		GLWindow glWindow = cast(GLWindow)windowClass;
 
 		MSG msg;
 		for (;;)
@@ -284,7 +284,7 @@ struct WindowPlatformVars {
 				// This will need work to support multiple GL windows
 				// For now, one is supported
 
-				glWindow.onDraw(getDeltaTime());
+	//			glWindow.onDraw(getDeltaTime());
 
 				// Now, we can swap the buffers
 				SwapBuffers(windhDC);

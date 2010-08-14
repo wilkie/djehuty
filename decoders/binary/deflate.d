@@ -201,7 +201,93 @@ private {
 
 // Description: This represents the DEFLATE Codec.
 class DEFLATEDecoder : BinaryDecoder {
+private:
 
+	// the bit mask to get the bit
+	ubyte deflateCurMask;
+	ubyte deflateCurBit;
+	ubyte deflateCurByte;
+
+	// FOR READ_BITS
+	uint deflateBitsLeft;
+	uint deflateCurValue;
+	ubyte deflateCurValueBit;
+
+	uint deflateLastState;
+
+	uint deflateCurCode;
+
+	// BLOCK HEADER
+	_deflate_block_info deflateCurBlock;
+
+
+
+	// FOR 'NO COMPRESSION' TYPE
+	ushort deflateDataLength;
+
+
+	// FOR HUFFMAN COMPRESSION TYPES
+
+	// CURRENT HUFFMAN TABLES
+	_huffman_table deflateInternalHuffmanTable;
+	_huffman_table deflateInternalDistanceTable;
+
+	// FOR REGULAR HUFFMAN DECODER //
+	uint deflateCurHuffmanBitLength;
+	_huffman_table* deflateCurHuffmanTable;
+	_huffman_entry* deflateCurHuffmanEntry;
+
+	// FOR DISTANCE TREE DECODER //
+	_huffman_entry* deflateCurDistanceEntry;
+	uint deflateCurDistanceBitLength;
+
+	// TRACK LENGTH, DISTANCE
+	ushort deflateLength;
+	ushort deflateDistance;
+
+	// COUNTER
+	uint deflateCounter;
+	uint deflateCounterMax;
+
+	// DYNAMIC HUFFMAN TREE BUILDING
+	ushort deflateHLIT;
+	ushort deflateHDIST;
+	ushort deflateHCLEN;
+
+	// HOLDS THE BIT LENGTH OF THE CODE
+	ubyte deflateCodeLengths[19];
+
+	// COUNTS HOW MANY OF EACH LENGTH HAVE BEEN FOUND
+	ubyte deflateCodeLengthCount[7];
+
+	// THE HUFFMAN TABLE FOR CODE LENGTHS //
+	_huffman_table deflateCodeLengthTable;
+
+	// THE MINIMUM CODE SIZE FOR A CODE LENGTH CODE //
+	ushort deflateCodeLengthCodeSize = 1;
+	ushort deflateDistanceCodeLengthCodeSize = 1;
+
+	// FOR HUFFMAN TABLE FOR ACTUAL CODES //
+	ubyte deflateHuffmanLengths[288];
+	ubyte deflateDistanceLengths[32];
+
+	ushort deflateHuffmanLengthCounts[16];
+	ushort deflateDistanceLengthCounts[16];
+
+	ushort* deflateCurLengthCountArray;
+	ubyte* deflateCurLengthArray;
+
+
+
+	ushort deflateHuffmanTable[578];
+	ushort deflateDistanceTable[68];
+
+	ushort deflateHuffmanNextCodes[16]; //nextcode
+	//ushort v[16]; //blcount
+
+	ushort deflateTreePosition;
+
+public:
 	StreamData decode(Stream stream, Stream toStream) {
 		uint counter;
 
@@ -1726,92 +1812,5 @@ class DEFLATEDecoder : BinaryDecoder {
 		}
 		return StreamData.Invalid;
 	}
-
-protected:
-
-	// the bit mask to get the bit
-	ubyte deflateCurMask;
-	ubyte deflateCurBit;
-	ubyte deflateCurByte;
-
-	// FOR READ_BITS
-	uint deflateBitsLeft;
-	uint deflateCurValue;
-	ubyte deflateCurValueBit;
-
-	uint deflateLastState;
-
-	uint deflateCurCode;
-
-	// BLOCK HEADER
-	_deflate_block_info deflateCurBlock;
-
-
-
-	// FOR 'NO COMPRESSION' TYPE
-	ushort deflateDataLength;
-
-
-	// FOR HUFFMAN COMPRESSION TYPES
-
-	// CURRENT HUFFMAN TABLES
-	_huffman_table deflateInternalHuffmanTable;
-	_huffman_table deflateInternalDistanceTable;
-
-	// FOR REGULAR HUFFMAN DECODER //
-	uint deflateCurHuffmanBitLength;
-	_huffman_table* deflateCurHuffmanTable;
-	_huffman_entry* deflateCurHuffmanEntry;
-
-	// FOR DISTANCE TREE DECODER //
-	_huffman_entry* deflateCurDistanceEntry;
-	uint deflateCurDistanceBitLength;
-
-	// TRACK LENGTH, DISTANCE
-	ushort deflateLength;
-	ushort deflateDistance;
-
-	// COUNTER
-	uint deflateCounter;
-	uint deflateCounterMax;
-
-	// DYNAMIC HUFFMAN TREE BUILDING
-	ushort deflateHLIT;
-	ushort deflateHDIST;
-	ushort deflateHCLEN;
-
-	// HOLDS THE BIT LENGTH OF THE CODE
-	ubyte deflateCodeLengths[19];
-
-	// COUNTS HOW MANY OF EACH LENGTH HAVE BEEN FOUND
-	ubyte deflateCodeLengthCount[7];
-
-	// THE HUFFMAN TABLE FOR CODE LENGTHS //
-	_huffman_table deflateCodeLengthTable;
-
-	// THE MINIMUM CODE SIZE FOR A CODE LENGTH CODE //
-	ushort deflateCodeLengthCodeSize = 1;
-	ushort deflateDistanceCodeLengthCodeSize = 1;
-
-	// FOR HUFFMAN TABLE FOR ACTUAL CODES //
-	ubyte deflateHuffmanLengths[288];
-	ubyte deflateDistanceLengths[32];
-
-	ushort deflateHuffmanLengthCounts[16];
-	ushort deflateDistanceLengthCounts[16];
-
-	ushort* deflateCurLengthCountArray;
-	ubyte* deflateCurLengthArray;
-
-
-
-	ushort deflateHuffmanTable[578];
-	ushort deflateDistanceTable[68];
-
-	ushort deflateHuffmanNextCodes[16]; //nextcode
-	//ushort v[16]; //blcount
-
-	ushort deflateTreePosition;
-
 
 }

@@ -13,7 +13,10 @@ module scaffold.directory;
 pragma(lib, "netapi32.lib");
 pragma(lib, "mpr.lib");
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.winbase;
+import binding.win32.windef;
 
 import platform.vars.directory;
 
@@ -66,7 +69,7 @@ string DirectoryGetBinary() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.application.name;
 	}
 
 	return cached;
@@ -87,7 +90,7 @@ string DirectoryGetAppData() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.application.name;
 	}
 
 	return cached;
@@ -126,7 +129,7 @@ string DirectoryGetUserData() {
 
 		str = _SanitizeWindowsPath(str[0..ret]);
 
-		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.app.name;
+		cached = Unicode.toUtf8(str) ~ "/" ~ Djehuty.application.name;
 	}
 
 	return cached;
@@ -428,7 +431,7 @@ string[] DirectoryList(ref DirectoryPlatformVars dirVars, string path) {
 
 		while(logicaldrives != 0) {
 			if ((logicaldrives & 1) == 1) {
-				list ~= curDrive;
+				list ~= curDrive.dup;
 			}
 
 			if (curDrive[0] == 'z') { break; }

@@ -14,11 +14,7 @@ import core.string;
 import core.definitions;
 
 // Description: Base class for all codecs
-class Decoder {
-	string name() {
-		return "Unknown Codec";
-	}
-
+abstract class Decoder {
 protected:
 
 	int decoderState = 0;
@@ -28,4 +24,9 @@ protected:
 	int decoderNextSubState = 0;
 
 	int decoderFrameState = 0;
+
+public:
+	string name() {
+		return "Unknown Codec";
+	}
 }

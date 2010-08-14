@@ -10,7 +10,11 @@
 
 module platform.vars.view;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.winuser;
+import binding.win32.winbase;
+import binding.win32.windef;
+import binding.win32.wingdi;
 
 import binding.win32.gdiplusgpstubs;
 import binding.win32.gdiplustypes;

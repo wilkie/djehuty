@@ -19,11 +19,7 @@ import core.variant;
 
 import data.iterable;
 
-import io.console;
-
 import math.currency;
-
-public import core.string;
 
 import binding.c;
 
@@ -381,8 +377,8 @@ int find(string source, string search, uint start = 0) {
 	return -1;
 }
 
-string times(string str, uint amount) {
-	if (amount == 0) {
+string times(string str, int amount) {
+	if (amount <= 0) {
 		return "";
 	}
 
@@ -391,6 +387,22 @@ string times(string str, uint amount) {
 		ret ~= str;
 	}
 	return ret;
+}
+
+bool beginsWith(string str, string find) {
+	if (str.length < find.length) {
+		return false;
+	}
+
+	return str[0..find.length] == find;
+}
+
+bool endsWith(string str, string find) {
+	if (str.length < find.length) {
+		return false;
+	}
+	
+	return str[str.length-find.length..str.length] == find;
 }
 
 string format(string format, ...) {

@@ -11,6 +11,42 @@ import cui.buffer;
 // Description: This console control is a console buffer that emulations VT100 terminal codes.
 class CuiVT100 : CuiBuffer {
 
+private:
+
+	static bool _vt100_inescape = false;
+	static bool _vt100_inescape2 = false;
+
+	static uint _vt100_saved_x = 0;
+	static uint _vt100_saved_y = 0;
+
+	static int _vt100_params[5] = [0];
+	static int _vt100_curparam = 0;
+	static int _vt100_paramFilled = 0;
+
+	static int _cur_fg_color = 8;
+	static int _cur_bg_color = 0;
+	static uint _cur_bright_color = 0;
+
+	static const Color[] _consoleToColor = [
+		Color.Black,
+		Color.DarkRed,
+		Color.DarkGreen,
+		Color.DarkYellow,
+		Color.DarkBlue,
+		Color.DarkMagenta,
+		Color.DarkCyan,
+		Color.DarkGray,
+		Color.Gray,
+		Color.Red,
+		Color.Green,
+		Color.Yellow,
+		Color.Blue,
+		Color.Magenta,
+		Color.Cyan,
+		Color.White
+	];
+
+public:
 	// Constructors
 
 	this( uint x, uint y, uint width, uint height) {
@@ -180,39 +216,4 @@ class CuiVT100 : CuiBuffer {
 			super.writeChar(chr);
 		}
 	}
-
-private:
-
-	static bool _vt100_inescape = false;
-	static bool _vt100_inescape2 = false;
-
-	static uint _vt100_saved_x = 0;
-	static uint _vt100_saved_y = 0;
-
-	static int _vt100_params[5] = [0];
-	static int _vt100_curparam = 0;
-	static int _vt100_paramFilled = 0;
-
-	static int _cur_fg_color = 8;
-	static int _cur_bg_color = 0;
-	static uint _cur_bright_color = 0;
-
-	static const Color[] _consoleToColor = [
-		Color.Black,
-		Color.DarkRed,
-		Color.DarkGreen,
-		Color.DarkYellow,
-		Color.DarkBlue,
-		Color.DarkMagenta,
-		Color.DarkCyan,
-		Color.DarkGray,
-		Color.Gray,
-		Color.Red,
-		Color.Green,
-		Color.Yellow,
-		Color.Blue,
-		Color.Magenta,
-		Color.Cyan,
-		Color.White
-	];
 }

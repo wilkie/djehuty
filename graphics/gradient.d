@@ -18,6 +18,17 @@ import io.console;
 
 // Description: This class represents a linear gradient.
 class Gradient {
+package:
+
+	double _origx;
+	double _origy;
+
+	double _angle;
+	double _width;
+	double[] _points;
+	Color[] _clrs;
+
+public:
 
 	// Description: This will create a default linear gradient.
 	this() {
@@ -132,14 +143,4 @@ class Gradient {
 	double[] points() {
 		return _points.dup;
 	}
-
-package:
-
-	double _origx;
-	double _origy;
-
-	double _angle;
-	double _width;
-	double[] _points;
-	Color[] _clrs;
 }

@@ -9,18 +9,17 @@
 
 module scaffold.file;
 
-import platform.win.common;
+import binding.win32.windef;
+import binding.win32.winbase;
+import binding.win32.winnt;
+
 import platform.win.main;
 
 import platform.vars.file;
 
 import scaffold.directory;
 
-import core.stream;
-import core.string;
-import core.main;
-import core.definitions;
-import core.unicode;
+import djehuty;
 
 import io.console;
 import io.directory;
@@ -221,4 +220,9 @@ void FileAppend(ref FilePlatformVars fileVars, ubyte* buffer, ulong len) {
 
 	file.rewind();
 	file.skip(pos);*/
+}
+
+Time FileTime(string path) {
+	Time t = new Time();
+	return t;
 }

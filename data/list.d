@@ -15,18 +15,36 @@ import djehuty;
 
 public import data.iterable;
 
-import io.console;
-
 class List(T) : Iterable!(T) {
+protected:
+
+	T _nullValue() {
+		T val;
+		return val;
+	}
+
+	void _resize() {
+		T[] temp = _data;
+		if (_data.length == 0) {
+			_data = new T[10];
+		}
+		else {
+			_data = new T[_data.length*2];
+		}
+		_data[0..temp.length] = temp[0..$];
+	}
+
+	T[] _data;
+	size_t _count;
+
+public:
 	this() {
-		_data.length = 10;
-		_data = new T[_data.length];
+		_data = new T[10];
 		_count = 0;
 	}
 
 	this(int size) {
-		_data.length = size;
-		_data = new T[_data.length];
+		_data = new T[size];
 		_count = 0;
 	}
 
@@ -86,7 +104,12 @@ class List(T) : Iterable!(T) {
 					_resize();
 				}
 
-				if (idx >= _count) {
+				if (idx == _count) {
+					add(item);
+					return;
+				}
+
+				if (idx > _count) {
 					throw new DataException.OutOfBounds(this.classinfo.name);
 				}
 
@@ -124,9 +147,8 @@ class List(T) : Iterable!(T) {
 	T remove(T value) {
 		synchronized(this) {
 			foreach(size_t index, item; _data[0.._count]) {
-				if (value == item) {
-					scope(exit) _data = _data[0..index] ~ _data[index+1..$];
-					return _data[index];
+				if (value is item) {
+					return removeAt(index);
 				}
 			}
 			return _nullValue();
@@ -144,8 +166,9 @@ class List(T) : Iterable!(T) {
 			}
 
 			_count--;
-			scope(exit) _data = _data[0..index] ~ _data[index+1..$];
-			return _data[index];
+			T ret = _data[index];
+			_data = _data[0..index] ~ _data[index+1..$];
+			return ret;
 		}
 	}
 
@@ -398,34 +421,4 @@ class List(T) : Iterable!(T) {
 
 		return ret;
 	}
-
-protected:
-
-	T _nullValue() {
-		T val;
-		return val;
-/*		static if (IsArray!(T) || IsClass!(T)) {
-			return null;
-		}
-		else static if (IsStruct!(T)) {
-			return *(new T);
-		}
-		else {
-			return 0;
-		}*/
-	}
-
-	void _resize() {
-		T[] temp = _data;
-		if (_data.length == 0) {
-			_data = new T[10];
-		}
-		else {
-			_data = new T[_data.length*2];
-		}
-		_data[0..temp.length] = temp[0..$];
-	}
-
-	T[] _data;
-	size_t _count;
 }

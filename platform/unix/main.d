@@ -18,24 +18,16 @@ import scaffold.directory;
 
 import platform.vars.window;
 
-import gui.application;
-import gui.window;
-
 import core.definitions;
 import core.main;
 import core.string;
 import core.arguments;
-
-import graphics.view;
 
 import synch.thread;
 
 import analyzing.debugger;
 
 import io.console;
-
-import cui.application;
-import cui.window;
 
 struct DjehutyPlatformVars {
 	X.Display* display;
@@ -81,7 +73,11 @@ extern(C) void mousetimerproc(sigval val) {
 
 	p_mouseProps = cast(Mouse*)val.sival_ptr;
 
-	p_mouseProps.clicks = 1;
+	p_mouseProps.clicks[0] = 1;
+	p_mouseProps.clicks[1] = 1;
+	p_mouseProps.clicks[2] = 1;
+	p_mouseProps.clicks[3] = 1;
+	p_mouseProps.clicks[4] = 1;
 }
 
 // segfault handler
@@ -95,32 +91,8 @@ void AppInit() {
 	// UTF-8 SUPPORT
 //	_pfvars.wm_name = X.XInternAtom(_pfvars.display, "_NET_WM_NAME\0"c.ptr, X.Bool.True);
 	setlocale(LC_CTYPE, "");
+	setlocale(LC_ALL,"");
 
 	// segfault handler
 	signal(SIGSEGV, &segfault_handler);
 }
-
-import binding.c;
-/*
-int main(string[] args){
-	try	{
-		printf("fudge\n");
-		AppInit();
-		printf("fudge\n");
-
-		Arguments argList = Arguments.instance();
-		foreach(arg; args) {
-			argList.add(arg);
-		}
-
-		ConsoleInit();
-		Djehuty.application.run();
-		ConsoleUninit();
-	}
-	catch(Object o)	{
-		Debugger.raiseException(cast(Exception)o);
-	}
-
-	return ApplicationController.instance.exitCode;
-//	return 0;
-}*/

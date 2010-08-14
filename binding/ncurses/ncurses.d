@@ -14,6 +14,13 @@ import binding.c;
 
 extern(System):
 
+version(PlatformWindows) {
+	pragma(lib, "ncurses.lib");
+}
+else {
+	pragma(lib, `"ncurses"`);
+}
+
 // << ncurses.h>> //
 
 // These correspond to the values retrieved from the headers I have referenced
@@ -681,12 +688,19 @@ const auto KEY_EVENT	= 0633;
 const auto KEY_MAX		= 0777;
 
 // Mouse interface
-const auto NCURSES_BUTTON_RELEASED = 001;
-const auto NCURSES_BUTTON_PRESSED = 002;
-const auto NCURSES_BUTTON_CLICKED = 004;
-const auto NCURSES_DOUBLE_CLICKED = 010;
-const auto NCURSES_TRIPLE_CLICKED = 020;
-const auto NCURSES_RESERVED_EVENT = 040;
+const auto NCURSES_BUTTON_RELEASED = 0x01;
+const auto NCURSES_BUTTON_PRESSED =  0x02;
+const auto NCURSES_BUTTON_CLICKED =  0x04;
+const auto NCURSES_DOUBLE_CLICKED =  0x08;
+const auto NCURSES_TRIPLE_CLICKED =  0x10;
+const auto NCURSES_RESERVED_EVENT =  0x20;
+
+static if (NCURSES_MOUSE_VERSION > 1) {
+	const auto BUTTON_RANGE = 5;
+}
+else {
+	const auto BUTTON_RANGE = 6;
+}
 
 const mmask_t BUTTON1_RELEASED = NCURSES_BUTTON_RELEASED;
 const mmask_t BUTTON1_PRESSED = NCURSES_BUTTON_PRESSED;
@@ -694,59 +708,73 @@ const mmask_t BUTTON1_CLICKED = NCURSES_BUTTON_CLICKED;
 const mmask_t BUTTON1_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED;
 const mmask_t BUTTON1_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED;
 
-const mmask_t BUTTON2_RELEASED = NCURSES_BUTTON_RELEASED << (1 * 5);
-const mmask_t BUTTON2_PRESSED = NCURSES_BUTTON_PRESSED << (1 * 5);
-const mmask_t BUTTON2_CLICKED = NCURSES_BUTTON_CLICKED << (1 * 5);
-const mmask_t BUTTON2_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (1 * 5);
-const mmask_t BUTTON2_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (1 * 5);
+const mmask_t BUTTON2_RELEASED = NCURSES_BUTTON_RELEASED << (1 * BUTTON_RANGE);
+const mmask_t BUTTON2_PRESSED = NCURSES_BUTTON_PRESSED << (1 * BUTTON_RANGE);
+const mmask_t BUTTON2_CLICKED = NCURSES_BUTTON_CLICKED << (1 * BUTTON_RANGE);
+const mmask_t BUTTON2_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (1 * BUTTON_RANGE);
+const mmask_t BUTTON2_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (1 * BUTTON_RANGE);
 
-const mmask_t BUTTON3_RELEASED = NCURSES_BUTTON_RELEASED << (2 * 5);
-const mmask_t BUTTON3_PRESSED = NCURSES_BUTTON_PRESSED << (2 * 5);
-const mmask_t BUTTON3_CLICKED = NCURSES_BUTTON_CLICKED << (2 * 5);
-const mmask_t BUTTON3_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (2 * 5);
-const mmask_t BUTTON3_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (2 * 5);
+const mmask_t BUTTON3_RELEASED = NCURSES_BUTTON_RELEASED << (2 * BUTTON_RANGE);
+const mmask_t BUTTON3_PRESSED = NCURSES_BUTTON_PRESSED << (2 * BUTTON_RANGE);
+const mmask_t BUTTON3_CLICKED = NCURSES_BUTTON_CLICKED << (2 * BUTTON_RANGE);
+const mmask_t BUTTON3_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (2 * BUTTON_RANGE);
+const mmask_t BUTTON3_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (2 * BUTTON_RANGE);
 
-const mmask_t BUTTON4_RELEASED = NCURSES_BUTTON_RELEASED << (3 * 5);
-const mmask_t BUTTON4_PRESSED = NCURSES_BUTTON_PRESSED << (3 * 5);
-const mmask_t BUTTON4_CLICKED = NCURSES_BUTTON_CLICKED << (3 * 5);
-const mmask_t BUTTON4_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (3 * 5);
-const mmask_t BUTTON4_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (3 * 5);
+const mmask_t BUTTON4_RELEASED = NCURSES_BUTTON_RELEASED << (3 * BUTTON_RANGE);
+const mmask_t BUTTON4_PRESSED = NCURSES_BUTTON_PRESSED << (3 * BUTTON_RANGE);
+const mmask_t BUTTON4_CLICKED = NCURSES_BUTTON_CLICKED << (3 * BUTTON_RANGE);
+const mmask_t BUTTON4_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (3 * BUTTON_RANGE);
+const mmask_t BUTTON4_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (3 * BUTTON_RANGE);
 
-const mmask_t BUTTON5_RELEASED = NCURSES_BUTTON_RELEASED << (4 * 5);
-const mmask_t BUTTON5_PRESSED = NCURSES_BUTTON_PRESSED << (4 * 5);
-const mmask_t BUTTON5_CLICKED = NCURSES_BUTTON_CLICKED << (4 * 5);
-const mmask_t BUTTON5_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (4 * 5);
-const mmask_t BUTTON5_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (4 * 5);
+static if (NCURSES_MOUSE_VERSION > 1) {
+	const mmask_t BUTTON5_RELEASED = NCURSES_BUTTON_RELEASED << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON5_PRESSED = NCURSES_BUTTON_PRESSED << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON5_CLICKED = NCURSES_BUTTON_CLICKED << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON5_DOUBLE_CLICKED = NCURSES_DOUBLE_CLICKED << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON5_TRIPLE_CLICKED = NCURSES_TRIPLE_CLICKED << (4 * BUTTON_RANGE);
 
-const mmask_t BUTTON_CTRL = 0001 << (5 * 5);
-const mmask_t BUTTON_SHIFT = 0002 << (5 * 5);
-const mmask_t BUTTON_ALT = 0004 << (5 * 5);
-const mmask_t REPORT_MOUSE_POSITION = 0010 << (5 * 5);
+	const mmask_t BUTTON_CTRL =  0x01 << (5 * BUTTON_RANGE);
+	const mmask_t BUTTON_SHIFT = 0x02 << (5 * BUTTON_RANGE);
+	const mmask_t BUTTON_ALT =   0x04 << (5 * BUTTON_RANGE);
+	const mmask_t REPORT_MOUSE_POSITION = 0x08 << (5 * BUTTON_RANGE);
+}
+else {
+	const mmask_t BUTTON5_RELEASED = 0;
+	const mmask_t BUTTON5_PRESSED = 0;
+	const mmask_t BUTTON5_CLICKED = 0;
+	const mmask_t BUTTON5_DOUBLE_CLICKED = 0;
+	const mmask_t BUTTON5_TRIPLE_CLICKED = 0;
+
+	const mmask_t BUTTON_CTRL =  0x01 << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON_SHIFT = 0x02 << (4 * BUTTON_RANGE);
+	const mmask_t BUTTON_ALT =   0x04 << (4 * BUTTON_RANGE);
+	const mmask_t REPORT_MOUSE_POSITION = 0x08 << (4 * BUTTON_RANGE);
+}
 
 const mmask_t ALL_MOUSE_EVENTS = (REPORT_MOUSE_POSITION - 1);
 
 int BUTTON_RELEASE(int event, int button) {
-	return (event & (001 << (6 * (button - 1))));
+	return (event & (NCURSES_BUTTON_RELEASED << (BUTTON_RANGE * (button - 1))));
 }
 
 int BUTTON_PRESS(int event, int button) {
-	return (event & (002 << (6 * (button - 1))));
+	return (event & (NCURSES_BUTTON_PRESSED << (BUTTON_RANGE * (button - 1))));
 }
 
 int BUTTON_CLICK(int event, int button) {
-	return (event & (004 << (6 * (button - 1))));
+	return (event & (NCURSES_BUTTON_CLICKED << (BUTTON_RANGE * (button - 1))));
 }
 
 int BUTTON_DOUBLE_CLICK(int event, int button) {
-	return (event & (010 << (6 * (button - 1))));
+	return (event & (NCURSES_DOUBLE_CLICKED << (BUTTON_RANGE * (button - 1))));
 }
 
 int BUTTON_TRIPLE_CLICK(int event, int button) {
-	return (event & (020 << (6 * (button - 1))));
+	return (event & (NCURSES_TRIPLE_CLICKED << (BUTTON_RANGE * (button - 1))));
 }
 
 int BUTTON_RESERVED_EVENT(int event, int button) {
-	return (event & (040 << (6 * (button - 1))));
+	return (event & (NCURSES_RESERVED_EVENT << (BUTTON_RANGE * (button - 1))));
 }
 
 struct MEVENT {

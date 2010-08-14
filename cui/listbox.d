@@ -1,331 +1,484 @@
+/*
+ * listbox.d
+ *
+ * This module implements a simple listbox widget for CUI applications.
+ *
+ */
+
 module cui.listbox;
 
 import djehuty;
 
+import cui.window;
+import cui.scrollbar;
+import cui.canvas;
+import cui.label;
+
 import data.list;
 
-import io.console;
+class CuiListBox : CuiWindow, Iterable!(string) {
+private:
+	// Scrollbar
+	CuiScrollBar _scrollbar;
 
-import cui.widget;
+	// Actual List
+	List!(string) _list;
 
-// Section: Console
+	// For searching the list incrementally
+	List!(string) _searchList;
+	List!(size_t) _searchIndices;
+	string _searchTerm;
+	CuiLabel _searchLabel;
 
-// Description: This console control abstracts a simple list of items.
-class CuiListBox : CuiWidget, Iterable!(string) {
-	this( uint x, uint y, uint width, uint height ) {
-		super(x,y,width,height);
+	// Colors
+	Color _bg = Color.Black;
+	Color _fg = Color.Blue;
 
-		_list = new List!(string)();
-	}
+	// Selected Colors
+	Color _selbg = Color.White;
+	Color _selfg = Color.Black;
 
-	override void onAdd() {
-	}
-	
-	override void onDraw() {
-		uint i;
+	size_t _selIndex = size_t.max;
 
-		for (i = _firstVisible; (i < this.height + _firstVisible) && (i < _list.length); i++) {
-			drawLine(i);
+	bool _scrolled(Dispatcher dsp, uint signal) {
+		if (signal == CuiScrollBar.Signal.Changed) {
+			redraw();
 		}
-
-		Console.forecolor = _forecolor;
-		Console.backcolor = _backcolor;
-
-		for (; i < this.height + _firstVisible; i++) {
-			Console.position(0, i-_firstVisible);
-			Console.putSpaces(this.width);
-		}
-	}
-
-	override void onKeyDown(Key key) {
-		if (key.code == Key.Up) {
-			if (_pos == 0) {
-				return;
-			}
-
-			if (_pos == _firstVisible) {
-				_firstVisible--;
-				_pos--;
-				onDraw();
-
-				return;
-			}
-
-			if (_pos > 0) {
-				_pos--;
-				drawLine(_pos+1);
-				drawLine(_pos);
-			}
-		}
-		else if (key.code == Key.Down) {
-			if (_pos == _list.length - 1) {
-				return;
-			}
-
-			if (_pos == (_firstVisible + this.height - 1)) {
-				_firstVisible++;
-				_pos++;
-				onDraw();
-
-				return;
-			}
-
-			if (_list.length > 0 && _pos < _list.length - 1) {
-				_pos++;
-				drawLine(_pos-1);
-				drawLine(_pos);
-			}
-		}
-		else if (key.code == Key.PageUp) {
-			if (_pos == 0) {
-				return;
-			}
-
-			if (_pos != _firstVisible) {
-				_pos = _firstVisible;
-			}
-			else {
-				if (_firstVisible > this.height - 1) {
-					_firstVisible -= this.height - 1;
-				}
-				else {
-					_firstVisible = 0;
-				}
-
-				if (_pos > this.height - 1) {
-					_pos -= this.height - 1;
-				}
-				else {
-					_pos = 0;
-				}
-			}
-
-			onDraw();
-		}
-		else if (key.code == Key.PageDown) {
-			if (_pos == _list.length - 1) {
-				return;
-			}
-
-			if (_pos != _firstVisible + this.height - 1) {
-				_pos = _firstVisible + this.height - 1;
-			}
-			else {
-				_firstVisible += this.height - 1;
-				_pos += this.height - 1;
-
-				if (_firstVisible > _list.length - this.height) {
-					_firstVisible = _list.length - this.height;
-				}
-			}
-
-			if ( _pos >= _list.length) {
-				_pos = _list.length - 1;
-			}
-
-			onDraw();
-		}
-	}
-
-	override void onLostFocus() {
-		if (_list.length > 0) {
-			drawLine(_pos);
-		}
-	}
-
-	override void onGotFocus() {
-		Console.hideCaret();
-
-		if (_list.length > 0) {
-			drawLine(_pos);
-		}
-	}
-	
-	void add(string c) {
-		_list.add(c);
-	}
-	
-	string remove() {
-		return _list.remove();
-	}
-	
-	string removeAt(size_t idx){
-		return _list.removeAt(idx);
-	}
-	
-	string peek() {
-		return _list.peek();
-	}
-	
-	string peekAt(size_t idx) {
-		return _list.peekAt(idx);
-	}
-	
-	void set(string c) {
-		_list.set(c);
-	}
-	
-	void apply(string delegate(string) func) {
-		_list.apply(func);
-	}
-	
-	bool contains(string c) {
-		return _list.contains(c);
-	}
-	
-	bool empty() {
-		return _list.empty();
-	}
-	
-	void clear() {
-		_list.clear();
-	}
-	
-	string[] array() {
-		return _list.array();
-	}
-	
-	List!(string) dup() {
-		return _list.dup();
-	}
-	
-	List!(string) slice(size_t start, size_t end) {
-		return _list.slice(start, end);
-	}
-	
-	List!(string) reverse() {
-		return _list.reverse();
-	}
-	
-	size_t length() {
-		return _list.length();
-	}
-	
-	string opIndex(size_t i1) {
-		return _list.opIndex(i1);
-	}
-	
-	int opApply(int delegate(ref string) loopFunc) {
-		return _list.opApply(loopFunc);
-	}
-	
-	int opApply(int delegate(ref size_t, ref string) loopFunc) {
-		return _list.opApply(loopFunc);
-	}
-
-	int opApplyReverse(int delegate(ref string) loopFunc) {
-		return _list.opApplyReverse(loopFunc);
-	}
-
-	int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
-		return _list.opApplyReverse(loopFunc);
-	}
-
-	void opCatAssign(string[] list) {
-		_list.opCatAssign(list);
-	}
-
-	void opCatAssign(Iterable!(string) list) {
-		_list.opCatAssign(list);
-	}
-
-	void opCatAssign(string item) {
-		_list.opCatAssign(item);
-	}
-
-	Iterable!(string) opCat(string[] list) {
-		return _list.opCat(list);
-	}
-
-	Iterable!(string) opCat(Iterable!(string) list) {
-		return _list.opCat(list);
-	}
-
-	Iterable!(string) opCat(string item) {
-		return _list.opCat(item);
-	}
-	
-	// methods
-
-	override bool isTabStop() {
 		return true;
 	}
 
-	// Description: This property returns the backcolor value for normal items.
-	Color backcolor() {
-		return _backcolor;
-	}
-
-	// Description: This property is for setting the backcolor for normal items.
-	// value: The color to set the backcolor to
-	void backcolor(Color value) {
-		_backcolor = value;
-	}
-
-	// Description: This property returns the backcolor value for normal items.
-	Color forecolor() {
-		return _forecolor;
-	}
-
-	// Description: This property is for setting the forecolor for normal items.
-	// value: The color to set the forecolor to
-	void forecolor(Color value) {
-		_forecolor = value;
-	}
-
-	// Description: This property returns the forecolor for selected items.
-	Color selectedForecolor() {
-		return _selectedForecolor;
-	}
-
-	// Description: This property is for setting the forecolor for selected items.
-	// value: The color to set the forecolor to
-	void selectedForecolor(Color value) {
-		_selectedForecolor = value;
-	}
-
-	// Description: This property returns the backcolor for selected items.
-	Color selectedBackcolor() {
-		return _selectedBackcolor;
-	}
-	
-	// Description: This property is for setting the backcolor for selected items.
-	// value: The color to set the backcolor to
-	void selectedBackcolor(Color value) {
-		_selectedBackcolor = value;
-	}
-
-protected:
-
-	void drawLine(uint pos) {
-		Console.position(0, pos - _firstVisible);
-
-		if(pos == _pos) {
-			Console.forecolor = _selectedForecolor;
-			Console.backcolor = _selectedBackcolor;
+	void _setScrollBarValues() {
+		if (_list.length() <= this.height) {
+			_scrollbar.max = 0;
 		}
 		else {
-			Console.forecolor = _forecolor;
-			Console.backcolor = _backcolor;
+			_scrollbar.max = _list.length() - this.height;
 		}
 
-		Console.put(_list[pos]);
+		if (_scrollbar.value > _scrollbar.max) {
+			_scrollbar.value = _scrollbar.max;
+		}
 
-		if(_list[pos].length < this.width) {
-			Console.putSpaces(this.width - _list[pos].length);
+		_scrollbar.largeChange = this.height - 1;
+	}
+	
+	void _cancelSearch() {
+		_searchLabel.visible = false;
+		_searchTerm = null;
+	}
+	
+	void _resetSearch() {
+		_searchList = new List!(string)();
+		_searchIndices = new List!(size_t)();
+		_searchList.addList(_list);
+		_searchIndices.addList(range(0, _searchList.length()));
+	}
+
+public:
+
+	enum Signal {
+		Changed
+	}
+
+	// Description: This constructor will create a new listbox widget of the
+	//  specified dimensions at the specified location.
+	this(int x, int y, int width, int height) {
+		super(x,y,width,height);
+
+		// Create a new list
+		_list = new List!(string);
+
+		// Create the vertical scroll bar for the list
+		_scrollbar = new CuiScrollBar(width-1, 0, 1, height, Orientation.Vertical);
+		attach(_scrollbar, &_scrolled);
+
+		_searchLabel = new CuiLabel(0, height-1, width-1, "");
+		_searchLabel.visible = false;
+		_searchLabel.forecolor = Color.White;
+		attach(_searchLabel);
+	}
+
+	// Events
+
+	override void onDraw(CuiCanvas canvas) {
+		canvas.forecolor = _fg;
+		canvas.backcolor = _bg;
+
+		for(int i = 0; i < this.height; i++) {
+			canvas.position(0, i);
+
+			size_t pos = cast(size_t)_scrollbar.value + i;
+			if (pos < _list.length()) {
+				string item = _list.peekAt(pos);
+				if (item.length < this.width-1) {
+					item ~= times(" ", (this.width-1) - item.length);
+				}
+				if (pos == _selIndex) {
+					canvas.forecolor = _selfg;
+					canvas.backcolor = _selbg;
+				}
+				canvas.write(item);
+				if (pos == _selIndex) {
+					canvas.forecolor = _fg;
+					canvas.backcolor = _bg;
+				}
+			}
+			else {
+				canvas.write(times(" ", this.width-1));
+			}
 		}
 	}
 
-	uint _pos = 0;
-	uint _firstVisible = 0;
+	override void onScrollY(ref Mouse mouse, int delta) {
+		delta = -delta;
 
-	char[] _spacestr;
+		// void out the current search
+		_cancelSearch();
 
-	List!(string) _list;
-	
-	Color _forecolor = Color.White;
-	Color _backcolor = Color.Black;
+		// get the new selected index
+		_scrollbar.value = _scrollbar.value + (cast(long)delta * 3);
+	}
 
-	Color _selectedForecolor = Color.Yellow;
-	Color _selectedBackcolor = Color.Black;
+	override void onPrimaryDown(ref Mouse mouse) {
+		// cancel any search
+		_cancelSearch();
+
+		// the calculation is easy... the index of the first visible + the mouse y coordinate
+		this.selected = cast(size_t)_scrollbar.value + cast(size_t)mouse.y;
+	}
+
+	override void onKeyDown(Key key) {
+		if (key.code == Key.Up || key.code == Key.PageUp) {
+			// must have a selection...
+			if (this.selected == size_t.max) {
+				return;
+			}
+
+			// get the new selected index
+			long newIndex = this.selected;
+			if (key.code == Key.Up) {
+				newIndex--;
+			}
+			else {
+				newIndex -= _scrollbar.largeChange;
+			}
+
+			// bounds check
+			if (newIndex < 0) {
+				newIndex = 0;
+			}
+
+			// set (and then account for the scroll bar so that it is actually visible)
+			this.selected = cast(size_t)newIndex;
+			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
+				_scrollbar.value = this.selected;
+			}
+		}
+		else if (key.code == Key.Down || key.code == Key.PageDown) {
+			// must have a selection...
+			if (this.selected == size_t.max) {
+				return;
+			}
+
+			// get the new selected index
+			long newIndex = this.selected;
+			if (key.code == Key.Down) {
+				newIndex++;
+			}
+			else {
+				newIndex += _scrollbar.largeChange;
+			}
+
+			// bounds check
+			if (newIndex > _list.length() - 1) {
+				newIndex = _list.length() - 1;
+			}
+
+			// set (and then account for the scroll bar so that it is actually visible)
+			this.selected = cast(size_t)newIndex;
+			if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height) {
+				_scrollbar.value = cast(long)this.selected - cast(long)this.height + 1;
+			}
+		}
+
+		if (key.code == Key.Backspace) {
+			if (_searchTerm.length <= 1) {
+				_cancelSearch();
+			}
+			else {
+				_searchTerm = _searchTerm.substring(0, _searchTerm.length-1);
+				_searchLabel.text = "/" ~ _searchTerm;
+				_resetSearch(); // Have to include some items we dropped...
+			}
+		}
+		else if ((!key.printable && key.code != Key.LeftShift && key.code != Key.RightShift) || key.code == Key.Return) {
+			// cancel any search
+			_cancelSearch();
+		}
+	}
+
+	override void onKeyChar(dchar chr) {
+		if (chr == '\r' || chr == '\n') {
+			_cancelSearch();
+			return;
+		}
+
+		// Search for the term in the list when entered
+		if (_searchTerm is null) {
+			// Reset to include all items in the search
+			_resetSearch();
+			_searchLabel.text = "/";
+			_searchLabel.visible = true;
+		}
+
+		_searchTerm ~= chr;
+		_searchLabel.text = "/" ~ _searchTerm;
+
+		for(size_t i = 0; i < _searchList.length(); i++) {
+			string element = _searchList.peekAt(i);
+			if (element.beginsWith(_searchTerm)) {
+				// oh good...
+				this.selected = _searchIndices.peekAt(i);
+				if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height - 1) {
+					_scrollbar.value = cast(long)this.selected - ((cast(long)this.height)/2) + 1;
+				}
+				break;
+			}
+			else {
+				// remove this item
+				_searchList.removeAt(i);
+				_searchIndices.removeAt(i);
+				i--;
+			}
+		}
+	}
+
+	// Methods (Iterable)
+
+	void add(string item) {
+		_list.add(item);
+		_setScrollBarValues();
+		redraw();
+	}
+
+	void addAt(string item, size_t idx) {
+		_list.addAt(item, idx);
+		_setScrollBarValues();
+		redraw();
+	}
+
+	override string remove() {
+		string ret = _list.remove();
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override string removeAt(size_t idx) {
+		string ret = _list.removeAt(idx);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override string peek() {
+		return _list.peek();
+	}
+
+	override string peekAt(size_t idx) {
+		return _list.peekAt(idx);
+	}
+
+	void set(string value) {
+		_list.set(value);
+		redraw();
+	}
+
+	void setAt(size_t idx, string value) {
+		_list.setAt(idx, value);
+		redraw();
+	}
+
+	void apply(string delegate(string) func) {
+		_list.apply(func);
+		redraw();
+	}
+
+	bool contains(string value) {
+		return _list.contains(value);
+	}
+
+	override bool empty() {
+		return _list.empty();
+	}
+
+	override void clear() {
+		_list.clear();
+		_setScrollBarValues();
+		this.selected = int.max;
+		redraw();
+	}
+
+	override string[] array() {
+		return _list.array();
+	}
+
+	override Iterable!(string) dup() {
+		return _list.dup();
+	}
+
+	override Iterable!(string) slice(size_t start, size_t end) {
+		return _list.slice(start, end);
+	}
+
+	override size_t length() {
+		return _list.length();
+	}
+
+	override string opIndex(size_t i1) {
+		return _list.opIndex(i1);
+	}
+
+	size_t opIndexAssign(string value, size_t i1) {
+		return _list.opIndexAssign(value, i1);
+	}
+
+	override int opApply(int delegate(ref string) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+
+	override int opApply(int delegate(ref size_t, ref string) loopFunc) {
+		return _list.opApply(loopFunc);
+	}
+
+	override int opApplyReverse(int delegate(ref string) loopFunc) {
+		auto ret = _list.opApplyReverse(loopFunc);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override int opApplyReverse(int delegate(ref size_t, ref string) loopFunc) {
+		auto ret = _list.opApplyReverse(loopFunc);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override Iterable!(string) opCat(string[] list) {
+		auto ret = _list.opCat(list);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override Iterable!(string) opCat(Iterable!(string) list) {
+		auto ret = _list.opCat(list);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override Iterable!(string) opCat(string item) {
+		auto ret = _list.opCat(item);
+		_setScrollBarValues();
+		redraw();
+		return ret;
+	}
+
+	override void opCatAssign(string[] list) {
+		_list.opCatAssign(list);
+		_setScrollBarValues();
+		redraw();
+	}
+
+	override void opCatAssign(Iterable!(string) list) {
+		_list.opCatAssign(list);
+		_setScrollBarValues();
+		redraw();
+	}
+
+	override void opCatAssign(string item) {
+		_list.opCatAssign(item);
+		_setScrollBarValues();
+		redraw();
+	}
+
+	// Properties
+
+	// Description: This function will get the index of the item that is currently selected.
+	// Returns: A valid index into the list of the item that is selected and size_t.max if nothing is selected.
+	size_t selected() {
+		return _selIndex;
+	}
+
+	// Description: This function will set the index of the item that is currently selected.
+	// index: The index of the item that is to be selected. An invalid index will select nothing.
+	void selected(size_t index) {
+		// For invalid indices, just unselect
+		if (index >= _list.length()) {
+			index = size_t.max;
+		}
+
+		// Set the selected index to that of the index given
+		_selIndex = index;
+
+		// Fire a signal
+		raiseSignal(CuiListBox.Signal.Changed);
+
+		// Refresh the display
+		redraw();
+	}
+
+	// Description: This function will get the foreground color for the list.
+	// Returns: The current foreground color.
+	Color forecolor() {
+		return _fg;
+	}
+
+	// Description: This function will set the foreground color for the list.
+	// value: The new color to set to be the foreground color.
+	void forecolor(Color value) {
+		_fg = value;
+		redraw();
+	}
+
+	// Description: This function will get the background color for the list.
+	// Returns: The current background color.
+	Color backcolor() {
+		return _bg;
+	}
+
+	// Description: This function will set the background color for the list.
+	// value: The new color to set to be the background color.
+	void backcolor(Color value) {
+		_bg = value;
+		redraw();
+	}
+
+	// Description: This function will get the foreground color for the selected items of the list.
+	// Returns: The current foreground color.
+	Color selectedForecolor() {
+		return _selfg;
+	}
+
+	// Description: This function will set the foreground color for the selected items of the list.
+	// value: The new color to set to be the foreground color.
+	void selectedForecolor(Color value) {
+		_selfg = value;
+		redraw();
+	}
+
+	// Description: This function will get the background color for the selected items of the list.
+	// Returns: The current background color.
+	Color selectedBackcolor() {
+		return _selbg;
+	}
+
+	// Description: This function will set the background color for the selected items of the list.
+	// value: The new color to set to be the background color.
+	void selectedBackcolor(Color value) {
+		_selbg = value;
+		redraw();
+	}
 }

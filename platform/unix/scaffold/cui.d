@@ -16,11 +16,49 @@ import platform.unix.common;
 
 import scaffold.console;
 
-import core.definitions;
+import djehuty;
 
 import platform.application;
 
+import cui.application;
+
 import binding.c;
+
+private {
+	winsize m_winsize_saved;
+	winsize m_winsize_working;
+}
+
+private extern(C) void size_sig_handler(int signal) {
+    ioctl(STDIN, TIOCGWINSZ, &m_winsize_working);
+
+    if (m_width != m_winsize_working.ws_col || m_height != m_winsize_working.ws_row) {
+        m_width = m_winsize_working.ws_col;
+        m_height = m_winsize_working.ws_row;
+
+        while (m_x >= m_width)
+        {
+            m_y++;
+            m_x -= m_width;
+        }
+
+        if (m_y >= m_height) { m_y = m_height-1; }
+        if (m_x < 0) { m_x = 0; }
+        if (m_y < 0) { m_y = 0; }
+
+        //reset (this will be retained when program exits)
+        m_winsize_saved = m_winsize_working;
+
+        //the window resized through the users actions, not through the class' resize()
+        //therefore don't change it back to anything on exit
+        m_winsize_state = false;
+    }
+
+    //fire Size event
+
+	//CuiApplication app = cast(CuiApplication)Djehuty.app;
+	//app.window.onResize();
+}
 
 void CuiStart(CuiPlatformVars* vars) {
 	Curses.savetty();
@@ -33,9 +71,10 @@ void CuiStart(CuiPlatformVars* vars) {
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
 	Curses.start_color();
+	Curses.wtimeout(Curses.stdscr, 0);
 	Curses.keypad(Curses.stdscr, 1);
 
-	Curses.move(0,0);
+	Curses.wmove(Curses.stdscr, 0, 0);
 
 	Curses.nonl();
 	Curses.cbreak();
@@ -53,6 +92,15 @@ void CuiStart(CuiPlatformVars* vars) {
 
 	Curses.getmaxyx(Curses.stdscr, m_height, m_width);
 	setvbuf (stdout, null, _IONBF, 0);
+
+	// Enable mouse movement (in case ncurses chokes and doesn't!)
+//	Curses.wprintw(Curses.stdscr, "\x1B[?1002h");
+//	Curses.wprintw(Curses.stdscr, "\x1B[?1003h");
+	printf("\x1B[?1002h");
+	printf("\x1B[?1003h");
+
+	// Hide caret
+	Curses.curs_set(0);
 }
 
 void CuiEnd(CuiPlatformVars* vars) {
@@ -64,12 +112,13 @@ void CuiEnd(CuiPlatformVars* vars) {
 	Curses.resetterm();
 }
 
-void CuiNextEvent(CuiEvent* evt, CuiPlatformVars* vars) {
+void CuiNextEvent(Event* evt, CuiPlatformVars* vars) {
 
 start:
 
-	static int mouse_x = -1;
-	static int mouse_y = -1;
+	static int lastPressed;
+	static bool dragOver = true;
+	static Mouse oldMouse;
 
 	//become IO bound
 
@@ -79,7 +128,7 @@ start:
 
 	if (key.code == Curses.KEY_RESIZE) {
 		// Resize
-		evt.type = CuiEvent.Type.Size;
+		evt.type = Event.Size;
 		return;
 	}
 	else if (key.code == Curses.KEY_MOUSE) {
@@ -92,91 +141,87 @@ start:
 		evt.info.mouse.x = event.x;
 		evt.info.mouse.y = event.y;
 
-		const auto CLICKED = Curses.BUTTON1_CLICKED | Curses.BUTTON2_CLICKED |
-				Curses.BUTTON3_CLICKED | Curses.BUTTON4_CLICKED |
-				Curses.BUTTON5_CLICKED;
-		const auto DOUBLE_CLICKED = Curses.BUTTON1_DOUBLE_CLICKED | Curses.BUTTON2_DOUBLE_CLICKED |
-				Curses.BUTTON3_DOUBLE_CLICKED | Curses.BUTTON4_DOUBLE_CLICKED |
-				Curses.BUTTON5_DOUBLE_CLICKED;
-		const auto TRIPLE_CLICKED = Curses.BUTTON1_DOUBLE_CLICKED | Curses.BUTTON2_DOUBLE_CLICKED |
-				Curses.BUTTON3_TRIPLE_CLICKED | Curses.BUTTON4_DOUBLE_CLICKED |
-				Curses.BUTTON5_TRIPLE_CLICKED;
+		auto clickedMasks = [
+			Curses.BUTTON1_CLICKED | Curses.BUTTON1_DOUBLE_CLICKED | Curses.BUTTON1_TRIPLE_CLICKED,
+			Curses.BUTTON2_CLICKED | Curses.BUTTON2_DOUBLE_CLICKED | Curses.BUTTON2_TRIPLE_CLICKED,
+			Curses.BUTTON3_CLICKED | Curses.BUTTON3_DOUBLE_CLICKED | Curses.BUTTON3_TRIPLE_CLICKED,
+			//Curses.BUTTON4_CLICKED | Curses.BUTTON4_DOUBLE_CLICKED | Curses.BUTTON4_TRIPLE_CLICKED,
+			//Curses.BUTTON5_CLICKED | Curses.BUTTON5_DOUBLE_CLICKED | Curses.BUTTON5_TRIPLE_CLICKED,
+		];
 
-		if (event.bstate & CLICKED) {
-			evt.info.mouse.clicks = 1;
-		}
-		else if (event.bstate & DOUBLE_CLICKED) {
-			evt.info.mouse.clicks = 2;
-		}
-		else if (event.bstate & TRIPLE_CLICKED) {
-			evt.info.mouse.clicks = 3;
+		auto releasedMasks = [
+			Curses.BUTTON1_RELEASED,
+			Curses.BUTTON2_RELEASED,
+			Curses.BUTTON3_RELEASED,
+			//Curses.BUTTON4_RELEASED,
+			//Curses.BUTTON5_RELEASED
+		];
+
+		auto pressedMasks = [
+			Curses.BUTTON1_PRESSED,
+			Curses.BUTTON2_PRESSED,
+			Curses.BUTTON3_PRESSED,
+			//Curses.BUTTON4_PRESSED,
+			//Curses.BUTTON5_PRESSED
+		];
+		
+		if (event.bstate & 
+			(Curses.BUTTON4_RELEASED | Curses.BUTTON4_CLICKED 
+			  | Curses.BUTTON4_DOUBLE_CLICKED | Curses.BUTTON4_TRIPLE_CLICKED)) {
+			// Mouse drag over
+			evt.aux = lastPressed;
+			evt.type = Event.MouseUp;
+			dragOver = true;
+			return;
 		}
 
-		if (event.bstate & Curses.BUTTON1_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
-			evt.info.mouse.leftDown = true;
+		if (event.bstate & Curses.BUTTON4_PRESSED) {
+			// Mouse drag
+			if (dragOver) {
+				evt.aux = lastPressed;
+				evt.type = Event.MouseDown;
+				dragOver = false;
+				return;
+			}
+		}
+
+		foreach(size_t idx, mask; releasedMasks) {
+			if ((event.bstate & mask)
+			  || (event.bstate & clickedMasks[idx])) {
+				evt.type = Event.MouseUp;
+				evt.aux = idx;
+				dragOver = false;
+				return;
+			}
+		}
+
+		foreach(size_t idx, mask; pressedMasks) {
+			if (event.bstate & mask) {
+				evt.type = Event.MouseDown;
+				dragOver = true;
+				evt.aux = idx;
+				lastPressed = idx;
+				return;
+			}
+		}
+
+		if (evt.info.mouse.x != oldMouse.x || evt.info.mouse.y != oldMouse.y) {
+			oldMouse.x = evt.info.mouse.x;
+			oldMouse.y = evt.info.mouse.y;
+
+			evt.type = Event.MouseMove;
 			evt.aux = 0;
 			return;
 		}
-		else if (event.bstate & Curses.BUTTON2_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
-			evt.info.mouse.rightDown = true;
-			evt.aux = 1;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON3_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
-			evt.info.mouse.middleDown = true;
-			evt.aux = 2;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON4_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
-			evt.aux = 3;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON5_PRESSED) {
-			evt.type = CuiEvent.Type.MouseDown;
-			evt.aux = 4;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON1_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
-			evt.aux = 0;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON2_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
-			evt.aux = 1;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON3_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
-			evt.aux = 2;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON4_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
-			evt.aux = 3;
-			return;
-		}
-		else if (event.bstate & Curses.BUTTON5_RELEASED) {
-			evt.type = CuiEvent.Type.MouseUp;
-			evt.aux = 4;
-			return;
-		}
 
-		if ((event.x != mouse_x) || (event.y != mouse_y)) {
-			mouse_x = event.x;
-			mouse_y = event.y;
-
-			evt.type = CuiEvent.Type.MouseMove;
-			return;
-		}
 		goto start;
 	}
 
-	evt.type = CuiEvent.Type.KeyDown;
+	evt.type = Event.KeyDown;
 	evt.info.key = key;
 	return;
+}
+
+// Will swap to display the backbuffer
+void CuiSwapBuffers(CuiPlatformVars* vars) {
 }

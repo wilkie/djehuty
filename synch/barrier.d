@@ -11,6 +11,12 @@
 module synch.barrier;
 
 class Barrier {
+protected:
+
+	uint _reportsIn;
+	uint _reportsNeeded;
+
+public:
 	this(uint reportsRequired) {
 		_reportsNeeded = reportsRequired;
 	}
@@ -28,9 +34,4 @@ class Barrier {
 		while(_reportsIn >= _reportsNeeded) {
 		}
 	}
-
-protected:
-
-	uint _reportsIn;
-	uint _reportsNeeded;
 }

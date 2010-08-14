@@ -10,6 +10,15 @@ import graphics.view;
 import graphics.brush;
 
 class Pen {
+private:
+
+	double _width;
+
+	package PenPlatformVars _pfvars;
+
+	// tied to a view?
+	package View _view; // will be null if no view is tied with it
+
 
 public:
 
@@ -41,14 +50,4 @@ public:
 			}
 		}
 	}
-
-private:
-
-	double _width;
-
-	package PenPlatformVars _pfvars;
-
-	// tied to a view?
-	package View _view; // will be null if no view is tied with it
-
 }

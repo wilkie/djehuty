@@ -16,7 +16,8 @@ import synch.thread;
 
 import data.queue;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.wincon;
 
 struct CuiPlatformVars {
 	// Window resize thread
@@ -25,9 +26,14 @@ struct CuiPlatformVars {
 	// Standard in and out
 	HANDLE stdin;
 	HANDLE stdout;
+	
+	HANDLE[2] buffers;
+	size_t bufferIndex;
 
 	// Input state
-	INPUT_RECORD irInBuf[128];
+	INPUT_RECORD[128] irInBuf;
 
-	Queue!(CuiEvent) events;
+	CHAR_INFO[][] screen;
+
+	Queue!(Event) events;
 }

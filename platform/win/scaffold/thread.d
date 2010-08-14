@@ -17,51 +17,52 @@ import core.string;
 import synch.thread;
 
 import platform.win.main;
-import platform.win.common;
+
+import binding.win32.windef;
+import binding.win32.winuser;
+import binding.win32.winnt;
+import binding.win32.winbase;
 
 import platform.vars.mutex;
 import platform.vars.semaphore;
 import platform.vars.thread;
 import platform.vars.condition;
 
-/*extern(Windows)
-DWORD _win_djehuty_thread_proc(void* udata)
-{
-	Thread t = cast(Thread)udata;
+extern(Windows)
+DWORD _win_djehuty_thread_proc(void* udata) {
+	ThreadPlatformVars* threadVars = cast(ThreadPlatformVars*)udata;
+	Thread t = threadVars.thread;
 
 	t.run();
 
-	ThreadPlatformVars* threadVars = ThreadGetPlatformVars(t);
-
 	threadVars.thread = null;
-	threadVars.thread_id = 0;
 
-	ThreadUninit(t);
-
+	threadVars.endCallback();
 	return 0;
 }
 
-void ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread)
-{
-	threadVars.thread = CreateThread(null, 0, &_win_djehuty_thread_proc, cast(void*)thread, 0, &threadVars.thread_id);
+uint ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
+	threadVars.endCallback = endCallback;
+	threadVars.thread = thread;
+	threadVars.threadHnd = CreateThread(null, 0, &_win_djehuty_thread_proc, cast(void*)&threadVars, 0, &threadVars.id);
+	return threadVars.id;
 }
 
-void ThreadStop(ref ThreadPlatformVars threadVars)
-{
-	if (threadVars.thread_id == GetCurrentThreadId())
-	{ // soft exit if called from the created thread
+void ThreadStop(ref ThreadPlatformVars threadVars) {
+	if (threadVars.id == GetCurrentThreadId()) {
+		// soft exit if called from the created thread
 		ExitThread(0);
 	}
-	else
-	{ // hard exit if called from another thread
-		TerminateThread(threadVars.thread, 0);
+	else {
+		// hard exit if called from another thread
+		TerminateThread(threadVars.threadHnd, 0);
 	}
 
-	threadVars.thread = null;
-	threadVars.thread_id = 0;
-}*/
+	threadVars.threadHnd = null;
+	threadVars.id = 0;
+}
 
-void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
+void ThreadSleep(ulong milliseconds) {
 	while (milliseconds > 0xFFFFFFFF) {
 		.Sleep(0xFFFFFFFF);
 
@@ -70,10 +71,13 @@ void ThreadSleep(ref ThreadPlatformVars threadVars, ulong milliseconds) {
 	.Sleep(cast(uint)milliseconds);
 }
 
-//bool ThreadIsCurrent(ref ThreadPlatformVars threadVars)
-//{
-//	return threadVars.thread_id == GetCurrentThreadId();
-//}
+void ThreadYield() {
+	SwitchToThread();
+}
+
+uint ThreadIdentifier() {
+	return GetCurrentThreadId();
+}
 
 
 
@@ -108,6 +112,9 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars) {
 	WaitForSingleObject(semVars._semaphore, INFINITE);
 }
 
+bool SemaphoreTry(ref SemaphorePlatformVars semVars) {
+	return false;
+}
 
 
 

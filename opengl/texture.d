@@ -22,6 +22,18 @@ import graphics.bitmap;
 
 // Description: This class implements an interface for an OpenGL texture.
 class Texture {
+private:
+
+	Image _img;
+
+	int _frows;
+	int _fcols;
+
+	int _fw;
+	int _fh;
+
+    GLuint _gl_tex_index;
+
 	// Description: This constructor will create a texture out of the image passed in. Optionally, it can divide the image up into equal sized frames.
 	// filename: The name of the image to load.
 	// frameRows: The number of rows contained in the image.
@@ -104,16 +116,4 @@ class Texture {
 	GLuint textureIndex() {
 		return _gl_tex_index;
 	}
-
-protected:
-
-	Image _img;
-
-	int _frows;
-	int _fcols;
-
-	int _fw;
-	int _fh;
-
-    GLuint _gl_tex_index;
 }

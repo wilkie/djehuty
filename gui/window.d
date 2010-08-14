@@ -10,1059 +10,298 @@
 
 module gui.window;
 
-import gui.widget;
-import gui.application;
+import djehuty;
 
-import resource.menu;
+class Window : Responder {
+private:
+	bool _visible;
 
-import platform.vars.view;
-import platform.vars.menu;
-import platform.vars.window;
+	Color _bg;
 
-import scaffold.color;
-import scaffold.window;
-import scaffold.view;
-import scaffold.menu;
+	Rect _bounds;
 
-import graphics.view;
-import graphics.graphics;
+	Window _focusedWindow;
+	Window _dragWindow;
 
-import core.definitions;
-import core.color;
-import core.string;
-import core.event;
-import core.main;
-import core.system;
-
-import interfaces.container;
-
-import binding.c;
-
-// Description: This class implements and abstracts a common window.  This window is a control container and a view canvas.
-class Window : Responder, AbstractContainer {
 public:
-
-	// Constructors
-
-	// Description: Will create the window with certain default parameters
-	// windowTitle: The initial title for the window.
-	// windowStyle: The initial style for the window.
-	// color: The initial color for the window.
-	// x: The initial x position of the window.
-	// y: The initial y position of the window.
-	// width: The initial width of the client area of the window.
-	// height: The initial height of the client area of the window.
-	this(string windowTitle, WindowStyle windowStyle, Color color, int x, int y, int width, int height) {
-		_color = color;
-		_window_title = windowTitle.dup;
-		_width = width;
-		_height = height;
-		_x = x;
-		_y = y;
-		_style = windowStyle;
-		_position = WindowPosition.User;
+	Window parent() {
+		return cast(Window)this.responder();
 	}
 
-	// Description: Will create the window with certain default parameters
-	// windowTitle: The initial title for the window.
-	// windowStyle: The initial style for the window.
-	// sysColor: The initial color for the window which is taken from a platform color setting.
-	// x: The initial x position of the window.
-	// y: The initial y position of the window.
-	// width: The initial width of the client area of the window.
-	// height: The initial height of the client area of the window.
-	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, int x, int y, int width, int height) {
-		ColorGetSystemColor(_color, sysColor);
-		_window_title = windowTitle.dup;
-		_width = width;
-		_height = height;
-		_x = x;
-		_y = y;
-		_style = windowStyle;
-		_position = WindowPosition.User;
+	Color backcolor() {
+		return _bg;
 	}
 
-	this(string windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
-		_color = color;
-		_window_title = windowTitle.dup;
-		_width = width;
-		_height = height;
-		_position = pos;
-		_style = windowStyle;
+	void backcolor(Color value) {
+		_bg = value;
 	}
 
-	this(string windowTitle, WindowStyle windowStyle, SystemColor sysColor, WindowPosition pos, int width, int height) {
-		ColorGetSystemColor(_color, sysColor);
-		_window_title = windowTitle.dup;
-		_width = width;
-		_height = height;
-		_position = pos;
-		_style = windowStyle;
-	}
-
-	~this() {
-		uninitialize();
-		remove();
-	}
-
-	// Properties
-
-	// Widget Container Margins
-
-	int baseLeft() {
-		return 0;
-	}
-
-	int baseTop() {
-		return 0;
-	}
-
-
-	// Methods //
-
-	// Description: Will get the title of the window.
-	// Returns: The string representing the title.
-	string text() {
-		return _window_title.dup;
-	}
-
-	// Description: Will set the title of the window.
-	// str: The new title.
-	void text(string str) {
-		_window_title = str.dup;
-
-		if (!_inited) { return; }
-		WindowSetTitle(this, &_pfvars);
-	}
-
-	Window nextWindow() {
-		return _nextWindow;
-	}
-
-	// Description: Sets the flag to make the window hidden or visible.
-	// bShow: Pass true to show the window and false to hide it.
-	void visible(bool bShow) {
-		if (_visible == bShow) { return; }
-
-		_visible = !_visible;
-
-		if (_inited) {
-			GuiApplication app = cast(GuiApplication)responder;
-			if (!_visible) {
-				app._windowVisibleCount--;
-			}
-			else {
-				app._windowVisibleCount++;
-			}
-
-			WindowSetVisible(this, &_pfvars, bShow);
-
-			// safe guard:
-			// fights off infection from ZOMBIE PROCESSES!!!
-			if (app.isZombie()) {
-				app.destroyAllWindows();
-				app.exit(0);
-			}
-		}
-
-		onVisibilityChange();
-	}
-
-	// Description: Will return whether or not the window is flagged as hidden or visible.  The window may not actually be visible due to it not being created or added.
-	// Returns: It will return true when the window is flagged to be visible and false otherwise.
 	bool visible() {
 		return _visible;
 	}
 
-	// Description: Will set the window to take a different state: WindowState.Minimized, WindowState.Maximized, WindowState.Fullscreen, WindowState.Normal
-	// state: A WindowState value representing the new state.
-	void state(WindowState state) {
-		if (_state == state) { return; }
+	void visible(bool value) {
+		_visible = value;
+	}
 
-		_state = state;
+	bool focused() {
+		return false;
+	}
 
-		if (_nextWindow !is null) {
-			WindowSetState(this, &_pfvars);
+	void focused(bool value) {
+	}
+
+	double left() {
+		return _bounds.left;
+	}
+
+	double top() {
+		return _bounds.top;
+	}
+
+	double width() {
+		return _bounds.right - _bounds.left;
+	}
+
+	void width(double value) {
+		reposition(this.left(), this.top(), value, this.height());
+	}
+
+	double height() {
+		return _bounds.bottom - _bounds.top;
+	}
+
+	void height(double value) {
+		reposition(this.left(), this.top(), this.width(), value);
+	}
+
+	double clientWidth() {
+		return width();
+	}
+
+	void clientWidth(double value) {
+		width(value);
+	}
+
+	double clientHeight() {
+		return height();
+	}
+
+	void clientHeight(double value) {
+		height(value);
+	}
+
+	// Description: This function returns the currently
+	//  focused window.
+	Window active() {
+		return _focusedWindow;
+	}
+
+	// Description: This function returns the next sibling window.
+	Window next() {
+		return null;
+	}
+
+	// Description: This function returns the previous sibling window.
+	Window previous() {
+		return null;
+	}
+
+	void reorder(WindowOrder order) {
+	}
+
+	void reposition(double left, double top, double width = float.nan, double height = float.nan) {
+		double w, h;
+		double oldW, oldH;
+		oldW = this.width();
+		oldH = this.height();
+
+		if (width !<>= width) {
+			w = oldW;
+		}
+		else {
+			w = width;
 		}
 
-		onStateChange();
+		if (height !<>= height) {
+			h = oldH;
+		}
+		else {
+			h = height;
+		}
+
+		if (w < 0) {
+			w = 0;
+		}
+		if (h < 0) {
+			h = 0;
+		}
+
+		_bounds.left = left;
+		_bounds.top = top;
+		_bounds.right = left + w;
+		_bounds.bottom = top + h;
+
+		if (oldW != w || oldH != h) {
+			onResize();
+		}
+		parent.redraw();
 	}
 
-	// Description: Will return the current state of the window.
-	// Returns: The current WindowState value for the window.
-	WindowState state() {
-		return _state;
-	}
-
-	// Description: Will set the window to take a different style: WindowStyle.Fixed (non-sizable), WindowStyle.Sizable (resizable window), WindowStyle.Popup (borderless).
-	// style: A WindowStyle value representing the new style.
-	void style(WindowStyle style) {
-		if (this.state == WindowState.Fullscreen)
-			{ return; }
-
-		_style = style;
-
-		if (_nextWindow !is null) {
-			WindowSetStyle(this, &_pfvars);
+	void redraw() {
+		if (!this.visible) {
+			return;
 		}
 	}
 
-	// Description: Will return the current style of the window.
-	// Returns: The current WindowStyle value for the window.
-	WindowStyle style() {
-		return _style;
+	// Events
+
+	void onResize() {
 	}
 
-	// Description: Will return the width of the client area of the window.
-	// Returns: The width of the client area of the window.
-	uint width() {
-		if (_state == WindowState.Fullscreen) {
-			return System.Display.width;
-		}
-		return _width;
-	}
-
-	// Description: Will return the height of the client area of the window.
-	// Returns: The height of the client area of the window.
-	uint height() {
-		if (_state == WindowState.Fullscreen) {
-			return System.Display.height;
-		}
-		return _height;
-	}
-
-	// Description: Will return the x coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
-	// Returns: The x position of the top-left corner of the window.
-	uint x() {
-		if (_state == WindowState.Fullscreen) {
-			return 0;
-		}
-		return _x;
-	}
-
-	// Description: Will return the y coordinate of the window's position in screen coordinates.  Note that this is not the client area, but rather the whole window.
-	// Returns: The y position of the top-left corner of the window.
-	uint y() {
-		if (_state == WindowState.Fullscreen) {
-			return 0;
-		}
-		return _y;
-	}
-
-	// Methods
-
-	// Description: Will attempt to destroy the window and its children.  It will be removed from the hierarchy.
-	void remove() {
-		if (!_inited) { return; }
-
-		// the window was added
-		// destroy
-
-		// TODO: Fire the event, and allow confirmation
-		// TODO: Add a FORCE DESTROY function method
-
-		_inited = false;
-
-		WindowDestroy(this, &_pfvars);
-	}
-
-	// Description: This function will Size the window to fit a client area with the dimensions given by width and height.
-	// width: The new width of the client area.
-	// height: The new height of the client area.
-	void resize(uint width, uint height) {
-		_width = width;
-		_height = height;
-
-		if (_inited) {
-			WindowRebound(this, &_pfvars);
-		}
-
-		onResize();
-	}
-
-	// Description: This function will move the window so that the top-left corner of the window (not client area) is set to the point (x,y).
-	// x: The new x coordinate of the top-left corner.
-	// y: The new y coordinate of the top-left corner.
-	void move(uint x, uint y) {
-		_x = x;
-		_y = y;
-
-		if (_inited) {
-			WindowReposition(this, &_pfvars);
-		}
-
-		onMove();
-	}
-
-	void ClientToScreen(ref int x, ref int y) {
-		if (_inited == false) { return; }
-		WindowClientToScreen(this, &_pfvars, x, y);
-	}
-
-	void ClientToScreen(ref Coord pt) {
-		if (_inited == false) { return; }
-		WindowClientToScreen(this, &_pfvars, pt);
-	}
-
-	void ClientToScreen(ref Rect rt) {
-		if (_inited == false) { return; }
-		WindowClientToScreen(this, &_pfvars, rt);
-	}
-
-	Window parent() {
-		return _parent;
-	}
-
-	// add a child window to this window
-
-	void addWindow(Window window) {
-	/*
-		if (_inited == false) { return; }
-
-		// add the window to the root window list
-		UpdateWindowList(window);
-
-		// mark the parent
-		window._parent = this;
-
-		UpdateChildWindowList(window);
-
-		// add one to the window count
-		ApplicationPlusWindow(cast(GuiApplication)Djehuty.app);
-
-		// add one to the child window count
-		_numChildren++;
-
-		// create the window via platform calls
-		WindowCreate(this, &this._pfvars, window, window._pfvars);
-
-		// create the window's view object
-		window.onInitialize();
-
-		// call the onAdd event of the new window
-		window.onAdd();*/
-
-		//PrintChildWindowList(this);
-	}
-
-	// Events //
-
-	// Description: This event will be called when the window is added to the window hierarchy.
-	void onAdd() {
-	}
-
-	// Description: This event will be called when the window is removed from the window hierarchy.
-	void onRemove() {
-	}
-
-	// Description: This event is called when the mouse wheel is scrolled vertically (the common scroll method).
-	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void onMouseWheelY(uint amount) {
-	}
-
-	// Description: This event is called when the mouse wheel is scrolled horizontally.
-	// amount: the number of standard 'ticks' that the scroll wheel makes
-	void onMouseWheelX(uint amount) {
-	}
-
-	// Description: This event is called when the mouse enters the client area of the window
-	void onMouseEnter() {
-	}
-
-	// Description: This event is called when the window is moved, either from the OS or the move() function.
-	void onMove() {
-	}
-
-	// Description: This event is called when the window is hidden or shown.
-	void onVisibilityChange() {
-	}
-
-	// Description: This event is called when the window is maximized, minimized, put into fullscreen, or restored.
-	void onStateChange() {
-	}
-
-	// Description: This event is called when a menu item belonging to the window is activated.
-	// mnu: A reference to the menu that was activated.
-	void onMenu(Menu mnu) {
-	}
-
-	void onInitialize() {
-		_view = new WindowView;
-		_viewVars = _view.createForWindow(this, &_pfvars);
-	}
-
-	void onUninitialize() {
-		_view.destroy();
-		_view = null;
-	}
-
-	void onDraw() {
-		if (_view !is null) {
-			Graphics g = _view.lock();
-
-			WindowStartDraw(this, &_pfvars, _view, *_viewVars);
-
-			Brush brush = new Brush(this.color);
-			Pen pen = new Pen(Color.Black);
-
-			g.brush = brush;
-			g.pen = pen;
-
-			g.fillRect(0,0,this.width,this.height);
-
-			brush = new Brush(Color.White);
-			g.brush = brush;
-
-			Widget c = _firstControl;
-
-			if (c !is null) {
-				do {
-					c = c._prevControl;
-
-					c.onDraw(g);
-				} while (c !is _firstControl)
-			}
-
-			WindowEndDraw(this, &_pfvars, _view, *_viewVars);
-
-			_view.unlock();
+	void onKeyDown(Key key) {
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow.onKeyDown(key);
 		}
 	}
 
 	void onKeyChar(dchar keyChar) {
-		// dispatch to focused control
-		if (_focused_control !is null) {
-			if (_focused_control.onKeyChar(keyChar)) {
-				onDraw();
-			}
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow.onKeyChar(keyChar);
 		}
 	}
 
-	void onKeyDown(Key key) {
-		// dispatch to focused control
-		if (_focused_control !is null) {
-			if (_focused_control.onKeyDown(key)) {
-				onDraw();
-			}
-		}
-	}
+	void onPrimaryDown(ref Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
 
-	void onKeyUp(Key key) {
-		// dispatch to focused control
-		if (_focused_control !is null) {
-			if (_focused_control.onKeyUp(key)) {
-				onDraw();
-			}
-		}
-	}
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
 
-	void onMouseLeave() {
-		if (_last_control !is null) {
-			_last_control._hovered = false;
-			if(_last_control.onMouseLeave()) {
-				onDraw();
-			}
-			_last_control = null;
-		}
-	}
+				_dragWindow = window;
 
-	void onMouseMove() {
-		//select the control to send the message to
-		Widget control;
-
-		if (_captured_control !is null) {
-			control = _captured_control;
-
-			if (controlAtPoint(mouseProps.x, mouseProps.y) is control && control.visible) {
-				//within bounds of control
-				if (!control._hovered) {
-					//currently, hover state says control is outside
-					control._hovered = true;
-					if (control.onMouseEnter() | control.onMouseMove(mouseProps)) {
-						onDraw();
-					}
+				if (_focusedWindow !is window) {
+					_focusedWindow = window;
 				}
-				else if (control.onMouseMove(mouseProps)) {
-					onDraw();
-				}
-			}
-			else {
-				//outside bounds of control
-				if (control._hovered) {
-					//currently, hover state says control is inside
-					control._hovered = false;
-					if (control.onMouseLeave() | control.onMouseMove(mouseProps)) {
-						onDraw();
-					}
-				}
-				else if (control.onMouseMove(mouseProps)) {
-					onDraw();
-				}
-			}
 
-			//change the cursor to reflect the new control
-			//ChangeCursor(window->captured_control->ctrl_info.ctrl_cursor);
+				window.onPrimaryDown(mouse);
 
-
-		}	// no control that has captured the mouse input
-		else if ((control = controlAtPoint(mouseProps.x, mouseProps.y)) !is null) {
-			//when there is a control to pass a MouseLeave to...
-			if (_last_control !is control && _last_control !is null) {
-				control._hovered = true;
-				_last_control._hovered = false;
-
-				if(_last_control.onMouseLeave() |
-					control.onMouseEnter() | control.onMouseMove(mouseProps)) {
-					onDraw();
-				}
-			} //otherwise, there is just one control to worry about
-			else {
-				if(!control._hovered) {
-					//wasn't hovered over before
-					control._hovered = true;
-					if(control.onMouseEnter() | control.onMouseMove(mouseProps)) {
-						onDraw();
-					}
-				}
-				else if(control.onMouseMove(mouseProps)) {
-					onDraw();
-				}
-			}
-
-			//change the cursor to reflect the new control
-			//ChangeCursor(index->ctrl_cursor);
-
-			_last_control = control;
-
-		}
-		else {
-			//mouse is on window, not control
-
-			if (_last_control !is null) {
-				_last_control._hovered = false;
-				if(_last_control.onMouseLeave()) {
-					onDraw();
-				}
-				_last_control = null;
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
 			}
 		}
 	}
 
-	// Description: Called when the primary mouse button (usually the left button) is pressed.
-	void onPrimaryMouseDown() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
+	void onPrimaryUp(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
 
-		_captured_control = target;
+			double xdiff = _dragWindow.left;
+			double ydiff = _dragWindow.top;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
 
-		if((target !is null) && (ret | target.onPrimaryMouseDown(mouseProps))) {
-			onDraw();
-		}
-	}
+			_dragWindow.onPrimaryUp(mouse);
 
-	// Description: Called when the primary mouse button (usually the left button) is released.
-	void onPrimaryMouseUp() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
+			mouse.x += xdiff;
+			mouse.y += ydiff;
 
-		_captured_control = null;
-
-		if((target !is null) && (ret | target.onPrimaryMouseUp(mouseProps))) {
-			onDraw();
-		}
-	}
-
-	// Description: Called when the secondary mouse button (usually the right button) is pressed.
-	void onSecondaryMouseDown() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = target;
-
-		if((target !is null) && (ret | target.onSecondaryMouseDown(mouseProps))) {
-			onDraw();
-		}
-	}
-
-	// Description: Called when the secondary mouse button (usually the right button) is released.
-	void onSecondaryMouseUp() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = null;
-
-		if((target !is null) && (ret | target.onSecondaryMouseUp(mouseProps))) {
-			onDraw();
-		}
-	}
-
-	// Description: Called when the tertiary mouse button (usually the middle button) is pressed.
-	void onTertiaryMouseDown() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = target;
-
-		if((target !is null) && (ret | target.onTertiaryMouseDown(mouseProps))) {
-			onDraw();
-		}
-	}
-
-	// Description: Called when the tertiary mouse button (usually the middle button) is released.
-	void onTertiaryMouseUp() {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = null;
-
-		if((target !is null) && (ret | target.onTertiaryMouseUp(mouseProps))) {
-			onDraw();
-		}
-	}
-
-	// Description: This event is called when another uncommon mouse button is pressed down over the window.
-	// button: The identifier of this button.
-	void onOtherMouseDown(uint button) {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = target;
-
-		if((target !is null) && (ret | target.onOtherMouseDown(mouseProps, button))) {
-			onDraw();
-		}
-	}
-
-	// Description: This event is called when another uncommon mouse button is released over the window.
-	// button: The identifier of this button.
-	void onOtherMouseUp(uint button) {
-		Widget target;
-		bool ret = mouseEventCommon(target);
-
-		_captured_control = null;
-
-		if((target !is null) && (ret | target.onOtherMouseUp(mouseProps, button))) {
-			onDraw();
-		}
-	}
-
-	void onResize() {
-		ViewResizeForWindow(_view, _viewVars, this, &_pfvars);
-
-		onDraw();
-	}
-
-	void onLostFocus() {
-		//currently focused control will lose focus
-		if (_focused_control !is null) {
-			_focused_control._focused = false;
-			if (_focused_control.onLostFocus(true)) {
-				onDraw();
-			}
-		}
-	}
-
-	void onGotFocus() {
-		//currently focused control will regain focus
-		if (_focused_control !is null) {
-			_focused_control._focused = true;
-			if (_focused_control.onGotFocus(true)) {
-				onDraw();
-			}
-		}
-	}
-
-	// Methods //
-
-	// Description: This will give the preferred position for the window.
-	// Returns: The position this window was created with.
-	WindowPosition position() {
-		return _position;
-	}
-
-	// Description: This will retreive the current window color.
-	// Returns: The color currently associated with the window.
-	Color color() {
-		return _color;
-	}
-
-	// Description: This will set the current window color.
-	// color: The color to associate with the window.
-	void color(ref Color clr) {
-		_color = clr;
-	}
-
-	// Description: This will set the current window color to a specific platform color.
-	// sysColor: The system color index to associate with the window.
-	void color(SystemColor clr) {
-		ColorGetSystemColor(_color, clr);
-	}
-
-	// Description: This will force a redraw of the entire window.
-	void redraw() {
-		onDraw();
-	}
-
-	// Widget Maintenance //
-
-	// Description: This function will return the visible control at the point given.
-	// x: The x coordinate to start the search.
-	// y: The y coordinate to start the search.
-	// Returns: The top-most visible control at the point (x,y) or null.
-	Widget controlAtPoint(int x, int y) {
-		Widget ctrl = _firstControl;
-
-		if (ctrl !is null) {
-			do {
-				if (ctrl.containsPoint(x,y) && ctrl.visible) {
-					if (ctrl.isContainer()) {
-						Widget innerCtrl = (cast(AbstractContainer)ctrl).controlAtPoint(x,y);
-						if (innerCtrl !is null) { return innerCtrl; }
-					}
-					else {
-						return ctrl;
-					}
-				}
-				ctrl = ctrl._nextControl;
-			} while (ctrl !is _firstControl)
-		}
-
-		return null;
-	}
-
-	override void push(Dispatcher dsp) {
-		if (cast(Widget)dsp !is null) {
-			Widget control = cast(Widget)dsp;
-
-			// do not add a control that is already part of another window
-			if (control.parent !is null) { return; }
-
-			// Set the window it belongs to
-			control._window = this;
-
-			// add to the control linked list
-			if (_firstControl is null && _lastControl is null) {
-				// first control
-
-				_firstControl = control;
-				_lastControl = control;
-
-				control._nextControl = control;
-				control._prevControl = control;
-			}
-			else {
-				// next control
-				control._nextControl = _firstControl;
-				control._prevControl = _lastControl;
-
-				_firstControl._prevControl = control;
-				_lastControl._nextControl = control;
-
-				_firstControl = control;
-			}
-
-			// increase the number of controls
-			_numControls++;
-
-			// set the control's parent
-			control._view = _view;
-			control._container = this;
-
-			super.push(control);
-
-			// call the control's event
-			control.onAdd();
-
+			_dragWindow = null;
 			return;
 		}
 
-		super.push(dsp);
-	}
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
 
-	// Description: Removes the control as long as this control is a part of the current window.
-	// control: A reference to the control that should be removed from the window.
-	void removeControl(Widget control) {
-		if (control.isOfWindow(this)) {
-			if (_firstControl is null && _lastControl is null) {
-				// it is the last control
-				_firstControl = null;
-				_lastControl = null;
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window.onPrimaryUp(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
 			}
-			else {
-				// is it not the last control
-
-				if (_firstControl is control) {
-					_firstControl = _firstControl._nextControl;
-				}
-
-				if (_lastControl is control) {
-					_lastControl = _lastControl._prevControl;
-				}
-
-				control.removeControl;
-			}
-
-			_numControls--;
 		}
 	}
 
-	void removeAll() {
-		// will go through and remove all of the controls
+	void onDrag(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+			double xdiff = _dragWindow.left;
+			double ydiff = _dragWindow.top;
 
-		Widget c = _firstControl;
-		Widget tmp;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
 
-		if (c is null) { return; }
+			_dragWindow.onDrag(mouse);
 
-		do {
-			tmp = c._nextControl;
-
-			c.removeControl();
-
-			c = tmp;
-		} while (c !is _firstControl);
-
-		_firstControl = null;
-		_lastControl = null;
-	}
-
-	// Menus //
-
-	// Description: Sets the menu for the window.  This menu's subitems will be displayed typically as a menu bar.
-	// mnuMain: A Menu object representing the main menu for the window.  Pass null to have no menu.
-	void menu(Menu mnuMain) {
-		_mainMenu = mnuMain;
-
-		if (mnuMain is null) {
-			// remove the menu
-		}
-		else {
-			// Switch out and apply the menu
-
-			// platform specific
-			MenuPlatformVars* mnuVars = MenuGetPlatformVars(mnuMain);
-			WindowSetMenu(mnuVars, this, &_pfvars);
+			mouse.x += xdiff;
+			mouse.y += ydiff;
 		}
 	}
 
-	// Description: Gets the current menu for the window.  It will return null when no menu is available.
-	// Returns: The Menu object representing the main menu for the window.
-	Menu menu() {
-		return _mainMenu;
+	void onHover(ref Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y) {
+
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window.onHover(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				break;
+			}
+		}
 	}
 
-	// public properties
-
-	Mouse mouseProps;
-
-protected:
-
-	final bool mouseEventCommon(out Widget target) {
-		if (_captured_control !is null) {
-			target = _captured_control;
-		}
-		else if ((target = controlAtPoint(mouseProps.x, mouseProps.y)) !is null) {
-			bool ret = false;
-
-			//consider the focus of the control
-			if(_focused_control !is target) {
-				if (_focused_control !is null) {
-					//the current focused control gets unfocused
-					_focused_control._focused = false;
-					ret = _focused_control.onLostFocus(false);
-				}
-
-				//focus this control
-				_focused_control = target;
-				_focused_control._focused = true;
-
-				ret |= _focused_control.onGotFocus(false);
-			}
-
-			return ret;
-
-			//change the cursor to reflect the new control
-			//ChangeCursor(index->ctrl_cursor);
-		}
-
-		return false;
+	int opApply(int delegate(ref Window window) loopBody) {
+		return 0;
 	}
 
-	package final void uninitialize() {
-		if (_nextWindow is null) { return; }
-
-		onRemove();
-
-		removeAll();
-
-		_prevWindow._nextWindow = _nextWindow;
-		_nextWindow._prevWindow = _prevWindow;
-
-		// destroy the window's view object
-		onUninitialize();
-
-		GuiApplication app = cast(GuiApplication)responder;
-
-		if (app._windowListHead is this && app._windowListTail is this) {
-			app._windowListHead = null;
-			app._windowListTail = null;
-		}
-		else {
-			if (app._windowListHead is this) {
-				app._windowListHead = app._windowListHead._nextWindow;
-			}
-
-			if (app._windowListTail is this) {
-				app._windowListTail = app._windowListHead._prevWindow;
-			}
-		}
-
-		_nextWindow = null;
-		_prevWindow = null;
-
-		// Decrement Window length
-		app._windowCount--;
-
-		// Check to see if this was invisible
-		if (_visible) {
-			// Decrement Window Visible length
-			app._windowVisibleCount--;
-
-			// If there are no visible windows, quit (for now)
-			if (app.isZombie()) {
-				// just kill the app
-				app.destroyAllWindows();
-				app.exit(0);
-			}
-		}
-
-		// is it a parent window of some kind?
-		// destroy and uninitialize all children
-		if (_firstChild !is null) {
-			Window child = _firstChild;
-
-			do {
-				child.remove();
-				child = child._nextSibling;
-			} while (child !is _firstChild)
-		}
-
-		// is it a child window of some kind?
-		// unlink it within the sibling list
-		if (_parent !is null) {
-			Window p = _parent;
-
-			p._numChildren--;
-
-			_prevSibling._nextSibling = _nextSibling;
-			_nextSibling._prevSibling = _prevSibling;
-
-			if (p._firstChild is this && p._lastChild is this) {
-				// unreference this, the last child
-				// the parent now has no children
-				p._firstChild = null;
-				p._lastChild = null;
-			}
-			else {
-				if (p._firstChild is this) {
-					p._firstChild = p._firstChild._nextSibling;
-				}
-
-				if (p._lastChild is this) {
-					p._lastChild = p._lastChild._prevSibling;
-				}
-			}
-		}
-
-		_parent = null;
-		_nextSibling = null;
-		_prevSibling = null;
-		_firstChild = null;
-		_lastChild = null;
+	void onDrawChildren() {
 	}
 
-	package WindowView _view = null;
-	package ViewPlatformVars* _viewVars;
+	void onDraw() {
+	}
 
-	Color _color;
-	WindowPosition _position;
+	// Signal Handler
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		super.attach(dsp, handler);
 
-	// imposes left and top margins on the window, when set
-	long _constraint_x = 0;
-	long _constraint_y = 0;
+		auto window = cast(Window)dsp;
+		if (window !is null) {
+			// Focus on this window (if it is visible)
+			if (window.visible) {
+				_focusedWindow = window;
+			}
 
-	string _window_title;
-	package uint _width, _height;
-	package uint _x, _y;
-
-	package WindowStyle _style;
-	package WindowState _state;
-
-private:
-
-	// head and tail of the control linked list
-	Widget _firstControl = null;	//head
-	Widget _lastControl = null;	//tail
-	int _numControls = 0;
-
-	Widget _captured_control = null;
-	Widget _last_control = null;
-	Widget _focused_control = null;
-
-	Menu _mainMenu = null;
-
-	// linked list implementation
-	// to keep track of all windows
-	package Window _nextWindow = null;
-	package Window _prevWindow = null;
-
-	// children windows will follow suit:
-	Window _firstChild = null;	//head
-	Window _lastChild = null;	//tail
-
-	uint _numChildren = 0; // child count
-
-	// parent is null when it is a root window
-	Window _parent = null;
-
-	// these may be null when it is an only child
-	Window _nextSibling = null;
-	Window _prevSibling = null;
-
-	package bool _visible = false;
-	bool _fullscreen = false;
-
-	package bool _inited = false;
-
-	package WindowPlatformVars _pfvars;
+			redraw();
+		}
+	}
 }
 
-// Definition: This is a View that defines the graphical client area of a Window.
-class WindowView : View {
-
-	this() {
-		super();
-	}
-
-	override void create(int width, int height) {
-	}
-
-protected:
-
-	override void _platformCreate() {
-		ViewCreateForWindow(this, &_pfvars, _window, _windowVars);
-	}
-
-private:
-
-	ViewPlatformVars* createForWindow(Window window, WindowPlatformVars* windowVars) {
-		_window = window;
-		_windowVars = windowVars;
-		View.create(window.width, window.height);
-
-		return &_pfvars;
-	}
-
-	Window _window;
-	WindowPlatformVars* _windowVars;
+class WindowView {
 }

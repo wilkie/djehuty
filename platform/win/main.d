@@ -10,7 +10,8 @@
 
 module platform.win.main;
 
-import platform.win.common;
+import binding.win32.winnt;
+import binding.win32.windef;
 
 import core.arguments;
 import core.string;
@@ -106,7 +107,7 @@ extern (C) void _moduleCtor();
 extern (C) void _moduleUnitTests();
 
 // The windows entry point
-extern (Windows)
+/*extern (Windows)
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
 	int result;
@@ -144,3 +145,4 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
     return result;
 }
+*/

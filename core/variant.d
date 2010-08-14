@@ -14,19 +14,15 @@ import core.string;
 import core.definitions;
 import core.unicode;
 
-import io.console;
-
 // Imposed variadic
 version(LDC) {
 	public import ldc.vararg;
 	public import C = ldc.cstdarg;
 }
 else {
-	public import std.stdarg;
-	public import C = std.c.stdarg;
+	public import dmd.stdarg;
+	public import C = dmd.cstdarg;
 }
-
-//import std.stdio;
 
 enum Type {
 
@@ -66,7 +62,21 @@ enum Type {
 }
 
 struct Variant {
+private:
+	Type _type = Type.Reference;
 
+	bool _isArray = false;
+	uint _depth = 0;
+
+	bool _isHash = false;
+	size_t _size = null.sizeof;
+
+	TypeInfo _tiRoot;
+	TypeInfo _ti;
+
+	VariantData _data = {reference:null};
+
+public:
 	Type type() {
 		return _type;
 	}
@@ -478,20 +488,6 @@ struct Variant {
 		}
 		return "foo";
 	}
-
-private:
-	Type _type = Type.Reference;
-
-	bool _isArray = false;
-	uint _depth = 0;
-
-	bool _isHash = false;
-	size_t _size = null.sizeof;
-
-	TypeInfo _tiRoot;
-	TypeInfo _ti;
-
-	VariantData _data = {reference:null};
 }
 
 union VariantData {
@@ -539,123 +535,6 @@ union VariantData {
 }
 
 class Variadic {
-	this(TypeInfo[] args, void* ptr) {
-		_args = args;
-		_ptr = ptr;
-		_originalPtr = _ptr;
-	}
-
-	bool hasNext() {
-		if (_idx == length()) {
-			return false;
-		}
-		return true;
-	}
-
-	Variant next() {
-		Variant ret = _variantForTypeInfo(_args[_idx], _ptr);
-		_ptr += argPtrSize(_args[_idx]);
-		_idx++;
-		return ret;
-	}
-
-	Variant[] rest() {
-		Variant[] ret;
-		foreach(arg; _args[_idx..$]) {
-			Variant var = _variantForTypeInfo(arg, _ptr);
-			_ptr += argPtrSize(arg);
-			ret ~= var;
-		}
-		return ret;
-	}
-
-	Variant peek() {
-		Variant ret = _variantForTypeInfo(_args[_idx], _ptr);
-		return ret;
-	}
-
-	Variant peekAt(size_t index) {
-		Variant ret;
-		void* ptr = _originalPtr;
-		uint startIndex = 0;
-		if (index > _idx) {
-			startIndex = _idx;
-			ptr = _ptr;
-		}
-		for ( ; startIndex < index; startIndex++) {
-			ptr += argPtrSize(_args[index]);
-		}
-		ret = _variantForTypeInfo(_args[index], ptr);
-		return ret;
-	}
-
-	Variant[] array() {
-		Variant[] ret;
-		void* ptr = _originalPtr;
-		foreach(arg; _args) {
-			Variant var = _variantForTypeInfo(arg, ptr);
-			ptr += argPtrSize(arg);
-			ret ~= var;
-		}
-		return ret;
-	}
-
-	size_t length() {
-		return _args.length;
-	}
-
-	void retain() {
-		if (_data !is null) {
-			return;
-		}
-
-		_args = _args.dup;
-
-		// get _size
-		foreach(arg; _args) {
-			_size += arg.tsize();
-		}
-
-		// copy
-		ubyte* dataptr = cast(ubyte*)_originalPtr;
-		_data = new ubyte[_size];
-		_data[0.._size] = dataptr[0.._size];
-		_ptr = _data.ptr;
-		_originalPtr = _ptr;
-	}
-
-	int opApply(int delegate(ref Variant) loopFunc) {
-		int ret;
-
-		_ptr = _originalPtr;
-		foreach(i, arg; _args) {
-			Variant var = _variantForTypeInfo(arg, _ptr);
-			ret = loopFunc(var);
-			_ptr += argPtrSize(arg);
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	int opApply(int delegate(ref size_t, ref Variant) loopFunc) {
-		int ret;
-
-		_ptr = _originalPtr;
-		foreach(size_t i, arg; _args) {
-			Variant var = _variantForTypeInfo(arg, _ptr);
-			ret = loopFunc(i,var);
-			_ptr += argPtrSize(arg);
-			if (ret) { break; }
-		}
-
-		return ret;
-	}
-
-	Variant opIndex(size_t i1) {
-		return peekAt(i1);
-	}
-
 protected:
 
 	TypeInfo[] _args;
@@ -1175,6 +1054,124 @@ protected:
 		}
 		//Console.putln(cmp, " : ", ret._size);
 		return ret;
+	}
+
+public:
+	this(TypeInfo[] args, void* ptr) {
+		_args = args;
+		_ptr = ptr;
+		_originalPtr = _ptr;
+	}
+
+	bool hasNext() {
+		if (_idx == length()) {
+			return false;
+		}
+		return true;
+	}
+
+	Variant next() {
+		Variant ret = _variantForTypeInfo(_args[_idx], _ptr);
+		_ptr += argPtrSize(_args[_idx]);
+		_idx++;
+		return ret;
+	}
+
+	Variant[] rest() {
+		Variant[] ret;
+		foreach(arg; _args[_idx..$]) {
+			Variant var = _variantForTypeInfo(arg, _ptr);
+			_ptr += argPtrSize(arg);
+			ret ~= var;
+		}
+		return ret;
+	}
+
+	Variant peek() {
+		Variant ret = _variantForTypeInfo(_args[_idx], _ptr);
+		return ret;
+	}
+
+	Variant peekAt(size_t index) {
+		Variant ret;
+		void* ptr = _originalPtr;
+		uint startIndex = 0;
+		if (index > _idx) {
+			startIndex = _idx;
+			ptr = _ptr;
+		}
+		for ( ; startIndex < index; startIndex++) {
+			ptr += argPtrSize(_args[index]);
+		}
+		ret = _variantForTypeInfo(_args[index], ptr);
+		return ret;
+	}
+
+	Variant[] array() {
+		Variant[] ret;
+		void* ptr = _originalPtr;
+		foreach(arg; _args) {
+			Variant var = _variantForTypeInfo(arg, ptr);
+			ptr += argPtrSize(arg);
+			ret ~= var;
+		}
+		return ret;
+	}
+
+	size_t length() {
+		return _args.length;
+	}
+
+	void retain() {
+		if (_data !is null) {
+			return;
+		}
+
+		_args = _args.dup;
+
+		// get _size
+		foreach(arg; _args) {
+			_size += arg.tsize();
+		}
+
+		// copy
+		ubyte* dataptr = cast(ubyte*)_originalPtr;
+		_data = new ubyte[_size];
+		_data[0.._size] = dataptr[0.._size];
+		_ptr = _data.ptr;
+		_originalPtr = _ptr;
+	}
+
+	int opApply(int delegate(ref Variant) loopFunc) {
+		int ret;
+
+		_ptr = _originalPtr;
+		foreach(i, arg; _args) {
+			Variant var = _variantForTypeInfo(arg, _ptr);
+			ret = loopFunc(var);
+			_ptr += argPtrSize(arg);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	int opApply(int delegate(ref size_t, ref Variant) loopFunc) {
+		int ret;
+
+		_ptr = _originalPtr;
+		foreach(size_t i, arg; _args) {
+			Variant var = _variantForTypeInfo(arg, _ptr);
+			ret = loopFunc(i,var);
+			_ptr += argPtrSize(arg);
+			if (ret) { break; }
+		}
+
+		return ret;
+	}
+
+	Variant opIndex(size_t i1) {
+		return peekAt(i1);
 	}
 }
 

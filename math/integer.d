@@ -15,6 +15,13 @@ import core.definitions;
 
 // Description: This class represents an integer value.
 class Integer {
+private:
+
+	ulong[] _value;
+	ulong _bitoffset;
+	bool _negative;
+
+public:
 	this() {
 		_value = [0];
 	}
@@ -162,10 +169,4 @@ class Integer {
 		}
 		return ret;
 	}
-
-private:
-
-	ulong[] _value;
-	ulong _bitoffset;
-	bool _negative;
 }

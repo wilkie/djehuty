@@ -19,6 +19,12 @@
 
 module binding.x.X;
 
+version(PlatformWindows) {
+}
+else {
+	pragma(lib, `"X11"`);
+}
+
 import binding.c;
 
 const uint X_PROTOCOL=11;		/* current protocol version */

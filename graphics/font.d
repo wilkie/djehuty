@@ -11,6 +11,14 @@ import core.definitions;
 import graphics.view;
 
 class Font {
+private:
+
+	package FontPlatformVars _pfvars;
+
+	// tied to a view?
+	package View _view; // will be null if no view is tied with it
+
+public:
 	this(string fontname, int fontsize, int weight, bool italic, bool underline, bool strikethru) {
 		Scaffold.createFont(&_pfvars, fontname, fontsize, weight, italic, underline, strikethru);
 	}
@@ -18,11 +26,4 @@ class Font {
 	~this() {
 		Scaffold.destroyFont(&_pfvars);
 	}
-
-private:
-
-	package FontPlatformVars _pfvars;
-
-	// tied to a view?
-	package View _view; // will be null if no view is tied with it
 }

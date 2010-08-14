@@ -35,7 +35,15 @@ import Scaffold = scaffold.graphics;
 
 // Description: This class encapsulates drawing functions for a view class.  It will draw primitives to a view canvas.
 class Graphics {
+protected:
 
+	bool _antialias = false;
+
+	// a backward reference to the view object
+	package View _view;
+	package ViewPlatformVars* _viewVars;
+
+public:
 // Primitives
 
 	// Description: Draws a line from (x,y) to (x2,y2).
@@ -550,12 +558,4 @@ class Graphics {
 	void clipRegion(Region rgn) {
 		Scaffold.clipRegion(_viewVars, rgn);
 	}
-
-protected:
-
-	bool _antialias = false;
-
-	// a backward reference to the view object
-	package View _view;
-	package ViewPlatformVars* _viewVars;
 }

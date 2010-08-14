@@ -25,7 +25,85 @@ import io.console;
 
 // Description: This template class represents a mathematical vector.
 class Vector(T = double) {
+protected:
 
+	bool _dirty;	// computations that have been cached are invalid
+
+	// cached computations
+	T _magnitude;
+	T _dotProduct;
+	T _unitVector;
+
+	T[] _data;
+
+	void fftPerform(bool inverse) {
+		int isign = (inverse) ? -1 : 1;
+		size_t N = _data.length;
+
+		size_t i, j, m;
+		j = 0;
+		for (i = 0; i < N; i++) {
+//			Console.putln("i: ", i, " j: ", j);
+			if (j > i) {
+//				Console.putln("swaping ", _data[j], " with ", _data[i]);
+				T tmp = _data[j];
+				_data[j] = _data[i];
+				_data[i] = tmp;
+			}
+			m = N >> 1;
+			while (m >= 1 && (j+1) > m) {
+				//Console.putln("m: ", m);
+				j -= m;
+				m >>= 1;
+			}
+			j += m;
+		}
+
+		size_t mmax = 2;
+		size_t istep;
+		while (N*2 > mmax) {
+			istep = 2 * mmax;
+
+			double theta = (2.0 * 3.1415926535897932) / (isign * mmax);
+			double sine = sin(0.5 * theta);
+			cdouble mult = (-2.0 * sine * sine) + (sin(theta) * 1.0i);
+			cdouble factor = 1.0 + 0.0i;
+
+//			Console.putln("n: ", N*2, " mmax: ", mmax);
+
+			for (m = 1; m < mmax; m += 2) {
+				for (i = m; i <= N*2; i += istep) {
+					j = i + mmax;
+//					Console.putln("eval i: ", i , " j: ", j);
+					cdouble temp = factor * _data[(j-1)/2];
+//					Console.putln("temp: ", temp);
+					_data[(j-1)/2] = cast(T)(_data[(i-1)/2] - temp);
+					_data[(i-1)/2] = cast(T)(_data[(i-1)/2] + temp);
+				}
+//				Console.putln("factor: ", factor);
+//				Console.putln("mult: ", mult);
+				factor = mult * factor + factor;
+				//Console.putln("factor: ", factor);
+			}
+			mmax = istep;
+		}
+
+		// normalize
+		if (isign == 1) {
+			for (i = 0; i < N; i++) {
+				_data[i] /= N;
+//				Console.putln("scaled: ", _data[i]);
+			}
+		}
+	}
+
+	void fftRearrange() {
+	}
+
+	void fftScale() {
+	}
+
+public:
 	this() {
 		_data = null;
 	}
@@ -262,84 +340,6 @@ class Vector(T = double) {
 		fftRearrange();
 		fftPerform(true);
 		fftScale();
-	}
-
-protected:
-
-	bool _dirty;	// computations that have been cached are invalid
-
-	// cached computations
-	T _magnitude;
-	T _dotProduct;
-	T _unitVector;
-
-	T[] _data;
-
-	void fftPerform(bool inverse) {
-		int isign = (inverse) ? -1 : 1;
-		size_t N = _data.length;
-
-		size_t i, j, m;
-		j = 0;
-		for (i = 0; i < N; i++) {
-//			Console.putln("i: ", i, " j: ", j);
-			if (j > i) {
-//				Console.putln("swaping ", _data[j], " with ", _data[i]);
-				T tmp = _data[j];
-				_data[j] = _data[i];
-				_data[i] = tmp;
-			}
-			m = N >> 1;
-			while (m >= 1 && (j+1) > m) {
-				//Console.putln("m: ", m);
-				j -= m;
-				m >>= 1;
-			}
-			j += m;
-		}
-
-		size_t mmax = 2;
-		size_t istep;
-		while (N*2 > mmax) {
-			istep = 2 * mmax;
-
-			double theta = (2.0 * 3.1415926535897932) / (isign * mmax);
-			double sine = sin(0.5 * theta);
-			cdouble mult = (-2.0 * sine * sine) + (sin(theta) * 1.0i);
-			cdouble factor = 1.0 + 0.0i;
-
-//			Console.putln("n: ", N*2, " mmax: ", mmax);
-
-			for (m = 1; m < mmax; m += 2) {
-				for (i = m; i <= N*2; i += istep) {
-					j = i + mmax;
-//					Console.putln("eval i: ", i , " j: ", j);
-					cdouble temp = factor * _data[(j-1)/2];
-//					Console.putln("temp: ", temp);
-					_data[(j-1)/2] = cast(T)(_data[(i-1)/2] - temp);
-					_data[(i-1)/2] = cast(T)(_data[(i-1)/2] + temp);
-				}
-//				Console.putln("factor: ", factor);
-//				Console.putln("mult: ", mult);
-				factor = mult * factor + factor;
-				//Console.putln("factor: ", factor);
-			}
-			mmax = istep;
-		}
-
-		// normalize
-		if (isign == 1) {
-			for (i = 0; i < N; i++) {
-				_data[i] /= N;
-//				Console.putln("scaled: ", _data[i]);
-			}
-		}
-	}
-
-	void fftRearrange() {
-	}
-
-	void fftScale() {
 	}
 }
 

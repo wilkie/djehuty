@@ -7,7 +7,7 @@
  *
  */
 
-module networking.telnet;
+module net.telnet;
 
 import core.string;
 import core.unicode;
@@ -77,57 +77,6 @@ class TelnetServer {
 
 // Description: This class provides a client interface to the Telnet protocol.
 class TelnetClient {
-public:
-
-	// Description: This will create an instance of the object.  Use 'connect' to make a connection.
-	this() {
-		_skt = new Socket();
-		_thread = new Thread();
-
-		_thread.callback = &threadProc;
-	}
-
-	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
-	// host: The host to connect to.
-	// port: The port to use to connect.  Default is 23.
-	bool connect(string host, ushort port = 23) {
-		_connected = _skt.connect(host,port);
-
-		if (_connected) {
-			_thread.start();
-		}
-
-		return _connected;
-	}
-
-	// Description: This function will send the byte to the server
-	void sendByte(ubyte byteout) {
-		if (_connected) {
-			_skt.write(byteout);
-		}
-	}
-
-	// Description: This function will send the UTF-32 character as a UTF-8 stream.
-	// chr: The UTF-32 character to send.
-	void putChar(dchar chr) {
-		if (_connected) {
-			dstring chrs = [ chr ];
-			string chrarray = Unicode.toUtf8(chrs);
-
-			_skt.write(cast(ubyte*)chrarray.ptr, chrarray.length);
-		}
-	}
-
-	// Description: Will set the delegate for callback events from this sockpuppet.
-	// callback: The delegate fitting the description.
-	void setDelegate(void delegate(dchar) callback) {
-		_charDelegate = callback;
-	}
-
-	void close() {
-		_skt.close();
-	}
-
 protected:
 
 	void sendCommandWord(ubyte optionWord, ubyte commandWord) {
@@ -218,4 +167,55 @@ protected:
 	Thread _thread;
 
 	void delegate(dchar) _charDelegate;
+
+public:
+
+	// Description: This will create an instance of the object.  Use 'connect' to make a connection.
+	this() {
+		_skt = new Socket();
+		_thread = new Thread();
+
+		_thread.callback = &threadProc;
+	}
+
+	// Description: Connect to the telnet server at the host given.  The port is optional; by default it is 23.
+	// host: The host to connect to.
+	// port: The port to use to connect.  Default is 23.
+	bool connect(string host, ushort port = 23) {
+		_connected = _skt.connect(host,port);
+
+		if (_connected) {
+			_thread.start();
+		}
+
+		return _connected;
+	}
+
+	// Description: This function will send the byte to the server
+	void sendByte(ubyte byteout) {
+		if (_connected) {
+			_skt.write(byteout);
+		}
+	}
+
+	// Description: This function will send the UTF-32 character as a UTF-8 stream.
+	// chr: The UTF-32 character to send.
+	void putChar(dchar chr) {
+		if (_connected) {
+			dstring chrs = [ chr ];
+			string chrarray = Unicode.toUtf8(chrs);
+
+			_skt.write(cast(ubyte*)chrarray.ptr, chrarray.length);
+		}
+	}
+
+	// Description: Will set the delegate for callback events from this sockpuppet.
+	// callback: The delegate fitting the description.
+	void setDelegate(void delegate(dchar) callback) {
+		_charDelegate = callback;
+	}
+
+	void close() {
+		_skt.close();
+	}
 }
