@@ -75,7 +75,8 @@ private:
 		while(true) {
 			GuiNextEvent(_window, &_pfvars, &evt);
 
-			if(evt.type == 102) {
+			if(evt.type == Event.Close) {
+				_window.parent.detach(_window);
 				break;
 			}
 		}
@@ -105,6 +106,7 @@ public:
 private class RootWindow : Window {
 private:
 	WindowPlatformContainer[Window] _vars;
+	int _numVisible = 0;
 
 public:
 	this() {
@@ -120,6 +122,9 @@ public:
 
 		if (window !is null) {
 			// Need to create a platform window
+			if (window.visible) {
+				_numVisible++;
+			}
 			auto vars = new WindowPlatformContainer(window);
 			_vars[window] = vars;
 			vars.run();
@@ -131,13 +136,16 @@ public:
 		if (window !is null) {
 			if (window.parent is this) {
 				// Need to destroy a platform window
+				if (window.visible) {
+					_numVisible--;
+				}
 				auto vars = _vars[window];
 			}
 		}
 
 		super.detach(dsp);
 	}
-	
+
 	override bool onSignal(Dispatcher dsp, uint signal) {
 		auto window = cast(Window)dsp;
 		if (window !is null) {
@@ -150,6 +158,10 @@ public:
 		}
 		return true;
 	}
+
+	int numberVisible() {
+		return _numVisible;
+	}
 }
 
 class GuiApplication : Application {
@@ -157,12 +169,12 @@ private:
 	GuiPlatformVars _pfvars;
 
 	// Window Management
-	Window _mainWindow;
+	RootWindow _mainWindow;
 
 	// Window counts
 	int _windowCount;
 	int _windowVisibleCount;
-	
+
 	bool _running = false;
 
 public:
@@ -199,13 +211,13 @@ public:
 	Window root() {
 		return _mainWindow;
 	}
-	
+
 	override bool isZombie() {
-		return false;
+		return _mainWindow.numberVisible == 0;
 	}
 
 	override void run() {
 		super.run();
-		for(;;) {}
+		while(this.isZombie is false) {}
 	}
 }

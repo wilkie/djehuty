@@ -102,6 +102,12 @@ void GuiNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		if (msg.message == WM_DESTROY
+		 || msg.message == WM_CLOSE
+		 || (msg.message == WM_SYSCOMMAND && msg.wParam == SC_CLOSE)) {
+			evt.type = Event.Close;
+			return;
+		}
 	}
 }
 

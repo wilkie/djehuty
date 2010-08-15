@@ -412,7 +412,6 @@ int main(string[] args) {
  	window.attach(new Button(0, 0, 100, 33));
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/
-	putln("Ran");
 
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();
