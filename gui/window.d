@@ -322,8 +322,18 @@ public:
 
 	void onDrawChildren(Canvas canvas) {
 		foreach(Window window; this) {
+			// Clip to the window
+			canvas.clipSave();
+			canvas.clipRectangle(window.left, window.top, window.width, window.height);
+
+			// Draw the area owned by the window
 			window.onDraw(canvas);
+
+			// Draw this window's children
 			window.onDrawChildren(canvas);
+
+			// Restore the clipping
+			canvas.clipRestore();
 		}
 	}
 }

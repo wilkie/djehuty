@@ -151,12 +151,10 @@ public:
 		if (window !is null) {
 			if (signal == Window.Signal.NeedRedraw) {
 				Canvas canvas = new Canvas(cast(int)window.width, cast(int)window.height);
-				canvas.clipRectangle(20, 20, 20, 20);
-				canvas.clipSave();
-				canvas.clipClear();
-				canvas.clipRestore();
+
 				window.onDraw(canvas);
 				window.onDrawChildren(canvas);
+
 				_vars[window].update(canvas);
 			}
 		}

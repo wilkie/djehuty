@@ -409,7 +409,7 @@ int main(string[] args) {
   	auto app = new GuiApplication("MyApp");
   	auto window = new Window(200, 200, 200, 200);
   	app.attach(window);
- 	window.attach(new Button(0, 0, 100, 33));
+ 	window.attach(new Button(10, 10, 100, 33));
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/
 
