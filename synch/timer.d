@@ -3,13 +3,13 @@ module synch.timer;
 import synch.thread;
 import synch.semaphore;
 
-import core.event;
+import core.signal;
 
 // Section: Core/Synchronization
 
 // Description: This class offers an abstraction to a periodic timer.  This is implemented currently as a yielding thread.
 class Timer : Dispatcher {
-protected:
+private:
 
 	ulong _interval = 0;
 
@@ -51,7 +51,9 @@ public:
 
 	// Description: This function will stop the timer when the timerProc returns.
 	void stop() {
-		_thread._stop = true;
+		if (isRunning()) {
+			_thread._stop = true;
+		}
 	}
 
 	// Description: This function will return the state of the timer.
@@ -60,8 +62,13 @@ public:
 		return (_thread !is null && _thread._stop == false);
 	}
 
-	// Description: This function is called on every timer fire. It's normal operation is to call the callback provided by the callback property.  One can override to provide a class based timer procedure.
-	// Returns: If true is returned, the timer is stopped. Otherwise the timer will fire again after the interval depletes. Note: the time it takes to run the function is not accounted for in the interval at this time.
+	// Description: This function is called on every timer fire. It's normal
+	//  operation is to call the callback provided by the callback property.
+	//  One can override to provide a class based timer procedure.
+	// Returns: If true is returned, the timer is stopped. Otherwise the
+	//  timer will fire again after the interval depletes. Note: the time
+	//  it takes to run the function is not accounted for in the interval
+	//  at this time.
 	bool fire() {
 		return raiseSignal(0);
 	}
@@ -81,12 +88,8 @@ private class timer_thread : Thread {
 
 //			if (_timer.fire() == false) { break; }
 		}
-
-		_stop = true;
 	}
 
 	bool _stop;
 	Timer _timer;
 }
-
-

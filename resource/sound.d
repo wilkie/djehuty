@@ -12,7 +12,7 @@ module resource.sound;
 
 import core.time;
 import core.string;
-import core.event;
+import core.signal;
 import core.definitions;
 import core.stream;
 
@@ -126,12 +126,12 @@ public:
 	// Description: This constructor will create the object and load the file using the filename passed.
 	// filename: The string containing the filename of the audio file to load.
 	this(string filename) {
-		push(wavDevice = new Audio);
+		attach(wavDevice = new Audio);
 
 		tmr = new Timer();
 		tmr.interval = 250;
 
-		push(tmr);
+		attach(tmr);
 
 		load(filename);
 	}

@@ -44,6 +44,15 @@ template FromBigEndianBitIndex32(uint index) {
 }
 
 private {
+	}
+
+
+
+// Section: Codecs/Audio
+
+// Description: This is the MPEG Layer 2 audio codec.
+class MP2Decoder : AudioDecoder {
+private:
 	// for the classes of quantization table
 	struct QuantizationClass {
 		uint numberOfSteps;
@@ -330,14 +339,7 @@ private {
 
 	// number of blocks (of 1152 samples) to buffer
 	const auto NUM_BLOCKS = 80;
-}
 
-
-
-// Section: Codecs/Audio
-
-// Description: This is the MPEG Layer 2 audio codec.
-class MP2Decoder : AudioDecoder {
 protected:
 
 	bool accepted;
@@ -1720,5 +1722,4 @@ public:
 		Time tme = Time.init;
 		return tme;
 	}
-
 }

@@ -26,7 +26,12 @@ import platform.vars.window;
 import scaffold.window;
 
 class GuiApplication : Application {
-protected:
+	Window _windowListHead = null;
+	Window _windowListTail = null;
+
+	int _windowCount;
+	int _windowVisibleCount;
+
 	override void start() {
 		_appController.start();
 	}

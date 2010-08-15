@@ -7,31 +7,6 @@
 
 module core.date;
 
-enum Month {
-	January,
-	February,
-	March,
-	April,
-	May,
-	June,
-	July,
-	August,
-	September,
-	October,
-	November,
-	December
-}
-
-enum Day {
-	Sunday,
-	Monday,
-	Tuesday,
-	Wednesday,
-	Thursday,
-	Friday,
-	Saturday
-}
-
 import scaffold.time;
 
 import core.string;

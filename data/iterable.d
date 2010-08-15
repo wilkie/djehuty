@@ -147,7 +147,6 @@ interface Iterable(T) {
 	T[] array();
 	Iterable!(T) dup();
 	Iterable!(T) slice(size_t start, size_t end);
-	Iterable!(T) reverse();
 	size_t length();
 
 	T opIndex(size_t i1);

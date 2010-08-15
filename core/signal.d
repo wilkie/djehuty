@@ -1,19 +1,22 @@
 /*
- * event.d
+ * signal.d
  *
- * This module implements the event dispatching mechanism.
+ * This module implements the signal dispatching mechanism.
  *
  */
 
-module core.event;
+module core.signal;
+
+alias bool delegate(Dispatcher dsp, uint signal) SignalHandler;
 
 // Description: This class represents an object that can dispatch signals.
 class Dispatcher : Object {
 private:
 
 	Responder _responder;
+	SignalHandler _handler;
 
-protected:
+public:
 	// Description: This function will emit a signal to the Responder that
 	//	is listening to this Dispatcher.
 	// signal: The identifier for the signal.
@@ -23,16 +26,15 @@ protected:
 			// Raise the event on the Responder, if it does not respond,
 			// tell the Responder to pass the event up the responder
 			// chain.
-			if (!_responder.onSignal(this, signal)) {
+			if (!_handler(this, signal)) {
 				// recursively raise the event
 				return _responder.raiseSignal(signal);
 			}
 		}
 		return true;
 	}
-	
-public:
-	void onPush(Responder rsp) {
+
+	void onAttach(Responder rsp) {
 	}
 
 	// Description: This function will set the responder that will receive
@@ -41,9 +43,17 @@ public:
 	void responder(Responder rsp) {
 		_responder = rsp;
 	}
-	
+
 	Responder responder() {
 		return _responder;
+	}
+
+	void handler(SignalHandler value) {
+		_handler = value;
+	}
+
+	SignalHandler handler() {
+		return _handler;
 	}
 }
 
@@ -54,11 +64,22 @@ public:
 	bool onSignal(Dispatcher dispatcher, uint signal) {
 		return false;
 	}
-	
+
 	// Description: This function will attach the specified Dispatcher to this
-	//	Responder. It fires an onPush event for the Dispatcher as well.
-	void push(Dispatcher dsp) {
+	//	Responder. It fires an onAttach event for the Dispatcher as well.
+	void attach(Dispatcher dsp, SignalHandler handler = null) {
 		dsp.responder = this;
-		dsp.onPush(this);
+		if (handler is null) {
+			handler = &onSignal;
+		}
+		dsp.handler = handler;
+		dsp.onAttach(this);
+	}
+	
+	// Description: This function will detach the specified Dispatcher.
+	void detach(Dispatcher dsp) {
+		if (dsp.responder is this) {
+			dsp.responder = null;
+		}
 	}
 }

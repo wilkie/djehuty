@@ -235,13 +235,6 @@ void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexsty
 	if (window.style == WindowStyle.Fixed) {
 		istyle = WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
-                /+
-                istyle &= ~(WS_BORDER | WS_THICKFRAME);
-                iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
-                istyle |= WS_CAPTION | WS_DLGFRAME;
-                iexstyle |= WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE;
-                +/
-
 		istyle &= ~(WS_THICKFRAME | WS_DLGFRAME);
 		iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_WINDOWEDGE | WS_EX_STATICEDGE);
 

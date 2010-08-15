@@ -48,7 +48,7 @@ public:
 		}
 		_clientArea = new CuiWindow(1,1,width,height, color);
 		_clientArea.visible = true;
-		push(_clientArea);
+		attach(_clientArea);
 	}
 
 	this(string windowTitle, WindowStyle windowStyle, Color color, WindowPosition pos, int width, int height) {
@@ -61,7 +61,7 @@ public:
 		}
 		_clientArea = new CuiWindow(1,1,width,height, color);
 		_clientArea.visible = true;
-		push(_clientArea);
+		attach(_clientArea);
 	}
 
 	string text() {
@@ -91,15 +91,15 @@ public:
 
 	// Signal
 
-	override void push(Dispatcher dsp) {
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		CuiWindow window = cast(CuiWindow)dsp;
 
 		if (window !is null && window !is _clientArea) {
-			_clientArea.push(dsp);
+			_clientArea.attach(dsp, handler);
 		}
 		else {
 			// Pass through so it calls this class
-			super.push(dsp);
+			super.attach(dsp, handler);
 		}
 	}
 

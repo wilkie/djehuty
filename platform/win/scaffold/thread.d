@@ -43,6 +43,7 @@ DWORD _win_djehuty_thread_proc(void* udata) {
 
 uint ThreadStart(ref ThreadPlatformVars threadVars, ref Thread thread, void delegate() endCallback) {
 	threadVars.endCallback = endCallback;
+	threadVars.thread = thread;
 	threadVars.threadHnd = CreateThread(null, 0, &_win_djehuty_thread_proc, cast(void*)&threadVars, 0, &threadVars.id);
 	return threadVars.id;
 }

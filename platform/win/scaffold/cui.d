@@ -15,14 +15,14 @@ import synch.atomic;
 
 import io.console;
 
-import core.main;
-import core.definitions;
+import djehuty;
 
 import binding.win32.winnt;
 import binding.win32.windef;
 import binding.win32.wincon;
 import binding.win32.winuser;
 import binding.win32.winbase;
+import binding.win32.mmsystem;
 
 import platform.win.main;
 
@@ -353,6 +353,9 @@ private {
                 	static int last_y;
                 	static DWORD last_state;
                 	static bool _last_was_mousepress;
+                	static int lastButton = -1;
+                	static int _lastTime;
+                	static int clicks = 0;
 
 					uint curbutton=0;
 					bool isPressed = true;
@@ -374,10 +377,34 @@ private {
 					evt.info.mouse.x = last_x;
 					evt.info.mouse.y = last_y;
 
+					void determineClicks() {
+						// Detect double clicks
+						int curTime = timeGetTime();
+						int diffTime = curTime - _lastTime;
+
+						if (diffTime < 500) {
+							clicks++;
+						}
+						else {
+							clicks = 1;
+						}
+
+						_lastTime = timeGetTime();
+					}
+						
+					if (isMovement) {
+						clicks = 0;
+					}
+
 					if (vars.irInBuf[i].Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED) {
 						if (!(last_state & FROM_LEFT_1ST_BUTTON_PRESSED)) {
+							determineClicks();
 							curbutton = 1;
-							evt.info.mouse.clicks[0] = 1;
+							if (lastButton != 0) {
+								clicks = 1;
+							}
+							evt.info.mouse.clicks[0] = clicks;
+							lastButton = 0;
 						}
 					}
 					else {
@@ -390,8 +417,13 @@ private {
 
 					if (vars.irInBuf[i].Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED) {
 						if (!(last_state & RIGHTMOST_BUTTON_PRESSED)) {
+							determineClicks();
 							curbutton = 5;
-							evt.info.mouse.clicks[1] = 1;
+							if (lastButton != 1) {
+								clicks = 1;
+							}
+							lastButton = 1;
+							evt.info.mouse.clicks[1] = clicks;
 						}
 					}
 					else {

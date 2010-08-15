@@ -18,8 +18,13 @@ import core.definitions;
 
 import decoders.image.decoder;
 import decoders.decoder;
+// Section: Codecs/Image
 
-private {
+// Description: The JPEG Codec
+
+class JPEGDecoder : ImageDecoder {
+
+private :
 	// Decoder States
 	enum {
 		JPEG_STATE_INIT_PROGRESS,
@@ -290,14 +295,7 @@ private {
         172.446f, 173.848f, 175.25f, 176.652f, 178.054f
     ];
 
-  }
-
-// Section: Codecs/Image
-
-// Description: The JPEG Codec
-
-class JPEGDecoder : ImageDecoder {
-private:
+protected:
 
 	JPEG_RENDER_INFO jpeg_vars;
 

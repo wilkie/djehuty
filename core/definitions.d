@@ -43,7 +43,7 @@ struct Rect {
 
 	// Description: The x point of the bottom-right of the rectangle.
 	double right = 0;
-	
+
 	// Description: This function will test whether another rectangle intersects (overlaps) this one.
 	// test: A rectangle to test.
 	// Returns: Will return true when the rectangle given by test overlaps.
@@ -52,7 +52,14 @@ struct Rect {
 	}
 }
 
-// Section: Enums
+// Description: This enum gives values for orientations.
+enum Orientation {
+	// Description: This indicates that something should go left to right.
+	Horizontal,
+
+	// Description: This indicates that something should go top to bottom.
+	Vertical
+}
 
 // Window Styles
 
@@ -129,6 +136,8 @@ struct Key {
 	bool ctrl;
 	bool alt;
 	bool shift;
+	
+	bool printable;
 
 	enum : uint {
 		Invalid,
@@ -267,3 +276,27 @@ struct Event {
 	uint aux;
 }
 
+enum Month {
+	January,
+	February,
+	March,
+	April,
+	May,
+	June,
+	July,
+	August,
+	September,
+	October,
+	November,
+	December
+}
+
+enum Day {
+	Sunday,
+	Monday,
+	Tuesday,
+	Wednesday,
+	Thursday,
+	Friday,
+	Saturday
+}

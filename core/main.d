@@ -27,7 +27,13 @@ import synch.thread;
 // Description: This class is the main class for the framework. It provides base functionality.
 class Djehuty {
 static:
-package:
+private:
+
+	bool _hasStarted = false;
+
+	Application _app;
+
+public:
 
 	void start() {
 		// Get default locale
@@ -45,40 +51,20 @@ package:
 		}
 
 		// Check to make sure the app provided a suitable class to use
-		if (app is null) {
+		if (_app is null) {
 			throw new Exception("No Application Class");
 		}
-		else {
-			app.onPreApplicationStart();
-			app.onApplicationStart();
-		}
 	}
-
-	void end(uint code = 0) {
-		// Reset colors to something sane
-		Console.forecolor = Color.White;
-		Console.backcolor = Color.Black;
-		if (app !is null) {
-			app.onApplicationEnd();
-			app.onPostApplicationEnd(code);
-		}
-	}
-
-	bool _hasStarted = false;
-
-	Application app;
-
-public:
 
 	void application(Application application) {
-		if (app !is null) {
+		if (_app !is null) {
 			throw new Exception("Application Already Spawned");
 		}
 
-		app = application;
+		_app = application;
 	}
 
 	Application application() {
-		return app;
+		return _app;
 	}
 }

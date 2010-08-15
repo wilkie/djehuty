@@ -18,7 +18,7 @@ import synch.semaphore;
 
 class CuiApplication : Application {
 private:
-    CuiPlatformVars _pfvars;
+	CuiPlatformVars _pfvars;
 
 	Semaphore _lock;
 
@@ -37,208 +37,14 @@ private:
 			CuiNextEvent(&evt, &_pfvars);
 
 			_allowRedraw = false;
-			switch(evt.type) {
-				case Event.KeyDown:
-					_mainWindow.onKeyDown(evt.info.key);
-					dchar chr;
-					if (isPrintable(evt.info.key, chr)) {
-						_mainWindow.onKeyChar(chr);
-					}
-					break;
-				case Event.MouseDown:
-					_mouse.x = evt.info.mouse.x;
-					_mouse.y = evt.info.mouse.y;
-					_mouse.clicks[evt.aux] = 1;
-					_mainWindow.onPrimaryDown(_mouse);
-					break;
-				case Event.MouseUp:
-					_mouse.x = evt.info.mouse.x;
-					_mouse.y = evt.info.mouse.y;
-					_mainWindow.onPrimaryUp(_mouse);
-					_mouse.clicks[evt.aux] = 0;
-					break;
-				case Event.MouseMove:
-					_mouse.x = evt.info.mouse.x;
-					_mouse.y = evt.info.mouse.y;
-					if (_mouse.clicks[0] > 0 || _mouse.clicks[1] > 0 || _mouse.clicks[2] > 0) {
-						_mainWindow.onDrag(_mouse);
-					}
-					else {
-						_mainWindow.onHover(_mouse);
-					}
-					break;
-				case Event.Close:
-					this.exit(evt.info.exitCode);
-					break;
-				case Event.Size:
-					break;
-				default:
-					break;
-			}
+			_mainWindow.onEvent(evt);
 			_allowRedraw = true;
+
 			if (_needRedraw) {
 				_needRedraw = false;
 				_redraw();
 			}
 		}
-	}
-
-	bool isPrintable(Key key, out dchar chr) {
-		if (key.ctrl || key.alt) {
-			return false;
-		}
-
-		if (key.code >= Key.A && key.code <= Key.Z) {
-			if (key.shift) {
-				chr = (key.code - Key.A) + 'A';
-			}
-			else {
-				chr = (key.code - Key.A) + 'a';
-			}
-		}
-		else if (key.code >= Key.Zero && key.code <= Key.Nine) {
-			if (key.shift) {
-				switch (key.code) {
-					case Key.Zero:
-						chr = ')';
-						break;
-					case Key.One:
-						chr = '!';
-						break;
-					case Key.Two:
-						chr = '@';
-						break;
-					case Key.Three:
-						chr = '#';
-						break;
-					case Key.Four:
-						chr = '$';
-						break;
-					case Key.Five:
-						chr = '%';
-						break;
-					case Key.Six:
-						chr = '^';
-						break;
-					case Key.Seven:
-						chr = '&';
-						break;
-					case Key.Eight:
-						chr = '*';
-						break;
-					case Key.Nine:
-						chr = '(';
-						break;
-					default:
-						return false;
-				}
-			}
-			else {
-				chr = (key.code - Key.Zero) + '0';
-			}
-		}
-		else if (key.code == Key.SingleQuote) {
-			if (key.shift) {
-				chr = '~';
-			}
-			else {
-				chr = '`';
-			}
-		}
-		else if (key.code == Key.Minus) {
-			if (key.shift) {
-				chr = '_';
-			}
-			else {
-				chr = '-';
-			}
-		}
-		else if (key.code == Key.Equals) {
-			if (key.shift) {
-				chr = '+';
-			}
-			else {
-				chr = '=';
-			}
-		}
-		else if (key.code == Key.LeftBracket) {
-			if (key.shift) {
-				chr = '{';
-			}
-			else {
-				chr = '[';
-			}
-		}
-		else if (key.code == Key.RightBracket) {
-			if (key.shift) {
-				chr = '}';
-			}
-			else {
-				chr = ']';
-			}
-		}
-		else if (key.code == Key.Semicolon) {
-			if (key.shift) {
-				chr = ':';
-			}
-			else {
-				chr = ';';
-			}
-		}
-		else if (key.code == Key.Comma) {
-			if (key.shift) {
-				chr = '<';
-			}
-			else {
-				chr = ',';
-			}
-		}
-		else if (key.code == Key.Period) {
-			if (key.shift) {
-				chr = '>';
-			}
-			else {
-				chr = '.';
-			}
-		}
-		else if (key.code == Key.Foreslash) {
-			if (key.shift) {
-				chr = '?';
-			}
-			else {
-				chr = '/';
-			}
-		}
-		else if (key.code == Key.Backslash) {
-			if (key.shift) {
-				chr = '|';
-			}
-			else {
-				chr = '\\';
-			}
-		}
-		else if (key.code == Key.Quote) {
-			if (key.shift) {
-				chr = '"';
-			}
-			else {
-				chr = '\'';
-			}
-		}
-		else if (key.code == Key.Tab && !key.shift) {
-			chr = '\t';
-		}
-		else if (key.code == Key.Space) {
-			chr = ' ';
-		}
-		else if (key.code == Key.Return && !key.shift) {
-			chr = '\r';
-		}
-		else {
-			return false;
-		}
-
-		return true;
 	}
 
 	void _redraw() {
@@ -252,24 +58,52 @@ private:
 		_lock.up();
 	}
 
-protected:
+public:
 
-	override void shutdown() {
-		CuiEnd(&_pfvars);
+	this() {
+		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
+		super();
 	}
 
-	override void start() {
+	this(string appName) {
+		CuiStart(&_pfvars);
+
+		_lock = new Semaphore(1);
+
+		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
+		attach(_mainWindow);
+		super(appName);
+	}
+
+	override void exit(uint code) {
+		_running = false;
+		CuiEnd(&_pfvars);
+		
+		super.exit(code);
+	}
+	
+	override bool isZombie() {
+		return _mainWindow.windowCount == 0;
+	}
+	
+	override void run() {
+		super.run();
+
 		_allowRedraw = true;
-		_redraw();
+
+		if (_needRedraw) {
+			_needRedraw = false;
+			_redraw();
+		}
+
 		eventLoop();
 	}
 
-	override void end(uint exitCode) {
-		_running = false;
-	}
-
-
-public:
 	override bool onSignal(Dispatcher dsp, uint signal) {
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null) {
@@ -286,31 +120,15 @@ public:
 		return false;
 	}
 
-	this() {
-		_lock = new Semaphore(1);
-		CuiStart(&_pfvars);
-		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
-		_mainWindow.visible = true;
-		push(_mainWindow);
-		super();
-	}
-
-	this(string appName) {
-		CuiStart(&_pfvars);
-		_mainWindow = new CuiWindow(0, 0, Console.width, Console.height);
-		_mainWindow.visible = true;
-		super(appName);
-	}
-
-	override void push(Dispatcher dsp) {
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		auto window = cast(CuiWindow)dsp;
 		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
-			_mainWindow.push(window);
+			_mainWindow.attach(window, handler);
 			_mainWindow.redraw();
 		}
 		else {
-			super.push(dsp);
+			super.attach(dsp, handler);
 		}
 	}
 }

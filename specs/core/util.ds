@@ -3,7 +3,6 @@ module specs.core.util;
 import core.util;
 import data.stack;
 import data.list;
-import interfaces.container;
 
 describe util() {
 	describe typeTemplates() {
@@ -16,16 +15,19 @@ describe util() {
 			should(IsClass!(Stack!(int)));
 			shouldNot(IsClass!(int));
 		}
+		
+		interface A {
+		}
 
 		it should_determine_if_it_is_an_iterface() {
-			should(IsInterface!(AbstractContainer));
+			should(IsInterface!(A));
 			shouldNot(IsInterface!(int));
 		}
 
 		it should_determine_if_it_is_an_object() {
 			shouldNot(IsObject!(int));
 			should(IsObject!(Stack!(int)));
-			should(IsObject!(AbstractContainer));
+			should(IsObject!(A));
 		}
 
 		it should_determine_if_it_is_an_int_type() {

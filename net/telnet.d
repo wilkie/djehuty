@@ -7,7 +7,7 @@
  *
  */
 
-module networking.telnet;
+module net.telnet;
 
 import core.string;
 import core.unicode;

@@ -20,7 +20,7 @@ private:
 
 public:
 	string name() {
-		return Djehuty.app.name; 
+		return Djehuty.application.name; 
 	}
 
 	void add(PackageSpecification spec) {
