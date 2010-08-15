@@ -35,6 +35,8 @@ private:
 	bool _isTopMost;
 	bool _isBottomMost;
 
+	int _count;
+
 	// Window list
 	Window _head;			// The head of the list
 	Window _topMostHead;	// The subsection where the top most end
@@ -234,6 +236,58 @@ public:
 		return ret;
 	}
 
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		super.attach(dsp, handler);
+
+		auto window = cast(Window)dsp;
+		if (window !is null && window.parent is this && window._next is null) {
+			if (_head is null) {
+				window._next = window;
+				window._prev = window;
+			}
+			else {
+				window._prev = _head._prev;
+				window._next = _head;
+
+				_head._prev._next = window;
+				_head._prev = window;
+			}
+
+			// Set as new head
+			_head = window;
+
+			// Focus on this window (if it is visible)
+			if (window.visible) {
+				_focusedWindow = window;
+			}
+
+			_count++;
+
+			redraw();
+		}
+	}
+
+	override void detach(Dispatcher dsp) {
+		auto window = cast(Window)dsp;
+
+		if (window !is null && window.parent is this) {
+			// remove this window from the list
+			_count--;
+
+			// Focus on this window (if it is visible)
+			if (_focusedWindow is window) {
+				_focusedWindow = _focusedWindow._next;
+			}
+
+			window._remove();
+
+			redraw();
+		}
+
+		// perform default behavior
+		super.detach(dsp);
+	}
+
 	void redraw() {
 		if (!this.visible) {
 			return;
@@ -267,5 +321,9 @@ public:
 	}
 
 	void onDrawChildren(Canvas canvas) {
+		foreach(Window window; this) {
+			window.onDraw(canvas);
+			window.onDrawChildren(canvas);
+		}
 	}
 }

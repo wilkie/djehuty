@@ -112,10 +112,11 @@ public:
 	}
 
 	override void attach(Dispatcher dsp, SignalHandler handler = null) {
-		super.attach(dsp, handler);
 
 		auto window = cast(Window)dsp;
 		auto dialog = cast(Dialog)dsp;
+
+		Responder.attach(dsp, handler);
 
 		if (window !is null) {
 			// Need to create a platform window
@@ -142,9 +143,8 @@ public:
 		if (window !is null) {
 			if (signal == Window.Signal.NeedRedraw) {
 				Canvas canvas = new Canvas(cast(int)window.width, cast(int)window.height);
-				printf("ondraw\n");
-				window.onDrawChildren(canvas);
 				window.onDraw(canvas);
+				window.onDrawChildren(canvas);
 				_vars[window].update(canvas);
 			}
 		}

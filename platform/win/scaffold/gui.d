@@ -75,7 +75,7 @@ void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatfo
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	HBITMAP hbm;
-	printf("chbmp = %d\n", Gdiplus.GdipCreateHBITMAPFromBitmap(viewVars.image, &hbm, 0));
+	Gdiplus.GdipCreateHBITMAPFromBitmap(viewVars.image, &hbm, 0);
 	HDC windowDC = GetDC(windowVars.hWnd);
 	HDC dc = CreateCompatibleDC(windowDC);
 	SelectObject(dc, hbm);

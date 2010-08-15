@@ -30,6 +30,8 @@ public:
 		clr.alpha = 0.7;
 		Pen pen = new Pen(clr);
 
+		canvas.brush = brush;
+		canvas.pen = pen;
 		canvas.drawRectangle(0, 0, this.width, this.height);
 	}
 }
