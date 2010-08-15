@@ -38,6 +38,7 @@ import io.console;
 // views
 void CanvasCreate(Canvas view, CanvasPlatformVars*viewVars) {
 	viewVars.clipRegions = new Stack!(Gdiplus.GpRegion*)();
+	viewVars.transformMatrices = new Stack!(Gdiplus.GpMatrix*)();
 
 	viewVars.length = (view.width() * view.height()) * 4;
 

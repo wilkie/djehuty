@@ -33,5 +33,6 @@ public:
 		canvas.brush = brush;
 		canvas.pen = pen;
 		canvas.drawRectangle(0, 0, this.width, this.height);
+		canvas.drawEllipse(0, 0, this.width, this.height);
 	}
 }

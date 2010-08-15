@@ -43,4 +43,5 @@ struct CanvasPlatformVars {
 	GpGraphics* g = null;
 
 	Stack!(GpRegion*) clipRegions;
+	Stack!(GpMatrix*) transformMatrices;
 }

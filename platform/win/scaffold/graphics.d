@@ -114,24 +114,24 @@ void drawRect(CanvasPlatformVars* viewVars, double x, double y, double width, do
 	Gdiplus.GdipDrawRectangle(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
-void fillOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void fillOval(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	width--;
 	height--;
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipFillEllipse(viewVars.g, viewVars.curBrush, x, y, width, height);
 }
 
-void strokeOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void strokeOval(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	width--;
 	height--;
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, width, height);
+	Gdiplus.GdipDrawEllipse(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 // Draw an ellipse (filled with current brush, outlined with current pen)
-void drawOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void drawOval(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	width--;
 	height--;
-	Gdiplus.GdipFillEllipseI(viewVars.g, viewVars.curBrush, x, y, width, height);
-	Gdiplus.GdipDrawEllipseI(viewVars.g, viewVars.curPen, x, y, width, height);
+	Gdiplus.GdipFillEllipse(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipDrawEllipse(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 void drawPie(ViewPlatformVars* viewVars, int x, int y, int width, int height, double startAngle, double sweepAngle) {
@@ -541,4 +541,37 @@ void clipRect(CanvasPlatformVars* viewVars, double x, double y, double width, do
 }
 
 void clipRegion(ViewPlatformVars* viewVars, Region region) {
+}
+
+void resetWorld(CanvasPlatformVars* viewVars) {
+	Gdiplus.GdipResetWorldTransform(viewVars.g);
+}
+
+void translateWorld(CanvasPlatformVars* viewVars, double x, double y) {
+	Gdiplus.GdipTranslateWorldTransform(viewVars.g, x, y, Gdiplus.MatrixOrder.MatrixOrderPrepend);
+}
+
+void scaleWorld(CanvasPlatformVars* viewVars, double x, double y) {
+	Gdiplus.GdipScaleWorldTransform(viewVars.g, x, y, Gdiplus.MatrixOrder.MatrixOrderPrepend);
+}
+
+void rotateWorld(CanvasPlatformVars* viewVars, double angle) {
+	Gdiplus.GdipRotateWorldTransform(viewVars.g, angle, Gdiplus.MatrixOrder.MatrixOrderPrepend);
+}
+
+void saveWorld(CanvasPlatformVars* viewVars) {
+	Gdiplus.GpMatrix* matrix;
+	Gdiplus.GdipCreateMatrix(&matrix);
+	Gdiplus.GdipGetWorldTransform(viewVars.g, matrix);
+	viewVars.transformMatrices.push(matrix);
+}
+
+void restoreWorld(CanvasPlatformVars* viewVars) {
+	Gdiplus.GpMatrix* matrix;
+
+	if (!viewVars.transformMatrices.empty) {
+		matrix = viewVars.transformMatrices.pop();
+		Gdiplus.GdipSetWorldTransform(viewVars.g, matrix);
+		Gdiplus.GdipDeleteMatrix(matrix);
+	}
 }

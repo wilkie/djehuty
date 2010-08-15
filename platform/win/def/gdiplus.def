@@ -507,4 +507,5 @@ _GdipBeginContainerI@20 = GdipBeginContainerI
 _GdipBeginContainer2@8 = GdipBeginContainer2
 _GdipEndContainer@8 = GdipEndContainer
 _GdipComment@12 = GdipComment
-
+_GdipDeleteMatrix@4 = GdipDeleteMatrix
+_GdipCreateMatrix@4 = GdipCreateMatrix

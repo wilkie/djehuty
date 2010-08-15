@@ -326,11 +326,18 @@ public:
 			canvas.clipSave();
 			canvas.clipRectangle(window.left, window.top, window.width, window.height);
 
+			// Set origin to be window's top-left coordinate
+			canvas.transformSave();
+			canvas.transformTranslate(window.left, window.top);
+
 			// Draw the area owned by the window
 			window.onDraw(canvas);
 
 			// Draw this window's children
 			window.onDrawChildren(canvas);
+
+			// Restore the transform matrix
+			canvas.transformRestore();
 
 			// Restore the clipping
 			canvas.clipRestore();

@@ -63,6 +63,20 @@ public:
 		GraphicsScaffold.fillRect(&_pfvars, x, y, width, height);
 	}
 
+	// Ellipses
+
+	void drawEllipse(double x, double y, double width, double height) {
+		GraphicsScaffold.drawOval(&_pfvars, x, y, width, height);
+	}
+
+	void strokeEllipse(double x, double y, double width, double height) {
+		GraphicsScaffold.strokeOval(&_pfvars, x, y, width, height);
+	}
+
+	void fillEllipse(double x, double y, double width, double height) {
+		GraphicsScaffold.fillOval(&_pfvars, x, y, width, height);
+	}
+
 	// Clipping
 
 	void clipRectangle(Rect rect) {
@@ -81,8 +95,34 @@ public:
 		GraphicsScaffold.clipRestore(&_pfvars);
 	}
 
-	void clipClear() {
+	void clipReset() {
 		GraphicsScaffold.clipClear(&_pfvars);
+	}
+
+	// Transforms
+
+	void transformReset() {
+		GraphicsScaffold.resetWorld(&_pfvars);
+	}
+
+	void transformTranslate(double x, double y) {
+		GraphicsScaffold.translateWorld(&_pfvars, x, y);
+	}
+
+	void transformScale(double x, double y) {
+		GraphicsScaffold.scaleWorld(&_pfvars, x, y);
+	}
+
+	void transformRotate(double angle) {
+		GraphicsScaffold.rotateWorld(&_pfvars, angle);
+	}
+
+	void transformSave() {
+		GraphicsScaffold.saveWorld(&_pfvars);
+	}
+
+	void transformRestore() {
+		GraphicsScaffold.restoreWorld(&_pfvars);
 	}
 
 	// Properties

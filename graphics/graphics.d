@@ -88,7 +88,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void drawOval(int x, int y, int width, int height) {
-		Scaffold.drawOval(_viewVars, x,y,width,height);
+//		Scaffold.drawOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Fills an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -97,7 +97,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void fillOval(int x, int y, int width, int height) {
-		Scaffold.fillOval(_viewVars, x,y,width,height);
+//		Scaffold.fillOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Outlines an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -106,7 +106,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void strokeOval(int x, int y, int width, int height) {
-		Scaffold.strokeOval(_viewVars, x,y,width,height);
+//		Scaffold.strokeOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Draws the region given.
