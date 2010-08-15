@@ -26,6 +26,11 @@ import cui.togglefield;
 import cui.spinner;
 import cui.listfield;
 
+import gui.application;
+import gui.window;
+import gui.dialog;
+import gui.button;
+
 import synch.timer;
 import synch.thread;
 import synch.atomic;
@@ -401,6 +406,14 @@ void foobarfunc(bool f) {
 }
 
 int main(string[] args) {
+  	auto app = new GuiApplication("MyApp");
+  	auto window = new Window(200, 200, 200, 200);
+  	app.attach(window);
+  	window.attach(new Button(0, 0, 50, 20));
+//  	app.attach(new Window(400,400,250,250));
+	app.run();//*/
+	putln("Ran");
+
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();
 // 	tmr.interval = 250;
@@ -410,7 +423,7 @@ int main(string[] args) {
 // 	tmr.start();
 // 	Thread.sleep(1000);
 	//*/
-	auto app = new CuiApplication("MyApp");
+/* 	auto app = new CuiApplication("MyApp");
 	app.attach(new Rogue());
 	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
 	app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
@@ -442,8 +455,7 @@ int main(string[] args) {
 	for(int i = 0; i < 34; i++) {
 		lf.add("item " ~ toStr(i));
 	}
-	app.attach(lf);
+	app.attach(lf); */
 
-	app.run();//*/
 	return 0;
 }

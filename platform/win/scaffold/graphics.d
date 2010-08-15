@@ -12,9 +12,16 @@ module scaffold.graphics;
 
 pragma(lib, "gdi32.lib");
 
+import graphics.region;
 import graphics.view;
+import graphics.canvas;
+import graphics.brush;
+import graphics.pen;
+
+import binding.c;
 
 import platform.vars.view;
+import platform.vars.canvas;
 import platform.vars.brush;
 import platform.vars.font;
 import platform.vars.pen;
@@ -31,8 +38,6 @@ import core.main;
 import core.definitions;
 import core.unicode;
 
-import graphics.region;
-
 import platform.win.main;
 
 import binding.win32.wingdi;
@@ -43,6 +48,40 @@ import binding.win32.winbase;
 import io.console;
 
 import math.common;
+/*
+CanvasPlatformVars* canvasPlatformVars(Canvas view, CanvasPlatformVars* vars) {
+	static CanvasPlatformVars*[Canvas] _canvasTable;
+
+	if (vars is null) {
+		return _canvasTable[view];
+	}
+	else {
+		_canvasTable[view] = vars;
+	}
+}
+
+BrushPlatformVars* brushPlatformVars(Brush brush, BrushPlatformVars* vars) {
+	static BrushPlatformVars*[Brush] _brushTable;
+
+	if (vars is null) {
+		return _brushTable[brush];
+	}
+	else {
+		_brushTable[brush] = vars;
+	}
+}
+
+PenPlatformVars* penPlatformVars(Pen pen, PenPlatformVars* vars) {
+	static PenPlatformVars*[Pen] _penTable;
+
+	if (vars is null) {
+		return _penTable[pen];
+	}
+	else {
+		_penTable[pen] = vars;
+	}
+}
+*/
 
 // Shapes
 
@@ -50,28 +89,29 @@ import math.common;
 void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
 	//MoveToEx(viewVars.dc, x, y, null);
 	//LineTo(viewVars.dc, x2, y2);
+//	auto viewVars = viewPlatformVars(view);
 
-	Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
+	//Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
 }
 
-void fillRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void fillRect(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	//width--;
 	//height--;
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipFillRectangle(viewVars.g, viewVars.curBrush, x, y, width, height);
 }
 
-void strokeRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void strokeRect(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	width--;
 	height--;
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, width, height);
+	Gdiplus.GdipDrawRectangle(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 // Draw a rectangle (filled with the current brush, outlined with current pen)
-void drawRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
+void drawRect(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	width--;
 	height--;
-	Gdiplus.GdipFillRectangleI(viewVars.g, viewVars.curBrush, x, y, width, height);
-	Gdiplus.GdipDrawRectangleI(viewVars.g, viewVars.curPen, x, y, width, height);
+	Gdiplus.GdipFillRectangle(viewVars.g, viewVars.curBrush, x, y, width, height);
+	Gdiplus.GdipDrawRectangle(viewVars.g, viewVars.curPen, x, y, width, height);
 }
 
 void fillOval(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
@@ -246,6 +286,11 @@ void createBrush(BrushPlatformVars* brush, in Color clr) {
 	Gdiplus.GdipCreateSolidFill(_colorToInt(clr), &brush.handle);
 }
 
+void setBrush(CanvasPlatformVars* viewVars, BrushPlatformVars* brush) {
+	viewVars.curBrush = brush.handle;
+	//SelectObject(viewVars.dc, brush.brushHandle);
+}
+
 void setBrush(ViewPlatformVars* viewVars, BrushPlatformVars* brush) {
 	viewVars.curBrush = brush.handle;
 	//SelectObject(viewVars.dc, brush.brushHandle);
@@ -265,12 +310,12 @@ void createBitmapBrush(BrushPlatformVars* brush, ref ViewPlatformVars viewVarsSr
 private int _colorToInt(Color clr) {
 	int value;
 	int r,g,b,a;
-	r = cast(int)(clr.red * 255);
-	g = cast(int)(clr.green * 255);
-	b = cast(int)(clr.blue * 255);
-	a = cast(int)(clr.alpha * 255);
+	r = cast(int)(clr.red * 255.0);
+	g = cast(int)(clr.green * 255.0);
+	b = cast(int)(clr.blue * 255.0);
+	a = cast(int)(clr.alpha * 255.0);
 
-	value = a | (b << 8) | (g << 16) | (r << 24);
+	value = (a << 24) | (b << 0) | (g << 8) | (r << 16);
 	return value;
 }
 
@@ -322,6 +367,12 @@ void createPen(PenPlatformVars* pen, in Color clr, double width) {
 
 void createPenWithBrush(PenPlatformVars* pen, ref BrushPlatformVars brushVars, double width) {
 	Gdiplus.GdipCreatePen2(brushVars.handle, width, Gdiplus.Unit.UnitWorld, &pen.handle);
+}
+
+void setPen(CanvasPlatformVars* viewVars, PenPlatformVars* pen) {
+	viewVars.curPen = pen.handle;
+	viewVars.penClr = pen.clr;
+	//SelectObject(viewVars.dc, pen.penHandle);
 }
 
 void setPen(ViewPlatformVars* viewVars, PenPlatformVars* pen) {

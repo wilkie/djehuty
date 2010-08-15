@@ -35,268 +35,521 @@ import core.unicode;
 
 import gui.window;
 
-import opengl.window;
-
 import synch.thread;
 
 import io.console;
 
+void GuiNextEvent(Event* evt, WindowPlatformVars* vars) {
+	MSG msg;
+
+	vars.event = evt;
+
+	auto ret = GetMessageW(&msg, vars.hWnd, 0, 0);
+	TranslateMessage(&msg);
+	DispatchMessageW(&msg);
+}
+
+extern(Windows)
+static int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
+
+	static const int WM_MOUSECAPTURE = 0xffff;
+
+	// resolve the window class reference:
+	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
+	WindowPlatformVars* windowVars = cast(WindowPlatformVars*)(wind_in);
+
+	int ret = IsWindowUnicode(windowVars.hWnd);
+
+	switch (uMsg) {
+		case WM_ERASEBKGND:
+			break;
+
+		case WM_PAINT:
+			break;
+
+	    case WM_DESTROY:
+			break;
+
+	/* FOCUS */
+
+		case WM_ACTIVATE:
+			int x, y;
+			//activation type
+			x = wParam & 0xffff;
+			//minimization status
+			y = (wParam >> 16) & 0xffff;
+
+			if (x == WA_INACTIVE) {
+				//losing focus
+			}
+			else if (x == WA_ACTIVE || x == WA_CLICKACTIVE) {
+				//gaining focus
+			}
+
+			if (y != 0) {
+				//minimized
+			}
+			break;
+
+		case WM_INPUT:
+			break;
+
+		case WM_CAPTURECHANGED:
+			break;
+
+		case WM_LBUTTONDOWN:
+
+			SetFocus(hWnd);
+			SetCapture(hWnd);
+
+			//uint lp = GetMessageExtraInfo();
+			//if ((lp & SIGNATURE_MASK) == MI_WP_SIGNATURE) {
+				//writefln("pen");
+			//}
+
+			//writefln("down : ", lp, " ... ", lp & SIGNATURE_MASK, " == ", MI_WP_SIGNATURE);
+
+			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+
+			//w.mouseProps.rightDown = 1;
+
+			//check bounds for the controls
+
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = true;
+//			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+//			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+
+//			_TestNumberOfClicks(w,windowVars,x,y,1);
+
+//			w.onPrimaryMouseDown();
+			break;
+
+		case WM_LBUTTONUP:
+
+			ReleaseCapture();
+
+			//window.mouseProps.rightDown = 0;
+
+			//check for double click first
+//			_TestNumberOfClicksUp(w,windowVars,1);
+
+			//fill _mouseProps
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = false;
+//			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+//			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+
+//			w.onPrimaryMouseUp();
+			break;
+
+		case WM_RBUTTONDOWN:
+
+			SetFocus(hWnd);
+			SetCapture(hWnd);
+
+			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+
+			//w.mouseProps.rightDown = 1;
+
+			//check bounds for the controls
+
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+//			w.mouseProps.rightDown = true;
+//			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+
+//			_TestNumberOfClicks(w,windowVars,x,y,2);
+
+//			w.onSecondaryMouseDown();
+			break;
+
+		case WM_RBUTTONUP:
+
+			ReleaseCapture();
+			//window.mouseProps.rightDown = 0;
+
+			//check for double click first
+//			_TestNumberOfClicksUp(w,windowVars,2);
+
+			//fill _mouseProps
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+//			w.mouseProps.rightDown = false;
+//			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+
+//			w.onSecondaryMouseUp();
+			break;
+
+		case WM_MBUTTONDOWN:
+
+			SetFocus(hWnd);
+			SetCapture(hWnd);
+
+			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+
+			//w.mouseProps.rightDown = 1;
+
+			//check bounds for the controls
+
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+//			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+//			w.mouseProps.middleDown = true;
+
+//			_TestNumberOfClicks(w,windowVars,x,y,3);
+
+//			w.onTertiaryMouseDown();
+			break;
+
+		case WM_MBUTTONUP:
+
+			ReleaseCapture();
+			//window.mouseProps.rightDown = 0;
+
+			//check for double click first
+
+//			_TestNumberOfClicksUp(w,windowVars,3);
+
+			//fill _mouseProps
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+//			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+//			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+//			w.mouseProps.middleDown = false;
+
+//			w.onTertiaryMouseUp();
+			break;
+
+		case WM_XBUTTONDOWN:
+
+			SetFocus(hWnd);
+			SetCapture(hWnd);
+
+			// FILL THE MOUSEPROPERTIES STRUCTURE FOR THE WINDOW
+
+			//w.mouseProps.rightDown = 1;
+
+			//check bounds for the controls
+
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+			wParam >>= 16;
+			if (wParam) {
+				wParam--;
+
+//				_TestNumberOfClicks(w,windowVars,x,y,4 + cast(uint)wParam);
+
+//				w.onOtherMouseDown(cast(uint)wParam);
+			}
+			break;
+
+		case WM_XBUTTONUP:
+
+			ReleaseCapture();
+			//window.mouseProps.rightDown = 0;
+
+			//fill _mouseProps
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+
+			wParam >>= 16;
+			if (wParam) {
+				wParam--;
+
+				//check for double click
+//				_TestNumberOfClicksUp(w,windowVars,4 + cast(uint)wParam);
+
+//				w.onOtherMouseUp(cast(uint)wParam);
+			}
+			break;
+
+		case WM_MOUSEHWHEEL:
+
+//			w.onMouseWheelX(0);
+			break;
+
+		case WM_MOUSEWHEEL:
+
+//			w.onMouseWheelY(0);
+			break;
+
+		case WM_MOUSEMOVE:
+
+			int x, y;
+			x = lParam & 0xffff;
+//			w.mouseProps.x = x;
+			y = (lParam >> 16) & 0xffff;
+//			w.mouseProps.y = y;
+		//	Console.putln("mouse move window! x:", x, "y:", y);
+
+//			w.mouseProps.leftDown = ((wParam & MK_LBUTTON) > 0);
+//			w.mouseProps.rightDown = ((wParam & MK_RBUTTON) > 0);
+//			w.mouseProps.middleDown = ((wParam & MK_MBUTTON) > 0);
+
+			if (windowVars.hoverTimerSet==0) {
+				SetTimer(hWnd, 0, 55, null);
+				windowVars.hoverTimerSet = 1;
+			}
+
+//			w.onMouseMove();
+			break;
+
+			// Internal Timing Functions
+		case WM_MOUSELEAVE:
+//			w.onMouseLeave();
+			break;
+
+		case WM_MOUSECAPTURE: //made up event
+			if (windowVars.hoverTimerSet == 1) {
+				KillTimer(hWnd, 0);
+//				windowVars.hoverTimerSet = 0;
+			}
+
+			SetCapture(hWnd);
+			break;
+
+		case WM_MOVE:
+
+			RECT rt;
+			GetWindowRect(hWnd, &rt);
+
+			if (!windowVars.supress_WM_MOVE) {
+//				w._x = rt.left;
+//				w._y = rt.top;
+
+//				w.onMove();
+				windowVars.supress_WM_MOVE = false;
+			}
+			break;
+
+		case WM_KEYDOWN:
+
+			Key key;
+			key.code = cast(uint)wParam;
+//			w.onKeyDown(key);
+
+			break;
+
+			//might have to translate these keys
+
+		case WM_CHAR:
+
+			if ((wParam == Key.Backspace)
+				|| (wParam == Key.Return)
+				|| (wParam == Key.Tab)) {
+				break;
+			}
+
+			ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+
+			//printf("%x %x", stuff[0], stuff[1]);
+
+//			w.onKeyChar(cast(dchar)wParam);
+
+			break;
+
+		case WM_DEADCHAR:
+
+			ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+
+			//printf("%x %x", stuff[0], stuff[1]);
+
+			break;
+
+		case WM_UNICHAR:
+
+			if (wParam == 0xFFFF) {
+				return 1;
+			}
+
+			ushort stuff[2] = (cast(ushort*)&wParam)[0 .. 2];
+
+			//printf("%x %x", stuff[0], stuff[1]);
+
+//			w.onKeyChar(cast(dchar)wParam);
+
+			break;
+
+		case WM_KEYUP:
+
+			Key key;
+			key.code = cast(uint)wParam;
+//			w.onKeyUp(key);
+
+			break;
+
+		case WM_SIZE:
+
+			RECT rt;
+			GetClientRect(hWnd, &rt);
+
+			if (!windowVars.supress_WM_SIZE) {
+//				w._width = rt.right;
+//				w._height = rt.bottom;
+
+//				w.onResize();
+
+//				if (cast(GLWindow)w !is null) {
+//					windowVars.gameLoopCallResize();
+//				}
+
+				windowVars.supress_WM_SIZE = false;
+			}
+
+			// was it minimized? maximized?
+
+//			if (w.state != WindowState.Fullscreen) {
+//				if (wParam == SIZE_MAXIMIZED && w.state != WindowState.Minimized) {
+//					if (!windowVars.supress_WM_SIZE_state) {
+//						w.state = WindowState.Maximized;
+//						w.onStateChange();
+//						windowVars.supress_WM_SIZE_state = false;
+//					}
+//				}
+//				else if (wParam == SIZE_MINIMIZED && w.state != WindowState.Maximized) {
+//					if (!windowVars.supress_WM_SIZE_state) {
+//						w.state = WindowState.Minimized;
+//						w.onStateChange();
+//						windowVars.supress_WM_SIZE_state = false;
+//					}
+//				}
+//				else if (wParam == SIZE_RESTORED && w.state != WindowState.Normal) {
+//					if (!windowVars.supress_WM_SIZE_state) {
+//						w.state = WindowState.Normal;
+//						w.onStateChange();
+//						windowVars.supress_WM_SIZE_state = false;
+//					}
+//				}
+//			}
+
+			break;
+
+		case WM_TIMER:
+
+			if (wParam == 0) {
+				//Internal Timer (mouse hover)
+
+				POINT pt;
+
+				GetCursorPos(&pt);
+
+				if (WindowFromPoint(pt) != hWnd) {
+					KillTimer(hWnd, 0);
+					windowVars.hoverTimerSet = 0;
+
+					SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
+				}
+				else {
+					POINT pnt[2];
+
+					pnt[0].x = 0;
+					pnt[0].y = 0;
+//					pnt[1].x = w.width-1;
+//					pnt[1].y = w.height-1;
+
+					ClientToScreen(hWnd, &pnt[0]);
+					ClientToScreen(hWnd, &pnt[1]);
+
+					if (pt.x < pnt[0].x || pt.y < pnt[0].y || pt.x > pnt[1].x || pt.y > pnt[1].y) {
+						KillTimer(hWnd,0);
+
+						windowVars.hoverTimerSet = 0;
+
+						SendMessageW(hWnd, WM_MOUSELEAVE, 0, 0);
+					}
+				}
+				//KillTimer(hWnd, 0);
+			}
+			else if (wParam == 1) {
+				//Internal Timer (double click test)
+				//kill the timer
+				windowVars.doubleClickTimerSet = -windowVars.doubleClickTimerSet;
+				KillTimer(hWnd, 1);
+			}
+
+			break;
+
+		default:
+
+			return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+	}
+
+	return 0;
+}
+
 // all windows
 void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
-	windowVars.oldWidth = window.width;
-	windowVars.oldHeight = window.height;
+	int width = cast(int)window.width;
+	int height = cast(int)window.height;
 
-	windowVars.oldX = window.x;
-	windowVars.oldY = window.y;
+	int x = cast(int)window.left;
+	int y = cast(int)window.top;
 
-	windowVars.oldTitle = window.text;
+	void* userData = cast(void*)windowVars;
 
-	windowVars.userData = cast(void*)window;
-
-	_ClientSizeToWindowSize(window, windowVars.oldWidth, windowVars.oldHeight);
-
-	_GatherStyleInformation(window, windowVars.istyle, windowVars.iexstyle);
-
-	windowVars.windowClass = window;
-
-	if (cast(GLWindow)window !is null) {
-		windowVars.msgThread = new Thread(&windowVars.gameLoop);
+	while(windowVars.hWnd is null) {
+		windowVars.hWnd = CreateWindowExW(0, "djehutyApp\0"w.ptr, "\0"w.ptr, cast(DWORD)(WS_POPUP | WS_CLIPSIBLINGS),
+			x, y, width, height, null,
+			cast(HMENU) null, null, userData);
 	}
-	else {
-		windowVars.msgThread = new Thread(&windowVars.msgLoop);
-	}
-
-	ThreadSetWindow(windowVars.msgThread, window);
-
-	windowVars.msgThread.start();
-
-	RAWINPUTDEVICE Rid;
-
-	Rid.usUsagePage = 0x01;
-	Rid.usUsage = 0x02;
-	Rid.dwFlags = RIDEV_INPUTSINK;
-	Rid.hwndTarget = windowVars.hWnd;
-
-	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
 }
 
 void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars) {
-	/*
-	int width, height, x, y;
-
-	width = window.width();
-	height = window.height();
-
-	x = window.getX();
-	y = window.getY();
-
-	width = window.width();
-	height = window.height();
-
-	_ClientSizeToWindowSize(window, width, height);
-
-	uint istyle;
-	uint iexstyle;
-
-	_GatherStyleInformation(window, istyle, iexstyle);
-
-	windowVars.hWnd = CreateWindowExW(iexstyle, djehutyClassName.ptr,window.getText().ptr, istyle | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		x, y, width, height, parentVars.hWnd,
-		cast(HMENU) null, null, cast(void*)window);
-
-	assert(windowVars.hWnd);
-
-	RAWINPUTDEVICE Rid;
-
-	Rid.usUsagePage = 0x01;
-	Rid.usUsage = 0x02;
-	Rid.dwFlags = RIDEV_INPUTSINK;
-	Rid.hwndTarget = windowVars.hWnd;
-
-	RegisterRawInputDevices(&Rid, 1, Rid.sizeof);
-	*/
 }
 
 void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars) {
-	bool wasMaximized = false;
-
-	if (window.state == WindowState.Maximized) {
-		ShowWindow(windowVars.hWnd, SW_HIDE);
-		wasMaximized = true;
-		window.state = WindowState.Normal;
-	}
-
-	int width, height;
-
-	width = window.width;
-	height = window.height;
-
-	_ClientSizeToWindowSize(window, width, height);
-
-	uint istyle;
-	uint iexstyle;
-
-	_GatherStyleInformation(window, istyle, iexstyle);
-
-	SetWindowLongW(windowVars.hWnd, GWL_STYLE, istyle);
-	SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, iexstyle);
-
-	windowVars.supress_WM_MOVE = true;
-	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
-	windowVars.supress_WM_MOVE = false;
-
-	if (wasMaximized) {
-		window.state = WindowState.Maximized;
-
-		if (window.visible) {
-			ShowWindow(windowVars.hWnd, SW_SHOW);
-		}
-	}
 }
 
 void WindowReposition(ref Window window, WindowPlatformVars* windowVars) {
-	SetWindowPos(windowVars.hWnd, null, window.x,window.y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	SetWindowPos(windowVars.hWnd, null, cast(int)window.left, cast(int)window.top, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
 void WindowSetState(ref Window window, WindowPlatformVars* windowVars) {
-	if (window.state == WindowState.Fullscreen) {
-		windowVars.oldX = window.x;
-		windowVars.oldY = window.y;
 
-		windowVars.oldWidth = window.width;
-		windowVars.oldHeight = window.height;
-
-		windowVars.supress_WM_MOVE = true;
-		windowVars.supress_WM_SIZE = true;
-
-		windowVars.oldStyle = SetWindowLongW(windowVars.hWnd, GWL_STYLE, WS_POPUP);
-
-		windowVars.supress_WM_SIZE = false;
-		windowVars.supress_WM_MOVE = false;
-
-		windowVars.supress_WM_MOVE = true;
-		windowVars.supress_WM_SIZE = true;
-		windowVars.oldExStyle = SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, 0);
-		windowVars.supress_WM_SIZE = false;
-		windowVars.supress_WM_MOVE = false;
-
-		SetWindowPos(windowVars.hWnd, null, 0,0, SystemGetDisplayWidth(SystemGetPrimaryDisplay()), SystemGetDisplayHeight(SystemGetPrimaryDisplay()), SWP_NOOWNERZORDER | SWP_NOZORDER);
-
-		SetWindowRgn(windowVars.hWnd, null, true);
-
-		if (window.visible) {
-			ShowWindow(windowVars.hWnd, SW_SHOW);
-		}
-
-		windowVars.infullscreen = true;
-	}
-	else if (window.visible) {
-		if (windowVars.infullscreen) {
-			SetWindowLongW(windowVars.hWnd, GWL_STYLE, cast(DWORD)windowVars.oldStyle);
-			SetWindowLongW(windowVars.hWnd, GWL_EXSTYLE, cast(DWORD)windowVars.oldExStyle);
-
-			int width, height;
-			width = window.width;
-			height = window.height;
-
-			_ClientSizeToWindowSize(window, width, height);
-
-			SetWindowPos(windowVars.hWnd, null, window.x,window.y, width, height, SWP_NOOWNERZORDER | SWP_NOZORDER);
-			InvalidateRect(null, null, 0);
-
-			windowVars.infullscreen = false;
-		}
-
-		switch(window.state) {
-			case WindowState.Normal:
-
-				windowVars.supress_WM_SIZE_state = true;
-				ShowWindow(windowVars.hWnd, SW_RESTORE);
-				break;
-
-			case WindowState.Minimized:
-
-				windowVars.supress_WM_SIZE_state = true;
-				ShowWindow(windowVars.hWnd, SW_MINIMIZE);
-				break;
-
-			case WindowState.Maximized:
-
-				windowVars.supress_WM_SIZE_state = true;
-				ShowWindow(windowVars.hWnd, SW_MAXIMIZE);
-				break;
-
-			default: break;
-		}
-	}
-}
-
-void _GatherStyleInformation(ref Window window, ref uint istyle, ref uint iexstyle) {
-	if (window.style == WindowStyle.Fixed) {
-		istyle = WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
-
-		istyle &= ~(WS_THICKFRAME | WS_DLGFRAME);
-		iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_WINDOWEDGE | WS_EX_STATICEDGE);
-
-		istyle |= WS_BORDER | WS_CAPTION;
-		iexstyle |= WS_EX_DLGMODALFRAME;
-	}
-	else if (window.style == WindowStyle.Popup) {
-		istyle = WS_POPUP;
-	}
-	else { //Sizable
-		istyle = WS_OVERLAPPEDWINDOW;
-	}
-	//iexstyle |= 0x02000000;
-
-	if (window.visible) {
-		istyle |= WS_VISIBLE;
-	}
-}
-
-void _ClientSizeToWindowSize(ref Window window, ref int width, ref int height) {
-	if (width == Default) {
-		width = CW_USEDEFAULT;
-	}
-	else {
-		//normalize sizes
-
-		//account for borders and title bar...
-		//because windows is retarded in this
-		//respect
-
-		if (window.style == WindowStyle.Fixed) {
-			int border_width, border_height;
-			border_width = ( GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME) ) * 2;
-			border_height = (GetSystemMetrics(SM_CYDLGFRAME) * 2) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
-
-			width += border_width;
-			height += border_height;
-		}
-		else if (window.style == WindowStyle.Popup) {
-			//do nothing
-		}
-		else { 
-			//Sizable
-			int border_width, border_height;
-			border_width = GetSystemMetrics(SM_CXFRAME) * 2;
-			border_height = GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
-
-			width += border_width;
-			height += border_height;
-		}
-
-		// account for menubar
-	}
 }
 
 void WindowRebound(ref Window window, WindowPlatformVars* windowVars) {
 	int width, height;
 
-	width = window.width;
-	height = window.height;
-
-	_ClientSizeToWindowSize(window, width, height);
+	width = cast(int)window.width;
+	height = cast(int)window.height;
 
 	windowVars.supress_WM_SIZE = true;
 	SetWindowPos(windowVars.hWnd, null, 0,0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER);
@@ -316,9 +569,6 @@ void WindowSetVisible(ref Window window, WindowPlatformVars* windowVars, bool bS
 }
 
 void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
-	wstring s = Unicode.toUtf16(window.text);
-	s ~= '\0';
-	SetWindowTextW(windowVars.hWnd, cast(wchar*)s.ptr);
 }
 
 // CLIENT TO SCREEN
@@ -326,32 +576,28 @@ void WindowSetTitle(ref Window window, WindowPlatformVars* windowVars) {
 // Takes a point on the window's client area and returns the actual screen
 // coordinates for that point.
 
-void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref int x, ref int y) {
+void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref double x, ref double y) {
 	Coord pt = {x,y};
-	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
-	x = pt.x;
-	y = pt.y;
+	POINT ptx;
+	ptx.x = 0;
+	ptx.y = 0;
+	ClientToScreen(windowVars.hWnd, &ptx);
+	x += cast(double)ptx.x;
+	y += cast(double)ptx.y;
 }
 
 void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Coord pt) {
-	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
+	WindowClientToScreen(window, windowVars, pt.x, pt.y);
 }
 
 void WindowClientToScreen(ref Window window, WindowPlatformVars* windowVars, ref Rect rt) {
-// could optimize by directly accessing a point worth from the rect
-	Coord pt = {rt.left,rt.top};
-	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt);
-	rt.left = pt.x;
-	rt.top = pt.y;
-	Coord pt2 = {rt.right,rt.bottom};
-	ClientToScreen(windowVars.hWnd, cast(POINT*)&pt2);
-	rt.right = pt2.x;
-	rt.bottom = pt2.y;
+	WindowClientToScreen(window, windowVars, rt.left, rt.top);
+	WindowClientToScreen(window, windowVars, rt.right, rt.bottom);
 }
 
 
 // Viewable windows
-void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
+void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref View view, ref ViewPlatformVars viewVars) {
 	//the starting pen and brush is black and white respectively
 	if (viewVars.aa) {
 		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeAntiAlias);
@@ -361,14 +607,14 @@ void WindowStartDraw(ref Window window, WindowPlatformVars* windowVars, ref Wind
 	}
 }
 
-void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref WindowView view, ref ViewPlatformVars viewVars) {
+void WindowEndDraw(ref Window window, WindowPlatformVars* windowVars, ref View view, ref ViewPlatformVars viewVars) {
 	HDC hdc;
 	hdc = GetDC(windowVars.hWnd);
 //	Gdiplus.GpGraphics* g;
 //	Gdiplus.GdipCreateFromHDC(hdc, &g);
 //	Gdiplus.GdipDrawImageI(g, viewVars.image, 0, 0);
 
-	BitBlt(hdc, 0, 0, window.width(), window.height(), viewVars.dc, 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, cast(int)window.width, cast(int)window.height, viewVars.dc, 0, 0, SRCCOPY);
 
 	ReleaseDC(windowVars.hWnd, hdc);
 }

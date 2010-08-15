@@ -1,10 +1,7 @@
 /*
  * window.d
  *
- * This module implements a GUI Window class. Widgets can be pushed to this window.
- *
- * Author: Dave Wilkinson
- * Originated: June 24th, 2009
+ * This module implements a Gui window class.
  *
  */
 
@@ -12,41 +9,108 @@ module gui.window;
 
 import djehuty;
 
+import graphics.canvas;
+import graphics.brush;
+import graphics.pen;
+
 import scaffold.window;
 
 class Window : Responder {
 private:
+
+	// Properties
+	Rect _bounds;
+	Color _bg;
 	bool _visible;
 
-	Color _bg;
-
-	Rect _bounds;
-
+	// Window management
 	Window _focusedWindow;
 	Window _dragWindow;
 
+	// Sibling list
+	Window _next;
+	Window _prev;
+
+	// Order management
+	bool _isTopMost;
+	bool _isBottomMost;
+
+	// Window list
+	Window _head;			// The head of the list
+	Window _topMostHead;	// The subsection where the top most end
+	Window _bottomMostHead;	// The subsection where the bottom most start
+
+	// Drawing optimization management
+	bool _needsRedraw;
+	bool _dirty;
+
+	void _remove() {
+		if (this._prev is this) {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = null;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = null;
+			}
+			else {
+				parent._head = null;
+			}
+		}
+		else {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = parent._topMostHead._next;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = parent._bottomMostHead._next;
+			}
+			else if (this is parent._head) {
+				parent._head = parent._head._next;
+			}
+
+			this._prev._next = this._next;
+			this._next._prev = this._prev;
+		}
+
+		this._prev = null;
+		this._next = null;
+	}
+
 public:
+
+	enum Signal {
+		NeedRedraw
+	}
 
 	this(double x, double y, double width, double height, Color bg = Color.Black) {
 		_bounds.left = x;
 		_bounds.top = y;
-		_bounds.right = x + width;
-		_bounds.bottom = y + height;
+		_bounds.right = width + x;
+		_bounds.bottom = height + y;
 		_bg = bg;
+		_visible = true;
 	}
 
 	this(WindowPosition pos, double width, double height, Color bg = Color.Black) {
-		double x, y;
+		double x = 0.0;
+		double y = 0.0;
+
 		if (pos == WindowPosition.Center) {
-			x = (System.Display.width - width) / 2;
-			y = (System.Display.height - height) / 2;
+			x = (cast(double)System.Display.width - width) / 2.0;
+			y = (cast(double)System.Display.height - height) / 2.0;
 		}
 
-		this(x, y, width, height, bg);
+		_bounds.left = x;
+		_bounds.top = y;
+		_bounds.right = width + x;
+		_bounds.bottom = height + y;
+		_bg = bg;
+		_visible = true;
 	}
 
+	// Properties
+
 	Window parent() {
-		return cast(Window)this.responder();
+		return cast(Window)responder;
 	}
 
 	Color backcolor() {
@@ -55,6 +119,7 @@ public:
 
 	void backcolor(Color value) {
 		_bg = value;
+		redraw();
 	}
 
 	bool visible() {
@@ -63,13 +128,28 @@ public:
 
 	void visible(bool value) {
 		_visible = value;
+		if (parent !is null) {
+			parent.redraw();
+		}
 	}
 
 	bool focused() {
-		return false;
+		if (parent is null) {
+			return false;
+		}
+
+		return parent._focusedWindow is this;
 	}
 
 	void focused(bool value) {
+		if (parent is null) {
+			return;
+		}
+
+		if (value == true) {
+			parent._focusedWindow = this;
+		}
+		// TODO: value = false?
 	}
 
 	double left() {
@@ -85,7 +165,7 @@ public:
 	}
 
 	void width(double value) {
-		reposition(this.left(), this.top(), value, this.height());
+		reposition(this.left, this.top, value, this.height);
 	}
 
 	double height() {
@@ -93,7 +173,7 @@ public:
 	}
 
 	void height(double value) {
-		reposition(this.left(), this.top(), this.width(), value);
+		reposition(this.left, this.top, this.width, value);
 	}
 
 	double clientWidth() {
@@ -118,212 +198,74 @@ public:
 		return _focusedWindow;
 	}
 
-	// Description: This function returns the next sibling window.
-	Window next() {
-		return null;
-	}
+	// Methods
 
-	// Description: This function returns the previous sibling window.
-	Window previous() {
-		return null;
-	}
+	int opApply(int delegate(ref Window window) loopBody) {
+		int ret;
 
-	void reorder(WindowOrder order) {
-	}
+		Window current;
+		Window end;
 
-	void reposition(double left, double top, double width = float.nan, double height = float.nan) {
-		double w, h;
-		double oldW, oldH;
-		oldW = this.width();
-		oldH = this.height();
+		for (int i = 0; i < 3; i++) {
+			if (i == 0) {
+				current = _topMostHead;
+			}
+			else if (i == 1) {
+				current = _head;
+			}
+			else {
+				current = _bottomMostHead;
+			}
 
-		if (width !<>= width) {
-			w = oldW;
+			end = current;
+
+			if (current is null) {
+				continue;
+			}
+
+			do {
+				ret = loopBody(current);
+				if (ret != 0) {
+					return ret;
+				}
+				current = current._next;
+			} while(current !is end);
 		}
-		else {
-			w = width;
-		}
-
-		if (height !<>= height) {
-			h = oldH;
-		}
-		else {
-			h = height;
-		}
-
-		if (w < 0) {
-			w = 0;
-		}
-		if (h < 0) {
-			h = 0;
-		}
-
-		_bounds.left = left;
-		_bounds.top = top;
-		_bounds.right = left + w;
-		_bounds.bottom = top + h;
-
-		if (oldW != w || oldH != h) {
-			onResize();
-		}
-		parent.redraw();
+		return ret;
 	}
 
 	void redraw() {
 		if (!this.visible) {
 			return;
 		}
+
+		if (this.parent.parent !is null) {
+			this.parent.redraw();
+		}
+		else {
+			raiseSignal(Signal.NeedRedraw);
+		}
+	}
+
+	void reposition(double left, double top, double width, double height) {
 	}
 
 	// Events
 
-	void onResize() {
+	void onDraw(Canvas canvas) {
+		Color clr = Color.White;
+		clr.alpha = 0.8;
+		Brush brush = new Brush(clr);
+		canvas.brush = brush;
+
+		clr = Color.Black;
+		clr.alpha = 0.8;
+		Pen pen = new Pen(clr);
+		canvas.pen = pen;
+
+		canvas.drawRectangle(0,0,this.width,this.height);
 	}
 
-	void onKeyDown(Key key) {
-		// Pass this down to the focused window
-		if (_focusedWindow !is null) {
-			_focusedWindow.onKeyDown(key);
-		}
-	}
-
-	void onKeyChar(dchar keyChar) {
-		// Pass this down to the focused window
-		if (_focusedWindow !is null) {
-			_focusedWindow.onKeyChar(keyChar);
-		}
-	}
-
-	void onPrimaryDown(ref Mouse mouse) {
-		// Look at passing this message down
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				_dragWindow = window;
-
-				if (_focusedWindow !is window) {
-					_focusedWindow = window;
-				}
-
-				window.onPrimaryDown(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
-	}
-
-	void onPrimaryUp(ref Mouse mouse) {
-		// Look at passing this message down
-		if (_dragWindow !is null) {
-
-			double xdiff = _dragWindow.left;
-			double ydiff = _dragWindow.top;
-			mouse.x -= xdiff;
-			mouse.y -= ydiff;
-
-			_dragWindow.onPrimaryUp(mouse);
-
-			mouse.x += xdiff;
-			mouse.y += ydiff;
-
-			_dragWindow = null;
-			return;
-		}
-
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				window.onPrimaryUp(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
-	}
-
-	void onDrag(ref Mouse mouse) {
-		// Look at passing this message down
-		if (_dragWindow !is null) {
-			double xdiff = _dragWindow.left;
-			double ydiff = _dragWindow.top;
-
-			mouse.x -= xdiff;
-			mouse.y -= ydiff;
-
-			_dragWindow.onDrag(mouse);
-
-			mouse.x += xdiff;
-			mouse.y += ydiff;
-		}
-	}
-
-	void onHover(ref Mouse mouse) {
-		// Look at passing this message down
-		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y) {
-
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
-
-				window.onHover(mouse);
-
-				mouse.x += xdiff;
-				mouse.y += ydiff;
-				break;
-			}
-		}
-	}
-
-	int opApply(int delegate(ref Window window) loopBody) {
-		return 0;
-	}
-
-	void onDrawChildren() {
-	}
-
-	void onDraw() {
-	}
-
-	// Signal Handler
-	override void attach(Dispatcher dsp, SignalHandler handler = null) {
-		super.attach(dsp, handler);
-
-		auto window = cast(Window)dsp;
-		if (window !is null) {
-			auto parentApp = cast(Application)this.parent;
-			if (parentApp !is null) {
-			}
-
-			// Focus on this window (if it is visible)
-			if (window.visible) {
-				_focusedWindow = window;
-			}
-
-			redraw();
-		}
+	void onDrawChildren(Canvas canvas) {
 	}
 }

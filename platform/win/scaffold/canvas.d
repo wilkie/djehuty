@@ -1,14 +1,12 @@
 /*
- * view.d
+ * canvas.d
  *
- * This file implements the Scaffold for platform specific View
+ * This file implements the Scaffold for platform specific Canvas
  * operations in Windows.
- *
- * Author: Dave Wilkinson
  *
  */
 
-module scaffold.view;
+module scaffold.canvas;
 
 import binding.win32.wingdi;
 import binding.win32.winnt;
@@ -19,14 +17,14 @@ import platform.win.main;
 
 import Gdiplus = binding.win32.gdiplus;
 
-import platform.vars.view;
+import platform.vars.canvas;
 import platform.vars.window;
 
 import gui.window;
 
-import graphics.view;
-import graphics.graphics;
-import graphics.bitmap;
+import graphics.canvas;
+//import graphics.graphics;
+//import graphics.bitmap;
 
 import core.string;
 import core.main;
@@ -37,26 +35,36 @@ import data.queue;
 import io.console;
 
 // views
-void ViewCreate(View view, ViewPlatformVars*viewVars) {
-//	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
-	//viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
-	//Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-//	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
+void CanvasCreate(Canvas view, CanvasPlatformVars*viewVars) {
 	viewVars.clipRegions = new _clipList();
 
+	viewVars.length = (view.width() * view.height()) * 4;
+
+	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 
+		0, Gdiplus.PixelFormat32bppARGB, null,
+		&viewVars.image);
+
+	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
+	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
+}
+
+/*void BitmapCreate(Bitmap view, CanvasPlatformVars* viewVars) {
+	viewVars.clipRegions = new _clipList();
+	
 	viewVars.length = (view.width() * view.height()) * 4;
 
 	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
 	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
 	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-}
+	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
+}*/
 
-void ViewDestroy(ref View view, ViewPlatformVars*viewVars) {
+void CanvasDestroy(Canvas view, CanvasPlatformVars*viewVars) {
 	DeleteDC(viewVars.dc);
 	Gdiplus.GdipDeleteGraphics(viewVars.g);
 }
 
-void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
+/*void CanvasCreateDIB(ref Bitmap view, CanvasPlatformVars*viewVars) {
 	viewVars.clipRegions = new _clipList();
 
 	viewVars.length = (view.width() * view.height()) * 4;
@@ -65,9 +73,9 @@ void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
 	viewVars.rt = Gdiplus.Rect(0, 0, view.width, view.height);
 	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
 	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
-}
-
-void ViewCreateForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
+}*/
+/*
+void CanvasCreateForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 	//will set _inited to true:
 	HDC dc;
 
@@ -86,12 +94,12 @@ void ViewCreateForWindow(ref View view, ViewPlatformVars*viewVars, ref Window wi
 	DeleteObject(bmp);
 
     Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
-}
+} */
 
-void ViewResizeForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
-}
+//void ViewResizeForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
+//}
 
-void ViewResize(ref View view, ViewPlatformVars*viewVars) {
+void CanvasResize(Canvas view, CanvasPlatformVars* viewVars) {
 	Console.putln("view resize");
 	HDC dc;
 
@@ -99,7 +107,7 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 
 	HBITMAP bmp;
 
-	if (cast(Bitmap)view !is null) {
+/*	if (cast(Bitmap)view !is null) {
 		BITMAPINFO bi;
 
 		bi.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
@@ -110,7 +118,7 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 
 		bmp = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &viewVars.bits, null, 0);
 	}
-	else {
+	else*/ {
 		bmp = CreateCompatibleBitmap(dc, view.width(), view.height());
 	}
 
@@ -122,24 +130,24 @@ void ViewResize(ref View view, ViewPlatformVars*viewVars) {
 	Console.putln("view done");
 }
 
-void* ViewGetBytes(ViewPlatformVars*viewVars, ref ulong length) {
+void* CanvasGetBytes(CanvasPlatformVars* viewVars, ref ulong length) {
     Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
 
 	length = viewVars.length;
 	return cast(void*)viewVars.bdata.Scan0;
 }
 
-void* ViewGetBytes(ViewPlatformVars*viewVars) {
+void* CanvasGetBytes(CanvasPlatformVars*viewVars) {
     Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
 
 	return cast(void*)viewVars.bdata.Scan0;
 }
 
-void ViewUnlockBytes(ViewPlatformVars* viewVars) {
+void CanvasUnlockBytes(CanvasPlatformVars* viewVars) {
 	Gdiplus.GdipBitmapUnlockBits(viewVars.image, &viewVars.bdata);
 }
 
-uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a) {
+uint CanvasRGBAToInt32(ref bool _forcenopremultiply, CanvasPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a) {
 	if (!_forcenopremultiply) {
 		float anew = a;
 		anew /= cast(float)0xFF;
@@ -151,6 +159,6 @@ uint ViewRGBAToInt32(ref bool _forcenopremultiply, ViewPlatformVars*_pfvars, ref
 	return (r << 16) | (g << 8) | (b) | (a << 24);
 }
 
-uint ViewRGBAToInt32(ViewPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b) {
+uint CanvasRGBAToInt32(CanvasPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b) {
 	return (r << 16) | (g << 8) | (b) | 0xFF000000;
 }

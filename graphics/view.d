@@ -74,7 +74,6 @@ public:
 
 	// Methods //
 
-
 	// Description: Creates a new drawing canvas offscreen to the dimensions given.
 	// width: The width of the new drawing context.
 	// height: The height of the new drawing context.

@@ -61,7 +61,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void drawRect(int x, int y, int width, int height) {
-		Scaffold.drawRect(_viewVars, x,y,width,height);
+//		Scaffold.drawRect(_viewVars, x,y,width,height);
 	}
 
 	// Description: Fills a rectangle defined by the top-left point: (x,y) and some size.
@@ -70,7 +70,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void fillRect(int x, int y, int width, int height) {
-		Scaffold.fillRect(_viewVars, x, y, width, height);
+//		Scaffold.fillRect(_viewVars, x, y, width, height);
 	}
 
 	// Description: Outlines a rectangle defined by the top-left point: (x,y) and some size.
@@ -79,7 +79,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void strokeRect(int x, int y, int width, int height) {
-		Scaffold.strokeRect(_viewVars, x, y, width, height);
+//		Scaffold.strokeRect(_viewVars, x, y, width, height);
 	}
 
 	// Description: Draws an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -274,7 +274,7 @@ public:
 	// Description: Will set the fill type to that specified by the Brush object.
 	// brush: The Brush to use.
 	void brush(Brush brush) {
-		Scaffold.setBrush(_viewVars, &brush._pfvars);
+	/*	Scaffold.setBrush(_viewVars, &brush._pfvars);
 
 		if (_view._brush !is null)
 		{
@@ -284,7 +284,7 @@ public:
 		_view._brush = brush;
 
 		// set the Brush's view
-		brush._view = _view;
+		brush._view = _view;*/
 	}
 
 // Pens
@@ -292,17 +292,17 @@ public:
 	// Description: Will set the stroke type to that specified by the Pen object.
 	// pen: The Pen to use.
 	void pen(Pen pen) {
-		Scaffold.setPen(_viewVars, &pen._pfvars);
+//		Scaffold.setPen(_viewVars, &pen._pfvars);
 
 		// set the pen in the view
-		if (_view._pen !is null) {
+/*		if (_view._pen !is null) {
 			// unattach current pen
 			_view._pen._view = null;
 		}
 		_view._pen = pen;
 
 		// set the Pen's view
-		pen._view = _view;
+		pen._view = _view;*/
 	}
 
 // View Interfacing

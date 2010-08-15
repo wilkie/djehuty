@@ -44,8 +44,39 @@ private:
 
 	bool _needsRedraw;
 	bool _dirty;
-	
+
 	int _count;
+
+	void _remove() {
+		if (this._prev is this) {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = null;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = null;
+			}
+			else {
+				parent._head = null;
+			}
+		}
+		else {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = parent._topMostHead._next;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = parent._bottomMostHead._next;
+			}
+			else if (this is parent._head) {
+				parent._head = parent._head._next;
+			}
+
+			this._prev._next = this._next;
+			this._next._prev = this._prev;
+		}
+
+		this._prev = null;
+		this._next = null;
+	}
 
 	// Event dispatchers
 
@@ -572,37 +603,6 @@ public:
 		}
 
 		return ret;
-	}
-
-	private void _remove() {
-		if (this._prev is this) {
-			if (this is parent._topMostHead) {
-				parent._topMostHead = null;
-			}
-			else if (this is parent._bottomMostHead) {
-				parent._bottomMostHead = null;
-			}
-			else {
-				parent._head = null;
-			}
-		}
-		else {
-			if (this is parent._topMostHead) {
-				parent._topMostHead = parent._topMostHead._next;
-			}
-			else if (this is parent._bottomMostHead) {
-				parent._bottomMostHead = parent._bottomMostHead._next;
-			}
-			else if (this is parent._head) {
-				parent._head = parent._head._next;
-			}
-
-			this._prev._next = this._next;
-			this._next._prev = this._prev;
-		}
-
-		this._prev = null;
-		this._next = null;
 	}
 
 	void reorder(WindowOrder order) {
