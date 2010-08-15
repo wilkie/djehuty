@@ -53,22 +53,6 @@ private:
 		_lock.up();
 
 		_canvas = new Canvas(cast(int)_window.width, cast(int)_window.height);
-/*
-		Color clr = Color.Blue;
-		clr.alpha = 0.5;
-
-		_canvas.brush = new Brush(clr);
-
-		clr = Color.Red;
-		clr.alpha = 0.3;
-
-		_canvas.pen = new Pen(clr);
-		_canvas.fillRectangle(0,0,50,_window.height);
-		_canvas.fillRectangle(50,0,_window.width-100,50);
-		_canvas.fillRectangle(_window.width-50,0,50,_window.height);
-		_canvas.fillRectangle(50,_window.height-50,_window.width-100,50);
-		_canvas.strokeRectangle(0,0,_window.width,_window.height);
-		_canvas.strokeRectangle(50,50,_window.width-100,_window.height-100); */
 
 		_window.redraw();
 

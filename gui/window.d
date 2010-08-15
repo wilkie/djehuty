@@ -292,6 +292,9 @@ public:
 		if (!this.visible) {
 			return;
 		}
+		if (this.parent is null) {
+			return;
+		}
 
 		if (this.parent.parent !is null) {
 			this.parent.redraw();
