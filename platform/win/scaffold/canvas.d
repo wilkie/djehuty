@@ -31,16 +31,17 @@ import core.main;
 import core.definitions;
 
 import data.queue;
+import data.stack;
 
 import io.console;
 
 // views
 void CanvasCreate(Canvas view, CanvasPlatformVars*viewVars) {
-	viewVars.clipRegions = new _clipList();
+	viewVars.clipRegions = new Stack!(Gdiplus.GpRegion*)();
 
 	viewVars.length = (view.width() * view.height()) * 4;
 
-	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 
+	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(),
 		0, Gdiplus.PixelFormat32bppARGB, null,
 		&viewVars.image);
 

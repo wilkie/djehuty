@@ -536,12 +536,12 @@ public:
 
 	// Description: Will push the clip region to a stack preserving its state.
 	void clipSave() {
-		Scaffold.clipSave(_viewVars);
+//		Scaffold.clipSave(_viewVars);
 	}
 
 	// Description: If possible, will restore the clip state most recently saved via clipSave().
 	void clipRestore() {
-		Scaffold.clipRestore(_viewVars);
+//		Scaffold.clipRestore(_viewVars);
 	}
 
 	// Description: Unions the current clip region with a rectangle region defined by the top-left point: (x,y) and some size.
@@ -550,12 +550,12 @@ public:
 	// width: The width of the rectangular region to clip.
 	// height: The height of the rectangular region to clip.
 	void clipRect(int x, int y, int width, int height) {
-		Scaffold.clipRect(_viewVars, x,y,width,height);
+//		Scaffold.clipRect(_viewVars, x,y,width,height);
 	}
 
 	// Description: Unions the current clip region with the region given.
 	// rgn: The region to clip.
 	void clipRegion(Region rgn) {
-		Scaffold.clipRegion(_viewVars, rgn);
+//		Scaffold.clipRegion(_viewVars, rgn);
 	}
 }

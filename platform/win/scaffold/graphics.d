@@ -514,35 +514,30 @@ void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rg
 	DeleteObject(brsh);
 }
 
-void clipSave(ViewPlatformVars* viewVars) {
-	if (viewVars.clipRegions.length == 0) {
-		viewVars.clipRegions.addItem(null);
-	}
-	else {
-		HRGN rgn = CreateRectRgn(0,0,0,0);
+void clipSave(CanvasPlatformVars* viewVars) {
+	Gdiplus.GpRegion* region;
+	Gdiplus.GdipCreateRegion(&region);
+	Gdiplus.GdipGetClip(viewVars.g, region);
+	viewVars.clipRegions.push(region);
+}
 
-		GetClipRgn(viewVars.dc, rgn);
+void clipRestore(CanvasPlatformVars* viewVars) {
+	Gdiplus.GpRegion* region;
 
-		viewVars.clipRegions.addItem(rgn);
+	if (!viewVars.clipRegions.empty) {
+		region = viewVars.clipRegions.pop();
+		Gdiplus.GdipSetClipRegion(viewVars.g, region, Gdiplus.CombineMode.CombineModeReplace);
+		Gdiplus.GdipDeleteRegion(region);
 	}
 }
 
-void clipRestore(ViewPlatformVars* viewVars) {
-	HRGN rgn;
-
-	if (viewVars.clipRegions.remove(rgn)) {
-		SelectClipRgn(viewVars.dc, rgn);
-
-		DeleteObject(rgn);
-	}
+void clipClear(CanvasPlatformVars* viewVars) {
+	Gdiplus.GdipResetClip(viewVars.g);
 }
 
-void clipRect(ViewPlatformVars* viewVars, int x, int y, int width, int height) {
-	HRGN rgn = CreateRectRgn(x,y,width,height);
-
-	ExtSelectClipRgn(viewVars.dc, rgn, RGN_AND);
-
-	DeleteObject(rgn);
+void clipRect(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
+	Gdiplus.GdipSetClipRect(viewVars.g,
+		x, y, width, height, Gdiplus.CombineMode.CombineModeIntersect);
 }
 
 void clipRegion(ViewPlatformVars* viewVars, Region region) {
