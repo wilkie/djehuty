@@ -267,6 +267,7 @@ struct Event {
 		MouseMove,
 		MouseWheelX,
 		MouseWheelY,
+		MouseLeave,
 		Size,
 		Close,
 	}

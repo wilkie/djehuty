@@ -44,7 +44,6 @@ struct WindowPlatformVars {
 
 	bool supress_WM_SIZE;
 	bool supress_WM_MOVE;
-}
 
-struct WindowCanvasPlatformVars {
+	Window window;
 }

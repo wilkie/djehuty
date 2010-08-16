@@ -28,6 +28,19 @@ public:
 	}
 
 	override void onPrimaryDown(Mouse mouse) {
+		printf("down\n");
+	}
+
+	override void onPrimaryUp(Mouse mouse) {
+		printf("up\n");
+	}
+
+	override void onHover(Mouse mouse) {
+		printf("hover\n");
+	}
+
+	override void onDrag(Mouse mouse) {
+		printf("drag\n");
 	}
 
 	override void onDraw(Canvas canvas) {

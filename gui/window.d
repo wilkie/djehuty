@@ -28,6 +28,9 @@ import binding.c;
 class Window : Responder {
 private:
 
+	// Mouse event management
+	Mouse _mouse;
+
 	// Properties
 	Rect _bounds;
 	Color _bg;
@@ -121,7 +124,7 @@ private:
 		GuiDestroyWindow(this, &_pfvars);
 	}
 
-	final void _dispatchMouseDown(uint button, Mouse mouse) {
+	final void _dispatchMouseDown(uint button, ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
 			if (window.left <= mouse.x
@@ -165,7 +168,7 @@ private:
 		}
 	}
 
-	final void _dispatchMouseUp(uint button, Mouse mouse) {
+	final void _dispatchMouseUp(uint button, ref Mouse mouse) {
 		// Look at passing this message down
 		if (_dragWindow !is null) {
 
@@ -213,6 +216,53 @@ private:
 			default:
 				break;
 		}
+	}
+
+
+	final void _dispatchDrag(ref Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+			double xdiff = _dragWindow.left;
+			double ydiff = _dragWindow.top;
+
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow._dispatchDrag(mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+			return;
+		}
+
+		// End up handling it in the main window
+		onDrag(mouse);
+	}
+
+	final void _dispatchHover(ref Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
+
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchHover(mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		onHover(mouse);
 	}
 
 public:
@@ -353,7 +403,7 @@ public:
 	int visibleCount() {
 		return _numVisible;
 	}
-	
+
 	int count() {
 		return _count;
 	}
@@ -506,11 +556,28 @@ public:
 				break;
 
 			case Event.MouseDown:
+				_mouse.x = event.info.mouse.x;
+				_mouse.y = event.info.mouse.y;
+				_mouse.clicks[event.aux] = 1;
 				this._dispatchMouseDown(event.aux, event.info.mouse);
 				break;
 
 			case Event.MouseUp:
+				_mouse.x = event.info.mouse.x;
+				_mouse.y = event.info.mouse.y;
 				this._dispatchMouseUp(event.aux, event.info.mouse);
+				_mouse.clicks[event.aux] = 0;
+				break;
+
+			case Event.MouseMove:
+				_mouse.x = event.info.mouse.x;
+				_mouse.y = event.info.mouse.y;
+				if (_mouse.clicks[0] > 0 || _mouse.clicks[1] > 0 || _mouse.clicks[2] > 0) {
+					_dispatchDrag(_mouse);
+				}
+				else {
+					_dispatchHover(_mouse);
+				}
 				break;
 
 			default:
@@ -528,6 +595,12 @@ public:
 	}
 
 	void onPrimaryUp(Mouse mouse) {
+	}
+
+	void onDrag(Mouse mouse) {
+	}
+
+	void onHover(Mouse mouse) {
 	}
 
 	void onDraw(Canvas canvas) {

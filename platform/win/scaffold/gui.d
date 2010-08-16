@@ -42,13 +42,15 @@ void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
 
 	wstring className = Unicode.toUtf16(Djehuty.application.name ~ "\0");
 
+	windowVars.doubleClickTimerSet = -1;
+	windowVars.window = window;
 	windowVars.hWnd = CreateWindowExW(
 		WS_EX_LAYERED, // | WS_EX_TOOLWINDOW,
 		className.ptr, "\0"w.ptr,
 		style,
 		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
 		null, null, null, userData);
-		
+
 //	printf("window: %p\n", windowVars.hWnd);
 }
 
@@ -180,13 +182,21 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case WM_LBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+			windowVars.event.type = Event.MouseDown;
+			if (uMsg == WM_LBUTTONDOWN) {
+				windowVars.event.aux = 0;
+			}
+			else if (uMsg == WM_RBUTTONDOWN) {
+				windowVars.event.aux = 1;
+			}
+			else {
+				windowVars.event.aux = 2;
+			}
+
 			SetFocus(hWnd);
 			SetCapture(hWnd);
-
-			windowVars.event.type = Event.MouseDown;
-			windowVars.event.aux = 0;
-
-			windowVars.event.info.mouse.clicks[0] = 1;
 
 			int x, y;
 			x = lParam & 0xffff;
@@ -199,19 +209,87 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			return 1;
 
 		case WM_LBUTTONUP:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONUP:
 			windowVars.event.type = Event.MouseUp;
-			windowVars.event.aux = 0;
+			if (uMsg == WM_LBUTTONUP) {
+				windowVars.event.aux = 0;
+			}
+			else if (uMsg == WM_RBUTTONUP) {
+				windowVars.event.aux = 1;
+			}
+			else {
+				windowVars.event.aux = 2;
+			}
 
 			ReleaseCapture();
-
-			//check for double click first
-//			_TestNumberOfClicksUp(w,windowVars,1);
 
 			int x, y;
 			x = lParam & 0xffff;
 			windowVars.event.info.mouse.x = x;
 			y = (lParam >> 16) & 0xffff;
 			windowVars.event.info.mouse.y = y;
+
+			windowVars.haveEvent = true;
+			break;
+
+		case WM_MOUSEMOVE:
+			windowVars.event.type = Event.MouseMove;
+			int x, y;
+			x = lParam & 0xffff;
+			windowVars.event.info.mouse.x = x;
+			y = (lParam >> 16) & 0xffff;
+			windowVars.event.info.mouse.y = y;
+
+			if (windowVars.hoverTimerSet == 0) {
+				SetTimer(hWnd, 0, 55, null);
+				windowVars.hoverTimerSet = 1;
+			}
+
+			windowVars.haveEvent = true;
+			break;
+
+		case WM_TIMER:
+			if (wParam == 0) {
+				//Internal Timer (mouse hover)
+				POINT pt;
+				GetCursorPos(&pt);
+
+				if (WindowFromPoint(pt) != hWnd) {
+					KillTimer(hWnd, 0);
+					windowVars.hoverTimerSet = 0;
+
+					SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
+				}
+				else {
+					POINT pnt[2];
+
+					pnt[0].x = 0;
+					pnt[0].y = 0;
+					pnt[1].x = cast(int)windowVars.window.width-1;
+					pnt[1].y = cast(int)windowVars.window.height-1;
+
+					ClientToScreen(hWnd, &pnt[0]);
+					ClientToScreen(hWnd, &pnt[1]);
+
+					if (pt.x < pnt[0].x || pt.y < pnt[0].y || pt.x > pnt[1].x || pt.y > pnt[1].y) {
+						KillTimer(hWnd,0);
+
+						windowVars.hoverTimerSet = 0;
+
+						// To make sure it is enqueued and thus retrieved 
+						// upon GetMessage...
+						SendMessageW(hWnd, WM_MOUSELEAVE, 0, 0);
+					}
+				}
+			}
+
+			break;
+
+		// Custom event that is triggered when the cursor leaves the window
+		case WM_MOUSELEAVE:
+			windowVars.event.type = Event.MouseLeave;
+			windowVars.haveEvent = true;
 			break;
 
 		default:
