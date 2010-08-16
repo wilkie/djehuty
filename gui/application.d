@@ -34,120 +34,6 @@ import GraphicsScaffold = scaffold.graphics;
 
 import binding.c;
 
-// We want to have the window class manage the windows
-// and not the Application, so we subclass a Window
-// class here to be the 'root' Window.
-/*
-private class WindowPlatformContainer {
-private:
-	WindowPlatformVars _pfvars;
-	Thread _eventThread;
-	Window _window;
-	Semaphore _lock;
-	Canvas _canvas;
-
-	void eventLoop(bool ps) {
-		Event evt;
-
-		GuiCreateWindow(_window, &_pfvars);
-
-		_lock.up();
-
-		_canvas = new Canvas(cast(int)_window.width, cast(int)_window.height);
-
-		_window.redraw();
-
-		while(true) {
-			GuiNextEvent(_window, &_pfvars, &evt);
-
-			if(evt.type == Event.Close) {
-				_window.parent.detach(_window);
-				break;
-			}
-		}
-
-		GuiDestroyWindow(_window, &_pfvars);
-	}
-
-public:
-
-	this(Window window) {
-		_window = window;
-		_lock = new Semaphore(1);
-		_eventThread = new Thread(&eventLoop);
-	}
-
-	void run() {
-		_lock.down();
-		_eventThread.start();
-		_lock.down();
-	}
-
-	void update(Canvas canvas) {
-		GuiUpdateWindow(_window, &_pfvars, canvas.platformVariables);
-	}
-}
-
-
-private class RootWindow : Window {
-private:
-	int _numVisible = 0;
-
-public:
-	this() {
-		super(0,0,0,0);
-	}
-
-	override void attach(Dispatcher dsp, SignalHandler handler = null) {
-		auto window = cast(Window)dsp;
-		auto dialog = cast(Dialog)dsp;
-
-		Responder.attach(dsp, handler);
-
-		if (window !is null) {
-			// Need to create a platform window
-			if (window.visible) {
-				_numVisible++;
-			}
-		}
-	}
-
-	override void detach(Dispatcher dsp) {
-		auto window = cast(Window)dsp;
-		if (window !is null) {
-			if (window.parent is this) {
-				// Need to destroy a platform window
-				if (window.visible) {
-					_numVisible--;
-				}
-				auto vars = _vars[window];
-			}
-		}
-
-		super.detach(dsp);
-	}
-
-	override bool onSignal(Dispatcher dsp, uint signal) {
-		auto window = cast(Window)dsp;
-		if (window !is null) {
-			if (signal == Window.Signal.NeedRedraw) {
-				Canvas canvas = new Canvas(cast(int)window.width, cast(int)window.height);
-
-				window.onDraw(canvas);
-				window.onDrawChildren(canvas);
-
-				_vars[window].update(canvas);
-			}
-		}
-		return true;
-	}
-
-	int numberVisible() {
-		return _numVisible;
-	}
-}
-*/
-
 class GuiApplication : Application {
 private:
 	GuiPlatformVars _pfvars;
@@ -202,6 +88,9 @@ public:
 
 	override void run() {
 		super.run();
-		while(this.isZombie is false) {}
+
+		// Block this function until all top level windows close (or become
+		// invisible)
+		while(this.isZombie is false) { Thread.yield(); }
 	}
 }
