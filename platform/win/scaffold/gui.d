@@ -97,15 +97,14 @@ void GuiNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
 	MSG msg;
 	BOOL ret = TRUE;
 	while (ret != 0) {
+		windowVars.event = evt;
+		windowVars.haveEvent = false;
 		ret = GetMessage(&msg, null, 0, 0);
 		if (ret != -1) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		if (msg.message == WM_DESTROY
-		 || msg.message == WM_CLOSE
-		 || (msg.message == WM_SYSCOMMAND && msg.wParam == SC_CLOSE)) {
-			evt.type = Event.Close;
+		if (windowVars.haveEvent) {
 			return;
 		}
 	}
@@ -150,14 +149,10 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_CREATE:
 			auto w = cast(WindowPlatformVars*)cs.lpCreateParams;
 
-			//SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&WindowProc);
+			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&MessageProc);
 			SetWindowLongW(hWnd, GWLP_USERDATA, cast(LONG)cs.lpCreateParams);
 
 			break;
-
-		case WM_ERASEBKGND:
-		case WM_UNICHAR:
-			return 1;
 
 		default:
 			return DefWindowProcW(hWnd, uMsg, wParam, lParam);
@@ -166,4 +161,62 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-//extern(Windows) int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam);
+extern(Windows)
+int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
+	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
+	WindowPlatformVars* windowVars = cast(WindowPlatformVars*)(wind_in);
+
+	switch(uMsg) {
+		case WM_ERASEBKGND:
+		case WM_UNICHAR:
+			return 1;
+
+		case WM_SYSCOMMAND:
+			if (wParam == SC_CLOSE) {
+				windowVars.event.type = Event.Close;
+				windowVars.haveEvent = true;
+				return 1;
+			}
+			break;
+
+		case WM_LBUTTONDOWN:
+			SetFocus(hWnd);
+			SetCapture(hWnd);
+
+			windowVars.event.type = Event.MouseDown;
+			windowVars.event.aux = 0;
+
+			windowVars.event.info.mouse.clicks[0] = 1;
+
+			int x, y;
+			x = lParam & 0xffff;
+			y = (lParam >> 16)& 0xffff;
+
+			windowVars.event.info.mouse.x = x;
+			windowVars.event.info.mouse.y = y;
+
+			windowVars.haveEvent = true;
+			return 1;
+
+		case WM_LBUTTONUP:
+			windowVars.event.type = Event.MouseUp;
+			windowVars.event.aux = 0;
+
+			ReleaseCapture();
+
+			//check for double click first
+//			_TestNumberOfClicksUp(w,windowVars,1);
+
+			int x, y;
+			x = lParam & 0xffff;
+			windowVars.event.info.mouse.x = x;
+			y = (lParam >> 16) & 0xffff;
+			windowVars.event.info.mouse.y = y;
+			break;
+
+		default:
+			break;
+	}
+
+	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+}

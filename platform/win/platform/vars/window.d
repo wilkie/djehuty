@@ -33,6 +33,7 @@ struct WindowPlatformVars {
 	HDC hdc;
 
 	Event* event;
+	bool haveEvent;
 
 	int hoverTimerSet;
 

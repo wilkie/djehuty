@@ -15,11 +15,16 @@ import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
 
+import binding.c;
+
 class Button : Window {
 private:
 public:
 	this(double x, double y, double width, double height) {
 		super(x, y, width, height);
+	}
+
+	override void onPrimaryDown(Mouse mouse) {
 	}
 
 	override void onDraw(Canvas canvas) {

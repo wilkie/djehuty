@@ -121,6 +121,100 @@ private:
 		GuiDestroyWindow(this, &_pfvars);
 	}
 
+	final void _dispatchMouseDown(uint button, Mouse mouse) {
+		// Look at passing this message down
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
+
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				_dragWindow = window;
+
+				if (_focusedWindow !is window) {
+					if (_focusedWindow !is null) {
+						_focusedWindow.onLostFocus();
+					}
+					_focusedWindow = window;
+					_focusedWindow.onGotFocus();
+				}
+
+				window._dispatchMouseDown(button, mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		switch (button) {
+			case 0:
+				onPrimaryDown(mouse);
+				break;
+			case 1:
+				break;
+			default:
+				break;
+		}
+	}
+
+	final void _dispatchMouseUp(uint button, Mouse mouse) {
+		// Look at passing this message down
+		if (_dragWindow !is null) {
+
+			double xdiff = _dragWindow.left;
+			double ydiff = _dragWindow.top;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
+
+			_dragWindow._dispatchMouseUp(button, mouse);
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
+
+			_dragWindow = null;
+			return;
+		}
+
+		foreach(window; this) {
+			if (window.left <= mouse.x
+					&& (window.left + window.width) > mouse.x
+					&& window.top <= mouse.y
+					&& (window.top + window.height) > mouse.y
+					&& (window.visible)) {
+
+				double xdiff = window.left;
+				double ydiff = window.top;
+				mouse.x -= xdiff;
+				mouse.y -= ydiff;
+
+				window._dispatchMouseUp(button, mouse);
+
+				mouse.x += xdiff;
+				mouse.y += ydiff;
+				return;
+			}
+		}
+
+		// End up handling it in the main window
+		switch (button) {
+			case 0:
+				onPrimaryUp(mouse);
+				break;
+			case 1:
+				break;
+			default:
+				break;
+		}
+	}
+
 public:
 
 	enum Signal {
@@ -409,11 +503,31 @@ public:
 		switch(event.type) {
 			case Event.Close:
 				this.parent.detach(this);
-
 				break;
+
+			case Event.MouseDown:
+				this._dispatchMouseDown(event.aux, event.info.mouse);
+				break;
+
+			case Event.MouseUp:
+				this._dispatchMouseUp(event.aux, event.info.mouse);
+				break;
+
 			default:
 				break;
 		}
+	}
+
+	void onGotFocus() {
+	}
+
+	void onLostFocus() {
+	}
+
+	void onPrimaryDown(Mouse mouse) {
+	}
+
+	void onPrimaryUp(Mouse mouse) {
 	}
 
 	void onDraw(Canvas canvas) {
