@@ -257,7 +257,6 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				windowVars.hoverTimerSet = 1;
 			}
 
-			printf("mousemove\n");
 			windowVars.haveEvent = true;
 			return 1;
 
@@ -295,7 +294,6 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 
 		// Custom event that is triggered when the cursor leaves the window
 		case WM_MOUSELEAVE:
-			printf("mouseleave\n");
 			windowVars.event.type = Event.MouseLeave;
 			windowVars.haveEvent = true;
 			return 1;
