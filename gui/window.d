@@ -111,8 +111,9 @@ private:
 		while(true) {
 			GuiNextEvent(this, &_pfvars, &evt);
 
-			if(evt.type == Event.Close) {
-				this.parent.detach(this);
+			this.onEvent(evt);
+
+			if (evt.type == Event.Close) {
 				break;
 			}
 		}
@@ -400,8 +401,18 @@ public:
 			_lock = new Semaphore(0);
 			Thread thread = new Thread(&eventLoop);
 			thread.start();
-			printf("window created\n");
 			_lock.down();
+		}
+	}
+
+	void onEvent(Event event) {
+		switch(event.type) {
+			case Event.Close:
+				this.parent.detach(this);
+
+				break;
+			default:
+				break;
 		}
 	}
 
