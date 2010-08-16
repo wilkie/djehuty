@@ -47,7 +47,7 @@ public:
 	// Description: This will return a Time object that represents the coordinated
 	//   universal time (UTC) assumed by the system.
 	// Returns: A Time class that represents the system's idea of the current universal time.
-	static Time Now() {
+	static Time now() {
 		return new Time(Scaffold.TimeGet());
 	}
 
@@ -56,7 +56,7 @@ public:
 	//   time of the current locale is returned.
 	// localTZ: The TimeZone to use to infer the localized time from the UTC.
 	// Returns: A Time class that represents the local time.
-	static Time Local(TimeZone localTZ = null) {
+	static Time local(TimeZone localTZ = null) {
 		Time ret = new Time(Scaffold.TimeGet());
 
 		// Get the local timezone if one was not specified.

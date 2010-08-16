@@ -334,15 +334,15 @@ public:
 		static Time last;
 		if (lastIndex == -1) {
 			lastIndex = 0;
-			last = Time.Now();
+			last = Time.now();
 		}
 		else if (bufferIndex == lastIndex) {
 			lastIndex = !bufferIndex;
 			samples = 0;
-			last = Time.Now();
+			last = Time.now();
 		}
 		else { // bufferIndex != lastIndex
-			Time cur = Time.Now();
+			Time cur = Time.now();
 			Time diff = cur - last;
 			last = cur;
 		}
