@@ -13,7 +13,17 @@ import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
 
-import scaffold.window;
+import scaffold.gui;
+import scaffold.canvas;
+
+import platform.vars.gui;
+import platform.vars.window;
+import platform.vars.canvas;
+
+import synch.semaphore;
+import synch.thread;
+
+import binding.c;
 
 class Window : Responder {
 private:
@@ -23,6 +33,8 @@ private:
 	Color _bg;
 	bool _visible;
 
+	Semaphore _lock;
+
 	// Window management
 	Window _focusedWindow;
 	Window _dragWindow;
@@ -30,6 +42,8 @@ private:
 	// Sibling list
 	Window _next;
 	Window _prev;
+
+	int _numVisible;
 
 	// Order management
 	bool _isTopMost;
@@ -45,6 +59,12 @@ private:
 	// Drawing optimization management
 	bool _needsRedraw;
 	bool _dirty;
+
+	WindowPlatformVars _pfvars;
+
+	void _update(Canvas canvas) {
+		GuiUpdateWindow(this, &_pfvars, canvas.platformVariables);
+	}
 
 	void _remove() {
 		if (this._prev is this) {
@@ -75,6 +95,29 @@ private:
 
 		this._prev = null;
 		this._next = null;
+	}
+
+	void eventLoop(bool ps) {
+		Event evt;
+
+		GuiCreateWindow(this, &_pfvars);
+
+		_lock.up();
+
+		auto canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+
+		this.redraw();
+
+		while(true) {
+			GuiNextEvent(this, &_pfvars, &evt);
+
+			if(evt.type == Event.Close) {
+				this.parent.detach(this);
+				break;
+			}
+		}
+
+		GuiDestroyWindow(this, &_pfvars);
 	}
 
 public:
@@ -129,6 +172,18 @@ public:
 	}
 
 	void visible(bool value) {
+		if (_visible != value) {
+			if (value == true) {
+				if (this.parent !is null) {
+					this.parent._numVisible++;
+				}
+			}
+			else {
+				if (this.parent !is null) {
+					this.parent._numVisible--;
+				}
+			}
+		}
 		_visible = value;
 		if (parent !is null) {
 			parent.redraw();
@@ -200,6 +255,14 @@ public:
 		return _focusedWindow;
 	}
 
+	int visibleCount() {
+		return _numVisible;
+	}
+	
+	int count() {
+		return _count;
+	}
+
 	// Methods
 
 	int opApply(int delegate(ref Window window) loopBody) {
@@ -261,6 +324,9 @@ public:
 				_focusedWindow = window;
 			}
 
+			if (window.visible) {
+				_numVisible++;
+			}
 			_count++;
 
 			redraw();
@@ -273,6 +339,9 @@ public:
 		if (window !is null && window.parent is this) {
 			// remove this window from the list
 			_count--;
+			if (window.visible) {
+				_numVisible--;
+			}
 
 			// Focus on this window (if it is visible)
 			if (_focusedWindow is window) {
@@ -300,7 +369,13 @@ public:
 			this.parent.redraw();
 		}
 		else {
-			raiseSignal(Signal.NeedRedraw);
+			// Need to update with a new canvas.
+			Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+
+			onDraw(canvas);
+			onDrawChildren(canvas);
+
+			_update(canvas);
 		}
 	}
 
@@ -308,6 +383,27 @@ public:
 	}
 
 	// Events
+
+	override void onAttach(Responder rsp) {
+		bool isTopLevel = false;
+		if (this.parent !is null && this.parent.parent is null) {
+			// Ok, the grandparent is not a Window class. It there
+			// is a grandparent (and not null as a responder) then
+			// we can assume it is the Application class.
+			if (this.parent.responder !is null) {
+				isTopLevel = true;
+			}
+		}
+
+		if (isTopLevel) {
+			// Top level window
+			_lock = new Semaphore(0);
+			Thread thread = new Thread(&eventLoop);
+			thread.start();
+			printf("window created\n");
+			_lock.down();
+		}
+	}
 
 	void onDraw(Canvas canvas) {
 		Color clr = Color.White;

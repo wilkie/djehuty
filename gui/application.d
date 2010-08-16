@@ -37,6 +37,7 @@ import binding.c;
 // We want to have the window class manage the windows
 // and not the Application, so we subclass a Window
 // class here to be the 'root' Window.
+/*
 private class WindowPlatformContainer {
 private:
 	WindowPlatformVars _pfvars;
@@ -87,9 +88,9 @@ public:
 	}
 }
 
+
 private class RootWindow : Window {
 private:
-	WindowPlatformContainer[Window] _vars;
 	int _numVisible = 0;
 
 public:
@@ -98,7 +99,6 @@ public:
 	}
 
 	override void attach(Dispatcher dsp, SignalHandler handler = null) {
-
 		auto window = cast(Window)dsp;
 		auto dialog = cast(Dialog)dsp;
 
@@ -109,9 +109,6 @@ public:
 			if (window.visible) {
 				_numVisible++;
 			}
-			auto vars = new WindowPlatformContainer(window);
-			_vars[window] = vars;
-			vars.run();
 		}
 	}
 
@@ -149,13 +146,14 @@ public:
 		return _numVisible;
 	}
 }
+*/
 
 class GuiApplication : Application {
 private:
 	GuiPlatformVars _pfvars;
 
 	// Window Management
-	RootWindow _mainWindow;
+	Window _mainWindow;
 
 	// Window counts
 	int _windowCount;
@@ -166,14 +164,14 @@ private:
 public:
 
 	this() {
-		_mainWindow = new RootWindow();
+		_mainWindow = new Window(0,0,0,0);
 		attach(_mainWindow);
 		super();
 		GuiStart(&_pfvars);
 	}
 
 	this(string appName) {
-		_mainWindow = new RootWindow();
+		_mainWindow = new Window(0,0,0,0);
 		attach(_mainWindow);
 		super(appName);
 		GuiStart(&_pfvars);
@@ -199,7 +197,7 @@ public:
 	}
 
 	override bool isZombie() {
-		return _mainWindow.numberVisible == 0;
+		return _mainWindow.visibleCount == 0;
 	}
 
 	override void run() {
