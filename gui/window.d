@@ -31,6 +31,13 @@ private:
 	// Mouse event management
 	Mouse _mouse;
 
+	// repeated clicking counter
+	Time _lastTime;
+	uint _lastButton = uint.max;
+	uint _lastCount;
+	double _lastX;
+	double _lastY;
+
 	// Properties
 	Rect _bounds;
 	Color _bg;
@@ -541,7 +548,43 @@ public:
 			case Event.MouseDown:
 				_mouse.x = event.info.mouse.x;
 				_mouse.y = event.info.mouse.y;
-				_mouse.clicks[event.aux] = 1;
+
+				// Double+ click check
+				Time curTime = Time.now();
+				if (_lastButton != event.aux) {
+					// Different button
+					_lastCount = 1;
+				}
+				else {
+					// Same button as last time,
+					// first, check to see if the mouse has not moved
+					// significantly.
+					if (_mouse.x > _lastX-1 && _mouse.x < _lastX+1
+					 && _mouse.y > _lastY-1 && _mouse.y < _lastY+1) {
+						// The mouse has not moved
+
+						// then, check how much time has elapsed
+						Time check = new Time(300000);
+						Time elapsed = curTime - _lastTime;
+						if (elapsed < check) {
+							_lastCount++;
+						}
+						else {
+							_lastCount = 1;
+						}
+					}
+					else {
+						_lastCount = 1;
+					}
+				}
+
+				_lastTime = curTime;
+				_lastX = _mouse.x;
+				_lastY = _mouse.y;
+				_lastButton = event.aux;
+
+				_mouse.clicks[event.aux] = _lastCount;
+
 				this._dispatchMouseDown(event.aux, _mouse);
 				break;
 
