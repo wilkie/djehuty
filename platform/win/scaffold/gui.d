@@ -42,16 +42,20 @@ void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
 
 	wstring className = Unicode.toUtf16(Djehuty.application.name ~ "\0");
 
-	windowVars.doubleClickTimerSet = -1;
+	// These variables are for detecting redundant mouse move messages
+	windowVars.lastX = -1;
+	windowVars.lastY = -1;
+
+	// Need a reference to the window for knowing its size for WM_MOUSELEAVE
 	windowVars.window = window;
+
+	// Create the window
 	windowVars.hWnd = CreateWindowExW(
 		WS_EX_LAYERED, // | WS_EX_TOOLWINDOW,
 		className.ptr, "\0"w.ptr,
 		style,
 		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
 		null, null, null, userData);
-
-//	printf("window: %p\n", windowVars.hWnd);
 }
 
 void GuiDestroyWindow(Window window, WindowPlatformVars* windowVars) {
@@ -231,7 +235,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.event.info.mouse.y = y;
 
 			windowVars.haveEvent = true;
-			break;
+			return 1;
 
 		case WM_MOUSEMOVE:
 			windowVars.event.type = Event.MouseMove;
@@ -241,13 +245,21 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			y = (lParam >> 16) & 0xffff;
 			windowVars.event.info.mouse.y = y;
 
+			if (x == windowVars.lastX && y == windowVars.lastY) {
+				// Redundant mouse move
+				return 1;
+			}
+			windowVars.lastX = x;
+			windowVars.lastY = y;
+
 			if (windowVars.hoverTimerSet == 0) {
 				SetTimer(hWnd, 0, 55, null);
 				windowVars.hoverTimerSet = 1;
 			}
 
+			printf("mousemove\n");
 			windowVars.haveEvent = true;
-			break;
+			return 1;
 
 		case WM_TIMER:
 			if (wParam == 0) {
@@ -255,13 +267,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				POINT pt;
 				GetCursorPos(&pt);
 
-				if (WindowFromPoint(pt) != hWnd) {
-					KillTimer(hWnd, 0);
-					windowVars.hoverTimerSet = 0;
-
-					SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
-				}
-				else {
+				if (WindowFromPoint(pt) == hWnd) {
 					POINT pnt[2];
 
 					pnt[0].x = 0;
@@ -272,37 +278,39 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 					ClientToScreen(hWnd, &pnt[0]);
 					ClientToScreen(hWnd, &pnt[1]);
 
-					if (pt.x < pnt[0].x || pt.y < pnt[0].y || pt.x > pnt[1].x || pt.y > pnt[1].y) {
-						KillTimer(hWnd,0);
-
-						windowVars.hoverTimerSet = 0;
-
-						// To make sure it is enqueued and thus retrieved
-						// upon GetMessage...
-						SendMessageW(hWnd, WM_MOUSELEAVE, 0, 0);
+					if (!(pt.x < pnt[0].x || pt.y < pnt[0].y || pt.x > pnt[1].x || pt.y > pnt[1].y)) {
+						// Within the window...
+						return 1;
 					}
 				}
-			}
 
-			break;
+				KillTimer(hWnd,0);
+				windowVars.hoverTimerSet = 0;
+
+				// To make sure it is enqueued and thus retrieved
+				// upon GetMessage...
+				SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
+			}
+			return 1;
 
 		// Custom event that is triggered when the cursor leaves the window
 		case WM_MOUSELEAVE:
+			printf("mouseleave\n");
 			windowVars.event.type = Event.MouseLeave;
 			windowVars.haveEvent = true;
-			break;
+			return 1;
 
 		case WM_KEYDOWN:
 			windowVars.event.type = Event.KeyDown;
 			windowVars.event.info.key.code = cast(uint)wParam;
 			windowVars.haveEvent = true;
-			break;
+			return 1;
 
 		case WM_KEYUP:
 			windowVars.event.type = Event.KeyUp;
 			windowVars.event.info.key.code = cast(uint)wParam;
 			windowVars.haveEvent = true;
-			break;
+			return 1;
 
 		default:
 			break;

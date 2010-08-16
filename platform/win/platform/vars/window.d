@@ -37,10 +37,8 @@ struct WindowPlatformVars {
 
 	int hoverTimerSet;
 
-	int doubleClickTimerSet;
-	int doubleClickAmount;
-	int doubleClickX;
-	int doubleClickY;
+	int lastX;
+	int lastY;
 
 	bool supress_WM_SIZE;
 	bool supress_WM_MOVE;
