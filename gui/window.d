@@ -255,6 +255,30 @@ private:
 		onHover(mouse);
 	}
 
+	final void _dispatchKeyDown(ref Key key) {
+		onKeyDown(key);
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow._dispatchKeyDown(key);
+		}
+	}
+
+	final void _dispatchKeyChar(dchar chr) {
+		onKeyChar(chr);
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow._dispatchKeyChar(chr);
+		}
+	}
+
+	final void _dispatchKeyUp(ref Key key) {
+		onKeyUp(key);
+		// Pass this down to the focused window
+		if (_focusedWindow !is null) {
+			_focusedWindow._dispatchKeyUp(key);
+		}
+	}
+
 public:
 
 	enum Signal {
@@ -606,6 +630,14 @@ public:
 				}
 				break;
 
+			case Event.KeyDown:
+				this._dispatchKeyDown(event.info.key);
+				break;
+
+			case Event.KeyUp:
+				this._dispatchKeyUp(event.info.key);
+				break;
+
 			default:
 				break;
 		}
@@ -627,6 +659,15 @@ public:
 	}
 
 	void onHover(Mouse mouse) {
+	}
+
+	void onKeyDown(Key key) {
+	}
+
+	void onKeyChar(dchar chr) {
+	}
+
+	void onKeyUp(Key key) {
 	}
 
 	void onDraw(Canvas canvas) {

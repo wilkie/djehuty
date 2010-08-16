@@ -277,7 +277,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 
 						windowVars.hoverTimerSet = 0;
 
-						// To make sure it is enqueued and thus retrieved 
+						// To make sure it is enqueued and thus retrieved
 						// upon GetMessage...
 						SendMessageW(hWnd, WM_MOUSELEAVE, 0, 0);
 					}
@@ -289,6 +289,18 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		// Custom event that is triggered when the cursor leaves the window
 		case WM_MOUSELEAVE:
 			windowVars.event.type = Event.MouseLeave;
+			windowVars.haveEvent = true;
+			break;
+
+		case WM_KEYDOWN:
+			windowVars.event.type = Event.KeyDown;
+			windowVars.event.info.key.code = cast(uint)wParam;
+			windowVars.haveEvent = true;
+			break;
+
+		case WM_KEYUP:
+			windowVars.event.type = Event.KeyUp;
+			windowVars.event.info.key.code = cast(uint)wParam;
 			windowVars.haveEvent = true;
 			break;
 

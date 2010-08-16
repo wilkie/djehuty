@@ -27,6 +27,18 @@ public:
 		super(x, y, width, height);
 	}
 
+	override void onKeyDown(Key key) {
+		printf("key down %d\n", key.code);
+	}
+
+	override void onKeyChar(dchar chr) {
+		printf("char: %c\n", cast(char)chr);
+	}
+
+	override void onKeyUp(Key key) {
+		printf("key up %d\n", key.code);
+	}
+
 	override void onMouseDown(Mouse mouse, uint button) {
 		printf("down %d clicks: %d\n", button, mouse.clicks[button]);
 	}
