@@ -19,8 +19,11 @@ import binding.c;
 
 class Button : Window {
 private:
+	string _value;
+
 public:
-	this(double x, double y, double width, double height) {
+	this(double x, double y, double width, double height, string text = "") {
+		_value = text.dup;
 		super(x, y, width, height);
 	}
 
@@ -50,5 +53,16 @@ public:
 		canvas.fillRectangle(this.width-2, 0, 2, this.height-2);
 
 		canvas.strokeRectangle(0, 0, this.width, this.height);
+	}
+
+	// Properties
+
+	string text() {
+		return _value.dup;
+	}
+
+	void text(string value) {
+		_value = value.dup;
+		redraw();
 	}
 }
