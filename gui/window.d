@@ -542,13 +542,13 @@ public:
 				_mouse.x = event.info.mouse.x;
 				_mouse.y = event.info.mouse.y;
 				_mouse.clicks[event.aux] = 1;
-				this._dispatchMouseDown(event.aux, event.info.mouse);
+				this._dispatchMouseDown(event.aux, _mouse);
 				break;
 
 			case Event.MouseUp:
 				_mouse.x = event.info.mouse.x;
 				_mouse.y = event.info.mouse.y;
-				this._dispatchMouseUp(event.aux, event.info.mouse);
+				this._dispatchMouseUp(event.aux, _mouse);
 				_mouse.clicks[event.aux] = 0;
 				break;
 

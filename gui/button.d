@@ -28,7 +28,7 @@ public:
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {
-		printf("down %d\n", button);
+		printf("down %d clicks: %d\n", button, mouse.clicks[button]);
 	}
 
 	override void onMouseUp(Mouse mouse, uint button) {
