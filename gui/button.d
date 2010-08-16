@@ -27,12 +27,12 @@ public:
 		super(x, y, width, height);
 	}
 
-	override void onPrimaryDown(Mouse mouse) {
-		printf("down\n");
+	override void onMouseDown(Mouse mouse, uint button) {
+		printf("down %d\n", button);
 	}
 
-	override void onPrimaryUp(Mouse mouse) {
-		printf("up\n");
+	override void onMouseUp(Mouse mouse, uint button) {
+		printf("up %d\n", button);
 	}
 
 	override void onHover(Mouse mouse) {

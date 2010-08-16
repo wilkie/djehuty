@@ -157,15 +157,7 @@ private:
 		}
 
 		// End up handling it in the main window
-		switch (button) {
-			case 0:
-				onPrimaryDown(mouse);
-				break;
-			case 1:
-				break;
-			default:
-				break;
-		}
+		onMouseDown(mouse, button);
 	}
 
 	final void _dispatchMouseUp(uint button, ref Mouse mouse) {
@@ -206,16 +198,7 @@ private:
 			}
 		}
 
-		// End up handling it in the main window
-		switch (button) {
-			case 0:
-				onPrimaryUp(mouse);
-				break;
-			case 1:
-				break;
-			default:
-				break;
-		}
+		onMouseUp(mouse, button);
 	}
 
 
@@ -591,10 +574,10 @@ public:
 	void onLostFocus() {
 	}
 
-	void onPrimaryDown(Mouse mouse) {
+	void onMouseDown(Mouse mouse, uint button) {
 	}
 
-	void onPrimaryUp(Mouse mouse) {
+	void onMouseUp(Mouse mouse, uint button) {
 	}
 
 	void onDrag(Mouse mouse) {
