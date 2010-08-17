@@ -5,11 +5,104 @@ import system.keyboardtranslator.keyboardtranslator;
 import core.definitions;
 
 class QwertyUSTranslator : KeyboardTranslator {
+
+
 	override Key translate(Key key) {
-		key.code = key.scan;
+		// This array will translate the scan code to the base key
+		static int _translateScancode[] = [
+			Key.Pause,
+			Key.Escape,
+			Key.One,
+			Key.Two,
+			Key.Three,
+			Key.Four,
+			Key.Five,
+			Key.Six,
+			Key.Seven,
+			Key.Eight,
+			Key.Nine,
+			Key.Zero,
+			Key.Minus,
+			Key.Equals,
+			Key.Backspace,
+			Key.Tab,
+			Key.Q,
+			Key.W,
+			Key.E,
+			Key.R,
+			Key.T,
+			Key.Y,
+			Key.U,
+			Key.I,
+			Key.O,
+			Key.P,
+			Key.LeftBracket,
+			Key.RightBracket,
+			Key.Return,
+			Key.LeftControl,
+			Key.A,
+			Key.S,
+			Key.D,
+			Key.F,
+			Key.G,
+			Key.H,
+			Key.J,
+			Key.K,
+			Key.L,
+			Key.Semicolon,
+			Key.Quote,
+			Key.SingleQuote,
+			Key.LeftShift,
+			Key.Backslash,
+			Key.Z,
+			Key.X,
+			Key.C,
+			Key.V,
+			Key.B,
+			Key.N,
+			Key.M,
+			Key.Comma,
+			Key.Period,
+			Key.Foreslash,
+			Key.RightShift,
+			Key.PrintScreen,
+			Key.LeftAlt,
+			Key.Space,
+			Key.CapsLock,
+			Key.F1,
+			Key.F2,
+			Key.F3,
+			Key.F4,
+			Key.F5,
+			Key.F6,
+			Key.F7,
+			Key.F8,
+			Key.F9,
+			Key.F10,
+			Key.NumLock,
+			Key.ScrollLock,
+			Key.Home,
+			Key.Up,
+			Key.PageUp,
+			Key.Invalid,
+			Key.Left,
+			Key.Invalid,
+			Key.Right,
+			Key.Invalid,
+			Key.End,
+			Key.Down,
+			Key.PageDown,
+			Key.Insert,
+			Key.Delete,
+			Key.SysRq,
+			87: Key.F11,
+			88: Key.F12
+		];
+
+		key.code = _translateScancode[key.scan];
 		key.printable = '\0';
 		if (key.shift) {
-			switch(key.scan) {
+			switch(key.code) {
 				case Key.SingleQuote:
 					key.code = Key.Tilde;
 					key.printable = '~';
@@ -97,7 +190,7 @@ class QwertyUSTranslator : KeyboardTranslator {
 				case Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H,
 				  Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q,
 				  Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z:
-					key.printable = 'A' + (key.scan - Key.A);
+					key.printable = 'A' + (key.code - Key.A);
 					break;
 				default:
 					break;
@@ -108,7 +201,7 @@ class QwertyUSTranslator : KeyboardTranslator {
 			key.printable = '\0';
 		}
 		else if (!key.shift) {
-			switch(key.scan) {
+			switch(key.code) {
 				case Key.SingleQuote:
 					key.printable = '`';
 					break;
@@ -175,7 +268,7 @@ class QwertyUSTranslator : KeyboardTranslator {
 				case Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H,
 				  Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q,
 				  Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z:
-					key.printable = 'a' + (key.scan - Key.A);
+					key.printable = 'a' + (key.code - Key.A);
 					break;
 				default:
 					break;
