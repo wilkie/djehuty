@@ -284,6 +284,24 @@ struct Key {
 		X,
 		Y,
 		Z,
+
+		KeypadZero,
+		KeypadOne,
+		KeypadTwo,
+		KeypadThree,
+		KeypadFour,
+		KeypadFive,
+		KeypadSix,
+		KeypadSeven,
+		KeypadEight,
+		KeypadNine,
+
+		KeypadPlus,
+		KeypadMinus,
+		KeypadAsterisk,
+		KeypadForeslash,
+		KeypadReturn,
+		KeypadPeriod,
 	}
 }
 

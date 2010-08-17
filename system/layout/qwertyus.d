@@ -119,28 +119,28 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.Backspace,
 		Key.Invalid,
 		Key.Invalid,
-		Key.One, // KP
+		Key.KeypadOne,
 		Key.Invalid,
 		Key.Left,
-		Key.Seven, // KP
+		Key.KeypadSeven,
 		Key.Invalid,
 		Key.Invalid,
 		Key.Invalid,
 		// 0x70
-		Key.Zero, // KP
-		Key.Period, // KP
-		Key.Two, // KP
-		Key.Five, // KP
-		Key.Six, // KP
-		Key.Eight, // KP
+		Key.KeypadZero,
+		Key.KeypadPeriod,
+		Key.KeypadTwo,
+		Key.KeypadFive,
+		Key.KeypadSix,
+		Key.KeypadEight,
 		Key.Escape,
 		Key.NumLock,
 		Key.F11,
-		Key.Plus, // KP
-		Key.Three, // KP
-		Key.Minus, // KP
-		Key.Asterisk, // KP
-		Key.Nine, // KP
+		Key.KeypadPlus,
+		Key.KeypadThree,
+		Key.KeypadMinus,
+		Key.KeypadAsterisk,
+		Key.KeypadNine,
 		Key.ScrollLock,
 		Key.Invalid,
 		// 0x80
@@ -168,7 +168,8 @@ class QwertyUSTranslator : KeyboardTranslator {
 		0x6b: Key.Left,
 		0x72: Key.Down,
 		0x74: Key.Right,
-		0x4a: Key.Foreslash, // KP
+		0x4a: Key.KeypadForeslash,
+		0x5a: Key.KeypadReturn
 	];
 
 	override Key translate(Key key) {
