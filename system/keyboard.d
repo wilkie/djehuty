@@ -22,7 +22,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.Dvorak;
+	KeyboardLayout _layout = KeyboardLayout.QwertyUS;
 	KeyboardTranslator _translator;
 
 public:
