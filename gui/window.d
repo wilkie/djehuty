@@ -30,8 +30,9 @@ import binding.c;
 class Window : Responder {
 private:
 
-	// Mouse event management
+	// Mouse and Keyboard event management
 	Mouse _mouse;
+	Key _key;
 
 	// repeated clicking counter
 	Time _lastTime;
@@ -633,17 +634,17 @@ public:
 				break;
 
 			case Event.KeyDown:
-				auto key = Keyboard.translate(event.info.key);
-				this._dispatchKeyDown(key);
+				event.info.key.deadCode = _key.deadCode;
+				_key = Keyboard.translate(event.info.key);
+				this._dispatchKeyDown(_key);
 
-				if (key.printable != '\0') {
-					this._dispatchKeyChar(key.printable);
+				if (_key.printable != '\0') {
+					this._dispatchKeyChar(_key.printable);
 				}
 				break;
 
 			case Event.KeyUp:
-				auto key = Keyboard.translate(event.info.key);
-				this._dispatchKeyUp(key);
+				this._dispatchKeyUp(event.info.key);
 				break;
 
 			default:

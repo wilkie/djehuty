@@ -424,7 +424,7 @@ private:
 				chr = '\\';
 			}
 		}
-		else if (key.code == Key.Quote) {
+		else if (key.code == Key.Apostrophe) {
 			if (key.shift) {
 				chr = '"';
 			}
