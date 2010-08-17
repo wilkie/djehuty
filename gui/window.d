@@ -634,7 +634,7 @@ public:
 				break;
 
 			case Event.KeyDown:
-				event.info.key.deadCode = _key.deadCode;
+				event.info.key.deadChar = _key.deadChar;
 				_key = Keyboard.translate(event.info.key);
 				this._dispatchKeyDown(_key);
 

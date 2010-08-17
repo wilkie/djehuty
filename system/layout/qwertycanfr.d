@@ -126,8 +126,9 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 		Key.Equals: '\u00be',
 		Key.Semicolon: '~',
 		Key.Apostrophe: '{',
-		Key.Comma: '_',
-		Key.Period: '-',
+		Key.M: '\u00b5', // Micro Sign
+		Key.Comma: '\u00af', // Macron
+		Key.Period: '\u00ad', // Soft Hyphen
 		Key.LeftBracket: '[',
 		Key.RightBracket: ']',
 		Key.Backslash: '}',
@@ -163,6 +164,15 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 		Key.Y: '\u00ff'
 	];
 
+	static dchar _translateAcuteToChar[] = [
+		Key.A: '\u00e1',
+		Key.E: '\u00e9',
+		Key.I: '\u00ed',
+		Key.O: '\u00f3',
+		Key.U: '\u00fa',
+		Key.Y: '\u00fd'
+	];
+
 	static dchar _translateShiftCircumflexToChar[] = [
 		Key.A: '\u00c2',
 		Key.E: '\u00ca',
@@ -177,7 +187,7 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 
 	static dchar _translateShiftGraveToChar[] = [
 		Key.A: '\u00c0',
-		Key.E: '\u00c9',
+		Key.E: '\u00c8',
 		Key.I: '\u00cc',
 		Key.O: '\u00d2',
 		Key.U: '\u00d9'
@@ -191,59 +201,81 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 		Key.U: '\u00dc'
 	];
 
+	static dchar _translateShiftAcuteToChar[] = [
+		Key.A: '\u00c1',
+		Key.E: '\u00c9',
+		Key.I: '\u00cd',
+		Key.O: '\u00d3',
+		Key.U: '\u00da',
+		Key.Y: '\u00dd'
+	];
+
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.ctrl) {
 			// Dead characters
-			if (key.code == Key.LeftBracket
-			 || key.code == Key.RightBracket
-			 || key.code == Key.Apostrophe) {
-				key.deadCode = key.code;
+			if (key.code == Key.LeftBracket) {
+				key.deadChar = '\u0302'; // circumflex
 			}
-			else if (key.deadCode != Key.Invalid) {
-				if (key.deadCode == Key.LeftBracket) {
-					key.printable = _translateCircumflexToChar[key.code];
-				}
-				else if (key.deadCode == Key.RightBracket) {
-					key.printable = _translateCedillaToChar[key.code];
-				}
-				else if (key.deadCode == Key.Apostrophe) {
-					key.printable = _translateGraveToChar[key.code];
-				}
-				else if (key.deadCode == Key.RightBracket + 20) {
-					key.printable = _translateDiaeresisToChar[key.code];
-				}
+			else if (key.code == Key.RightBracket) {
+				key.deadChar = '\u0327'; // cedilla
+			}
+			else if (key.code == Key.Apostrophe) {
+				key.deadChar = '\u0300'; // grave
+			}
+			else if (key.deadChar == '\u0302') {
+				key.printable = _translateCircumflexToChar[key.code];
+			}
+			else if (key.deadChar == '\u0327') {
+				key.printable = _translateCedillaToChar[key.code];
+			}
+			else if (key.deadChar == '\u0300') {
+				key.printable = _translateGraveToChar[key.code];
+			}
+			else if (key.deadChar == '\u0308') {
+				key.printable = _translateDiaeresisToChar[key.code];
+			}
+			else if (key.deadChar == '\u0301') {
+				key.printable = _translateAcuteToChar[key.code];
 			}
 			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
 			}
 		}
 		else if (key.shift && !key.alt && !key.ctrl) {
-			if (key.code == Key.LeftBracket
-			 || key.code == Key.RightBracket
-			 || key.code == Key.Apostrophe) {
-				key.deadCode = key.code + 20;
+			if (key.code == Key.LeftBracket) {
+				key.deadChar = '\u0302'; // circumflex
 			}
-			else if (key.deadCode != Key.Invalid) {
-				if (key.deadCode == Key.LeftBracket) {
-					key.printable = _translateShiftCircumflexToChar[key.code];
-				}
-				else if (key.deadCode == Key.RightBracket) {
-					key.printable = _translateShiftCedillaToChar[key.code];
-				}
-				else if (key.deadCode == Key.Apostrophe) {
-					key.printable = _translateShiftGraveToChar[key.code];
-				}
-				else if (key.deadCode == Key.RightBracket + 20) {
-					key.printable = _translateShiftDiaeresisToChar[key.code];
-				}
+			else if (key.code == Key.RightBracket) {
+				key.deadChar = '\u0308'; // diaeresis
+			}
+			else if (key.code == Key.Apostrophe) {
+				key.deadChar = '\u0300'; // grave
+			}
+			else if (key.deadChar == '\u0302') {
+				key.printable = _translateShiftCircumflexToChar[key.code];
+			}
+			else if (key.deadChar == '\u0327') {
+				key.printable = _translateShiftCedillaToChar[key.code];
+			}
+			else if (key.deadChar == '\u0300') {
+				key.printable = _translateShiftGraveToChar[key.code];
+			}
+			else if (key.deadChar == '\u0308') {
+				key.printable = _translateShiftDiaeresisToChar[key.code];
+			}
+			else if (key.deadChar == '\u0301') {
+				key.printable = _translateShiftAcuteToChar[key.code];
 			}
 			else if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
 			}
 		}
 		else if (!key.shift && key.rightAlt && !key.ctrl) {
-			if (key.code < _translateAltToChar.length) {
+			if (key.code == Key.Foreslash) {
+				key.deadChar = '\u0301'; // acute
+			}
+			else if (key.code < _translateAltToChar.length) {
 				key.printable = _translateAltToChar[key.code];
 			}
 		}
@@ -251,7 +283,7 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 			key.printable = '\0';
 		}
 		if (key.printable != '\0') {
-			key.deadCode = Key.Invalid;
+			key.deadChar = '\0';
 		}
 		return key;
 	}

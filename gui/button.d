@@ -28,7 +28,6 @@ public:
 	}
 
 	override void onKeyDown(Key key) {
-		putln("key down ", key.code);
 	}
 
 	override void onKeyChar(dchar chr) {
@@ -36,7 +35,6 @@ public:
 	}
 
 	override void onKeyUp(Key key) {
-		putln("key up ", key.code);
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {

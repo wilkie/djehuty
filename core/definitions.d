@@ -143,7 +143,7 @@ struct Key {
 
 	dchar printable;
 
-	uint deadCode;
+	dchar deadChar;
 
 	enum : uint {
 		Invalid,
