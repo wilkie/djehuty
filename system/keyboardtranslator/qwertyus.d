@@ -4,156 +4,188 @@ import system.keyboardtranslator.keyboardtranslator;
 
 import core.definitions;
 
+import binding.c;
+
 class QwertyUSTranslator : KeyboardTranslator {
+
+	// This array will translate the scan code to the base key
+	static int _translateScancode[] = [
+		// 0x00
+		Key.Invalid,
+		Key.F9,
+		Key.Invalid,
+		Key.F5,
+		Key.F3,
+		Key.F1,
+		Key.F2,
+		Key.F12,
+		Key.Invalid,
+		Key.F10,
+		Key.F8,
+		Key.F6,
+		Key.F4,
+		Key.Tab,
+		Key.SingleQuote,
+		Key.Invalid,
+		// 0x10
+		Key.Invalid,
+		Key.LeftAlt,
+		Key.LeftShift,
+		Key.Invalid,
+		Key.LeftControl,
+		Key.Q,
+		Key.One,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Z,
+		Key.S,
+		Key.A,
+		Key.W,
+		Key.Two,
+		Key.Invalid,
+		// 0x20
+		Key.Invalid,
+		Key.C,
+		Key.X,
+		Key.D,
+		Key.E,
+		Key.Four,
+		Key.Three,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Space,
+		Key.V,
+		Key.F,
+		Key.T,
+		Key.R,
+		Key.Five,
+		Key.Invalid,
+		// 0x30
+		Key.Invalid,
+		Key.N,
+		Key.B,
+		Key.H,
+		Key.G,
+		Key.Y,
+		Key.Six,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.M,
+		Key.J,
+		Key.U,
+		Key.Seven,
+		Key.Eight,
+		Key.Invalid,
+		// 0x40
+		Key.Invalid,
+		Key.Comma,
+		Key.K,
+		Key.I,
+		Key.O,
+		Key.Zero,
+		Key.Nine,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Period,
+		Key.Foreslash,
+		Key.L,
+		Key.Semicolon,
+		Key.P,
+		Key.Minus,
+		Key.Invalid,
+		// 0x50
+		Key.Invalid,
+		Key.Invalid,
+		Key.Quote,
+		Key.Invalid,
+		Key.LeftBracket,
+		Key.Equals,
+		Key.Invalid,
+		Key.Invalid,
+		Key.CapsLock,
+		Key.RightShift,
+		Key.Return,
+		Key.RightBracket,
+		Key.Invalid,
+		Key.Backslash,
+		Key.Invalid,
+		Key.Invalid,
+		// 0x60
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Backspace,
+		Key.Invalid,
+		Key.Invalid,
+		Key.One, // KP
+		Key.Invalid,
+		Key.Left,
+		Key.Seven, // KP
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		// 0x70
+		Key.Zero, // KP
+		Key.Period, // KP
+		Key.Two, // KP
+		Key.Five, // KP
+		Key.Six, // KP
+		Key.Eight, // KP
+		Key.Escape,
+		Key.NumLock,
+		Key.F11,
+		Key.Plus, // KP
+		Key.Three, // KP
+		Key.Minus, // KP
+		Key.Asterisk, // KP
+		Key.Nine, // KP
+		Key.ScrollLock,
+		Key.Invalid,
+		// 0x80
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.SysRq,
+	];
+
+	static int _translateScancodeEx[] = [
+		0x1f: Key.LeftGui,
+		0x14: Key.RightControl,
+		0x27: Key.RightGui,
+		0x11: Key.RightAlt,
+		0x2f: Key.Application,
+		0x7c: Key.PrintScreen,
+		0x70: Key.Insert,
+		0x6c: Key.Home,
+		0x7d: Key.PageUp,
+		0x71: Key.Delete,
+		0x69: Key.End,
+		0x7a: Key.PageDown,
+		0x75: Key.Up,
+		0x6b: Key.Left,
+		0x72: Key.Down,
+		0x74: Key.Right,
+		0x4a: Key.Foreslash, // KP
+	];
+
 	override Key translate(Key key) {
-		// This array will translate the scan code to the base key
-		static int _translateScancode[] = [
-			// 0x00
-			Key.Invalid,
-			Key.F9,
-			Key.Invalid,
-			Key.F5,
-			Key.F3,
-			Key.F1,
-			Key.F2,
-			Key.F12,
-			Key.Invalid,
-			Key.F10,
-			Key.F8,
-			Key.F6,
-			Key.F4,
-			Key.Tab,
-			Key.SingleQuote,
-			Key.Invalid,
-			// 0x10
-			Key.Invalid,
-			Key.LeftAlt,
-			Key.LeftShift,
-			Key.Invalid,
-			Key.LeftControl,
-			Key.Q,
-			Key.One,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Z,
-			Key.S,
-			Key.A,
-			Key.W,
-			Key.Two,
-			Key.Invalid,
-			// 0x20
-			Key.Invalid,
-			Key.C,
-			Key.X,
-			Key.D,
-			Key.E,
-			Key.Four,
-			Key.Three,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Space,
-			Key.V,
-			Key.F,
-			Key.T,
-			Key.R,
-			Key.Five,
-			Key.Invalid,
-			// 0x30
-			Key.Invalid,
-			Key.N,
-			Key.B,
-			Key.H,
-			Key.G,
-			Key.Y,
-			Key.Six,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.M,
-			Key.J,
-			Key.U,
-			Key.Seven,
-			Key.Eight,
-			Key.Invalid,
-			// 0x40
-			Key.Invalid,
-			Key.Comma,
-			Key.K,
-			Key.I,
-			Key.O,
-			Key.Zero,
-			Key.Nine,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Period,
-			Key.Foreslash,
-			Key.L,
-			Key.Semicolon,
-			Key.P,
-			Key.Minus,
-			Key.Invalid,
-			// 0x50
-			Key.Invalid,
-			Key.Invalid,
-			Key.Quote,
-			Key.Invalid,
-			Key.LeftBracket,
-			Key.Equals,
-			Key.Invalid,
-			Key.Invalid,
-			Key.CapsLock,
-			Key.RightShift,
-			Key.Return,
-			Key.RightBracket,
-			Key.Invalid,
-			Key.Backslash,
-			Key.Invalid,
-			Key.Invalid,
-			// 0x60
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			Key.Backspace,
-			Key.Invalid,
-			Key.Invalid,
-			Key.One, // KP
-			Key.Invalid,
-			Key.Left,
-			Key.Seven, // KP
-			Key.Invalid,
-			Key.Invalid,
-			Key.Invalid,
-			// 0x70
-			Key.Zero, // KP
-			Key.Period, // KP
-			Key.Two, // KP
-   			Key.Five, // KP
-   			Key.Six, // KP
-   			Key.Eight, // KP
-   			Key.Escape,
-   			Key.NumLock,
-   			Key.F11,
-   			Key.Plus, // KP
-   			Key.Three, // KP
-   			Key.Minus, // KP
-   			Key.Asterisk, // KP
-   			Key.Nine, // KP
-   			Key.ScrollLock,
-		];
 
-		static int _translateScancodeEx[] = [
-		];
-
-		if (key.scan < 0x80) {
+		if (key.scan == 0xe11477) {
+			key.code = Key.Pause;
+		}
+		else if (key.scan < _translateScancode.length) {
 			key.code = _translateScancode[key.scan];
 		}
 		else if (key.scan > 0xe000) {
 			key.code = _translateScancodeEx[key.scan & 0xff];
 		}
+
 		key.printable = '\0';
 		if (key.shift) {
 			switch(key.code) {

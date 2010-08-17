@@ -175,6 +175,11 @@ struct Key {
 		LeftAlt,
 		RightAlt,
 
+		LeftGui,
+		RightGui,
+
+		Application,
+
 		F1,
 		F2,
 		F3,

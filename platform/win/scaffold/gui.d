@@ -184,7 +184,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		// 0x40
 		0x0b, 0x83, 0x0a, 0x01, 0x09, 0x77, 0x7e, 0x6c, 0x75, 0x7d, 0x7b, 0x6b, 0x73, 0x74, 0x79, 0x69,
 		// 0x50
-		0x72, 0x7a, 0x70, 0x71, 0x00, 0x00, 0x00, 0x78, 0x07
+		0x72, 0x7a, 0x70, 0x71, 0x84, 0x00, 0x00, 0x78, 0x07
 	];
 
 	static int _set1ExToSet2[] = [
@@ -384,10 +384,11 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.event.info.key.scan = ((lParam >> 16) & 0xff);
 
 			windowVars.event.info.key.scan += ((lParam & (1 << 24)) * 0xe000);
-			printf("invalid key: %d\n", windowVars.event.info.key.scan);
+
+			printf("invalid key: %x\n", windowVars.event.info.key.scan);
 			if (windowVars.event.info.key.scan == 0x45) {
 				// PAUSE (Incorrect on windows)
-				windowVars.event.info.key.scan = 0xe11417;
+				windowVars.event.info.key.scan = 0xe11477;
 			}
 			else if (windowVars.event.info.key.scan == 0xe045) {
 				// NUMLOCK (Incorrect on windows)
@@ -403,6 +404,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 					windowVars.event.info.key.scan = _set1ToSet2[windowVars.event.info.key.scan];
 				}
 			}
+			printf("to: %x\n", windowVars.event.info.key.scan);
 
 			windowVars.event.info.key.ctrl = GetKeyState(VK_CONTROL) < 0;
 			windowVars.event.info.key.alt = GetKeyState(VK_MENU) < 0;
