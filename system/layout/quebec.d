@@ -1,19 +1,17 @@
 /*
- * qwertycanfr.d
+ * quebec.d
  *
  * This module implements the French Canadian qwerty keyboard layout.
  *
  */
 
-module system.layout.qwertycanfr;
+module system.layout.quebec;
 
-import system.layout.keyboardtranslator;
+import system.layout.keytranslator;
 
 import core.definitions;
 
-import io.console;
-
-class QwertyCanFrTranslator : KeyboardTranslator {
+class QuebecKeyboard : KeyTranslator {
 	static dchar _translateToChar[] = [
 		Key.SingleQuote: '#',
 		Key.One: '1',
@@ -225,19 +223,29 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 				key.deadChar = '\u0300'; // grave
 			}
 			else if (key.deadChar == '\u0302') {
-				key.printable = _translateCircumflexToChar[key.code];
+				if (key.code < _translateCircumflexToChar.length) {
+					key.printable = _translateCircumflexToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0327') {
-				key.printable = _translateCedillaToChar[key.code];
+				if (key.code < _translateCedillaToChar.length) {
+					key.printable = _translateCedillaToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0300') {
-				key.printable = _translateGraveToChar[key.code];
+				if (key.code < _translateGraveToChar.length) {
+					key.printable = _translateGraveToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0308') {
-				key.printable = _translateDiaeresisToChar[key.code];
+				if (key.code < _translateDiaeresisToChar.length) {
+					key.printable = _translateDiaeresisToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0301') {
-				key.printable = _translateAcuteToChar[key.code];
+				if (key.code < _translateAcuteToChar.length) {
+					key.printable = _translateAcuteToChar[key.code];
+				}
 			}
 			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
@@ -254,19 +262,29 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 				key.deadChar = '\u0300'; // grave
 			}
 			else if (key.deadChar == '\u0302') {
-				key.printable = _translateShiftCircumflexToChar[key.code];
+				if (key.code < _translateShiftCircumflexToChar.length) {
+					key.printable = _translateShiftCircumflexToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0327') {
-				key.printable = _translateShiftCedillaToChar[key.code];
+				if (key.code < _translateShiftCedillaToChar.length) {
+					key.printable = _translateShiftCedillaToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0300') {
-				key.printable = _translateShiftGraveToChar[key.code];
+				if (key.code < _translateShiftGraveToChar.length) {
+					key.printable = _translateShiftGraveToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0308') {
-				key.printable = _translateShiftDiaeresisToChar[key.code];
+				if (key.code < _translateShiftDiaeresisToChar.length) {
+					key.printable = _translateShiftDiaeresisToChar[key.code];
+				}
 			}
 			else if (key.deadChar == '\u0301') {
-				key.printable = _translateShiftAcuteToChar[key.code];
+				if (key.code < _translateShiftAcuteToChar.length) {
+					key.printable = _translateShiftAcuteToChar[key.code];
+				}
 			}
 			else if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];

@@ -1,18 +1,17 @@
 /*
- * qwertyus.d
+ * unitedstates.d
  *
  * This module implements the US qwerty keyboard layout.
  *
  */
 
-module system.layout.qwertyus;
+module system.layout.unitedstates;
 
-import system.layout.keyboardtranslator;
+import system.layout.keytranslator;
 
 import core.definitions;
 
-class QwertyUSTranslator : KeyboardTranslator {
-
+class UnitedStatesKeyboard : KeyTranslator {
 	static dchar _translateToChar[] = [
 		Key.SingleQuote: '`',
 		Key.One: '1',

@@ -1,8 +1,8 @@
-module system.layout.keyboardlayout;
+module system.layout.keytranslator;
 
 import core.definitions;
 
-class KeyboardTranslator {
+class KeyTranslator {
 	Key translate(Key key) {
 		return key;
 	}

@@ -7,11 +7,11 @@
 
 module system.layout.colemak;
 
-import system.layout.keyboardtranslator;
+import system.layout.keytranslator;
 
 import core.definitions;
 
-class ColemakTranslator : KeyboardTranslator {
+class ColemakKeyboard : KeyTranslator {
 
 	static dchar _translateToChar[] = [
 		Key.SingleQuote: '`',

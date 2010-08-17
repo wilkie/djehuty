@@ -9,17 +9,18 @@ module system.keyboard;
 
 import core.definitions;
 
-import system.layout.keyboardtranslator;
+import system.layout.keytranslator;
 
-import system.layout.qwertyus;
-import system.layout.qwertycanfr;
+import system.layout.unitedstates;
+import system.layout.quebec;
+import system.layout.canadianmultilingual;
 import system.layout.dvorak;
 import system.layout.colemak;
 
 enum KeyboardLayout {
-	QwertyUS,
-	QwertyCanFr,
-	QwertyCanMultilingual,
+	UnitedStates,
+	Quebec,
+	CanadianMultilingual,
 	Dvorak,
 	Colemak
 }
@@ -27,8 +28,8 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.QwertyCanFr;
-	KeyboardTranslator _translator;
+	KeyboardLayout _layout = KeyboardLayout.Quebec;
+	KeyTranslator _translator;
 
 public:
 	KeyboardLayout layout() {
@@ -38,21 +39,25 @@ public:
 	void layout(KeyboardLayout value) {
 		_layout = value;
 		switch(_layout) {
-			case KeyboardLayout.QwertyUS:
+			case KeyboardLayout.UnitedStates:
 			default:
-				_translator = new QwertyUSTranslator();
+				_translator = new UnitedStatesKeyboard();
 				break;
 
-			case KeyboardLayout.QwertyCanFr:
-				_translator = new QwertyCanFrTranslator();
+			case KeyboardLayout.Quebec:
+				_translator = new QuebecKeyboard();
 				break;
 
 			case KeyboardLayout.Dvorak:
-				_translator = new DvorakTranslator();
+				_translator = new DvorakKeyboard();
 				break;
 
 			case KeyboardLayout.Colemak:
-				_translator = new ColemakTranslator();
+				_translator = new ColemakKeyboard();
+				break;
+
+			case KeyboardLayout.CanadianMultilingual:
+				_translator = new CanadianMultilingualKeyboard();
 				break;
 		}
 	}
