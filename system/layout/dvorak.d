@@ -7,11 +7,11 @@
 
 module system.layout.dvorak;
 
-import system.layout.keyboardtranslator;
+import system.layout.keytranslator;
 
 import core.definitions;
 
-class DvorakTranslator : KeyboardTranslator {
+class DvorakKeyboard : KeyTranslator {
 	static dchar _translateToChar[] = [
 		Key.SingleQuote: '`',
 		Key.One: '1',

@@ -141,6 +141,8 @@ struct Key {
 	bool leftAlt;
 	bool rightAlt;
 
+	bool capsLock;
+
 	dchar printable;
 
 	enum : uint {
