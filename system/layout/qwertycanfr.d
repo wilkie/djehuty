@@ -1,20 +1,20 @@
 /*
- * qwertyus.d
+ * qwertycanfr.d
  *
- * This module implements the US qwerty keyboard layout.
+ * This module implements the French Canadian qwerty keyboard layout.
  *
  */
 
-module system.layout.qwertyus;
+module system.layout.qwertycanfr;
 
 import system.layout.keyboardtranslator;
 
 import core.definitions;
 
-class QwertyUSTranslator : KeyboardTranslator {
+class QwertyCanFrTranslator : KeyboardTranslator {
 
 	static dchar _translateToChar[] = [
-		Key.SingleQuote: '`',
+		Key.SingleQuote: '#',
 		Key.One: '1',
 		Key.Two: '2',
 		Key.Three: '3',
@@ -54,23 +54,24 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.N: 'n',
 		Key.M: 'm',
 		Key.Semicolon: ';',
-		Key.Apostrophe: '\'',
+//		Key.Apostrophe: , // DEAD
 		Key.Comma: ',',
 		Key.Period: '.',
-		Key.Foreslash: '/',
-		Key.LeftBracket: '[',
-		Key.RightBracket: ']',
-		Key.Backslash: '\\'
+		Key.Foreslash: '\u00e9', // Minuscule e-acute
+//		Key.LeftBracket: '[', // DEAD
+//		Key.RightBracket: ']', // DEAD
+		Key.Backslash: '<',
+		Key.International: '\u00ab' // Double angle quote left
 	];
 
 	static dchar _translateShiftToChar[] = [
 		Key.SingleQuote: '~',
 		Key.One: '!',
-		Key.Two: '@',
-		Key.Three: '#',
+		Key.Two: '"',
+		Key.Three: '/',
 		Key.Four: '$',
 		Key.Five: '%',
-		Key.Six: '^',
+		Key.Six: '?',
 		Key.Seven: '&',
 		Key.Eight: '*',
 		Key.Nine: '(',
@@ -104,13 +105,38 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.N: 'N',
 		Key.M: 'M',
 		Key.Semicolon: ':',
-		Key.Apostrophe: '"',
-		Key.Comma: '<',
-		Key.Period: '>',
-		Key.Foreslash: '?',
-		Key.LeftBracket: '{',
-		Key.RightBracket: '}',
-		Key.Backslash: '|'
+//		Key.Apostrophe: '"', // DEAD
+		Key.Comma: '\'',
+		Key.Foreslash: '\u00c9', // Majuscule e-acute
+//		Key.LeftBracket: '{', // DEAD
+//		Key.RightBracket: '}', // DEAD
+		Key.Backslash: '>',
+		Key.International: '\u00bb' // Double angle quote right
+	];
+
+	static dchar _translateAltToChar[] = [
+		Key.SingleQuote: '\\',
+		Key.One: '\u00b1',
+		Key.Two: '@',
+		Key.Three: '\u20a4',
+		Key.Four: '\u00a2',
+		Key.Five: '\u00a4',
+		Key.Six: '\u00ac',
+		Key.Seven: '\u00a6',
+		Key.Eight: '\u00b2',
+		Key.Nine: '\u00b3',
+		Key.Zero: '\u00bc',
+		Key.Minus: '\u00bd',
+		Key.Equals: '\u00be',
+		Key.Semicolon: '~',
+		Key.Apostrophe: '{',
+		Key.Comma: '_',
+		Key.Period: '-',
+//		Key.Foreslash: '', // DEAD
+		Key.LeftBracket: '[',
+		Key.RightBracket: ']',
+		Key.Backslash: '}',
+		Key.International: '\u00b0' // Degree
 	];
 
 	override Key translate(Key key) {
@@ -123,6 +149,11 @@ class QwertyUSTranslator : KeyboardTranslator {
 		else if (key.shift && !key.alt && !key.ctrl) {
 			if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
+			}
+		}
+		else if (!key.shift && key.rightAlt && !key.ctrl) {
+			if (key.code < _translateAltToChar.length) {
+				key.printable = _translateAltToChar[key.code];
 			}
 		}
 		if (key.printable == 0xffff) {

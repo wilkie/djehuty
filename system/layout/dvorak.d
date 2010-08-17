@@ -12,360 +12,121 @@ import system.layout.keyboardtranslator;
 import core.definitions;
 
 class DvorakTranslator : KeyboardTranslator {
-	// This array will translate the scan code to the base key
-	static int _translateScancode[] = [
-		// 0x00
-		Key.Invalid,
-		Key.F9,
-		Key.Invalid,
-		Key.F5,
-		Key.F3,
-		Key.F1,
-		Key.F2,
-		Key.F12,
-		Key.F17,
-		Key.F10,
-		Key.F8,
-		Key.F6,
-		Key.F4,
-		Key.Tab,
-		Key.SingleQuote,
-		Key.Invalid,
-		// 0x10
-		Key.F18,
-		Key.LeftAlt,
-		Key.LeftShift,
-		Key.Invalid,
-		Key.LeftControl,
-		Key.Quote,
-		Key.One,
-		Key.Invalid,
-		Key.F19,
-		Key.Invalid,
-		Key.Semicolon,
-		Key.O,
-		Key.A,
-		Key.Comma,
-		Key.Two,
-		Key.F13,
-		// 0x20
-		Key.F20,
-		Key.J,
-		Key.Q,
-		Key.E,
-		Key.Period,
-		Key.Four,
-		Key.Three,
-		Key.F14,
-		Key.F21,
-		Key.Space,
-		Key.K,
-		Key.U,
-		Key.Y,
-		Key.P,
-		Key.Five,
-		Key.F15,
-		// 0x30
-		Key.F22,
-		Key.B,
-		Key.X,
-		Key.D,
-		Key.I,
-		Key.F,
-		Key.Six,
-		Key.Invalid,
-		Key.F23,
-		Key.Invalid,
-		Key.M,
-		Key.H,
-		Key.G,
-		Key.Seven,
-		Key.Eight,
-		Key.Invalid,
-		// 0x40
-		Key.F24,
-		Key.W,
-		Key.T,
-		Key.C,
-		Key.R,
-		Key.Zero,
-		Key.Nine,
-		Key.Invalid,
-		Key.Invalid,
-		Key.V,
-		Key.Z,
-		Key.N,
-		Key.S,
-		Key.L,
-		Key.LeftBracket,
-		Key.Invalid,
-		// 0x50
-		Key.Invalid,
-		Key.Invalid,
-		Key.Minus,
-		Key.Invalid,
-		Key.Foreslash,
-		Key.RightBracket,
-		Key.Invalid,
-		Key.Invalid,
-		Key.CapsLock,
-		Key.RightShift,
-		Key.Return,
-		Key.Equals,
-		Key.Invalid,
-		Key.Backslash,
-		Key.F16,
-		Key.Invalid,
-		// 0x60
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Backspace,
-		Key.Invalid,
-		Key.Invalid,
-		Key.KeypadOne,
-		Key.Invalid,
-		Key.Left,
-		Key.KeypadSeven,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		// 0x70
-		Key.KeypadZero,
-		Key.KeypadPeriod,
-		Key.KeypadTwo,
-		Key.KeypadFive,
-		Key.KeypadSix,
-		Key.KeypadEight,
-		Key.Escape,
-		Key.NumLock,
-		Key.F11,
-		Key.KeypadPlus,
-		Key.KeypadThree,
-		Key.KeypadMinus,
-		Key.KeypadAsterisk,
-		Key.KeypadNine,
-		Key.ScrollLock,
-		Key.Invalid,
-		// 0x80
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.Invalid,
-		Key.SysRq,
+	static dchar _translateToChar[] = [
+		Key.SingleQuote: '`',
+		Key.One: '1',
+		Key.Two: '2',
+		Key.Three: '3',
+		Key.Four: '4',
+		Key.Five: '5',
+		Key.Six: '6',
+		Key.Seven: '7',
+		Key.Eight: '8',
+		Key.Nine: '9',
+		Key.Zero: '0',
+		Key.Minus: '[',
+		Key.Equals: ']',
+		Key.Q: '\'',
+		Key.W: ',',
+		Key.E: '.',
+		Key.R: 'p',
+		Key.T: 'y',
+		Key.Y: 'f',
+		Key.U: 'g',
+		Key.I: 'c',
+		Key.O: 'r',
+		Key.P: 'l',
+		Key.A: 'a',
+		Key.S: 'o',
+		Key.D: 'e',
+		Key.F: 'u',
+		Key.G: 'i',
+		Key.H: 'd',
+		Key.J: 'h',
+		Key.K: 't',
+		Key.L: 'n',
+		Key.Z: ';',
+		Key.X: 'q',
+		Key.C: 'j',
+		Key.V: 'k',
+		Key.B: 'x',
+		Key.N: 'b',
+		Key.M: 'm',
+		Key.Semicolon: 's',
+		Key.Apostrophe: '-',
+		Key.Comma: 'w',
+		Key.Period: 'v',
+		Key.Foreslash: 'z',
+		Key.LeftBracket: '/',
+		Key.RightBracket: '=',
+		Key.Backslash: '\\'
 	];
 
-	static int _translateScancodeEx[] = [
-		0x1f: Key.LeftGui,
-		0x14: Key.RightControl,
-		0x27: Key.RightGui,
-		0x11: Key.RightAlt,
-		0x2f: Key.Application,
-		0x7c: Key.PrintScreen,
-		0x70: Key.Insert,
-		0x6c: Key.Home,
-		0x7d: Key.PageUp,
-		0x71: Key.Delete,
-		0x69: Key.End,
-		0x7a: Key.PageDown,
-		0x75: Key.Up,
-		0x6b: Key.Left,
-		0x72: Key.Down,
-		0x74: Key.Right,
-		0x4a: Key.KeypadForeslash,
-		0x5a: Key.KeypadReturn
+	static dchar _translateShiftToChar[] = [
+		Key.SingleQuote: '~',
+		Key.One: '!',
+		Key.Two: '@',
+		Key.Three: '#',
+		Key.Four: '$',
+		Key.Five: '%',
+		Key.Six: '^',
+		Key.Seven: '&',
+		Key.Eight: '*',
+		Key.Nine: '(',
+		Key.Zero: ')',
+		Key.Minus: '{',
+		Key.Equals: '}',
+		Key.Q: '"',
+		Key.W: '<',
+		Key.E: '>',
+		Key.R: 'P',
+		Key.T: 'Y',
+		Key.Y: 'F',
+		Key.U: 'G',
+		Key.I: 'C',
+		Key.O: 'R',
+		Key.P: 'L',
+		Key.A: 'A',
+		Key.S: 'O',
+		Key.D: 'E',
+		Key.F: 'U',
+		Key.G: 'I',
+		Key.H: 'D',
+		Key.J: 'H',
+		Key.K: 'T',
+		Key.L: 'N',
+		Key.Z: ':',
+		Key.X: 'Q',
+		Key.C: 'J',
+		Key.V: 'K',
+		Key.B: 'X',
+		Key.N: 'B',
+		Key.M: 'M',
+		Key.Semicolon: 'S',
+		Key.Apostrophe: '_',
+		Key.Comma: 'W',
+		Key.Period: 'V',
+		Key.Foreslash: 'Z',
+		Key.LeftBracket: '?',
+		Key.RightBracket: '+',
+		Key.Backslash: '|'
 	];
 
 	override Key translate(Key key) {
-
-		if (key.scan == 0xe11477) {
-			key.code = Key.Pause;
-		}
-		else if (key.scan < _translateScancode.length) {
-			key.code = _translateScancode[key.scan];
-		}
-		else if (key.scan > 0xe000) {
-			key.code = _translateScancodeEx[key.scan & 0xff];
-		}
-
 		key.printable = '\0';
-		if (key.shift) {
-			switch(key.code) {
-				case Key.SingleQuote:
-					key.code = Key.Tilde;
-					key.printable = '~';
-					break;
-				case Key.One:
-					key.code = Key.Bang;
-					key.printable = '!';
-					break;
-				case Key.Two:
-					key.code = Key.At;
-					key.printable = '@';
-					break;
-				case Key.Three:
-					key.code = Key.Pound;
-					key.printable = '#';
-					break;
-				case Key.Four:
-					key.code = Key.Dollar;
-					key.printable = '$';
-					break;
-				case Key.Five:
-					key.code = Key.Percent;
-					key.printable = '%';
-					break;
-				case Key.Six:
-					key.code = Key.Caret;
-					key.printable = '^';
-					break;
-				case Key.Seven:
-					key.code = Key.Ampersand;
-					key.printable = '&';
-					break;
-				case Key.Eight:
-					key.code = Key.Asterisk;
-					key.printable = '*';
-					break;
-				case Key.Nine:
-					key.code = Key.LeftParenthesis;
-					key.printable = '(';
-					break;
-				case Key.Zero:
-					key.code = Key.RightParenthesis;
-					key.printable = ')';
-					break;
-				case Key.Minus:
-					key.code = Key.Underscore;
-					key.printable = '_';
-					break;
-				case Key.Equals:
-					key.code = Key.Plus;
-					key.printable = '+';
-					break;
-				case Key.LeftBracket:
-					key.code = Key.LeftCurly;
-					key.printable = '{';
-					break;
-				case Key.RightBracket:
-					key.code = Key.RightCurly;
-					key.printable = '}';
-					break;
-				case Key.Semicolon:
-					key.code = Key.Colon;
-					key.printable = ':';
-					break;
-				case Key.Quote:
-					key.code = Key.DoubleQuote;
-					key.printable = '"';
-					break;
-				case Key.Comma:
-					key.code = Key.LeftAngle;
-					key.printable = '<';
-					break;
-				case Key.Period:
-					key.code = Key.RightAngle;
-					key.printable = '>';
-					break;
-				case Key.Backslash:
-					key.code = Key.Pipe;
-					key.printable = '|';
-					break;
-				case Key.Foreslash:
-					key.code = Key.QuestionMark;
-					key.printable = '?';
-					break;
-				case Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H,
-				  Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q,
-				  Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z:
-					key.printable = 'A' + (key.code - Key.A);
-					break;
-				default:
-					break;
+		if (!key.shift && !key.alt && !key.ctrl) {
+			if (key.code < _translateToChar.length) {
+				key.printable = _translateToChar[key.code];
 			}
 		}
-
-		if (key.alt || key.ctrl) {
+		else if (key.shift && !key.alt && !key.ctrl) {
+			if (key.code < _translateShiftToChar.length) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+		}
+		if (key.printable == 0xffff) {
 			key.printable = '\0';
 		}
-		else if (!key.shift) {
-			switch(key.code) {
-				case Key.SingleQuote:
-					key.printable = '`';
-					break;
-				case Key.One:
-					key.printable = '1';
-					break;
-				case Key.Two:
-					key.printable = '2';
-					break;
-				case Key.Three:
-					key.printable = '3';
-					break;
-				case Key.Four:
-					key.printable = '4';
-					break;
-				case Key.Five:
-					key.printable = '5';
-					break;
-				case Key.Six:
-					key.printable = '6';
-					break;
-				case Key.Seven:
-					key.printable = '7';
-					break;
-				case Key.Eight:
-					key.printable = '8';
-					break;
-				case Key.Nine:
-					key.printable = '9';
-					break;
-				case Key.Zero:
-					key.printable = '0';
-					break;
-				case Key.Minus:
-					key.printable = '-';
-					break;
-				case Key.Equals:
-					key.printable = '=';
-					break;
-				case Key.LeftBracket:
-					key.printable = '[';
-					break;
-				case Key.RightBracket:
-					key.printable = ']';
-					break;
-				case Key.Semicolon:
-					key.printable = ';';
-					break;
-				case Key.Quote:
-					key.printable = '\'';
-					break;
-				case Key.Comma:
-					key.printable = ',';
-					break;
-				case Key.Period:
-					key.printable = '.';
-					break;
-				case Key.Backslash:
-					key.printable = '\\';
-					break;
-				case Key.Foreslash:
-					key.printable = '/';
-					break;
-				case Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H,
-				  Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q,
-				  Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z:
-					key.printable = 'a' + (key.code - Key.A);
-					break;
-				default:
-					break;
-			}
-		}
-
 		return key;
 	}
 }

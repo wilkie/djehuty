@@ -186,7 +186,7 @@ private {
 		VK_OEM_PERIOD: Key.Period,
 		VK_OEM_2: Key.Foreslash,
 		VK_OEM_5: Key.Backslash,
-		VK_OEM_7: Key.Quote,
+		VK_OEM_7: Key.Apostrophe,
 		VK_OEM_MINUS: Key.Minus,
 		VK_OEM_PLUS: Key.Equals,
 	];

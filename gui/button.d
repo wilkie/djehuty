@@ -15,7 +15,7 @@ import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
 
-import binding.c;
+import io.console;
 
 class Button : Window {
 private:
@@ -28,31 +28,31 @@ public:
 	}
 
 	override void onKeyDown(Key key) {
-		printf("key down %d\n", key.code);
+		putln("key down ", key.code);
 	}
 
 	override void onKeyChar(dchar chr) {
-		printf("char: %c\n", cast(char)chr);
+		putln(chr);
 	}
 
 	override void onKeyUp(Key key) {
-		printf("key up %d\n", key.code);
+		putln("key up ", key.code);
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {
-		printf("down %d clicks: %d\n", button, mouse.clicks[button]);
+		putln("down ", button, " clicks: ", button, mouse.clicks[button]);
 	}
 
 	override void onMouseUp(Mouse mouse, uint button) {
-		printf("up %d\n", button);
+		putln("up ", button);
 	}
 
 	override void onHover(Mouse mouse) {
-		printf("hover\n");
+		putln("hover");
 	}
 
 	override void onDrag(Mouse mouse) {
-		printf("drag\n");
+		putln("drag");
 	}
 
 	override void onDraw(Canvas canvas) {
