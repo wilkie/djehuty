@@ -1,17 +1,17 @@
 /*
- * qwertyus.d
+ * colemak.d
  *
- * This module implements the US qwerty keyboard layout.
+ * This module implements the colemak keyboard layout.
  *
  */
 
-module system.layout.qwertyus;
+module system.layout.colemak;
 
 import system.layout.keyboardtranslator;
 
 import core.definitions;
 
-class QwertyUSTranslator : KeyboardTranslator {
+class ColemakTranslator : KeyboardTranslator {
 	// This array will translate the scan code to the base key
 	static int _translateScancode[] = [
 		// 0x00
@@ -43,7 +43,7 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.F19,
 		Key.Invalid,
 		Key.Z,
-		Key.S,
+		Key.R,
 		Key.A,
 		Key.W,
 		Key.Two,
@@ -52,51 +52,51 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.F20,
 		Key.C,
 		Key.X,
-		Key.D,
-		Key.E,
+		Key.S,
+		Key.F,
 		Key.Four,
 		Key.Three,
 		Key.F14,
 		Key.F21,
 		Key.Space,
 		Key.V,
-		Key.F,
 		Key.T,
-		Key.R,
+		Key.G,
+		Key.P,
 		Key.Five,
 		Key.F15,
 		// 0x30
 		Key.F22,
-		Key.N,
+		Key.K,
 		Key.B,
 		Key.H,
-		Key.G,
-		Key.Y,
+		Key.D,
+		Key.J,
 		Key.Six,
 		Key.Invalid,
 		Key.F23,
 		Key.Invalid,
 		Key.M,
-		Key.J,
-		Key.U,
+		Key.N,
+		Key.L,
 		Key.Seven,
 		Key.Eight,
 		Key.Invalid,
 		// 0x40
 		Key.F24,
 		Key.Comma,
-		Key.K,
-		Key.I,
-		Key.O,
+		Key.E,
+		Key.U,
+		Key.Y,
 		Key.Zero,
 		Key.Nine,
 		Key.Invalid,
 		Key.Invalid,
 		Key.Period,
 		Key.Foreslash,
-		Key.L,
+		Key.I,
+		Key.O,
 		Key.Semicolon,
-		Key.P,
 		Key.Minus,
 		Key.Invalid,
 		// 0x50
@@ -126,28 +126,28 @@ class QwertyUSTranslator : KeyboardTranslator {
 		Key.Backspace,
 		Key.Invalid,
 		Key.Invalid,
-		Key.One, // KP
+		Key.KeypadOne,
 		Key.Invalid,
 		Key.Left,
-		Key.Seven, // KP
+		Key.KeypadSeven,
 		Key.Invalid,
 		Key.Invalid,
 		Key.Invalid,
 		// 0x70
-		Key.Zero, // KP
-		Key.Period, // KP
-		Key.Two, // KP
-		Key.Five, // KP
-		Key.Six, // KP
-		Key.Eight, // KP
+		Key.KeypadZero,
+		Key.KeypadPeriod,
+		Key.KeypadTwo,
+		Key.KeypadFive,
+		Key.KeypadSix,
+		Key.KeypadEight,
 		Key.Escape,
 		Key.NumLock,
 		Key.F11,
-		Key.Plus, // KP
-		Key.Three, // KP
-		Key.Minus, // KP
-		Key.Asterisk, // KP
-		Key.Nine, // KP
+		Key.KeypadPlus,
+		Key.KeypadThree,
+		Key.KeypadMinus,
+		Key.KeypadAsterisk,
+		Key.KeypadNine,
 		Key.ScrollLock,
 		Key.Invalid,
 		// 0x80
@@ -175,7 +175,8 @@ class QwertyUSTranslator : KeyboardTranslator {
 		0x6b: Key.Left,
 		0x72: Key.Down,
 		0x74: Key.Right,
-		0x4a: Key.Foreslash, // KP
+		0x4a: Key.KeypadForeslash,
+		0x5a: Key.KeypadReturn
 	];
 
 	override Key translate(Key key) {

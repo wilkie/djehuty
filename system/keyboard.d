@@ -13,10 +13,12 @@ import system.layout.keyboardtranslator;
 
 import system.layout.qwertyus;
 import system.layout.dvorak;
+import system.layout.colemak;
 
 enum KeyboardLayout {
 	QwertyUS,
-	Dvorak
+	Dvorak,
+	Colemak
 }
 
 class Keyboard {
@@ -40,6 +42,10 @@ public:
 
 			case KeyboardLayout.Dvorak:
 				_translator = new DvorakTranslator();
+				break;
+
+			case KeyboardLayout.Colemak:
+				_translator = new ColemakTranslator();
 				break;
 		}
 	}
