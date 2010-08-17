@@ -1,4 +1,4 @@
-module system.keyboardtranslator.keyboardlayout;
+module system.layout.keyboardlayout;
 
 import core.definitions;
 

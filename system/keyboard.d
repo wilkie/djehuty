@@ -9,8 +9,8 @@ module system.keyboard;
 
 import core.definitions;
 
-import system.keyboardtranslator.qwertyus;
-import system.keyboardtranslator.keyboardtranslator;
+import system.layout.qwertyus;
+import system.layout.keyboardtranslator;
 
 enum KeyboardLayout {
 	QwertyUS
