@@ -20,7 +20,7 @@ import system.layout.colemak;
 enum KeyboardLayout {
 	UnitedStates,
 	Quebec,
-	CanadianMultilingual,
+	CanadianMultilingualStandard,
 	Dvorak,
 	Colemak
 }
@@ -28,7 +28,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.Quebec;
+	KeyboardLayout _layout = KeyboardLayout.CanadianMultilingualStandard;
 	KeyTranslator _translator;
 
 public:
@@ -56,7 +56,7 @@ public:
 				_translator = new ColemakKeyboard();
 				break;
 
-			case KeyboardLayout.CanadianMultilingual:
+			case KeyboardLayout.CanadianMultilingualStandard:
 				_translator = new CanadianMultilingualKeyboard();
 				break;
 		}

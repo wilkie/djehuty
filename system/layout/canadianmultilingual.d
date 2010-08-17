@@ -10,10 +10,11 @@ module system.layout.canadianmultilingual;
 import system.layout.keytranslator;
 
 import core.definitions;
+import core.unicode;
 
 class CanadianMultilingualKeyboard : KeyTranslator {
 	static dchar _translateToChar[] = [
-		Key.SingleQuote: '#',
+		Key.SingleQuote: '/',
 		Key.One: '1',
 		Key.Two: '2',
 		Key.Three: '3',
@@ -55,16 +56,19 @@ class CanadianMultilingualKeyboard : KeyTranslator {
 		Key.Semicolon: ';',
 		Key.Comma: ',',
 		Key.Period: '.',
-		Key.Foreslash: '\u00e9', // Minuscule e-acute
-		Key.Backslash: '<',
-		Key.International: '\u00ab' // Double angle quote left
+		Key.Apostrophe: '\u00e8',
+		Key.RightBracket: '\u00e7',
+		Key.Backslash: '\u00e0',
+		Key.Foreslash: '\u00e9',
+		Key.International: '\u00f9', // u grave
+		Key.Space: ' '
 	];
 
 	static dchar _translateShiftToChar[] = [
-		Key.SingleQuote: '~',
+		Key.SingleQuote: '\\',
 		Key.One: '!',
-		Key.Two: '"',
-		Key.Three: '/',
+		Key.Two: '@',
+		Key.Three: '#',
 		Key.Four: '$',
 		Key.Five: '%',
 		Key.Six: '?',
@@ -102,197 +106,183 @@ class CanadianMultilingualKeyboard : KeyTranslator {
 		Key.M: 'M',
 		Key.Semicolon: ':',
 		Key.Comma: '\'',
-		Key.Foreslash: '\u00c9', // Majuscule e-acute
-		Key.Backslash: '>',
-		Key.International: '\u00bb' // Double angle quote right
+		Key.Period: '"',
+		Key.RightBracket: '\u00c7',
+		Key.Apostrophe: '\u00c8',
+		Key.Backslash: '\u00c0',
+		Key.Foreslash: '\u00c9',
+		Key.International: '\u00d9', // capital u grave
+		Key.Space: ' '
 	];
 
 	static dchar _translateAltToChar[] = [
-		Key.SingleQuote: '\\',
-		Key.One: '\u00b1',
-		Key.Two: '@',
-		Key.Three: '\u20a4',
-		Key.Four: '\u00a2',
-		Key.Five: '\u00a4',
-		Key.Six: '\u00ac',
-		Key.Seven: '\u00a6',
-		Key.Eight: '\u00b2',
-		Key.Nine: '\u00b3',
-		Key.Zero: '\u00bc',
-		Key.Minus: '\u00bd',
-		Key.Equals: '\u00be',
-		Key.Semicolon: '~',
-		Key.Apostrophe: '{',
-		Key.O: '\u00a7', // Section Sign
-		Key.P: '\u00b6', // Pilcrow Sign
+		Key.SingleQuote: '|',
+		Key.Seven: '{',
+		Key.Eight: '}',
+		Key.Nine: '[',
+		Key.Zero: ']',
+		Key.Equals: '\u00af', // Macron
+		Key.Semicolon: '\u00b0', // Degree
+		Key.Comma: '<',
+		Key.Period: '>',
+		Key.Z: '\u00ab', // Double angle quotes left
+		Key.X: '\u00bb', // Double angle quotes right
+		Key.Space: '\u00a0' // Non-breaking space
+	];
+
+	static dchar _translateControlToChar[] = [
+		Key.One: '\u00b9', // superscript one
+		Key.Two: '\u00b2', // superscript two
+		Key.Three: '\u00b3', // superscript three
+		Key.Four: '\u00bc', // 1/4
+		Key.Five: '\u00bd', // 1/2
+		Key.Six: '\u00be', // 3/4
+		Key.W: '\u0142', // Small latin L with stroke
+		Key.E: '\u0153', // Small latin Ligature Oe
+		Key.R: '\u00b6', // Pilcrow Sign
+		Key.T: '\u0167', // Small latin T with stroke
+		Key.Y: '\u2190', // Leftwards arrow
+		Key.U: '\u2193', // Downwards arrow
+		Key.I: '\u2192', // Rightwards arrow
+		Key.O: '\u00f8', // Small latin letter O with stroke
+		Key.P: '\u00fe', // Small latin letter Thorn
+		Key.RightBracket: '~',
+		Key.A: '\u00e6', // Small latin letter ae
+		Key.S: '\u00df', // Small latin letter Sharp S
+		Key.D: '\u00f0', // Small latin letter Eth
+		Key.G: '\u014b', // Small latin letter Eng
+		Key.H: '\u0127', // Small latin letter H with stroke
+		Key.J: '\u0133', // Small latin ligature ij
+		Key.K: '\u0138', // Small latin letter Kra
+		Key.L: '\u0140', // Small latin letter L with middle dot
+		Key.C: '\u00a2', // Cent Sign
+		Key.V: '\u201c', // Left Double Quote
+		Key.B: '\u201d', // Right Double Quote
+		Key.N: '\u0149', // Small latin letter N preceded by Apostrophe
 		Key.M: '\u00b5', // Micro Sign
-		Key.Comma: '\u00af', // Macron
-		Key.Period: '\u00ad', // Soft Hyphen
-		Key.LeftBracket: '[',
-		Key.RightBracket: ']',
-		Key.Backslash: '}',
-		Key.International: '\u00b0' // Degree
+		Key.Comma: '\u2015', // Horizontal Bar
 	];
 
-	static dchar _translateCircumflexToChar[] = [
-		Key.A: '\u00e2',
-		Key.E: '\u00ea',
-		Key.I: '\u00ee',
-		Key.O: '\u00f4',
-		Key.U: '\u00fb'
-	];
-
-	static dchar _translateCedillaToChar[] = [
-		Key.C: '\u00e7'
-	];
-
-	static dchar _translateGraveToChar[] = [
-		Key.A: '\u00e0',
-		Key.E: '\u00e8',
-		Key.I: '\u00ec',
-		Key.O: '\u00f2',
-		Key.U: '\u00f9'
-	];
-
-	static dchar _translateDiaeresisToChar[] = [
-		Key.A: '\u00e4',
-		Key.E: '\u00eb',
-		Key.I: '\u00ef',
-		Key.O: '\u00f6',
-		Key.U: '\u00fc',
-		Key.Y: '\u00ff'
-	];
-
-	static dchar _translateAcuteToChar[] = [
-		Key.A: '\u00e1',
-		Key.E: '\u00e9',
-		Key.I: '\u00ed',
-		Key.O: '\u00f3',
-		Key.U: '\u00fa',
-		Key.Y: '\u00fd'
-	];
-
-	static dchar _translateShiftCircumflexToChar[] = [
-		Key.A: '\u00c2',
-		Key.E: '\u00ca',
-		Key.I: '\u00ce',
-		Key.O: '\u00d4',
-		Key.U: '\u00db'
-	];
-
-	static dchar _translateShiftCedillaToChar[] = [
-		Key.C: '\u00c7'
-	];
-
-	static dchar _translateShiftGraveToChar[] = [
-		Key.A: '\u00c0',
-		Key.E: '\u00c8',
-		Key.I: '\u00cc',
-		Key.O: '\u00d2',
-		Key.U: '\u00d9'
-	];
-
-	static dchar _translateShiftDiaeresisToChar[] = [
-		Key.A: '\u00c4',
-		Key.E: '\u00cb',
-		Key.I: '\u00cf',
-		Key.O: '\u00d6',
-		Key.U: '\u00dc'
-	];
-
-	static dchar _translateShiftAcuteToChar[] = [
-		Key.A: '\u00c1',
-		Key.E: '\u00c9',
-		Key.I: '\u00cd',
-		Key.O: '\u00d3',
-		Key.U: '\u00da',
-		Key.Y: '\u00dd'
+	static dchar _translateShiftControlToChar[] = [
+		Key.SingleQuote: '\u00ad', // soft hyphen
+		Key.One: '\u00a1', // inverted exclamation mark
+		Key.Three: '\u00a3', // pound sign
+		Key.Four: '\u00a4', // currency sign
+		Key.Five: '\u215c', // 3/8
+		Key.Six: '\u215d', // 5/8
+		Key.Seven: '\u215e', // 7/8
+		Key.Eight: '\u2122', // TM
+		Key.Nine: '\u00b1', // plus-minus sign
+		Key.Minus: '\u00bf', // inverted question mark
+		Key.Q: '\u2126', // Ohm Sign
+		Key.W: '\u0141', // Capital latin L with stroke
+		Key.E: '\u0152', // Capital latin Ligature Oe
+		Key.R: '\u00ae', // Registered Sign
+		Key.T: '\u0166', // Capital latin T with stroke
+		Key.Y: '\u00a5', // Yen
+		Key.U: '\u2191', // Upwards arrow
+		Key.I: '\u0131', // Small latin letter Dotless i
+		Key.O: '\u00d8', // Capital latin letter O with stroke
+		Key.P: '\u00de', // Capital latin letter Thorn
+		Key.A: '\u00c6', // Capital latin letter ae
+		Key.S: '\u00a7', // Section Sign
+		Key.D: '\u00d0', // Capital latin letter Eth
+		Key.F: '\u00aa', // Feminine Ordinal Indicator
+		Key.G: '\u014a', // Capital latin letter Eng
+		Key.H: '\u0126', // Capital latin letter H with stroke
+		Key.J: '\u0132', // Capital latin ligature ij
+		Key.L: '\u013f', // Capital latin letter L with middle dot
+		Key.International: '\u00a6', // Broken Bar
+		Key.C: '\u00a9', // Copyright Sign
+		Key.V: '\u2018', // Left Single Quote
+		Key.B: '\u2019', // Right Single Quote
+		Key.N: '\u266a', // Eighth Note
+		Key.M: '\u00ba', // Masculine Ordinal Indicator
+		Key.Comma: '\u00d7', // Multiplication Sign
+		Key.Period: '\u00f7', // Division Sign
 	];
 
 	override Key translate(Key key) {
 		key.printable = '\0';
-		if (!key.shift && !key.alt && !key.ctrl) {
+		if (!key.shift && !key.alt && !key.control) {
 			// Dead characters
 			if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0302'; // circumflex
 			}
-			else if (key.code == Key.RightBracket) {
-				key.deadChar = '\u0327'; // cedilla
-			}
-			else if (key.code == Key.Apostrophe) {
-				key.deadChar = '\u0300'; // grave
-			}
-			else if (key.deadChar == '\u0302') {
-				if (key.code < _translateCircumflexToChar.length) {
-					key.printable = _translateCircumflexToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0327') {
-				if (key.code < _translateCedillaToChar.length) {
-					key.printable = _translateCedillaToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0300') {
-				if (key.code < _translateGraveToChar.length) {
-					key.printable = _translateGraveToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0308') {
-				if (key.code < _translateDiaeresisToChar.length) {
-					key.printable = _translateDiaeresisToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0301') {
-				if (key.code < _translateAcuteToChar.length) {
-					key.printable = _translateAcuteToChar[key.code];
-				}
-			}
 			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
+
+				if (key.deadChar != '\0') {
+					key.printable = Unicode.combine(key.printable, key.deadChar)[0];
+				}
 			}
 		}
-		else if (key.shift && !key.alt && !key.ctrl) {
+		else if (key.shift && !key.alt && !key.control) {
 			if (key.code == Key.LeftBracket) {
-				key.deadChar = '\u0302'; // circumflex
-			}
-			else if (key.code == Key.RightBracket) {
 				key.deadChar = '\u0308'; // diaeresis
-			}
-			else if (key.code == Key.Apostrophe) {
-				key.deadChar = '\u0300'; // grave
-			}
-			else if (key.deadChar == '\u0302') {
-				if (key.code < _translateShiftCircumflexToChar.length) {
-					key.printable = _translateShiftCircumflexToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0327') {
-				if (key.code < _translateShiftCedillaToChar.length) {
-					key.printable = _translateShiftCedillaToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0300') {
-				if (key.code < _translateShiftGraveToChar.length) {
-					key.printable = _translateShiftGraveToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0308') {
-				if (key.code < _translateShiftDiaeresisToChar.length) {
-					key.printable = _translateShiftDiaeresisToChar[key.code];
-				}
-			}
-			else if (key.deadChar == '\u0301') {
-				if (key.code < _translateShiftAcuteToChar.length) {
-					key.printable = _translateShiftAcuteToChar[key.code];
-				}
 			}
 			else if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
+
+				if (key.deadChar != '\0') {
+					key.printable = Unicode.combine(key.printable, key.deadChar)[0];
+				}
 			}
 		}
-		else if (!key.shift && key.rightAlt && !key.ctrl) {
-			if (key.code == Key.Foreslash) {
-				key.deadChar = '\u0301'; // acute
+		else if (!key.shift && !key.rightAlt && key.rightControl && !key.leftControl) {
+			if (key.code == Key.Equals) {
+				// Dead char
+			}
+			else if (key.code == Key.Period) {
+				// Dead char
+			}
+			else if (key.code == Key.Semicolon) {
+				// Dead char
+			}
+			else if (key.code < _translateControlToChar.length) {
+				key.printable = _translateControlToChar[key.code];
+
+				if (key.deadChar != '\0') {
+					key.printable = Unicode.combine(key.printable, key.deadChar)[0];
+				}
+			}
+		}
+		else if (key.shift && !key.rightAlt && key.rightControl && !key.leftControl) {
+			if (key.code == Key.Equals) {
+				key.deadChar = '\u0328'; // Ogonek
+			}
+			else if (key.code == Key.Foreslash) {
+				key.deadChar = '\u0307'; // Dot Above
+			}
+			else if (key.code == Key.LeftBracket) {
+				key.deadChar = '\u030a'; // Ring Above
+			}
+			else if (key.code == Key.RightBracket) {
+				key.deadChar = '\u0304'; // Macron
+			}
+			else if (key.code == Key.Backslash) {
+				key.deadChar = '\u0306'; // Breve
+			}
+			else if (key.code == Key.Semicolon) {
+				key.deadChar = '\u030b'; // Double Acute
+			}
+			else if (key.code == Key.Apostrophe) {
+				key.deadChar = '\u030c'; // Caron
+			}
+			else if (key.code < _translateShiftControlToChar.length) {
+				key.printable = _translateShiftControlToChar[key.code];
+
+				if (key.deadChar != '\0') {
+					key.printable = Unicode.combine(key.printable, key.deadChar)[0];
+				}
+			}
+		}
+		else if (!key.shift && key.rightAlt && !key.leftAlt && !key.control) {
+			if (key.code == Key.LeftBracket) {
+				key.deadChar = '\u0300'; // grave
+			}
+			else if (key.code == Key.RightBracket) {
+				key.deadChar = '\u0303'; // tilde
 			}
 			else if (key.code < _translateAltToChar.length) {
 				key.printable = _translateAltToChar[key.code];
