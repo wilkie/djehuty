@@ -584,8 +584,8 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				windowVars.event.info.key.code = _translateScancodeEx[windowVars.event.info.key.scan & 0xff];
 			}
 
-			windowVars.event.info.key.ctrl = GetKeyState(VK_CONTROL) < 0;
-			windowVars.event.info.key.alt = GetKeyState(VK_MENU) < 0;
+			windowVars.event.info.key.leftControl = GetKeyState(VK_LCONTROL) < 0;
+			windowVars.event.info.key.rightControl = GetKeyState(VK_RCONTROL) < 0;
 			windowVars.event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
 			windowVars.event.info.key.rightAlt = GetKeyState(VK_RMENU) < 0;
 			windowVars.event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;

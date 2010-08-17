@@ -141,7 +141,7 @@ class MyWindow : CuiDialog {
 
 	override void onKeyDown(Key key) {
 		redraw();
-		if (key.ctrl && key.code == Key.Q) {
+		if (key.control && key.code == Key.Q) {
 			Djehuty.application.exit(0);
 		}
 		else if (key.alt && key.code == Key.Tab) {
@@ -271,7 +271,7 @@ class Rogue : CuiWindow {
 	}
 
 	override void onKeyDown(Key key) {
-		if (key.ctrl && key.code == Key.Q) {
+		if (key.control && key.code == Key.Q) {
 			Djehuty.application.exit(0);
 		}
 		else if (key.code == Key.Left) {

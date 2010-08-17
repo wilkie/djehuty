@@ -134,18 +134,27 @@ struct Key {
 	uint code;
 	uint scan;
 
-	bool ctrl;
-	bool alt;
-	bool shift;
-
 	bool leftAlt;
 	bool rightAlt;
+
+	bool leftControl;
+	bool rightControl;
+
+	bool shift;
 
 	bool capsLock;
 
 	dchar printable;
 
 	dchar deadChar;
+
+	bool control() {
+		return leftControl | rightControl;
+	}
+
+	bool alt() {
+		return leftAlt | rightAlt;
+	}
 
 	enum : uint {
 		Invalid,

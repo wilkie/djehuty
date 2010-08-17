@@ -60,7 +60,8 @@ class ColemakKeyboard : KeyTranslator {
 		Key.Foreslash: '/',
 		Key.LeftBracket: '[',
 		Key.RightBracket: ']',
-		Key.Backslash: '\\'
+		Key.Backslash: '\\',
+		Key.Space: ' '
 	];
 
 	static dchar _translateShiftToChar[] = [
@@ -110,17 +111,18 @@ class ColemakKeyboard : KeyTranslator {
 		Key.Foreslash: '?',
 		Key.LeftBracket: '{',
 		Key.RightBracket: '}',
-		Key.Backslash: '|'
+		Key.Backslash: '|',
+		Key.Space: ' '
 	];
 
 	override Key translate(Key key) {
 		key.printable = '\0';
-		if (!key.shift && !key.alt && !key.ctrl) {
+		if (!key.shift && !key.alt && !key.control) {
 			if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
 			}
 		}
-		else if (key.shift && !key.alt && !key.ctrl) {
+		else if (key.shift && !key.alt && !key.control) {
 			if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
 			}

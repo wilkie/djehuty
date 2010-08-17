@@ -512,7 +512,6 @@ public:
 
 	dchar toUtf32Char(dstring src) {
 		// Useless function
-
 		return src[0];
 	}
 
@@ -1077,5 +1076,547 @@ public:
 		}
 
 		return CP866_to_UTF32[chr-128];
+	}
+
+	dchar[] combine(dchar chr, dchar combiningMark) {
+		return combine([chr], combiningMark);
+	}
+
+	dchar[] combine(dchar[] chr, dchar combiningMark) {
+		switch(combiningMark) {
+			case '\u0300': // grave
+				switch(chr[0]) {
+					case 'a':
+						return "\u00e0";
+					case 'e':
+						return "\u00e8";
+					case 'i':
+						return "\u00ec";
+					case 'o':
+						return "\u00f2";
+					case 'u':
+						return "\u00f9";
+					case 'A':
+						return "\u00c0";
+					case 'E':
+						return "\u00c8";
+					case 'I':
+						return "\u00cc";
+					case 'O':
+						return "\u00d2";
+					case 'U':
+						return "\u00d9";
+					case 'W':
+						return "\u1e80";
+					case 'w':
+						return "\u1e81";
+					case 'Y':
+						return "\u1ef2";
+					case 'y':
+						return "\u1ef3";
+					case ' ':
+						return "`";
+					default:
+						break;
+				}
+				break;
+			case '\u0301': // acute
+				switch(chr[0]) {
+					case 'a':
+						return "\u00e1";
+					case 'e':
+						return "\u00e9";
+					case 'i':
+						return "\u00ed";
+					case 'o':
+						return "\u00f3";
+					case 'u':
+						return "\u00fa";
+					case 'y':
+						return "\u00fd";
+					case 'A':
+						return "\u00c1";
+					case 'E':
+						return "\u00c9";
+					case 'I':
+						return "\u00cd";
+					case 'O':
+						return "\u00d3";
+					case 'U':
+						return "\u00da";
+					case 'Y':
+						return "\u00dd";
+					case 'C':
+						return "\u0106";
+					case 'c':
+						return "\u0107";
+					case 'L':
+						return "\u0139";
+					case 'l':
+						return "\u013a";
+					case 'N':
+						return "\u0143";
+					case 'n':
+						return "\u0144";
+					case 'R':
+						return "\u0154";
+					case 'r':
+						return "\u0155";
+					case 'S':
+						return "\u015a";
+					case 's':
+						return "\u015b";
+					case 'Z':
+						return "\u0179";
+					case 'z':
+						return "\u017a";
+					case '\u00c6': // Latin AE (capital)
+						return "\u01fc";
+					case '\u00e6': // Latin AE (small)
+						return "\u01fd";
+					case '\u00d8': // O with stroke (capital)
+						return "\u01fe";
+					case '\u00f8': // O with stroke (small)
+						return "\u01ff";
+					case 'W':
+						return "\u1e82";
+					case 'w':
+						return "\u1e83";
+					case ' ':
+						return "\u00b4";
+					default:
+						break;
+				}
+				break;
+			case '\u0302': // circumflex
+				switch(chr[0]) {
+					case 'a':
+						return "\u00e2";
+					case 'e':
+						return "\u00ea";
+					case 'i':
+						return "\u00ee";
+					case 'o':
+						return "\u00f4";
+					case 'c':
+						return "\u0109";
+					case 'g':
+						return "\u011d";
+					case 'h':
+						return "\u0125";
+					case 'j':
+						return "\u0135";
+					case 's':
+						return "\u015d";
+					case 'u':
+						return "\u00fb";
+					case 'w':
+						return "\u0175";
+					case 'y':
+						return "\u0177";
+					case 'A':
+						return "\u00c2";
+					case 'E':
+						return "\u00ca";
+					case 'I':
+						return "\u00ce";
+					case 'O':
+						return "\u00d4";
+					case 'C':
+						return "\u0108";
+					case 'G':
+						return "\u011c";
+					case 'H':
+						return "\u0124";
+					case 'J':
+						return "\u0134";
+					case 'S':
+						return "\u015c";
+					case 'U':
+						return "\u00db";
+					case 'W':
+						return "\u0174";
+					case 'Y':
+						return "\u0176";
+					case ' ':
+						return "^";
+					default:
+						break;
+				}
+				break;
+			case '\u0303': // tilde
+				switch(chr[0]) {
+					case 'a':
+						return "\u00e3";
+					case 'A':
+						return "\u00c3";
+					case 'n':
+						return "\u00f1";
+					case 'u':
+						return "\u0169";
+					case 'N':
+						return "\u00d1";
+					case 'U':
+						return "\u0168";
+					case 'o':
+						return "\u00f5";
+					case 'O':
+						return "\u00d5";
+					case 'i':
+						return "\u0129";
+					case 'I':
+						return "\u0128";
+					case ' ':
+						return "~";
+					default:
+						break;
+				}
+				break;
+			case '\u0304': // macron
+				switch(chr[0]) {
+					case 'A':
+						return "\u0100";
+					case 'a':
+						return "\u0101";
+					case 'E':
+						return "\u0112";
+					case 'e':
+						return "\u0113";
+					case 'I':
+						return "\u012a";
+					case 'i':
+						return "\u012b";
+					case 'O':
+						return "\u014c";
+					case 'o':
+						return "\u014d";
+					case 'U':
+						return "\u016a";
+					case 'u':
+						return "\u016b";
+					case '\u00c6': // Latin AE (capital)
+						return "\u01e2";
+					case '\u00e6': // Latin AE (small)
+						return "\u01e3";
+					case ' ':
+						return "\u00af";
+					default:
+						break;
+				}
+				break;
+			case '\u0305': // overline
+				break;
+			case '\u0306': // breve
+				switch(chr[0]) {
+					case 'A':
+						return "\u0102";
+					case 'a':
+						return "\u0103";
+					case 'E':
+						return "\u0114";
+					case 'e':
+						return "\u0115";
+					case 'G':
+						return "\u011e";
+					case 'g':
+						return "\u011f";
+					case 'I':
+						return "\u012c";
+					case 'i':
+						return "\u012d";
+					case 'O':
+						return "\u014e";
+					case 'o':
+						return "\u014f";
+					case 'U':
+						return "\u016c";
+					case 'u':
+						return "\u016d";
+					case '\u0416': // Cyrillic Letter Zhe (Capital)
+						return "\u04c1";
+					case '\u0436': // Cyrillic Letter Zhe (Small)
+						return "\u04c2";
+					case ' ':
+						return "\u02d8";
+					default:
+						break;
+				}
+				break;
+			case '\u0307': // dot above
+				switch(chr[0]) {
+					case 'C':
+						return "\u010a";
+					case 'c':
+						return "\u010b";
+					case 'E':
+						return "\u0116";
+					case 'e':
+						return "\u0117";
+					case 'G':
+						return "\u0120";
+					case 'g':
+						return "\u0121";
+					case 'I':
+						return "\u0130";
+					case 'Z':
+						return "\u017b";
+					case 'z':
+						return "\u017c";
+					case ' ':
+						return "\u02d9";
+					default:
+						break;
+				}
+				break;
+			case '\u0308': // diaeresis
+				switch(chr[0]) {
+					case 'a':
+						return "\u00e4";
+					case 'e':
+						return "\u00eb";
+					case 'i':
+						return "\u00ef";
+					case 'o':
+						return "\u00f6";
+					case 'u':
+						return "\u00fc";
+					case 'y':
+						return "\u00ff";
+					case 'A':
+						return "\u00c4";
+					case 'E':
+						return "\u00cb";
+					case 'I':
+						return "\u00cf";
+					case 'O':
+						return "\u00d6";
+					case 'U':
+						return "\u00dc";
+					case 'Y':
+						return "\u00df";
+					case 'W':
+						return "\u1e84";
+					case 'w':
+						return "\u1e85";
+					case ' ':
+						return "\u00a8";
+					default:
+						break;
+				}
+				break;
+			case '\u0309': // hook above
+				break;
+			case '\u030a': // ring above
+				switch(chr[0]) {
+					case 'A':
+						return "\u00c5";
+					case 'a':
+						return "\u00e5";
+					case 'U':
+						return "\u016e";
+					case 'u':
+						return "\u016f";
+					case ' ':
+						return "\u02da";
+					default:
+						break;
+				}
+				break;
+			case '\u030b': // double acute
+				switch(chr[0]) {
+					case 'O':
+						return "\u0150";
+					case 'o':
+						return "\u0151";
+					case 'U':
+						return "\u0170";
+					case 'u':
+						return "\u0171";
+					case ' ':
+						return "\u02dd";
+					default:
+						break;
+				}
+				break;
+			case '\u030c': // caron
+				switch(chr[0]) {
+					case 'C':
+						return "\u010c";
+					case 'c':
+						return "\u010d";
+					case 'D':
+						return "\u010e";
+					case 'd':
+						return "\u010f";
+					case 'E':
+						return "\u011a";
+					case 'e':
+						return "\u011b";
+					case 'L':
+						return "\u013d";
+					case 'l':
+						return "\u013e";
+					case 'N':
+						return "\u0147";
+					case 'n':
+						return "\u0148";
+					case 'R':
+						return "\u0158";
+					case 'r':
+						return "\u0159";
+					case 'S':
+						return "\u0160";
+					case 's':
+						return "\u0161";
+					case 'T':
+						return "\u0164";
+					case 't':
+						return "\u0165";
+					case 'Z':
+						return "\u017d";
+					case 'z':
+						return "\u017e";
+					case '\u02a3': // Latin letter dz (small, digraph)
+						return "\u01c6";
+					case 'A':
+						return "\u01cd";
+					case 'a':
+						return "\u01ce";
+					case 'I':
+						return "\u01cf";
+					case 'i':
+						return "\u01d0";
+					case 'O':
+						return "\u01d1";
+					case 'o':
+						return "\u01d2";
+					case 'U':
+						return "\u01d3";
+					case 'u':
+						return "\u01d4";
+					case 'G':
+						return "\u01e6";
+					case 'g':
+						return "\u01e7";
+					case 'K':
+						return "\u01e8";
+					case 'k':
+						return "\u01e9";
+					case '\u01b7': // Ezh (capital)
+						return "\u01ee";
+					case '\u0292': // Ezh (small)
+						return "\u01ef";
+					case 'j':
+						return "\u01f0";
+					case ' ':
+						return "\u02c7";
+					default:
+						break;
+				}
+				break;
+			case '\u031b': // horn
+				switch(chr[0]) {
+					case 'O':
+						return "\u01a0";
+					case 'o':
+						return "\u01a1";
+					case 'U':
+						return "\u01af";
+					case 'u':
+						return "\u01b0";
+					default:
+						break;
+				}
+				break;
+			case '\u0326': // comma below
+				switch(chr[0]) {
+					case 'S':
+						return "\u0218";
+					case 's':
+						return "\u0219";
+					case 'T':
+						return "\u021a";
+					case 't':
+						return "\u021b";
+					case ' ':
+						return ",";
+					default:
+						break;
+				}
+				break;
+			case '\u0327': // cedilla
+				switch(chr[0]) {
+					case 'C':
+						return "\u00c7";
+					case 'c':
+						return "\u00e7";
+					case 'G':
+						return "\u0122";
+					case 'g':
+						return "\u0123";
+					case 'K':
+						return "\u0136";
+					case 'k':
+						return "\u0137";
+					case 'L':
+						return "\u013b";
+					case 'l':
+						return "\u013c";
+					case 'N':
+						return "\u0145";
+					case 'n':
+						return "\u0146";
+					case 'R':
+						return "\u0156";
+					case 'r':
+						return "\u0157";
+					case 'S':
+						return "\u015e";
+					case 's':
+						return "\u015f";
+					case 'T':
+						return "\u0162";
+					case 't':
+						return "\u0163";
+					case ' ':
+						return "\u00b8";
+					default:
+						break;
+				}
+				break;
+			case '\u0328': // ogonek
+				switch(chr[0]) {
+					case 'A':
+						return "\u0104";
+					case 'a':
+						return "\u0105";
+					case 'E':
+						return "\u0118";
+					case 'e':
+						return "\u0119";
+					case 'I':
+						return "\u012e";
+					case 'i':
+						return "\u012f";
+					case 'U':
+						return "\u0172";
+					case 'u':
+						return "\u0173";
+					case 'O':
+						return "\u01ea";
+					case 'o':
+						return "\u01eb";
+					case ' ':
+						return "\u02db";
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+
+		// Default case is to just concatenate the combining mark
+		return chr[0] ~ [combiningMark] ~ chr[1..$];
 	}
 }
