@@ -17,6 +17,8 @@ import binding.c;
 
 import binding.win32.wincon;
 
+import system.keyboard;
+
 class CuiWindow : Responder {
 private:
 	Mouse _mouse;
@@ -755,11 +757,10 @@ public:
 	void onEvent(ref Event evt) {
 		switch(evt.type) {
 			case Event.KeyDown:
-				dchar chr;
-				evt.info.key.printable = isPrintable(evt.info.key, chr);
-				_dispatchKeyDown(evt.info.key);
-				if (evt.info.key.printable) {
-					_dispatchKeyChar(chr);
+				auto key = Keyboard.translate(evt.info.key);
+				_dispatchKeyDown(key);
+				if (key.printable != '\0') {
+					_dispatchKeyChar(key.printable);
 				}
 				break;
 			case Event.MouseDown:

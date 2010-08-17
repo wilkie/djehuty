@@ -172,6 +172,97 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
 	WindowPlatformVars* windowVars = cast(WindowPlatformVars*)(wind_in);
 
+
+	static int _translateScancode[] = [
+		Key.Pause,
+		Key.Escape,
+		Key.One,
+		Key.Two,
+		Key.Three,
+		Key.Four,
+		Key.Five,
+		Key.Six,
+		Key.Seven,
+		Key.Eight,
+		Key.Nine,
+		Key.Zero,
+		Key.Minus,
+		Key.Equals,
+		Key.Backspace,
+		Key.Tab,
+		Key.Q,
+		Key.W,
+		Key.E,
+		Key.R,
+		Key.T,
+		Key.Y,
+		Key.U,
+		Key.I,
+		Key.O,
+		Key.P,
+		Key.LeftBracket,
+		Key.RightBracket,
+		Key.Return,
+		Key.LeftControl,
+		Key.A,
+		Key.S,
+		Key.D,
+		Key.F,
+		Key.G,
+		Key.H,
+		Key.J,
+		Key.K,
+		Key.L,
+		Key.Semicolon,
+		Key.Quote,
+		Key.SingleQuote,
+		Key.LeftShift,
+		Key.Backslash,
+		Key.Z,
+		Key.X,
+		Key.C,
+		Key.V,
+		Key.B,
+		Key.N,
+		Key.M,
+		Key.Comma,
+		Key.Period,
+		Key.Foreslash,
+		Key.RightShift,
+		Key.PrintScreen,
+		Key.LeftAlt,
+		Key.Space,
+		Key.CapsLock,
+		Key.F1,
+		Key.F2,
+		Key.F3,
+		Key.F4,
+		Key.F5,
+		Key.F6,
+		Key.F7,
+		Key.F8,
+		Key.F9,
+		Key.F10,
+		Key.NumLock,
+		Key.ScrollLock,
+		Key.Home,
+		Key.Up,
+		Key.PageUp,
+		Key.Invalid,
+		Key.Left,
+		Key.Invalid,
+		Key.Right,
+		Key.Invalid,
+		Key.End,
+		Key.Down,
+		Key.PageDown,
+		Key.Insert,
+		Key.Delete,
+		Key.SysRq,
+		87: Key.F11,
+		88: Key.F12
+	];
+
 	switch(uMsg) {
 		case WM_ERASEBKGND:
 		case WM_UNICHAR:
@@ -298,15 +389,52 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.haveEvent = true;
 			return 1;
 
-		case WM_KEYDOWN:
-			windowVars.event.type = Event.KeyDown;
-			windowVars.event.info.key.code = cast(uint)wParam;
-			windowVars.haveEvent = true;
-			return 1;
+		case WM_SYSKEYDOWN:
+		case WM_SYSKEYUP:
+			// Detect a system command.
+			auto scan = ((lParam >> 16) & 0xff);
+			scan = _translateScancode[scan];
 
+			if ((lParam & (1 << 29)) > 0) {
+				// ALT is pressed with another key
+				if (scan == Key.F4) {
+					// ALT+F4
+					break;
+				}
+			}
+
+			// Follow through to catch the key press / release
+
+		case WM_KEYDOWN:
 		case WM_KEYUP:
-			windowVars.event.type = Event.KeyUp;
-			windowVars.event.info.key.code = cast(uint)wParam;
+			if (uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN) {
+				windowVars.event.type = Event.KeyDown;
+			}
+			else {
+				windowVars.event.type = Event.KeyUp;
+			}
+
+			// Get the scancode from the OEM section in LPARAM
+			auto scan = ((lParam >> 16) & 0xff);
+			if (wParam == VK_RMENU || (wParam == VK_MENU && (lParam & (1 << 24)))) {
+				scan = Key.RightAlt;
+			}
+			else if (wParam == VK_RCONTROL || (wParam == VK_CONTROL && (lParam & (1 << 24)))) {
+				scan = Key.RightControl;
+			}
+			else {
+				scan = _translateScancode[scan];
+			}
+
+			windowVars.event.info.key.ctrl = GetKeyState(VK_CONTROL) < 0;
+			windowVars.event.info.key.alt = GetKeyState(VK_MENU) < 0;
+			windowVars.event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
+
+			if (scan == Key.Invalid) {
+				printf("invalid key: %d\n", MapVirtualKey(wParam, MAPVK_VK_TO_VSC));
+			}
+
+			windowVars.event.info.key.scan = scan;
 			windowVars.haveEvent = true;
 			return 1;
 

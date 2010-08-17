@@ -23,6 +23,8 @@ import platform.vars.canvas;
 import synch.semaphore;
 import synch.thread;
 
+import system.keyboard;
+
 import binding.c;
 
 class Window : Responder {
@@ -631,11 +633,17 @@ public:
 				break;
 
 			case Event.KeyDown:
-				this._dispatchKeyDown(event.info.key);
+				auto key = Keyboard.translate(event.info.key);
+				this._dispatchKeyDown(key);
+
+				if (key.printable != '\0') {
+					this._dispatchKeyChar(key.printable);
+				}
 				break;
 
 			case Event.KeyUp:
-				this._dispatchKeyUp(event.info.key);
+				auto key = Keyboard.translate(event.info.key);
+				this._dispatchKeyUp(key);
 				break;
 
 			default:

@@ -132,12 +132,13 @@ struct Mouse {
 
 struct Key {
 	uint code;
+	uint scan;
 
 	bool ctrl;
 	bool alt;
 	bool shift;
-	
-	bool printable;
+
+	dchar printable;
 
 	enum : uint {
 		Invalid,
@@ -205,6 +206,9 @@ struct Key {
 		Eight,
 		Nine,
 
+		PrintScreen,
+		SysRq,
+
 		SingleQuote,
 		Quote,
 		Comma,
@@ -218,6 +222,28 @@ struct Key {
 		Semicolon,
 		Minus,
 		Equals,
+
+		Tilde,
+		Bang,
+		At,
+		Pound,
+		Dollar,
+		Percent,
+		Caret,
+		Ampersand,
+		Asterisk,
+		LeftParenthesis,
+		RightParenthesis,
+		Underscore,
+		Plus,
+		LeftCurly,
+		RightCurly,
+		Pipe,
+		Colon,
+		DoubleQuote,
+		LeftAngle,
+		RightAngle,
+		QuestionMark,
 
 		A,
 		B,

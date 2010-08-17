@@ -64,11 +64,12 @@ DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/com
 DFILES_OPENGL =
 DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d spec/test.d
 DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
+DFILES_SYSTEM = system/keyboard.d system/keyboardtranslator/keyboardtranslator.d system/keyboardtranslator/qwertyus.d
 
 DFILES_RSC =
 DFILES_SPECS = .specs/runtime/array.d .specs/runtime/foreach.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d .specs/runtime/switch.d .specs/runtime/synchronized.d .specs/math/abs.d
 
-SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_SCRIPTING) $(DFILES_BINDING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
+SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_SYSTEM) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_SCRIPTING) $(DFILES_BINDING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
 
 OBJS_CORE = $(SOURCES:.d=.o)
 
