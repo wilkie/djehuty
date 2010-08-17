@@ -500,7 +500,7 @@ static int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			else if (wParam == 1) {
 				//Internal Timer (double click test)
 				//kill the timer
-				windowVars.doubleClickTimerSet = -windowVars.doubleClickTimerSet;
+//				windowVars.doubleClickTimerSet = -windowVars.doubleClickTimerSet;
 				KillTimer(hWnd, 1);
 			}
 
