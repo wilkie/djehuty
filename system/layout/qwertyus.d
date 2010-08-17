@@ -1,6 +1,6 @@
-module system.keyboardtranslator.qwertyus;
+module system.layout.qwertyus;
 
-import system.keyboardtranslator.keyboardtranslator;
+import system.layout.keyboardtranslator;
 
 import core.definitions;
 

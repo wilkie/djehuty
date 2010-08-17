@@ -387,7 +387,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 
 			windowVars.event.info.key.scan += ((lParam & (1 << 24)) * 0xe000);
 
-			printf("invalid key: %x\n", windowVars.event.info.key.scan);
+		//	printf("invalid key: %x\n", windowVars.event.info.key.scan);
 			if (windowVars.event.info.key.scan == 0x45) {
 				// PAUSE (Incorrect on windows)
 				windowVars.event.info.key.scan = 0xe11477;
@@ -406,7 +406,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 					windowVars.event.info.key.scan = _set1ToSet2[windowVars.event.info.key.scan];
 				}
 			}
-			printf("to: %x\n", windowVars.event.info.key.scan);
+		//	printf("to: %x\n", windowVars.event.info.key.scan);
 
 			windowVars.event.info.key.ctrl = GetKeyState(VK_CONTROL) < 0;
 			windowVars.event.info.key.alt = GetKeyState(VK_MENU) < 0;
