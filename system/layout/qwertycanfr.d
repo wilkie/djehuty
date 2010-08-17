@@ -14,7 +14,6 @@ import core.definitions;
 import io.console;
 
 class QwertyCanFrTranslator : KeyboardTranslator {
-
 	static dchar _translateToChar[] = [
 		Key.SingleQuote: '#',
 		Key.One: '1',
@@ -126,6 +125,8 @@ class QwertyCanFrTranslator : KeyboardTranslator {
 		Key.Equals: '\u00be',
 		Key.Semicolon: '~',
 		Key.Apostrophe: '{',
+		Key.O: '\u00a7', // Section Sign
+		Key.P: '\u00b6', // Pilcrow Sign
 		Key.M: '\u00b5', // Micro Sign
 		Key.Comma: '\u00af', // Macron
 		Key.Period: '\u00ad', // Soft Hyphen
