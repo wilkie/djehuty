@@ -9,17 +9,20 @@ module system.keyboard;
 
 import core.definitions;
 
-import system.layout.qwertyus;
 import system.layout.keyboardtranslator;
 
+import system.layout.qwertyus;
+import system.layout.dvorak;
+
 enum KeyboardLayout {
-	QwertyUS
+	QwertyUS,
+	Dvorak
 }
 
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.QwertyUS;
+	KeyboardLayout _layout = KeyboardLayout.Dvorak;
 	KeyboardTranslator _translator;
 
 public:
@@ -33,6 +36,10 @@ public:
 			case KeyboardLayout.QwertyUS:
 			default:
 				_translator = new QwertyUSTranslator();
+				break;
+
+			case KeyboardLayout.Dvorak:
+				_translator = new DvorakTranslator();
 				break;
 		}
 	}
