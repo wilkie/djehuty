@@ -184,7 +184,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		// 0x40
 		0x0b, 0x83, 0x0a, 0x01, 0x09, 0x77, 0x7e, 0x6c, 0x75, 0x7d, 0x7b, 0x6b, 0x73, 0x74, 0x79, 0x69,
 		// 0x50
-		0x72, 0x7a, 0x70, 0x71, 0x84, 0x00, 0x00, 0x78, 0x07, 0x00, 0x00, 0x1f, 0x27, 0x2f, 0x00, 0x00,
+		0x72, 0x7a, 0x70, 0x71, 0x84, 0x00, 0x61, 0x78, 0x07, 0x00, 0x00, 0x1f, 0x27, 0x2f, 0x00, 0x00,
 		// 0x60
 		0x00, 0x00, 0x00, 0x5e, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x00, 0x00, 0x00, 0x00,
 	];
@@ -231,6 +231,173 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		0x68: 0xe028,
 		0x67: 0xe020,
 		0x66: 0xe018,
+	];
+
+	// This array will translate the scan code (set 2) to the base key
+	static int _translateScancode[] = [
+		// 0x00
+		Key.Invalid,
+		Key.F9,
+		Key.Invalid,
+		Key.F5,
+		Key.F3,
+		Key.F1,
+		Key.F2,
+		Key.F12,
+		Key.F17,
+		Key.F10,
+		Key.F8,
+		Key.F6,
+		Key.F4,
+		Key.Tab,
+		Key.SingleQuote,
+		Key.Invalid,
+		// 0x10
+		Key.F18,
+		Key.LeftAlt,
+		Key.LeftShift,
+		Key.Invalid,
+		Key.LeftControl,
+		Key.Q,
+		Key.One,
+		Key.Invalid,
+		Key.F19,
+		Key.Invalid,
+		Key.Z,
+		Key.S,
+		Key.A,
+		Key.W,
+		Key.Two,
+		Key.F13,
+		// 0x20
+		Key.F20,
+		Key.C,
+		Key.X,
+		Key.D,
+		Key.E,
+		Key.Four,
+		Key.Three,
+		Key.F14,
+		Key.F21,
+		Key.Space,
+		Key.V,
+		Key.F,
+		Key.T,
+		Key.R,
+		Key.Five,
+		Key.F15,
+		// 0x30
+		Key.F22,
+		Key.N,
+		Key.B,
+		Key.H,
+		Key.G,
+		Key.Y,
+		Key.Six,
+		Key.Invalid,
+		Key.F23,
+		Key.Invalid,
+		Key.M,
+		Key.J,
+		Key.U,
+		Key.Seven,
+		Key.Eight,
+		Key.Invalid,
+		// 0x40
+		Key.F24,
+		Key.Comma,
+		Key.K,
+		Key.I,
+		Key.O,
+		Key.Zero,
+		Key.Nine,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Period,
+		Key.Foreslash,
+		Key.L,
+		Key.Semicolon,
+		Key.P,
+		Key.Minus,
+		Key.Invalid,
+		// 0x50
+		Key.Invalid,
+		Key.Invalid,
+		Key.Apostrophe,
+		Key.Invalid,
+		Key.LeftBracket,
+		Key.Equals,
+		Key.Invalid,
+		Key.Invalid,
+		Key.CapsLock,
+		Key.RightShift,
+		Key.Return,
+		Key.RightBracket,
+		Key.Invalid,
+		Key.Backslash,
+		Key.F16,
+		Key.Invalid,
+		// 0x60
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Backspace,
+		Key.Invalid,
+		Key.Invalid,
+		Key.KeypadOne,
+		Key.Invalid,
+		Key.Left,
+		Key.KeypadSeven,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		// 0x70
+		Key.KeypadZero,
+		Key.KeypadPeriod,
+		Key.KeypadTwo,
+		Key.KeypadFive,
+		Key.KeypadSix,
+		Key.KeypadEight,
+		Key.Escape,
+		Key.NumLock,
+		Key.F11,
+		Key.KeypadPlus,
+		Key.KeypadThree,
+		Key.KeypadMinus,
+		Key.KeypadAsterisk,
+		Key.KeypadNine,
+		Key.ScrollLock,
+		Key.Invalid,
+		// 0x80
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.Invalid,
+		Key.SysRq,
+	];
+
+	static int _translateScancodeEx[] = [
+		0x1f: Key.LeftGui,
+		0x14: Key.RightControl,
+		0x27: Key.RightGui,
+		0x11: Key.RightAlt,
+		0x2f: Key.Application,
+		0x7c: Key.PrintScreen,
+		0x70: Key.Insert,
+		0x6c: Key.Home,
+		0x7d: Key.PageUp,
+		0x71: Key.Delete,
+		0x69: Key.End,
+		0x7a: Key.PageDown,
+		0x75: Key.Up,
+		0x6b: Key.Left,
+		0x72: Key.Down,
+		0x74: Key.Right,
+		0x4a: Key.KeypadForeslash,
+		0x5a: Key.KeypadReturn
 	];
 
 	switch(uMsg) {
@@ -406,14 +573,22 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 					windowVars.event.info.key.scan = _set1ToSet2[windowVars.event.info.key.scan];
 				}
 			}
-		//	printf("to: %x\n", windowVars.event.info.key.scan);
+
+			if (windowVars.event.info.key.scan == 0xe11477) {
+				windowVars.event.info.key.code = Key.Pause;
+			}
+			else if (windowVars.event.info.key.scan < _translateScancode.length) {
+				windowVars.event.info.key.code = _translateScancode[windowVars.event.info.key.scan];
+			}
+			else if (windowVars.event.info.key.scan > 0xe000) {
+				windowVars.event.info.key.code = _translateScancodeEx[windowVars.event.info.key.scan & 0xff];
+			}
 
 			windowVars.event.info.key.ctrl = GetKeyState(VK_CONTROL) < 0;
 			windowVars.event.info.key.alt = GetKeyState(VK_MENU) < 0;
 			windowVars.event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
-
-			if (windowVars.event.info.key.scan == Key.Invalid) {
-			}
+			windowVars.event.info.key.rightAlt = GetKeyState(VK_RMENU) < 0;
+			windowVars.event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
 
 			windowVars.haveEvent = true;
 			return 1;

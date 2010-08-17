@@ -138,6 +138,9 @@ struct Key {
 	bool alt;
 	bool shift;
 
+	bool leftAlt;
+	bool rightAlt;
+
 	dchar printable;
 
 	enum : uint {
@@ -210,7 +213,7 @@ struct Key {
 		SysRq,
 
 		SingleQuote,
-		Quote,
+		Apostrophe,
 		Comma,
 		Period,
 		Foreslash,
@@ -222,28 +225,6 @@ struct Key {
 		Semicolon,
 		Minus,
 		Equals,
-
-		Tilde,
-		Bang,
-		At,
-		Pound,
-		Dollar,
-		Percent,
-		Caret,
-		Ampersand,
-		Asterisk,
-		LeftParenthesis,
-		RightParenthesis,
-		Underscore,
-		Plus,
-		LeftCurly,
-		RightCurly,
-		Pipe,
-		Colon,
-		DoubleQuote,
-		LeftAngle,
-		RightAngle,
-		QuestionMark,
 
 		A,
 		B,
@@ -271,6 +252,26 @@ struct Key {
 		X,
 		Y,
 		Z,
+
+		KeypadZero,
+		KeypadOne,
+		KeypadTwo,
+		KeypadThree,
+		KeypadFour,
+		KeypadFive,
+		KeypadSix,
+		KeypadSeven,
+		KeypadEight,
+		KeypadNine,
+
+		KeypadPlus,
+		KeypadMinus,
+		KeypadAsterisk,
+		KeypadForeslash,
+		KeypadReturn,
+		KeypadPeriod,
+
+		International,
 	}
 }
 

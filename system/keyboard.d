@@ -12,11 +12,14 @@ import core.definitions;
 import system.layout.keyboardtranslator;
 
 import system.layout.qwertyus;
+import system.layout.qwertycanfr;
 import system.layout.dvorak;
 import system.layout.colemak;
 
 enum KeyboardLayout {
 	QwertyUS,
+	QwertyCanFr,
+	QwertyCanMultilingual,
 	Dvorak,
 	Colemak
 }
@@ -24,7 +27,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.QwertyUS;
+	KeyboardLayout _layout = KeyboardLayout.QwertyCanFr;
 	KeyboardTranslator _translator;
 
 public:
@@ -38,6 +41,10 @@ public:
 			case KeyboardLayout.QwertyUS:
 			default:
 				_translator = new QwertyUSTranslator();
+				break;
+
+			case KeyboardLayout.QwertyCanFr:
+				_translator = new QwertyCanFrTranslator();
 				break;
 
 			case KeyboardLayout.Dvorak:
