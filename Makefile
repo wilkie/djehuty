@@ -64,7 +64,7 @@ DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/com
 DFILES_OPENGL =
 DFILES_TESTING = spec/support.d spec/logic.d spec/itemspecification.d spec/packagespecification.d spec/modulespecification.d spec/specification.d spec/test.d
 DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d synch/semaphore.d synch/thread.d synch/timer.d
-DFILES_SYSTEM = system/keyboard.d system/layout/keyboardtranslator.d system/layout/qwertyus.d
+DFILES_SYSTEM = system/keyboard.d system/layout/keyboardtranslator.d system/layout/qwertyus.d system/layout/dvorak.d
 
 DFILES_RSC =
 DFILES_SPECS = .specs/runtime/array.d .specs/runtime/foreach.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d .specs/runtime/switch.d .specs/runtime/synchronized.d .specs/math/abs.d
