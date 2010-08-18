@@ -60,7 +60,23 @@ class RussianKeyboard : KeyTranslator {
 		Key.LeftBracket: '\u0445', // cyrillic small Ha
 		Key.RightBracket: '\u044a', // cyrillic small hard sign
 		Key.Backslash: '\\',
-		Key.Space: ' '
+		Key.Space: ' ',
+
+		Key.KeypadZero: '0',
+		Key.KeypadOne: '1',
+		Key.KeypadTwo: '2',
+		Key.KeypadThree: '3',
+		Key.KeypadFour: '4',
+		Key.KeypadFive: '5',
+		Key.KeypadSix: '6',
+		Key.KeypadSeven: '7',
+		Key.KeypadEight: '8',
+		Key.KeypadNine: '9',
+		Key.KeypadMinus: '-',
+		Key.KeypadPlus: '+',
+		Key.KeypadForeslash: '/',
+		Key.KeypadAsterisk: '*',
+		Key.KeypadPeriod: '.'
 	];
 
 	static dchar _translateShiftToChar[] = [
