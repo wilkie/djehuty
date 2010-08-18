@@ -221,8 +221,13 @@ class CanadianMultilingualKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			// Dead characters
-			if (key.code == Key.LeftBracket) {
+			if (key.capsLock && ((key.code >= Key.A && key.code <= Key.Z)
+			  || key.code == Key.RightBracket || key.code == Key.Semicolon
+			  || key.code == Key.Apostrophe || key.code == Key.Backslash
+			  || key.code == Key.Foreslash || key.code == Key.International)) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0302'; // circumflex
 			}
 			else if (key.code < _translateToChar.length) {
@@ -234,7 +239,13 @@ class CanadianMultilingualKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code == Key.LeftBracket) {
+			if (key.capsLock && ((key.code >= Key.A && key.code <= Key.Z)
+			  || key.code == Key.RightBracket || key.code == Key.Semicolon
+			  || key.code == Key.Apostrophe || key.code == Key.Backslash
+			  || key.code == Key.Foreslash || key.code == Key.International)) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0308'; // diaeresis
 			}
 			else if (key.code < _translateShiftToChar.length) {
