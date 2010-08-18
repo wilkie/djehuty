@@ -15,6 +15,7 @@ import system.layout.canadianmultilingual;
 import system.layout.czechprogrammers;
 import system.layout.colemak;
 import system.layout.dvorak;
+import system.layout.french;
 import system.layout.polishprogrammers;
 import system.layout.quebec;
 import system.layout.russian;
@@ -26,6 +27,7 @@ enum KeyboardLayout {
 	CzechProgrammers,
 	Colemak,
 	Dvorak,
+	French,
 	PolishProgrammers,
 	Quebec,
 	Russian,
@@ -36,7 +38,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.UnitedStates;
+	KeyboardLayout _layout = KeyboardLayout.French;
 	KeyTranslator _translator;
 
 public:
@@ -61,6 +63,10 @@ public:
 
 			case KeyboardLayout.Dvorak:
 				_translator = new DvorakKeyboard();
+				break;
+
+			case KeyboardLayout.French:
+				_translator = new FrenchKeyboard();
 				break;
 
 			case KeyboardLayout.PolishProgrammers:
