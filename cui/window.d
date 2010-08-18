@@ -291,7 +291,7 @@ private:
 	}
 
 	bool isPrintable(Key key, out dchar chr) {
-		if (key.ctrl || key.alt) {
+		if (key.control || key.alt) {
 			return false;
 		}
 

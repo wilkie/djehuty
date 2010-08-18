@@ -326,8 +326,8 @@ private {
 
 					evt.info.key.code = _translateKey[code];
 
-					evt.info.key.ctrl = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
-					evt.info.key.alt = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
+					evt.info.key.leftControl = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
+					evt.info.key.leftAlt = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
 					evt.info.key.shift = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
 
 					if (vars.irInBuf[i].Event.KeyEvent.bKeyDown == TRUE) {
