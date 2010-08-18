@@ -197,7 +197,10 @@ class UnitedStatesInternationalKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			if (key.code == Key.SingleQuote) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code == Key.SingleQuote) {
 				key.deadChar = '\u0300'; // grave
 			}
 			else if (key.code == Key.Apostrophe) {
@@ -212,7 +215,10 @@ class UnitedStatesInternationalKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code == Key.SingleQuote) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code == Key.SingleQuote) {
 				key.deadChar = '\u0303'; // tilde
 			}
 			else if (key.code == Key.Six) {
@@ -230,7 +236,12 @@ class UnitedStatesInternationalKeyboard : KeyTranslator {
 			}
 		}
 		else if (!key.shift && key.rightAlt && !key.leftAlt && !key.control) {
-			if (key.code < _translateAltToChar.length) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock
+			  && key.code != Key.R && key.code != Key.S && key.code != Key.M
+			  && key.code != Key.C) {
+				key.printable = _translateShiftAltToChar[key.code];
+			}
+			else if (key.code < _translateAltToChar.length) {
 				key.printable = _translateAltToChar[key.code];
 
 				if (key.deadChar != '\0') {
@@ -239,7 +250,12 @@ class UnitedStatesInternationalKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && key.rightAlt && !key.leftAlt && !key.control) {
-			if (key.code < _translateShiftAltToChar.length) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock
+			  && key.code != Key.R && key.code != Key.S && key.code != Key.M
+			  && key.code != Key.C) {
+				key.printable = _translateAltToChar[key.code];
+			}
+			else if (key.code < _translateShiftAltToChar.length) {
 				key.printable = _translateShiftAltToChar[key.code];
 
 				if (key.deadChar != '\0') {
