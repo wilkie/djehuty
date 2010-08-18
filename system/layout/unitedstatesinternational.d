@@ -223,8 +223,8 @@ class UnitedStatesInternationalKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && key.rightAlt && !key.leftAlt && !key.control) {
-			if (key.code < _translateAltToChar.length) {
-				key.printable = _translateAltToChar[key.code];
+			if (key.code < _translateShiftAltToChar.length) {
+				key.printable = _translateShiftAltToChar[key.code];
 
 				if (key.deadChar != '\0') {
 					key.printable = Unicode.combine(key.printable, key.deadChar)[0];
