@@ -589,6 +589,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
 			windowVars.event.info.key.rightAlt = GetKeyState(VK_RMENU) < 0;
 			windowVars.event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
+			windowVars.event.info.key.capsLock = (GetKeyState(VK_CAPITAL) & 1) == 1;
 
 			windowVars.haveEvent = true;
 			return 1;

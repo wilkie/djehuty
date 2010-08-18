@@ -133,12 +133,18 @@ class UnitedStatesKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			if (key.code < _translateToChar.length) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code < _translateShiftToChar.length) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
 			}
 		}
