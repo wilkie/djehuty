@@ -59,7 +59,23 @@ class QuebecKeyboard : KeyTranslator {
 		Key.Foreslash: '\u00e9', // Minuscule e-acute
 		Key.Backslash: '<',
 		Key.International: '\u00ab', // Double angle quote left
-		Key.Space: ' '
+		Key.Space: ' ',
+
+		Key.KeypadZero: '0',
+		Key.KeypadOne: '1',
+		Key.KeypadTwo: '2',
+		Key.KeypadThree: '3',
+		Key.KeypadFour: '4',
+		Key.KeypadFive: '5',
+		Key.KeypadSix: '6',
+		Key.KeypadSeven: '7',
+		Key.KeypadEight: '8',
+		Key.KeypadNine: '9',
+		Key.KeypadMinus: '-',
+		Key.KeypadPlus: '+',
+		Key.KeypadForeslash: '/',
+		Key.KeypadAsterisk: '*',
+		Key.KeypadPeriod: '.'
 	];
 
 	static dchar _translateShiftToChar[] = [
@@ -141,8 +157,11 @@ class QuebecKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			// Dead characters
-			if (key.code == Key.LeftBracket) {
+			if (key.capsLock && (key.code >= Key.A && key.code <= Key.Z
+			  || key.code == Key.Foreslash)) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0302'; // circumflex
 			}
 			else if (key.code == Key.RightBracket) {
@@ -160,7 +179,11 @@ class QuebecKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code == Key.LeftBracket) {
+			if (key.capsLock && (key.code >= Key.A && key.code <= Key.Z
+			  || key.code == Key.Foreslash)) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0302'; // circumflex
 			}
 			else if (key.code == Key.RightBracket) {
