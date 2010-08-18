@@ -133,12 +133,28 @@ class RussianKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			if (key.code < _translateToChar.length) {
+			if (key.capsLock && ((key.code >= Key.A && key.code <= Key.Z)
+			  || key.code == Key.RightBracket || key.code == Key.Semicolon
+			  || key.code == Key.Apostrophe || key.code == Key.Backslash
+			  || key.code == Key.LeftBracket || key.code == Key.International
+			  || key.code == Key.SingleQuote || key.code == Key.Comma
+			  || key.code == Key.Period)) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code < _translateShiftToChar.length) {
+			if (key.capsLock && ((key.code >= Key.A && key.code <= Key.Z)
+			  || key.code == Key.RightBracket || key.code == Key.Semicolon
+			  || key.code == Key.Apostrophe || key.code == Key.Backslash
+			  || key.code == Key.LeftBracket || key.code == Key.International
+			  || key.code == Key.SingleQuote || key.code == Key.Comma
+			  || key.code == Key.Period)) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code < _translateShiftToChar.length) {
 				key.printable = _translateShiftToChar[key.code];
 			}
 		}
