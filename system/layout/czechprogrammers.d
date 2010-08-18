@@ -170,8 +170,10 @@ class CzechProgrammersKeyboard : KeyTranslator {
 	override Key translate(Key key) {
 		key.printable = '\0';
 		if (!key.shift && !key.alt && !key.control) {
-			// Dead characters
-			if (key.code < _translateToChar.length) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateShiftToChar[key.code];
+			}
+			else if (key.code < _translateToChar.length) {
 				key.printable = _translateToChar[key.code];
 
 				if (key.deadChar != '\0') {
@@ -180,7 +182,10 @@ class CzechProgrammersKeyboard : KeyTranslator {
 			}
 		}
 		else if (key.shift && !key.alt && !key.control) {
-			if (key.code == Key.SingleQuote) {
+			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code == Key.SingleQuote) {
 				key.deadChar = '\u0303'; // tilde
 			}
 			else if (key.code < _translateShiftToChar.length) {
