@@ -59,6 +59,7 @@ class FrenchKeyboard : KeyTranslator {
 		Key.Period: ':',
 		Key.Foreslash: '!',
 		Key.Backslash: '*',
+		Key.RightBracket: '$',
 		Key.International: '<',
 		Key.Space: ' '
 	];
@@ -109,7 +110,7 @@ class FrenchKeyboard : KeyTranslator {
 		Key.Foreslash: '\u00a7', // Section Sign
 		Key.Backslash: '\u00b5', // Micro Sign
 		Key.RightBracket: '\u00a3', // Pound Sign
-		Key.International: '\u00bb', // Double angle quote right
+		Key.International: '>',
 		Key.Space: ' ',
 
 		Key.KeypadZero: '0',
@@ -146,11 +147,8 @@ class FrenchKeyboard : KeyTranslator {
 
 	override Key translate(Key key) {
 		key.printable = '\0';
-		if (!key.shift && !key.alt && !key.control && !key.capsLock) {
-			if (key.code >= Key.A && key.code <= Key.Z && key.capsLock) {
-				key.printable = _translateShiftToChar[key.code];
-			}
-			else if (key.code == Key.LeftBracket) {
+		if (!(key.shift ^ key.capsLock) && !key.alt && !key.control) {
+			if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0302'; // circumflex
 			}
 			else if (key.code < _translateToChar.length) {
@@ -162,7 +160,10 @@ class FrenchKeyboard : KeyTranslator {
 			}
 		}
 		else if ((key.shift || key.capsLock) && !key.alt && !key.control) {
-			if (key.code == Key.LeftBracket) {
+			if (!key.shift && key.code == Key.SingleQuote) {
+				key.printable = _translateToChar[key.code];
+			}
+			else if (key.code == Key.LeftBracket) {
 				key.deadChar = '\u0308'; // diaeresis
 			}
 			else if (key.code < _translateShiftToChar.length) {
