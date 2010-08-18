@@ -11,26 +11,30 @@ import core.definitions;
 
 import system.layout.keytranslator;
 
-import system.layout.unitedstates;
-import system.layout.quebec;
 import system.layout.canadianmultilingual;
-import system.layout.polishprogrammers;
-import system.layout.dvorak;
+import system.layout.czechprogrammers;
 import system.layout.colemak;
+import system.layout.dvorak;
+import system.layout.polishprogrammers;
+import system.layout.quebec;
+import system.layout.unitedstates;
+import system.layout.unitedstatesinternational;
 
 enum KeyboardLayout {
 	CanadianMultilingualStandard,
+	CzechProgrammers,
 	Colemak,
 	Dvorak,
 	PolishProgrammers,
 	Quebec,
 	UnitedStates,
+	UnitedStatesInternational,
 }
 
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.PolishProgrammers;
+	KeyboardLayout _layout = KeyboardLayout.UnitedStatesInternational;
 	KeyTranslator _translator;
 
 public:
@@ -44,6 +48,14 @@ public:
 			case KeyboardLayout.UnitedStates:
 			default:
 				_translator = new UnitedStatesKeyboard();
+				break;
+
+			case KeyboardLayout.UnitedStatesInternational:
+				_translator = new UnitedStatesInternationalKeyboard();
+				break;
+
+			case KeyboardLayout.CzechProgrammers:
+				_translator = new CzechProgrammersKeyboard();
 				break;
 
 			case KeyboardLayout.Quebec:
