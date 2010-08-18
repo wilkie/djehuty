@@ -17,6 +17,7 @@ import system.layout.colemak;
 import system.layout.dvorak;
 import system.layout.polishprogrammers;
 import system.layout.quebec;
+import system.layout.russian;
 import system.layout.unitedstates;
 import system.layout.unitedstatesinternational;
 
@@ -27,6 +28,7 @@ enum KeyboardLayout {
 	Dvorak,
 	PolishProgrammers,
 	Quebec,
+	Russian,
 	UnitedStates,
 	UnitedStatesInternational,
 }
@@ -34,7 +36,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.UnitedStatesInternational;
+	KeyboardLayout _layout = KeyboardLayout.Russian;
 	KeyTranslator _translator;
 
 public:
@@ -45,21 +47,16 @@ public:
 	void layout(KeyboardLayout value) {
 		_layout = value;
 		switch(_layout) {
-			case KeyboardLayout.UnitedStates:
-			default:
-				_translator = new UnitedStatesKeyboard();
+			case KeyboardLayout.CanadianMultilingualStandard:
+				_translator = new CanadianMultilingualKeyboard();
 				break;
 
-			case KeyboardLayout.UnitedStatesInternational:
-				_translator = new UnitedStatesInternationalKeyboard();
+			case KeyboardLayout.Colemak:
+				_translator = new ColemakKeyboard();
 				break;
 
 			case KeyboardLayout.CzechProgrammers:
 				_translator = new CzechProgrammersKeyboard();
-				break;
-
-			case KeyboardLayout.Quebec:
-				_translator = new QuebecKeyboard();
 				break;
 
 			case KeyboardLayout.Dvorak:
@@ -70,12 +67,21 @@ public:
 				_translator = new PolishProgrammersKeyboard();
 				break;
 
-			case KeyboardLayout.Colemak:
-				_translator = new ColemakKeyboard();
+			case KeyboardLayout.Quebec:
+				_translator = new QuebecKeyboard();
 				break;
 
-			case KeyboardLayout.CanadianMultilingualStandard:
-				_translator = new CanadianMultilingualKeyboard();
+			case KeyboardLayout.Russian:
+				_translator = new RussianKeyboard();
+				break;
+
+			case KeyboardLayout.UnitedStates:
+			default:
+				_translator = new UnitedStatesKeyboard();
+				break;
+
+			case KeyboardLayout.UnitedStatesInternational:
+				_translator = new UnitedStatesInternationalKeyboard();
 				break;
 		}
 	}
