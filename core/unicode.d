@@ -1658,6 +1658,22 @@ public:
 						break;
 				}
 				break;
+			case '\u0654': // arabic hamza above
+				switch(chr[0]) {
+					case '\u0627':
+						return "\u0623";
+					case '\u06c1':
+						return "\u06c2";
+					case '\u0648':
+						return "\u0624";
+					case '\u064a':
+						return "\u0626";
+					case '\u06d2':
+						return "\u06d3";
+					default:
+						break;
+				}
+				break;
 			default:
 				break;
 		}
