@@ -20,6 +20,7 @@ import system.layout.french;
 import system.layout.polishprogrammers;
 import system.layout.quebec;
 import system.layout.russian;
+import system.layout.spanish;
 import system.layout.unitedstates;
 import system.layout.unitedstatesinternational;
 
@@ -33,6 +34,7 @@ enum KeyboardLayout {
 	PolishProgrammers,
 	Quebec,
 	Russian,
+	Spanish,
 	UnitedStates,
 	UnitedStatesInternational,
 }
@@ -85,6 +87,10 @@ public:
 
 			case KeyboardLayout.Russian:
 				_translator = new RussianKeyboard();
+				break;
+
+			case KeyboardLayout.Spanish:
+				_translator = new SpanishKeyboard();
 				break;
 
 			case KeyboardLayout.UnitedStates:
