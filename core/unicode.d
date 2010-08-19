@@ -1612,6 +1612,52 @@ public:
 						break;
 				}
 				break;
+			case '\u05bc': // hebrew point dagesh or mapiq
+				switch(chr[0]) {
+					case '\u05d1':
+						return "\ufb31";
+					case '\u05db':
+						return "\ufb3b";
+					case '\u05da':
+						return "\ufb3a";
+					case '\u05e4':
+						return "\ufb44";
+					case '\u05e3':
+						return "\ufb43";
+					case '\u05e9':
+						return "\ufb49";
+					default:
+						break;
+				}
+				break;
+			case '\u05bf': // hebrew point rafe
+				switch(chr[0]) {
+					case '\u05d1':
+						return "\ufb4c";
+					case '\u05db':
+						return "\ufb4d";
+					case '\u05e4':
+						return "\ufb4e";
+					default:
+						break;
+				}
+				break;
+			case '\u05c1': // hebrew point shin dot
+				switch(chr[0]) {
+					case '\u05e9':
+						return "\ufb2a";
+					default:
+						break;
+				}
+				break;
+			case '\u05c2': // hebrew point sin dot
+				switch(chr[0]) {
+					case '\u05e9':
+						return "\ufb2b";
+					default:
+						break;
+				}
+				break;
 			default:
 				break;
 		}
