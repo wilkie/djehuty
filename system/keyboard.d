@@ -40,7 +40,7 @@ enum KeyboardLayout {
 class Keyboard {
 static:
 private:
-	KeyboardLayout _layout = KeyboardLayout.Belgian;
+	KeyboardLayout _layout = KeyboardLayout.UnitedStates;
 	KeyTranslator _translator;
 
 public:

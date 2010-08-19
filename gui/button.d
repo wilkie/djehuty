@@ -40,7 +40,7 @@ public:
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {
-		putln("down ", button, " clicks: ", button, mouse.clicks[button]);
+		putln("down ", button, " clicks: ", mouse.clicks[button]);
 	}
 
 	override void onMouseUp(Mouse mouse, uint button) {
