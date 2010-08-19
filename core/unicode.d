@@ -10,6 +10,7 @@
 module core.unicode;
 
 import core.definitions;
+import core.util;
 
 private static const uint halfShift = 10;
 private static const uint halfBase = 0x0010000;
@@ -529,14 +530,148 @@ public:
 		return isDeadChar(chr[0]);
 	}
 
+	private template BuildDeadList(string content) {
+		const string BuildDeadList = `static bool _isDead[] = [
+			` ~ content[0..$-1]
+			~ `
+			];
+		`;
+	}
+
+	private template BuildDeadListItemsImpl(uint index = 0, items...) {
+		static if (index == items.length) {
+			const string BuildDeadListItemsImpl = "";
+		}
+		else {
+			const string BuildDeadListItemsImpl = `
+				` ~ items[index].stringof ~ `: true,
+` ~ BuildDeadListItemsImpl!(index+1,items);
+		}
+	}
+
+	private template BuildDeadListItems(items...) {
+		const string BuildDeadListItems = BuildDeadListItemsImpl!(0, items);
+	}
+
 	bool isDeadChar(dchar chr) {
-		// if it is a dead character
-		return ((
-			(chr >= 0x300 && chr <= 0x36F) ||		// Combining Diacritical Marks
-			(chr >= 0x1DC0 && chr <= 0x1DFF) ||		// Combining Diacritical Marks Supplement
-			(chr >= 0x20D0 && chr <= 0x20FF) ||		// Combining Diacritical Marks for Symbols
-			(chr >= 0xFE20 && chr <= 0xFE2F)		// Combining Half Marks
-			));
+		// Because Unicode spec cannot put these in order
+		// since that would be too useful.
+
+		mixin(BuildDeadList!(
+			// Combining Diacritical Marks
+			BuildDeadListItems!(Range!(0x300, 0x36F)) ~
+			// Hebrew
+			BuildDeadListItems!(Range!(0x591, 0x5bd), 0x5c1, 0x5c2, 0x5c4, 0x5c5, 0x5c7) ~
+			// Arabic
+			BuildDeadListItems!(Range!(0x610, 0x61a), Range!(0x64b, 0x65e),	0x670, Range!(0x6d6, 0x6dc)) ~
+			BuildDeadListItems!(Range!(0x6df, 0x6e4), 0x6e7, 0x6e8, Range!(0x6ea, 0x6ed)) ~
+			// Syriac
+			BuildDeadListItems!(0x711, Range!(0x730, 0x74a)) ~
+			// Thaana
+			BuildDeadListItems!(Range!(0x7a6, 0x7b0)) ~
+			// NKO
+			BuildDeadListItems!(Range!(0x7eb, 0x7f3)) ~
+			// Devanagari
+			BuildDeadListItems!(0x901, 0x902, 0x93c, Range!(0x941, 0x948), 0x94d, Range!(0x951, 0x954),
+			0x962, 0x963) ~
+			// Bengali
+			BuildDeadListItems!(0x981, 0x9bc, Range!(0x9c1, 0x9c4), 0x9cd, 0x9e2, 0x9e3) ~
+			// Gurmukhi
+			BuildDeadListItems!(0xa01, 0xa02, 0xa3c, 0xa41, 0xa42, 0xa47, 0xa48, Range!(0xa4b, 0xa4d),
+			0xa51, 0xa70, 0xa71, 0xa75, 0xa81, 0xa82, 0xabc, Range!(0xac1, 0xac5),
+			0xac7, 0xac8, 0xacd, 0xae2, 0xae3) ~
+			// Oriya
+			BuildDeadListItems!(0xb01, 0xb3c, 0xb3f, Range!(0xb41, 0xb44), 0xb4d, 0xb56, 0xb62, 0xb63) ~
+			// Tamil
+			BuildDeadListItems!(0xb82, 0xbc0, 0xbcd) ~
+			// Telugu
+			BuildDeadListItems!(0xc3e, 0xc3f, 0xc40, Range!(0xc46, 0xc48), Range!(0xc4a, 0xc4d), 0xc55,
+			0xc56, 0xc62, 0xc63) ~
+			// Kannada
+			BuildDeadListItems!(0xcbc, 0xcbf, 0xcc6, 0xccc, 0xccd, 0xce2, 0xce3) ~
+			// Malayalam
+			BuildDeadListItems!(Range!(0xd41, 0xd44), 0xd4d, 0xd62, 0xd63) ~
+			// Sinhala
+			BuildDeadListItems!(0xdca, Range!(0xdd2, 0xdd4), 0xdd6) ~
+			// Thai
+			BuildDeadListItems!(0xe31, Range!(0xe34, 0xe3a), Range!(0xe47, 0xe4e)) ~
+			// Lao
+			BuildDeadListItems!(0xeb1, Range!(0xeb4, 0xeb9), 0xebb, 0xebc, Range!(0xec8, 0xecd)) ~
+			// Tibetan
+			BuildDeadListItems!(0xf18, 0xf19, 0xf35, 0xf37, 0xf39, Range!(0xf71, 0xf7e),
+			Range!(0xf80, 0xf84), 0xf86, 0xf87, Range!(0xf90, 0xfbc), 0xfc6) ~
+			// Myanmar
+			BuildDeadListItems!(Range!(0x102d, 0x1030), Range!(0x1032, 0x1037), 0x1039, 0x103a, 0x103d,
+			0x103e, 0x1058, 0x1059, Range!(0x105e, 0x1060), Range!(0x1071, 0x1074),
+			0x1082, 0x1085, 0x1086, 0x108d) ~
+			// Ethiopic
+			BuildDeadListItems!(0x135f) ~
+			// Tagalog
+			BuildDeadListItems!(Range!(0x1712, 0x1714)) ~
+			// Hanunoo
+			BuildDeadListItems!(Range!(0x1732, 0x1734)) ~
+			// Buhid
+			BuildDeadListItems!(0x1752, 0x1753) ~
+			// Tagbanwa
+			BuildDeadListItems!(0x1772, 0x1773) ~
+			// Khmer
+			BuildDeadListItems!(Range!(0x17b7, 0x17bd), 0x17c6, Range!(0x17c9, 0x17d3), 0x17dd) ~
+			// Mongolian
+			BuildDeadListItems!(Range!(0x180b, 0x180d), 0x18a9) ~
+			// Limbu
+			BuildDeadListItems!(Range!(0x1920, 0x1922), 0x1927, 0x1928, 0x1932, Range!(0x1939, 0x193b)) ~
+			// Buginese
+			BuildDeadListItems!(0x1a17, 0x1a18) ~
+			// Balinese
+			BuildDeadListItems!(Range!(0x1b00, 0x1b03), 0x1b34, Range!(0x1b36, 0x1b3a), 0x1b3c, 0x1b42,
+			Range!(0x1b6b, 0x1b73)) ~
+			// Sundanese
+			BuildDeadListItems!(0x1b80, 0x1b81, Range!(0x1ba2, 0x1ba5), 0x1ba8, 0x1ba9) ~
+			// Lepcha
+			BuildDeadListItems!(Range!(0x1c2c, 0x1c33), 0x1c36, 0x1c37) ~
+			// Combining Diacritical Marks Supplement
+			BuildDeadListItems!(Range!(0x1dc0, 0x1dff)) ~
+			// Combining Diacritical Marks for Symbols
+			BuildDeadListItems!(Range!(0x20d0, 0x20ff)) ~
+			// Combining Cyrillic
+			BuildDeadListItems!(Range!(0x2d30, 0x2dff)) ~
+			// Ideographic
+			BuildDeadListItems!(Range!(0x302a, 0x302d)) ~
+			// Hangul
+			BuildDeadListItems!(0x302e, 0x302f) ~
+			// Combining Katakana-Hiragana
+			BuildDeadListItems!(0x3099, 0x309a) ~
+			// Combining Cyrillic
+			BuildDeadListItems!(0xa66f, 0xa67c, 0xa67d) ~
+			// Syloti
+			BuildDeadListItems!(0xa802, 0xa806, 0xa80b, 0xa825, 0xa826) ~
+			// Saurashtra
+			BuildDeadListItems!(0xa8c4) ~
+			// Kayah
+			BuildDeadListItems!(Range!(0xa926, 0xa92d)) ~
+			// Rejang
+			BuildDeadListItems!(Range!(0xa947, 0xa951)) ~
+			// Cham
+			BuildDeadListItems!(Range!(0xaa29, 0xaa2e), 0xaa31, 0xaa32, 0xaa35, 0xaa36, 0xaa43, 0xaa4c) ~
+			// Hebrew Judeo-Spanish Varika
+			BuildDeadListItems!(0xfb1e) ~
+			// Variation Selector
+			BuildDeadListItems!(Range!(0xfe00, 0xfe0f)) ~
+			// Combining Half Marks
+			BuildDeadListItems!(Range!(0xfe20, 0xfeff)) ~
+			// Phaistos Disc Sign Combining Oblique Stroke
+			BuildDeadListItems!(0x101dd) ~
+			// Kharoshthi
+			BuildDeadListItems!(Range!(0x10a01, 0x10a03), 0x10a05, 0x10a06, Range!(0x10a0c, 0x10a0f),
+			0x10a38, 0x10a39, 0x10a3a, 0x10a3f) ~
+			// Musical Symbols
+			BuildDeadListItems!(Range!(0x1d167, 0x1d169), Range!(0x1d17b, 0x1d182),
+			Range!(0x1d185, 0x1d18b), Range!(0x1d1aa, 0x1d1ad)) ~
+			// Combining Greek Musical Symbols
+			BuildDeadListItems!(Range!(0x1d242, 0x1d244))
+		));
+
+		return (chr < _isDead.length && _isDead[chr]);
 	}
 
 	// character conversions
@@ -553,7 +688,6 @@ public:
 
 		char* source = src.ptr;
 		char* sourceEnd = &src[$-1] + 1;
-
 		ushort extraBytesToRead;
 
 		dchar ch;

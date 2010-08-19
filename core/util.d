@@ -232,7 +232,8 @@ template Itoa(long i) {
 	}
 }
 
-template Itoh(long i) {
+template Itoh(ulong i) {
+		pragma(msg, "itoh " ~ i.stringof);
 	const char[] Itoh = "0x" ~ IntToStr!(i, 16);
 }
 
@@ -249,4 +250,12 @@ template IntToStr(ulong i, int base) {
 	}
 }
 
+template Range(uint start, uint end) {
+	static if (start == end) {
+		alias Tuple!(start) Range;
+	}
+	else {
+		alias Tuple!(start, Range!(start+1, end)) Range;
+	}
+}
 
