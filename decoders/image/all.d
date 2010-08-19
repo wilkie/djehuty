@@ -5,6 +5,8 @@ import graphics.bitmap;
 import core.string;
 import core.stream;
 
+import io.console;
+
 import decoders.decoder;
 import decoders.image.decoder;
 
@@ -19,7 +21,6 @@ public import decoders.image.jpeg;
 // PCX
 // RAW
 StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap view) {
-	/*
 	StreamData ret;
 
 	ulong pos = stream.position;
@@ -51,7 +52,6 @@ StreamData runAllDecoders(ref ImageDecoder imageCodec, Stream stream, ref Bitmap
 	}
 
 	imageCodec = null;
-*/
 	return StreamData.Invalid;
 }
 

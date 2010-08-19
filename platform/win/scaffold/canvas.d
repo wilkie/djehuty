@@ -24,7 +24,7 @@ import gui.window;
 
 import graphics.canvas;
 //import graphics.graphics;
-//import graphics.bitmap;
+import graphics.bitmap;
 
 import core.string;
 import core.main;
@@ -50,9 +50,13 @@ void CanvasCreate(Canvas view, CanvasPlatformVars*viewVars) {
 	Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
 }
 
+void CanvasCreateDIB(Bitmap view, CanvasPlatformVars* viewVars) {
+	CanvasCreate(view, viewVars);
+}
+
 /*void BitmapCreate(Bitmap view, CanvasPlatformVars* viewVars) {
 	viewVars.clipRegions = new _clipList();
-	
+
 	viewVars.length = (view.width() * view.height()) * 4;
 
 	Gdiplus.GdipCreateBitmapFromScan0(view.width(), view.height(), 0, Gdiplus.PixelFormat32bppARGB, null, &viewVars.image);
@@ -102,7 +106,6 @@ void CanvasCreateForWindow(ref View view, ViewPlatformVars*viewVars, ref Window 
 //}
 
 void CanvasResize(Canvas view, CanvasPlatformVars* viewVars) {
-	Console.putln("view resize");
 	HDC dc;
 
 	dc = GetDC(null);
@@ -129,7 +132,6 @@ void CanvasResize(Canvas view, CanvasPlatformVars* viewVars) {
 	SelectObject(viewVars.dc, bmp);
 
 	DeleteObject(bmp);
-	Console.putln("view done");
 }
 
 void* CanvasGetBytes(CanvasPlatformVars* viewVars, ref ulong length) {

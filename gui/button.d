@@ -15,11 +15,15 @@ import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
 
+import resource.image;
+
 import io.console;
 
 class Button : Window {
 private:
 	string _value;
+	Image _image;
+	Position _imagePosition = Position.Center;
 
 public:
 	this(double x, double y, double width, double height, string text = "") {
@@ -76,6 +80,41 @@ public:
 		canvas.fillRectangle(this.width-2, 0, 2, this.height-2);
 
 		canvas.strokeRectangle(0, 0, this.width, this.height);
+
+		if (_image !is null) {
+			double posX, posY;
+			switch(_imagePosition) {
+				case Position.Left:
+				case Position.TopLeft:
+				case Position.BottomLeft:
+					posX = 0.0;
+					break;
+				case Position.Right:
+				case Position.TopRight:
+				case Position.BottomRight:
+					posX = this.width - cast(double)_image.width;
+					break;
+				default:
+					posX = (this.width - cast(double)_image.width) / 2.0;
+					break;
+			}
+			switch(_imagePosition) {
+				case Position.Top:
+				case Position.TopLeft:
+				case Position.TopRight:
+					posY = 0.0;
+					break;
+				case Position.Bottom:
+				case Position.BottomLeft:
+				case Position.BottomRight:
+					posY = this.height - cast(double)_image.height;
+					break;
+				default:
+					posY = (this.height - cast(double)_image.height) / 2.0;
+					break;
+			}
+			canvas.drawCanvas(_image.canvas, posX, posY);
+		}
 	}
 
 	// Properties
@@ -86,6 +125,24 @@ public:
 
 	void text(string value) {
 		_value = value.dup;
+		redraw();
+	}
+
+	Image image() {
+		return _image;
+	}
+
+	void image(Image value) {
+		_image = value;
+		redraw();
+	}
+
+	Position imagePosition() {
+		return _imagePosition;
+	}
+
+	void imagePosition(Position value) {
+		_imagePosition = value;
 		redraw();
 	}
 }

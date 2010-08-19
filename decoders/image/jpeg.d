@@ -677,7 +677,7 @@ public:
 					imgxlinemovement_block_start = 32 * Hmajor;
 					imgylinemovement_block_start = imgylinemovement_block * Vmajor;
 
-					view.create(sof.num_samples_per_line, sof.num_lines);
+					view.resize(sof.num_samples_per_line, sof.num_lines);
 					//view.CreateDIB(actual_image_width, actual_image_height);
 
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;

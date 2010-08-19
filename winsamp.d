@@ -410,6 +410,9 @@ int main(string[] args) {
   	auto window = new Window(200, 200, 500, 500);
  	window.attach(new Button(10, 10, 100, 33));
  	window.attach(new Button(50, 50, 100, 33));
+ 	auto button = new Button(100,100, 45, 45);
+ 	button.image = new Image("tests/PNG/Knob Add.png");
+ 	window.attach(button);
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/

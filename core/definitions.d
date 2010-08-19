@@ -61,6 +61,36 @@ enum Orientation {
 	Vertical
 }
 
+// Description: This enum gives values for positions.
+enum Position {
+	// Description: Will indicate the position at the top-left.
+	TopLeft,
+
+	// Description: Will indicate the position at the center-left.
+	Left,
+
+	// Description: Will indicate the position at the bottom-left.
+	BottomLeft,
+
+	// Description: Will indicate the position at the bottom-center.
+	Bottom,
+
+	// Description: Will indicate the position at the bottom-right.
+	BottomRight,
+
+	// Description: Will indicate the position at the center-right.
+	Right,
+
+	// Description: Will indicate the position at the top-right.
+	TopRight,
+
+	// Description: Will indicate the position at the top-center.
+	Top,
+
+	// Description: Will indicate the position at the very center.
+	Center
+}
+
 // Window Styles
 
 // Description: This enum gives all possible window styles.  Use the SetStyle() function within the BaseWindow class to set the style of the window to this value.

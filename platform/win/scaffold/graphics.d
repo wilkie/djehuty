@@ -389,31 +389,19 @@ void destroyPen(PenPlatformVars* pen) {
 
 // View Interfacing
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
-	Gdiplus.GdipDrawImageI(viewVars.g, viewVarsSrc.image , x, y);
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas) {
+	Gdiplus.GdipDrawImage(CanvasVars.g, CanvasVarsSrc.image, x, y);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
-	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, srcView.width(), srcView.height(), Gdiplus.Unit.UnitPixel);
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas, double CanvasX, double CanvasY) {
+	Gdiplus.GdipDrawImagePointRect(CanvasVars.g, CanvasVarsSrc.image, x, y, CanvasX, CanvasY, srcCanvas.width(), srcCanvas.height(), Gdiplus.Unit.UnitPixel);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
-	Gdiplus.GdipDrawImagePointRectI(viewVars.g, viewVarsSrc.image, x, y, viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel);
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas, double CanvasX, double CanvasY, double CanvasWidth, double CanvasHeight) {
+	Gdiplus.GdipDrawImagePointRect(CanvasVars.g, CanvasVarsSrc.image, x, y, CanvasX, CanvasY, CanvasWidth, CanvasHeight, Gdiplus.Unit.UnitPixel);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, double opacity) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas, double opacity) {
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
@@ -422,16 +410,13 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
 		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
-		0, 0, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
+	Gdiplus.GdipDrawImageRectRect(CanvasVars.g, CanvasVarsSrc.image, x, y, srcCanvas.width, srcCanvas.height,
+		0, 0, srcCanvas.width, srcCanvas.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
 	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, double opacity) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas, double CanvasX, double CanvasY, double opacity) {
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
@@ -440,16 +425,13 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
 		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, srcView.width, srcView.height,
-		viewX, viewY, srcView.width, srcView.height, Gdiplus.Unit.UnitPixel, ia, null, null);
+	Gdiplus.GdipDrawImageRectRect(CanvasVars.g, CanvasVarsSrc.image, x, y, srcCanvas.width, srcCanvas.height,
+		CanvasX, CanvasY, srcCanvas.width, srcCanvas.height, Gdiplus.Unit.UnitPixel, ia, null, null);
 
 	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
-void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref ViewPlatformVars* viewVarsSrc, ref View srcView, int viewX, int viewY, int viewWidth, int viewHeight, double opacity) {
-	if (viewVars.image !is null) {
-		Gdiplus.GdipGetImageGraphicsContext(viewVars.image, &viewVars.g);
-	}
+void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double y, CanvasPlatformVars* CanvasVarsSrc, Canvas srcCanvas, double CanvasX, double CanvasY, double CanvasWidth, double CanvasHeight, double opacity) {
 	static Gdiplus.ColorMatrix cm;
 	cm.m[3][3] = cast(Gdiplus.REAL)opacity;
 
@@ -458,8 +440,8 @@ void drawView(ref ViewPlatformVars* viewVars, ref View view, int x, int y, ref V
 	Gdiplus.GdipSetImageAttributesColorMatrix(ia, Gdiplus.ColorAdjustType.ColorAdjustTypeBitmap,
 		TRUE, &cm, null, Gdiplus.ColorMatrixFlags.ColorMatrixFlagsDefault);
 
-	Gdiplus.GdipDrawImageRectRectI(viewVars.g, viewVarsSrc.image, x, y, viewWidth, viewHeight,
-		viewX, viewY, viewWidth, viewHeight, Gdiplus.Unit.UnitPixel, ia, null, null);
+	Gdiplus.GdipDrawImageRectRect(CanvasVars.g, CanvasVarsSrc.image, x, y, CanvasWidth, CanvasHeight,
+		CanvasX, CanvasY, CanvasWidth, CanvasHeight, Gdiplus.Unit.UnitPixel, ia, null, null);
 
 	Gdiplus.GdipDisposeImageAttributes(ia);
 }

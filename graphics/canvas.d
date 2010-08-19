@@ -12,11 +12,15 @@ import djehuty;
 import graphics.brush;
 import graphics.pen;
 
+import resource.image;
+
 import scaffold.canvas;
 
 import platform.vars.canvas;
 
 import GraphicsScaffold = scaffold.graphics;
+
+import io.console;
 
 class Canvas {
 private:
@@ -27,6 +31,8 @@ private:
 	Pen _pen;
 
 	CanvasPlatformVars _pfvars;
+
+	bool _forcenopremultiply = false;
 
 public:
 
@@ -39,6 +45,14 @@ public:
 
 	~this() {
 		CanvasDestroy(this, &_pfvars);
+	}
+
+	void resize(int width, int height) {
+		_width = width;
+		_height = height;
+
+		CanvasDestroy(this, &_pfvars);
+		CanvasCreate(this, &_pfvars);
 	}
 
 	int width() {
@@ -75,6 +89,12 @@ public:
 
 	void fillEllipse(double x, double y, double width, double height) {
 		GraphicsScaffold.fillOval(&_pfvars, x, y, width, height);
+	}
+
+	// Image
+
+	void drawCanvas(Canvas canvas, double x, double y) {
+		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
 	}
 
 	// Clipping
@@ -149,5 +169,13 @@ public:
 
 	CanvasPlatformVars* platformVariables() {
 		return &_pfvars;
+	}
+
+	uint rgbaTouint(uint r, uint g, uint b, uint a) {
+		return CanvasRGBAToInt32(_forcenopremultiply,&_pfvars,r,g,b,a);
+	}
+
+	uint rgbTouint(uint r, uint g, uint b) {
+		return CanvasRGBAToInt32(&_pfvars,r,g,b);
 	}
 }

@@ -663,7 +663,7 @@ private:
 				gifBlockSize = 0;
 				gifBlockCounter = 0;
 
-				view.create(gifImage.gifImageWidth, gifImage.gifImageHeight);
+				view.resize(gifImage.gifImageWidth, gifImage.gifImageHeight);
 
 				decoderState = GIF_STATE_DECODE;
 				decoderSubState = 0;
