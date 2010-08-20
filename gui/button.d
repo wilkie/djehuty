@@ -24,6 +24,7 @@ private:
 	string _value;
 	Image _image;
 	Position _imagePosition = Position.Center;
+	bool _clicked;
 
 public:
 	this(double x, double y, double width, double height, string text = "") {
@@ -42,10 +43,14 @@ public:
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {
+		_clicked = true;
+		redraw();
 		putln("down ", button, " clicks: ", mouse.clicks[button]);
 	}
 
 	override void onMouseUp(Mouse mouse, uint button) {
+		_clicked = false;
+		redraw();
 		putln("up ", button);
 	}
 
@@ -59,7 +64,14 @@ public:
 
 	override void onDraw(Canvas canvas) {
 		Color clr = Color.Blue;
-		clr.alpha = 0.7;
+
+		if (_clicked) {
+			clr.alpha = 1.0;
+		}
+		else {
+			clr.alpha = 0.7;
+		}
+
 		Brush brush = new Brush(clr);
 
 		clr = Color.Black;
