@@ -140,17 +140,13 @@ private:
 	final void _dispatchMouseDown(uint button, ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y
-					&& (window.visible)) {
+			double xdiff = window.left;
+			double ydiff = window.top;
 
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
 
+			if (window.visible && window.containsPoint(mouse.x, mouse.y)) {
 				_dragWindow = window;
 				_hoverWindow = null;
 
@@ -168,6 +164,9 @@ private:
 				mouse.y += ydiff;
 				return;
 			}
+
+			mouse.x += xdiff;
+			mouse.y += ydiff;
 		}
 
 		// End up handling it in the main window
@@ -193,23 +192,21 @@ private:
 		}
 
 		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y
-					&& (window.visible)) {
+			double xdiff = window.left;
+			double ydiff = window.top;
 
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
 
+			if (window.visible && window.containsPoint(mouse.x, mouse.y)) {
 				window._dispatchMouseUp(button, mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
 				return;
 			}
+			mouse.x += xdiff;
+			mouse.y += ydiff;
 		}
 
 		onMouseUp(mouse, button);
@@ -249,17 +246,13 @@ private:
 	final void _dispatchMouseHover(ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
-			if (window.left <= mouse.x
-					&& (window.left + window.width) > mouse.x
-					&& window.top <= mouse.y
-					&& (window.top + window.height) > mouse.y
-					&& (window.visible)) {
+			double xdiff = window.left;
+			double ydiff = window.top;
 
-				double xdiff = window.left;
-				double ydiff = window.top;
-				mouse.x -= xdiff;
-				mouse.y -= ydiff;
+			mouse.x -= xdiff;
+			mouse.y -= ydiff;
 
+			if (window.visible && window.containsPoint(mouse.x, mouse.y)) {
 				if (_hoverWindow !is window && _hoverWindow !is null) {
 					_hoverWindow._dispatchMouseLeave();
 				}
@@ -270,6 +263,8 @@ private:
 				mouse.y += ydiff;
 				return;
 			}
+			mouse.x += xdiff;
+			mouse.y += ydiff;
 		}
 
 		// End up handling it in the main window
@@ -451,6 +446,19 @@ public:
 	}
 
 	// Methods
+
+	// Description: This method will return true when the given point is within
+	//  the active region of the Window.
+	// x: The x coordinate relative to the client area of the Window.
+	// y: The y coordinate relative to the client area of the Window.
+	// Returns: true when the point is within the active region and false
+	//  otherwise.
+	bool containsPoint(double x, double y) {
+		if (x >= 0.0 && x < this.width && y >= 0.0 && y < this.height) {
+			return true;
+		}
+		return false;
+	}
 
 	int opApply(int delegate(ref Window window) loopBody) {
 		int ret;
