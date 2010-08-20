@@ -27,6 +27,8 @@ import system.keyboard;
 
 import binding.c;
 
+import io.console;
+
 class Window : Responder {
 private:
 
@@ -76,6 +78,8 @@ private:
 	bool _allowRedraw;
 
 	WindowPlatformVars _pfvars;
+
+	Semaphore _redrawLock;
 
 	void _update(Canvas canvas) {
 		GuiUpdateWindow(this, &_pfvars, canvas.platformVariables);
@@ -568,6 +572,7 @@ public:
 			}
 			_count++;
 
+			window._allowRedraw = true;
 			redraw();
 		}
 	}
@@ -615,12 +620,17 @@ public:
 		}
 		else {
 			// Need to update with a new canvas.
-			Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
-
-			onDraw(canvas);
-			onDrawChildren(canvas);
-
-			_update(canvas);
+			if (_redrawLock !is null) {
+				_redrawLock.down();
+				Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+		
+				onDraw(canvas);
+				onDrawChildren(canvas);
+		
+				_update(canvas);
+		
+				_redrawLock.up();
+			}
 		}
 	}
 
@@ -642,6 +652,7 @@ public:
 
 		if (isTopLevel) {
 			// Top level window
+			_redrawLock = new Semaphore(1);
 			_lock = new Semaphore(0);
 			Thread thread = new Thread(&eventLoop);
 			thread.start();
@@ -651,6 +662,7 @@ public:
 
 	void onEvent(Event event) {
 		_allowRedraw = false;
+		_redrawLock.down();
 		switch(event.type) {
 			case Event.Close:
 				this.parent.detach(this);
@@ -738,7 +750,10 @@ public:
 			default:
 				break;
 		}
+
 		_allowRedraw = true;
+		_redrawLock.up();
+
 		if (_needsRedraw) {
 			redraw();
 		}
