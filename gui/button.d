@@ -54,12 +54,16 @@ public:
 		putln("up ", button);
 	}
 
-	override void onHover(Mouse mouse) {
+	override void onMouseHover(Mouse mouse) {
 		putln("hover");
 	}
 
-	override void onDrag(Mouse mouse) {
+	override void onMouseDrag(Mouse mouse) {
 		putln("drag");
+	}
+
+	override void onMouseLeave() {
+		putln("leave");
 	}
 
 	override void onDraw(Canvas canvas) {

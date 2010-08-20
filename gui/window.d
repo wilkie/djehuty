@@ -51,6 +51,7 @@ private:
 	// Window management
 	Window _focusedWindow;
 	Window _dragWindow;
+	Window _hoverWindow;
 
 	// Sibling list
 	Window _next;
@@ -151,6 +152,7 @@ private:
 				mouse.y -= ydiff;
 
 				_dragWindow = window;
+				_hoverWindow = null;
 
 				if (_focusedWindow !is window) {
 					if (_focusedWindow !is null) {
@@ -214,7 +216,7 @@ private:
 	}
 
 
-	final void _dispatchDrag(ref Mouse mouse) {
+	final void _dispatchMouseDrag(ref Mouse mouse) {
 		// Look at passing this message down
 		if (_dragWindow !is null) {
 			double xdiff = _dragWindow.left;
@@ -223,7 +225,7 @@ private:
 			mouse.x -= xdiff;
 			mouse.y -= ydiff;
 
-			_dragWindow._dispatchDrag(mouse);
+			_dragWindow._dispatchMouseDrag(mouse);
 
 			mouse.x += xdiff;
 			mouse.y += ydiff;
@@ -231,10 +233,20 @@ private:
 		}
 
 		// End up handling it in the main window
-		onDrag(mouse);
+		onMouseDrag(mouse);
 	}
 
-	final void _dispatchHover(ref Mouse mouse) {
+	final void _dispatchMouseLeave() {
+		if (_hoverWindow !is null) {
+			_hoverWindow._dispatchMouseLeave();
+		}
+
+		_hoverWindow = null;
+
+		this.onMouseLeave();
+	}
+
+	final void _dispatchMouseHover(ref Mouse mouse) {
 		// Look at passing this message down
 		foreach(window; this) {
 			if (window.left <= mouse.x
@@ -248,7 +260,11 @@ private:
 				mouse.x -= xdiff;
 				mouse.y -= ydiff;
 
-				window._dispatchHover(mouse);
+				if (_hoverWindow !is window && _hoverWindow !is null) {
+					_hoverWindow._dispatchMouseLeave();
+				}
+				_hoverWindow = window;
+				window._dispatchMouseHover(mouse);
 
 				mouse.x += xdiff;
 				mouse.y += ydiff;
@@ -257,7 +273,14 @@ private:
 		}
 
 		// End up handling it in the main window
-		onHover(mouse);
+		if (_hoverWindow !is null) {
+			// This window receives a mouse leave message
+			_hoverWindow._dispatchMouseLeave();
+			_hoverWindow = null;
+		}
+
+		// This window handles the hover
+		onMouseHover(mouse);
 	}
 
 	final void _dispatchKeyDown(ref Key key) {
@@ -635,11 +658,15 @@ public:
 				_mouse.x = event.info.mouse.x;
 				_mouse.y = event.info.mouse.y;
 				if (_mouse.clicks[0] > 0 || _mouse.clicks[1] > 0 || _mouse.clicks[2] > 0) {
-					_dispatchDrag(_mouse);
+					_dispatchMouseDrag(_mouse);
 				}
 				else {
-					_dispatchHover(_mouse);
+					_dispatchMouseHover(_mouse);
 				}
+				break;
+
+			case Event.MouseLeave:
+				_dispatchMouseLeave();
 				break;
 
 			case Event.KeyDown:
@@ -677,10 +704,13 @@ public:
 	void onMouseUp(Mouse mouse, uint button) {
 	}
 
-	void onDrag(Mouse mouse) {
+	void onMouseLeave() {
 	}
 
-	void onHover(Mouse mouse) {
+	void onMouseDrag(Mouse mouse) {
+	}
+
+	void onMouseHover(Mouse mouse) {
 	}
 
 	void onKeyDown(Key key) {
