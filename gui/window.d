@@ -484,11 +484,11 @@ public:
 			}
 
 			do {
+				current = current._prev;
 				ret = loopBody(current);
 				if (ret != 0) {
 					return ret;
 				}
-				current = current._next;
 			} while(current !is end);
 		}
 		return ret;
