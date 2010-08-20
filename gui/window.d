@@ -43,7 +43,7 @@ private:
 
 	// Properties
 	Rect _bounds;
-	Color _bg;
+	Color _bg = Color.None;
 	bool _visible;
 
 	Semaphore _lock;
@@ -308,7 +308,7 @@ public:
 		NeedRedraw
 	}
 
-	this(double x, double y, double width, double height, Color bg = Color.Black) {
+	this(double x, double y, double width, double height, Color bg = Color.None) {
 		_bounds.left = x;
 		_bounds.top = y;
 		_bounds.right = width + x;
@@ -317,7 +317,7 @@ public:
 		_visible = true;
 	}
 
-	this(WindowPosition pos, double width, double height, Color bg = Color.Black) {
+	this(WindowPosition pos, double width, double height, Color bg = Color.None) {
 		double x = 0.0;
 		double y = 0.0;
 
@@ -437,6 +437,16 @@ public:
 		return _focusedWindow;
 	}
 
+	Window topmost() {
+		if (_topMostHead !is null) {
+			return _topMostHead;
+		}
+		else if (_head !is null) {
+			return _head;
+		}
+		return _bottomMostHead;
+	}
+
 	int visibleCount() {
 		return _numVisible;
 	}
@@ -460,7 +470,7 @@ public:
 		return false;
 	}
 
-	int opApply(int delegate(ref Window window) loopBody) {
+	int opApplyReverse(int delegate(ref Window window) loopBody) {
 		int ret;
 
 		Window current;
@@ -489,6 +499,40 @@ public:
 				if (ret != 0) {
 					return ret;
 				}
+			} while(current !is end);
+		}
+		return ret;
+	}
+
+	int opApply(int delegate(ref Window window) loopBody) {
+		int ret;
+
+		Window current;
+		Window end;
+
+		for (int i = 0; i < 3; i++) {
+			if (i == 0) {
+				current = _topMostHead;
+			}
+			else if (i == 1) {
+				current = _head;
+			}
+			else {
+				current = _bottomMostHead;
+			}
+
+			end = current;
+
+			if (current is null) {
+				continue;
+			}
+
+			do {
+				ret = loopBody(current);
+				if (ret != 0) {
+					return ret;
+				}
+				current = current._next;
 			} while(current !is end);
 		}
 		return ret;
@@ -745,7 +789,7 @@ public:
 	}
 
 	void onDrawChildren(Canvas canvas) {
-		foreach(Window window; this) {
+		foreach_reverse(Window window; this) {
 			// Clip to the window
 			canvas.clipSave();
 			canvas.clipRectangle(window.left, window.top, window.width, window.height);
