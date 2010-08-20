@@ -21,6 +21,8 @@ private:
 	Position _textPosition = Position.Center;
 	string _text;
 
+	Color _fg = Color.Black;
+
 public:
 	this(double x, double y, double width, double height, string text = "") {
 		_text = text.dup;
@@ -34,8 +36,12 @@ public:
 		canvas.font = new Font(FontSans, 16, 200, false, false, false);
 		sz = canvas.font.measureString(_text);
 
-		canvas.brush = new Brush(Color.Black);
-		canvas.pen = new Pen(Color.Black);
+		if (this.backcolor.alpha > 0.0) {
+			canvas.brush = new Brush(this.backcolor);
+			canvas.fillRectangle(0, 0, this.width, this.height);
+		}
+
+		canvas.brush = new Brush(_fg);
 
 		double textX, textY;
 		switch(_textPosition) {
@@ -75,7 +81,7 @@ public:
 				break;
 		}
 
-		canvas.drawString(_text, textX, textY);
+		canvas.fillString(_text, textX, textY);
 	}
 
 	// Properties
@@ -102,6 +108,15 @@ public:
 
 	void position(Position value) {
 		_textPosition = value;
+		redraw();
+	}
+
+	Color forecolor() {
+		return _fg;
+	}
+
+	void forecolor(Color value) {
+		_fg = value;
 		redraw();
 	}
 }

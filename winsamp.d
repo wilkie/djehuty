@@ -414,7 +414,11 @@ int main(string[] args) {
  	auto button = new Button(100,100, 45, 45);
  	button.image = new Image("tests/PNG/Knob Add.png");
  	window.attach(button);
- 	window.attach(new Label(0, 0, 30, 30, "Hello"));
+ 	auto label = new Label(0, 0, 30, 30, "Hello");
+ 	window.attach(label);
+ 	label.backcolor = Color.Red;
+ 	label.forecolor = Color.Gray;
+ 	label.position = Position.Left;
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/
