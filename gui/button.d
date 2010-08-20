@@ -131,6 +131,9 @@ public:
 
 	// Properties
 
+	// Description: This property is for the text displayed on the button.
+	// value: The text for the button.
+	// default: ""
 	string text() {
 		return _value.dup;
 	}
@@ -140,6 +143,10 @@ public:
 		redraw();
 	}
 
+	// Description: This property is for the image displayed on the button.
+	// value: The loaded image class. The property will be null when no image
+	//  is loaded.
+	// default: null
 	Image image() {
 		return _image;
 	}
@@ -149,6 +156,9 @@ public:
 		redraw();
 	}
 
+	// Description: This property is for positioning the image on the button.
+	// value: The position of the image.
+	// default: Position.Center
 	Position imagePosition() {
 		return _imagePosition;
 	}
