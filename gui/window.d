@@ -72,6 +72,7 @@ private:
 	// Drawing optimization management
 	bool _needsRedraw;
 	bool _dirty;
+	bool _allowRedraw;
 
 	WindowPlatformVars _pfvars;
 
@@ -119,6 +120,7 @@ private:
 
 		auto canvas = new Canvas(cast(int)this.width, cast(int)this.height);
 
+		_allowRedraw = true;
 		this.redraw();
 
 		while(true) {
@@ -520,9 +522,15 @@ public:
 	}
 
 	void redraw() {
+		if (!_allowRedraw) {
+			_needsRedraw = true;
+			return;
+		}
+
 		if (!this.visible) {
 			return;
 		}
+
 		if (this.parent is null) {
 			return;
 		}
@@ -567,6 +575,7 @@ public:
 	}
 
 	void onEvent(Event event) {
+		_allowRedraw = false;
 		switch(event.type) {
 			case Event.Close:
 				this.parent.detach(this);
@@ -649,6 +658,10 @@ public:
 
 			default:
 				break;
+		}
+		_allowRedraw = true;
+		if (_needsRedraw) {
+			redraw();
 		}
 	}
 
