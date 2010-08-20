@@ -22,19 +22,22 @@ private:
 	string _text;
 
 	Color _fg = Color.Black;
+	Font _font;
+
+	Size _sz;
 
 public:
 	this(double x, double y, double width, double height, string text = "") {
 		_text = text.dup;
+		_font = new Font(FontSans, 16, 200, false, false, false);
+		_sz = _font.measureString(_text);
 		super(x, y, width, height);
 	}
 
 	override void onDraw(Canvas canvas) {
 		canvas.antialias = true;
 
-		Size sz;
-		canvas.font = new Font(FontSans, 16, 200, false, false, false);
-		sz = canvas.font.measureString(_text);
+		canvas.font = _font;
 
 		if (this.backcolor.alpha > 0.0) {
 			canvas.brush = new Brush(this.backcolor);
@@ -49,7 +52,7 @@ public:
 			case Position.Bottom:
 			case Position.Center:
 			default:
-				textX = (this.width - sz.x) / 2.0;
+				textX = (this.width - _sz.x) / 2.0;
 				break;
 			case Position.Left:
 			case Position.TopLeft:
@@ -59,7 +62,7 @@ public:
 			case Position.Right:
 			case Position.TopRight:
 			case Position.BottomRight:
-				textX = this.width - sz.x;
+				textX = this.width - _sz.x;
 				break;
 		}
 		switch(_textPosition) {
@@ -67,7 +70,7 @@ public:
 			case Position.Right:
 			case Position.Center:
 			default:
-				textY = (this.height - sz.y) / 2.0;
+				textY = (this.height - _sz.y) / 2.0;
 				break;
 			case Position.Top:
 			case Position.TopLeft:
@@ -77,7 +80,7 @@ public:
 			case Position.Bottom:
 			case Position.BottomLeft:
 			case Position.BottomRight:
-				textY = this.height - sz.y;
+				textY = this.height - _sz.y;
 				break;
 		}
 
@@ -95,6 +98,7 @@ public:
 
 	void text(string value) {
 		_text = value.dup;
+		_sz = _font.measureString(_text);
 		redraw();
 	}
 
@@ -111,12 +115,27 @@ public:
 		redraw();
 	}
 
+	// Description: This property indicates the color of the text.
+	// value: The color of the text when rendered.
+	// default: Color.Black
 	Color forecolor() {
 		return _fg;
 	}
 
 	void forecolor(Color value) {
 		_fg = value;
+		redraw();
+	}
+
+	// Description: This property indicates the font of the text.
+	// value: The font of the text when rendered.
+	Font font() {
+		return _font;
+	}
+
+	void font(Font value) {
+		_font = value;
+		_sz = _font.measureString(_text);
 		redraw();
 	}
 }
