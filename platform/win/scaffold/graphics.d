@@ -590,6 +590,8 @@ void scaleWorld(CanvasPlatformVars* viewVars, double x, double y) {
 }
 
 void rotateWorld(CanvasPlatformVars* viewVars, double angle) {
+	// needs to be in degrees (for some reason)
+	angle = (angle / 3.14159265) * 180.0;
 	Gdiplus.GdipRotateWorldTransform(viewVars.g, angle, Gdiplus.MatrixOrder.MatrixOrderPrepend);
 }
 

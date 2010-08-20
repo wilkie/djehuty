@@ -31,6 +31,7 @@ import gui.window;
 import gui.dialog;
 import gui.button;
 import gui.label;
+import gui.spinner;
 
 import synch.timer;
 import synch.thread;
@@ -419,6 +420,10 @@ int main(string[] args) {
  	label.backcolor = Color.Red;
  	label.forecolor = Color.Gray;
  	label.position = Position.Left;
+ 	auto spinner = new Spinner(200, 200, 75, 75);
+ 	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
+ 	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
+ 	window.attach(spinner);
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/
