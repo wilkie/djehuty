@@ -26,45 +26,61 @@ private:
 	Image _image;
 	Position _imagePosition = Position.Center;
 	bool _clicked;
+	bool _hover;
+
+	void _pressed() {
+		_clicked = true;
+		redraw();
+		raiseSignal(Signal.Pressed);
+	}
+
+	void _released() {
+		_clicked = false;
+		redraw();
+		raiseSignal(Signal.Released);
+	}
 
 public:
+	enum Signal {
+		Pressed,
+		Released
+	}
+
 	this(double x, double y, double width, double height, string text = "") {
 		_value = text.dup;
 		super(x, y, width, height);
 	}
 
 	override void onKeyDown(Key key) {
-	}
-
-	override void onKeyChar(dchar chr) {
-		putln(chr);
+		if (key.code == Key.Return || key.code == Key.Space) {
+			_pressed();
+		}
 	}
 
 	override void onKeyUp(Key key) {
+		if (key.code == Key.Return || key.code == Key.Space) {
+			_released();
+		}
 	}
 
 	override void onMouseDown(Mouse mouse, uint button) {
-		_clicked = true;
-		redraw();
-		putln("down ", button, " clicks: ", mouse.clicks[button]);
+		_pressed();
 	}
 
 	override void onMouseUp(Mouse mouse, uint button) {
-		_clicked = false;
-		redraw();
-		putln("up ", button);
+		_released();
 	}
 
 	override void onMouseHover(Mouse mouse) {
-		putln("hover");
-	}
-
-	override void onMouseDrag(Mouse mouse) {
-		putln("drag");
+		if (_hover == false) {
+			_hover = true;
+			redraw();
+		}
 	}
 
 	override void onMouseLeave() {
-		putln("leave");
+		_hover = false;
+		redraw();
 	}
 
 	override void onDraw(Canvas canvas) {
@@ -73,8 +89,11 @@ public:
 		if (_clicked) {
 			clr.alpha = 1.0;
 		}
-		else {
+		else if (!_hover) {
 			clr.alpha = 0.7;
+		}
+		else {
+			clr.alpha = 0.5;
 		}
 
 		Brush brush = new Brush(clr);
