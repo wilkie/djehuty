@@ -14,6 +14,7 @@ import gui.window;
 import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
+import graphics.font;
 
 import resource.image;
 
@@ -96,6 +97,18 @@ public:
 		canvas.fillRectangle(this.width-2, 0, 2, this.height-2);
 
 		canvas.strokeRectangle(0, 0, this.width, this.height);
+
+		canvas.pen = new Pen(Color.fromRGBA(0, 0, 0, 0.5), 2.0);
+		canvas.brush = new Brush(Color.Black);
+		canvas.font = new Font(FontSans, 16, 800, false, false, false);
+
+		double textX, textY;
+		auto size = canvas.font.measureString(_value);
+		textX = (this.width - size.x) / 2.0;
+		textY = (this.height - size.y) / 2.0;
+		canvas.antialias = true;
+		canvas.drawString(_value, textX, textY);
+		canvas.antialias = false;
 
 		if (_image !is null) {
 			double posX, posY;

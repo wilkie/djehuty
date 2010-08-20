@@ -7,6 +7,8 @@
 
 module platform.vars.canvas;
 
+import platform.vars.font;
+
 import binding.win32.winnt;
 import binding.win32.winuser;
 import binding.win32.winbase;
@@ -38,7 +40,7 @@ struct CanvasPlatformVars {
 	GpBrush* curBrush = null;
 	GpPen* curPen = null;
 	GpBrush* curTextBrush = null;
-	GpFont* curFont = null;
+	FontPlatformVars curFont;
 
 	GpGraphics* g = null;
 

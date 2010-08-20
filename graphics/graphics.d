@@ -176,7 +176,7 @@ public:
 	// y: The y coordinate to start rendering the text.
 	// str: The string to render.
 	void drawText(int x, int y, string str) {
-		Scaffold.drawText(_viewVars, x,y,str);
+//		Scaffold.drawText(_viewVars, x,y,str);
 	}
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and only up to the number of characters specified by length.
@@ -185,7 +185,7 @@ public:
 	// str: The string to render.
 	// length: the length of the string.
 	void drawText(int x, int y, string str, uint length) {
-		Scaffold.drawText(_viewVars, x,y,str,length);
+//		Scaffold.drawText(_viewVars, x,y,str,length);
 	}
 
 // Clipped Text
@@ -215,7 +215,7 @@ public:
 	// str: The string to measure.
 	// sz: The Size struct to update.
 	void measureText(string str, out Size sz) {
-		Scaffold.measureText(_viewVars, str, sz);
+//		Scaffold.measureText(_viewVars, str, sz);
 	}
 
 	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
@@ -223,7 +223,7 @@ public:
 	// length: The length of the string to consider.
 	// sz: The Size struct to update.
 	void measureText(string str, uint length, out Size sz) {
-		Scaffold.measureText(_viewVars, str, length, sz);
+//		Scaffold.measureText(_viewVars, str, length, sz);
 	}
 
 // Text Colors
@@ -259,14 +259,14 @@ public:
 	}
 
 	void antialias(bool value) {
-		Scaffold.setAntialias(_viewVars, value);
+//		Scaffold.setAntialias(_viewVars, value);
 		_antialias = value;
 	}
 
 // Fonts
 
 	void font(ref Font font) {
-		Scaffold.setFont(_viewVars, &font._pfvars);
+//		Scaffold.setFont(_viewVars, &font._pfvars);
 	}
 
 // Brushes

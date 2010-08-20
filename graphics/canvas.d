@@ -11,6 +11,7 @@ import djehuty;
 
 import graphics.brush;
 import graphics.pen;
+import graphics.font;
 
 import resource.image;
 
@@ -29,10 +30,12 @@ private:
 
 	Brush _brush;
 	Pen _pen;
+	Font _font;
 
 	CanvasPlatformVars _pfvars;
 
 	bool _forcenopremultiply = false;
+	bool _antialias;
 
 public:
 
@@ -91,6 +94,19 @@ public:
 		GraphicsScaffold.fillOval(&_pfvars, x, y, width, height);
 	}
 
+	// Text
+	void drawString(string text, double x, double y) {
+		GraphicsScaffold.drawText(&_pfvars, x, y, text);
+	}
+
+	void strokeString(string text, double x, double y) {
+		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
+	}
+
+	void fillString(string text, double x, double y) {
+		GraphicsScaffold.fillText(&_pfvars, x, y, text);
+	}
+
 	// Image
 
 	void drawCanvas(Canvas canvas, double x, double y) {
@@ -147,6 +163,15 @@ public:
 
 	// Properties
 
+	void antialias(bool value) {
+		_antialias = value;
+		GraphicsScaffold.setAntialias(&_pfvars, value);
+	}
+
+	bool antialias() {
+		return _antialias;
+	}
+
 	void brush(Brush value) {
 		_brush = value;
 		GraphicsScaffold.setBrush(&_pfvars, value.platformVariables);
@@ -157,12 +182,21 @@ public:
 	}
 
 	void pen(Pen value) {
-		_pen = pen;
+		_pen = value;
 		GraphicsScaffold.setPen(&_pfvars, value.platformVariables);
 	}
 
 	Pen pen() {
 		return _pen;
+	}
+
+	void font(Font value) {
+		_font = value;
+		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
+	}
+
+	Font font() {
+		return _font;
 	}
 
 	// Platform Bullshits

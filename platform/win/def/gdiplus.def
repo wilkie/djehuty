@@ -509,3 +509,4 @@ _GdipEndContainer@8 = GdipEndContainer
 _GdipComment@12 = GdipComment
 _GdipDeleteMatrix@4 = GdipDeleteMatrix
 _GdipCreateMatrix@4 = GdipCreateMatrix
+_GdipCreatePath@8 = GdipCreatePath

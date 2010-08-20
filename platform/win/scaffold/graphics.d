@@ -154,20 +154,53 @@ void strokePie(ViewPlatformVars* viewVars, int x, int y, int width, int height, 
 }
 
 // Text
-void drawText(ViewPlatformVars* viewVars, int x, int y, string str) {
-	wstring utf16 = Unicode.toUtf16(str ~ '\0');
+void drawText(CanvasPlatformVars* viewVars, double x, double y, string str) {
+	wstring utf16 = Unicode.toUtf16(str);
+
+	Gdiplus.GpPath* path;
+	Gdiplus.GdipCreatePath(Gdiplus.FillMode.FillModeAlternate, &path);
 
 	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
-    Gdiplus.GdipDrawString(viewVars.g, utf16.ptr, utf16.length-1, viewVars.curFont, &rect, null, viewVars.curTextBrush);
-	//TextOutW(viewVars.dc, x, y, utf16.ptr, utf16.length-1);
+
+	Gdiplus.GdipAddPathString(path, utf16.ptr, utf16.length, viewVars.curFont.family,
+		viewVars.curFont.style, viewVars.curFont.fontsize, &rect,
+		null);
+
+	Gdiplus.GdipFillPath(viewVars.g, viewVars.curBrush, path);
+	Gdiplus.GdipDrawPath(viewVars.g, viewVars.curPen, path);
+	Gdiplus.GdipDeletePath(path);
 }
 
-void drawText(ViewPlatformVars* viewVars, int x, int y, string str, uint length) {
-	wstring utf16 = Unicode.toUtf16(str ~ '\0');
+void strokeText(CanvasPlatformVars* viewVars, double x, double y, string str) {
+	wstring utf16 = Unicode.toUtf16(str);
+
+	Gdiplus.GpPath* path;
+	Gdiplus.GdipCreatePath(Gdiplus.FillMode.FillModeAlternate, &path);
 
 	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
-    Gdiplus.GdipDrawString(viewVars.g, utf16.ptr, length, viewVars.curFont, &rect, null, viewVars.curTextBrush);
-	//TextOutW(viewVars.dc, x, y, utf16.ptr, length);
+
+	Gdiplus.GdipAddPathString(path, utf16.ptr, utf16.length, viewVars.curFont.family,
+		viewVars.curFont.style, viewVars.curFont.fontsize, &rect,
+		null);
+
+	Gdiplus.GdipDrawPath(viewVars.g, viewVars.curPen, path);
+	Gdiplus.GdipDeletePath(path);
+}
+
+void fillText(CanvasPlatformVars* viewVars, double x, double y, string str) {
+	wstring utf16 = Unicode.toUtf16(str);
+
+	Gdiplus.GpPath* path;
+	Gdiplus.GdipCreatePath(Gdiplus.FillMode.FillModeAlternate, &path);
+
+	Gdiplus.RectF rect = Gdiplus.RectF(x, y, 0.0f, 0.0f);
+
+	Gdiplus.GdipAddPathString(path, utf16.ptr, utf16.length, viewVars.curFont.family,
+		viewVars.curFont.style, viewVars.curFont.fontsize, &rect,
+		null);
+
+	Gdiplus.GdipFillPath(viewVars.g, viewVars.curBrush, path);
+	Gdiplus.GdipDeletePath(path);
 }
 
 // Clipped Text
@@ -182,26 +215,43 @@ void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, stri
 }
 
 // Text Measurement
-void measureText(ViewPlatformVars* viewVars, string str, out Size sz) {
+void measureText(FontPlatformVars* fontVars, string str, out Size sz) {
+	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
+
+	if (fontVars.g is null) {
+		HDC dc = GetDC(null);
+        Gdiplus.GdipCreateFromHDC(dc, &fontVars.g);
+        ReleaseDC(null, dc);
+	}
+
+	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
+	Gdiplus.RectF result;
+	Gdiplus.GdipMeasureString(fontVars.g, utf16.ptr, utf16.length-1,
+		fontVars.handle, &rect, null, &result, null, null);
+	sz.x = cast(uint)result.Width;
+	sz.y = cast(uint)result.Height;
+}
+
+void measureText(CanvasPlatformVars* viewVars, string str, out Size sz) {
 	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
 	//GetTextExtentPoint32W(viewVars.dc, utf16.ptr, utf16.length, cast(SIZE*)&sz) ;
 	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
 	Gdiplus.RectF result;
 	Gdiplus.GdipMeasureString(viewVars.g, utf16.ptr, utf16.length-1,
-		viewVars.curFont, &rect, null, &result, null, null);
+		viewVars.curFont.handle, &rect, null, &result, null, null);
 	sz.x = cast(uint)result.Width;
 	sz.y = cast(uint)result.Height;
 }
 
 void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size sz) {
-	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
+/*	wstring utf16 = Unicode.toUtf16(str) ~ cast(wchar)'\0';
 	//GetTextExtentPoint32W(viewVars.dc, utf16.ptr, length, cast(SIZE*)&sz);
 	Gdiplus.RectF rect = Gdiplus.RectF(0.0f, 0.0f, 0.0f, 0.0f);
 	Gdiplus.RectF result;
 	Gdiplus.GdipMeasureString(viewVars.g, utf16.ptr, length,
-		viewVars.curFont, &rect, null, &result, null, null);
+		viewVars.curFont.handle, &rect, null, &result, null, null);
 	sz.x = cast(uint)result.Width;
-	sz.y = cast(uint)result.Height;
+	sz.y = cast(uint)result.Height;*/
 }
 
 // Text Colors
@@ -225,7 +275,7 @@ void setTextModeOpaque(ViewPlatformVars* viewVars) {
 
 // Graphics States
 
-void setAntialias(ViewPlatformVars* viewVars, bool value) {
+void setAntialias(CanvasPlatformVars* viewVars, bool value) {
 	viewVars.aa = value;
 	if (viewVars.aa) {
 		Gdiplus.GdipSetSmoothingMode(viewVars.g, Gdiplus.SmoothingMode.SmoothingModeAntiAlias);
@@ -242,40 +292,42 @@ void createFont(FontPlatformVars* font, string fontname, int fontsize, int weigh
 	wstring utf16 = Unicode.toUtf16(fontname) ~ cast(wchar)'\0';
 	Gdiplus.GdipCreateFontFamilyFromName(utf16.ptr, null, &font.family);
 
-	Gdiplus.FontStyle style;
+	font.fontsize = fontsize;
+
 	bool bold = false;
 	if (weight > 600) {
 		bold = true;
 	}
 
 	if (bold) {
-		style |= Gdiplus.FontStyle.FontStyleBold;
+		font.style |= Gdiplus.FontStyle.FontStyleBold;
 	}
 
 	if (italic) {
-		style |= Gdiplus.FontStyle.FontStyleItalic;
+		font.style |= Gdiplus.FontStyle.FontStyleItalic;
 	}
 
 	if (underline) {
-		style |= Gdiplus.FontStyle.FontStyleUnderline;
+		font.style |= Gdiplus.FontStyle.FontStyleUnderline;
 	}
 
 	if (strikethru) {
-		style |= Gdiplus.FontStyle.FontStyleStrikeout;
+		font.style |= Gdiplus.FontStyle.FontStyleStrikeout;
 	}
 
 	// Create font
-    Gdiplus.GdipCreateFont(font.family, fontsize, style, Gdiplus.Unit.UnitPoint, &font.handle);
+    Gdiplus.GdipCreateFont(font.family, font.fontsize, font.style, Gdiplus.Unit.UnitPixel, &font.handle);
 }
 
-void setFont(ViewPlatformVars* viewVars, FontPlatformVars* font) {
-	viewVars.curFont = font.handle;
+void setFont(CanvasPlatformVars* viewVars, FontPlatformVars* font) {
+	viewVars.curFont = *font;
 	//SelectObject(viewVars.dc, font.fontHandle);
 }
 
 void destroyFont(FontPlatformVars* font) {
 	Gdiplus.GdipDeleteFontFamily(font.family);
 	Gdiplus.GdipDeleteFont(font.handle);
+	Gdiplus.GdipDeleteGraphics(font.g);
 	//DeleteObject(font.fontHandle);
 }
 

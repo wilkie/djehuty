@@ -408,8 +408,8 @@ void foobarfunc(bool f) {
 int main(string[] args) {
   	auto app = new GuiApplication("MyApp");
   	auto window = new Window(200, 200, 500, 500);
- 	window.attach(new Button(10, 10, 100, 33));
- 	window.attach(new Button(50, 50, 100, 33));
+ 	window.attach(new Button(10, 10, 100, 33, "hello"));
+ 	window.attach(new Button(50, 50, 100, 33, "button"));
  	auto button = new Button(100,100, 45, 45);
  	button.image = new Image("tests/PNG/Knob Add.png");
  	window.attach(button);
