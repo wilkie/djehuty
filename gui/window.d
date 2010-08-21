@@ -76,6 +76,7 @@ private:
 	bool _needsRedraw;
 	bool _dirty;
 	bool _allowRedraw;
+	Canvas _canvas;
 
 	WindowPlatformVars _pfvars;
 
@@ -620,15 +621,16 @@ public:
 			// Need to update with a new canvas.
 			if (_redrawLock !is null) {
 				_redrawLock.down();
-				static Canvas canvas;
-				//Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
-				if (canvas is null) canvas = new Canvas(cast(int)this.width, cast(int)this.height);
 
-				onDraw(canvas);
-				onDrawChildren(canvas);
+				if (_canvas is null) {
+					_canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+				}
 
-				_update(canvas);
-				canvas.clear();
+				onDraw(_canvas);
+				onDrawChildren(_canvas);
+
+				_update(_canvas);
+				_canvas.clear();
 
 				_redrawLock.up();
 			}
