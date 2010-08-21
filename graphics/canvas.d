@@ -58,6 +58,11 @@ public:
 		CanvasCreate(this, &_pfvars);
 	}
 
+	void clear() {
+		CanvasDestroy(this, &_pfvars);
+		CanvasCreate(this, &_pfvars);
+	}
+
 	int width() {
 		return _width;
 	}

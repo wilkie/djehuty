@@ -123,8 +123,6 @@ private:
 
 		_lock.up();
 
-		auto canvas = new Canvas(cast(int)this.width, cast(int)this.height);
-
 		_allowRedraw = true;
 		this.redraw();
 
@@ -622,13 +620,16 @@ public:
 			// Need to update with a new canvas.
 			if (_redrawLock !is null) {
 				_redrawLock.down();
-				Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
-		
+				static Canvas canvas;
+				//Canvas canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+				if (canvas is null) canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+
 				onDraw(canvas);
 				onDrawChildren(canvas);
-		
+
 				_update(canvas);
-		
+				canvas.clear();
+
 				_redrawLock.up();
 			}
 		}
@@ -751,8 +752,8 @@ public:
 				break;
 		}
 
-		_allowRedraw = true;
 		_redrawLock.up();
+		_allowRedraw = true;
 
 		if (_needsRedraw) {
 			redraw();

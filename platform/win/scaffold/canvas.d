@@ -66,7 +66,7 @@ void CanvasCreateDIB(Bitmap view, CanvasPlatformVars* viewVars) {
 }*/
 
 void CanvasDestroy(Canvas view, CanvasPlatformVars*viewVars) {
-	DeleteDC(viewVars.dc);
+	Gdiplus.GdipDisposeImage(viewVars.image);
 	Gdiplus.GdipDeleteGraphics(viewVars.g);
 }
 
