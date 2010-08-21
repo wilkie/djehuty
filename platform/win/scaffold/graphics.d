@@ -22,6 +22,7 @@ import binding.c;
 
 import platform.vars.view;
 import platform.vars.canvas;
+import platform.vars.path;
 import platform.vars.brush;
 import platform.vars.font;
 import platform.vars.pen;
@@ -87,10 +88,6 @@ PenPlatformVars* penPlatformVars(Pen pen, PenPlatformVars* vars) {
 
 // Draw a line
 void drawLine(ViewPlatformVars* viewVars, int x, int y, int x2, int y2) {
-	//MoveToEx(viewVars.dc, x, y, null);
-	//LineTo(viewVars.dc, x2, y2);
-//	auto viewVars = viewPlatformVars(view);
-
 	//Gdiplus.GdipDrawLineI(viewVars.g, viewVars.curPen, x, y, x2, y2);
 }
 
@@ -331,6 +328,47 @@ void destroyFont(FontPlatformVars* font) {
 	//DeleteObject(font.fontHandle);
 }
 
+// Paths
+void createPath(PathPlatformVars* path) {
+	Gdiplus.GdipCreatePath(Gdiplus.FillMode.FillModeAlternate, &path.path);
+}
+
+void pathAddArc(PathPlatformVars* path, double left, double top, double width, double height, double direction, double sweep) {
+	width--;
+	height--;
+	Gdiplus.GdipAddPathArc(path.path, left, top, width, height, direction, sweep);
+}
+
+void pathAddRectangle(PathPlatformVars* path, double left, double top, double width, double height) {
+	width--;
+	height--;
+	Gdiplus.GdipAddPathRectangle(path.path, left, top, width, height);
+}
+
+void pathAddLine(PathPlatformVars* path, double x1, double y1, double x2, double y2) {
+	Gdiplus.GdipAddPathLine(path.path, x1, y2, x2, y2);
+}
+
+void pathClose(PathPlatformVars* path) {
+	Gdiplus.GdipClosePathFigures(path.path);
+}
+
+void destroyPath(PathPlatformVars* path) {
+	Gdiplus.GdipDeletePath(path.path);
+}
+
+void drawPath(CanvasPlatformVars* viewVars, PathPlatformVars* path) {
+	Gdiplus.GdipFillPath(viewVars.g, viewVars.curBrush, path.path);
+	Gdiplus.GdipDrawPath(viewVars.g, viewVars.curPen, path.path);
+}
+
+void fillPath(CanvasPlatformVars* viewVars, PathPlatformVars* path) {
+	Gdiplus.GdipFillPath(viewVars.g, viewVars.curBrush, path.path);
+}
+
+void strokePath(CanvasPlatformVars* viewVars, PathPlatformVars* path) {
+	Gdiplus.GdipDrawPath(viewVars.g, viewVars.curPen, path.path);
+}
 
 // Brushes
 
@@ -572,6 +610,11 @@ void clipClear(CanvasPlatformVars* viewVars) {
 void clipRect(CanvasPlatformVars* viewVars, double x, double y, double width, double height) {
 	Gdiplus.GdipSetClipRect(viewVars.g,
 		x, y, width, height, Gdiplus.CombineMode.CombineModeIntersect);
+}
+
+void clipPath(CanvasPlatformVars* viewVars, PathPlatformVars* path) {
+	Gdiplus.GdipSetClipPath(viewVars.g,
+		path.path, Gdiplus.CombineMode.CombineModeIntersect);
 }
 
 void clipRegion(ViewPlatformVars* viewVars, Region region) {
