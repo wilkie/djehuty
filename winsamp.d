@@ -32,6 +32,7 @@ import gui.dialog;
 import gui.button;
 import gui.label;
 import gui.spinner;
+import gui.progressbar;
 
 import synch.timer;
 import synch.thread;
@@ -416,6 +417,9 @@ int main(string[] args) {
  	button.image = new Image("tests/PNG/Knob Add.png");
  	window.attach(button);
  	auto label = new Label(0, 0, 30, 30, "Hello");
+ 	auto progressbar = new ProgressBar(150,320,200,20);
+ 	progressbar.value = 0.7;
+ 	window.attach(progressbar);
  	window.attach(label);
  	label.backcolor = Color.Red;
  	label.forecolor = Color.Gray;
