@@ -12,6 +12,7 @@ import djehuty;
 import graphics.brush;
 import graphics.pen;
 import graphics.font;
+import graphics.path;
 
 import resource.image;
 
@@ -85,6 +86,43 @@ public:
 		GraphicsScaffold.fillRect(&_pfvars, x, y, width, height);
 	}
 
+	// Rounded Rectangles
+
+	void drawRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		Path tempPath = new Path();
+		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
+
+		drawPath(tempPath);
+	}
+
+	void strokeRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		Path tempPath = new Path();
+		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
+
+		strokePath(tempPath);
+	}
+
+	void fillRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		Path tempPath = new Path();
+		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
+
+		fillPath(tempPath);
+	}
+
+	// Paths
+
+	void drawPath(Path path) {
+		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
+	}
+
+	void strokePath(Path path) {
+		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
+	}
+
+	void fillPath(Path path) {
+		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
+	}
+
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
@@ -130,6 +168,10 @@ public:
 
 	void clipSave() {
 		GraphicsScaffold.clipSave(&_pfvars);
+	}
+
+	void clipPath(Path path) {
+		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
 	}
 
 	void clipRestore() {
