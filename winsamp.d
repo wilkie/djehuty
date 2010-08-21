@@ -420,7 +420,7 @@ int main(string[] args) {
  	label.backcolor = Color.Red;
  	label.forecolor = Color.Gray;
  	label.position = Position.Left;
- 	auto spinner = new Spinner(200, 200, 75, 75);
+ 	auto spinner = new Spinner(200, 200, 100, 100);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
  	window.attach(spinner);

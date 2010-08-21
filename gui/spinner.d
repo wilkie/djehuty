@@ -65,6 +65,11 @@ public:
 		canvas.transformRestore();
 	}
 
+	// Properties
+
+	// Description: This property indicates the color of the indicator.
+	// value: The color to render the indicator.
+	// default: Color.Black
 	Color forecolor() {
 		return _fg;
 	}
