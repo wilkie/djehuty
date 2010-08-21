@@ -638,6 +638,11 @@ public:
 	}
 
 	void reposition(double left, double top, double width, double height) {
+		_bounds.left = left;
+		_bounds.top = top;
+		_bounds.right = width + left;
+		_bounds.bottom = height + top;
+		redraw();
 	}
 
 	// Events
