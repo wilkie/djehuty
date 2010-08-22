@@ -15,6 +15,7 @@ import graphics.canvas;
 import graphics.brush;
 import graphics.pen;
 import graphics.path;
+import graphics.gradient;
 
 import data.iterable;
 
@@ -91,6 +92,9 @@ public:
 
 		canvas.pen = new Pen(Color.fromRGBA(0.1, 0.1, 0.5, 1.0));
 		canvas.strokePath(bar);
+
+		canvas.brush = new Brush(new Gradient(0, 0, this.height, 3.1415926 / 2, 0, Color.fromRGBA(0,0,0.5,0.0), 1.0, Color.fromRGBA(0,0,0.3,0.2)));
+		canvas.fillPath(bar);
 
 		canvas.antialias = false;
 	}

@@ -30,7 +30,7 @@ public:
 	}
 
 	this(Gradient gradient) {
-//		Scaffold.createGradientBrush(&_pfvars, gradient._origx, gradient._origy, gradient._points, gradient._clrs, gradient._angle, gradient._width);
+		Scaffold.createGradientBrush(&_pfvars, gradient.originX, gradient.originY, gradient.points, gradient.colors, gradient.angle, gradient.width);
 	}
 
 	// Destructor

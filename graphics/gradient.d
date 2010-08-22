@@ -14,11 +14,9 @@ import core.definitions;
 import core.color;
 import core.variant;
 
-import io.console;
-
 // Description: This class represents a linear gradient.
 class Gradient {
-package:
+private:
 
 	double _origx;
 	double _origy;
@@ -70,6 +68,18 @@ public:
 				add(pt, clr);
 			}
 		}
+	}
+
+	double originX() {
+		return _origx;
+	}
+
+	double originY() {
+		return _origy;
+	}
+
+	double width() {
+		return _width;
 	}
 
 	// Description: This will add a point to the gradient and attach a color. Colors are
