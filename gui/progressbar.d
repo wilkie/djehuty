@@ -28,7 +28,7 @@ private:
 	Timer _timer;
 
 	bool timerProc(Dispatcher dsp, uint signal) {
-		_animTranslate += 1.0;
+		_animTranslate += 2.0;
 		redraw();
 		return true;
 	}
