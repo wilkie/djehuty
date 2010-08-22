@@ -586,6 +586,17 @@ void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rg
 	DeleteObject(brsh);
 }
 
+void save(CanvasPlatformVars* viewVars, long* state) {
+	int ret;
+	Gdiplus.GdipSaveGraphics(viewVars.g, cast(Gdiplus.GraphicsState*)&ret);
+	*state = ret;
+}
+
+void restore(CanvasPlatformVars* viewVars, long state) {
+	int ret = cast(int)state;
+	Gdiplus.GdipRestoreGraphics(viewVars.g, cast(Gdiplus.GraphicsState)ret);
+}
+
 void clipSave(CanvasPlatformVars* viewVars) {
 	Gdiplus.GpRegion* region;
 	Gdiplus.GdipCreateRegion(&region);

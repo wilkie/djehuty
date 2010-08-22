@@ -138,6 +138,7 @@ public:
 	}
 
 	// Text
+
 	void drawString(string text, double x, double y) {
 		GraphicsScaffold.drawText(&_pfvars, x, y, text);
 	}
@@ -148,6 +149,18 @@ public:
 
 	void fillString(string text, double x, double y) {
 		GraphicsScaffold.fillText(&_pfvars, x, y, text);
+	}
+
+	// State
+
+	long save() {
+		long ret;
+		GraphicsScaffold.save(&_pfvars, &ret);
+		return ret;
+	}
+
+	void restore(long state) {
+		GraphicsScaffold.restore(&_pfvars, state);
 	}
 
 	// Image
@@ -166,16 +179,8 @@ public:
 		GraphicsScaffold.clipRect(&_pfvars, x, y, width, height);
 	}
 
-	void clipSave() {
-		GraphicsScaffold.clipSave(&_pfvars);
-	}
-
 	void clipPath(Path path) {
 		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
-	}
-
-	void clipRestore() {
-		GraphicsScaffold.clipRestore(&_pfvars);
 	}
 
 	void clipReset() {
@@ -198,14 +203,6 @@ public:
 
 	void transformRotate(double angle) {
 		GraphicsScaffold.rotateWorld(&_pfvars, angle);
-	}
-
-	void transformSave() {
-		GraphicsScaffold.saveWorld(&_pfvars);
-	}
-
-	void transformRestore() {
-		GraphicsScaffold.restoreWorld(&_pfvars);
 	}
 
 	// Properties

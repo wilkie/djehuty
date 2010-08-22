@@ -44,7 +44,8 @@ public:
 		canvas.brush = new Brush(this.backcolor);
 		canvas.fillRectangle(0, 0, this.width, this.height);
 
-		canvas.transformSave();
+		long context = canvas.save();
+		canvas.antialias = true;
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 
 		// |--|--|--|--|--|--|--|--| <-- width of the widget
@@ -62,7 +63,7 @@ public:
 			canvas.transformRotate(rotation);
 		}
 
-		canvas.transformRestore();
+		canvas.restore(context);
 	}
 
 	// Properties

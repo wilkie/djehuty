@@ -814,11 +814,10 @@ public:
 	void onDrawChildren(Canvas canvas) {
 		foreach_reverse(Window window; this) {
 			// Clip to the window
-			canvas.clipSave();
+			long context = canvas.save();
 			canvas.clipRectangle(window.left, window.top, window.width, window.height);
 
 			// Set origin to be window's top-left coordinate
-			canvas.transformSave();
 			canvas.transformTranslate(window.left, window.top);
 
 			// Draw the area owned by the window
@@ -827,11 +826,8 @@ public:
 			// Draw this window's children
 			window.onDrawChildren(canvas);
 
-			// Restore the transform matrix
-			canvas.transformRestore();
-
 			// Restore the clipping
-			canvas.clipRestore();
+			canvas.restore(context);
 		}
 	}
 }

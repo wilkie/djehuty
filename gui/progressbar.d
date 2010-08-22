@@ -64,27 +64,29 @@ public:
 		canvas.fillPath(bar);
 
 		if (_value > 0.0) {
-			canvas.clipSave();
+			long context = canvas.save();
+
 			// clip bar to indicate the progress
 			canvas.clipRectangle(0, 0, this.width * _value, this.height);
 			canvas.clipPath(bar);
-	
+
 			// Draw bar
 			canvas.brush = new Brush(Color.fromRGBA(0.3, 0.3, 0.7, 0.7));
 			canvas.fillPath(bar);
-	
+
 			double rotation = 3.14159265 / 4.0;
-	
+
 			canvas.pen = new Pen(Color.fromRGBA(0.3, 0.3, 0.7, 0.5));
 			double step = barSize*2.4;
 			for (double x = -step; x < this.width; x += step) {
-				canvas.transformSave();
+				long innercontext = canvas.save();
 				canvas.transformTranslate(x+(_animTranslate % step), 0);
 				canvas.transformRotate(rotation);
 				canvas.drawRectangle(0, -this.height/2, barSize, this.height*2);
-				canvas.transformRestore();
+				canvas.restore(innercontext);
 			}
-			canvas.clipRestore();
+
+			canvas.restore(context);
 		}
 
 		canvas.pen = new Pen(Color.fromRGBA(0.1, 0.1, 0.5, 1.0));
