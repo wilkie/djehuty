@@ -814,6 +814,10 @@ public:
 
 	void onDrawChildren(Canvas canvas) {
 		foreach_reverse(Window window; this) {
+			if (!window.visible) {
+				continue;
+			}
+
 			// Clip to the window
 			long context = canvas.save();
 			canvas.clipRectangle(window.left, window.top, window.width, window.height);
