@@ -93,9 +93,7 @@ protected:
 					_frameDescs ~= _curFrameDesc;
 					if (_view is null) {
 						_view = new Bitmap(_curView.width, _curView.height);
-//						Graphics g = _view.lock();
-//						g.drawView(0,0,_curView);
-//						_view.unlock();
+						_view.drawCanvas(_curView, 0, 0);
 					}
 					_curView = null;
 					_frameCount++;
@@ -212,25 +210,15 @@ public:
 
 		if (_view !is null) {
 			// Update view, if necessary
-//			Graphics g = _view.lock;
-//			if (_frameDesc.clearFirst) {
-//				g.brush = new Brush(_frameDesc.clearColor);
-//				g.drawRect(0,0,_view.width,_view.height);
-//			}
-//			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
-//			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
-//			_view.unlock;
+			if (_frameDesc.clearFirst) {
+				_view.brush = new Brush(_frameDesc.clearColor);
+				_view.fillRectangle(0,0,_view.width,_view.height);
+			}
+			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);
+			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);
 		}
 		else {
 			_view = _frames[_frameIdx];
 		}
 	}
-}
-
-void ImageLock(ref Image img) {
-	//img._loaded.down();
-}
-
-void ImageUnlock(ref Image img) {
-	//img._loaded.up();
 }
