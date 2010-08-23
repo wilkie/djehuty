@@ -62,7 +62,7 @@ private:
 
 		_scrollbar.largeChange = cast(long)(this.height / 18);
 	}
-	
+
 	void _cancelSearch() {
 		_searchLabel.visible = false;
 		_searchTerm = null;
@@ -94,8 +94,9 @@ public:
 		attach(_scrollbar, &_scrolled);
 
 		_searchLabel = new Label(0, this.height-20, this.width-_scrollbar.width, 20, "");
+		_searchLabel.position = Position.Left;
 		_searchLabel.visible = false;
-		_searchLabel.backcolor = Color.fromRGBA(1, 1, 1, 0.5);
+		_searchLabel.backcolor = Color.fromRGBA(1, 1, 1, 0.8);
 		_searchLabel.forecolor = Color.Black;
 		attach(_searchLabel);
 	}
@@ -207,7 +208,7 @@ public:
 			}
 			else {
 				_searchTerm = _searchTerm.substring(0, _searchTerm.length-1);
-				_searchLabel.text = "/" ~ _searchTerm;
+				_searchLabel.text = _searchTerm;
 				_resetSearch(); // Have to include some items we dropped...
 			}
 		}
@@ -227,20 +228,20 @@ public:
 		if (_searchTerm is null) {
 			// Reset to include all items in the search
 			_resetSearch();
-			_searchLabel.text = "/";
+			_searchLabel.text = "";
 			_searchLabel.visible = true;
 		}
 
 		_searchTerm ~= chr;
-		_searchLabel.text = "/" ~ _searchTerm;
+		_searchLabel.text = _searchTerm;
 
 		for(size_t i = 0; i < _searchList.length(); i++) {
 			string element = _searchList.peekAt(i);
 			if (element.beginsWith(_searchTerm)) {
 				// oh good...
 				this.selected = _searchIndices.peekAt(i);
-				if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + this.height - 1) {
-					_scrollbar.value = cast(long)this.selected - ((cast(long)this.height)/2) + 1;
+				if (this.selected < _scrollbar.value || this.selected >= _scrollbar.value + cast(long)(this.height / 18) - 1) {
+					_scrollbar.value = cast(long)this.selected - cast(long)(this.height/18) + 1;
 				}
 				break;
 			}
