@@ -83,7 +83,7 @@ public:
 
 	// Description: This constructor will create a new listbox widget of the
 	//  specified dimensions at the specified location.
-	this(int x, int y, int width, int height) {
+	this(double x, double y, double width, double height) {
 		super(x,y,width,height);
 
 		// Create a new list

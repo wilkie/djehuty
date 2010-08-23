@@ -36,6 +36,7 @@ import gui.progressbar;
 import gui.scrollbar;
 import gui.imagebox;
 import gui.listbox;
+import gui.filebox;
 
 import synch.timer;
 import synch.thread;
@@ -414,8 +415,8 @@ void foobarfunc(bool f) {
 int main(string[] args) {
   	auto app = new GuiApplication("MyApp");
   	auto window = new Window(200, 200, 500, 500);
-// 	auto imagebox = new ImageBox(0, 0, 485, 485, "tests/Hypnotoad_animated.gif");
-// 	window.attach(imagebox);
+ 	auto imagebox = new ImageBox(0, 0, 485, 485, "tests/Hypnotoad_animated.gif");
+ 	window.attach(imagebox);
  	window.attach(new Button(10, 10, 100, 33, "hello"));
  	window.attach(new Button(50, 50, 100, 33, "button"));
  	auto button = new Button(100,100, 45, 45);
@@ -431,7 +432,8 @@ int main(string[] args) {
  	window.attach(scrollbar);
  	window.attach(scrollbarh);
 
-	auto listbox = new ListBox(0, 0, 485, 485);
+	auto filebox = new FileBox(245, 0, 240, 485);
+	auto listbox = new ListBox(0, 0, 245, 485);
 	listbox.add("hello");
 	listbox.add("hey");
 	listbox.add("foo");
@@ -439,6 +441,7 @@ int main(string[] args) {
 	listbox.add("foo" ~ toStr(i));
 	}
 	window.attach(listbox);
+	window.attach(filebox);
 
 /* 	auto spinner = new Spinner(200, 200, 100, 100);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
