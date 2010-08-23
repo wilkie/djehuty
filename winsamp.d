@@ -429,7 +429,9 @@ int main(string[] args) {
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
  	auto scrollbar = new ScrollBar(400,0,15,400);
+ 	auto scrollbarh = new ScrollBar(0,400,400,15, Orientation.Horizontal);
  	window.attach(scrollbar);
+ 	window.attach(scrollbarh);
  	window.attach(spinner);
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));

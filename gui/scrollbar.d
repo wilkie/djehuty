@@ -348,9 +348,14 @@ public:
 		canvas.brush = new Brush(Color.fromRGBA(0, 0, 0.6, 0.5));
 		canvas.pen = new Pen(Color.fromRGBA(0, 0, 0.6, 0.7));
 
-		canvas.fillRectangle(0, this.width, this.width, this.height - (this.width*2));
-
-		canvas.drawRectangle(0, _thumbPos + this.width, this.width, _thumbSize);
+		if (_orientation == Orientation.Horizontal) {
+			canvas.fillRectangle(this.height, 0, this.width - (this.height * 2), this.height);
+			canvas.drawRectangle(_thumbPos + this.height, 0, _thumbSize, this.height);
+		}
+		else {
+			canvas.fillRectangle(0, this.width, this.width, this.height - (this.width*2));
+			canvas.drawRectangle(0, _thumbPos + this.width, this.width, _thumbSize);
+		}
 	}
 
 	// Properties
