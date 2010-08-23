@@ -421,21 +421,23 @@ int main(string[] args) {
  	button.image = new Image("tests/PNG/Knob Add.png");
  	window.attach(button);
  	auto label = new Label(0, 0, 30, 30, "Hello");
- 	auto progressbar = new ProgressBar(150,320,200,20);
- 	progressbar.value = 0.7;
- 	window.attach(progressbar);
  	window.attach(label);
  	label.backcolor = Color.Red;
  	label.forecolor = Color.Gray;
  	label.position = Position.Left;
- 	auto spinner = new Spinner(200, 200, 100, 100);
- 	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
- 	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
  	auto scrollbar = new ScrollBar(485,0,15,485);
  	auto scrollbarh = new ScrollBar(0,485,485,15, Orientation.Horizontal);
  	window.attach(scrollbar);
  	window.attach(scrollbarh);
- 	window.attach(spinner);
+// 	auto spinner = new Spinner(200, 200, 100, 100);
+// 	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
+// 	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
+// 	window.attach(spinner);
+ 	
+//	auto progressbar = new ProgressBar(150,320,200,20);
+// 	progressbar.value = 0.7;
+// 	window.attach(progressbar);
+
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
 	app.run();//*/

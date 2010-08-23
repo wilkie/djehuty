@@ -763,6 +763,7 @@ public:
 		_allowRedraw = true;
 
 		if (_needsRedraw) {
+			_needsRedraw = false;
 			redraw();
 		}
 	}
