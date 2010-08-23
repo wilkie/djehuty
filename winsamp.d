@@ -33,6 +33,7 @@ import gui.button;
 import gui.label;
 import gui.spinner;
 import gui.progressbar;
+import gui.scrollbar;
 
 import synch.timer;
 import synch.thread;
@@ -427,6 +428,8 @@ int main(string[] args) {
  	auto spinner = new Spinner(200, 200, 100, 100);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
+ 	auto scrollbar = new ScrollBar(400,0,15,400);
+ 	window.attach(scrollbar);
  	window.attach(spinner);
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));

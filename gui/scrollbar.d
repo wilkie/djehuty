@@ -1,22 +1,28 @@
 /*
  * scrollbar.d
  *
- * This module implements a console widget for a simple scroll bar,
- * both horizontal and vertical.
+ * This module implements a scroll bar widget for gui applications.
  *
  */
 
-module cui.scrollbar;
+module gui.scrollbar;
 
 import djehuty;
 
-import cui.window;
-import cui.canvas;
-import cui.button;
+import gui.window;
+import gui.button;
+
+import graphics.canvas;
+import graphics.brush;
+import graphics.pen;
+import graphics.gradient;
+import graphics.path;
 
 import synch.timer;
 
-class CuiScrollBar : CuiWindow {
+import io.console;
+
+class ScrollBar : Window {
 private:
 
 	// The time inbetween updates when the buttons are held down.
@@ -25,7 +31,7 @@ private:
 	// The timer foo
 	bool _timerIsLarge;		// if using _largeChange
 	bool _timerIncreasing;	// if scrolling in a positive direction
-	int _timerLastPos;		// the last pos
+	double _timerLastPos;		// the last pos
 
 	Timer _timer;			// the timer for holding down the buttons
 
@@ -51,12 +57,14 @@ private:
 
 	// Thumb foo
 
-	int _thumbSize;
-	int _thumbPos;
+	double _thumbSize;
+	double _thumbPos;
 	bool _thumbDragged;
+	double _diff;
+	double _dragThumbPos;
 
-	CuiButton _minusButton;
-	CuiButton _plusButton;
+	Button _minusButton;
+	Button _plusButton;
 
 	// This function computes where the thumb bar is and how large it is.
 	void computeThumbBounds() {
@@ -79,7 +87,7 @@ private:
 		// The thumb size is the width of the bar area (the width of the
 		// widget minus the width of both buttons) times the percentage
 		// of the large change area.
-		int barSize;
+		double barSize;
 
 		if (_orientation == Orientation.Horizontal) {
 			barSize = this.width - (this.height * 2);
@@ -102,10 +110,10 @@ private:
 			_thumbSize = 1;
 		}
 
-		int thumbArea = barSize - _thumbSize;
+		double thumbArea = barSize - _thumbSize;
 
 		// Thumb position
-		_thumbPos = cast(int)(thumbArea * percent);
+		_thumbPos = thumbArea * percent;
 		if (_thumbPos < 0) {
 			_thumbPos = 0;
 		}
@@ -139,11 +147,11 @@ private:
 		}
 
 		switch(signal) {
-			case CuiButton.Signal.Released:
+			case Button.Signal.Released:
 				// Kill the timer
 				_timer.stop();
 				break;
-			case CuiButton.Signal.Pressed:
+			case Button.Signal.Pressed:
 				this.value = this.value + direction * _smallChange;
 
 				// Set a timer
@@ -160,9 +168,16 @@ private:
 	// This helper function will take a position and report which section of the bar
 	// is at that position. 0 will be the thumb (no movement), -1 is to the left of the
 	// thumb (negative movement) and 1 is to the right (positive movement)
-	int componentAtPosition(int mousePos) {
+	int componentAtPosition(double mousePos) {
 		// get thumb bounds
 		computeThumbBounds();
+
+		if (_orientation == Orientation.Vertical) {
+			mousePos -= this.width;
+		}
+		else {
+			mousePos -= this.height;
+		}
 
 		if (mousePos > _thumbPos && mousePos <= _thumbPos + _thumbSize) {
 			// Mouse is clicked inside of the thumb bar
@@ -182,14 +197,7 @@ public:
 		Changed
 	}
 
-	// Description: This function will create a scrollbar widget that will
-	//  go in the direction indicated by orientation.
-	// x: The x coordinate of the widget.
-	// y: The y coordinate of the widget.
-	// width: The width of the widget.
-	// height: The height of the widget.
-	// orientation: Whether the bar is horizontal or vertical.
-	this(int x, int y, int width, int height, Orientation orientation) {
+	this(double x, double y, double width, double height, Orientation orientation = Orientation.Vertical) {
 		super(x, y, width, height);
 
 		_timer = new Timer();
@@ -200,133 +208,37 @@ public:
 		_orientation = orientation;
 
 		if (_orientation == Orientation.Horizontal) {
-			_minusButton = new CuiButton(0, 0, this.height, this.height, "\u2190");
-			_plusButton = new CuiButton(this.width - this.height, 0, this.height, this.height, "\u2192");
+			_minusButton = new Button(0, 0, this.height, this.height, "-");
+			_plusButton = new Button(this.width - this.height, 0, this.height, this.height, "+");
 		}
 		else {
-			_minusButton = new CuiButton(0, 0, this.width, this.width, "\u2191");
-			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "\u2193");
+			_minusButton = new Button(0, 0, this.width, this.width, "-");
+			_plusButton = new Button(0, this.height - this.width, this.width, this.width, "+");
 		}
 
-		_minusButton.forecolor = _buttonForecolor;
-		_minusButton.backcolor = _buttonBackcolor;
-		_plusButton.forecolor = _buttonForecolor;
-		_plusButton.backcolor = _buttonBackcolor;
-
-		attach(_minusButton, &buttonHandler);
-		attach(_plusButton, &buttonHandler);
+		this.attach(_plusButton, &buttonHandler);
+		this.attach(_minusButton, &buttonHandler);
 	}
 
-	override void onDrag(ref Mouse mouse) {
-		if (_thumbDragged) {
-			// get thumb bounds
-			computeThumbBounds();
-
-			// need the difference since the last movement
-			int diff;
-			int buttonSize;
-			int barSize;
-			int mousePos;
-
-			if (_orientation == Orientation.Horizontal) {
-				mousePos = cast(int)mouse.x;
-				buttonSize = _plusButton.width;
-				barSize = this.width - (buttonSize*2);
-			}
-			else {
-				mousePos = cast(int)mouse.y;
-				buttonSize = _plusButton.height;
-				barSize = this.height - (buttonSize*2);
-			}
-
-			diff = mousePos - _timerLastPos;
-			if (diff == 0) {
-				return;
-			}
-
-			// Now move the thumb bar to that position
-
-			// |....|xxx|....| - visual representation, x = thumb bar
-
-			// |-------------| - width (barSize)
-			// |---------|     - width of the area (thumbArea)
-			// ^--- minimum thumb position (0)
-			//           ^--- maximum thumb position (thumbArea)
-
-			int thumbArea = barSize - _thumbSize;
-			if (thumbArea <= 0) {
-				return;
-			}
-
-			int newThumbPos = _thumbPos + diff;
-
-			if (newThumbPos < 0) {
-				newThumbPos = 0;
-			}
-			else if (newThumbPos > thumbArea) {
-				newThumbPos = thumbArea;
-			}
-
-			// Ensure that we are moving the thumb bar to the mouse position
-			if (mousePos < buttonSize && _thumbPos == newThumbPos) {
-				return;
-			}
-			else if (mousePos >= buttonSize + barSize && _thumbPos == newThumbPos) {
-				return;
-			}
-
-			double percent = cast(double)newThumbPos / cast(double)thumbArea;
-
-			long newValue = this.value;
-
-			double change = 0.25 * (1.0 / cast(double)thumbArea);
-
-			// Keep adjusting the value until it lines up correctly
-			// We adjust using the percentage of the scrolling space that makes up
-			// a quarter of a character cell.
-			while(_thumbPos != newThumbPos) {
-				newValue = cast(long)(percent * cast(double)(_max - _min) + cast(double)_min);
-				computeThumbBounds(newValue);
-				if (_max == _min) {
-					break;
-				}
-				if (_thumbPos < newThumbPos) {
-					percent += change;
-				}
-				else if (_thumbPos > newThumbPos) {
-					percent -= change;
-				}
-			}
-
-			this.value = newValue;
-		}
-
-		// update to the current position
-		if (_orientation == Orientation.Horizontal) {
-			_timerLastPos = cast(int)mouse.x;
-		}
-		else {
-			_timerLastPos = cast(int)mouse.y;
-		}
-	}
-
-	override void onPrimaryUp(ref Mouse mouse) {
+	override void onMouseUp(Mouse mouse, uint button) {
 		_thumbDragged = false;
 		_timer.stop();
 	}
 
-	override void onPrimaryDown(ref Mouse mouse) {
-		int mousePos;
-		int buttonSize;
-		int barExtent;
+	override void onMouseDown(Mouse mouse, uint button) {
+		double mousePos;
+		double buttonSize;
+		double barExtent;
 
 		if (_orientation == Orientation.Horizontal) {
-			mousePos = cast(int)mouse.x;
+			mousePos = mouse.x;
+			_diff = mouse.x;
 			buttonSize = _plusButton.width;
 			barExtent = this.width - buttonSize;
 		}
 		else {
-			mousePos = cast(int)mouse.y;
+			mousePos = mouse.y;
+			_diff = mouse.y;
 			buttonSize = _plusButton.height;
 			barExtent = this.height - buttonSize;
 		}
@@ -350,69 +262,98 @@ public:
 				_timer.start();
 			}
 		}
+
+		_dragThumbPos = _thumbPos;
 	}
 
-	override void onDraw(CuiCanvas canvas) {
-		// get thumb bounds
-		computeThumbBounds();
+	override void onMouseDrag(Mouse mouse) {
+		if (_thumbDragged) {
+			// get thumb bounds
+			computeThumbBounds();
 
-		if (_orientation == Orientation.Horizontal) {
-			// Buttons are square
-			int buttonWidth = _plusButton.width;
+			// need the difference since the last movement
+			double diff;
+			double buttonSize;
+			double barSize;
+			double mousePos;
 
-			for(int i = 0; i < this.height; i++) {
-				canvas.position(buttonWidth, i);
-
-				// Draw the area up to the thumb
-				canvas.backcolor = _areaBackcolor;
-
-				canvas.write(times(" ", _thumbPos));
-
-				// Draw the thumb
-				canvas.forecolor = _thumbForecolor;
-				canvas.backcolor = _thumbBackcolor;
-
-				canvas.write(times(" ", _thumbSize));
-
-				// Draw the rest of the area up to the second button
-				canvas.backcolor = _areaBackcolor;
-
-				canvas.write(times(" ", this.width - (buttonWidth*2) - _thumbPos - _thumbSize));
+			if (_orientation == Orientation.Horizontal) {
+				mousePos = mouse.x;
+				buttonSize = _plusButton.width;
+				barSize = this.width - (buttonSize*2);
 			}
+			else {
+				mousePos = mouse.y;
+				buttonSize = _plusButton.height;
+				barSize = this.height - (buttonSize*2);
+			}
+
+			diff = mousePos - _diff;
+			if (diff == 0) {
+				return;
+			}
+
+			// Now move the thumb bar to that position
+
+			// |....|xxx|....| - visual representation, x = thumb bar
+
+			// |-------------| - width (barSize)
+			// |---------|     - width of the area (thumbArea)
+			// ^--- minimum thumb position (0)
+			//           ^--- maximum thumb position (thumbArea)
+
+			double thumbArea = barSize - _thumbSize;
+			if (thumbArea <= 0) {
+				return;
+			}
+
+			double newThumbPos = _dragThumbPos + diff;
+			if (newThumbPos < 0) {
+				newThumbPos = 0;
+			}
+			else if (newThumbPos > thumbArea) {
+				newThumbPos = thumbArea;
+			}
+
+			// Ensure that we are moving the thumb bar to the mouse position
+			if (mousePos < buttonSize && _thumbPos == newThumbPos) {
+				return;
+			}
+			else if (mousePos >= buttonSize + barSize && _thumbPos == newThumbPos) {
+				return;
+			}
+
+			double percent = newThumbPos / thumbArea;
+
+			long newValue = cast(long)((newThumbPos * cast(double)(this.max - this.min)) / thumbArea);
+			newValue += this.min;
+			this.value = newValue;
+		}
+
+		// update to the current position
+		if (_orientation == Orientation.Horizontal) {
+			_timerLastPos = cast(int)mouse.x;
 		}
 		else {
-			// Buttons are square
-			int buttonHeight = _plusButton.height;
-
-			for(int i = buttonHeight; i < (this.height - buttonHeight); i++) {
-				canvas.position(0,i);
-				if (i == _thumbPos + buttonHeight) {
-					canvas.forecolor = _thumbForecolor;
-					canvas.backcolor = _thumbBackcolor;
-				}
-				else if (i == buttonHeight || (i == (buttonHeight + _thumbPos + _thumbSize))) {
-					canvas.backcolor = _areaBackcolor;
-				}
-
-				canvas.write(times(" ", this.width));
-			}
+			_timerLastPos = cast(int)mouse.y;
 		}
+	}
+
+	void onDraw(Canvas canvas) {
+		computeThumbBounds();
+
+		canvas.brush = new Brush(this.backcolor);
+		canvas.fillRectangle(0, 0, this.width, this.height);
+
+		canvas.brush = new Brush(Color.fromRGBA(0, 0, 0.6, 0.5));
+		canvas.pen = new Pen(Color.fromRGBA(0, 0, 0.6, 0.7));
+
+		canvas.fillRectangle(0, this.width, this.width, this.height - (this.width*2));
+
+		canvas.drawRectangle(0, _thumbPos + this.width, this.width, _thumbSize);
 	}
 
 	// Properties
-
-	// Description: This function will get the orientation.
-	// Returns: The current orientation.
-	Orientation orientation() {
-		return _orientation;
-	}
-
-	// Description: This function will set the orientation.
-	// value: The new orientation.
-	void orientation(Orientation value) {
-		_orientation = value;
-		redraw();
-	}
 
 	// Description: This function will get the value.
 	// Returns: The current value.
@@ -430,7 +371,7 @@ public:
 		else if (_value < _min) {
 			_value = _min;
 		}
-		raiseSignal(CuiScrollBar.Signal.Changed);
+		raiseSignal(ScrollBar.Signal.Changed);
 		redraw();
 	}
 
