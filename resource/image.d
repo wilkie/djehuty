@@ -99,8 +99,12 @@ protected:
 					_frameCount++;
 				}
 			}
-		}
 
+			foreach(ref frameDesc; _frameDescs) {
+				frameDesc.time = _curFrameDesc.time;
+			}
+		}
+		_frameDesc = _curFrameDesc;
 		return ret;
 	}
 
