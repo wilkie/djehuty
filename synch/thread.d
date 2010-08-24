@@ -114,6 +114,7 @@ public:
 		if (!_inited) {
 			_inited = true;
 			_id = ThreadStart(_pfvars, this, &end);
+			threadById[_id] = this;
 
 			startTime = time = System.time;
 		}
