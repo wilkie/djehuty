@@ -413,33 +413,36 @@ void foobarfunc(bool f) {
 }
 
 int main(string[] args) {
-  	auto app = new GuiApplication("MyApp");
-  	auto window = new Window(200, 200, 500, 500);
- 	auto imagebox = new ImageBox(0, 0, 485, 485, "tests/Hypnotoad_animated.gif");
- 	window.attach(imagebox);
- 	window.attach(new Button(10, 10, 100, 33, "hello"));
- 	window.attach(new Button(50, 50, 100, 33, "button"));
- 	auto button = new Button(100,100, 45, 45);
- 	button.image = new Image("tests/PNG/Knob Add.png");
- 	window.attach(button);
- 	auto label = new Label(0, 0, 30, 30, "Hello");
- 	window.attach(label);
- 	label.backcolor = Color.Red;
- 	label.forecolor = Color.Gray;
- 	label.position = Position.Left;
- 	auto scrollbar = new ScrollBar(485,0,15,485);
- 	auto scrollbarh = new ScrollBar(0,485,485,15, Orientation.Horizontal);
- 	window.attach(scrollbar);
- 	window.attach(scrollbarh);
+	auto app = new GuiApplication("MyApp");
+	auto window = new Window(200, 200, 500, 500);
+	auto imagebox = new ImageBox(0, 0, "tests/Hypnotoad_animated.gif");
+	imagebox.buffered = false;
+	window.attach(imagebox);
+	window.attach(new Button(10, 10, 100, 33, "hello"));
+	window.attach(new Button(50, 50, 100, 33, "button"));
+	auto button = new Button(100,100, 45, 45);
+	button.image = new Image("tests/PNG/Knob Add.png");
+	window.attach(button);
+	auto label = new Label(0, 0, 30, 30, "Hello");
+	window.attach(label);
+	label.backcolor = Color.Red;
+	label.forecolor = Color.Gray;
+	label.position = Position.Left;
+	auto scrollbar = new ScrollBar(485,0,15,485);
+	auto scrollbarh = new ScrollBar(0,485,485,15, Orientation.Horizontal);
+	window.attach(scrollbar);
+	window.attach(scrollbarh);
 
 	auto filebox = new FileBox(245, 0, 240, 485);
 	auto listbox = new ListBox(0, 0, 245, 485);
+	listbox.buffered = true;
 	listbox.add("hello");
 	listbox.add("hey");
 	listbox.add("foo");
 	for(int i = 0; i < 100; i++) {
 	listbox.add("foo" ~ toStr(i));
 	}
+	filebox.buffered = true;
 	window.attach(listbox);
 	window.attach(filebox);
 

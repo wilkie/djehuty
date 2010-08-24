@@ -77,7 +77,10 @@ private:
 	bool _dirty;
 	bool _allowRedraw;
 	Canvas _canvas;
+	bool _buffered = false;
+	bool _translucent = true;
 
+	Thread _eventThread;
 	WindowPlatformVars _pfvars;
 
 	Semaphore _redrawLock;
@@ -458,6 +461,23 @@ public:
 		return _count;
 	}
 
+	bool buffered() {
+		return _buffered;
+	}
+
+	void buffered(bool value) {
+		_canvas = new Canvas(cast(int)this.width, cast(int)this.height);
+		_buffered = true;
+	}
+
+	bool translucent() {
+		return _translucent;
+	}
+
+	void translucent(bool value) {
+		_translucent = value;
+	}
+
 	// Methods
 
 	// Description: This method will return true when the given point is within
@@ -600,7 +620,7 @@ public:
 		super.detach(dsp);
 	}
 
-	void redraw() {
+	private void _redraw() {
 		if (!_allowRedraw) {
 			_needsRedraw = true;
 			return;
@@ -615,7 +635,7 @@ public:
 		}
 
 		if (this.parent.parent !is null) {
-			this.parent.redraw();
+			this.parent._redraw();
 		}
 		else {
 			// Need to update with a new canvas.
@@ -635,6 +655,11 @@ public:
 				_redrawLock.up();
 			}
 		}
+	}
+
+	void redraw() {
+		_dirty = true;
+		_redraw();
 	}
 
 	void reposition(double left, double top, double width, double height) {
@@ -662,8 +687,8 @@ public:
 			// Top level window
 			_redrawLock = new Semaphore(1);
 			_lock = new Semaphore(0);
-			Thread thread = new Thread(&eventLoop);
-			thread.start();
+			_eventThread = new Thread(&eventLoop);
+			_eventThread.start();
 			_lock.down();
 		}
 	}
@@ -818,21 +843,34 @@ public:
 				continue;
 			}
 
-			// Clip to the window
-			long context = canvas.save();
-			canvas.clipRectangle(window.left, window.top, window.width, window.height);
+			if (window.buffered) {
+				if (window._dirty) {
+					window._dirty = false;
+					window._canvas.clear();
+					long context = canvas.save();
+					window.onDraw(window._canvas);
+					window.onDrawChildren(window._canvas);
+					canvas.restore(context);
+				}
+				canvas.drawCanvas(window._canvas, window.left, window.top);
+			}
+			else {
+				// Clip to the window
+				long context = canvas.save();
+				canvas.clipRectangle(window.left, window.top, window.width, window.height);
 
-			// Set origin to be window's top-left coordinate
-			canvas.transformTranslate(window.left, window.top);
+				// Set origin to be window's top-left coordinate
+				canvas.transformTranslate(window.left, window.top);
 
-			// Draw the area owned by the window
-			window.onDraw(canvas);
+				// Draw the area owned by the window
+				window.onDraw(canvas);
 
-			// Draw this window's children
-			window.onDrawChildren(canvas);
-
-			// Restore the clipping
-			canvas.restore(context);
+				// Draw this window's children
+				window.onDrawChildren(canvas);
+		
+				// Restore the clipping
+				canvas.restore(context);
+			}
 		}
 	}
 }
