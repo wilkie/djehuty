@@ -639,7 +639,10 @@ public:
 		}
 		else {
 			// Need to update with a new canvas.
-			if (_redrawLock !is null) {
+			if (Thread.current !is _eventThread) {
+				GuiRedrawRequest(this, &_pfvars);
+			}
+			else if (_redrawLock !is null) {
 				_redrawLock.down();
 
 				if (_canvas is null) {
@@ -778,6 +781,10 @@ public:
 
 			case Event.KeyUp:
 				this._dispatchKeyUp(event.info.key);
+				break;
+
+			case Event.Redraw:
+				_needsRedraw = true;
 				break;
 
 			default:

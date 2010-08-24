@@ -415,7 +415,7 @@ void foobarfunc(bool f) {
 int main(string[] args) {
 	auto app = new GuiApplication("MyApp");
 	auto window = new Window(200, 200, 500, 500);
-	auto imagebox = new ImageBox(0, 0, "tests/Hypnotoad_animated.gif");
+	auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
 	imagebox.buffered = false;
 	window.attach(imagebox);
 	window.attach(new Button(10, 10, 100, 33, "hello"));
@@ -449,11 +449,11 @@ int main(string[] args) {
 /* 	auto spinner = new Spinner(200, 200, 100, 100);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
- 	window.attach(spinner);*/
+ 	window.attach(spinner);
 
-//	auto progressbar = new ProgressBar(150,320,200,20);
-// 	progressbar.value = 0.7;
-// 	window.attach(progressbar);
+	auto progressbar = new ProgressBar(150,320,200,20);
+ 	progressbar.value = 0.7;
+ 	window.attach(progressbar);*/
 
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));

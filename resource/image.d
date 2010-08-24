@@ -103,8 +103,8 @@ protected:
 			foreach(ref frameDesc; _frameDescs) {
 				frameDesc.time = _curFrameDesc.time;
 			}
+			_frameDesc = _frameDescs[0];
 		}
-		_frameDesc = _curFrameDesc;
 		return ret;
 	}
 
@@ -215,8 +215,11 @@ public:
 		if (_view !is null) {
 			// Update view, if necessary
 			if (_frameDesc.clearFirst) {
-				_view.brush = new Brush(_frameDesc.clearColor);
-				_view.fillRectangle(0,0,_view.width,_view.height);
+				_view.clear();
+    			if (_frameDesc.clearColor.alpha > 0.0) {
+					_view.brush = new Brush(_frameDesc.clearColor);
+					_view.fillRectangle(0,0,_view.width,_view.height);
+				}
 			}
 			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);
 			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);

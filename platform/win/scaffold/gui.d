@@ -29,6 +29,8 @@ import binding.win32.wingdi;
 import binding.win32.winuser;
 import binding.win32.winerror;
 
+import io.console;
+
 import Gdiplus = binding.win32.gdiplus;
 
 void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
@@ -56,6 +58,12 @@ void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
 		style,
 		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
 		null, null, null, userData);
+}
+
+static const uint WM_USER_REDRAW = WM_USER + 1;
+
+void GuiRedrawRequest(Window window, WindowPlatformVars* windowVars) {
+	PostMessage(windowVars.hWnd, WM_USER_REDRAW, 0, 0);
 }
 
 void GuiDestroyWindow(Window window, WindowPlatformVars* windowVars) {
@@ -591,6 +599,11 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
 			windowVars.event.info.key.capsLock = (GetKeyState(VK_CAPITAL) & 1) == 1;
 
+			windowVars.haveEvent = true;
+			return 1;
+
+		case WM_USER_REDRAW:
+			windowVars.event.type = Event.Redraw;
 			windowVars.haveEvent = true;
 			return 1;
 

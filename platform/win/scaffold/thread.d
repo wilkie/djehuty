@@ -64,10 +64,10 @@ void ThreadStop(ref ThreadPlatformVars threadVars) {
 }
 
 void ThreadSleep(ulong milliseconds) {
-	while (milliseconds > 0xFFFFFFFF) {
-		.Sleep(0xFFFFFFFF);
+	while (milliseconds > 0xFFFFFFFE) {
+		.Sleep(0xFFFFFFFE);
 
-		milliseconds -= 0xFFFFFFFF;
+		milliseconds -= 0xFFFFFFFE;
 	}
 	.Sleep(cast(uint)milliseconds);
 }

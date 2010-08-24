@@ -14,21 +14,25 @@ import gui.window;
 import graphics.canvas;
 import graphics.brush;
 
+import decoders.image.decoder;
+
 import resource.image;
 
 import synch.timer;
+
+import io.console;
 
 class ImageBox : Window {
 private:
 	Image _image;
 	Position _position = Position.Center;
 	Timer _animationTimer;
+	ImageFrameDescription _frameDesc;
 
 	bool timerProc(Dispatcher dsp, uint signal) {
 		image.next();
-		auto frameDesc = image.frameDescription;
 
-		_animationTimer.interval = frameDesc.time;
+		_animationTimer.interval = _frameDesc.time;
 		redraw();
 		return true;
 	}
@@ -40,6 +44,7 @@ public:
 
 		if (filename !is null) {
 			this.image = new Image(filename);
+			_frameDesc = this.image.frameDescription;
 		}
 		super(x, y, width, height);
 	}
@@ -50,6 +55,7 @@ public:
 
 		if (filename !is null) {
 			this.image = new Image(filename);
+			_frameDesc = this.image.frameDescription;
 
 			super(x, y, _image.width, _image.height);
 		}
@@ -111,6 +117,7 @@ public:
 
 	void image(Image value) {
 		_image = value;
+		_frameDesc = this.image.frameDescription;
 
 		if (_image.numFrames > 1) {
 			_animationTimer.stop();

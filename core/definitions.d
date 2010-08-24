@@ -353,6 +353,7 @@ struct Event {
 		MouseLeave,
 		Size,
 		Close,
+		Redraw
 	}
 
 	uint type;
