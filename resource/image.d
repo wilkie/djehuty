@@ -102,6 +102,8 @@ protected:
 
 			foreach(ref frameDesc; _frameDescs) {
 				frameDesc.time = _curFrameDesc.time;
+				frameDesc.clearFirst = _curFrameDesc.clearFirst;
+				frameDesc.clearColor = _curFrameDesc.clearColor;
 			}
 			_frameDesc = _frameDescs[0];
 		}

@@ -434,7 +434,7 @@ int main(string[] args) {
 	window.attach(scrollbarh);
 
 	auto filebox = new FileBox(245, 0, 240, 485);
-	auto listbox = new ListBox(0, 0, 245, 485);
+	auto listbox = new ListBox(0, 150, 245, 335);
 	listbox.buffered = true;
 	listbox.add("hello");
 	listbox.add("hey");
