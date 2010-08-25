@@ -473,6 +473,28 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			windowVars.haveEvent = true;
 			return 1;
 
+		case WM_MOUSEWHEEL:
+		case WM_MOUSEHWHEEL:
+			if (uMsg == WM_MOUSEWHEEL) {
+				windowVars.event.type = Event.MouseWheelY;
+			}
+			else {
+				windowVars.event.type = Event.MouseWheelX;
+			}
+
+			short count = cast(short)((wParam >> 16) & 0xffff);
+			auto counts_per_tick = cast(double)WHEEL_DELTA;
+			windowVars.event.resolution = cast(double)count / counts_per_tick;
+
+			int x, y;
+			x = lParam & 0xffff;
+			windowVars.event.info.mouse.x = x;
+			y = (lParam >> 16) & 0xffff;
+			windowVars.event.info.mouse.y = y;
+
+			windowVars.haveEvent = true;
+			return 1;
+
 		case WM_MOUSEMOVE:
 			windowVars.event.type = Event.MouseMove;
 			int x, y;

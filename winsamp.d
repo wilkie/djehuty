@@ -412,6 +412,19 @@ class C {
 void foobarfunc(bool f) {
 }
 
+class MineSweeper : Window {
+private:
+	int _gridX;
+	int _gridY;
+
+public:
+	this(double x, double y, int gridX, int gridY) {
+		_gridX = gridX;
+		_gridY = gridY;
+		super(x, y, gridX * 32, gridY * 32);
+	}
+}
+
 int main(string[] args) {
 	auto app = new GuiApplication("MyApp");
 	auto window = new Window(200, 200, 500, 500);

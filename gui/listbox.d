@@ -20,6 +20,8 @@ import graphics.pen;
 import graphics.gradient;
 import graphics.path;
 
+import io.console;
+
 import data.list;
 
 class ListBox : Window, Iterable!(string) {
@@ -130,7 +132,7 @@ public:
 		}
 	}
 
-	/*override void onScrollY(ref Mouse mouse, int delta) {
+	override void onMouseScrollY(Mouse mouse, double delta) {
 		delta = -delta;
 
 		// void out the current search
@@ -139,7 +141,7 @@ public:
 		// get the new selected index
 		_scrollbar.value = _scrollbar.value + (cast(long)delta * 3);
 	}
-*/
+
 	override void onMouseDown(Mouse mouse, uint button) {
 		// cancel any search
 		_cancelSearch();

@@ -359,6 +359,7 @@ struct Event {
 	uint type;
 	EventInfo info;
 	uint aux;
+	double resolution;
 }
 
 enum Month {

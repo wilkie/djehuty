@@ -218,6 +218,19 @@ private:
 		onMouseUp(mouse, button);
 	}
 
+	final void _dispatchMouseScrollX(ref Mouse mouse, double delta) {
+		if (_hoverWindow !is null) {
+			_hoverWindow._dispatchMouseScrollX(mouse, delta);
+		}
+		this.onMouseScrollX(mouse, delta);
+	}
+
+	final void _dispatchMouseScrollY(ref Mouse mouse, double delta) {
+		if (_hoverWindow !is null) {
+			_hoverWindow._dispatchMouseScrollY(mouse, delta);
+		}
+		this.onMouseScrollY(mouse, delta);
+	}
 
 	final void _dispatchMouseDrag(ref Mouse mouse) {
 		// Look at passing this message down
@@ -769,6 +782,18 @@ public:
 				_dispatchMouseLeave();
 				break;
 
+			case Event.MouseWheelX:
+				_mouse.x = event.info.mouse.x;
+				_mouse.y = event.info.mouse.y;
+				_dispatchMouseScrollX(_mouse, event.resolution);
+				break;
+
+			case Event.MouseWheelY:
+				_mouse.x = event.info.mouse.x;
+				_mouse.y = event.info.mouse.y;
+				_dispatchMouseScrollY(_mouse, event.resolution);
+				break;
+
 			case Event.KeyDown:
 				event.info.key.deadChar = _key.deadChar;
 				_key = Keyboard.translate(event.info.key);
@@ -819,6 +844,12 @@ public:
 	}
 
 	void onMouseHover(Mouse mouse) {
+	}
+
+	void onMouseScrollX(Mouse mouse, double delta) {
+	}
+
+	void onMouseScrollY(Mouse mouse, double delta) {
 	}
 
 	void onKeyDown(Key key) {
