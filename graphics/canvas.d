@@ -20,8 +20,6 @@ import scaffold.canvas;
 
 import platform.vars.canvas;
 
-import GraphicsScaffold = scaffold.graphics;
-
 import io.console;
 
 class Canvas {
@@ -45,6 +43,8 @@ public:
 		_height = height;
 
 		CanvasCreate(this, &_pfvars);
+		GraphicsScaffold.setBrush(&_pfvars, Brush.Black.platformVariables);
+		GraphicsScaffold.fillRect(&_pfvars, 0, 0, width, height);
 	}
 
 	~this() {
@@ -60,8 +60,8 @@ public:
 	}
 
 	void clear() {
-		CanvasDestroy(this, &_pfvars);
-		CanvasCreate(this, &_pfvars);
+//		CanvasDestroy(this, &_pfvars);
+//		CanvasCreate(this, &_pfvars);
 	}
 
 	int width() {
@@ -75,15 +75,15 @@ public:
 	// Rectangles
 
 	void drawRectangle(double x, double y, double width, double height) {
-		GraphicsScaffold.drawRect(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.drawRect(&_pfvars, x, y, width, height);
 	}
 
 	void strokeRectangle(double x, double y, double width, double height) {
-		GraphicsScaffold.strokeRect(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.strokeRect(&_pfvars, x, y, width, height);
 	}
 
 	void fillRectangle(double x, double y, double width, double height) {
-		GraphicsScaffold.fillRect(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.fillRect(&_pfvars, x, y, width, height);
 	}
 
 	// Rounded Rectangles
@@ -92,124 +92,124 @@ public:
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-		drawPath(tempPath);
+//		drawPath(tempPath);
 	}
 
 	void strokeRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-		strokePath(tempPath);
+//		strokePath(tempPath);
 	}
 
 	void fillRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-		fillPath(tempPath);
+//		fillPath(tempPath);
 	}
 
 	// Paths
 
 	void drawPath(Path path) {
-		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
+//		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
 	}
 
 	void strokePath(Path path) {
-		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
+//		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
 	}
 
 	void fillPath(Path path) {
-		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
+//		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
 	}
 
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
-		GraphicsScaffold.drawOval(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.drawOval(&_pfvars, x, y, width, height);
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
-		GraphicsScaffold.strokeOval(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.strokeOval(&_pfvars, x, y, width, height);
 	}
 
 	void fillEllipse(double x, double y, double width, double height) {
-		GraphicsScaffold.fillOval(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.fillOval(&_pfvars, x, y, width, height);
 	}
 
 	// Text
 
 	void drawString(string text, double x, double y) {
-		GraphicsScaffold.drawText(&_pfvars, x, y, text);
+//		GraphicsScaffold.drawText(&_pfvars, x, y, text);
 	}
 
 	void strokeString(string text, double x, double y) {
-		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
+//		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
 	}
 
 	void fillString(string text, double x, double y) {
-		GraphicsScaffold.fillText(&_pfvars, x, y, text);
+//		GraphicsScaffold.fillText(&_pfvars, x, y, text);
 	}
 
 	// State
 
 	long save() {
 		long ret;
-		GraphicsScaffold.save(&_pfvars, &ret);
+//		GraphicsScaffold.save(&_pfvars, &ret);
 		return ret;
 	}
 
 	void restore(long state) {
-		GraphicsScaffold.restore(&_pfvars, state);
+//		GraphicsScaffold.restore(&_pfvars, state);
 	}
 
 	// Image
 
 	void drawCanvas(Canvas canvas, double x, double y) {
-		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
+//		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
 	}
 
 	// Clipping
 
 	void clipRectangle(Rect rect) {
-		clipRectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+//		clipRectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
 	}
 
 	void clipRectangle(double x, double y, double width, double height) {
-		GraphicsScaffold.clipRect(&_pfvars, x, y, width, height);
+//		GraphicsScaffold.clipRect(&_pfvars, x, y, width, height);
 	}
 
 	void clipPath(Path path) {
-		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
+//		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
 	}
 
 	void clipReset() {
-		GraphicsScaffold.clipClear(&_pfvars);
+//		GraphicsScaffold.clipClear(&_pfvars);
 	}
 
 	// Transforms
 
 	void transformReset() {
-		GraphicsScaffold.resetWorld(&_pfvars);
+//		GraphicsScaffold.resetWorld(&_pfvars);
 	}
 
 	void transformTranslate(double x, double y) {
-		GraphicsScaffold.translateWorld(&_pfvars, x, y);
+//		GraphicsScaffold.translateWorld(&_pfvars, x, y);
 	}
 
 	void transformScale(double x, double y) {
-		GraphicsScaffold.scaleWorld(&_pfvars, x, y);
+//		GraphicsScaffold.scaleWorld(&_pfvars, x, y);
 	}
 
 	void transformRotate(double angle) {
-		GraphicsScaffold.rotateWorld(&_pfvars, angle);
+//		GraphicsScaffold.rotateWorld(&_pfvars, angle);
 	}
 
 	// Properties
 
 	void antialias(bool value) {
 		_antialias = value;
-		GraphicsScaffold.setAntialias(&_pfvars, value);
+//		GraphicsScaffold.setAntialias(&_pfvars, value);
 	}
 
 	bool antialias() {
@@ -218,7 +218,7 @@ public:
 
 	void brush(Brush value) {
 		_brush = value;
-		GraphicsScaffold.setBrush(&_pfvars, value.platformVariables);
+//		GraphicsScaffold.setBrush(&_pfvars, value.platformVariables);
 	}
 
 	Brush brush() {
@@ -227,7 +227,7 @@ public:
 
 	void pen(Pen value) {
 		_pen = value;
-		GraphicsScaffold.setPen(&_pfvars, value.platformVariables);
+//		GraphicsScaffold.setPen(&_pfvars, value.platformVariables);
 	}
 
 	Pen pen() {
@@ -236,7 +236,7 @@ public:
 
 	void font(Font value) {
 		_font = value;
-		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
+//		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
 	}
 
 	Font font() {

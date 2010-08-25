@@ -44,6 +44,10 @@ public:
 		return new Brush(Color.White);
 	}
 
+	static Brush Black() {
+		return new Brush(Color.Black);
+	}
+
 	static Brush Red() {
 		return new Brush(Color.Red);
 	}
