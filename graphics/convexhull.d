@@ -10,14 +10,14 @@
 
 module graphics.convexhull;
 
-import graphics.region;
+import graphics.polygon;
 
 import core.definitions;
 
 import io.console;
 
 // Description: This class represents a region that is convex.
-class ConvexHull : Region {
+class ConvexHull : Polygon {
 private:
 
 	// Description: This function will build the internal array of points using the given array of points
@@ -91,7 +91,7 @@ public:
 
 	// Description: This will construct a ConvexHull for the given Region.
 	// region: The class representing the region to use.
-	this(Region region) {
+	this(Polygon region) {
 		quickHull(region[]);
 	}
 

@@ -1,13 +1,11 @@
 /*
- * region.d
+ * polygon.d
  *
- * This module implements a region primitive.
- *
- * Author: Dave Wilkinson
+ * This module implements a polygon primitive.
  *
  */
 
-module graphics.region;
+module graphics.polygon;
 
 import core.definitions;
 
@@ -15,7 +13,7 @@ import platform.vars.region;
 
 import scaffold.graphics;
 
-class Region {
+class Polygon {
 protected:
 
 	// Whether or not the platform's realization of the state of this region
@@ -32,7 +30,7 @@ public:
 	this() {
 	}
 
-	this(Region rgn) {
+	this(Polygon rgn) {
 		_points = rgn.points;
 	}
 

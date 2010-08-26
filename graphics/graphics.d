@@ -20,7 +20,7 @@ import core.color;
 public import graphics.brush;
 public import graphics.pen;
 public import graphics.font;
-public import graphics.region;
+public import graphics.polygon;
 public import graphics.gradient;
 
 import platform.vars.view;
@@ -113,7 +113,7 @@ public:
 	// x: The amount to translate the region in the x direction.
 	// y: The amount to translate the region in the y direction.
 	// rgn: The region to draw.
-	void drawRegion(int x, int y, Region rgn) {
+/*	void drawRegion(int x, int y, Region rgn) {
 		rgn.platformDirty = false;
 		Scaffold.drawRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
 	}
@@ -135,7 +135,7 @@ public:
 		rgn.platformDirty = false;
 		Scaffold.strokeRegion(_viewVars, &rgn._pfvars, rgn.platformDirty, rgn, x, y);
 	}
-
+*/
 	// Description: Draws a pie wedge within the rectangular region given with the top-left point of the pie at the point (x,y). The wedge will be from the startAngle and have an arc length of the sweepAngle.
 	// x: The top-left coordinate's x value.
 	// y: The top-left coordinate's y value.
@@ -555,7 +555,7 @@ public:
 
 	// Description: Unions the current clip region with the region given.
 	// rgn: The region to clip.
-	void clipRegion(Region rgn) {
+	void clipRegion(Polygon rgn) {
 //		Scaffold.clipRegion(_viewVars, rgn);
 	}
 }

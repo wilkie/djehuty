@@ -12,7 +12,7 @@ module scaffold.graphics;
 
 pragma(lib, "gdi32.lib");
 
-import graphics.region;
+import graphics.polygon;
 import graphics.view;
 import graphics.canvas;
 import graphics.brush;
@@ -41,7 +41,7 @@ import core.unicode;
 
 import platform.win.main;
 
-import binding.win32.wingdi;
+import Gdi = binding.win32.wingdi;
 import binding.win32.winuser;
 import binding.win32.windef;
 import binding.win32.winbase;
@@ -202,13 +202,13 @@ void fillText(CanvasPlatformVars* viewVars, double x, double y, string str) {
 
 // Clipped Text
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str) {
-	wstring utf16 = Unicode.toUtf16(str);
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, utf16.length, null);
+	//wstring utf16 = Unicode.toUtf16(str);
+//	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, utf16.length, null);
 }
 
 void drawClippedText(ViewPlatformVars* viewVars, int x, int y, Rect region, string str, uint length) {
-	wstring utf16 = Unicode.toUtf16(str);
-	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, length, null);
+	//wstring utf16 = Unicode.toUtf16(str);
+//	ExtTextOutW(viewVars.dc, x,y, ETO_CLIPPED, cast(RECT*)&region, utf16.ptr, length, null);
 }
 
 // Text Measurement
@@ -253,21 +253,21 @@ void measureText(ViewPlatformVars* viewVars, string str, uint length, out Size s
 
 // Text Colors
 void setTextBackgroundColor(ViewPlatformVars* viewVars, in Color textColor) {
-	SetBkColor(viewVars.dc, _colorToInt(textColor));
+//	SetBkColor(viewVars.dc, _colorToInt(textColor));
 }
 
 void setTextColor(ViewPlatformVars* viewVars, in Color textColor) {
-	Gdiplus.GdipCreateSolidFill(_colorToInt(textColor), &viewVars.curTextBrush);
+//	Gdiplus.GdipCreateSolidFill(_colorToInt(textColor), &viewVars.curTextBrush);
 }
 
 // Text States
 
 void setTextModeTransparent(ViewPlatformVars* viewVars) {
-	SetBkMode(viewVars.dc, TRANSPARENT);
+//	SetBkMode(viewVars.dc, TRANSPARENT);
 }
 
 void setTextModeOpaque(ViewPlatformVars* viewVars) {
-	SetBkMode(viewVars.dc, OPAQUE);
+//	SetBkMode(viewVars.dc, OPAQUE);
 }
 
 // Graphics States
@@ -536,10 +536,10 @@ void drawCanvas(CanvasPlatformVars* CanvasVars, Canvas canvas, double x, double 
 	Gdiplus.GdipDisposeImageAttributes(ia);
 }
 
-void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
+void _createRegion(RegionPlatformVars* rgnVars, Polygon rgn, int x, int y) {
 	// destroy old region data
 	if (rgnVars.regionHandle !is null) {
-		DeleteObject(rgnVars.regionHandle);
+//		DeleteObject(rgnVars.regionHandle);
 	}
 
 	// compute a platform graphics api version of the region
@@ -551,39 +551,39 @@ void _createRegion(RegionPlatformVars* rgnVars, Region rgn, int x, int y) {
 	}
 
 	// call the platform to create a region object from the points
-	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.length, ALTERNATE);
+//	rgnVars.regionHandle = CreatePolygonRgn(pts.ptr, rgn.length, ALTERNATE);
 }
 
-void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+void fillRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Polygon rgn, int x, int y) {
 	if (rgnPlatformDirty) {
 		_createRegion(rgnVars, rgn, x, y);
 	}
 
 	// paint the region
-	PaintRgn(viewVars.dc, rgnVars.regionHandle);
+//	PaintRgn(viewVars.dc, rgnVars.regionHandle);
 }
 
-void strokeRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+void strokeRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Polygon rgn, int x, int y) {
 	if (rgnPlatformDirty) {
 		_createRegion(rgnVars, rgn, x, y);
 	}
 
 	// frame the region
-	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
-	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
-	DeleteObject(brsh);
+//	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
+//	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
+//	DeleteObject(brsh);
 }
 
-void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Region rgn, int x, int y) {
+void drawRegion(ViewPlatformVars* viewVars, RegionPlatformVars* rgnVars, bool rgnPlatformDirty, Polygon rgn, int x, int y) {
 	if (rgnPlatformDirty) {
 		_createRegion(rgnVars, rgn, x, y);
 	}
 
 	// paint and frame the region
-	PaintRgn(viewVars.dc, rgnVars.regionHandle);
-	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
-	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
-	DeleteObject(brsh);
+//	PaintRgn(viewVars.dc, rgnVars.regionHandle);
+//	HBRUSH brsh = CreateSolidBrush(viewVars.penClr);
+//	FrameRgn(viewVars.dc, rgnVars.regionHandle, brsh, 1, 1);
+//	DeleteObject(brsh);
 }
 
 void save(CanvasPlatformVars* viewVars, long* state) {
@@ -628,7 +628,7 @@ void clipPath(CanvasPlatformVars* viewVars, PathPlatformVars* path) {
 		path.path, Gdiplus.CombineMode.CombineModeIntersect);
 }
 
-void clipRegion(ViewPlatformVars* viewVars, Region region) {
+void clipRegion(ViewPlatformVars* viewVars, Polygon region) {
 }
 
 void resetWorld(CanvasPlatformVars* viewVars) {

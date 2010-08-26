@@ -1428,9 +1428,9 @@ const GL_EDGE_FLAG_ARRAY_POINTER_EXT = 0x8093;
 
 alias GL_DOUBLE GL_DOUBLE_EXT;
 /* EXT_bgra */
-const GL_BGR_EXT = 0x80E0;
+//const GL_BGR_EXT = 0x80E0;
 
-const GL_BGRA_EXT = 0x80E1;
+//const GL_BGRA_EXT = 0x80E1;
 /* EXT_paletted_texture */
 
 /* These must match the GL_COLOR_TABLE_*_SGI enumerants */

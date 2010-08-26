@@ -27,6 +27,7 @@ struct CanvasPlatformVars {
 
 	RECT bounds;
 	HDC dc;
+	HDC testDC;
 
 	GpImage* image;
 	Rect rt;

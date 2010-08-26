@@ -12,8 +12,18 @@ import graphics.gradient;
 import graphics.bitmap;
 
 class Brush {
+public:
+	enum Type {
+		Color,
+		Brush,
+		Gradient
+	}
+
 private:
 	BrushPlatformVars _pfvars;
+	Color _color;
+	Type _type;
+
 public:
 
 	this() {
@@ -22,6 +32,7 @@ public:
 
 	// Constructor
 	this(Color clr) {
+		_color = clr;
 		Scaffold.createBrush(&_pfvars, clr);
 	}
 
@@ -38,7 +49,17 @@ public:
 		Scaffold.destroyBrush(&_pfvars);
 	}
 
-// Convenience
+	// Properties
+
+	Color color() {
+		return _color;
+	}
+
+	Type type() {
+		return _type;
+	}
+
+	// Convenience
 
 	static Brush White() {
 		return new Brush(Color.White);

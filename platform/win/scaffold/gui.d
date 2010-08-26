@@ -88,17 +88,8 @@ void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatfo
 	bf.SourceConstantAlpha = 255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	HBITMAP hbm;
-	Gdiplus.GdipCreateHBITMAPFromBitmap(viewVars.image, &hbm, 0);
-	HDC windowDC = GetDC(windowVars.hWnd);
-	HDC dc = CreateCompatibleDC(windowDC);
-	SelectObject(dc, hbm);
-	DeleteObject(hbm);
-
-	UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, dc, &ptz, 0, &bf, ULW_ALPHA);
-	
-	ReleaseDC(windowVars.hWnd, windowDC);
-	DeleteDC(dc);
+	putln("update");
+	UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, viewVars.testDC, &ptz, 0, &bf, ULW_ALPHA);
 }
 
 void GuiUpdateCursor(Canvas view, CanvasPlatformVars* viewVars) {

@@ -7,7 +7,7 @@ import synch.semaphore;
 import graphics.brush;
 import graphics.pen;
 import graphics.font;
-import graphics.region;
+import graphics.polygon;
 
 import platform.vars.view;
 
