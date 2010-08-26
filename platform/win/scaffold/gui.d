@@ -51,13 +51,15 @@ void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
 	// Need a reference to the window for knowing its size for WM_MOUSELEAVE
 	windowVars.window = window;
 
-	// Create the window
+	// Create the window as a normal app window to add it to the taskbar
 	windowVars.hWnd = CreateWindowExW(
-		WS_EX_LAYERED, // | WS_EX_TOOLWINDOW,
+		WS_EX_APPWINDOW,
 		className.ptr, "\0"w.ptr,
 		style,
 		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
 		null, null, null, userData);
+		
+	SetWindowLong(windowVars.hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
 }
 
 static const uint WM_USER_REDRAW = WM_USER + 1;

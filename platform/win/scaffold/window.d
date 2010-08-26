@@ -531,7 +531,7 @@ void WindowCreate(ref Window window, WindowPlatformVars* windowVars) {
 	}
 }
 
-void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars) {
+void WindowCreate(ref Window parent, WindowPlatformVars* windowVars, ref Window window, WindowPlatformVars* parentVars) {	
 }
 
 void WindowSetStyle(ref Window window, WindowPlatformVars* windowVars) {
@@ -542,7 +542,6 @@ void WindowReposition(ref Window window, WindowPlatformVars* windowVars) {
 }
 
 void WindowSetState(ref Window window, WindowPlatformVars* windowVars) {
-
 }
 
 void WindowRebound(ref Window window, WindowPlatformVars* windowVars) {
