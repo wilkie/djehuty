@@ -161,6 +161,7 @@ dchar[][] world;
 import math.random;
 
 class Rogue : CuiWindow {
+
 	int worldX, worldY;
 	int playerX, playerY;
 
@@ -188,7 +189,7 @@ class Rogue : CuiWindow {
 
 	this() {
 		enemies = new List!(Enemy)();
-
+		
 		rnd = new Random();
 		world = new dchar[][](_w,_h);
 		for(int x = 0; x < _w; x++) {
@@ -202,8 +203,10 @@ class Rogue : CuiWindow {
 				}
 			}
 		}
+
 		playerX = Console.width / 2;
 		playerY = Console.height / 2;
+
 		super(0,0,Console.width, Console.height);
 
 		for(int i = 0; i < 100; i++) {
@@ -415,6 +418,7 @@ int main(string[] args) {
 	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
 	app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
 	app.attach(new CuiFileBox(30,10,20,20));
+
 	auto lb = new CuiListBox(10, 10, 20, 20);
 	auto tf = new CuiToggleField(10,8,20,1);
 	auto tf2 = new CuiToggleField(10,9,20,1);

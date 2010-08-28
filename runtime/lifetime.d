@@ -226,8 +226,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(true, true)(ti, dimensions);
+	void* _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, true)(ti, dimensions).ptr;
 	}
 }
 
@@ -253,8 +253,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(true, false)(ti, dimensions);
+	void* _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, false)(ti, dimensions).ptr;
 	}
 }
 
@@ -280,8 +280,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(false, false)(ti, dimensions);
+	void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(false, false)(ti, dimensions).ptr;
 	}
 }
 
