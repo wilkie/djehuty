@@ -67,7 +67,7 @@ void ViewCreateDIB(ref Bitmap view, ViewPlatformVars*viewVars) {
 	Gdiplus.GdipGetDC(viewVars.g, &viewVars.dc);
 }
 
-void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
+void ViewCreateForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 	//will set _inited to true:
 	HDC dc;
 
@@ -88,7 +88,7 @@ void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Win
     Gdiplus.GdipCreateFromHDC(viewVars.dc, &viewVars.g);
 }
 
-void ViewResizeForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
+void ViewResizeForWindow(ref View view, ViewPlatformVars*viewVars, ref Window window, WindowPlatformVars* windowVars) {
 }
 
 void ViewResize(ref View view, ViewPlatformVars*viewVars) {

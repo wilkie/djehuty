@@ -15,6 +15,10 @@ import synch.semaphore;
 
 import binding.c;
 
+import binding.win32.wincon;
+
+import system.keyboard;
+
 class CuiWindow : Responder {
 private:
 	Mouse _mouse;
@@ -42,8 +46,39 @@ private:
 
 	bool _needsRedraw;
 	bool _dirty;
-	
+
 	int _count;
+
+	void _remove() {
+		if (this._prev is this) {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = null;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = null;
+			}
+			else {
+				parent._head = null;
+			}
+		}
+		else {
+			if (this is parent._topMostHead) {
+				parent._topMostHead = parent._topMostHead._next;
+			}
+			else if (this is parent._bottomMostHead) {
+				parent._bottomMostHead = parent._bottomMostHead._next;
+			}
+			else if (this is parent._head) {
+				parent._head = parent._head._next;
+			}
+
+			this._prev._next = this._next;
+			this._next._prev = this._prev;
+		}
+
+		this._prev = null;
+		this._next = null;
+	}
 
 	// Event dispatchers
 
@@ -256,7 +291,7 @@ private:
 	}
 
 	bool isPrintable(Key key, out dchar chr) {
-		if (key.ctrl || key.alt) {
+		if (key.control || key.alt) {
 			return false;
 		}
 
@@ -389,7 +424,7 @@ private:
 				chr = '\\';
 			}
 		}
-		else if (key.code == Key.Quote) {
+		else if (key.code == Key.Apostrophe) {
 			if (key.shift) {
 				chr = '"';
 			}
@@ -572,37 +607,6 @@ public:
 		return ret;
 	}
 
-	private void _remove() {
-		if (this._prev is this) {
-			if (this is parent._topMostHead) {
-				parent._topMostHead = null;
-			}
-			else if (this is parent._bottomMostHead) {
-				parent._bottomMostHead = null;
-			}
-			else {
-				parent._head = null;
-			}
-		}
-		else {
-			if (this is parent._topMostHead) {
-				parent._topMostHead = parent._topMostHead._next;
-			}
-			else if (this is parent._bottomMostHead) {
-				parent._bottomMostHead = parent._bottomMostHead._next;
-			}
-			else if (this is parent._head) {
-				parent._head = parent._head._next;
-			}
-
-			this._prev._next = this._next;
-			this._next._prev = this._prev;
-		}
-
-		this._prev = null;
-		this._next = null;
-	}
-
 	void reorder(WindowOrder order) {
 		// put on top
 		CuiWindow parent = this.parent();
@@ -753,11 +757,10 @@ public:
 	void onEvent(ref Event evt) {
 		switch(evt.type) {
 			case Event.KeyDown:
-				dchar chr;
-				evt.info.key.printable = isPrintable(evt.info.key, chr);
-				_dispatchKeyDown(evt.info.key);
-				if (evt.info.key.printable) {
-					_dispatchKeyChar(chr);
+				auto key = Keyboard.translate(evt.info.key);
+				_dispatchKeyDown(key);
+				if (key.printable != '\0') {
+					_dispatchKeyChar(key.printable);
 				}
 				break;
 			case Event.MouseDown:

@@ -57,7 +57,7 @@ protected:
 		StreamData ret = StreamData.Invalid;
 
 		if (_curView is null) {
-			_curView = new Bitmap();
+			_curView = new Bitmap(0, 0);
 			_curFrameDesc = ImageFrameDescription.init;
 		}
 
@@ -72,7 +72,7 @@ protected:
 			if (ret == StreamData.Accepted) {
 				// This means the image decoder is indeed the correct choice
 				// and that this image contains multiple frames.
-				_hasFrames = true;		
+				_hasFrames = true;
 			}
 			else if (ret != StreamData.Invalid) {
 				_view = _curView;
@@ -83,7 +83,7 @@ protected:
 			ret = StreamData.Accepted;
 			while(ret == StreamData.Accepted) {
 				if (_curView is null) {
-					_curView = new Bitmap();
+					_curView = new Bitmap(0, 0);
 					_curFrameDesc = ImageFrameDescription.init;
 				}
 				ret = _curCodec.decodeFrame(stream, _curView, _curFrameDesc);
@@ -93,16 +93,20 @@ protected:
 					_frameDescs ~= _curFrameDesc;
 					if (_view is null) {
 						_view = new Bitmap(_curView.width, _curView.height);
-						Graphics g = _view.lock();
-						g.drawView(0,0,_curView);
-						_view.unlock();
+						_view.drawCanvas(_curView, 0, 0);
 					}
 					_curView = null;
 					_frameCount++;
-				}	
+				}
 			}
-		}
 
+			foreach(ref frameDesc; _frameDescs) {
+				frameDesc.time = _curFrameDesc.time;
+				frameDesc.clearFirst = _curFrameDesc.clearFirst;
+				frameDesc.clearColor = _curFrameDesc.clearColor;
+			}
+			_frameDesc = _frameDescs[0];
+		}
 		return ret;
 	}
 
@@ -158,7 +162,7 @@ public:
 
 	// Description: This function will return the view object associated with this image.
 	// Returns: The view that can be manipulated.
-	Bitmap view() {
+	Bitmap canvas() {
 		return _view;
 	}
 
@@ -212,25 +216,18 @@ public:
 
 		if (_view !is null) {
 			// Update view, if necessary
-			Graphics g = _view.lock;
 			if (_frameDesc.clearFirst) {
-				g.brush = new Brush(_frameDesc.clearColor);
-				g.drawRect(0,0,_view.width,_view.height);
+				_view.clear();
+    			if (_frameDesc.clearColor.alpha > 0.0) {
+					_view.brush = new Brush(_frameDesc.clearColor);
+					_view.fillRectangle(0,0,_view.width,_view.height);
+				}
 			}
-			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
-			g.drawView(_frameDesc.xoffset, _frameDesc.yoffset, _frames[_frameIdx]);
-			_view.unlock;
+			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);
+			_view.drawCanvas(_frames[_frameIdx], _frameDesc.xoffset, _frameDesc.yoffset);
 		}
 		else {
 			_view = _frames[_frameIdx];
 		}
 	}
-}
-
-void ImageLock(ref Image img) {
-	//img._loaded.down();
-}
-
-void ImageUnlock(ref Image img) {
-	//img._loaded.up();
 }

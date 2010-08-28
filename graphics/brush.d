@@ -10,16 +10,10 @@ import resource.image;
 
 import graphics.gradient;
 import graphics.bitmap;
-import graphics.view;
 
 class Brush {
 private:
-
-	package BrushPlatformVars _pfvars;
-
-	// tied to a view?
-	package View _view; // will be null if no view is tied with it
-
+	BrushPlatformVars _pfvars;
 public:
 
 	this() {
@@ -32,20 +26,11 @@ public:
 	}
 
 	this(Image image) {
-		this(image.view);
-	}
-
-	this(Bitmap bitmap) {
-		if (bitmap is null) {
-			Scaffold.createBrush(&_pfvars, Color.Black);
-		}
-		else {
-			Scaffold.createBitmapBrush(&_pfvars, bitmap._pfvars);
-		}
+//		this(image.view);
 	}
 
 	this(Gradient gradient) {
-		Scaffold.createGradientBrush(&_pfvars, gradient._origx, gradient._origy, gradient._points, gradient._clrs, gradient._angle, gradient._width);
+		Scaffold.createGradientBrush(&_pfvars, gradient.originX, gradient.originY, gradient.points, gradient.colors, gradient.angle, gradient.width);
 	}
 
 	// Destructor
@@ -53,24 +38,7 @@ public:
 		Scaffold.destroyBrush(&_pfvars);
 	}
 
-	// Sets color of a solid brush
-	void setColor(Color clr) {
-	}
-
-	void color(Color clr) {
-		Scaffold.destroyBrush(&_pfvars);
-		Scaffold.createBrush(&_pfvars, clr);
-
-		// when tied to a locked view, update the brush being used
-		if (_view !is null) {
-			if (_view._locked)
-			{
-				_view._graphics.brush = _view._brush;
-			}
-		}
-	}
-
-// Convenient
+// Convenience
 
 	static Brush White() {
 		return new Brush(Color.White);
@@ -86,5 +54,9 @@ public:
 
 	static Brush Blue() {
 		return new Brush(Color.Blue);
+	}
+
+	BrushPlatformVars* platformVariables() {
+		return &_pfvars;
 	}
 }

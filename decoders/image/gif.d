@@ -397,11 +397,13 @@ private:
 
 								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
 									gifFirstClearColor = Color.Black;
+									gifFirstClearColor.alpha = 0.0;
 								}
 								else {
 									// if TRANSPARENT is set, clear color is transparent
 									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
 										gifFirstClearColor = Color.Black;
+										gifFirstClearColor.alpha = 0.0;
 									}
 									else {
 										gifFirstClearColor.red =
@@ -425,11 +427,13 @@ private:
 
 								if (gifScreen.gifBackgroundColorIndex >= gifGlobalColorTableSize) {
 									imageDesc.clearColor = Color.Black;
+									imageDesc.clearColor.alpha = 0.0;
 								}
 								else {
 									// iF TRANSPARENT is set, clear color is transparent
 									if ((gifGraphicControl.gifBlockSize == 4) && (gifGraphicControl.gifPackedFields & 1) ) {
 										imageDesc.clearColor = Color.Black;
+										imageDesc.clearColor.alpha = 0.0;
 									}
 									else {
 										imageDesc.clearColor.red =
@@ -663,7 +667,7 @@ private:
 				gifBlockSize = 0;
 				gifBlockCounter = 0;
 
-				view.create(gifImage.gifImageWidth, gifImage.gifImageHeight);
+				view.resize(gifImage.gifImageWidth, gifImage.gifImageHeight);
 
 				decoderState = GIF_STATE_DECODE;
 				decoderSubState = 0;

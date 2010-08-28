@@ -22,6 +22,7 @@ import binding.win32.windef;
 import binding.win32.winuser;
 import binding.win32.winnt;
 import binding.win32.winbase;
+import binding.win32.winerror;
 
 import platform.vars.mutex;
 import platform.vars.semaphore;
@@ -63,10 +64,10 @@ void ThreadStop(ref ThreadPlatformVars threadVars) {
 }
 
 void ThreadSleep(ulong milliseconds) {
-	while (milliseconds > 0xFFFFFFFF) {
-		.Sleep(0xFFFFFFFF);
+	while (milliseconds > 0xFFFFFFFE) {
+		.Sleep(0xFFFFFFFE);
 
-		milliseconds -= 0xFFFFFFFF;
+		milliseconds -= 0xFFFFFFFE;
 	}
 	.Sleep(cast(uint)milliseconds);
 }
@@ -113,7 +114,9 @@ void SemaphoreDown(ref SemaphorePlatformVars semVars) {
 }
 
 bool SemaphoreTry(ref SemaphorePlatformVars semVars) {
-	return false;
+	auto ret = WaitForSingleObject(semVars._semaphore, 0);
+
+	return ret != WAIT_TIMEOUT;
 }
 
 

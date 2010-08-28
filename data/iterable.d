@@ -552,6 +552,21 @@ template flatten(T) {
 	}
 }
 
+template min(T) {
+	static assert(IsIterable!(T), "min: " ~ T.stringof ~ " is not iterable.");
+	IterableType!(T) min(T list) {
+		IterableType!(T) minimum;
+		uint idx = uint.max;
+		foreach(uint i, item; list) {
+			if (idx == uint.max || item < minimum) {
+				idx = i;
+				minimum = item;
+			}
+		}
+		return minimum;
+	}
+}
+
 template argmin(T, R, S) {
 	static assert(IsIterable!(T), "argmin: " ~ T.stringof ~ " is not iterable.");
 	IterableType!(T) argmin(S delegate(R) func, T list) {
@@ -581,6 +596,21 @@ template argmin(T, R, S) {
 			}
 		}
 		return min;
+	}
+}
+
+template max(T) {
+	static assert(IsIterable!(T), "max: " ~ T.stringof ~ " is not iterable.");
+	IterableType!(T) max(T list) {
+		IterableType!(T) maximum;
+		uint idx = uint.max;
+		foreach(uint i, item; list) {
+			if (idx == uint.max || item > maximum) {
+				idx = i;
+				maximum = item;
+			}
+		}
+		return maximum;
 	}
 }
 

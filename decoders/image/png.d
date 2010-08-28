@@ -11,6 +11,8 @@ import decoders.image.decoder;
 import decoders.decoder;
 import decoders.binary.zlib;
 
+import io.console;
+
 // Section: Codecs/Image
 
 // Description: The PNG Codec
@@ -210,7 +212,6 @@ public:
 		for (;;) {
 			switch(decoderState) {
 			case PNG_STATE_INIT_PROGRESS:
-
 				ptrPos = 0;
 				ptrLine = 0;
 
@@ -620,10 +621,8 @@ public:
 	//			Console.putln("eh!", pngRenderState, PNG_STATE_RENDER_STATE_BASE + PNG_TRUECOLOUR_ALPHA_8BPP);
 				}
 
-				//Console.putln(("png - ") + toString(pngIHDR.pngWidth) + (" x ") + toString(pngIHDR.pngHeight) + ("\n"));
-
 //	printf("type: %d\n", pngIHDR.pngWidth);
-				view.create(pngIHDR.pngWidth, pngIHDR.pngHeight);
+				view.resize(pngIHDR.pngWidth, pngIHDR.pngHeight);
 
 				// CALCULATE THE NUMBER OF BYTES WE WILL BE READING
 				switch(pngIHDR.pngColorType) {

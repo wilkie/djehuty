@@ -2,154 +2,95 @@
  * application.d
  *
  * This module implements the GUI application class that will be the starting
- * point for a GUI application. From this, Window classes with Widgets can be
- * created and pushed.
- *
- * Author: Dave Wilkinson
- * Originated: June 24th, 2009
+ * point for a GUI application. From this, Window classes can be
+ * created and attached.
  *
  */
 
 module gui.application;
 
-import core.application;
-import core.event;
+import djehuty;
 
-import gui.widget;
 import gui.window;
+import gui.dialog;
 
-// Platform Specific application entry
-import gui.apploop;
+import graphics.canvas;
+import graphics.brush;
+import graphics.pen;
 
+import scaffold.gui;
+import scaffold.canvas;
+
+import platform.vars.gui;
 import platform.vars.window;
+import platform.vars.canvas;
 
-import scaffold.window;
+import synch.thread;
+import synch.semaphore;
+
+import io.console;
+
+import GraphicsScaffold = scaffold.graphics;
+
+import binding.c;
 
 class GuiApplication : Application {
-protected:
-	Window _windowListHead = null;
-	Window _windowListTail = null;
+private:
+	GuiPlatformVars _pfvars;
 
+	// Window Management
+	Window _mainWindow;
+
+	// Window counts
 	int _windowCount;
 	int _windowVisibleCount;
 
-	override void start() {
-		_appController.start();
-	}
+	bool _running = false;
 
-	override void end(uint exitCode) {
-		_appController.end(exitCode);
-	}
-
-private:
-
-	GuiApplicationController _appController;
-
-	// Description: Will add and create the window (as long as it hasn't been already) and add it to the root window hierarchy.
-	// window: An instance of a Window class, or any the inherit from Window.
-	void addWindow(Window window) {
-		WindowPlatformVars* wpv = &window._pfvars;
-
-		synchronized {
-			// update the window linked list
-			updateWindowList(window);
-
-			// increase global window count
-			_windowCount++;
-
-			// create the window through platform calls
-			WindowCreate(window, wpv);
-		}
-
-		if (window.visible) {
-			WindowSetVisible(window, wpv, true);
-		}
-	}
-
-	void updateWindowList(Window window) {
-		window._inited = true;
-
-		if (_windowListHead is null)
-		{
-			_windowListHead = window;
-			_windowListTail = window;
-
-			window._nextWindow = window;
-			window._prevWindow = window;
-		}
-		else
-		{
-			window._nextWindow = _windowListHead;
-			window._prevWindow = _windowListTail;
-
-			_windowListHead._prevWindow = window;
-			_windowListTail._nextWindow = window;
-
-			_windowListHead = window;
-		}
-
-		if (window._visible)
-		{
-			_windowVisibleCount++;
-		}
-	}
-
-	package void destroyAllWindows()
-	{
-		Window w = _windowListHead;
-
-		if (w is null) { return; }
-
-		Window tmp = w;
-
-		_windowListHead = null;
-		_windowListTail = null;
-
-		do
-		{
-			w.remove();
-
-			w = w._nextWindow;
-
-		} while (w !is tmp)
-
-		_windowCount = 0;
-		_windowVisibleCount = 0;
-	}
 public:
 
-	// Constructors
-
 	this() {
-		_appController = new GuiApplicationController();
+		_mainWindow = new Window(0,0,0,0);
+		attach(_mainWindow);
 		super();
+		GuiStart(&_pfvars);
 	}
 
-	override void push(Dispatcher dsp) {
-		if (cast(Window)dsp !is null) {
-			addWindow(cast(Window)dsp);
+	this(string appName) {
+		_mainWindow = new Window(0,0,0,0);
+		attach(_mainWindow);
+		super(appName);
+		GuiStart(&_pfvars);
+	}
+
+	// Responder methods
+
+	override void attach(Dispatcher dsp, SignalHandler handler = null) {
+		// special cases for Dialog
+
+		auto window = cast(Window)dsp;
+		if (window !is null && window !is _mainWindow) {
+			// Add it to the dialog list
+			_mainWindow.attach(dsp, handler);
 		}
-
-		super.push(dsp);
+		else {
+			super.attach(dsp, handler);
+		}
 	}
 
-	// Properties
-
-	int numWindows() {
-		return _windowCount;
+	Window root() {
+		return _mainWindow;
 	}
-
-	int numVisible() {
-		return _windowVisibleCount;
-	}
-
-	// Methods
 
 	override bool isZombie() {
-		return _windowVisibleCount == 0;
+		return _mainWindow.visibleCount == 0;
 	}
 
-	Window firstWindow() {
-		return _windowListHead;
+	override void run() {
+		super.run();
+
+		// Block this function until all top level windows close (or become
+		// invisible)
+		while(this.isZombie is false) { Thread.yield(); }
 	}
 }

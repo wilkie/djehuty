@@ -201,22 +201,17 @@ public:
 
 		if (_orientation == Orientation.Horizontal) {
 			_minusButton = new CuiButton(0, 0, this.height, this.height, "\u2190");
-			_minusButton.forecolor = _buttonForecolor;
-			_minusButton.backcolor = _buttonBackcolor;
-
 			_plusButton = new CuiButton(this.width - this.height, 0, this.height, this.height, "\u2192");
-			_plusButton.forecolor = _buttonForecolor;
-			_plusButton.backcolor = _buttonBackcolor;
 		}
 		else {
 			_minusButton = new CuiButton(0, 0, this.width, this.width, "\u2191");
-			_minusButton.forecolor = _buttonForecolor;
-			_minusButton.backcolor = _buttonBackcolor;
-
 			_plusButton = new CuiButton(0, this.height - this.width, this.width, this.width, "\u2193");
-			_plusButton.forecolor = _buttonForecolor;
-			_plusButton.backcolor = _buttonBackcolor;
 		}
+
+		_minusButton.forecolor = _buttonForecolor;
+		_minusButton.backcolor = _buttonBackcolor;
+		_plusButton.forecolor = _buttonForecolor;
+		_plusButton.backcolor = _buttonBackcolor;
 
 		attach(_minusButton, &buttonHandler);
 		attach(_plusButton, &buttonHandler);

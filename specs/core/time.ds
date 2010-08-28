@@ -42,9 +42,9 @@ describe time() {
 		}
 	}
 
-	describe Now() {
+	describe now() {
 		it should_return_a_new_time() {
-			auto n = Time.Now();
+			auto n = Time.now();
 			shouldNot(cast(Time)n is null);
 		}
 	}

@@ -11,8 +11,13 @@
 module platform.vars.font;
 
 import binding.win32.gdiplusgpstubs;
+import binding.win32.gdiplusenums;
+import binding.win32.gdiplusfont;
 
-struct FontPlatformVars {	
+struct FontPlatformVars {
 	GpFont* handle;
 	GpFontFamily* family;
+	GpGraphics* g;
+	FontStyle style;
+	double fontsize;
 }

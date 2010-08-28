@@ -323,7 +323,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -523,7 +523,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -698,7 +698,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1161,7 +1161,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1535,7 +1535,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;
@@ -1706,7 +1706,7 @@ public:
 				}
 
 				//create the bitmap's buffer
-				view.create(bi.biWidth, bi.biHeight);
+				view.resize(bi.biWidth, bi.biHeight);
 
 				ptrLine = 0;
 				ptrPos = 0;

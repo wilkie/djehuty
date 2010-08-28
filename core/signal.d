@@ -36,6 +36,9 @@ public:
 
 	void onAttach(Responder rsp) {
 	}
+	
+	void onDetach() {
+	}
 
 	// Description: This function will set the responder that will receive
 	//	signals raised by this class.
@@ -75,11 +78,12 @@ public:
 		dsp.handler = handler;
 		dsp.onAttach(this);
 	}
-	
+
 	// Description: This function will detach the specified Dispatcher.
 	void detach(Dispatcher dsp) {
 		if (dsp.responder is this) {
 			dsp.responder = null;
+			dsp.onDetach();
 		}
 	}
 }

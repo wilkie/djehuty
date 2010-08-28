@@ -61,7 +61,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void drawRect(int x, int y, int width, int height) {
-		Scaffold.drawRect(_viewVars, x,y,width,height);
+//		Scaffold.drawRect(_viewVars, x,y,width,height);
 	}
 
 	// Description: Fills a rectangle defined by the top-left point: (x,y) and some size.
@@ -70,7 +70,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void fillRect(int x, int y, int width, int height) {
-		Scaffold.fillRect(_viewVars, x, y, width, height);
+//		Scaffold.fillRect(_viewVars, x, y, width, height);
 	}
 
 	// Description: Outlines a rectangle defined by the top-left point: (x,y) and some size.
@@ -79,7 +79,7 @@ public:
 	// width: The width of the rectangle to draw.
 	// height: The height of the rectangle to draw.
 	void strokeRect(int x, int y, int width, int height) {
-		Scaffold.strokeRect(_viewVars, x, y, width, height);
+//		Scaffold.strokeRect(_viewVars, x, y, width, height);
 	}
 
 	// Description: Draws an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -88,7 +88,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void drawOval(int x, int y, int width, int height) {
-		Scaffold.drawOval(_viewVars, x,y,width,height);
+//		Scaffold.drawOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Fills an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -97,7 +97,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void fillOval(int x, int y, int width, int height) {
-		Scaffold.fillOval(_viewVars, x,y,width,height);
+//		Scaffold.fillOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Outlines an ellipse inscribed by the rectangle defined by the top-left point: (x,y) and some size.
@@ -106,7 +106,7 @@ public:
 	// width: The width of the rectangle to use to inscribe.
 	// height: The height of the rectangle to use to inscribe.
 	void strokeOval(int x, int y, int width, int height) {
-		Scaffold.strokeOval(_viewVars, x,y,width,height);
+//		Scaffold.strokeOval(_viewVars, x,y,width,height);
 	}
 
 	// Description: Draws the region given.
@@ -176,7 +176,7 @@ public:
 	// y: The y coordinate to start rendering the text.
 	// str: The string to render.
 	void drawText(int x, int y, string str) {
-		Scaffold.drawText(_viewVars, x,y,str);
+//		Scaffold.drawText(_viewVars, x,y,str);
 	}
 
 	// Description: Draws the string starting with the top-left point of the text at the point (x,y) and only up to the number of characters specified by length.
@@ -185,7 +185,7 @@ public:
 	// str: The string to render.
 	// length: the length of the string.
 	void drawText(int x, int y, string str, uint length) {
-		Scaffold.drawText(_viewVars, x,y,str,length);
+//		Scaffold.drawText(_viewVars, x,y,str,length);
 	}
 
 // Clipped Text
@@ -215,7 +215,7 @@ public:
 	// str: The string to measure.
 	// sz: The Size struct to update.
 	void measureText(string str, out Size sz) {
-		Scaffold.measureText(_viewVars, str, sz);
+//		Scaffold.measureText(_viewVars, str, sz);
 	}
 
 	// Description: Will update the Size variable with the width and height of the text as it would be rendered.
@@ -223,7 +223,7 @@ public:
 	// length: The length of the string to consider.
 	// sz: The Size struct to update.
 	void measureText(string str, uint length, out Size sz) {
-		Scaffold.measureText(_viewVars, str, length, sz);
+//		Scaffold.measureText(_viewVars, str, length, sz);
 	}
 
 // Text Colors
@@ -259,14 +259,14 @@ public:
 	}
 
 	void antialias(bool value) {
-		Scaffold.setAntialias(_viewVars, value);
+//		Scaffold.setAntialias(_viewVars, value);
 		_antialias = value;
 	}
 
 // Fonts
 
 	void font(ref Font font) {
-		Scaffold.setFont(_viewVars, &font._pfvars);
+//		Scaffold.setFont(_viewVars, &font._pfvars);
 	}
 
 // Brushes
@@ -274,7 +274,7 @@ public:
 	// Description: Will set the fill type to that specified by the Brush object.
 	// brush: The Brush to use.
 	void brush(Brush brush) {
-		Scaffold.setBrush(_viewVars, &brush._pfvars);
+	/*	Scaffold.setBrush(_viewVars, &brush._pfvars);
 
 		if (_view._brush !is null)
 		{
@@ -284,7 +284,7 @@ public:
 		_view._brush = brush;
 
 		// set the Brush's view
-		brush._view = _view;
+		brush._view = _view;*/
 	}
 
 // Pens
@@ -292,17 +292,17 @@ public:
 	// Description: Will set the stroke type to that specified by the Pen object.
 	// pen: The Pen to use.
 	void pen(Pen pen) {
-		Scaffold.setPen(_viewVars, &pen._pfvars);
+//		Scaffold.setPen(_viewVars, &pen._pfvars);
 
 		// set the pen in the view
-		if (_view._pen !is null) {
+/*		if (_view._pen !is null) {
 			// unattach current pen
 			_view._pen._view = null;
 		}
 		_view._pen = pen;
 
 		// set the Pen's view
-		pen._view = _view;
+		pen._view = _view;*/
 	}
 
 // View Interfacing
@@ -322,7 +322,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view);
+//		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view);
 
 		view.unlock();
 	}
@@ -343,7 +343,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY);
+//		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY);
 
 		view.unlock();
 	}
@@ -366,7 +366,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight);
+		//Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight);
 
 		view.unlock();
 	}
@@ -386,7 +386,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, opacity);
+//		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, opacity);
 
 		view.unlock();
 	}
@@ -408,7 +408,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, opacity);
+//		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, opacity);
 
 		view.unlock();
 	}
@@ -432,7 +432,7 @@ public:
 
 		ViewPlatformVars* viewVarsSrc = &view._pfvars;
 
-		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight, opacity);
+//		Scaffold.drawView(_viewVars, _view, x, y, viewVarsSrc, view, viewX, viewY, viewWidth, viewHeight, opacity);
 
 		view.unlock();
 	}
@@ -444,12 +444,12 @@ public:
 	// y: The y coordinate to place the top-left corner of the image.
 	// image: The image to draw.
 	void drawImage(int x, int y, Image image) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v);
+//		}
+//		ImageUnlock(image);
 	}
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y) while cropping the image at the coordinate (srcX, srcY).
@@ -459,12 +459,12 @@ public:
 	// srcX: The x coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	void drawImage(int x, int y, Image image, int srcX, int srcY) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v, srcX, srcY);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v, srcX, srcY);
+//		}
+//		ImageUnlock(image);
 	}
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y) while cropping the image at the coordinate (srcX, srcY) with the region sized by srcW and srcH.
@@ -476,12 +476,12 @@ public:
 	// srcW: The width of the cropped region.
 	// srcH: The height of the cropped region.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v, srcX, srcY, srcW, srcH);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v, srcX, srcY, srcW, srcH);
+//		}
+//		ImageUnlock(image);
 	}
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y) at an opacity of the fraction given.
@@ -490,12 +490,12 @@ public:
 	// image: The image to draw.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, double opacity) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v, opacity);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v, opacity);
+//		}
+//		ImageUnlock(image);
 	}
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y) while cropping the image at the coordinate (srcX, srcY) at an opacity of the fraction given.
@@ -506,12 +506,12 @@ public:
 	// srcY: The y coordinate to crop the image.  The top-left corner of the render will correspond to the top-left corner of this cropped region.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, double opacity) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v, srcX, srcY, opacity);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v, srcX, srcY, opacity);
+//		}
+//		ImageUnlock(image);
 	}
 
 	// Description: Will draw the image to the current view object at the coordinate (x,y) while cropping the image at the coordinate (srcX, srcY) with the region sized by srcW and srcH at an opacity of the fraction given.
@@ -524,24 +524,24 @@ public:
 	// srcH: The height of the cropped region.
 	// opacity: The opacity.  1.0 is full opacity.  0.0 will result in no image, as this is full transparency.
 	void drawImage(int x, int y, Image image, int srcX, int srcY, int srcW, int srcH, double opacity) {
-		ImageLock(image);
-		View v = image.view;
-		if (v !is null) {
-			drawView(x, y, v, srcX, srcY, srcW, srcH, opacity);
-		}
-		ImageUnlock(image);
+//		ImageLock(image);
+//		View v = image.view;
+//		if (v !is null) {
+//			drawView(x, y, v, srcX, srcY, srcW, srcH, opacity);
+//		}
+//		ImageUnlock(image);
 	}
 
 // Clipping
 
 	// Description: Will push the clip region to a stack preserving its state.
 	void clipSave() {
-		Scaffold.clipSave(_viewVars);
+//		Scaffold.clipSave(_viewVars);
 	}
 
 	// Description: If possible, will restore the clip state most recently saved via clipSave().
 	void clipRestore() {
-		Scaffold.clipRestore(_viewVars);
+//		Scaffold.clipRestore(_viewVars);
 	}
 
 	// Description: Unions the current clip region with a rectangle region defined by the top-left point: (x,y) and some size.
@@ -550,12 +550,12 @@ public:
 	// width: The width of the rectangular region to clip.
 	// height: The height of the rectangular region to clip.
 	void clipRect(int x, int y, int width, int height) {
-		Scaffold.clipRect(_viewVars, x,y,width,height);
+//		Scaffold.clipRect(_viewVars, x,y,width,height);
 	}
 
 	// Description: Unions the current clip region with the region given.
 	// rgn: The region to clip.
 	void clipRegion(Region rgn) {
-		Scaffold.clipRegion(_viewVars, rgn);
+//		Scaffold.clipRegion(_viewVars, rgn);
 	}
 }

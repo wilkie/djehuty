@@ -74,7 +74,6 @@ public:
 
 	// Methods //
 
-
 	// Description: Creates a new drawing canvas offscreen to the dimensions given.
 	// width: The width of the new drawing context.
 	// height: The height of the new drawing context.
@@ -150,7 +149,7 @@ public:
 	void unlock() {
 		_locked = false;
 
-		if (_brush !is null) {
+/*		if (_brush !is null) {
 			// Unattach the Brush
 			_brush._view = null;
 		}
@@ -160,7 +159,7 @@ public:
 			// Unattach the Pen
 			_pen._view = null;
 		}
-		_pen = null;
+		_pen = null;*/
 		_mutex.up();
 	}
 

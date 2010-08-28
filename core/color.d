@@ -190,6 +190,8 @@ public:
 
 	static const Color White 		= { _red: 1.0, _green: 1.0, _blue: 1.0, _alpha: 1.0 };
 
+	static const Color None			= { _red: 0.0, _green: 0.0, _blue: 0.0, _alpha: 0.0 };
+
 	// Description: This function will set the color given the red, green, blue, and alpha components.
 	static Color fromRGBA(double r, double g, double b, double a) {
 		Color ret;

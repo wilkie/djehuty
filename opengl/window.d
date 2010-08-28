@@ -14,7 +14,7 @@ import gui.window;
 import core.string;
 import core.definitions;
 import core.color;
-import core.event;
+import core.signal;
 
 import opengl.texture;
 

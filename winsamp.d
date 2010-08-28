@@ -26,6 +26,18 @@ import cui.togglefield;
 import cui.spinner;
 import cui.listfield;
 
+import gui.application;
+import gui.window;
+import gui.dialog;
+import gui.button;
+import gui.label;
+import gui.spinner;
+import gui.progressbar;
+import gui.scrollbar;
+import gui.imagebox;
+import gui.listbox;
+import gui.filebox;
+
 import synch.timer;
 import synch.thread;
 import synch.atomic;
@@ -136,7 +148,7 @@ class MyWindow : CuiDialog {
 
 	override void onKeyDown(Key key) {
 		redraw();
-		if (key.ctrl && key.code == Key.Q) {
+		if (key.control && key.code == Key.Q) {
 			Djehuty.application.exit(0);
 		}
 		else if (key.alt && key.code == Key.Tab) {
@@ -266,7 +278,7 @@ class Rogue : CuiWindow {
 	}
 
 	override void onKeyDown(Key key) {
-		if (key.ctrl && key.code == Key.Q) {
+		if (key.control && key.code == Key.Q) {
 			Djehuty.application.exit(0);
 		}
 		else if (key.code == Key.Left) {
@@ -400,7 +412,66 @@ class C {
 void foobarfunc(bool f) {
 }
 
+class MineSweeper : Window {
+private:
+	int _gridX;
+	int _gridY;
+
+public:
+	this(double x, double y, int gridX, int gridY) {
+		_gridX = gridX;
+		_gridY = gridY;
+		super(x, y, gridX * 32, gridY * 32);
+	}
+}
+
 int main(string[] args) {
+	auto app = new GuiApplication("MyApp");
+	auto window = new Window(200, 200, 500, 500);
+	auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
+	imagebox.buffered = false;
+	window.attach(imagebox);
+	window.attach(new Button(10, 10, 100, 33, "hello"));
+	window.attach(new Button(50, 50, 100, 33, "button"));
+	auto button = new Button(100,100, 45, 45);
+	button.image = new Image("tests/PNG/Knob Add.png");
+	window.attach(button);
+	auto label = new Label(0, 0, 30, 30, "Hello");
+	window.attach(label);
+	label.backcolor = Color.Red;
+	label.forecolor = Color.Gray;
+	label.position = Position.Left;
+	auto scrollbar = new ScrollBar(485,0,15,485);
+	auto scrollbarh = new ScrollBar(0,485,485,15, Orientation.Horizontal);
+	window.attach(scrollbar);
+	window.attach(scrollbarh);
+
+	auto filebox = new FileBox(245, 0, 240, 485);
+	auto listbox = new ListBox(0, 150, 245, 335);
+	listbox.buffered = true;
+	listbox.add("hello");
+	listbox.add("hey");
+	listbox.add("foo");
+	for(int i = 0; i < 100; i++) {
+	listbox.add("foo" ~ toStr(i));
+	}
+	filebox.buffered = true;
+	window.attach(listbox);
+	window.attach(filebox);
+
+/* 	auto spinner = new Spinner(200, 200, 100, 100);
+ 	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
+ 	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
+ 	window.attach(spinner);
+
+	auto progressbar = new ProgressBar(150,320,200,20);
+ 	progressbar.value = 0.7;
+ 	window.attach(progressbar);*/
+
+  	app.attach(window);
+//  	app.attach(new Window(400,400,250,250));
+	app.run();//*/
+
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();
 // 	tmr.interval = 250;
@@ -410,7 +481,7 @@ int main(string[] args) {
 // 	tmr.start();
 // 	Thread.sleep(1000);
 	//*/
-	auto app = new CuiApplication("MyApp");
+/* 	auto app = new CuiApplication("MyApp");
 	app.attach(new Rogue());
 	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
 	app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
@@ -442,8 +513,7 @@ int main(string[] args) {
 	for(int i = 0; i < 34; i++) {
 		lf.add("item " ~ toStr(i));
 	}
-	app.attach(lf);
+	app.attach(lf); */
 
-	app.run();//*/
 	return 0;
 }

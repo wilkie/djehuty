@@ -186,7 +186,7 @@ private {
 		VK_OEM_PERIOD: Key.Period,
 		VK_OEM_2: Key.Foreslash,
 		VK_OEM_5: Key.Backslash,
-		VK_OEM_7: Key.Quote,
+		VK_OEM_7: Key.Apostrophe,
 		VK_OEM_MINUS: Key.Minus,
 		VK_OEM_PLUS: Key.Equals,
 	];
@@ -326,8 +326,8 @@ private {
 
 					evt.info.key.code = _translateKey[code];
 
-					evt.info.key.ctrl = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
-					evt.info.key.alt = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
+					evt.info.key.leftControl = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x000C) > 0);
+					evt.info.key.leftAlt = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0003) > 0);
 					evt.info.key.shift = ((vars.irInBuf[i].Event.KeyEvent.dwControlKeyState & 0x0010) > 0);
 
 					if (vars.irInBuf[i].Event.KeyEvent.bKeyDown == TRUE) {

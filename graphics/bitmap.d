@@ -4,65 +4,42 @@
  * This module implements a bitmap view, or more specifically, a
  * device-independent-bitmap.
  *
- * Author: Dave Wilkinson
- * Originated: July 20th 2009
- *
  */
 
 module graphics.bitmap;
 
-import graphics.view;
+import graphics.canvas;
 import graphics.graphics;
 
 import synch.semaphore;
 
-import scaffold.view;
+import scaffold.canvas;
 
-import io.console;
-
-class Bitmap : View {
+class Bitmap : Canvas {
 private:
+	bool _inited;
 	Semaphore _buffer_mutex;
 
-public:
-	this() {
-		super();
+	bool _hasAlpha;
 
-		_buffer_mutex = new Semaphore(1);
-	}
+public:
 
 	this(int width, int height) {
-		create(width, height);
-	}
-
-	void create(int width, int height) {
-		if (_inited) { destroy(); }
-
-		_mutex.down();
-
-		_width = width;
-		_height = height;
-
-		_hasAlpha = false;
-
-		ViewCreateDIB(this, &_pfvars);
-
-		_inited = true;
-
-		_mutex.up();
+		_buffer_mutex = new Semaphore(1);
+		super(width, height);
 	}
 
 	void* getBufferUnsafe() {
-		return ViewGetBytes(&_pfvars);
+		return CanvasGetBytes(this.platformVariables);
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		_buffer_mutex.down();
-		bufferPtr[0] = ViewGetBytes(&_pfvars, length);
+		bufferPtr[0] = CanvasGetBytes(this.platformVariables, length);
 	}
 
 	void unlockBuffer() {
-		ViewUnlockBytes(&_pfvars);
+		CanvasUnlockBytes(this.platformVariables);
 		_buffer_mutex.up();
 	}
 }

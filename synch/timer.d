@@ -4,6 +4,7 @@ import synch.thread;
 import synch.semaphore;
 
 import core.signal;
+import core.time;
 
 // Section: Core/Synchronization
 
@@ -80,11 +81,14 @@ private class timer_thread : Thread {
 	}
 
 	override void run() {
+		Time cur = new Time(0);
 		while (_stop == false) {
-			sleep(_timer._interval);
+			sleep(_timer._interval - cur.milliseconds);
 
 			if (_stop == true) { break; }
+			auto last = Time.now();
 			_timer.raiseSignal(1);
+			cur = Time.now() - last;
 
 //			if (_timer.fire() == false) { break; }
 		}

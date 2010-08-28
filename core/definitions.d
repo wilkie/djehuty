@@ -61,6 +61,36 @@ enum Orientation {
 	Vertical
 }
 
+// Description: This enum gives values for positions.
+enum Position {
+	// Description: Will indicate the position at the top-left.
+	TopLeft,
+
+	// Description: Will indicate the position at the center-left.
+	Left,
+
+	// Description: Will indicate the position at the bottom-left.
+	BottomLeft,
+
+	// Description: Will indicate the position at the bottom-center.
+	Bottom,
+
+	// Description: Will indicate the position at the bottom-right.
+	BottomRight,
+
+	// Description: Will indicate the position at the center-right.
+	Right,
+
+	// Description: Will indicate the position at the top-right.
+	TopRight,
+
+	// Description: Will indicate the position at the top-center.
+	Top,
+
+	// Description: Will indicate the position at the very center.
+	Center
+}
+
 // Window Styles
 
 // Description: This enum gives all possible window styles.  Use the SetStyle() function within the BaseWindow class to set the style of the window to this value.
@@ -132,12 +162,29 @@ struct Mouse {
 
 struct Key {
 	uint code;
+	uint scan;
 
-	bool ctrl;
-	bool alt;
+	bool leftAlt;
+	bool rightAlt;
+
+	bool leftControl;
+	bool rightControl;
+
 	bool shift;
-	
-	bool printable;
+
+	bool capsLock;
+
+	dchar printable;
+
+	dchar deadChar;
+
+	bool control() {
+		return leftControl | rightControl;
+	}
+
+	bool alt() {
+		return leftAlt | rightAlt;
+	}
 
 	enum : uint {
 		Invalid,
@@ -174,6 +221,11 @@ struct Key {
 		LeftAlt,
 		RightAlt,
 
+		LeftGui,
+		RightGui,
+
+		Application,
+
 		F1,
 		F2,
 		F3,
@@ -190,6 +242,14 @@ struct Key {
 		F14,
 		F15,
 		F16,
+		F17,
+		F18,
+		F19,
+		F20,
+		F21,
+		F22,
+		F23,
+		F24,
 
 		Return,
 		Space,
@@ -205,8 +265,11 @@ struct Key {
 		Eight,
 		Nine,
 
+		PrintScreen,
+		SysRq,
+
 		SingleQuote,
-		Quote,
+		Apostrophe,
 		Comma,
 		Period,
 		Foreslash,
@@ -245,6 +308,26 @@ struct Key {
 		X,
 		Y,
 		Z,
+
+		KeypadZero,
+		KeypadOne,
+		KeypadTwo,
+		KeypadThree,
+		KeypadFour,
+		KeypadFive,
+		KeypadSix,
+		KeypadSeven,
+		KeypadEight,
+		KeypadNine,
+
+		KeypadPlus,
+		KeypadMinus,
+		KeypadAsterisk,
+		KeypadForeslash,
+		KeypadReturn,
+		KeypadPeriod,
+
+		International,
 	}
 }
 
@@ -267,13 +350,16 @@ struct Event {
 		MouseMove,
 		MouseWheelX,
 		MouseWheelY,
+		MouseLeave,
 		Size,
 		Close,
+		Redraw
 	}
 
 	uint type;
 	EventInfo info;
 	uint aux;
+	double resolution;
 }
 
 enum Month {

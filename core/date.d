@@ -163,7 +163,7 @@ public:
 			localTZ = new TimeZone();
 		}
 
-		Time time = Time.Now();
+		Time time = Time.now();
 		long micros = time.microseconds;
 		micros += localTZ.utcOffset;
 		if (micros < 0) {
