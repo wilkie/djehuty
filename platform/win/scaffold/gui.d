@@ -88,7 +88,6 @@ void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatfo
 	bf.SourceConstantAlpha = 255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	putln("update");
 	UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, viewVars.testDC, &ptz, 0, &bf, ULW_ALPHA);
 }
 

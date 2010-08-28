@@ -55,6 +55,9 @@ private:
 	static PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXTPtr;
 	static PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC glRenderbufferStorageMultisampleEXTPtr;
 
+	static PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparatePtr;
+	static PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparatePtr;
+
 	int _width;
 	int _height;
 
@@ -99,7 +102,7 @@ private:
 			0,                                          // No Accumulation Buffer
 			0, 0, 0, 0,                                 // Accumulation Bits Ignored
 			24,                                         // 16Bit Z-Buffer (Depth Buffer)
-			8,                                          // No Stencil Buffer
+			8,                                          // Some Stencil Buffer
 			0,                                          // No Auxiliary Buffer
 			PFD_MAIN_PLANE,                             // Main Drawing Layer
 			0,                                          // Reserved
@@ -203,8 +206,23 @@ private:
 		if (glGenerateMipmapEXTPtr is null) { putln("glGenerateMipmapEXT not found"); }
 		glRenderbufferStorageMultisampleEXTPtr = cast(PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC)wglGetProcAddress("glRenderbufferStorageMultisampleEXT\0"c.ptr);
 		if (glRenderbufferStorageMultisampleEXTPtr is null) { putln("glRenderbufferStorageMultisampleEXT not found"); }
+		glBlendFuncSeparatePtr = cast(PFNGLBLENDFUNCSEPARATEPROC)wglGetProcAddress("glBlendFuncSeparate\0"c.ptr);
+		if (glBlendFuncSeparatePtr is null) { putln("glBlendFuncSeparate not found"); }
+		glBlendEquationSeparatePtr = cast(PFNGLBLENDEQUATIONSEPARATEPROC)wglGetProcAddress("glBlendEquationSeparate\0"c.ptr);
+		if (glBlendEquationSeparatePtr is null) { putln("glBlendEquationSeparate not found"); }
+
 
 		alias void (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+	}
+
+	void _drawEllipse(uint type, double x, double y, double width, double height) {
+		static const double n = 100.0;
+
+		glBegin(type);
+		for(double t = 0; t <= TWOPI; t += TWOPI/n) {
+			glVertex3f(x + (width * cos(t)), y + (height * sin(t)),0);
+		}
+		glEnd();
 	}
 
 public:
@@ -243,7 +261,7 @@ public:
 			putln("extensions: ", extstr);
 		}
 
-		GLuint fb, color_rb, depth_rb;
+		GLuint fb, color_rb, depth_rb, stencil_rb, packed_rb;
 
 		// RGBA8 RenderBuffer
 		glGenFramebuffersEXTPtr(1, &fb);
@@ -263,6 +281,27 @@ public:
 	//	glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, depth_rb);
 	//	glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24,
 	//		width, height);
+		// -------------------------
+	// 	glGenRenderbuffersEXTPtr(1, &stencil_rb);
+// 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, stencil_rb);
+// 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX8, width, height);
+// 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, stencil_rb);
+//
+//
+// 		glGenRenderbuffersEXTPtr(1, &stencil_rb);
+// 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, stencil_rb);
+// 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT,
+// 		  GL_STENCIL_INDEX, _width, _height);
+// 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT,
+// 		  GL_STENCIL_ATTACHMENT_EXT,
+// 		  GL_RENDERBUFFER_EXT, stencil_rb);
+
+		glGenRenderbuffersEXTPtr(1, &packed_rb);
+		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, packed_rb);
+		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_DEPTH_STENCIL_EXT, _width, _height);
+		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
+		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
+
 		// -------------------------
 		// Attach depth buffer to FBO
 //		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
@@ -312,12 +351,27 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
 				putln("good. i");
 
-		glEnable(GL_ALPHA);
+	//	glEnable(GL_ALPHA);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//		glBlendFunc(GL_SRC_COLOR, GL_ONE);
+//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA); //, GL_ONE_MINUS_DST_ALPHA);
+
+		glBlendEquationSeparatePtr(GL_ADD, GL_ADD);
+		glBlendFuncSeparatePtr(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//		glBlendFuncSeparatePtr(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
+
+		// WINNER:
+//		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+//		glBlendFunc(GL_ONE, GL_SRC_ALPHA);
+//		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+//		glBledFunc(GL_SRC_COLOR, GL_ONE);
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 
+//		glEnable(GL_ALPHA_TEST); // allows alpha channels or transperancy
+	//	glAlphaFunc(GL_GREATER, 0.1f); // sets aplha function
+
+//		glEnable(GL_COLOR_MATERIAL);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 
@@ -344,17 +398,27 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		this.clear();
 		// Clear screen and depth buffer
 		glLoadIdentity(); // Reset the current modelview matrix
+		glLineWidth(1);
+
+//		this.antialias = false;
+		this.brush = new Brush(Color.fromRGBA(0.0, 1.0, 0.0, 0.5));
+		this.pen = new Pen(Color.fromRGBA(0, 0, 0, 1), 5);
+		this.drawRectangle(100, 100, 400, 400);
+		this.brush = new Brush(Color.fromRGBA(0.0, 0.0, 1.0, 0.5));
+		this.drawRectangle(0, 0, 200, 200);
 
 		// RENDER
-		glLineWidth(1.0);
 //		this.antialias = true;
 		this.brush = new Brush(Color.fromRGBA(0, 1, 0, 1.0));
 		this.pen = new Pen(Color.fromRGBA(1, 0, 0, 1.0), 3);
-		this.drawRectangle(0, 0, 100, 100);
-		this.drawRectangle(200, 200, 100, 100);
-		this.strokeRectangle(300,300,100,100);
+//		this.drawRectangle(1, 1, 100, 100);
+	//	this.drawRectangle(200, 200, 100, 100);
+		//this.strokeRectangle(300,300,100,100);
 
 		this.brush = new Brush(Color.fromRGBA(1.0, 1.0, 1.0, 0.9));
+		this.antialias = false;
+//		this.fillEllipse(220, 20, 100, 200);
+		this.antialias = true;
 		this.fillEllipse(120, 20, 100, 200);
 		this.drawEllipse(300, 200, 100, 200);
 		this.strokeEllipse(400, 300, 100, 200);
@@ -363,10 +427,9 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		this.pen = new Pen(Color.fromRGBA(1, 0, 1, 1), 5);
 		this.drawLine(0,0,499,499);
 
-//		this.antialias = false;
-		this.brush = new Brush(Color.fromRGBA(1.0, 1.0, 1.0, 0.2));
-		this.pen = new Pen(Color.fromRGBA(0, 0, 0, 1), 5);
-		this.drawRectangle(0, 0, 500, 500);
+		this.antialias = true;
+		this.pen = new Pen(Color.fromRGBA(1, 0, 1, 1), 5);
+		this.drawLine(499,0,0,499);
 
 		// Capture
 		ubyte[] pPixelData = new ubyte[](width * height * 4);
@@ -402,7 +465,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void clear() {
 		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	int width() {
@@ -416,11 +479,25 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 	// Lines
 
 	void drawLine(double x1, double y1, double x2, double y2) {
+		x1 += 0.5;
+		y1 += 0.5;
+		x2 += 0.5;
+		y1 += 0.5;
+
+		if (_antialias) {
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		}
+
 		glBegin(GL_LINES);
 		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
 		glVertex3f(x1, y1, 0);
 		glVertex3f(x2, y2, 0);
 		glEnd();
+
+		if (_antialias) {
+			glDisable(GL_LINE_SMOOTH);
+		}
 	}
 
 	// Rectangles
@@ -497,17 +574,75 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
-		fillEllipse(x, y, width, height);
-		strokeEllipse(x, y, width, height);
+		x+=0.5;
+		y+=0.5;
+
+		width--;
+		height--;
+		x--;
+		y--;
+		width /= 2;
+		height /= 2;
+		x += width;
+		y += height;
+
+		if (_antialias) {
+			glEnable(GL_STENCIL_TEST);
+			glStencilMask(0x01);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
+			glStencilFunc(GL_ALWAYS, 0, ~0);
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+			// Draw to the stencil mask
+			_drawEllipse(GL_POLYGON, x, y, width, height);
+
+			glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+			glStencilFunc (GL_EQUAL, 0x00, 0x01);
+			glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
+
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+
+			glDisable(GL_LINE_SMOOTH);
+
+			// Draw fill
+			glStencilFunc (GL_EQUAL, 0x01, 0x01);
+			glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			glBegin (GL_QUADS);
+			glVertex3f(0, 0, 0.0);
+			glVertex3f(_width, 0, 0.0);
+			glVertex3f(_width, _height, 0.0);
+			glVertex3f(0, _height, 0.0);
+			glEnd ();//*/
+
+			glDisable (GL_STENCIL_TEST);
+
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+
+			glDisable(GL_LINE_SMOOTH);
+		}
+		else {
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawEllipse(GL_POLYGON, x, y, width, height);
+			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+		}
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
 		x+=0.5;
 		y+=0.5;
 
-		glBegin(GL_LINE_LOOP);
-		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-		static const double n = 100.0;
 		width--;
 		height--;
 		x--;
@@ -516,19 +651,24 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		height /= 2;
 		x += width;
 		y += height;
-		for(double t = 0; t <= TWOPI; t += TWOPI/n) {
-			glVertex3f(x + (width * cos(t)), y + (height * sin(t)),0);
+
+		if (_antialias) {
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+			glDisable(GL_LINE_SMOOTH);
 		}
-		glEnd();
+		else {
+			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+		}
 	}
 
 	void fillEllipse(double x, double y, double width, double height) {
 		x+=0.5;
 		y+=0.5;
 
-		glBegin(GL_POLYGON);
-		glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
-		static const double n = 100.0;
 		width--;
 		height--;
 		x--;
@@ -537,10 +677,49 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		height /= 2;
 		x += width;
 		y += height;
-		for(double t = 0; t <= TWOPI; t += TWOPI/n) {
-			glVertex3f(x + (width * cos(t)), y + (height * sin(t)),0);
+
+		if (_antialias) {
+			glEnable(GL_STENCIL_TEST);
+			glStencilMask(0x01);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
+			glStencilFunc(GL_ALWAYS, 0, ~0);
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+			// Draw to the stencil mask
+			_drawEllipse(GL_POLYGON, x, y, width, height);
+
+			glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+			glStencilFunc (GL_EQUAL, 0x00, 0x01);
+			glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
+
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+
+			glDisable(GL_LINE_SMOOTH);
+
+			// Draw fill
+			glStencilFunc (GL_EQUAL, 0x01, 0x01);
+			// Interestingly, we can clear the stencil at the same time
+			// We might as well.
+			glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
+
+			glBegin (GL_QUADS);
+			glVertex3f(0, 0, 0.0);
+			glVertex3f(_width, 0, 0.0);
+			glVertex3f(_width, _height, 0.0);
+			glVertex3f(0, _height, 0.0);
+			glEnd ();
+
+			glDisable (GL_STENCIL_TEST);
 		}
-		glEnd();
+		else {
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawEllipse(GL_POLYGON, x, y, width, height);
+		}
 	}
 
 	// Text
@@ -615,16 +794,8 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void antialias(bool value) {
 		_antialias = value;
-		if (_antialias) {
-			glEnable(GL_LINE_SMOOTH);
-			glEnable(GL_POLYGON_SMOOTH);
-			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-		}
-		else {
-			glDisable(GL_LINE_SMOOTH);
-			glDisable(GL_POLYGON_SMOOTH);
-		}
+//		glDisable(GL_LINE_SMOOTH);
+	//	glDisable(GL_POLYGON_SMOOTH);
 //		GraphicsScaffold.setAntialias(&_pfvars, value);
 	}
 
@@ -634,7 +805,15 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void brush(Brush value) {
 		_brush = value;
-		_fillColor = value.color();
+		auto clr = value.color();
+//		putln(clr.red, " ", clr.green, " ", clr.blue, " ", clr.alpha);
+//		_fillColor = Color.fromRGBA(clr.red * (clr.alpha), clr.green * (clr.alpha), clr.blue * (clr.alpha), clr.alpha);
+//			pPixelData[i] = cast(ubyte)((pPixelData[i] * pPixelData[i+3]) / 0xff);
+	//		pPixelData[i+1] = cast(ubyte)((pPixelData[i+1] * pPixelData[i+3]) / 0xff);
+		//	pPixelData[i+2] = cast(ubyte)((pPixelData[i+2] * pPixelData[i+3]) / 0xff);
+
+//		putln(_fillColor.red, " ", _fillColor.green, " ", _fillColor.blue, " ", _fillColor.alpha);
+		_fillColor = clr;
 //		GraphicsScaffold.setBrush(&_pfvars, value.platformVariables);
 	}
 
@@ -644,7 +823,10 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void pen(Pen value) {
 		_pen = value;
-		_strokeColor = value.color;
+		auto clr = value.color;
+//		_strokeColor = Color.fromRGBA(clr.red * (1-clr.alpha), clr.green * (1-clr.alpha), clr.blue * (1-clr.alpha), clr.alpha);
+//		_strokeColor = Color.fromRGBA(clr.red * clr.alpha, clr.green * clr.alpha, clr.blue * clr.alpha, clr.alpha);
+		_strokeColor = clr;
 //		GraphicsScaffold.setPen(&_pfvars, value.platformVariables);
 	}
 

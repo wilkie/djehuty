@@ -10,7 +10,7 @@ PLATFORM = WINDOWS
 
 LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
-LFLAGS_WIN = -Iplatform/win -Icompiler
+LFLAGS_WIN = -Iplatform/win -Icompiler platform/win/lib/opengl32.lib
 
 ifeq (${MY_ARCH},MINGW32_NT-5.1)
 	OBJEXT = .obj

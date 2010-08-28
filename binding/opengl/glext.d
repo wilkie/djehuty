@@ -5684,7 +5684,7 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameteri (GLenum pname, GLint param);
 	void glPointParameteriv (GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void function(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) PFNGLBLENDFUNCSEPARATEPROC;
 alias void (PFNGLMULTIDRAWARRAYSPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
 alias void (PFNGLMULTIDRAWELEMENTSPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
 alias void (PFNGLPOINTPARAMETERFPROC) (GLenum pname, GLfloat param);
@@ -5911,7 +5911,7 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttrib4usv (GLuint index, GLushort *v);
 	void glVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDEQUATIONSEPARATEPROC) (GLenum modeRGB, GLenum modeAlpha);
+alias void function(GLenum modeRG, GLenum modeAlpha) PFNGLBLENDEQUATIONSEPARATEPROC;
 alias void (PFNGLDRAWBUFFERSPROC) (GLsizei n, GLenum *bufs);
 alias void (PFNGLSTENCILOPSEPARATEPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
 alias void (PFNGLSTENCILFUNCSEPARATEPROC) (GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask);
