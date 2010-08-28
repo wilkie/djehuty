@@ -122,6 +122,7 @@ public:
 
 	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		auto window = cast(CuiWindow)dsp;
+
 		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
 			_mainWindow.attach(window, handler);
