@@ -93,8 +93,8 @@ void ViewCreateForWindow(ref WindowView view, ViewPlatformVars*viewVars, ref Win
 	screen = X.DefaultScreen(_pfvars.display);
 	depth = X.DefaultDepth(_pfvars.display, screen);
 
-	int _width = window.width;
-	int _height = window.height;
+	int _width = cast(int)window.width;
+	int _height = cast(int)window.height;
 
 	//create the back buffer
 	viewVars.pixmap = X.XCreatePixmap(
