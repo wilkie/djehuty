@@ -215,6 +215,71 @@ private:
 		alias void (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
 	}
 
+	void _initMask() {
+		glEnable(GL_STENCIL_TEST);
+		glStencilMask(0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
+		glStencilFunc(GL_ALWAYS, 0, ~0);
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	}
+
+	void _uninitMask() {
+		glDisable (GL_STENCIL_TEST);
+	}
+
+	void _useMask() {
+		glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+		glStencilFunc (GL_EQUAL, 0x00, 0x01);
+		glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
+	}
+
+	void _revertMask() {
+		glStencilFunc (GL_EQUAL, 0x01, 0x01);
+
+		// Interestingly, we can clear the stencil at the same time
+		// We might as well.
+		glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
+	}
+
+	void _drawRing(uint type, double x, double y, double width, double height, double ringWidth) {
+		static const double n = 100.0;
+
+		if (type == GL_TRIANGLE_STRIP) {
+			glBegin(GL_TRIANGLE_STRIP);
+			double resultX, resultY;
+			for(double t = 0; t <= TWOPI; t += TWOPI/n) {
+				resultX = x + (width * cos(t));
+				resultY = y + (height * sin(t));
+				glVertex3f(resultX, resultY, 0);
+
+				// For the ring part
+				resultX = x + ((width-(ringWidth)) * cos(t));
+				resultY = y + ((height-(ringWidth)) * sin(t));
+				glVertex3f(resultX, resultY, 0);
+			}
+			glEnd();
+		}
+		else {
+			glBegin(GL_LINE_LOOP);
+			double resultX, resultY;
+			for(double t = 0; t <= TWOPI; t += TWOPI/n) {
+				resultX = x + (width * cos(t));
+				resultY = y + (height * sin(t));
+				glVertex3f(resultX, resultY, 0);
+			}
+			glEnd();
+			glBegin(GL_LINE_LOOP);
+			for(double t = 0; t <= TWOPI; t += TWOPI/n) {
+				// For the ring part
+				resultX = x + ((width-(ringWidth)) * cos(t));
+				resultY = y + ((height-(ringWidth)) * sin(t));
+				glVertex3f(resultX, resultY, 0);
+			}
+			glEnd();
+		}
+	}
+
 	void _drawEllipse(uint type, double x, double y, double width, double height) {
 		static const double n = 100.0;
 
@@ -261,156 +326,138 @@ public:
 			putln("extensions: ", extstr);
 		}
 
-		GLuint fb, color_rb, depth_rb, stencil_rb, packed_rb;
+		// This identifies the framebuffer object.
+		GLuint fb;
+
+		// Yay for the many render buffers that we need.
+		GLuint color_rb, depth_rb, stencil_rb, packed_rb;
 
 		// RGBA8 RenderBuffer
 		glGenFramebuffersEXTPtr(1, &fb);
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
+
 		// Create and attach a color buffer
 		glGenRenderbuffersEXTPtr(1, &color_rb);
+
 		// We must bind color_rb before we call glRenderbufferStorageEXT
 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, color_rb);
+
 		// The storage format is RGBA8
 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_RGBA8, width, height);
-//		glRenderbufferStorageMultisampleEXTPtr(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
+
+		// The following is for a multisample FBO.
+		// This is not strictly necessary ever. But illustrated here for posterity:
+		// glRenderbufferStorageMultisampleEXTPtr(GL_RENDERBUFFER_EXT, 4, GL_RGBA8, width, height);
+
 		// Attach color buffer to FBO
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
 			GL_RENDERBUFFER_EXT, color_rb);
-		// -------------------------
-	//	glGenRenderbuffersEXTPtr(1, &depth_rb);
-	//	glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, depth_rb);
-	//	glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24,
-	//		width, height);
-		// -------------------------
-	// 	glGenRenderbuffersEXTPtr(1, &stencil_rb);
-// 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, stencil_rb);
-// 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX8, width, height);
-// 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, stencil_rb);
-//
-//
-// 		glGenRenderbuffersEXTPtr(1, &stencil_rb);
-// 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, stencil_rb);
-// 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT,
-// 		  GL_STENCIL_INDEX, _width, _height);
-// 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT,
-// 		  GL_STENCIL_ATTACHMENT_EXT,
-// 		  GL_RENDERBUFFER_EXT, stencil_rb);
 
+		// Some video cards need a depth buffer with a stencil buffer.
+		// Otherwise, a stencil buffer can just be produced with a simple
+		//   GL_STENCIL_INDEX_8 renderbuffer.
+		// XXX: should probably check for this extension before I use it.
 		glGenRenderbuffersEXTPtr(1, &packed_rb);
 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, packed_rb);
 		glRenderbufferStorageEXTPtr(GL_RENDERBUFFER_EXT, GL_DEPTH_STENCIL_EXT, _width, _height);
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
 
-		// -------------------------
-		// Attach depth buffer to FBO
-//		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
-	//		GL_RENDERBUFFER_EXT, depth_rb);
-		// -------------------------
-		// Does the GPU support current FBO configuration?
-		GLenum status;
-status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
-		switch(status)
-  {
-  case GL_FRAMEBUFFER_COMPLETE_EXT:
-  putln("complete");
-  break;
-  case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-  //Choose different formats
-  putln("Framebuffer object format is unsupported by the video hardware. (GL_FRAMEBUFFER_UNSUPPORTED_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-  putln("Incomplete attachment. (GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-  putln("Incomplete missing attachment. (GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-  putln("Incomplete dimensions. (GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-  putln("Incomplete formats. (GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-  putln("Incomplete draw buffer. (GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-  putln("Incomplete read buffer. (GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT)(FBO - 820)");
-  break;
-  case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT:
-  putln("Incomplete multisample buffer. (GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT)(FBO - 820)");
-  break;
-  default:
-  //Programming error; will fail on all hardware
-  putln("Some video driver error or programming error occured. Framebuffer object status is invalid. (FBO - 823)");
-  break;
-  }
+		// We should check to see if the FBO is supported... now, for some reason.
+		GLenum status = glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
+		switch(status) {
+			case GL_FRAMEBUFFER_COMPLETE_EXT:
+			putln("complete");
+			break;
+		case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+			putln("Framebuffer object format is unsupported by the video hardware. (GL_FRAMEBUFFER_UNSUPPORTED_EXT)(FBO - 820)");
 
-		// -------------------------
+			// Damn.
+			// XXX: Use some hideous older technology
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+			putln("Incomplete attachment. (GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+			putln("Incomplete missing attachment. (GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+			putln("Incomplete dimensions. (GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+			putln("Incomplete formats. (GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+			putln("Incomplete draw buffer. (GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+			putln("Incomplete read buffer. (GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT)(FBO - 820)");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT:
+			putln("Incomplete multisample buffer. (GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT)(FBO - 820)");
+			break;
+		default:
+			//Programming error; will fail on all hardware
+			putln("Some video driver error or programming error occured. Framebuffer object status is invalid. (FBO - 823)");
+			break;
+		}
+
 		// and now you can render to the FBO (also called RenderBuffer)
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
-				putln("good. i");
 
-	//	glEnable(GL_ALPHA);
 		glEnable(GL_BLEND);
-//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA); //, GL_ONE_MINUS_DST_ALPHA);
 
+		// The traditional blending function fails since the background
+		// of any canvas object we use is technically transparent.
+
+		// With this blending function below, it blends the colors with
+		// rgba(0, 0, 0, 0) as though it were actually black. The problem
+		// is _not_ with the RGB blending since it is using premultiplied
+		// alpha. The problem is that it should not be blending the alpha
+		// with the destination alpha the same way it blends colors.
+		// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Therefore, the solution is simple. Impose a different blending
+		// equation for the alpha channel. This one will not do anything to
+		// the destination alpha channel before blending it with the source.
+		// XXX: What to do when these extension are not available? (GL 1.4+)
 		glBlendEquationSeparatePtr(GL_ADD, GL_ADD);
 		glBlendFuncSeparatePtr(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-//		glBlendFuncSeparatePtr(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
 
-		// WINNER:
-//		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-//		glBlendFunc(GL_ONE, GL_SRC_ALPHA);
-//		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-//		glBledFunc(GL_SRC_COLOR, GL_ONE);
-		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
-
-//		glEnable(GL_ALPHA_TEST); // allows alpha channels or transperancy
-	//	glAlphaFunc(GL_GREATER, 0.1f); // sets aplha function
-
-//		glEnable(GL_COLOR_MATERIAL);
+		// Disable things just to be sure
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 
-//		glDepthFunc(GL_EQUAL);
-//		glDepthMask(GL_TRUE);
-
-//		glShadeModel(GL_SMOOTH); // Enable smooth shading
+		// Set up the viewport
 		glViewport(0, 0, width, height);
 
-//		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
 		// Reset the current viewport
-		glMatrixMode(GL_PROJECTION); // Select the projection matrix
-		glLoadIdentity(); // Reset the projection matrix
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
 
-		// Calculate the aspect ratio of the window
+		// Set up an orthographic view
 		glOrtho(0, width, height, 0, -1, 1);
 
-		glMatrixMode(GL_MODELVIEW); // Select the modelview matrix
-		glLoadIdentity(); // Reset the modelview matrix
+		// And then switch over to the model matrix
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 
+		// Clear the screen.
 		this.clear();
-		// Clear screen and depth buffer
-		glLoadIdentity(); // Reset the current modelview matrix
+
 		glLineWidth(1);
 
-//		this.antialias = false;
+		// RENDER
+
 		this.brush = new Brush(Color.fromRGBA(0.0, 1.0, 0.0, 0.5));
-		this.pen = new Pen(Color.fromRGBA(0, 0, 0, 1), 5);
+		this.pen = new Pen(Color.fromRGBA(0, 0, 0, 1), 1);
 		this.drawRectangle(100, 100, 400, 400);
 		this.brush = new Brush(Color.fromRGBA(0.0, 0.0, 1.0, 0.5));
 		this.drawRectangle(0, 0, 200, 200);
 
-		// RENDER
 //		this.antialias = true;
 		this.brush = new Brush(Color.fromRGBA(0, 1, 0, 1.0));
-		this.pen = new Pen(Color.fromRGBA(1, 0, 0, 1.0), 3);
+		this.pen = new Pen(Color.fromRGBA(1, 0, 0, 0.75), 10);
 //		this.drawRectangle(1, 1, 100, 100);
 	//	this.drawRectangle(200, 200, 100, 100);
 		//this.strokeRectangle(300,300,100,100);
@@ -420,7 +467,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 //		this.fillEllipse(220, 20, 100, 200);
 		this.antialias = true;
 		this.fillEllipse(120, 20, 100, 200);
-		this.drawEllipse(300, 200, 100, 200);
+		this.drawEllipse(300, 200, 200, 200);
 		this.strokeEllipse(400, 300, 100, 200);
 
 //		this.antialias = true;
@@ -431,7 +478,9 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		this.pen = new Pen(Color.fromRGBA(1, 0, 1, 1), 5);
 		this.drawLine(499,0,0,499);
 
-		// Capture
+		// The following gets moved eventually...
+
+		// Capture (only when presenting it to the window manager)
 		ubyte[] pPixelData = new ubyte[](width * height * 4);
 		glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE,
 			pPixelData.ptr);
@@ -452,7 +501,6 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		ReleaseDC(null, windhDC);
 
 		_pfvars.testDC = hDC;
-		putln("dah. ", _pfvars.testDC, " at ", width, " x ", height);
 	}
 
 	~this() {
@@ -574,69 +622,8 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
-		x+=0.5;
-		y+=0.5;
-
-		width--;
-		height--;
-		x--;
-		y--;
-		width /= 2;
-		height /= 2;
-		x += width;
-		y += height;
-
-		if (_antialias) {
-			glEnable(GL_STENCIL_TEST);
-			glStencilMask(0x01);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
-			glStencilFunc(GL_ALWAYS, 0, ~0);
-			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-
-			// Draw to the stencil mask
-			_drawEllipse(GL_POLYGON, x, y, width, height);
-
-			glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-			glStencilFunc (GL_EQUAL, 0x00, 0x01);
-			glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
-
-			glEnable(GL_LINE_SMOOTH);
-			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
-			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
-
-			glDisable(GL_LINE_SMOOTH);
-
-			// Draw fill
-			glStencilFunc (GL_EQUAL, 0x01, 0x01);
-			glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
-
-			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
-			glBegin (GL_QUADS);
-			glVertex3f(0, 0, 0.0);
-			glVertex3f(_width, 0, 0.0);
-			glVertex3f(_width, _height, 0.0);
-			glVertex3f(0, _height, 0.0);
-			glEnd ();//*/
-
-			glDisable (GL_STENCIL_TEST);
-
-			glEnable(GL_LINE_SMOOTH);
-			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
-			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
-
-			glDisable(GL_LINE_SMOOTH);
-		}
-		else {
-			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
-			_drawEllipse(GL_POLYGON, x, y, width, height);
-			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
-		}
+		fillEllipse(x+(_pen.width/2), y+(_pen.width/2), width-_pen.width, height-_pen.width);
+		strokeEllipse(x, y, width, height);
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
@@ -652,16 +639,40 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		x += width;
 		y += height;
 
+		// The stroke path should be centered on the edge of the filled path
+		width+=_pen.width/2.0;
+		height+=_pen.width/2.0;
+
 		if (_antialias) {
+			_initMask();
+
+			// Draw to the stencil mask
+			_drawRing(GL_TRIANGLE_STRIP, x, y, width, height, _pen.width());
+
+			_useMask();
+
 			glEnable(GL_LINE_SMOOTH);
 			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
 			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+			_drawRing(GL_LINE_LOOP, x, y, width, height, _pen.width());
+
 			glDisable(GL_LINE_SMOOTH);
+
+			_revertMask();
+
+			glBegin (GL_QUADS);
+			glVertex3f(0, 0, 0.0);
+			glVertex3f(_width, 0, 0.0);
+			glVertex3f(_width, _height, 0.0);
+			glVertex3f(0, _height, 0.0);
+			glEnd ();
+
+			_uninitMask();
 		}
 		else {
 			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-			_drawEllipse(GL_LINE_LOOP, x, y, width, height);
+			_drawRing(GL_TRIANGLE_STRIP, x, y, width, height, _pen.width());
 		}
 	}
 
@@ -679,19 +690,12 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		y += height;
 
 		if (_antialias) {
-			glEnable(GL_STENCIL_TEST);
-			glStencilMask(0x01);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
-			glStencilFunc(GL_ALWAYS, 0, ~0);
-			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+			_initMask();
 
 			// Draw to the stencil mask
 			_drawEllipse(GL_POLYGON, x, y, width, height);
 
-			glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-			glStencilFunc (GL_EQUAL, 0x00, 0x01);
-			glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
+			_useMask();
 
 			glEnable(GL_LINE_SMOOTH);
 			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -701,11 +705,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 			glDisable(GL_LINE_SMOOTH);
 
-			// Draw fill
-			glStencilFunc (GL_EQUAL, 0x01, 0x01);
-			// Interestingly, we can clear the stencil at the same time
-			// We might as well.
-			glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
+			_revertMask();
 
 			glBegin (GL_QUADS);
 			glVertex3f(0, 0, 0.0);
@@ -714,7 +714,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 			glVertex3f(0, _height, 0.0);
 			glEnd ();
 
-			glDisable (GL_STENCIL_TEST);
+			_uninitMask();
 		}
 		else {
 			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
@@ -794,9 +794,6 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void antialias(bool value) {
 		_antialias = value;
-//		glDisable(GL_LINE_SMOOTH);
-	//	glDisable(GL_POLYGON_SMOOTH);
-//		GraphicsScaffold.setAntialias(&_pfvars, value);
 	}
 
 	bool antialias() {
@@ -805,16 +802,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void brush(Brush value) {
 		_brush = value;
-		auto clr = value.color();
-//		putln(clr.red, " ", clr.green, " ", clr.blue, " ", clr.alpha);
-//		_fillColor = Color.fromRGBA(clr.red * (clr.alpha), clr.green * (clr.alpha), clr.blue * (clr.alpha), clr.alpha);
-//			pPixelData[i] = cast(ubyte)((pPixelData[i] * pPixelData[i+3]) / 0xff);
-	//		pPixelData[i+1] = cast(ubyte)((pPixelData[i+1] * pPixelData[i+3]) / 0xff);
-		//	pPixelData[i+2] = cast(ubyte)((pPixelData[i+2] * pPixelData[i+3]) / 0xff);
-
-//		putln(_fillColor.red, " ", _fillColor.green, " ", _fillColor.blue, " ", _fillColor.alpha);
-		_fillColor = clr;
-//		GraphicsScaffold.setBrush(&_pfvars, value.platformVariables);
+		_fillColor = value.color;
 	}
 
 	Brush brush() {
@@ -823,11 +811,7 @@ status=glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 
 	void pen(Pen value) {
 		_pen = value;
-		auto clr = value.color;
-//		_strokeColor = Color.fromRGBA(clr.red * (1-clr.alpha), clr.green * (1-clr.alpha), clr.blue * (1-clr.alpha), clr.alpha);
-//		_strokeColor = Color.fromRGBA(clr.red * clr.alpha, clr.green * clr.alpha, clr.blue * clr.alpha, clr.alpha);
-		_strokeColor = clr;
-//		GraphicsScaffold.setPen(&_pfvars, value.platformVariables);
+		_strokeColor = value.color;
 	}
 
 	Pen pen() {
