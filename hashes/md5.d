@@ -75,10 +75,14 @@ public:
 
 	    uint a, b, c, d, tmp;
 
-	    uint a0 = FromBigEndian32(0x01234567);
-		uint b0 = FromBigEndian32(0x89ABCDEF);
-		uint c0 = FromBigEndian32(0xFEDCBA98);
-		uint d0 = FromBigEndian32(0x76543210);
+	    uint a0 = 0x01234567;
+		uint b0 = 0x89ABCDEF;
+		uint c0 = 0xFEDCBA98;
+		uint d0 = 0x76543210;
+		toLittleEndian(a0);
+		toLittleEndian(b0);
+		toLittleEndian(c0);
+		toLittleEndian(d0);
 
 	    buffer = new ubyte[bufferLen];
 
@@ -142,12 +146,16 @@ public:
 	        data+=16;
 	    }
 
-		// the final rotations (go back to big endian)
-		a = NativeToBE32(a0);
-		b = NativeToBE32(b0);
-		c = NativeToBE32(c0);
-		d = NativeToBE32(d0);
+		// the final rotations
+		a = a0;
+		b = b0;
+		c = c0;
+		d = d0;
 
+		toBigEndian(a);
+		toBigEndian(b);
+		toBigEndian(c);
+		toBigEndian(d);
 		// form the hash
 
 		// need formatted constructor

@@ -149,6 +149,29 @@ template Tuple(T...) {
 	alias T Tuple;
 }
 
+// Description: Given a struct, S, this field will resolve to a Tuple of the
+//  field names.
+template FieldNames(S, int idx = 0) {
+	static if(idx >= S.tupleof.length) {
+		alias Tuple!() FieldNames;
+	}
+	else {
+		alias Tuple!(GetLastName!(S.tupleof[idx].stringof), FieldNames!(S, idx + 1)) FieldNames;
+	}
+}
+
+private template GetLastName(char[] fullName, int idx = fullName.length - 1) {
+	static if(idx < 0) {
+		const char[] GetLastName = fullName;
+	}
+	else static if(fullName[idx] == '.') {
+		const char[] GetLastName = fullName[idx + 1 .. $];
+	}
+	else {
+		const char[] GetLastName = GetLastName!(fullName, idx - 1);
+	}
+}
+
 // String templates
 
 // Description: Resolves to a string that represents the capitalization of the input string.

@@ -607,7 +607,7 @@ public:
 					return StreamData.Required;
 				}
 
-				deflateDataLength = FromLittleEndian16(deflateDataLength);
+				fromLittleEndian(deflateDataLength);
 
 				decoderState = DEFLATE_STATE_DEFLATE_NO_COMPRESSION_SKIP;
 

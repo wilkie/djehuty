@@ -58,7 +58,9 @@ public:
 		buffer[0..message.length] = message[0..$];
 		buffer[message.length] = 0x80;
 
-		*(cast(ulong*)&buffer[$-8]) = FromBigEndian64(message.length * 8);
+		ulong foo = message.length * 8;
+		fromBigEndian(foo);
+		*(cast(ulong*)&buffer[$-8]) = foo;
 
 		uint* bufferPtr = cast(uint*)&buffer[0];
 		uint* bufferEnd = bufferPtr + (buffer.length / 8);
@@ -71,7 +73,8 @@ public:
 		    //Extend the sixteen 32-bit words into eighty 32-bit words:
 			int i;
 			for ( ; i<16; i++) {
-				words[i] = FromBigEndian32(bufferPtr[i]);
+				fromBigEndian(bufferPtr[i]);
+				words[i] = bufferPtr[i];
 			}
 			for (i=0 ; i < 64; i++) {
 				words[i+16] = (words[i+13] ^ words[i+8] ^ words[i+2] ^ words[i]);

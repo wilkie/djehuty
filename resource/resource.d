@@ -196,7 +196,9 @@ private:
 		uint magic;
 
 		_file.read(magic);
-		if (FromLittleEndian32(magic) != 0x53524a44) {
+		fromLittleEndian(magic);
+
+		if (magic != 0x53524a44) {
 			// error: not a valid resource file
 			Console.putln("error: not a valid resource file");
 			return;
