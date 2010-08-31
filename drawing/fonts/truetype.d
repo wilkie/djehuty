@@ -24,6 +24,10 @@ public:
 		input.read(&_offsetTable, _offsetTable.sizeof);
 		fromBigEndian(_offsetTable);
 
-		putln("Version: {d}, {d}".format(_offsetTable.versionMajor, _offsetTable.versionMinor));
+		putln("Version: ", _offsetTable.versionMajor, ".", _offsetTable.versionMinor);
+		putln("Number of tables: ", _offsetTable.numTables);
+		putln("Search Range: ", _offsetTable.searchRange);
+		putln("Entry Selector: ", _offsetTable.entrySelector);
+		putln("Range Shift: ", _offsetTable.rangeShift);
 	}
 }

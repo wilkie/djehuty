@@ -472,7 +472,7 @@ int main(string[] args) {
 
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
-	TrueTypeFont font = new TrueTypeFont(File.open("tests/consola.ttf"));
+	TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
 	app.run();//*/
 
 //  	auto app = new Application("MyApp");
