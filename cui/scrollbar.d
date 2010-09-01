@@ -16,6 +16,8 @@ import cui.button;
 
 import synch.timer;
 
+import binding.c;
+
 class CuiScrollBar : CuiWindow {
 private:
 
@@ -60,10 +62,12 @@ private:
 
 	// This function computes where the thumb bar is and how large it is.
 	void computeThumbBounds() {
+		printf("computeThumbBounds()\n");
 		computeThumbBounds(_value);
 	}
 
 	void computeThumbBounds(long withValue) {
+		printf("computeThumbBounds( withValue)\n");
 		// Thumb area size is the area that represents a large change
 		long area = _max - _min;
 		if (withValue > _max) {
@@ -113,6 +117,7 @@ private:
 
 	// This will be called when the timer signals.
 	bool timerProc(Dispatcher dsp, uint signal) {
+		printf("timerProc(dsp, signal)\n");
 		if (_timerIsLarge) {
 			// if the cursor is now over the thumb bar, stop!
 			int comp = componentAtPosition(_timerLastPos);
@@ -132,6 +137,7 @@ private:
 
 	// This will be called when the button signals an action.
 	bool buttonHandler(Dispatcher dsp, uint signal) {
+		printf("buttonHandler(dsp, signal)\n");		
 		long direction = 1;
 
 		if (dsp is _minusButton) {
@@ -161,6 +167,7 @@ private:
 	// is at that position. 0 will be the thumb (no movement), -1 is to the left of the
 	// thumb (negative movement) and 1 is to the right (positive movement)
 	int componentAtPosition(int mousePos) {
+		printf("componentAtPosition(mousePos)\n");	
 		// get thumb bounds
 		computeThumbBounds();
 
@@ -218,11 +225,12 @@ public:
 			_plusButton.backcolor = _buttonBackcolor;
 		}
 
-		attach(_minusButton, &buttonHandler);
-		attach(_plusButton, &buttonHandler);
+		//attach(_minusButton, &buttonHandler);
+		//attach(_plusButton, &buttonHandler);
 	}
 
 	override void onDrag(ref Mouse mouse) {
+		printf("onDrag(mouse)\n");	
 		if (_thumbDragged) {
 			// get thumb bounds
 			computeThumbBounds();
@@ -316,11 +324,13 @@ public:
 	}
 
 	override void onPrimaryUp(ref Mouse mouse) {
+		printf("onPrimaryUp(mouse)\n");	
 		_thumbDragged = false;
 		_timer.stop();
 	}
 
 	override void onPrimaryDown(ref Mouse mouse) {
+		printf("onPrimaryDown(mouse)\n");	
 		int mousePos;
 		int buttonSize;
 		int barExtent;
@@ -359,7 +369,7 @@ public:
 
 	override void onDraw(CuiCanvas canvas) {
 		// get thumb bounds
-		computeThumbBounds();
+		/*computeThumbBounds();
 
 		if (_orientation == Orientation.Horizontal) {
 			// Buttons are square
@@ -401,7 +411,7 @@ public:
 
 				canvas.write(times(" ", this.width));
 			}
-		}
+		}*/
 	}
 
 	// Properties
@@ -409,12 +419,14 @@ public:
 	// Description: This function will get the orientation.
 	// Returns: The current orientation.
 	Orientation orientation() {
+		printf("orentation()\n");
 		return _orientation;
 	}
 
 	// Description: This function will set the orientation.
 	// value: The new orientation.
 	void orientation(Orientation value) {
+		printf("orientation(value)\n");
 		_orientation = value;
 		redraw();
 	}
@@ -422,12 +434,14 @@ public:
 	// Description: This function will get the value.
 	// Returns: The current value.
 	long value() {
+		printf("value()\n");
 		return _value;
 	}
 
 	// Description: This function will set the value.
 	// value: The new value.
 	void value(long value) {
+		printf("value(value)\n");
 		_value = value;
 		if (_value > _max) {
 			_value = _max;
@@ -442,12 +456,14 @@ public:
 	// Description: This function will get the maximum value.
 	// Returns: The maximum value.
 	long max() {
+		printf("max()\n");
 		return _max;
 	}
 
 	// Description: This function will set the maximum value.
 	// value: The new maximum value.
 	void max(long value) {
+		printf("max(value)\n");
 		_max = value;
 		if (_max <= _min) {
 			_max = _min;
@@ -461,12 +477,14 @@ public:
 	// Description: This function will get the maximum value.
 	// Returns: The maximum value.
 	long min() {
+		printf("min()\n");
 		return _min;
 	}
 
 	// Description: This function will set the minimum value.
 	// value: The new minimum value.
 	void min(long value) {
+		printf("min(value)\n");
 		_min = value;
 		if (_max <= _min) {
 			_min = _max;
@@ -480,12 +498,14 @@ public:
 	// Description: This function will get the amount that is scrolled when the buttons are pressed.
 	// Returns: The amount that will be scrolled.
 	long smallChange() {
+		printf("smallChange()\n");
 		return _smallChange;
 	}
 
 	// Description: This function will set the amount that is scrolled when the buttons are pressed.
 	// value: The new amount to scroll.
 	void smallChange(long value) {
+		printf("smallChange(value)\n");
 		_smallChange = value;
 		redraw();
 	}
@@ -494,6 +514,7 @@ public:
 	//  is whenever the inner area is clicked or page up or page down is pressed.
 	// Returns: The amount that will be scrolled.
 	long largeChange() {
+		printf("largeChange()\n");
 		return _largeChange;
 	}
 
@@ -501,6 +522,7 @@ public:
 	//  is whenever the inner area is clicked or page up or page down is pressed.
 	// value: The new amount to scroll.
 	void largeChange(long value) {
+		printf("largeChange(value)\n");
 		_largeChange = value;
 		redraw();
 	}

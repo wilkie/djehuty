@@ -414,22 +414,26 @@ int main(string[] args) {
 // 	Thread.sleep(1000);
 	//*/
 	auto app = new CuiApplication("MyApp");
-	app.attach(new Rogue());
-	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
-	app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
-	app.attach(new CuiFileBox(30,10,20,20));
 
+	/*app.attach(new Rogue());*/
+	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
+	/*app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
+	app.attach(new CuiFileBox(30,10,20,20));
+	
 	auto lb = new CuiListBox(10, 10, 20, 20);
 	auto tf = new CuiToggleField(10,8,20,1);
 	auto tf2 = new CuiToggleField(10,9,20,1);
 	tf.add(tf2);
 	tf.remove();
 	tf.add(tf2);
+
 	app.attach(tf);
 	app.attach(tf2);
 	app.attach(lb);
+
 	tf.text = "option 1";
 	tf2.text = "option 2";
+
 	lb.add("hello");
 	lb.add("foo");
 	lb.add("bar");
@@ -443,11 +447,14 @@ int main(string[] args) {
 	lf.add("foo");
 	lf.add("bar");
 	lf.add("meh");
+	Console.putln("before for");
 	for(int i = 0; i < 34; i++) {
 		lf.add("item " ~ toStr(i));
 	}
+	Console.putln("before attaching lf");
 	app.attach(lf);
-
+	
+	Console.putln("before run.");	*/
 	app.run();//*/
 	return 0;
 }

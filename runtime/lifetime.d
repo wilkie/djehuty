@@ -20,7 +20,7 @@ Object _d_allocclass(ClassInfo ci) {
 
     // Initialize it
     mem[0..$] = ci.init[];
-
+	
     return cast(Object)mem.ptr;
 }
 
