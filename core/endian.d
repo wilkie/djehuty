@@ -30,9 +30,14 @@ private template EndianStructImpl(T, int idx = 0) {
 	_endianStruct(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `, who);`
 		~ EndianStructImpl!(T, idx + 1);
 	}
+	else static if (IsArray!(typeof(T.tupleof[idx]))) {
+		const string EndianStructImpl = `
+	_endianArray!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
+		~ EndianStructImpl!(T, idx + 1);
+	}
 	else {
 		const string EndianStructImpl = `
-	_endian!(` ~ typeof(T.tupleof[idx]).stringof ~ `, who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
+	_endian!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
 		~ EndianStructImpl!(T, idx + 1);
 	}
 }
@@ -43,10 +48,31 @@ private template _endianStruct(T, string who) {
 	}
 }
 
+private template _endianArray(T, string who) {
+	void _endianArray(T input) {
+		foreach(ref element; input) {
+			static if (IsArray!(ArrayType!(T))) {
+				_endianArray!(ArrayType!(T), who)(element);
+			}
+			else {
+				_endian!(ArrayType!(T), who)(element);
+			}
+		}
+	}
+}
+
 private template _endian(T, string who) {
 	void _endian(ref T input) {
+		static if (IsArray!(T)) {
+			_endianArray!(T, "")(input);
+		}
 		static if (IsStruct!(T)) {
-			_endianStruct!(T, who)(input);
+			_endianStruct!(T, "")(input);
+		}
+		else static if (IsEnum!(T)) {
+			auto foo = cast(EnumType!(T))input;
+			_endian!(EnumType!(T), who)(foo);
+			input = cast(T)foo;
 		}
 		else static if (is(T == ulong) || is(T == long)) {
 			_endian64(input);
@@ -59,6 +85,8 @@ private template _endian(T, string who) {
 		}
 		else static if (is(T == ubyte) || is(T == byte)) {
 		}
+		else static if (who == "") {
+		}
 		else {
 			static assert(false, who ~ ": Error: " ~ T.stringof ~ " is not a valid type.");
 		}
@@ -70,17 +98,33 @@ template fromBigEndian(T) {
 		version(BigEndian) {
 		}
 		else {
-			_endian!(T,"fromBigEndian")(input);
+			static if (IsArray!(T)) {
+				_endianArray!(T,"fromBigEndian")(input);
+			}
+			else {
+				_endian!(T,"fromBigEndian")(input);
+			}
 		}
 	}
 }
 
 template fromLittleEndian(T) {
-	void fromLittleEndian(ref T input) {
-		version(LittleEndian) {
+	static if (IsArray!(T)) {
+		void fromLittleEndian(T input) {
+			version(LittleEndian) {
+			}
+			else {
+				_endian!(T,"fromLittleEndian")(input);
+			}
 		}
-		else {
-			_endian!(T,"fromBigEndian")(input);
+	}
+	else {
+		void fromLittleEndian(ref T input) {
+			version(LittleEndian) {
+			}
+			else {
+				_endian!(T,"fromLittleEndian")(input);
+			}
 		}
 	}
 }
