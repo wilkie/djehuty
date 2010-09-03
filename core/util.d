@@ -82,6 +82,10 @@ template IsStruct(T) {
 	const bool IsStruct = is(T == struct);
 }
 
+template IsEnum(T) {
+	const bool IsEnum = is(T == enum);
+}
+
 // Description: Resolves to true when T is an array and false otherwise.
 template IsArray(T) {
 	static if (is(T U:U[])) {
@@ -169,6 +173,15 @@ private template GetLastName(char[] fullName, int idx = fullName.length - 1) {
 	}
 	else {
 		const char[] GetLastName = GetLastName!(fullName, idx - 1);
+	}
+}
+
+template EnumType(T) {
+	static if (is(T S == enum)) {
+		alias S EnumType;
+	}
+	else {
+		static assert (false, "EnumType: " ~ T.stringof ~ " is not an enum.");
 	}
 }
 
