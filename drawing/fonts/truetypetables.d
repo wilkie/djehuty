@@ -18,20 +18,6 @@ align(1) struct OffsetTable {
 	ushort rangeShift;
 }
 
-align(1) struct TableDirectoryEntry {
-	// 4-byte identifier
-	uint tag;
-
-	// Checksum for this table
-	uint checkSum;
-
-	// Offset from beginning of truetype font file
-	uint offset;
-
-	// Length of the table
-	uint length;
-}
-
 template CharacterTagToInteger(string tag) {
 	const uint CharacterTagToInteger = (((((tag[0] << 8) | tag[1]) << 8) | tag[2]) << 8) | tag[3];
 }
@@ -65,15 +51,36 @@ enum Tag : uint {
 	VerticalMetrics = CharacterTagToInteger!("vmtx")
 }
 
+align(1) struct TableRecord {
+	// 4-byte identifier
+	Tag tag;
+
+	// Checksum for this table
+	uint checksum;
+
+	// Offset from beginning of truetype font file
+	uint offset;
+
+	// Length of the table
+	uint length;
+}
+
 align(1) struct CharacterToGlyphIndexMappingTable {
+	static const MAIN_TABLE_SIZE = 4;
+
 	// The version identification of the table (0)
 	ushort tableVersion;
 
 	// The number of EncodingTable entries that follow this table
 	ushort numEncodingTables;
+
+	// The encoding tables
+	EncodingTable[] encodingTables;
 }
 
 align(1) struct EncodingTable {
+	static const MAIN_TABLE_SIZE = 8;
+
 	// a platform ID
 	ushort platformID;
 
@@ -83,11 +90,20 @@ align(1) struct EncodingTable {
 	// byte offset from beginning of the table to the
 	// subtable for this encoding.
 	uint offsetToSubtable;
+
+	EncodingSubtable subtable;
 }
 
 // Subtables
 
 // Format 0 (Byte encoding table)
+align(1) union EncodingSubtable {
+	ByteEncodingTable byteEncodingTable;
+	HighByteMappingThroughTable highByteMappingThroughTable;
+	SegmentMappingToDeltaValuesTable segmentMappingToDeltaValuesTable;
+	TrimmedTableMappingTable trimmedTableMappingTable;
+}
+
 align(1) struct ByteEncodingTable {
 	// The format number (set to 0)
 	ushort format;
@@ -104,17 +120,22 @@ align(1) struct ByteEncodingTable {
 
 // Format 2 (High-byte mapping through table)
 align(1) struct HighByteMappingThroughTable {
+	static const MAIN_TABLE_SIZE = 6 + (256*2);
+
 	// The format number (set to 2)
 	ushort format;
 
 	// Length in bytes
 	ushort length;
 
-	// Version (starts at 0)
-	ushort subtableVersion;
+	// Language field (was a version field)
+	ushort language;
 
 	// Array that maps high bytes to subHeaders: value is subHeader index * 8
 	ushort[256] subHeaderKeys;
+
+	SubHeader[] subHeaders;
+	ushort[] glyphIndexArray;
 }
 
 // Format 2
@@ -136,6 +157,8 @@ align(1) struct SubHeader {
 
 // Format 4
 align(1) struct SegmentMappingToDeltaValuesTable {
+	static const MAIN_TABLE_SIZE = 14;
+
 	// Format number (set to 4)
 	ushort format;
 
@@ -159,10 +182,33 @@ align(1) struct SegmentMappingToDeltaValuesTable {
 
 	// afterward, there is a set of variable length fields for each
 	// segment specified by segCount
+
+	// ending character code for each segment, last = 0xffff
+	// sizeOfArray = segCountX2 / 2
+	ushort[] endCode;
+
+	ushort reserved;
+
+	// starting character for each segment
+	// sizeOfArray = segCountX2 / 2
+	ushort[] startCode;
+
+	// delta for all character codes in segment
+	// sizeOfArray = segCountX2 / 2
+	ushort[] idDelta;
+
+	// offset in bytes to glyphIndexArray, or 0
+	// sizeOfArray = segCountX2 / 2
+	ushort[] idRangeOffset;
+
+	// sizeOfArray = length - MAIN_TABLE_SIZE - segCountX2 * 4 - 2
+	ushort[] glyphIndexArray;
 }
 
 // Format 6
 align(1) struct TrimmedTableMappingTable {
+	static const MAIN_TABLE_SIZE = 10;
+
 	// Format number (set to 6)
 	ushort format;
 
@@ -179,11 +225,18 @@ align(1) struct TrimmedTableMappingTable {
 	ushort entryCount;
 
 	// afterward, a ushort array of size entryCount for glyphIDArray[]
+	// sizeOfArray = entryCount
+	ushort[] glyphIDArray;
 }
+
+// cvt (Control Value Table)
+// -------------------------
 
 align(1) struct ControlValueTable {
 }
 
+// EBLC (Embedded Bitmap Data Table)
+// ---------------------------------
 // The EBLC table identifies the sizes and glyph ranges of the sbits
 // (scalar bitmaps) and keeps offsets to glyph bitmap data in indexSubTables.
 // The EBDT table then stores the glyph bitmap data in a number of different
