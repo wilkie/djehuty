@@ -341,12 +341,13 @@ private template _arraysetlength(bool initWithZero) {
 			newArray = GarbageCollector.malloc(newSize);
 
 			if (oldSize != 0) {
-				newArray[0..oldSize] = oldArray[0..oldSize];
+//				newArray[0..oldSize] = oldArray[0..oldSize];
+				newArray.ptr[0..oldSize] = oldArray.ptr[0..oldSize];
 			}
 		}
 		else {
 			// just resize
-			newArray = oldArray[0..newSize];
+			newArray = oldArray.ptr[0..newSize];
 		}
 
 		// No need to initialize for truncation.
