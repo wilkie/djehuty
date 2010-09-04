@@ -415,8 +415,8 @@ int main(string[] args) {
 	//*/
 	auto app = new CuiApplication("MyApp");
 
-	/*app.attach(new Rogue());*/
-	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
+	app.attach(new Rogue());//*/
+	//app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
 	/*app.attach(new CuiScrollBar(0,5,1,25,Orientation.Vertical));
 	app.attach(new CuiFileBox(30,10,20,20));
 	
@@ -456,5 +456,6 @@ int main(string[] args) {
 	
 	Console.putln("before run.");	*/
 	app.run();//*/
+
 	return 0;
 }
