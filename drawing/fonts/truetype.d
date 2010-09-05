@@ -43,8 +43,62 @@ private:
 
 	OffsetTable _offsetTable;
 	TableRecord[] _tableRecords;
+
+	FontHeaderTable _fontHeader;
+	HorizontalHeaderTable _horizontalHeader;
+	MaximumProfile _profile;
+	IndexToLocationLongTable _locations;
+
+	GlyphDataTable _glyphData;
+
 	CharacterToGlyphIndexMappingTable _characterGlyphIndexMappingTable;
 	EncodingTable _encodingTables;
+
+	void readFontHeaderTable(Stream input, ref TableRecord tbl) {
+		input.position = tbl.offset;
+
+		input.read(&_fontHeader, FontHeaderTable.sizeof);
+		fromBigEndian(_fontHeader);
+	}
+
+	void readHorizontalHeaderTable(Stream input, ref TableRecord tbl) {
+		input.position = tbl.offset;
+
+		input.read(&_horizontalHeader, HorizontalHeaderTable.sizeof);
+		fromBigEndian(_horizontalHeader);
+	}
+
+	void readMaximumProfile(Stream input, ref TableRecord tbl) {
+		input.position = tbl.offset;
+
+		input.read(&_profile, MaximumProfile.sizeof);
+		fromBigEndian(_profile);
+
+		putln("Number of Glyphs: ", _profile.numGlyphs);
+	}
+
+	void readIndexToLocationTable(Stream input, ref TableRecord tbl) {
+		input.position = tbl.offset;
+
+		_locations.offsets = new uint[](_profile.numGlyphs + 1);
+		if (_fontHeader.indexToLocFormat != 0) {
+			putln("Loca table indicates number of glyphs: ", (tbl.length / 4) - 1);
+			input.read(_locations.offsets.ptr, uint.sizeof * _locations.offsets.length);
+			fromBigEndian(_locations.offsets);
+		}
+		else {
+			putln("Loca table indicates number of glyphs: ", (tbl.length / 2) - 1);
+			// Note the <= here since the number of locations is one more than the number of glyphs
+			ushort offset;
+			for (int i = 0; i <= _profile.numGlyphs; i++) {
+				input.read(&offset, ushort.sizeof);
+				fromBigEndian(offset);
+
+				_locations.offsets[i] = offset;
+				_locations.offsets[i] *= 2;
+			}
+		}
+	}
 
 	void readHighByteMappingThroughTable(ref HighByteMappingThroughTable table, Stream input) {
 		// Getting the subheaders means figuring out how
@@ -123,8 +177,22 @@ private:
 		input.read(table.glyphIDArray.ptr, table.entryCount * ushort.sizeof);
 	}
 
+	void readMixed16BitAnd32BitCoverageTable(Mixed16BitAnd32BitCoverageTable table, Stream input) {
+		table.groups = new MixedGroup[](table.nGroups);
+		input.read(table.groups.ptr, MixedGroup.sizeof * table.nGroups);
+	}
+
+	void readTrimmedArrayTable(TrimmedArrayTable table, Stream input) {
+		table.glyphs = new ushort[](table.numChars);
+		input.read(table.glyphs.ptr, ushort.sizeof * table.numChars);
+	}
+
+	void readSegmentedCoverageTable(SegmentedCoverageTable table, Stream input) {
+		table.groups = new MixedGroup[](table.nGroups);
+		input.read(table.groups.ptr, MixedGroup.sizeof * table.nGroups);
+	}
+
 	void readCharacterToGlyphMappingTable(Stream input, int offset) {
-		input.rewind();
 		input.position = offset;
 
 		input.read(&_characterGlyphIndexMappingTable,
@@ -170,11 +238,19 @@ private:
 					case 6:
 						size = TrimmedTableMappingTable.MAIN_TABLE_SIZE;
 						break;
-						
-						// XXX: 8
-						// XXX: 10
-						// XXX: 12
-						// XXX: 14
+
+					case 8:
+						size = Mixed16BitAnd32BitCoverageTable.MAIN_TABLE_SIZE;
+						break;
+
+					case 10:
+						size = TrimmedArrayTable.MAIN_TABLE_SIZE;
+						break;
+
+					case 12:
+						size = SegmentedCoverageTable.MAIN_TABLE_SIZE;
+						break;
+
 					default:
 						break;
 				}
@@ -209,9 +285,188 @@ private:
 						readTrimmedTableMappingTable(tbl.subtable.trimmedTableMappingTable, input);
 						break;
 
+					case 8: // Mixed 16-bit and 32-bit Coverage
+						fromBigEndian(tbl.subtable.mixed16BitAnd32BitCoverageTable);
+						readMixed16BitAnd32BitCoverageTable(tbl.subtable.mixed16BitAnd32BitCoverageTable, input);
+
+					case 10: // Trimmed Array Table
+						fromBigEndian(tbl.subtable.trimmedArrayTable);
+						readTrimmedArrayTable(tbl.subtable.trimmedArrayTable, input);
+
+					case 12: // Segmented Coverage Table
+					case 13: // Last Resort Font Table (it has the same structure)
+						fromBigEndian(tbl.subtable.segmentedCoverageTable);
+						readSegmentedCoverageTable(tbl.subtable.segmentedCoverageTable, input);
+
 					default:
 						break;
 				}
+			}
+		}
+	}
+
+	// This function reads in the coordinate arrays
+	void readCoordinateArray(bool isX)(Stream input, ref short[] array, ref ubyte[] flags) {
+		static if (isX) {
+			static const IS_NOT_SHORT = (1 << 1);
+			static const SAME_FLAG = (1 << 4);
+		}
+		else {
+			static const IS_NOT_SHORT = (1 << 2);
+			static const SAME_FLAG = (1 << 5);
+		}
+
+		short last = 0;
+		foreach(size_t idx, ref coord; array) {
+			// When bit 1 is set, the point is a ubyte,
+			// otherwise, it is a short
+			if (flags[idx] & IS_NOT_SHORT) {
+				ubyte smallCoord;
+				input.read(&smallCoord, ubyte.sizeof);
+				coord = smallCoord;
+				// When bit 4 is set, in this case, it denotes
+				// that this value is positive
+				// Otherwise, it is negative
+				if (!(flags[idx] & SAME_FLAG)) {
+					coord = -coord;
+				}
+
+				if (idx > 0) {
+					// Convert to absolute coordinates
+					coord += last;
+				}
+			}
+			else {
+				// The value is stored as a short
+
+				// When bit 4 is set, it denotes that this coord
+				// is the same as the last coord...
+				if (flags[idx] & SAME_FLAG) {
+					if (idx > 0) {
+						coord = last;
+					}
+				}
+				else {
+					// The value is then a 16-bit delta vector
+					input.read(&coord, short.sizeof);
+					fromBigEndian(coord);
+					if (idx > 0) {
+						// Convert to absolute coordinates
+						coord += last;
+					}
+				}
+			}
+			last = coord;
+		}
+	}
+
+	void readSimpleGlyph(Stream input, ref Glyph g, int numberOfContours) {
+		// First thing is an array of points (endPtsOfContours) of
+		// length numberOfContours
+		g.endPtsOfContours = new ushort[](numberOfContours);
+		putln("Pos: ", input.position);
+		input.read(g.endPtsOfContours.ptr, ushort.sizeof * numberOfContours);
+		putln("Pos: ", input.position);
+		fromBigEndian(g.endPtsOfContours);
+
+		ushort instLength;
+		input.read(&instLength, ushort.sizeof);
+		fromBigEndian(instLength);
+
+		putln("Instruction Count: ", instLength);
+
+		g.instructions = new ubyte[](instLength);
+		input.read(g.instructions.ptr, ubyte.sizeof * instLength);
+
+		// set up glyph arrays that are set via flags
+		g.isOnCurve = new bool[](numberOfContours);
+
+		// flags...
+		int numberOfPoints = 0;
+
+		if (numberOfContours > 0) {
+			numberOfPoints = g.endPtsOfContours[$-1] + 1;
+		}
+
+		putln("Number of points: ", numberOfPoints);
+		ubyte[] flags = new ubyte[](numberOfPoints);
+
+		// flags may be applied to more than one point,
+		// so we should keep track of how many times this flag
+		// should be repeated
+		ubyte repeat = 0;
+
+		for(int i = 0; i < numberOfPoints; i++) {
+			if (repeat == 0) {
+				// read in the flags
+				input.read(&flags[i], ubyte.sizeof);
+
+				if (flags[i] & (1 << 3)) { // Repeat flag
+					// read in the repeat byte
+					input.read(&repeat, ubyte.sizeof);
+
+					// set all flags that are repeated to this current flag value
+					flags[i+1..i+repeat+1] = flags[i];
+				}
+			}
+			else {
+				repeat--;
+			}
+
+			// interpret flags
+			if (flags[i] & 0x01) { // On Curve flag
+				g.isOnCurve[i] = 1;
+			}
+		}
+
+		// xCoordinate array
+		g.xCoordinates = new short[](numberOfPoints);
+		readCoordinateArray!(true)(input, g.xCoordinates, flags);
+
+		g.yCoordinates = new short[](numberOfPoints);
+		readCoordinateArray!(false)(input, g.yCoordinates, flags);
+	}
+
+	void readCompositeGlyph(Stream input, ref Glyph g) {
+	}
+
+	void readGlyphData(Stream input, ref TableRecord record) {
+		putln("Length: ", record.length);
+
+		for (int i = 0; i < _profile.numGlyphs; i++) {
+			Glyph g;
+
+			if (_locations.offsets[i] == _locations.offsets[i+1]) {
+				// empty glyph
+				putln("continuing...");
+				continue;
+			}
+
+			input.position = record.offset + _locations.offsets[i];
+			putln("Offset: ", _locations.offsets[i]);
+
+			short numberOfContours;
+			input.read(&numberOfContours, short.sizeof);
+			fromBigEndian(numberOfContours);
+
+			putln("Glyph: numContours: ", numberOfContours);
+
+			input.read(&g.xMin, short.sizeof);
+			fromBigEndian(g.xMin);
+			input.read(&g.yMin, short.sizeof);
+			fromBigEndian(g.yMin);
+			input.read(&g.xMax, short.sizeof);
+			fromBigEndian(g.xMax);
+			input.read(&g.yMax, short.sizeof);
+			fromBigEndian(g.yMax);
+
+			if (numberOfContours >= 0) {
+				// Simple Glyph
+				readSimpleGlyph(input, g, numberOfContours);
+			}
+			else {
+				// Composite Glyph
+				readCompositeGlyph(input, g);
 			}
 		}
 	}
@@ -229,8 +484,34 @@ public:
 
 		_tableRecords = new TableRecord[](_offsetTable.numTables);
 		input.read(_tableRecords.ptr, TableRecord.sizeof * _offsetTable.numTables);
-		foreach(ref tbl; _tableRecords) {
+
+		int hheaIndex = int.min;
+		int headIndex = int.min;
+		int maxpIndex = int.min;
+		int locaIndex = int.min;
+		int glyfIndex = int.min;
+		int cmapIndex = int.min;
+
+		foreach(size_t idx, ref tbl; _tableRecords) {
 			fromBigEndian(tbl);
+			if (tbl.tag == Tag.FontHeader) {
+				headIndex = idx;
+			}
+			else if (tbl.tag == Tag.CharacterToGlyphMapping) {
+				cmapIndex = idx;
+			}
+			else if (tbl.tag == Tag.GlyphData) {
+				glyfIndex = idx;
+			}
+			else if (tbl.tag == Tag.MaximumProfile) {
+				maxpIndex = idx;
+			}
+			else if (tbl.tag == Tag.IndexToLocation) {
+				locaIndex = idx;
+			}
+			else if (tbl.tag == Tag.HorizontalHeader) {
+				hheaIndex = idx;
+			}
 		}
 
 		foreach(ref tbl; _tableRecords) {
@@ -240,15 +521,40 @@ public:
 			putln("Length: ", tbl.length);
 		}
 
-		foreach(ref tbl; _tableRecords) {
-			switch(tbl.tag) {
-				case Tag.CharacterToGlyphMapping:
-					readCharacterToGlyphMappingTable(input, tbl.offset);
-					break;
-				default:
-					// skip table
-					break;
-			}
+		if (headIndex == int.min) {
+			// error
 		}
+
+		readFontHeaderTable(input, _tableRecords[headIndex]);
+
+		if (hheaIndex == int.min) {
+			// error
+		}
+
+		readHorizontalHeaderTable(input, _tableRecords[hheaIndex]);
+
+		if (maxpIndex == int.min) {
+			// error
+		}
+
+		readMaximumProfile(input, _tableRecords[maxpIndex]);
+
+		if (locaIndex == int.min) {
+			// error
+		}
+
+		readIndexToLocationTable(input, _tableRecords[locaIndex]);
+
+		if (cmapIndex == int.min) {
+			// error
+		}
+
+		readCharacterToGlyphMappingTable(input, _tableRecords[cmapIndex].offset);
+
+		if (glyfIndex == int.min) {
+			// error
+		}
+
+		readGlyphData(input, _tableRecords[glyfIndex]);
 	}
 }

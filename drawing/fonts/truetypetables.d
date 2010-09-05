@@ -23,6 +23,7 @@ template CharacterTagToInteger(string tag) {
 }
 
 enum Tag : uint {
+	// Required
 	CharacterToGlyphMapping = CharacterTagToInteger!("cmap"),
 	GlyphData = CharacterTagToInteger!("glyf"),
 	FontHeader = CharacterTagToInteger!("head"),
@@ -65,45 +66,9 @@ align(1) struct TableRecord {
 	uint length;
 }
 
-align(1) struct CharacterToGlyphIndexMappingTable {
-	static const MAIN_TABLE_SIZE = 4;
-
-	// The version identification of the table (0)
-	ushort tableVersion;
-
-	// The number of EncodingTable entries that follow this table
-	ushort numEncodingTables;
-
-	// The encoding tables
-	EncodingTable[] encodingTables;
-}
-
-align(1) struct EncodingTable {
-	static const MAIN_TABLE_SIZE = 8;
-
-	// a platform ID
-	ushort platformID;
-
-	// platform specific encoding ID
-	ushort platformEncodingID;
-
-	// byte offset from beginning of the table to the
-	// subtable for this encoding.
-	uint offsetToSubtable;
-
-	EncodingSubtable subtable;
-}
-
 // Subtables
 
 // Format 0 (Byte encoding table)
-align(1) union EncodingSubtable {
-	ByteEncodingTable byteEncodingTable;
-	HighByteMappingThroughTable highByteMappingThroughTable;
-	SegmentMappingToDeltaValuesTable segmentMappingToDeltaValuesTable;
-	TrimmedTableMappingTable trimmedTableMappingTable;
-}
-
 align(1) struct ByteEncodingTable {
 	// The format number (set to 0)
 	ushort format;
@@ -227,6 +192,176 @@ align(1) struct TrimmedTableMappingTable {
 	// afterward, a ushort array of size entryCount for glyphIDArray[]
 	// sizeOfArray = entryCount
 	ushort[] glyphIDArray;
+}
+
+// Format 8
+align(1) struct Mixed16BitAnd32BitCoverageTable {
+	static const MAIN_TABLE_SIZE = (ushort.sizeof * 2) + (uint.sizeof * 3) + (8 * 1024);
+
+	// Format number (set to 8)
+	ushort format;
+
+	// table version (starts at 0)
+	ushort tableVersion;
+
+	// length of table in bytes
+	uint length;
+
+	// language code for this encoding table, 0 if language-independent
+	uint language;
+
+	// bitmap with 64K bits that indicate whether or not the particular
+	// 16-bit (index) value is the start of a 32-bit character code
+	ubyte[8 * 1024] is32;
+
+	// The number of groups to follow
+	uint nGroups;
+
+	// The groups
+	// sizeOfArray = nGroups
+	MixedGroup[] groups;
+}
+
+align(1) struct MixedGroup {
+	// First character code in this group;
+	// Note: that if this group is for one or more 16-bit character codes
+	// (which is determined from the is32 array), this 32-bit value will have
+	// the high 16-bits set to zero
+	uint startCharCode;
+
+	// Last character code in this group
+	// Note: This is used as an index and not as a count since the comparisons are done
+	// on ranges and this would save an addition.
+	uint endCharCode;
+
+	// Glyph index corresponding to the starting character code
+	uint startGlyphCode;
+}
+
+// Format 10
+align(1) struct TrimmedArrayTable {
+	static const MAIN_TABLE_SIZE = 20;
+
+	// format (set to 10)
+	ushort format;
+
+	// version (starts at 0)
+	ushort tableVersion;
+
+	// length of the table in bytes
+	uint length;
+
+	// language (0 if dont-care)
+	uint language;
+
+	// first character code covered
+	uint startCharCode;
+
+	// the number of characters covered
+	uint numChars;
+
+	// Array of glyph indices for the character codes covered
+	// sizeOfArray = numChars
+	ushort[] glyphs;
+}
+
+// Format 12
+align(1) struct SegmentedCoverageTable {
+	static const MAIN_TABLE_SIZE = 16;
+
+	// format (set to 10)
+	ushort format;
+
+	// version (starts at 0)
+	ushort tableVersion;
+
+	// length of the table in bytes
+	uint length;
+
+	// language (0 if dont-care)
+	uint language;
+
+	// number of groups
+	uint nGroups;
+
+	// sizeOfArray = nGroups
+	MixedGroup[] groups;
+}
+
+// Format 13 (Last Resort Font)
+alias SegmentedCoverageTable LastResortFontTable;
+
+// Format 14 (Unicode Variation Sequences)
+align(1) struct VariationSelectorRecord {
+	// Variation selector
+	// Note: No two records may have the same selector
+	// The records are stored in increasing order
+	ubyte[3] varSelector;
+
+	// Offset to the default UVS table (may be 0)
+	uint defaultUVSOffset;
+
+	// Offset to the non-default UVS table (may be 0)
+	uint nonDefaultUVSOffset;
+}
+
+align(1) struct UnicodeVariationSequencesTable {
+	static const MAIN_TABLE_SIZE = 10;
+
+	// format (set to 14)
+	ushort format;
+
+	// length in bytes (includes header)
+	uint length;
+
+	// number of variation selector records
+	uint numVarSelectorRecords;
+
+	// Selectors
+	// The records are stored in increasing order
+	// No Duplicates are allowed
+	// sizeOfArray = numVarSelectorRecords
+	VariationSelectorRecord[] records;
+}
+
+align(1) union EncodingSubtable {
+	ByteEncodingTable byteEncodingTable;
+	HighByteMappingThroughTable highByteMappingThroughTable;
+	SegmentMappingToDeltaValuesTable segmentMappingToDeltaValuesTable;
+	TrimmedTableMappingTable trimmedTableMappingTable;
+	Mixed16BitAnd32BitCoverageTable mixed16BitAnd32BitCoverageTable;
+	TrimmedArrayTable trimmedArrayTable;
+	SegmentedCoverageTable segmentedCoverageTable;
+	LastResortFontTable lastResortFontTable;
+}
+
+align(1) struct EncodingTable {
+	static const MAIN_TABLE_SIZE = 8;
+
+	// a platform ID
+	ushort platformID;
+
+	// platform specific encoding ID
+	ushort platformEncodingID;
+
+	// byte offset from beginning of the table to the
+	// subtable for this encoding.
+	uint offsetToSubtable;
+
+	EncodingSubtable subtable;
+}
+
+align(1) struct CharacterToGlyphIndexMappingTable {
+	static const MAIN_TABLE_SIZE = 4;
+
+	// The version identification of the table (0)
+	ushort tableVersion;
+
+	// The number of EncodingTable entries that follow this table
+	ushort numEncodingTables;
+
+	// The encoding tables
+	EncodingTable[] encodingTables;
 }
 
 // cvt (Control Value Table)
@@ -506,9 +641,57 @@ enum RangeGaspBehavior : ushort {
 
 // glyf (Glyph Data)
 
+struct CompositeData {
+	size_t glyphIndex;
+}
+
+struct Glyph {
+	// If negative, this is a composite glyph.
+	bool isComposite;
+
+	// Minimum x for coordinate data in FUnits
+	short xMin;
+
+	// Minimum y for coordinate data in FUnits
+	short yMin;
+
+	// Maximum x for coordinate data in FUnits
+	short xMax;
+
+	// Maximum y for coordinate data in FUnits
+	short yMax;
+
+	union {
+		struct { // Simple Glyph
+			// Array of last points of each contour
+			// sizeOfArray = glyf.numberOfContours
+			ushort[] endPtsOfContours;
+
+			// The bounding rectangle for each character is defined as the
+			// rectangle with a lower-left corner of (xMin, yMin) and an
+			// upper-right corner of (xMax, yMax).
+
+			// Array of instruct ions for each glyph.
+			// sizeOfArray = simpleglyphdesc.instructionLength
+			ubyte[] instructions;
+
+			// Whether or not the point is on the curve
+			bool[] isOnCurve;
+
+			// First coordinates relative to (0,0), rest are relative
+			// to the previous point
+			// sizeOfArray = endPtsOfContours[$-1]+1
+			short[] xCoordinates;
+			short[] yCoordinates;
+		}
+
+		CompositeData[] components;
+	}
+}
+
 align(1) struct GlyphDataTable {
 	// If the number of contours is greater than or equal to zero,
-	// this is a single glyph.
+	// this is a 'simple' glyph.
 
 	// If negative, this is a composite glyph.
 	short numberOfContours;
@@ -528,52 +711,6 @@ align(1) struct GlyphDataTable {
 	// The bounding rectangle for each character is defined as the
 	// rectangle with a lower-left corner of (xMin, yMin) and an
 	// upper-right corner of (xMax, yMax).
-}
-
-// For when numberOfContours is greater than zero
-align(1) struct SimpleGlyphDescription {
-	// Array of last points of each contour.
-	// sizeOfArray = numberOfContours
-	ushort[] endPtsOfContours;
-
-	// Total number of bytes for instruct ions
-	ushort instructionLength;
-
-	// Array of instruct ions for each glyph.
-	// sizeOfArray = instruct ionLength
-	ubyte[] instructions;
-
-	// Array of flags for each coordinate in outline.
-	ubyte[] flags;
-	// Bit 0 - On Curve 		- If set, the point is on the curve,
-	//							otherwise it is off
-	// Bit 1 - x-Short Vector	- If set, the corresponding x-coordinate is
-	//							1 byte long, not two
-	// Bit 2 - y-Short Vector	- If set, the y-coordinate is 1 byte long not two
-	// Bit 3 - Repeat			- If set, the next byte specifies the number of
-	//							additional times this set of flags is to be
-	//							repeated. In this way, the number of flags listed
-	//							can be smaller than the number of points in a
-	//							character.
-	// Bit 4 - X Is Same		- This flag has two meanings, depending on how the
-	//							x-Short Vector flag is set. If x-Short Vector is set,
-	//							this bit describes the sign of the value, with 1 equaling
-	//							positive and 0 negative. If the x-Short Vector is not set,
-	//							and this bit is set, then the current x-coordinate is the
-	//							same as the previous x-coordinate. If the x-Short Vector
-	//							bit is not set and this bit is also not set, the current
-	//							x-coordinate is signed 16-bit delta vector.
-	// Bit 5 - Y is Same		- Same as above but for y-coordinate.
-	// Bit 6 - Reserved
-	// Bit 7 - Reserved
-
-	// First coordinates relative to (0,0), rest are relative
-	// to the previous point
-	ubyte[] xCoordinates;
-	ubyte[] yCoordinates;
-
-	short[] sxCoordinates;
-	short[] syCoordinates;
 }
 
 // hdmx (Horizontal Device Metrics)
@@ -604,10 +741,6 @@ align(1) struct HorizontalDeviceMetricsTable {
 }
 
 // head (Font Header)
-
-align(1) struct LongDateTime {
-}
-
 align(1) struct FontHeaderTable {
 	// Table version number
 	short tableVersionMajor;
@@ -635,8 +768,8 @@ align(1) struct FontHeaderTable {
 	ushort unitsPerEm;
 
 	// International data (8-byte field)
-	LongDateTime created;
-	LongDateTime modified;
+	long created;
+	long modified;
 
 	// For all glyph bounding boxes (in FUnits)
 	short xMin;
@@ -735,8 +868,7 @@ align(1) struct HorizontalMetricsTable {
 // kern (Kerning)
 // --------------
 // The kerning table contains the values that control the intercharacter
-// spacing for the glyphs in a font. There is currently no system level
-// support for kerning (other than returning the kern pairs and kern values)
+// spacing for the glyphs in a font.
 
 align(1) struct KernelSubTable {
 	// version number
