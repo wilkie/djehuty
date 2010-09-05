@@ -54,6 +54,8 @@ private:
 	CharacterToGlyphIndexMappingTable _characterGlyphIndexMappingTable;
 	EncodingTable _encodingTables;
 
+	Glyph[] _glyphs;
+
 	void readFontHeaderTable(Stream input, ref TableRecord tbl) {
 		input.position = tbl.offset;
 
@@ -433,9 +435,9 @@ private:
 	void readGlyphData(Stream input, ref TableRecord record) {
 		putln("Length: ", record.length);
 
-		for (int i = 0; i < _profile.numGlyphs; i++) {
-			Glyph g;
+		_glyphs = new Glyph[](_profile.numGlyphs);
 
+		for (int i = 0; i < _profile.numGlyphs; i++) {
 			if (_locations.offsets[i] == _locations.offsets[i+1]) {
 				// empty glyph
 				putln("continuing...");
@@ -451,22 +453,22 @@ private:
 
 			putln("Glyph: numContours: ", numberOfContours);
 
-			input.read(&g.xMin, short.sizeof);
-			fromBigEndian(g.xMin);
-			input.read(&g.yMin, short.sizeof);
-			fromBigEndian(g.yMin);
-			input.read(&g.xMax, short.sizeof);
-			fromBigEndian(g.xMax);
-			input.read(&g.yMax, short.sizeof);
-			fromBigEndian(g.yMax);
+			input.read(&_glyphs[i].xMin, short.sizeof);
+			fromBigEndian(_glyphs[i].xMin);
+			input.read(&_glyphs[i].yMin, short.sizeof);
+			fromBigEndian(_glyphs[i].yMin);
+			input.read(&_glyphs[i].xMax, short.sizeof);
+			fromBigEndian(_glyphs[i].xMax);
+			input.read(&_glyphs[i].yMax, short.sizeof);
+			fromBigEndian(_glyphs[i].yMax);
 
 			if (numberOfContours >= 0) {
 				// Simple Glyph
-				readSimpleGlyph(input, g, numberOfContours);
+				readSimpleGlyph(input, _glyphs[i], numberOfContours);
 			}
 			else {
 				// Composite Glyph
-				readCompositeGlyph(input, g);
+				readCompositeGlyph(input, _glyphs[i]);
 			}
 		}
 	}
