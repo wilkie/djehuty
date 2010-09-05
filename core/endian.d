@@ -27,7 +27,7 @@ private template EndianStructImpl(T, int idx = 0) {
 	}
 	else static if (IsStruct!(typeof(T.tupleof[idx]))) {
 		const string EndianStructImpl = `
-	_endianStruct(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `, who);`
+	_endianStruct!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
 		~ EndianStructImpl!(T, idx + 1);
 	}
 	else static if (IsArray!(typeof(T.tupleof[idx]))) {
