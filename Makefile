@@ -3,7 +3,7 @@ MY_ARCH := $(shell uname)
 
 DC = ldc
 OBJCC = gcc
-DFLAGS = 
+DFLAGS =
 
 # can be changed
 PLATFORM = WINDOWS

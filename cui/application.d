@@ -53,7 +53,6 @@ private:
 		canvas.position(0,0);
 		_mainWindow.onDrawChildren(canvas);
 		_mainWindow.onDraw(canvas);
-
 		CuiSwapBuffers(&_pfvars);
 		_lock.up();
 	}
@@ -93,14 +92,13 @@ public:
 	
 	override void run() {
 		super.run();
-
 		_allowRedraw = true;
-
+		
 		if (_needRedraw) {
 			_needRedraw = false;
 			_redraw();
 		}
-
+		
 		eventLoop();
 	}
 
@@ -122,6 +120,7 @@ public:
 
 	override void attach(Dispatcher dsp, SignalHandler handler = null) {
 		auto window = cast(CuiWindow)dsp;
+
 		if (window !is null && window !is _mainWindow) {
 			// Add to the window list
 			_mainWindow.attach(window, handler);
