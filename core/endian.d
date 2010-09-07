@@ -109,7 +109,7 @@ template fromBigEndian(T) {
 }
 
 template fromLittleEndian(T) {
-	void fromLittleEndian(T input) {
+	void fromLittleEndian(ref T input) {
 		version(LittleEndian) {
 		}
 		else {
