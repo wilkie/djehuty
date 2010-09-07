@@ -109,18 +109,12 @@ template fromBigEndian(T) {
 }
 
 template fromLittleEndian(T) {
-	static if (IsArray!(T)) {
-		void fromLittleEndian(T input) {
-			version(LittleEndian) {
-			}
-			else {
-				_endian!(T,"fromLittleEndian")(input);
-			}
+	void fromLittleEndian(T input) {
+		version(LittleEndian) {
 		}
-	}
-	else {
-		void fromLittleEndian(ref T input) {
-			version(LittleEndian) {
+		else {
+			static if (IsArray!(T)) {
+				_endianArray!(T,"fromLittleEndian")(input);
 			}
 			else {
 				_endian!(T,"fromLittleEndian")(input);
