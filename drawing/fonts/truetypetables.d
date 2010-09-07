@@ -1,5 +1,8 @@
 module drawing.fonts.truetypetables;
 
+import djehuty;
+import io.console;
+
 align(1) struct OffsetTable {
 	// Version
 	short versionMajor;
@@ -641,9 +644,82 @@ enum RangeGaspBehavior : ushort {
 
 // glyf (Glyph Data)
 
-struct CompositeData {
-	size_t glyphIndex;
+struct F2Dot14 {
+	ushort data;
+
+	int numerator() {
+		return data >> 14;
+	}
+
+	int denominator() {
+		return data & ((1 << 14) - 1);
+	}
+
+	double toDouble() {
+		int mantissa = this.numerator;
+		if (mantissa > 1) {
+			// 2's complement for a 2-bit integer:
+			mantissa -= 4;
+		}
+
+		double denominator = cast(double)this.denominator;
+		denominator /= 16384;
+
+		double result = cast(double)mantissa;
+		if (mantissa < 0) {
+			result -= (1 - denominator);
+		}
+		else {
+			result += denominator;
+		}
+		putln("data: ", format("{x}", data), " vs ", result);
+		return result;
+	}
 }
+
+struct Component {
+	ushort flags;
+
+	size_t glyphIndex;
+
+	// The arguments differ in context due to flags
+	union {
+		// These are for when the arguments are offsets
+		// for the glyph placement within the new composite glyph
+		struct {
+			short xOffset;
+			short yOffset;
+		}
+
+		// The first point number indicates the new glyph's
+		// "matched" point. Once a glyph is added, its point
+		// numbers begin directly after the last glyph's (endpoint
+		// of first glyph + 1)
+		struct {
+			short glyphPoint;
+			short newPoint;
+		}
+	}
+
+	double scale;
+
+	double xscale;
+	double yscale;
+
+	double scale01;
+	double scale10;
+}
+
+// Composite Glyph Flags
+static const auto ARG_1_AND_2_ARE_WORDS		= (1 << 0);
+static const auto ARGS_ARE_XY_VALUES		= (1 << 1);
+static const auto ROUND_XY_TO_GRID			= (1 << 2);
+static const auto WE_HAVE_A_SCALE			= (1 << 3);
+static const auto MORE_COMPONENTS			= (1 << 5);
+static const auto WE_HAVE_AN_X_AND_Y_SCALE	= (1 << 6);
+static const auto WE_HAVE_A_TWO_BY_TWO		= (1 << 7);
+static const auto WE_HAVE_INSTRUCTIONS		= (1 << 8);
+static const auto USE_MY_METRICS			= (1 << 9);
 
 struct Glyph {
 	// If negative, this is a composite glyph.
@@ -661,31 +737,39 @@ struct Glyph {
 	// Maximum y for coordinate data in FUnits
 	short yMax;
 
-	union {
-		struct { // Simple Glyph
-			// Array of last points of each contour
-			// sizeOfArray = glyf.numberOfContours
-			ushort[] endPtsOfContours;
+	struct {
+		ubyte[] instructions; // (shared with both simple and composite)
 
-			// The bounding rectangle for each character is defined as the
-			// rectangle with a lower-left corner of (xMin, yMin) and an
-			// upper-right corner of (xMax, yMax).
+		union {
+			struct {
+				// Simple Glyph
 
-			// Array of instruct ions for each glyph.
-			// sizeOfArray = simpleglyphdesc.instructionLength
-			ubyte[] instructions;
+				// Array of last points of each contour
+				// sizeOfArray = glyf.numberOfContours
+				ushort[] endPtsOfContours;
 
-			// Whether or not the point is on the curve
-			bool[] isOnCurve;
+				// The bounding rectangle for each character is defined as the
+				// rectangle with a lower-left corner of (xMin, yMin) and an
+				// upper-right corner of (xMax, yMax).
+		
+				// Array of instruct ions for each glyph.
+				// sizeOfArray = simpleglyphdesc.instructionLength
+		
+				// Whether or not the point is on the curve
+				bool[] isOnCurve;
+		
+				// First coordinates relative to (0,0), rest are relative
+				// to the previous point
+				// sizeOfArray = endPtsOfContours[$-1]+1
+				short[] xCoordinates;
+				short[] yCoordinates;
+			}
 
-			// First coordinates relative to (0,0), rest are relative
-			// to the previous point
-			// sizeOfArray = endPtsOfContours[$-1]+1
-			short[] xCoordinates;
-			short[] yCoordinates;
+			struct {
+				// Composite Glyph
+				Component[] components;
+			}
 		}
-
-		CompositeData[] components;
 	}
 }
 

@@ -429,7 +429,90 @@ private:
 		readCoordinateArray!(false)(input, g.yCoordinates, flags);
 	}
 
+	void readComponent(Stream input, ref Component cdata) {
+		input.read(&cdata.flags, ushort.sizeof);
+		fromBigEndian(cdata.flags);
+
+		ushort glyphIndex;
+		input.read(&glyphIndex, ushort.sizeof);
+		fromBigEndian(glyphIndex);
+
+		cdata.glyphIndex = glyphIndex;
+
+		// Read arguments
+		if (cdata.flags & ARG_1_AND_2_ARE_WORDS) {
+			input.read(&cdata.xOffset, short.sizeof);
+			fromBigEndian(cdata.xOffset);
+
+			input.read(&cdata.yOffset, short.sizeof);
+			fromBigEndian(cdata.yOffset);
+		}
+		else {
+			ushort args;
+			input.read(&args, ushort.sizeof);
+			fromBigEndian(args);
+
+			cdata.yOffset = args & 0xff;
+			cdata.xOffset = cast(short)(args >> 8);
+		}
+
+		F2Dot14 scale;
+		if (cdata.flags & WE_HAVE_A_SCALE) {
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.scale = scale.toDouble();
+		}
+		else if (cdata.flags & WE_HAVE_AN_X_AND_Y_SCALE) {
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.xscale = scale.toDouble();
+
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.yscale = scale.toDouble();
+		}
+		else if (cdata.flags & WE_HAVE_A_TWO_BY_TWO) {
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.xscale = scale.toDouble();
+
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.scale01 = scale.toDouble();
+
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.scale10 = scale.toDouble();
+
+			input.read(&scale, F2Dot14.sizeof);
+			fromBigEndian(scale);
+			cdata.yscale = scale.toDouble();
+		}
+	}
+
 	void readCompositeGlyph(Stream input, ref Glyph g) {
+		int curComponent = 0;
+
+		g.components = new Component[](_profile.maxComponentElements);
+
+		bool more = true;
+
+		while(more) {
+			readComponent(input, g.components[curComponent]);
+
+			more = (g.components[curComponent].flags & MORE_COMPONENTS) != 0;
+			curComponent++;
+		}
+
+		if (g.components[curComponent-1].flags & WE_HAVE_INSTRUCTIONS) {
+			ushort instCount;
+			input.read(&instCount, ushort.sizeof);
+			fromBigEndian(instCount);
+
+			g.instructions = new ubyte[](instCount);
+
+			input.read(g.instructions.ptr, instCount);
+		}
 	}
 
 	void readGlyphData(Stream input, ref TableRecord record) {
