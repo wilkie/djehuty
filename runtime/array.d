@@ -80,20 +80,43 @@ void[] _adReverse(ubyte[] array, size_t elementSize) {
 
 // Description: This runtime function will compare two arrays.
 // Returns: 0 when equal, positive when first array is larger, negative otherwise.
-int _adCmp(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
-	return ti.compare(&a1, &a2);
+version(DigitalMars) {
+	int _adCmp(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+		TypeInfo_Array tia = new TypeInfo_Array(ti);
+		return tia.compare(&a1, &a2);
+	}
+}
+else {
+	int _adCmp(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+		return ti.compare(&a1, &a2);
+	}
 }
 
 // Description: This runtime function will compare two utf8 arrays.
 // Returns: 0 when equal, positive when first array is larger, negative otherwise.
-int _adCmpChar(ubyte[] a1, ubyte[] a2) {
-	return _adCmp(a1, a2, typeid(char));
+version(DigitalMars) {
+	int _adCmpChar(ubyte[] a1, ubyte[] a2) {
+		return _adCmp(a1, a2, typeid(char[]));
+	}
+}
+else {
+	int _adCmpChar(ubyte[] a1, ubyte[] a2) {
+		return _adCmp(a1, a2, typeid(char));
+	}
 }
 
 // Description: This runtime function will compare two arrays for equality.
 // Returns: 1 when equal, 0 otherwise
-int _adEq(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
-	return ti.equals(&a1, &a2);
+version(DigitalMars) {
+	int _adEq(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+		TypeInfo_Array tia = new TypeInfo_Array(ti);
+		return tia.equals(&a1, &a2);
+	}
+}
+else {
+	int _adEq(ubyte[] a1, ubyte[] a2, TypeInfo ti) {
+		return ti.equals(&a1, &a2);
+	}
 }
 
 // Description: This runtime function sorts an array and is invoked with
