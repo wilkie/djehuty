@@ -1,0 +1,16 @@
+OpenGL Branch
+[x] - FBO as primary backend (focus on what should be common in the future)
+[x] - Rectangles
+[x] - Ellipses
+[x] - Flat Strokes for Rectangles and Ellipses
+[x] - Flat pens
+[x] - Flat brushes
+[ ] - Paths
+  [ ] - Stroke
+  [ ] - Fill
+[ ] - Textures as Bitmap canvas
+[ ] - Separate context per Canvas
+[ ] - Fallbacks (pbuffers, dib, etc)
+[ ] - Image rendering
+[ ] - Complex pens
+[ ] - Complex brushes
