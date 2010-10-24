@@ -15,6 +15,8 @@ import synch.semaphore;
 
 import scaffold.canvas;
 
+import io.console;
+
 class Bitmap : Canvas {
 private:
 	bool _inited;
@@ -35,11 +37,10 @@ public:
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		_buffer_mutex.down();
-		bufferPtr[0] = CanvasGetBytes(this.platformVariables, length);
+		*bufferPtr = (new byte[](width * height * 4)).ptr;
 	}
 
 	void unlockBuffer() {
-		CanvasUnlockBytes(this.platformVariables);
 		_buffer_mutex.up();
 	}
 }

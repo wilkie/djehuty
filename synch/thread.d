@@ -148,6 +148,10 @@ public:
 		return time - oldTime;
 	}
 
+	long id() {
+		return ThreadIdentifier();
+	}
+
 	static Thread current() {
 		Thread ret;
 

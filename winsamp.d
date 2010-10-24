@@ -428,9 +428,11 @@ public:
 int main(string[] args) {
 	auto app = new GuiApplication("MyApp");
 	auto window = new Window(200, 200, 500, 500);
-	/*auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
+//	auto img = new Image("tests/Ape_walks.gif");
+	auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
 	imagebox.buffered = false;
-	window.attach(imagebox);
+	window.attach(imagebox);//*/
+	/*
 	window.attach(new Button(10, 10, 100, 33, "hello"));
 	window.attach(new Button(50, 50, 100, 33, "button"));
 	auto button = new Button(100,100, 45, 45);

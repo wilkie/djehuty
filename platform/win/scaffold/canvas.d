@@ -142,13 +142,13 @@ void* CanvasGetBytes(CanvasPlatformVars* viewVars, ref ulong length) {
 }
 
 void* CanvasGetBytes(CanvasPlatformVars*viewVars) {
-    Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
+//    Gdiplus.GdipBitmapLockBits(viewVars.image, &viewVars.rt, Gdiplus.ImageLockMode.ImageLockModeReadWrite, Gdiplus.PixelFormat32bppARGB, &viewVars.bdata);
 
 	return cast(void*)viewVars.bdata.Scan0;
 }
 
 void CanvasUnlockBytes(CanvasPlatformVars* viewVars) {
-	Gdiplus.GdipBitmapUnlockBits(viewVars.image, &viewVars.bdata);
+//	Gdiplus.GdipBitmapUnlockBits(viewVars.image, &viewVars.bdata);
 }
 
 uint CanvasRGBAToInt32(ref bool _forcenopremultiply, CanvasPlatformVars*_pfvars, ref uint r, ref uint g, ref uint b, ref uint a) {

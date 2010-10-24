@@ -9,7 +9,7 @@ OpenGL Branch
   [ ] - Stroke
   [ ] - Fill
 [ ] - Textures as Bitmap canvas
-[ ] - Separate context per Canvas
+[x] - Separate context per Canvas
 [ ] - Fallbacks (pbuffers, dib, etc)
 [ ] - Image rendering
 [ ] - Complex pens

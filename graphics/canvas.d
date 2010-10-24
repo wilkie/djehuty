@@ -18,6 +18,8 @@ import resource.image;
 
 import scaffold.canvas;
 
+import synch.thread;
+
 import binding.opengl.gl;
 import binding.opengl.glu;
 import binding.opengl.glext;
@@ -76,7 +78,8 @@ private:
 
 	static bool _glInited = false;
 	static HGLRC _hRC;
-	static HDC _hDC;
+//	static HDC _hDC;
+	static HWND _hWnd;
 
 	static void _init() {
 		if (_glInited) {
@@ -86,6 +89,40 @@ private:
 		// Initialize OpenGL
 		_glInited = true;
 
+		// Create a dummy class
+		WNDCLASSW wc;
+		wstring className = "DummyWindow\0"w;
+		wc.lpszClassName = className.ptr;
+
+		wc.style = CS_OWNDC;
+
+		wc.lpfnWndProc = &DefWindowProc;
+
+		wc.hInstance = null;
+
+		wc.hIcon = LoadIconA(cast(HINSTANCE) null, IDI_APPLICATION);
+		wc.hCursor = LoadCursorA(cast(HINSTANCE) null, IDC_ARROW);
+
+		wc.hbrBackground = cast(HBRUSH) (COLOR_WINDOW + 1);
+		wc.lpszMenuName = null;
+		wc.cbClsExtra = wc.cbWndExtra = 0;
+
+		RegisterClassW(&wc);
+
+		// Create a dummy window
+		_hWnd = CreateWindowExW(0,
+		className.ptr, "\0"w.ptr,
+		WS_OVERLAPPED,
+		0, 0, cast(int)0, cast(int)0,
+		null, null, null, null);
+
+		// Get a dummy device context
+		auto dummyhDC = GetDC(_hWnd);
+
+//		putln("threadInit? ", Thread.current.id);
+//		_inited[Thread.current] = true;
+
+//		putln("threadInit...");
 		GLuint PixelFormat;
 
 		static PIXELFORMATDESCRIPTOR pfd = {
@@ -111,59 +148,30 @@ private:
 
 		putln("pixel format");
 
-		// Create a dummy class
-		WNDCLASSW wc;
-		wstring className = "DummyWindow\0"w;
-		wc.lpszClassName = className.ptr;
-
-		wc.style = CS_OWNDC;
-
-		wc.lpfnWndProc = &DefWindowProc;
-
-		wc.hInstance = null;
-
-		wc.hIcon = LoadIconA(cast(HINSTANCE) null, IDI_APPLICATION);
-		wc.hCursor = LoadCursorA(cast(HINSTANCE) null, IDC_ARROW);
-
-		wc.hbrBackground = cast(HBRUSH) (COLOR_WINDOW + 1);
-		wc.lpszMenuName = null;
-		wc.cbClsExtra = wc.cbWndExtra = 0;
-
-		RegisterClassW(&wc);
-
-		// Create a dummy window
-		auto hWnd = CreateWindowExW(0,
-		className.ptr, "\0"w.ptr,
-		WS_OVERLAPPED,
-		0, 0, cast(int)0, cast(int)0,
-		null, null, null, null);
-
-		// Get a dummy device context
-		_hDC = GetDC(hWnd);
-
 		putln("choosepixel");
+
 		// Set up the pixel format
-		if ((PixelFormat=ChoosePixelFormat(_hDC,&pfd)) == 0) { // Did Windows Find A Matching Pixel Format?
+		if ((PixelFormat=ChoosePixelFormat(dummyhDC,&pfd)) == 0) { // Did Windows Find A Matching Pixel Format?
 			putln("Can't Find A Suitable PixelFormat.");
 			return ; // Return FALSE
 		}
 
 		putln("setpixel");
-		if(SetPixelFormat(_hDC,PixelFormat,&pfd) == 0) { // Are We Able To Set The Pixel Format?
+		if(SetPixelFormat(dummyhDC,PixelFormat,&pfd) == 0) { // Are We Able To Set The Pixel Format?
 			putln("Can't Set The PixelFormat.");
 			return ; // Return FALSE
 		}
 
 		putln("createcontext");
 		// Create a faux-GL context
-		if ((_hRC=wglCreateContext(_hDC)) == null) { // Are We Able To Get A Rendering Context?
-			putln("Can't Create A GL Rendering Context.");
+		if ((_hRC=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
+			putln("Can't Create A GL Rendering Context. (ti)");
 			return ; // Return FALSE
 		}
 
 		putln("makecurrent");
 		// Make this the current GL context
-		if(wglMakeCurrent(_hDC,_hRC) == 0) { // Try To Activate The Rendering Context
+		if(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
 			putln("Can't Activate The GL Rendering Context.");
 			//return ; // Return FALSE
 		}
@@ -211,8 +219,14 @@ private:
 		glBlendEquationSeparatePtr = cast(PFNGLBLENDEQUATIONSEPARATEPROC)wglGetProcAddress("glBlendEquationSeparate\0"c.ptr);
 		if (glBlendEquationSeparatePtr is null) { putln("glBlendEquationSeparate not found"); }
 
+		ReleaseDC(_hWnd, dummyhDC);
+	}
 
-		alias void (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+	static bool _inited[Thread];
+	static void _threadInit() {
+//		if (Thread.current in _inited) {
+	//		return;
+		//}
 	}
 
 	void _initMask() {
@@ -290,35 +304,54 @@ private:
 		glEnd();
 	}
 
+	void _setContext() {
+		_threadInit();
+
+		// Make this the current GL context
+		if (width == 0 || height == 0) {
+			return;
+		}
+
+		auto dummyhDC = GetDC(_hWnd);
+		while(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
+			Thread.sleep(5);
+		}
+
+		ReleaseDC(_hWnd, dummyhDC);
+	}
+
+	void _unsetContext() {
+		wglMakeCurrent(null, null);
+	}
+
 public:
 
 	this(int width, int height) {
 		putln("initing");
 		_init();
+		_threadInit();
 		putln("init done");
+
+		putln("setup ", width, " x ", height);
 
 		_width = width;
 		_height = height;
 
-		if (width != 500 || height != 500) {
+		if (width == 0 || height == 0) {
 			return;
 		}
 
-		putln("create context");
+		auto dummyhDC = GetDC(_hWnd);
 		// Create a faux-GL context
-		if ((_hRC=wglCreateContext(_hDC)) == null) { // Are We Able To Get A Rendering Context?
-			putln("Can't Create A GL Rendering Context.");
+		if ((_hRC=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
+			putln("Can't Create A GL Rendering Context. (constructor)");
 			return ; // Return FALSE
 		}
+		ReleaseDC(_hWnd, dummyhDC);
 
-		putln("make current");
-		// Make this the current GL context
-		if(wglMakeCurrent(_hDC,_hRC) == 0) { // Try To Activate The Rendering Context
-			putln("Can't Activate The GL Rendering Context.");
-			//return ; // Return FALSE
-		}
+		_setContext();
 
-		putln("setup");
+		putln("setup ", width, " x ", height);
 
 		auto ext = cast(char*)glGetString(GL_EXTENSIONS);
 		if (ext !is null) {
@@ -442,10 +475,12 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
+		glLineWidth(1);
+
+		_unsetContext();
+
 		// Clear the screen.
 		this.clear();
-
-		glLineWidth(1);
 
 		// RENDER
 
@@ -480,10 +515,13 @@ public:
 
 		// The following gets moved eventually...
 
+		_setContext();
 		// Capture (only when presenting it to the window manager)
 		ubyte[] pPixelData = new ubyte[](width * height * 4);
 		glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE,
 			pPixelData.ptr);
+
+		_unsetContext();
 
 		auto windhDC = GetDC(null);
 		auto hBMP = CreateCompatibleBitmap(windhDC, width, height);
@@ -512,8 +550,10 @@ public:
 	}
 
 	void clear() {
+		_setContext();
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
+		_unsetContext();
 	}
 
 	int width() {
@@ -527,6 +567,7 @@ public:
 	// Lines
 
 	void drawLine(double x1, double y1, double x2, double y2) {
+		_setContext();
 		x1 += 0.5;
 		y1 += 0.5;
 		x2 += 0.5;
@@ -546,16 +587,20 @@ public:
 		if (_antialias) {
 			glDisable(GL_LINE_SMOOTH);
 		}
+		_unsetContext();
 	}
 
 	// Rectangles
 
 	void drawRectangle(double x, double y, double width, double height) {
+		_setContext();
 		fillRectangle(x, y, width, height);
 		strokeRectangle(x, y, width, height);
+		_unsetContext();
 	}
 
 	void strokeRectangle(double x, double y, double width, double height) {
+		_setContext();
 		x+=0.5;
 		y+=0.5;
 
@@ -567,9 +612,11 @@ public:
 		glVertex3f(x+width-1, y+height-1, 0);
 		glVertex3f(x, y+height-1, 0);
 		glEnd();
+		_unsetContext();
 	}
 
 	void fillRectangle(double x, double y, double width, double height) {
+		_setContext();
 		x+=0.5;
 		y+=0.5;
 
@@ -580,53 +627,69 @@ public:
 		glVertex3f(x+width-1, y+height-1, 0);
 		glVertex3f(x, y+height-1, 0);
 		glEnd();
+		_unsetContext();
 	}
 
 	// Rounded Rectangles
 
 	void drawRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		_setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 //		drawPath(tempPath);
+		_unsetContext();
 	}
 
 	void strokeRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		_setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 //		strokePath(tempPath);
+		_unsetContext();
 	}
 
 	void fillRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
+		_setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 //		fillPath(tempPath);
+		_unsetContext();
 	}
 
 	// Paths
 
 	void drawPath(Path path) {
+		_setContext();
 //		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
+		_unsetContext();
 	}
 
 	void strokePath(Path path) {
+		_setContext();
 //		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
+		_unsetContext();
 	}
 
 	void fillPath(Path path) {
+		_setContext();
 //		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
+		_unsetContext();
 	}
 
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
+		_setContext();
 		fillEllipse(x+(_pen.width/2), y+(_pen.width/2), width-_pen.width, height-_pen.width);
 		strokeEllipse(x, y, width, height);
+		_unsetContext();
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
+		_setContext();
 		x+=0.5;
 		y+=0.5;
 
@@ -674,6 +737,7 @@ public:
 			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
 			_drawRing(GL_TRIANGLE_STRIP, x, y, width, height, _pen.width());
 		}
+		_unsetContext();
 	}
 
 	void fillEllipse(double x, double y, double width, double height) {
@@ -720,6 +784,7 @@ public:
 			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
 			_drawEllipse(GL_POLYGON, x, y, width, height);
 		}
+		_unsetContext();
 	}
 
 	// Text
