@@ -86,6 +86,7 @@ private:
 	Semaphore _redrawLock;
 
 	void _update(Canvas canvas) {
+		canvas.setContext();
 		GuiUpdateWindow(this, &_pfvars, canvas.platformVariables);
 	}
 
@@ -667,6 +668,7 @@ public:
 
 				_update(_canvas);
 				_canvas.clear();
+				_canvas.transformReset();
 
 				_redrawLock.up();
 			}
@@ -894,7 +896,7 @@ public:
 			}
 			else {
 				// Clip to the window
-				long context = canvas.save();
+				//long context = canvas.save();
 				canvas.clipRectangle(window.left, window.top, window.width, window.height);
 
 				// Set origin to be window's top-left coordinate
@@ -907,7 +909,7 @@ public:
 				window.onDrawChildren(canvas);
 		
 				// Restore the clipping
-				canvas.restore(context);
+				//canvas.restore(context);
 			}
 		}
 	}

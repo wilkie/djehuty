@@ -304,22 +304,6 @@ private:
 		glEnd();
 	}
 
-	void _setContext() {
-		_threadInit();
-
-		// Make this the current GL context
-		if (width == 0 || height == 0) {
-			return;
-		}
-
-		auto dummyhDC = GetDC(_hWnd);
-		while(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
-			Thread.sleep(5);
-		}
-
-		ReleaseDC(_hWnd, dummyhDC);
-	}
-
 	void _unsetContext() {
 		wglMakeCurrent(null, null);
 	}
@@ -349,7 +333,7 @@ public:
 		}
 		ReleaseDC(_hWnd, dummyhDC);
 
-		_setContext();
+		setContext();
 
 		putln("setup ", width, " x ", height);
 
@@ -515,30 +499,7 @@ public:
 
 		// The following gets moved eventually...
 
-		_setContext();
-		// Capture (only when presenting it to the window manager)
-		ubyte[] pPixelData = new ubyte[](width * height * 4);
-		glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE,
-			pPixelData.ptr);
-
-		_unsetContext();
-
-		auto windhDC = GetDC(null);
-		auto hBMP = CreateCompatibleBitmap(windhDC, width, height);
-		auto hDC = CreateCompatibleDC(windhDC);
-		BITMAPINFO bmpInfo;
-		bmpInfo.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
-		bmpInfo.bmiHeader.biWidth = width;
-		bmpInfo.bmiHeader.biHeight = height;
-		bmpInfo.bmiHeader.biPlanes = 1;
-		bmpInfo.bmiHeader.biBitCount = 32;
-		bmpInfo.bmiHeader.biCompression = BI_RGB;
-		SetDIBits(hDC, hBMP, 0, height, pPixelData.ptr, &bmpInfo, DIB_RGB_COLORS);
-		SelectObject(hDC, hBMP);
-		DeleteObject(hBMP);
-		ReleaseDC(null, windhDC);
-
-		_pfvars.testDC = hDC;
+		setContext();
 	}
 
 	~this() {
@@ -549,8 +510,24 @@ public:
 		_height = height;
 	}
 
+	void setContext() {
+		_threadInit();
+
+		// Make this the current GL context
+		if (width == 0 || height == 0) {
+			return;
+		}
+
+		auto dummyhDC = GetDC(_hWnd);
+		while(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
+			Thread.sleep(5);
+		}
+
+		ReleaseDC(_hWnd, dummyhDC);
+	}
+
 	void clear() {
-		_setContext();
+		setContext();
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		_unsetContext();
@@ -567,7 +544,7 @@ public:
 	// Lines
 
 	void drawLine(double x1, double y1, double x2, double y2) {
-		_setContext();
+		setContext();
 		x1 += 0.5;
 		y1 += 0.5;
 		x2 += 0.5;
@@ -593,14 +570,14 @@ public:
 	// Rectangles
 
 	void drawRectangle(double x, double y, double width, double height) {
-		_setContext();
+		setContext();
 		fillRectangle(x, y, width, height);
 		strokeRectangle(x, y, width, height);
 		_unsetContext();
 	}
 
 	void strokeRectangle(double x, double y, double width, double height) {
-		_setContext();
+		setContext();
 		x+=0.5;
 		y+=0.5;
 
@@ -615,25 +592,60 @@ public:
 		_unsetContext();
 	}
 
-	void fillRectangle(double x, double y, double width, double height) {
-		_setContext();
-		x+=0.5;
-		y+=0.5;
-
-		glBegin(GL_QUADS);
-		glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+	private void _drawRectangle(uint type, double x, double y, double width, double height) {
+		glBegin(type);
 		glVertex3f(x, y, 0);
 		glVertex3f(x+width-1, y, 0);
 		glVertex3f(x+width-1, y+height-1, 0);
 		glVertex3f(x, y+height-1, 0);
 		glEnd();
+	}
+
+	void fillRectangle(double x, double y, double width, double height) {
+		setContext();
+		x+=0.5;
+		y+=0.5;
+
+		if (_antialias) {
+			_initMask();
+
+			// Draw to the stencil mask
+			_drawRectangle(GL_QUADS, x, y, width, height);
+
+			_useMask();
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawRectangle(GL_LINE_LOOP, x, y, width, height);
+
+			glDisable(GL_LINE_SMOOTH);
+
+			_revertMask();
+
+			// Fill in the rest
+			// A single quad to cover the entire area
+			glBegin (GL_QUADS);
+			glVertex3f(x-1, y-1, 0.0);
+			glVertex3f(x+width+2, y-1, 0.0);
+			glVertex3f(x+width+2, y+_height+2, 0.0);
+			glVertex3f(x-1, y+height+2, 0.0);
+			glEnd ();
+
+			_uninitMask();
+		}
+		else {
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawRectangle(GL_QUADS, x, y, width, height);
+		}
+
 		_unsetContext();
 	}
 
 	// Rounded Rectangles
 
 	void drawRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		_setContext();
+		setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
@@ -642,7 +654,7 @@ public:
 	}
 
 	void strokeRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		_setContext();
+		setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
@@ -651,7 +663,7 @@ public:
 	}
 
 	void fillRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		_setContext();
+		setContext();
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
@@ -662,19 +674,19 @@ public:
 	// Paths
 
 	void drawPath(Path path) {
-		_setContext();
+		setContext();
 //		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
 
 	void strokePath(Path path) {
-		_setContext();
+		setContext();
 //		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
 
 	void fillPath(Path path) {
-		_setContext();
+		setContext();
 //		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
@@ -682,14 +694,14 @@ public:
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
-		_setContext();
+		setContext();
 		fillEllipse(x+(_pen.width/2), y+(_pen.width/2), width-_pen.width, height-_pen.width);
 		strokeEllipse(x, y, width, height);
 		_unsetContext();
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
-		_setContext();
+		setContext();
 		x+=0.5;
 		y+=0.5;
 
@@ -803,14 +815,26 @@ public:
 
 	// State
 
+	private long _stackCount = 0;
+
 	long save() {
-		long ret;
-//		GraphicsScaffold.save(&_pfvars, &ret);
-		return ret;
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		_stackCount++;
+		_unsetContext();
+		return _stackCount;
 	}
 
 	void restore(long state) {
-//		GraphicsScaffold.restore(&_pfvars, state);
+		// Inspect _stackCount and state
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		while(_stackCount != state && _stackCount > 0) {
+			glPopMatrix();
+			_stackCount--;
+		}
+		_unsetContext();
 	}
 
 	// Image
@@ -840,19 +864,31 @@ public:
 	// Transforms
 
 	void transformReset() {
-//		GraphicsScaffold.resetWorld(&_pfvars);
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		_unsetContext();
 	}
 
 	void transformTranslate(double x, double y) {
-//		GraphicsScaffold.translateWorld(&_pfvars, x, y);
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		glTranslated(x, y, 0.0);
+		_unsetContext();
 	}
 
 	void transformScale(double x, double y) {
-//		GraphicsScaffold.scaleWorld(&_pfvars, x, y);
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		glScaled(x, y, 1.0);
+		_unsetContext();
 	}
 
 	void transformRotate(double angle) {
-//		GraphicsScaffold.rotateWorld(&_pfvars, angle);
+		setContext();
+		glMatrixMode(GL_MODELVIEW);
+		glRotated(angle*180.0/3.141529, 0, 0, 1);
+		_unsetContext();
 	}
 
 	// Properties

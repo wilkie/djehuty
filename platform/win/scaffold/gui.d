@@ -12,6 +12,10 @@ import gui.window;
 
 import graphics.canvas;
 
+import binding.opengl.gl;
+import binding.opengl.glu;
+import binding.opengl.glext;
+
 import platform.vars.gui;
 import platform.vars.window;
 import platform.vars.canvas;
@@ -90,6 +94,29 @@ void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatfo
 	bf.SourceConstantAlpha = 255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
+	// Capture (only when presenting it to the window manager)
+	ubyte[] pPixelData = new ubyte[](cast(int)window.width * cast(int)window.height * 4);
+	glReadPixels(0, 0, cast(int)window.width, cast(int)window.height, GL_BGRA, GL_UNSIGNED_BYTE,
+			pPixelData.ptr);
+
+	auto windhDC = GetDC(null);
+	auto hBMP = CreateCompatibleBitmap(windhDC, cast(int)window.width, cast(int)window.height);
+	auto hDC = CreateCompatibleDC(windhDC);
+
+	BITMAPINFO bmpInfo;
+	bmpInfo.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
+	bmpInfo.bmiHeader.biWidth = cast(int)window.width;
+	bmpInfo.bmiHeader.biHeight = cast(int)window.height;
+	bmpInfo.bmiHeader.biPlanes = 1;
+	bmpInfo.bmiHeader.biBitCount = 32;
+	bmpInfo.bmiHeader.biCompression = BI_RGB;
+	SetDIBits(hDC, hBMP, 0, cast(int)window.height, pPixelData.ptr, &bmpInfo, DIB_RGB_COLORS);
+
+	SelectObject(hDC, hBMP);
+	DeleteObject(hBMP);
+	ReleaseDC(null, windhDC);
+
+	viewVars.testDC = hDC;
 	UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, viewVars.testDC, &ptz, 0, &bf, ULW_ALPHA);
 }
 
