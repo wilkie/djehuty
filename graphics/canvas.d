@@ -230,30 +230,38 @@ private:
 	}
 
 	void _initMask() {
-		glEnable(GL_STENCIL_TEST);
-		glStencilMask(0x01);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
-		glStencilFunc(GL_ALWAYS, 0, ~0);
+		// Mask for our antialias bit (0x1, defined by us)
+
+		// Update the mask by setting the first bit in the mask
+		glStencilFunc(GL_NOTEQUAL, 0x10, 0x11);
+		glStencilOp (GL_KEEP, GL_INCR, GL_INCR);
+
+		// Turn off rendering
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	}
 
 	void _uninitMask() {
-		glDisable (GL_STENCIL_TEST);
+		glStencilFunc (GL_EQUAL, 0x00, 0x11);
+		glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
 	}
 
 	void _useMask() {
+		// Allow rendering
 		glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-		glStencilFunc (GL_EQUAL, 0x00, 0x01);
+		// Only allow rendering where none of the bits are set in the stencil
+		glStencilFunc (GL_EQUAL, 0x00, 0x11);
+
+		// Do not update the mask
 		glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
 	}
 
 	void _revertMask() {
-		glStencilFunc (GL_EQUAL, 0x01, 0x01);
+		glStencilFunc (GL_EQUAL, 0x01, 0x11);
 
 		// Interestingly, we can clear the stencil at the same time
-		// We might as well.
-		glStencilOp (GL_ZERO, GL_ZERO, GL_ZERO);
+		// We might as well. Every time we see the first bit set
+		glStencilOp (GL_KEEP, GL_ZERO, GL_ZERO);
 	}
 
 	void _drawRing(uint type, double x, double y, double width, double height, double ringWidth) {
@@ -463,43 +471,19 @@ public:
 
 		_unsetContext();
 
-		// Clear the screen.
 		this.clear();
 
+		// Clear the screen.
+
 		// RENDER
-
-		this.brush = new Brush(Color.fromRGBA(0.0, 1.0, 0.0, 0.5));
-		this.pen = new Pen(Color.fromRGBA(0, 0, 0, 1), 1);
-		this.drawRectangle(100, 100, 400, 400);
-		this.brush = new Brush(Color.fromRGBA(0.0, 0.0, 1.0, 0.5));
-		this.drawRectangle(0, 0, 200, 200);
-
-//		this.antialias = true;
-		this.brush = new Brush(Color.fromRGBA(0, 1, 0, 1.0));
-		this.pen = new Pen(Color.fromRGBA(1, 0, 0, 0.75), 10);
-//		this.drawRectangle(1, 1, 100, 100);
-	//	this.drawRectangle(200, 200, 100, 100);
-		//this.strokeRectangle(300,300,100,100);
-
-		this.brush = new Brush(Color.fromRGBA(1.0, 1.0, 1.0, 0.9));
-		this.antialias = false;
-//		this.fillEllipse(220, 20, 100, 200);
-		this.antialias = true;
-		this.fillEllipse(120, 20, 100, 200);
-		this.drawEllipse(300, 200, 200, 200);
-		this.strokeEllipse(400, 300, 100, 200);
-
-//		this.antialias = true;
-		this.pen = new Pen(Color.fromRGBA(1, 0, 1, 1), 5);
-		this.drawLine(0,0,499,499);
-
-		this.antialias = true;
-		this.pen = new Pen(Color.fromRGBA(1, 0, 1, 1), 5);
-		this.drawLine(499,0,0,499);
-
 		// The following gets moved eventually...
 
 		setContext();
+		glEnable(GL_STENCIL_TEST);
+		glStencilMask(0x11);
+		glStencilFunc(GL_EQUAL, 0x00, 0x11);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	}
 
 	~this() {
@@ -529,7 +513,8 @@ public:
 	void clear() {
 		setContext();
 		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearStencil(0);
+		glClear(GL_COLOR_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 		_unsetContext();
 	}
 
@@ -846,11 +831,29 @@ public:
 	// Clipping
 
 	void clipRectangle(Rect rect) {
-//		clipRectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+		clipRectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
 	}
 
 	void clipRectangle(double x, double y, double width, double height) {
-//		GraphicsScaffold.clipRect(&_pfvars, x, y, width, height);
+		setContext();
+
+		x+=0.5;
+		y+=0.5;
+
+		glStencilFunc(GL_EQUAL, 0x10, 0x11);
+		glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+		_drawRectangle(GL_QUADS, 0.5, 0.5, x, _height+0.5);
+		_drawRectangle(GL_QUADS, x, 0.5, _width+0.5, y);
+		_drawRectangle(GL_QUADS, x+width, y, _width+0.5, _height+0.5);
+		_drawRectangle(GL_QUADS, x, y+height, x+width, _height+0.5);
+
+		glStencilFunc(GL_EQUAL, 0x00, 0x11);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+		_unsetContext();
 	}
 
 	void clipPath(Path path) {
@@ -858,7 +861,10 @@ public:
 	}
 
 	void clipReset() {
-//		GraphicsScaffold.clipClear(&_pfvars);
+		setContext();
+		glClearStencil(0);
+		glClear(GL_STENCIL_BUFFER_BIT);
+		_unsetContext();
 	}
 
 	// Transforms
