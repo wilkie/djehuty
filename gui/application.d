@@ -91,6 +91,6 @@ public:
 
 		// Block this function until all top level windows close (or become
 		// invisible)
-		while(this.isZombie is false) { Thread.yield(); }
+		while(this.isZombie is false) { Thread.sleep(1); }
 	}
 }
