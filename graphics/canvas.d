@@ -57,8 +57,66 @@ private:
 	static PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXTPtr;
 	static PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC glRenderbufferStorageMultisampleEXTPtr;
 
+	static PFNGLBINDPROGRAMARBPROC glBindProgramARBPtr;
+	static PFNGLGENPROGRAMSARBPROC glGenProgramsARBPtr;
+	static PFNGLPROGRAMSTRINGARBPROC glProgramStringARBPtr;
+
+	static PFNGLMULTITEXCOORD1FPROC glMultiTexCoord1fPtr;
+	static PFNGLMULTITEXCOORD2FPROC glMultiTexCoord2fPtr;
+
 	static PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparatePtr;
 	static PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparatePtr;
+
+/*	static const string QUADRATIC_SHADER = `!!ARBfp1.0
+TEMP color;
+MUL color, fragment.texcoord[1].y, 2.0;
+ADD color, 1.0, -color;
+ABS color, color;
+ADD result.color, 1.0, -color;
+MOV result.color.a, 0.5;
+END`;//*/
+
+	// Some fragment shaders that will rasterize a curve
+	// Reference: http://www.mdk.org.pl/2007/10/27/curvy-blues
+	// Modified from the work of Michael Dominic K.
+
+	// However, these are not good enough, because they do not
+	// provide anti-aliasing. They will need to be modified
+	// to do this. The easiest method is to have the alpha be
+	// a piecewise function to the distance to the curve.
+
+	// This requires the use of gradient functions, which are
+	// not standard to the ARB shader specification, but are
+	// available in GLSL 2 and NVidia proprietary extensions.
+
+	// I think it is fine to use *all* of the strategies and
+	// fallback to CPU tesselation when they are not available.
+	// Order the affinity to provide best performance.
+	static const string QUADRATIC_SHADER = `!!ARBfp1.0
+PARAM c[1] = { { 1, 0 } };
+TEMP R0;
+MUL R0.x, fragment.texcoord[0], fragment.texcoord[0];
+SLT R0.x, R0, fragment.texcoord[0].y;
+ABS R0.x, R0;
+CMP R0.x, -R0, c[0].y, c[0];
+CMP result.color, -R0.x, c[0].y, fragment.color.primary;
+END`; 
+
+	static GLuint _quadraticShader;
+
+	static const string CUBIC_SHADER = `!!ARBfp1.0
+PARAM c[1] = { { 1, 0, 1e-06 } };
+TEMP R0;
+MUL R0.x, fragment.texcoord[0], fragment.texcoord[0];
+MUL R0.x, fragment.texcoord[0], R0;
+MAD R0.y, fragment.texcoord[0], fragment.texcoord[0].z, c[0].z;
+SLT R0.x, R0.y, R0;
+ABS R0.x, R0;
+CMP R0.x, -R0, c[0].y, c[0];
+CMP result.color, -R0.x, c[0].y, fragment.color.primary;
+END`;
+
+	static GLuint _cubicShader;
 
 	int _width;
 	int _height;
@@ -218,6 +276,18 @@ private:
 		if (glBlendFuncSeparatePtr is null) { putln("glBlendFuncSeparate not found"); }
 		glBlendEquationSeparatePtr = cast(PFNGLBLENDEQUATIONSEPARATEPROC)wglGetProcAddress("glBlendEquationSeparate\0"c.ptr);
 		if (glBlendEquationSeparatePtr is null) { putln("glBlendEquationSeparate not found"); }
+
+		glBindProgramARBPtr = cast(PFNGLBINDPROGRAMARBPROC)wglGetProcAddress("glBindProgramARB\0"c.ptr);
+		if (glBindProgramARBPtr is null) { putln("glBindProgramARB not found"); }
+		glGenProgramsARBPtr = cast(PFNGLGENPROGRAMSARBPROC)wglGetProcAddress("glGenProgramsARB\0"c.ptr);
+		if (glGenProgramsARBPtr is null) { putln("glGenProgramsARB not found"); }
+		glProgramStringARBPtr = cast(PFNGLPROGRAMSTRINGARBPROC)wglGetProcAddress("glProgramStringARB\0"c.ptr);
+		if (glProgramStringARBPtr is null) { putln("glProgramStringARB not found"); }
+
+		glMultiTexCoord1fPtr = cast(PFNGLMULTITEXCOORD1FPROC)wglGetProcAddress("glMultiTexCoord1f\0"c.ptr);
+		if (glMultiTexCoord1fPtr is null) { putln("glMultiTexCoord1f not found"); }
+		glMultiTexCoord2fPtr = cast(PFNGLMULTITEXCOORD2FPROC)wglGetProcAddress("glMultiTexCoord2f\0"c.ptr);
+		if (glMultiTexCoord2fPtr is null) { putln("glMultiTexCoord2f not found"); }
 
 		ReleaseDC(_hWnd, dummyhDC);
 	}
@@ -432,6 +502,27 @@ public:
 
 		glEnable(GL_BLEND);
 
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+
+		// Generate the shader for the quadratic curve rasterizer
+		glGenProgramsARBPtr(1, &_quadraticShader);
+		glBindProgramARBPtr(GL_FRAGMENT_PROGRAM_ARB, _quadraticShader);
+
+		// Load the quadratic curve rasterizer
+		glProgramStringARBPtr(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, QUADRATIC_SHADER.length, QUADRATIC_SHADER.ptr);
+		char* retstr = cast(char*)glGetString(GL_PROGRAM_ERROR_STRING_ARB);
+		putln("shader");
+		putln(retstr[0..strlen(retstr)]);
+
+		// Generate the shader for the cubic curve rasterizer
+		glGenProgramsARBPtr(1, &_cubicShader);
+		glBindProgramARBPtr(GL_FRAGMENT_PROGRAM_ARB, _cubicShader);
+
+		// Load the cubic curve rasterizer
+		glProgramStringARBPtr(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, CUBIC_SHADER.length, CUBIC_SHADER.ptr);
+
+		glDisable(GL_FRAGMENT_PROGRAM_ARB);
+
 		// The traditional blending function fails since the background
 		// of any canvas object we use is technically transparent.
 
@@ -495,6 +586,7 @@ public:
 	}
 
 	void setContext() {
+		
 		_threadInit();
 
 		// Make this the current GL context
@@ -507,7 +599,7 @@ public:
 			Thread.sleep(5);
 		}
 
-		ReleaseDC(_hWnd, dummyhDC);
+		ReleaseDC(_hWnd, dummyhDC);//*/
 	}
 
 	void clear() {
@@ -610,12 +702,12 @@ public:
 
 			// Fill in the rest
 			// A single quad to cover the entire area
-			glBegin (GL_QUADS);
+			glBegin(GL_QUADS);
 			glVertex3f(x-1, y-1, 0.0);
 			glVertex3f(x+width+2, y-1, 0.0);
 			glVertex3f(x+width+2, y+_height+2, 0.0);
 			glVertex3f(x-1, y+height+2, 0.0);
-			glEnd ();
+			glEnd();
 
 			_uninitMask();
 		}
@@ -627,6 +719,128 @@ public:
 		_unsetContext();
 	}
 
+	private void _drawQuadraticShader(GLenum type, double x1, double y1, double x2, double y2, double x3, double y3) {
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+		glBindProgramARBPtr(GL_FRAGMENT_PROGRAM_ARB, _quadraticShader);
+
+		glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+
+		double minX = x1;
+		if (x2 < minX) { minX = x2; }
+		if (x3 < minX) { minX = x3; }
+
+		double minY = y1;
+		if (y2 < minY) { minY = y2; }
+		if (y3 < minY) { minY = y3; }
+
+		double maxX = x1;
+		if (x2 > maxX) { maxX = x2; }
+		if (x3 > maxX) { maxX = x3; }
+
+		double maxY = y1;
+		if (y2 > maxY) { maxY = y2; }
+		if (y3 > maxY) { maxY = y3; }
+
+		double w = maxX - minX;
+		double h = maxY - minY;
+
+		glBegin(type);
+		glTexCoord2f(0, 0);
+		glVertex3f(x1, y1, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(x2, y2, 0);
+		glTexCoord2f(0.5, 0);
+		glVertex3f(x3, y3, 0);
+		glEnd();
+
+		glDisable(GL_FRAGMENT_PROGRAM_ARB);
+	}
+
+	private void _drawQuadratic(uint type, double x1, double y1, double x2, double y2, double x3, double y3) {
+		static const int MAX_TESSELATIONS = 30;
+
+		glBegin(type);
+
+		double t;
+		double t_inv;
+
+		double qx_1, qx_2, qy_1, qy_2;
+		double bx, by;
+
+		for(int k = 0; k < MAX_TESSELATIONS; k++) {
+			t = cast(double)k / cast(double)(MAX_TESSELATIONS-1);
+			t_inv = 1 - t;
+
+			qx_1 = ((x3 - x1) * t) + x1;
+			qy_1 = ((y3 - y1) * t) + y1;
+
+			qx_2 = ((x3 - x2) * t_inv) + x2;
+			qy_2 = ((y3 - y2) * t_inv) + y2;
+
+			bx = ((qx_2 - qx_1) * t) + qx_1;
+			by = ((qy_2 - qy_1) * t) + qy_1;
+
+			glVertex3f(bx, by, 0);
+		}
+		glEnd();
+	}
+
+	void drawQuadratic(double x1, double y1, double x2, double y2, double x3, double y3) {
+		setContext();
+
+		x1+=0.5;
+		y1+=0.5;
+		x2+=0.5;
+		y2+=0.5;
+		x3+=0.5;
+		y3+=0.5;
+
+		// SHADERS
+		static const bool DJEHUTY_USE_SHADERS = false;
+		static if (DJEHUTY_USE_SHADERS) {
+			_drawQuadraticShader(x1,y1,x2,y2,x3,y3);
+		}
+		else {
+			// No shaders... use tesselation
+
+			if (_antialias) {
+				_initMask();
+
+				// Draw to the stencil mask
+				_drawQuadratic(GL_POLYGON, x1, y1, x2, y2, x3, y3);
+
+				_useMask();
+				glEnable(GL_LINE_SMOOTH);
+				glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+				glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+				_drawQuadratic(GL_LINE_LOOP, x1, y1, x2, y2, x3, y3);
+
+				glDisable(GL_LINE_SMOOTH);
+
+				_revertMask();
+
+				// Fill in the rest
+				// A single triangle to cover the entire area
+				glBegin(GL_TRIANGLES);
+				glVertex3f(x1, y1, 0.0);
+				glVertex3f(x2, y2, 0.0);
+				glVertex3f(x3, y3, 0.0);
+				glEnd();
+
+				_uninitMask();
+			}
+			else {
+				glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+				_drawQuadratic(GL_POLYGON, x1, y1, x2, y2, x3, y3);
+			}
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+
+		}
+		_unsetContext();
+	}
+
 	// Rounded Rectangles
 
 	void drawRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
@@ -634,7 +848,7 @@ public:
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-//		drawPath(tempPath);
+		drawPath(tempPath);
 		_unsetContext();
 	}
 
@@ -643,7 +857,7 @@ public:
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-//		strokePath(tempPath);
+		strokePath(tempPath);
 		_unsetContext();
 	}
 
@@ -652,7 +866,7 @@ public:
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
-//		fillPath(tempPath);
+		fillPath(tempPath);
 		_unsetContext();
 	}
 
@@ -660,19 +874,16 @@ public:
 
 	void drawPath(Path path) {
 		setContext();
-//		GraphicsScaffold.drawPath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
 
 	void strokePath(Path path) {
 		setContext();
-//		GraphicsScaffold.strokePath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
 
 	void fillPath(Path path) {
 		setContext();
-//		GraphicsScaffold.fillPath(&_pfvars, path.platformVariables);
 		_unsetContext();
 	}
 
@@ -787,15 +998,15 @@ public:
 	// Text
 
 	void drawString(string text, double x, double y) {
-//		GraphicsScaffold.drawText(&_pfvars, x, y, text);
+		//		GraphicsScaffold.drawText(&_pfvars, x, y, text);
 	}
 
 	void strokeString(string text, double x, double y) {
-//		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
+		//		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
 	}
 
 	void fillString(string text, double x, double y) {
-//		GraphicsScaffold.fillText(&_pfvars, x, y, text);
+		//		GraphicsScaffold.fillText(&_pfvars, x, y, text);
 	}
 
 	// State
@@ -825,7 +1036,7 @@ public:
 	// Image
 
 	void drawCanvas(Canvas canvas, double x, double y) {
-//		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
+		//		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
 	}
 
 	// Clipping
@@ -853,11 +1064,11 @@ public:
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-		_unsetContext();
+		_unsetContext();//*/
 	}
 
 	void clipPath(Path path) {
-//		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
+		//		GraphicsScaffold.clipPath(&_pfvars, path.platformVariables);
 	}
 
 	void clipReset() {
@@ -927,7 +1138,7 @@ public:
 
 	void font(Font value) {
 		_font = value;
-//		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
+		//		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
 	}
 
 	Font font() {

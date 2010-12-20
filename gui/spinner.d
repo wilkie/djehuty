@@ -46,6 +46,8 @@ public:
 
 		long context = canvas.save();
 		canvas.antialias = true;
+		canvas.brush = new Brush(Color.Red);
+		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 
 		// |--|--|--|--|--|--|--|--| <-- width of the widget
