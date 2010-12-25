@@ -11,6 +11,9 @@ import djehuty;
 
 import graphics.canvas;
 import graphics.brush;
+import graphics.path;
+import graphics.contour;
+import graphics.region;
 
 import gui.window;
 
@@ -47,7 +50,31 @@ public:
 		long context = canvas.save();
 		canvas.antialias = true;
 		canvas.brush = new Brush(Color.Red);
-		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
+
+		Contour c = new Contour();
+		c.addCurve(200, 200, 250, 200, 225, 225);
+//		c.addLine(200, 200, 250, 200);
+		c.addLine(250, 200, 275, 200);
+		c.addCurve(300, 300, 350, 300, 325, 325);
+//		c.addLine(300, 300, 350, 300);
+		c.addCurve(250, 150, 200, 150, 200, 125);
+//		c.addLine(250, 150, 200, 150);
+		canvas.drawContour(c);
+//		Path p = new Path();
+//		p.addCurve(0, 0, this.width, 0, this.width/3, this.height);
+//		canvas.drawPath(p);
+
+		Region r = new Region();
+		c = new Contour();
+		c.addLine(50,50,200,50);
+		c.addLine(200,200,50,200);
+		r.addContour(c);
+		c = new Contour();
+		c.addLine(100,100,150,100);
+		c.addLine(150,150,100,150);
+		r.addContour(c);
+		canvas.drawRegion(r);
+//		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 
 		// |--|--|--|--|--|--|--|--| <-- width of the widget

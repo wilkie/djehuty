@@ -3,169 +3,125 @@
  *
  * This file contains some simple code to switch endian.
  *
- * Author: Dave Wilkinson
- *
  */
 
 module core.endian;
 
+import core.util;
 
-// IntType FromBigEndian(IntType)
-// --------------------------------
-//   converts big endian input to native byte order
+private void _endian64(T)(ref T input) {
+	input = (input >> 56) | ((input >> 40) & 0xFF00) | ((input >> 24) & 0xFF0000) | ((input >> 8) & 0xFF000000) | ((input << 8) & 0xFF00000000UL) | ((input << 24) & 0xFF0000000000UL) | ((input << 40) & 0xFF000000000000UL) | ((input << 56) & 0xFF00000000000000UL);
+}
 
-ulong FromBigEndian64(ulong input)
-{
-	version(LittleEndian)
-	{
-		return (input >> 56) | ((input >> 40) & 0xFF00) | ((input >> 24) & 0xFF0000) | ((input >> 8) & 0xFF000000) | ((input << 8) & 0xFF00000000UL) | ((input << 24) & 0xFF0000000000UL) | ((input << 40) & 0xFF000000000000UL) | ((input << 56) & 0xFF00000000000000UL);
+private void _endian32(T)(ref T input) {
+	input = (input >> 24) | ((input >> 8) & 0xFF00) | ((input << 8) & 0xFF0000) | ((input << 24) & 0xFF000000);
+}
+
+private void _endian16(T)(ref T input) {
+	input = (input >> 8) | (input << 8);
+}
+
+private template EndianStructImpl(T, int idx = 0) {
+	static if (idx == T.tupleof.length) {
+		const string EndianStructImpl = "";
 	}
-	else
-	{
-		return input;
+	else static if (IsStruct!(typeof(T.tupleof[idx]))) {
+		const string EndianStructImpl = `
+	_endianStruct!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
+		~ EndianStructImpl!(T, idx + 1);
+	}
+	else static if (IsArray!(typeof(T.tupleof[idx]))) {
+		const string EndianStructImpl = `
+	_endianArray!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
+		~ EndianStructImpl!(T, idx + 1);
+	}
+	else {
+		const string EndianStructImpl = `
+	_endian!(typeof(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `), who)(input.` ~ GetLastName!(T.tupleof[idx].stringof) ~ `);`
+		~ EndianStructImpl!(T, idx + 1);
 	}
 }
 
-uint FromBigEndian32(uint input)
-{
-	version(LittleEndian)
-	{
-		return (input >> 24) | ((input >> 8) & 0xFF00) | ((input << 8) & 0xFF0000) | ((input << 24) & 0xFF000000);
-	}
-	else
-	{
-		return input;
+private template _endianStruct(T, string who) {
+	void _endianStruct(ref T input) {
+		mixin(EndianStructImpl!(T));
 	}
 }
 
-ushort FromBigEndian16(ushort input)
-{
-	version(LittleEndian)
-	{
-		return cast(ushort)((cast(uint)input >> 8) | (cast(uint)input << 8));
-	}
-	else
-	{
-		return input;
-	}
-}
-
-
-
-
-
-
-
-// IntType FromLittleEndian(IntType)
-// -----------------------------------
-//   converts little endian input to native byte order
-
-ulong FromLittleEndian64(ulong input)
-{
-	version(LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return (input >> 56) | ((input >> 40) & 0xFF00) | ((input >> 24) & 0xFF0000) | ((input >> 8) & 0xFF000000) | ((input << 8) & 0xFF00000000) | ((input << 24) & 0xFF0000000000) | ((input << 40) & 0xFF000000000000) | ((input << 56) & 0xFF00000000000000);
+private template _endianArray(T, string who) {
+	void _endianArray(T input) {
+		foreach(ref element; input) {
+			static if (IsArray!(ArrayType!(T))) {
+				_endianArray!(ArrayType!(T), who)(element);
+			}
+			else {
+				_endian!(ArrayType!(T), who)(element);
+			}
+		}
 	}
 }
 
-uint FromLittleEndian32(uint input)
-{
-	version(LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return (input >> 24) | ((input >> 8) & 0xFF00) | ((input << 8) & 0xFF0000) | ((input << 24) & 0xFF000000);
-	}
-}
-
-ushort FromLittleEndian16(ushort input)
-{
-	version(LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return (input >> 8) | (input << 8);
-	}
-}
-
-
-
-ulong NativeToLE64(ulong input)
-{
-	version (LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return FromLittleEndian64(input);
+private template _endian(T, string who) {
+	void _endian(ref T input) {
+		static if (IsArray!(T)) {
+			_endianArray!(T, "")(input);
+		}
+		static if (IsStruct!(T)) {
+			_endianStruct!(T, "")(input);
+		}
+		else static if (IsEnum!(T)) {
+			auto foo = cast(EnumType!(T))input;
+			_endian!(EnumType!(T), who)(foo);
+			input = cast(T)foo;
+		}
+		else static if (is(T == ulong) || is(T == long)) {
+			_endian64(input);
+		}
+		else static if (is(T == uint) || is(T == int)) {
+			_endian32(input);
+		}
+		else static if (is(T == ushort) || is(T == short)) {
+			_endian16(input);
+		}
+		else static if (is(T == ubyte) || is(T == byte)) {
+		}
+		else static if (who == "") {
+		}
+		else {
+			static assert(false, who ~ ": Error: " ~ T.stringof ~ " is not a valid type.");
+		}
 	}
 }
 
-uint NativeToLE32(uint input)
-{
-	version (LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return FromLittleEndian32(input);
-	}
-}
-
-ushort NativeToLE16(ushort input)
-{
-	version (LittleEndian)
-	{
-		return input;
-	}
-	else
-	{
-		return FromLittleEndian16(input);
+template fromBigEndian(T) {
+	void fromBigEndian(ref T input) {
+		version(BigEndian) {
+		}
+		else {
+			static if (IsArray!(T)) {
+				_endianArray!(T,"fromBigEndian")(input);
+			}
+			else {
+				_endian!(T,"fromBigEndian")(input);
+			}
+		}
 	}
 }
 
-ulong NativeToBE64(ulong input)
-{
-	version (LittleEndian)
-	{
-		return FromBigEndian64(input);
-	}
-	else
-	{
-		return input;
-	}
-}
-
-uint NativeToBE32(uint input)
-{
-	version (LittleEndian)
-	{
-		return FromBigEndian32(input);
-	}
-	else
-	{
-		return input;
+template fromLittleEndian(T) {
+	void fromLittleEndian(ref T input) {
+		version(LittleEndian) {
+		}
+		else {
+			static if (IsArray!(T)) {
+				_endianArray!(T,"fromLittleEndian")(input);
+			}
+			else {
+				_endian!(T,"fromLittleEndian")(input);
+			}
+		}
 	}
 }
 
-ushort NativeToBE16(ushort input)
-{
-	version (LittleEndian)
-	{
-		return FromBigEndian16(input);
-	}
-	else
-	{
-		return input;
-	}
-}
+alias fromLittleEndian toBigEndian;
+alias fromBigEndian toLittleEndian;

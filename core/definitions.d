@@ -23,11 +23,67 @@ struct Coord {
 	// Description: The y coordinate.
 	double y = 0;
 
-}
+	Coord opSub(ref Coord b) {
+		Coord c;
+		c.x = this.x - b.x;
+		c.y = this.y - b.y;
+		return c;
+	}
 
+	// Description: This function will return the dot product.
+	double opMul(ref Coord b) {
+		return this.x * b.x + this.y * b.y;
+	}
+
+	// Description: This function will return the scalar product.
+	Coord opMul(double scalar) {
+		Coord c;
+		c.x = this.x * scalar;
+		c.y = this.y * scalar;
+		return c;
+	}
+}
 // Description: This struct stores an x any y, or a width and height, useful for some measurements.
 alias Coord Size;
+   
+// Description: This struct stores a description of a curve.
+struct Curve {
+	Coord start;
+	Coord end;
+	Coord[] controls;
+}
 
+// Description: This struct stores a description of a triangle.
+struct Triangle {
+	Coord[3] points;
+
+	// Description: This function will return true when the point given
+	//   is within the bounds or on the triangle.
+	bool contains(Coord coord) {
+		// Compute vectors        
+		Coord v0 = points[2] - points[0];
+		Coord v1 = points[1] - points[0];
+		Coord v2 = coord - points[0];
+
+		// Compute dot products
+		double dot00 = v0 * v0;
+		double dot01 = v0 * v1;
+		double dot02 = v0 * v2;
+		double dot11 = v1 * v1;
+		double dot12 = v1 * v2;
+
+		double invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+		double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		double v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+		// Check if point is in triangle
+		return (u > 0.0) && (v > 0.0) && (u + v < 1.0);
+	}
+
+	string toString() {
+		return "()";
+	}
+}
 
 // Description: This struct stores a description of a rectangle.
 struct Rect {

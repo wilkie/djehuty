@@ -15,33 +15,47 @@ import GraphicsScaffold = scaffold.graphics;
 
 class Path {
 private:
-	PathPlatformVars _pfvars;
+	Curve[] _points;
 
 public:
 	this() {
-		GraphicsScaffold.createPath(&_pfvars);
 	}
 
-	~this() {
-		GraphicsScaffold.destroyPath(&_pfvars);
+	// Properties
+
+	Curve[] curves() {
+		return _points;
+	}
+
+	void curves(Curve[] value) {
+		_points = value;
 	}
 
 	// Methods
 
+	void addCurve(double x1, double y1, double x2, double y2, double xc, double yc) {
+		Curve curve;
+		curve.start.x = x1;
+		curve.start.y = y1;
+		curve.end.x = x2;
+		curve.end.y = y2;
+		curve.controls = new Coord[1];
+		curve.controls[0].x = xc;
+		curve.controls[0].y = yc;
+
+		_points ~= curve;
+	}
+
 	void addArc(double left, double top, double width, double height, double direction, double sweep) {
-		GraphicsScaffold.pathAddArc(&_pfvars, left, top, width, height, direction, sweep);
 	}
 
 	void addArc(Rect bounds, double direction, double sweep) {
-		addArc(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, direction, sweep);
 	}
 
 	void addRectangle(double left, double top, double width, double height) {
-		GraphicsScaffold.pathAddRectangle(&_pfvars, left, top, width, height);
 	}
 
 	void addRectangle(Rect rect) {
-		addRectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
 	}
 
 	void addRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
@@ -65,16 +79,14 @@ public:
 	}
 
 	void addLine(double x1, double y1, double x2, double y2) {
-		GraphicsScaffold.pathAddLine(&_pfvars, x1, y1, x2, y2);
 	}
 
 	void close() {
-		GraphicsScaffold.pathClose(&_pfvars);
 	}
 
 	// Platform bullshits
 
 	PathPlatformVars* platformVariables() {
-		return &_pfvars;
+		return null;
 	}
 }

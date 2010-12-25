@@ -261,7 +261,7 @@ public:
 					return StreamData.Required;
 				}
 
-				pngChunkHeader.pngChunkLength = FromBigEndian32(pngChunkHeader.pngChunkLength);
+				fromBigEndian(pngChunkHeader.pngChunkLength);
 	//			Console.putln(toString(pngChunkHeader.pngChunkLength) ~ "\n");
 
 				switch(pngChunkHeader.pngChunkType) {
@@ -373,8 +373,8 @@ public:
 					return StreamData.Required;
 				}
 
-				pngIHDR.pngWidth = FromBigEndian32(pngIHDR.pngWidth);
-				pngIHDR.pngHeight = FromBigEndian32(pngIHDR.pngHeight);
+				fromBigEndian(pngIHDR.pngWidth);
+				fromBigEndian(pngIHDR.pngHeight);
 
 				pngPaletteCount = 0;
 

@@ -3,14 +3,14 @@ MY_ARCH := $(shell uname)
 
 DC = ldc
 OBJCC = gcc
-DFLAGS = 
+DFLAGS =
 
 # can be changed
 PLATFORM = WINDOWS
 
 LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
-LFLAGS_WIN = -Iplatform/win -Icompiler platform/win/lib/opengl32.lib
+LFLAGS_WIN = -Iplatform/win -Icompiler
 
 ifeq (${MY_ARCH},MINGW32_NT-5.1)
 	OBJEXT = .obj
@@ -49,7 +49,7 @@ DFILES = djehuty.d
 DFILES_BINARY_CODECS = decoders/binary/decoder.d decoders/binary/base64.d decoders/binary/yEnc.d decoders/binary/deflate.d decoders/binary/zlib.d
 DFILES_IMAGE_CODECS = decoders/image/decoder.d decoders/image/all.d decoders/image/bmp.d decoders/image/png.d decoders/image/gif.d decoders/image/jpeg.d
 DFILES_AUDIO_CODECS = decoders/audio/decoder.d decoders/audio/all.d decoders/audio/mp2.d decoders/audio/mp3.d decoders/audio/wav.d decoders/audio/mp3Huffman.d decoders/audio/mpegCommon.d
-DFILES_GRAPHICS = graphics/polygon.d graphics/canvas.d graphics/path.d graphics/gradient.d graphics/bitmap.d graphics/view.d graphics/graphics.d graphics/convexhull.d graphics/brush.d graphics/font.d graphics/pen.d
+DFILES_GRAPHICS = graphics/canvas.d graphics/path.d graphics/gradient.d graphics/bitmap.d graphics/view.d graphics/graphics.d graphics/polygon.d graphics/brush.d graphics/font.d graphics/pen.d drawing/font.d drawing/fonts/truetype.d drawing/fonts/truetypetables.d graphics/contour.d graphics/region.d
 DFILES_NETWORKING = net/http.d net/telnet.d net/irc.d net/ftp.d
 DFILES_IO = io/file.d io/directory.d io/console.d io/audio.d io/wavelet.d io/socket.d
 DFILES_RESOURCE = resource/sound.d resource/image.d resource/resource.d resource/menu.d

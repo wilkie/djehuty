@@ -367,7 +367,7 @@ template member(T, S) {
 
 template remove(T, S) {
 	static assert(IsIterable!(T), "remove: " ~ T.stringof ~ " is not iterable.");
-	T remove(S value, T list) {
+	T remove(T list, S value) {
 		foreach(uint i, item; list) {
 			if (value == item) {
 				return cast(T)(list[0..i] ~ list[i+1..list.length]);
@@ -379,7 +379,7 @@ template remove(T, S) {
 
 template remove(T, S, R, Q) {
 	static assert(IsIterable!(T), "remove: " ~ T.stringof ~ " is not iterable.");
-	T remove(S value, T list, bool delegate(R, Q) equalFunc) {
+	T remove(T list, S value, bool delegate(R, Q) equalFunc) {
 		foreach(uint i, item; list) {
 			if (equalFunc(value, item)) {
 				return cast(T)(list[0..i] ~ list[i+1..list.length]);

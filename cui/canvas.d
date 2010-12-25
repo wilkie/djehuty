@@ -3,6 +3,7 @@ module cui.canvas;
 import djehuty;
 
 import scaffold.console;
+import io.console;
 
 class CuiCanvas {
 private:

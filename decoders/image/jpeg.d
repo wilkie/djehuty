@@ -485,7 +485,9 @@ public:
 						return StreamData.Required;
 					}
 
-					if (header == FromBigEndian16(0xFFD8)) {
+					fromBigEndian(header);
+
+					if (header == 0xffd8) {
 						// SOI (Start of Image)
 
 						decoderState = JPEG_STATE_READ_CHUNK_TYPE;
@@ -505,7 +507,7 @@ public:
 						return StreamData.Required;
 					}
 
-					chunkType = FromBigEndian16(chunkType);
+					fromBigEndian(chunkType);
 
 					//grabbing info from block headers \ initing huffman tables
 
@@ -522,7 +524,7 @@ public:
 						return StreamData.Required;
 					}
 
-					chunkLength = FromBigEndian16(chunkLength);
+					fromBigEndian(chunkLength);
 					chunkLength -= 2; // supplement for the length identifier (short)
 
 					// interpret chunk type
@@ -601,8 +603,8 @@ public:
 					}
 
 					// enforce endian
-					sof.num_lines = FromBigEndian16(sof.num_lines);
-					sof.num_samples_per_line = FromBigEndian16(sof.num_samples_per_line);
+					fromBigEndian(sof.num_lines);
+					fromBigEndian(sof.num_samples_per_line);
 
 					decoderState = JPEG_STATE_CHUNK_SOF_READ_COMPONENTS;
 
@@ -722,8 +724,8 @@ public:
 						return StreamData.Required;
 					}
 
-					jfif.density_x = FromBigEndian16(jfif.density_x);
-					jfif.density_y = FromBigEndian16(jfif.density_y);
+					fromBigEndian(jfif.density_x);
+					fromBigEndian(jfif.density_y);
 
 					decoderState = JPEG_STATE_READ_CHUNK_TYPE;
 					continue;
@@ -889,7 +891,8 @@ public:
 						}
 
 						for (int n = 0; n < 64; n++) {
-							quantization_table[quantization_destination][n] = FromBigEndian16(bytesRead[n]);
+							fromBigEndian(bytesRead[n]);
+							quantization_table[quantization_destination][n] = bytesRead[n];
 						}
 					}
 

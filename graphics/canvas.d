@@ -13,6 +13,8 @@ import graphics.brush;
 import graphics.pen;
 import graphics.font;
 import graphics.path;
+import graphics.contour;
+import graphics.region;
 
 import resource.image;
 
@@ -759,7 +761,7 @@ public:
 	private void _drawQuadratic(uint type, double x1, double y1, double x2, double y2, double x3, double y3) {
 		static const int MAX_TESSELATIONS = 30;
 
-		glBegin(type);
+//		glBegin(type);
 
 		double t;
 		double t_inv;
@@ -780,9 +782,10 @@ public:
 			bx = ((qx_2 - qx_1) * t) + qx_1;
 			by = ((qy_2 - qy_1) * t) + qy_1;
 
-			glVertex3f(bx, by, 0);
+			drawEllipse(bx-5, by-5, 10, 10);
+//			glVertex3f(bx, by, 0);
 		}
-		glEnd();
+//		glEnd();
 	}
 
 	void drawQuadratic(double x1, double y1, double x2, double y2, double x3, double y3) {
@@ -870,10 +873,135 @@ public:
 		_unsetContext();
 	}
 
+	// Contours
+
+	private void _drawContour(GLuint type, Coord[] vertices) {
+		glBegin(type);
+		foreach(vertex; vertices) {
+			glVertex3f(vertex.x, vertex.y, 0);
+		}
+		glEnd();
+	}
+
+	void drawContour(Contour contour) {
+		setContext();
+
+		Triangle[] triangles = contour.tessellate();
+		Coord[] vertices = contour.compose();
+		Coord last;
+		bool first = true;
+
+		/*
+		foreach(vertex; vertices) {
+			drawEllipse(vertex.x-1.25, vertex.y-1.25, 2.5, 2.5);
+			if (!first) {
+				drawLine(vertex.x, vertex.y, last.x, last.y);
+			}
+			first = false;
+			last = vertex;
+		}
+		if (vertices.length > 0) {
+			drawLine(last.x, last.y, vertices[0].x, vertices[0].y);
+		}*/
+
+		setContext();
+		if (_antialias) {
+			_initMask();
+
+			// Draw to the stencil mask
+			_drawContour(GL_POLYGON, vertices);
+
+			_useMask();
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawContour(GL_LINE_LOOP, vertices);
+
+			glDisable(GL_LINE_SMOOTH);
+
+			_revertMask();
+
+			// Fill in the rest
+			// A single quad to cover the entire area
+			glBegin(GL_QUADS);
+			glVertex3f(0, 0, 0.0);
+			glVertex3f(width, 0, 0.0);
+			glVertex3f(width, height, 0.0);
+			glVertex3f(0, height, 0.0);
+			glEnd();
+
+			_uninitMask();
+		}
+		else {
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawContour(GL_TRIANGLES, vertices);
+		}
+/*
+		glColor4f(1,1,0,1);
+		glBegin(GL_TRIANGLES);
+		foreach(triangle; triangles) {
+			foreach(point; triangle.points) {
+				glVertex3f(point.x, point.y, 0);
+			}
+		}
+		glEnd();
+		*/
+
+/*		foreach(triangle; triangles) {
+			drawLine(triangle.points[0].x, triangle.points[0].y,
+					triangle.points[1].x, triangle.points[1].y);
+			drawLine(triangle.points[0].x, triangle.points[0].y,
+					triangle.points[2].x, triangle.points[2].y);
+			drawLine(triangle.points[1].x, triangle.points[1].y,
+					triangle.points[2].x, triangle.points[2].y);
+		}*/
+
+		_unsetContext();
+	}
+
+	// Glyphs
+
+	void drawRegion(Region region) {
+		setContext();
+
+		// Tessellate
+		// Draw
+
+		_unsetContext();
+	}
+
 	// Paths
 
 	void drawPath(Path path) {
 		setContext();
+
+		Curve[] curves = path.curves;
+
+		foreach(curve; curves) {
+			if (curve.controls.length == 1) {
+				drawQuadratic(
+				  curve.start.x, curve.start.y,
+				  curve.end.x, curve.end.y,
+				  curve.controls[0].x, curve.controls[0].y
+				);
+			}
+			else if (curve.controls.length == 2) {
+				/*drawCubic(
+				  curve.start.x, curve.start.y,
+				  curve.end.x, curve.end.y,
+				  curve.controls[0].x, curve.controls[0].y,
+				  curve.controls[1].x, curve.controls[1].y
+				);*/
+			}
+			else {
+				drawLine(
+				  curve.start.x, curve.start.y,
+				  curve.end.x, curve.end.y
+				);
+			}
+		}
+
 		_unsetContext();
 	}
 

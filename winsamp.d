@@ -26,6 +26,8 @@ import cui.togglefield;
 import cui.spinner;
 import cui.listfield;
 
+import drawing.fonts.truetype;
+
 import gui.application;
 import gui.window;
 import gui.dialog;
@@ -461,7 +463,7 @@ int main(string[] args) {
 	window.attach(listbox);
 	window.attach(filebox);*/
 
- 	auto spinner = new Spinner(200, 200, 100, 100);
+ 	auto spinner = new Spinner(50, 50, 400, 400);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
  	window.attach(spinner);
@@ -473,6 +475,7 @@ int main(string[] args) {
 
   	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
+	TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
 	app.run();//*/
 
 //  	auto app = new Application("MyApp");

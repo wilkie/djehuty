@@ -20,7 +20,7 @@ Object _d_allocclass(ClassInfo ci) {
 
     // Initialize it
     mem[0..$] = ci.init[];
-
+	
     return cast(Object)mem.ptr;
 }
 
@@ -226,8 +226,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(true, true)(ti, dimensions);
+	void* _d_newarraymT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, true)(ti, dimensions).ptr;
 	}
 }
 
@@ -253,8 +253,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(true, false)(ti, dimensions);
+	void* _d_newarraymiT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(true, false)(ti, dimensions).ptr;
 	}
 }
 
@@ -280,8 +280,8 @@ version(DigitalMars) {
 	}
 }
 else {
-	void[] _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
-		return _newarraym!(false, false)(ti, dimensions);
+	void* _d_newarraymvT(TypeInfo ti, size_t[] dimensions) {
+		return _newarraym!(false, false)(ti, dimensions).ptr;
 	}
 }
 
@@ -341,12 +341,13 @@ private template _arraysetlength(bool initWithZero) {
 			newArray = GarbageCollector.malloc(newSize);
 
 			if (oldSize != 0) {
-				newArray[0..oldSize] = oldArray[0..oldSize];
+//				newArray[0..oldSize] = oldArray[0..oldSize];
+				newArray.ptr[0..oldSize] = oldArray.ptr[0..oldSize];
 			}
 		}
 		else {
 			// just resize
-			newArray = oldArray[0..newSize];
+			newArray = oldArray.ptr[0..newSize];
 		}
 
 		// No need to initialize for truncation.
