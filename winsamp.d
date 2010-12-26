@@ -58,6 +58,9 @@ import parsing.options;
 import io.file;
 
 import math.vector;
+import math.trig;
+import math.sign;
+import math.log;
 
 import core.date;
 
@@ -473,10 +476,19 @@ int main(string[] args) {
  	progressbar.value = 0.7;
  	window.attach(progressbar);*/
 
-  	app.attach(window);
+//  	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
-	TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
-	app.run();//*/
+//	TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
+	putln(Trig.sin(3.1415926));
+	putln(Trig.cos(3.1415926));
+
+	float d = -34;
+	putln(Sign.abs(d));
+
+	putln(Log.baseE(20.0855369));
+	putln(Log.base10(10*10*10));
+	putln(Log.base2(8));
+//	app.run();//*/
 
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();
