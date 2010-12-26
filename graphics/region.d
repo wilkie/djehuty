@@ -1250,7 +1250,7 @@ public:
 
 	/* (v0, v1) is the new diagonal to be added to the polygon. Find which */
 	/* chain to use and return the positions of v0 and v1 in p and q */ 
-	private int _getVertexPositions(int v0, int v1, ref int ip, ref int iq) {
+	private void _getVertexPositions(int v0, int v1, ref int ip, ref int iq) {
 		VertexChain* vp0;
 		VertexChain* vp1;
 
