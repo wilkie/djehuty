@@ -488,7 +488,9 @@ int main(string[] args) {
 	putln(Log.baseE(20.0855369));
 	putln(Log.base10(10*10*10));
 	putln(Log.base2(8));
-//	app.run();//*/
+
+	app.attach(window);
+	app.run();//*/
 
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();

@@ -34,12 +34,24 @@ private:
 		return true;
 	}
 
+	Region r;
 public:
 	this(double x, double y, double width, double height) {
 		_timer = new Timer(70);
 		attach(_timer, &timerProc);
 		_timer.start();
 		super(x, y, width, height);
+
+		r = new Region();
+		Contour c = new Contour();
+		c.addLine(50,50,200,50);
+		c.addLine(200,200,50,200);
+		r.addContour(c);
+		c = new Contour();
+		c.addLine(100,100,150,100);
+		c.addLine(150,150,100,150);
+		r.addContour(c);
+
 	}
 
 	override void onDraw(Canvas canvas) {
@@ -64,15 +76,6 @@ public:
 //		p.addCurve(0, 0, this.width, 0, this.width/3, this.height);
 //		canvas.drawPath(p);
 
-		Region r = new Region();
-		c = new Contour();
-		c.addLine(50,50,200,50);
-		c.addLine(200,200,50,200);
-		r.addContour(c);
-		c = new Contour();
-		c.addLine(100,100,150,100);
-		c.addLine(150,150,100,150);
-		r.addContour(c);
 		canvas.drawRegion(r);
 //		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);

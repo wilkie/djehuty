@@ -962,11 +962,91 @@ public:
 
 	// Glyphs
 
+	void _drawRegion(Triangle[] triangles) {
+		glBegin(GL_TRIANGLES);
+		foreach(triangle; triangles) {
+			foreach(pt; triangle.points) {
+				glVertex3f(pt.x, pt.y, 0);
+			}
+		}
+		glEnd();
+	}
+
+	void _strokeRegion(Contour[] contours) {
+		foreach(contour; contours) {
+			glBegin(GL_LINE_LOOP);
+			foreach(vertex; contour.compose()) {
+				glVertex3f(vertex.x, vertex.y, 0);
+			}
+			glEnd();
+		}
+	}
+
+	void strokeRegion(Region region) {
+		setContext();
+		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+		_strokeRegion(region.contours);
+		_unsetContext();
+	}
+
 	void drawRegion(Region region) {
 		setContext();
 
 		// Tessellate
+		Triangle[] triangles = region.tessellate();
+
 		// Draw
+		if (_antialias) {
+			_initMask();
+
+			// Draw to the stencil mask
+			_drawRegion(triangles);
+
+			_useMask();
+			glEnable(GL_LINE_SMOOTH);
+			glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_strokeRegion(region.contours);
+
+			glDisable(GL_LINE_SMOOTH);
+
+			_revertMask();
+
+			// Fill in the rest
+			// A single quad to cover the entire area
+			glBegin(GL_QUADS);
+			glVertex3f(0, 0, 0.0);
+			glVertex3f(width, 0, 0.0);
+			glVertex3f(width, height, 0.0);
+			glVertex3f(0, height, 0.0);
+			glEnd();
+
+			_uninitMask();
+		}
+		else {
+			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
+			_drawRegion(triangles);
+		}
+
+/*
+		foreach(triangle; triangles) {
+			drawLine(triangle.points[0].x, triangle.points[0].y,
+					triangle.points[1].x, triangle.points[1].y);
+			drawLine(triangle.points[0].x, triangle.points[0].y,
+					triangle.points[2].x, triangle.points[2].y);
+			drawLine(triangle.points[1].x, triangle.points[1].y,
+					triangle.points[2].x, triangle.points[2].y);
+		}
+
+		foreach(triangle; triangles) {
+			foreach(point; triangle.points) {
+				drawEllipse(point.x - 3, point.y - 3, 6, 6);
+			}
+		}*/
+
+		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
+		_strokeRegion(region.contours);
 
 		_unsetContext();
 	}
