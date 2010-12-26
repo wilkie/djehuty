@@ -1660,7 +1660,227 @@ public:
 //		return retval;
 	}
 
-	void _triangulatePolygon(int[] pointsPerContour, Coord[] vertices) {
+	static const int TRI_LHS = 1;
+	static const int TRI_RHS = 2;
+
+	/* For each monotone polygon, find the ymax and ymin (to determine the */
+	/* two y-monotone chains) and pass on this monotone polygon for greedy */
+	/* triangulation. */
+	/* Take care not to triangulate duplicate monotone polygons */
+	Triangle[] _triangulateMonotonePolygons(int nmonpoly) {
+		int nvert = segments.length - 1;
+		Triangle[] ret;
+
+		int i;
+
+		Coord ymax, ymin;
+
+		int p, vfirst, posmax, posmin, v;
+		int vcount;
+		bool processed;
+
+		op_idx = 0;
+		for (i = 0; i < nmonpoly; i++) {
+			vcount = 1;
+
+			processed = false;
+
+			vfirst = mchain[mon[i]].vnum;
+
+			ymax = vert[vfirst].pt;
+			ymin = ymax;
+
+			posmax = mon[i];
+			posmin = posmax;
+			
+			mchain[mon[i]].marked = true;
+
+			p = mchain[mon[i]].next;
+
+			while (mchain[p].vnum != vfirst) {
+				v = mchain[p].vnum;
+
+				if (mchain[p].marked) {
+					processed = true;
+					break;
+				}
+				else {
+					mchain[p].marked = true;
+				}
+
+				if (_greaterThan(vert[v].pt, ymax)) {
+						ymax = vert[v].pt;
+						posmax = p;
+				}
+
+				if (_lessThan(vert[v].pt, ymin)) {
+						ymin = vert[v].pt;
+						posmin = p;
+				}
+
+				p = mchain[p].next;
+				vcount++;
+			}
+
+			if (processed) {
+				// Go to next polygon
+				continue;
+			}
+
+			if (vcount == 3) {
+				// Already a triangle!
+				Triangle t;
+
+				t.points[0] = vert[mchain[p].vnum].pt;
+				t.points[1] = vert[mchain[mchain[p].next].vnum].pt;
+				t.points[2] = vert[mchain[mchain[p].prev].vnum].pt;
+
+				ret ~= t;
+
+				//op[op_idx][0] = mchain[p].vnum;
+				//op[op_idx][1] = mchain[mchain[p].next].vnum;
+				//op[op_idx][2] = mchain[mchain[p].prev].vnum;
+
+				//op_idx++;
+			}
+			else {
+				// Triangulate the polygon
+
+				v = mchain[mchain[posmax].next].vnum;
+				if (_equalTo(vert[v].pt, ymin)) {
+					ret ~= _triangulateSinglePolygon(posmax, TRI_LHS);
+				}
+				else {
+					ret ~= _triangulateSinglePolygon(posmax, TRI_RHS);
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	/* A greedy corner-cutting algorithm to triangulate a y-monotone 
+	 * polygon in O(n) time.
+	 * Joseph O-Rourke, Computational Geometry in C.
+	 */
+	private Triangle[] _triangulateSinglePolygon(int posmax, int side) {
+		int nvert = segments.length - 1;
+
+		int v;
+
+		Triangle[] ret;
+
+		// Reflex chain
+		int[] rc = new int[segments.length - 1];
+		int ri = 0;
+
+		int endv, tmp, vpos;
+
+		// Right-hand side segment is a single segment
+		if (side == TRI_RHS) {
+			rc[0] = mchain[posmax].vnum;
+			tmp = mchain[posmax].next;
+
+			rc[1] = mchain[tmp].vnum;
+			ri = 1;
+
+			vpos = mchain[tmp].next;
+			v = mchain[vpos].vnum;
+
+			endv = mchain[mchain[posmax].prev].vnum;
+			if (endv == 0) {
+				endv = nvert;
+			}
+		}
+		else {
+			// Left-hand side is a single segment
+			
+			tmp = mchain[posmax].next;
+			rc[0] = mchain[tmp].vnum;
+
+			tmp = mchain[tmp].next;
+			rc[1] = mchain[tmp].vnum;
+
+			ri = 1;
+
+			vpos = mchain[tmp].next;
+			v = mchain[vpos].vnum;
+
+			endv = mchain[posmax].vnum;
+		}
+
+		while ((v != endv) || (ri > 1)) {
+			if (ri > 0) {
+				// Reflex chain is non-empty
+
+				// Compute Cross product of the 3 points
+
+				double cross;
+				cross = (vert[rc[ri - 1]].pt.x - vert[v].pt.x);
+				cross = cross * (vert[rc[ri]].pt.y - vert[v].pt.y);
+
+				double temp;
+				temp = (vert[rc[ri - 1]].pt.y - vert[v].pt.y);
+				temp = temp * (vert[rc[ri]].pt.x - vert[v].pt.x);
+
+				cross = cross - temp;
+
+				if (cross > 0) {
+					// Convex point
+					
+					// Cut it off
+					Triangle t;
+					t.points[0] = vert[rc[ri - 1]].pt;
+					t.points[1] = vert[rc[ri]].pt;
+					t.points[2] = vert[v].pt;
+					ret ~= t;
+//					op[op_idx][0] = rc[ri - 1];
+//					op[op_idx][1] = rc[ri];
+//					op[op_idx][2] = v;
+
+//					op_idx++;
+					ri--;
+				}
+				else {
+					// Reflex point
+
+					// Add to the chain
+					ri++;
+					rc[ri] = v;
+					vpos = mchain[vpos].next;
+					v = mchain[vpos].vnum;
+				}
+			}
+			else {
+				// Reflex chain empty
+
+				// Add v to the reflex chain and advance it
+				ri++;
+				rc[ri] = v;
+				vpos = mchain[vpos].next;
+				v = mchain[vpos].vnum;
+			}
+		}
+
+		// Reached bottom vertex
+
+		Triangle t;
+		t.points[0] = vert[rc[ri - 1]].pt;
+		t.points[1] = vert[rc[ri]].pt;
+		t.points[2] = vert[v].pt;
+		ret ~= t;
+
+		//op[op_idx][0] = rc[ri - 1];
+		//op[op_idx][1] = rc[ri];
+		//op[op_idx][2] = v;
+
+		//op_idx++;
+		ri--;
+
+		return ret;
+	}
+
+	Triangle[] _triangulatePolygon(int[] pointsPerContour, Coord[] vertices) {
 		int sum = 0;
 		foreach(element; pointsPerContour) {
 			sum += element;
@@ -1707,6 +1927,7 @@ public:
 
 		_constructTrapezoids();
 		int nmonpoly = _monotonateTrapezoids();
+		return _triangulateMonotonePolygons(nmonpoly);
 	}
 
 	int q_idx;
