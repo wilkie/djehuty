@@ -45,9 +45,13 @@ public:
 
 		_canvas = new Canvas(100, 100);
 
+		_canvas.drawRectangle(0, 0, 100, 100);
+		_canvas.drawRectangle(0, 0, 25, 25);
 		_canvas.drawRectangle(25, 25, 25, 25);
+		_canvas.brush = new Brush(Color.Red);
 		_canvas.drawRectangle(50, 50, 25, 25);
-		_canvas.drawRectangle(85, 85, 25, 25);
+		_canvas.brush = new Brush(Color.Blue);
+		_canvas.drawRectangle(75, 75, 25, 25);
 
 		r = new Region();
 		Contour c = new Contour();

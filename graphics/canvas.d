@@ -576,8 +576,8 @@ public:
 
 		glLineWidth(1);
 
-		_pen = new Pen(Color.Black);
-		_brush = new Brush(Color.White);
+		this.pen = new Pen(Color.Black);
+		this.brush = new Brush(Color.White);
 
 		_unsetContext();
 
@@ -1271,6 +1271,8 @@ public:
 		glEnable(GL_TEXTURE_2D);
 
 		glBindTexture(GL_TEXTURE_2D, canvas.tex);
+
+		glColor4f(1.0, 1.0, 1.0, 1.0);
 
 		glBegin(GL_QUADS);
 		glTexCoord2f(0, 0);
