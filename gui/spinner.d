@@ -34,6 +34,7 @@ private:
 		return true;
 	}
 
+	Canvas _canvas;
 	Region r;
 public:
 	this(double x, double y, double width, double height) {
@@ -42,16 +43,22 @@ public:
 		_timer.start();
 		super(x, y, width, height);
 
+		_canvas = new Canvas(100, 100);
+
+		_canvas.drawRectangle(25, 25, 25, 25);
+		_canvas.drawRectangle(50, 50, 25, 25);
+		_canvas.drawRectangle(85, 85, 25, 25);
+
 		r = new Region();
 		Contour c = new Contour();
 		c.addLine(50,50,200,50);
 		c.addLine(200,200,50,200);
+		//c.addLine(50,500,200,500);
 		r.addContour(c);
 		c = new Contour();
-		c.addLine(100,100,150,100);
-		c.addLine(150,150,100,150);
+		c.addLine(100,125,150,125);
+		c.addLine(150,175,100,175);
 		r.addContour(c);
-
 	}
 
 	override void onDraw(Canvas canvas) {
@@ -78,6 +85,9 @@ public:
 
 		canvas.drawRegion(r);
 //		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
+
+		canvas.drawCanvas(_canvas, 0, 0);
+
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 
 		// |--|--|--|--|--|--|--|--| <-- width of the widget

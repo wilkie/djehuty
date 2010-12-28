@@ -388,6 +388,9 @@ END`;
 		wglMakeCurrent(null, null);
 	}
 
+	// Yay for the many render buffers that we need.
+	GLuint color_rb, depth_rb, stencil_rb, packed_rb, tex;
+
 public:
 
 	this(int width, int height) {
@@ -405,13 +408,13 @@ public:
 			return;
 		}
 
-		auto dummyhDC = GetDC(_hWnd);
+/*		auto dummyhDC = GetDC(_hWnd);
 		// Create a faux-GL context
 		if ((_hRC=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
 			putln("Can't Create A GL Rendering Context. (constructor)");
 			return ; // Return FALSE
 		}
-		ReleaseDC(_hWnd, dummyhDC);
+		ReleaseDC(_hWnd, dummyhDC);*/
 
 		setContext();
 
@@ -426,15 +429,23 @@ public:
 		// This identifies the framebuffer object.
 		GLuint fb;
 
-		// Yay for the many render buffers that we need.
-		GLuint color_rb, depth_rb, stencil_rb, packed_rb;
+
+		glEnable(GL_TEXTURE_2D);
+		
+		glGenTextures(1, &tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
+
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
 
 		// RGBA8 RenderBuffer
 		glGenFramebuffersEXTPtr(1, &fb);
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
 
 		// Create and attach a color buffer
-		glGenRenderbuffersEXTPtr(1, &color_rb);
+		/*glGenRenderbuffersEXTPtr(1, &color_rb);
 
 		// We must bind color_rb before we call glRenderbufferStorageEXT
 		glBindRenderbufferEXTPtr(GL_RENDERBUFFER_EXT, color_rb);
@@ -449,6 +460,8 @@ public:
 		// Attach color buffer to FBO
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
 			GL_RENDERBUFFER_EXT, color_rb);
+*/
+		glFramebufferTexture2DEXTPtr(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, tex, 0);
 
 		// Some video cards need a depth buffer with a stencil buffer.
 		// Otherwise, a stencil buffer can just be produced with a simple
@@ -460,6 +473,7 @@ public:
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
 		glFramebufferRenderbufferEXTPtr(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, packed_rb);
 
+		glDisable(GL_TEXTURE_2D);
 		// We should check to see if the FBO is supported... now, for some reason.
 		GLenum status = glCheckFramebufferStatusEXTPtr(GL_FRAMEBUFFER_EXT);
 		switch(status) {
@@ -514,7 +528,7 @@ public:
 		glProgramStringARBPtr(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, QUADRATIC_SHADER.length, QUADRATIC_SHADER.ptr);
 		char* retstr = cast(char*)glGetString(GL_PROGRAM_ERROR_STRING_ARB);
 		putln("shader");
-		putln(retstr[0..strlen(retstr)]);
+//		putln(retstr[0..strlen(retstr)]);
 
 		// Generate the shader for the cubic curve rasterizer
 		glGenProgramsARBPtr(1, &_cubicShader);
@@ -561,6 +575,9 @@ public:
 		glLoadIdentity();
 
 		glLineWidth(1);
+
+		_pen = new Pen(Color.Black);
+		_brush = new Brush(Color.White);
 
 		_unsetContext();
 
@@ -657,6 +674,7 @@ public:
 
 	void strokeRectangle(double x, double y, double width, double height) {
 		setContext();
+
 		x+=0.5;
 		y+=0.5;
 
@@ -1244,6 +1262,32 @@ public:
 	// Image
 
 	void drawCanvas(Canvas canvas, double x, double y) {
+		setContext();
+
+		x += 0.5;
+		y += 0.5;
+
+		
+		glEnable(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, canvas.tex);
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);
+		glVertex3f(x, y+canvas.height-1, 0);
+		glTexCoord2f(1, 0);
+		glVertex3f(x+canvas.width-1, y+canvas.height-1, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(x+canvas.width-1, y, 0);
+		glTexCoord2f(0, 1);
+		glVertex3f(x, y, 0);
+		glEnd();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glDisable(GL_TEXTURE_2D);
+		// */
+
 		//		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
 	}
 

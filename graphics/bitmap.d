@@ -17,12 +17,16 @@ import scaffold.canvas;
 
 import io.console;
 
+import binding.opengl.gl;
+import binding.opengl.glu;
+
 class Bitmap : Canvas {
 private:
 	bool _inited;
 	Semaphore _buffer_mutex;
 
 	bool _hasAlpha;
+	byte* _buffer;
 
 public:
 
@@ -32,15 +36,30 @@ public:
 	}
 
 	void* getBufferUnsafe() {
-		return CanvasGetBytes(this.platformVariables);
+		setContext();
+
+		_buffer = (new byte[](width * height * 4)).ptr;
+		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		return _buffer;
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		_buffer_mutex.down();
-		*bufferPtr = (new byte[](width * height * 4)).ptr;
+
+		setContext();
+
+		_buffer = (new byte[](width * height * 4)).ptr;
+		*bufferPtr = _buffer;
+
+		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
 	}
 
 	void unlockBuffer() {
+		setContext();
+
+		glRasterPos2i(0, 0);
+		glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+
 		_buffer_mutex.up();
 	}
 }
