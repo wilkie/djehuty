@@ -16,6 +16,8 @@ import graphics.path;
 import graphics.contour;
 import graphics.region;
 
+import resource.image;
+
 import gui.window;
 
 import io.console;
@@ -37,6 +39,7 @@ private:
 		return true;
 	}
 
+	Image _img;
 	Bitmap _canvas;
 	Region r;
 public:
@@ -47,6 +50,7 @@ public:
 		super(x, y, width, height);
 
 		_canvas = new Bitmap(100, 100);
+		_img = new Image("tests/PNG/Knob Add.png");
 
 		_canvas.brush = new Brush(Color.fromRGBA(1,1,1,0.5));
 		_canvas.drawRectangle(0, 0, 100, 100);
@@ -56,14 +60,6 @@ public:
 		_canvas.drawRectangle(50, 50, 25, 25);
 		_canvas.brush = new Brush(Color.Blue);
 		_canvas.drawRectangle(75, 75, 25, 25);
-
-		byte* pixels;
-		ulong len;
-		_canvas.lockBuffer(cast(void**)&pixels, len);
-		for(int j = 0; j < len; j += 4) {
-			pixels[j] = cast(byte)0x80;
-		}
-		_canvas.unlockBuffer();
 
 		r = new Region();
 		Contour c = new Contour();
@@ -75,6 +71,9 @@ public:
 		c.addLine(100,125,150,125);
 		c.addLine(150,175,100,175);
 		r.addContour(c);
+
+		_canvas.drawRectangle(0, 75, 25, 25);
+		_canvas.drawCanvas(_img.canvas,0,0);
 	}
 
 	override void onDraw(Canvas canvas) {
@@ -102,7 +101,8 @@ public:
 		canvas.drawRegion(r);
 //		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 
-		canvas.drawCanvas(_canvas, 0, 0);
+		canvas.drawCanvas(_img.canvas,15,15);
+		canvas.drawCanvas(_canvas, 300, 0);
 
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 

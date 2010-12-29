@@ -442,7 +442,6 @@ public:
 	}
 
 	void _addSegment(int segment) {
-		putln("segment: ", segment);
 		Segment s;
 		Segment *so = &segments[segment];
 
@@ -1190,9 +1189,6 @@ public:
 			mchain[i].prev = segments[i].prev;
 			mchain[i].next = segments[i].next;
 			mchain[i].vnum = i;
-			putln("mchain[",i,"]: prev: ", mchain[i].prev,
-					" next: ", mchain[i].next,
-					" vnum: ", mchain[i].vnum);
 
 			vert[i].pt = segments[i].v0;
 			// Next vertex
@@ -1200,10 +1196,6 @@ public:
 			// Location of next vertex
 			vert[i].vpos[0] = i;
 			vert[i].nextfree = 1;
-			putln("vert[",i,"]: pt: x:", vert[i].pt.x, " y: ", vert[i].pt.y,
-					" vnext[0]: ", vert[i].vnext[0], 
-					" vpos[0]: ", vert[i].vpos[0] = i,
-					" nextfree: ", vert[i].nextfree);
 		}
 
 		chain_idx = n;
@@ -1225,13 +1217,11 @@ public:
 	}
 
 	private int newmon() {
-		putln("newmon ", mon_idx+1);
 		mon_idx++;
 		return mon_idx;
 	}
 
 	private int _newChainElement() {
-		putln("chain_idx: ", chain_idx+1);
 		chain_idx++;
 		return chain_idx;
 	}
@@ -1353,8 +1343,6 @@ public:
 
 		mchain[i].vnum = v0;
 		mchain[j].vnum = v1;
-		putln("updated mchain[", i, "].vnum: ", mchain[i].vnum);
-		putln("updated mchain[", j, "].vnum: ", mchain[j].vnum);
 
 		mchain[i].next = mchain[p].next;
 		mchain[mchain[p].next].prev = i;
@@ -1397,9 +1385,7 @@ public:
 
 		i++;
 		int j = i;
-		putln("traverse ", i);
 		if (trnum <= 0 || visited[trnum]) {
-			putln(j, " = 0!");
 			return;
 		}
 
@@ -1423,13 +1409,11 @@ public:
 				if (from == t.d1) {
 					do_switch = true;
 
-					putln("m1");
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 					_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
 					_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 				}
 				else {
-					putln("m2");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 					_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
 					_traversePolygon(mnew, t.d1, trnum, TR_FROM_UP);
@@ -1455,14 +1439,12 @@ public:
 				if (from == t.u1) {
 					do_switch = true;
 
-					putln("m3");
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 					_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
 					_traversePolygon(mnew, t.u0, trnum, TR_FROM_DN);
 				}
 				else {
-					putln("m4");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 					_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1493,7 +1475,6 @@ public:
 						|| (dir == TR_FROM_UP && t.u1 == from)) {
 					do_switch = true;
 
-					putln("m5");
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 					_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1502,7 +1483,6 @@ public:
 					_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 				}
 				else {
-					putln("m6");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 					
 					_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1522,7 +1502,6 @@ public:
 					if (dir == TR_FROM_UP && t.u0 == from) {
 						do_switch = true;
 
-					putln("m7");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1531,7 +1510,6 @@ public:
 						_traversePolygon(mnew, t.d1, trnum, TR_FROM_UP);
 					}
 					else {
-					putln("m8");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1549,7 +1527,6 @@ public:
 					if (dir == TR_FROM_UP && t.u1 == from) {
 						do_switch = true;
 
-					putln("m9");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1558,7 +1535,6 @@ public:
 						_traversePolygon(mnew, t.u0, trnum, TR_FROM_DN);
 					}
 					else {
-					putln("m10");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1582,7 +1558,6 @@ public:
 					if (!(dir == TR_FROM_DN && t.d0 == from)) {
 						do_switch = true;
 
-					putln("m11");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1591,7 +1566,6 @@ public:
 						_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 					}
 					else {
-					putln("m12");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
@@ -1608,7 +1582,6 @@ public:
 
 					if (dir == TR_FROM_DN && t.d1 == from) {
 						do_switch = true;
-					putln("m13");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
@@ -1617,7 +1590,6 @@ public:
 						_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 					}
 					else {
-					putln("m14");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1640,7 +1612,6 @@ public:
 					if (dir == TR_FROM_UP) {
 						do_switch = true;
 
-					putln("m15");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1649,7 +1620,6 @@ public:
 						_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 					}
 					else {
-					putln("m16");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
@@ -1668,7 +1638,6 @@ public:
 					if (dir == TR_FROM_UP) {
 						do_switch = true;
 
-					putln("m17");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1677,7 +1646,6 @@ public:
 						_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 					}
 					else {
-					putln("m18");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
@@ -1698,7 +1666,6 @@ public:
 			}
 		}
 
-		putln(j, " = ", retval);
 //		return retval;
 	}
 
@@ -1710,7 +1677,6 @@ public:
 	/* triangulation. */
 	/* Take care not to triangulate duplicate monotone polygons */
 	Triangle[] _triangulateMonotonePolygons(int nmonpoly) {
-		putln("nmonpoly: ", nmonpoly);
 		int nvert = segments.length - 1;
 		Triangle[] ret;
 
@@ -1739,11 +1705,9 @@ public:
 			mchain[mon[i]].marked = true;
 
 			p = mchain[mon[i]].next;
-			putln(p, ", i: ", i);
 
 			while (mchain[p].vnum != vfirst) {
 				v = mchain[p].vnum;
-				putln(p, ", ", v);
 
 				if (mchain[p].marked) {
 					processed = true;
@@ -1815,7 +1779,6 @@ public:
 	private Triangle[] _triangulateSinglePolygon(int posmax, int side) {
 		int nvert = segments.length - 1;
 
-		putln("nvert: ", nvert, " posmax: ", posmax, " side: ", side);
 		int v;
 
 		Triangle[] ret;
@@ -1878,7 +1841,6 @@ public:
 				if (cross > 0) {
 					// Convex point
 					
-					putln("convex point found");
 					// Cut it off
 					Triangle t;
 					t.points[0] = vert[rc[ri - 1]].pt;
@@ -1899,7 +1861,6 @@ public:
 					// Reflex point
 
 					// Add to the chain
-					putln("non convex point found");
 					ri++;
 					rc[ri] = v;
 					vpos = mchain[vpos].next;
@@ -1910,7 +1871,6 @@ public:
 				// Reflex chain empty
 
 				// Add v to the reflex chain and advance it
-					putln("reflex chain empty");
 				ri++;
 				rc[ri] = v;
 				vpos = mchain[vpos].next;
@@ -1941,7 +1901,6 @@ public:
 		foreach(element; pointsPerContour) {
 			sum += element;
 		}
-		putln("# Segments: ", sum+1);
 		segments = new Segment[sum+1];
 
 		int i = 1;
@@ -1978,16 +1937,12 @@ public:
 		querytree = new Node[8 * (segments.length-1)];
 		trapezoids = new Trapezoid[4 * (segments.length-1)];
 
-		putln("Generating Random Ordering...");
 		_generateRandomOrdering();
 
-		putln("Constructing Trapezoids...");
 		_constructTrapezoids();
 
-		putln("Monotonating Trapezoids...");
 		int nmonpoly = _monotonateTrapezoids();
 		
-		putln("Triangulating Monotone Polygons... # Monotone Polygons: ", nmonpoly);
 /*		foreach(idx; mon[0..nmonpoly]) {
 			int cur = idx;
 			putln("Polygon: ");
@@ -2169,7 +2124,6 @@ public:
 			for (int i = _mathN(n, h - 1) + 1; i <= _mathN(n, h); i++) {
 				_addSegment(_chooseSegment());
 				segs++;
-				putln("added segment");
 			}
 
 			for (int i = 1; i <= n; i++) {
@@ -2180,10 +2134,8 @@ public:
 		for (int i = _mathN(n, _mathLogstarN(n)) + 1; i <= n; i++) {
 			_addSegment(_chooseSegment());
 			segs++;
-			putln("added segment");
 		}
 
-		putln("added ", segs, " segments.");
 	}
 
 	private Triangle[] _tris;
@@ -2207,17 +2159,11 @@ public:
 					contourVertices = contourVertices.reverse;
 				}
 
-				putln("Contour:");
-				foreach(pt; contourVertices) {
-					putln("X: ", pt.x, " Y: ", pt.y);
-				}
 				vertices ~= contourVertices;
 				ppc[idx] = contourVertices.length;
 			}
 
-			putln("Starting... # Vertices: ", vertices.length, " # Contours: ", _contours.length);
 			_tris = _triangulatePolygon(ppc, vertices);
-			putln("Done. # Triangles: ", _tris.length);
 		}
 
 		return _tris;

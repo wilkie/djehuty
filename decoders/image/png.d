@@ -310,12 +310,14 @@ public:
 
 						view.lockBuffer(cast(void**)&ptr_start, ptr_len);
 
+						ptr_start += (ptr_len / 4);
+
 						ptr = ptr_start;
 
-						ptr += (pngIHDR.pngWidth * ptrLine);
+						ptr -= (pngIHDR.pngWidth * (ptrLine+1));
 						ptr_max_line = ptr + pngIHDR.pngWidth;
 
-						ptr_max_page = ptr_start + (ptr_len / 4);
+						ptr_max_page = ptr_start;
 
 						ptr += ptrPos;
 
@@ -962,11 +964,12 @@ public:
 
 						ptrPos = pngInterlaceStartsX[pngInterlacePass];
 
-						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 					else {
 						ptrPos = 0;
 						ptrLine++;
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 
 					pngCounter = -1;
@@ -1062,11 +1065,12 @@ public:
 
 						ptrPos = pngInterlaceStartsX[pngInterlacePass];
 
-						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 					else {
 						ptrPos = 0;
 						ptrLine++;
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 
 					pngCounter = -1;
@@ -1152,11 +1156,12 @@ public:
 
 						ptrPos = pngInterlaceStartsX[pngInterlacePass];
 
-						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 					else {
 						ptrPos = 0;
 						ptrLine++;
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 
 					pngCounter = -1;
@@ -1246,11 +1251,12 @@ public:
 
 						ptrPos = pngInterlaceStartsX[pngInterlacePass];
 
-						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 					else {
 						ptrPos = 0;
 						ptrLine++;
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 
 					pngCounter = -1;
@@ -1340,11 +1346,12 @@ public:
 
 						ptrPos = pngInterlaceStartsX[pngInterlacePass];
 
-						ptr = ptr_start + ((pngIHDR.pngWidth * ptrLine) + ptrPos);
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 					else {
 						ptrPos = 0;
 						ptrLine++;
+						ptr = ptr_start - ((pngIHDR.pngWidth * (ptrLine+1)) + ptrPos);
 					}
 
 					pngCounter = -1;

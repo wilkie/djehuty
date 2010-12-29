@@ -21,6 +21,7 @@ import resource.image;
 import scaffold.canvas;
 
 import synch.thread;
+import synch.semaphore;
 
 import binding.opengl.gl;
 import binding.opengl.glu;
@@ -140,6 +141,9 @@ END`;
 	static HGLRC _hRC;
 //	static HDC _hDC;
 	static HWND _hWnd;
+ 
+	float[16] _viewMatrix;
+	float[16] _projMatrix;
 
 	static void _init() {
 		if (_glInited) {
@@ -300,7 +304,8 @@ END`;
 	static HGLRC _RC[Thread];
 	static void _threadInit() {
 		auto dummyhDC = GetDC(_hWnd);
-		if (!(Thread.current in _RC)) {
+		if (_hRC is null) {
+//		if (!(Thread.current in _RC)) {
 			// Get a dummy device context
 
 			putln("createcontext");
@@ -320,8 +325,10 @@ END`;
 
 //		putln("makecurrent");
 		// Make this the current GL context
+
 		wglMakeCurrent(null, null);
-		if(wglMakeCurrent(dummyhDC,_RC[Thread.current]) == 0) { // Try To Activate The Rendering Context
+		if(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
+//		if(wglMakeCurrent(dummyhDC,_RC[Thread.current]) == 0) { // Try To Activate The Rendering Context
 			putln("Can't Activate The GL Rendering Context.");
 			//return ; // Return FALSE
 		}
@@ -424,9 +431,7 @@ END`;
 	// This identifies the framebuffer object.
 	GLuint fb;
 
-public:
-
-	this(int width, int height) {
+	void _create(int width, int height) {
 		putln("initing");
 		_init();
 		_threadInit();
@@ -453,11 +458,11 @@ public:
 
 		putln("setup ", width, " x ", height);
 
-		auto ext = cast(char*)glGetString(GL_EXTENSIONS);
+/*		auto ext = cast(char*)glGetString(GL_EXTENSIONS);
 		if (ext !is null) {
 			auto extstr = ext[0..strlen(ext)];
 			putln("extensions: ", extstr);
-		}
+		}*/
 
 		glEnable(GL_TEXTURE_2D);
 		
@@ -596,43 +601,50 @@ public:
 		glLoadIdentity();
 
 		// Set up an orthographic view
+		putln("glOrtho ", width, " x ", height);
 		glOrtho(0, width, height, 0, -1, 1);
+
+		glGetFloatv(GL_PROJECTION_MATRIX, _projMatrix.ptr);
 
 		// And then switch over to the model matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
 
 		glLineWidth(1);
 
 		this.pen = new Pen(Color.Black);
 		this.brush = new Brush(Color.White);
 
-		_unsetContext();
-
-		this.clear();
-
-		// Clear the screen.
-
-		// RENDER
-		// The following gets moved eventually...
-
-		setContext();
 		glEnable(GL_STENCIL_TEST);
 		glStencilMask(0x11);
 		glStencilFunc(GL_EQUAL, 0x00, 0x11);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+		_unsetContext();
+
+		// Clear the screen.
+		this.clear();
+	}
+
+public:
+
+	this(int width, int height) {
+		_create(width, height);
 	}
 
 	~this() {
 	}
 
 	void resize(int width, int height) {
-		_width = width;
-		_height = height;
+		_create(width, height);
 	}
 
 	void setContext() {
+		static Semaphore lock;
+		if (lock is null) lock = new Semaphore(1);
+		lock.down();
 		_threadInit();
 
 		// Make this the current GL context
@@ -652,10 +664,33 @@ public:
 		}
 
 		ReleaseDC(_hWnd, dummyhDC);//*/
+/*
+		// Reset the current viewport
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		// Set up an orthographic view
+		glOrtho(0, width, 0, height, -1, 1);
+
+		// And then switch over to the model matrix
+		glMatrixMode(GL_MODELVIEW);
+*/
+		// Set up the viewport
+		glViewport(0, 0, width, height);
+
+		glMatrixMode(GL_PROJECTION);
+		// Set up an orthographic view
+		glLoadMatrixf(_projMatrix.ptr);
+
+
+		// And then switch over to the model matrix
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixf(_viewMatrix.ptr);
 
 		// and now you can render to the FBO (also called RenderBuffer)
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
 		glBindTexture(GL_TEXTURE_2D, tex);
+		lock.up();
 	}
 
 	void clear() {
@@ -703,10 +738,8 @@ public:
 	// Rectangles
 
 	void drawRectangle(double x, double y, double width, double height) {
-		setContext();
 		fillRectangle(x, y, width, height);
 		strokeRectangle(x, y, width, height);
-		_unsetContext();
 	}
 
 	void strokeRectangle(double x, double y, double width, double height) {
@@ -737,6 +770,7 @@ public:
 
 	void fillRectangle(double x, double y, double width, double height) {
 		setContext();
+
 		x+=0.5;
 		y+=0.5;
 
@@ -1300,10 +1334,10 @@ public:
 
 	void drawCanvas(Canvas canvas, double x, double y) {
 		setContext();
+		putln("drawCanvas: x:", x, " y:", y, " w:", width, " h:", height, " cw:", canvas.width, " ch:", canvas.height);
 
 		x += 0.5;
 		y += 0.5;
-
 		
 		glEnable(GL_TEXTURE_2D);
 
@@ -1322,12 +1356,9 @@ public:
 		glVertex3f(x, y, 0);
 		glEnd();
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-
 		glDisable(GL_TEXTURE_2D);
-		// */
 
-		//		GraphicsScaffold.drawCanvas(&_pfvars, this, x, y, canvas.platformVariables, canvas);
+		_unsetContext();
 	}
 
 	// Clipping
@@ -1375,6 +1406,7 @@ public:
 		setContext();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
 		_unsetContext();
 	}
 
@@ -1382,6 +1414,7 @@ public:
 		setContext();
 		glMatrixMode(GL_MODELVIEW);
 		glTranslated(x, y, 0.0);
+		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
 		_unsetContext();
 	}
 
@@ -1389,6 +1422,7 @@ public:
 		setContext();
 		glMatrixMode(GL_MODELVIEW);
 		glScaled(x, y, 1.0);
+		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
 		_unsetContext();
 	}
 
@@ -1396,6 +1430,7 @@ public:
 		setContext();
 		glMatrixMode(GL_MODELVIEW);
 		glRotated(angle*180.0/3.141529, 0, 0, 1);
+		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
 		_unsetContext();
 	}
 

@@ -19,6 +19,7 @@ import io.console;
 
 import binding.opengl.gl;
 import binding.opengl.glu;
+import binding.opengl.glext;
 
 import binding.win32.wingdi;
 import binding.win32.windef;
@@ -50,7 +51,7 @@ public:
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		putln("read?");
-//		_buffer_mutex.down();
+		//_buffer_mutex.down();
 		setContext();
 
 		_buffer = (new byte[](width * height * 4)).ptr;
@@ -58,7 +59,7 @@ public:
 
 		length = width * height * 4;
 
-		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, _buffer);
 		putln("read");
 		wglMakeCurrent(null, null);
 	}
@@ -69,7 +70,7 @@ public:
 
 		//glRasterPos2i(0, 0);
 		//glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, _buffer);
 
 		putln("drawn");
 //		_buffer_mutex.up();
