@@ -222,6 +222,9 @@ END`;
 			return ; // Return FALSE
 		}
 
+		_threadInit();
+
+		/*
 		putln("createcontext");
 		// Create a faux-GL context
 		if ((_hRC=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
@@ -235,7 +238,7 @@ END`;
 			putln("Can't Activate The GL Rendering Context.");
 			//return ; // Return FALSE
 		}
-
+*/
 		putln("glgetproc");
 		// Retrieve GL extension functions
 		glIsRenderbufferEXTPtr = cast(PFNGLISRENDERBUFFEREXTPROC)wglGetProcAddress("glIsRenderbufferEXT\0"c.ptr);
@@ -294,11 +297,38 @@ END`;
 		ReleaseDC(_hWnd, dummyhDC);
 	}
 
-	static bool _inited[Thread];
+	static HGLRC _RC[Thread];
 	static void _threadInit() {
-//		if (Thread.current in _inited) {
-	//		return;
-		//}
+		auto dummyhDC = GetDC(_hWnd);
+		if (!(Thread.current in _RC)) {
+			// Get a dummy device context
+
+			putln("createcontext");
+			// Create a faux-GL context
+			if ((_RC[Thread.current]=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
+				putln("Can't Create A GL Rendering Context. (ti)");
+				ReleaseDC(_hWnd, dummyhDC);
+				return ; // Return FALSE
+			}
+			if (_hRC is null) {
+				_hRC = _RC[Thread.current];
+			}
+			else {
+				wglShareLists(_hRC, _RC[Thread.current]);
+			}
+		}
+
+//		putln("makecurrent");
+		// Make this the current GL context
+		wglMakeCurrent(null, null);
+		if(wglMakeCurrent(dummyhDC,_RC[Thread.current]) == 0) { // Try To Activate The Rendering Context
+			putln("Can't Activate The GL Rendering Context.");
+			//return ; // Return FALSE
+		}
+
+		ReleaseDC(_hWnd, dummyhDC);
+
+		//*/
 	}
 
 	void _initMask() {
@@ -391,6 +421,9 @@ END`;
 	// Yay for the many render buffers that we need.
 	GLuint color_rb, depth_rb, stencil_rb, packed_rb, tex;
 
+	// This identifies the framebuffer object.
+	GLuint fb;
+
 public:
 
 	this(int width, int height) {
@@ -425,10 +458,6 @@ public:
 			auto extstr = ext[0..strlen(ext)];
 			putln("extensions: ", extstr);
 		}
-
-		// This identifies the framebuffer object.
-		GLuint fb;
-
 
 		glEnable(GL_TEXTURE_2D);
 		
@@ -510,14 +539,13 @@ public:
 		default:
 			//Programming error; will fail on all hardware
 			putln("Some video driver error or programming error occured. Framebuffer object status is invalid. (FBO - 823)");
-			break;
 		}
 
 		// and now you can render to the FBO (also called RenderBuffer)
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
 
 		glEnable(GL_BLEND);
-
+/*
 		glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
 		// Generate the shader for the quadratic curve rasterizer
@@ -538,7 +566,7 @@ public:
 		glProgramStringARBPtr(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, CUBIC_SHADER.length, CUBIC_SHADER.ptr);
 
 		glDisable(GL_FRAGMENT_PROGRAM_ARB);
-
+*/
 		// The traditional blending function fails since the background
 		// of any canvas object we use is technically transparent.
 
@@ -605,20 +633,29 @@ public:
 	}
 
 	void setContext() {
-		
 		_threadInit();
 
 		// Make this the current GL context
-		if (width == 0 || height == 0) {
+/*		if (width == 0 || height == 0) {
+			return;
+		}*/
+/*
+		if (wglGetCurrentContext() == _hRC) {
 			return;
 		}
-
+		
 		auto dummyhDC = GetDC(_hWnd);
 		while(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
+			putln("sleep?!?!", dummyhDC, " ", _hRC);
+			putln(wglGetCurrentContext());
 			Thread.sleep(5);
 		}
 
 		ReleaseDC(_hWnd, dummyhDC);//*/
+
+		// and now you can render to the FBO (also called RenderBuffer)
+		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
+		glBindTexture(GL_TEXTURE_2D, tex);
 	}
 
 	void clear() {

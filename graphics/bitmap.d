@@ -20,6 +20,11 @@ import io.console;
 import binding.opengl.gl;
 import binding.opengl.glu;
 
+import binding.win32.wingdi;
+import binding.win32.windef;
+import binding.win32.winuser;
+
+
 class Bitmap : Canvas {
 private:
 	bool _inited;
@@ -44,22 +49,30 @@ public:
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
-		_buffer_mutex.down();
-
+		putln("read?");
+//		_buffer_mutex.down();
 		setContext();
 
 		_buffer = (new byte[](width * height * 4)).ptr;
 		*bufferPtr = _buffer;
 
+		length = width * height * 4;
+
 		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		putln("read");
+		wglMakeCurrent(null, null);
 	}
 
 	void unlockBuffer() {
+		putln("draw?");
 		setContext();
 
-		glRasterPos2i(0, 0);
-		glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		//glRasterPos2i(0, 0);
+		//glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
 
-		_buffer_mutex.up();
+		putln("drawn");
+//		_buffer_mutex.up();
+		wglMakeCurrent(null, null);
 	}
 }

@@ -10,12 +10,15 @@ module gui.spinner;
 import djehuty;
 
 import graphics.canvas;
+import graphics.bitmap;
 import graphics.brush;
 import graphics.path;
 import graphics.contour;
 import graphics.region;
 
 import gui.window;
+
+import io.console;
 
 import synch.timer;
 
@@ -34,7 +37,7 @@ private:
 		return true;
 	}
 
-	Canvas _canvas;
+	Bitmap _canvas;
 	Region r;
 public:
 	this(double x, double y, double width, double height) {
@@ -43,8 +46,9 @@ public:
 		_timer.start();
 		super(x, y, width, height);
 
-		_canvas = new Canvas(100, 100);
+		_canvas = new Bitmap(100, 100);
 
+		_canvas.brush = new Brush(Color.fromRGBA(1,1,1,0.5));
 		_canvas.drawRectangle(0, 0, 100, 100);
 		_canvas.drawRectangle(0, 0, 25, 25);
 		_canvas.drawRectangle(25, 25, 25, 25);
@@ -52,6 +56,14 @@ public:
 		_canvas.drawRectangle(50, 50, 25, 25);
 		_canvas.brush = new Brush(Color.Blue);
 		_canvas.drawRectangle(75, 75, 25, 25);
+
+		byte* pixels;
+		ulong len;
+		_canvas.lockBuffer(cast(void**)&pixels, len);
+		for(int j = 0; j < len; j += 4) {
+			pixels[j] = cast(byte)0x80;
+		}
+		_canvas.unlockBuffer();
 
 		r = new Region();
 		Contour c = new Contour();
