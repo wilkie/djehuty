@@ -9,6 +9,7 @@
 module scaffold.gui;
 
 import gui.window;
+import gui.dialog;
 
 import graphics.canvas;
 
@@ -23,6 +24,8 @@ import platform.vars.canvas;
 import djehuty;
 
 pragma(lib, "comctl32.lib");
+pragma(lib, "msimg32.lib");
+pragma(lib, "dwmapi.lib");
 
 import binding.c;
 
@@ -33,75 +36,64 @@ import binding.win32.wingdi;
 import binding.win32.winuser;
 import binding.win32.winerror;
 
+import binding.win32.dwmapi;
+import binding.win32.uxtheme;
+
+import data.queue;
+
 import io.console;
+
+import synch.thread;
+import synch.semaphore;
 
 import Gdiplus = binding.win32.gdiplus;
 
 void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
-	void* userData = cast(void*)windowVars;
-
-	DWORD style = WS_POPUP;
-
-	if (window.visible) {
-		style |= WS_VISIBLE;
-	}
-
-	wstring className = Unicode.toUtf16(Djehuty.application.name ~ "\0");
-
 	// These variables are for detecting redundant mouse move messages
 	windowVars.lastX = -1;
 	windowVars.lastY = -1;
 
 	// Need a reference to the window for knowing its size for WM_MOUSELEAVE
 	windowVars.window = window;
+	windowVars.pixelData = new ubyte[](cast(int)window.width * cast(int)window.height * 4);
 
-	// Create the window as a normal app window to add it to the taskbar
-	windowVars.hWnd = CreateWindowExW(
-		WS_EX_APPWINDOW,
-		className.ptr, "\0"w.ptr,
-		style,
-		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
-		null, null, null, userData);
-		
-	SetWindowLong(windowVars.hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
+	windowVars.eventQueue = new Queue!(Event);
+	windowVars.wait = new Semaphore(0);
+	windowVars.messageThread = new MessageThread(windowVars);
+
+	auto windhDC = GetDC(null);
+	windowVars.backbuffer = CreateCompatibleDC(windhDC);
+	ReleaseDC(null, windhDC);
+
+	// Start the message loop
+
+	windowVars.messageThread.start();
+
+	windowVars.wait.down();
+	windowVars.wait.up();
 }
 
 static const uint WM_USER_REDRAW = WM_USER + 1;
 
 void GuiRedrawRequest(Window window, WindowPlatformVars* windowVars) {
-	PostMessage(windowVars.hWnd, WM_USER_REDRAW, 0, 0);
+	Event evt;
+	evt.type = Event.Redraw;
+
+	windowVars.eventQueue.add(evt);
+//	PostMessage(windowVars.hWnd, WM_USER_REDRAW, 0, 0);
 }
 
 void GuiDestroyWindow(Window window, WindowPlatformVars* windowVars) {
 }
 
 void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatformVars* viewVars) {
-	POINT pt;
-	pt.x = cast(int)window.left;
-	pt.y = cast(int)window.top;
-
-	POINT ptz;
-	ptz.x = 0;
-	ptz.y = 0;
-
-	SIZE sz;
-	sz.cx = cast(int)window.width;
-	sz.cy = cast(int)window.height;
-
-	BLENDFUNCTION bf;
-	bf.BlendOp = AC_SRC_OVER;
-	bf.BlendFlags = 0;
-	bf.SourceConstantAlpha = 255;
-	bf.AlphaFormat = AC_SRC_ALPHA;
-
 	// Capture (only when presenting it to the window manager)
-	ubyte[] pPixelData = new ubyte[](cast(int)window.width * cast(int)window.height * 4);
 	glReadPixels(0, 0, cast(int)window.width, cast(int)window.height, GL_BGRA, GL_UNSIGNED_BYTE,
-			pPixelData.ptr);
+			windowVars.pixelData.ptr);
 
 	auto windhDC = GetDC(null);
 	auto hBMP = CreateCompatibleBitmap(windhDC, cast(int)window.width, cast(int)window.height);
-	auto hDC = CreateCompatibleDC(windhDC);
+	windowVars.backbuffer = CreateCompatibleDC(windhDC);
 
 	BITMAPINFO bmpInfo;
 	bmpInfo.bmiHeader.biSize = BITMAPINFOHEADER.sizeof;
@@ -110,14 +102,52 @@ void GuiUpdateWindow(Window window, WindowPlatformVars* windowVars, CanvasPlatfo
 	bmpInfo.bmiHeader.biPlanes = 1;
 	bmpInfo.bmiHeader.biBitCount = 32;
 	bmpInfo.bmiHeader.biCompression = BI_RGB;
-	SetDIBits(hDC, hBMP, 0, cast(int)window.height, pPixelData.ptr, &bmpInfo, DIB_RGB_COLORS);
+	SetDIBits(windowVars.backbuffer, hBMP, 0, cast(int)window.height, windowVars.pixelData.ptr, &bmpInfo, DIB_RGB_COLORS);
 
-	SelectObject(hDC, hBMP);
+	SelectObject(windowVars.backbuffer, hBMP);
 	DeleteObject(hBMP);
 	ReleaseDC(null, windhDC);
 
-	viewVars.testDC = hDC;
-	UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, viewVars.testDC, &ptz, 0, &bf, ULW_ALPHA);
+	viewVars.testDC = windowVars.backbuffer;
+
+	BLENDFUNCTION bf;
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.SourceConstantAlpha = 255;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+
+	if (cast(Dialog)window is null) {
+		POINT pt;
+		pt.x = cast(int)window.left;
+		pt.y = cast(int)window.top;
+
+		POINT ptz;
+		ptz.x = 0;
+		ptz.y = 0;
+
+		SIZE sz;
+		sz.cx = cast(int)window.width;
+		sz.cy = cast(int)window.height;
+
+		UpdateLayeredWindow(windowVars.hWnd, null, &pt, &sz, viewVars.testDC, &ptz, 0, &bf, ULW_ALPHA);
+	}
+	else {
+		//RedrawWindow(windowVars.hWnd, null, null, RDW_INVALIDATE | RDW_INTERNALPAINT);
+		
+		auto hdc = GetDC(windowVars.hWnd);
+/*		HBRUSH brsh = CreateSolidBrush(0);
+		RECT rt;
+		GetClientRect(windowVars.hWnd, &rt);
+		FillRect(hdc, &rt, brsh);
+		AlphaBlend(hdc, 
+				0, 0, cast(int)window.width(), cast(int)window.height(),
+				windowVars.backbuffer, 
+				0, 0, cast(int)window.width(), cast(int)window.height(), 
+				bf);//*/
+
+		BitBlt(hdc, 0, 0, cast(int)window.width(), cast(int)window.height(), windowVars.backbuffer, 0, 0, SRCCOPY);
+		ReleaseDC(windowVars.hWnd, hdc);
+	}
 }
 
 void GuiUpdateCursor(Canvas view, CanvasPlatformVars* viewVars) {
@@ -130,14 +160,8 @@ void GuiNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
 	MSG msg;
 	BOOL ret = TRUE;
 	while (ret != 0) {
-		windowVars.event = evt;
-		windowVars.haveEvent = false;
-		ret = GetMessage(&msg, null, 0, 0);
-		if (ret != -1) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		if (windowVars.haveEvent) {
+		if (!windowVars.eventQueue.empty) {
+			*evt = windowVars.eventQueue.remove();
 			return;
 		}
 	}
@@ -145,14 +169,79 @@ void GuiNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
 
 void GuiStart(GuiPlatformVars* guiVars) {
 	registerClass();
-	Gdiplus.GdiplusStartup(&guiVars.gdiplusToken, &guiVars.gdiplusStartupInput, null);
 }
 
 void GuiEnd(GuiPlatformVars* guiVars) {
-	Gdiplus.GdiplusShutdown(guiVars.gdiplusToken);
 }
 
 private:
+
+void createWindow(WindowPlatformVars* windowVars) {
+	auto window = windowVars.window;
+	void* userData = cast(void*)windowVars;
+
+	DWORD style = WS_POPUP;
+
+	if (cast(Dialog)window !is null) {
+		style = WS_OVERLAPPED;
+	}
+
+	if (window.visible) {
+		style |= WS_VISIBLE;
+	}
+
+	wstring className = Unicode.toUtf16(Djehuty.application.name ~ "\0");
+
+	// Create the window as a normal app window to add it to the taskbar
+	windowVars.hWnd = CreateWindowExW(
+		WS_EX_APPWINDOW,
+		className.ptr, "\0"w.ptr,
+		style,
+		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
+		null, null, null, userData);
+
+
+	if (cast(Dialog)window is null) {
+		SetWindowLong(windowVars.hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
+	}
+
+	DWM_BLURBEHIND bb;
+
+	bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION;
+	bb.fEnable = FALSE;
+	bb.hRgnBlur = null;
+	bb.fTransitionOnMaximized = TRUE;
+
+	DwmEnableBlurBehindWindow(windowVars.hWnd, &bb);
+}
+
+class MessageThread : Thread {
+private:
+	WindowPlatformVars* windowVars;
+
+public:
+	this(WindowPlatformVars* windowVars) {
+		this.windowVars = windowVars;
+		super();
+	}
+
+	override void run() {
+
+		createWindow(windowVars);
+
+		windowVars.wait.up();
+
+		MSG msg;
+		BOOL ret = TRUE;
+		while(ret != 0) {
+			ret = GetMessageW(&msg, windowVars.hWnd, 0, 0);
+			if (ret != 0) {
+				//TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+	}
+}
 
 void registerClass() {
 	WNDCLASSW wc;
@@ -198,6 +287,8 @@ extern(Windows)
 int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 	void* wind_in = cast(void*)GetWindowLongW(hWnd, GWLP_USERDATA);
 	WindowPlatformVars* windowVars = cast(WindowPlatformVars*)(wind_in);
+
+	Dialog dialog = cast(Dialog)windowVars.window;
 
 	static int _set1ToSet2[] = [
 		// 0x00
@@ -427,15 +518,55 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		0x5a: Key.KeypadReturn
 	];
 
+	Event event;
+
 	switch(uMsg) {
 		case WM_ERASEBKGND:
 		case WM_UNICHAR:
 			return 1;
 
+		case WM_MOVE:
+			return 1;
+
+		case WM_PAINT:
+			if (dialog !is null) {
+				PAINTSTRUCT ps;
+				HDC dc = BeginPaint(hWnd, &ps);
+				MARGINS margins;
+
+				RECT rt;
+				GetClientRect(windowVars.hWnd, &rt);
+
+				margins.cxLeftWidth = rt.left;
+				margins.cxRightWidth = rt.right;
+				margins.cyBottomHeight = rt.bottom;
+				margins.cyTopHeight = rt.top;
+
+				BLENDFUNCTION bf;
+				bf.BlendOp = AC_SRC_OVER;
+				bf.BlendFlags = 0;
+				bf.SourceConstantAlpha = 255;
+				bf.AlphaFormat = AC_SRC_ALPHA;
+
+				DwmExtendFrameIntoClientArea(windowVars.hWnd, &margins);
+				HBRUSH brsh = CreateSolidBrush(0);
+				FillRect(ps.hdc, &rt, brsh);
+				AlphaBlend(ps.hdc, 
+						0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(),
+						windowVars.backbuffer, 
+						0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(), 
+						bf);
+
+
+//				BitBlt(ps.hdc, 0, 0, cast(int)dialog.width, cast(int)dialog.height, windowVars.backbuffer, 0, 0, SRCCOPY);
+				EndPaint(hWnd, &ps);
+			}
+			return 1;
+
 		case WM_SYSCOMMAND:
 			if (wParam == SC_CLOSE) {
-				windowVars.event.type = Event.Close;
-				windowVars.haveEvent = true;
+				event.type = Event.Close;
+				windowVars.eventQueue.add(event);
 				return 1;
 			}
 			break;
@@ -443,15 +574,15 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
 		case WM_MBUTTONDOWN:
-			windowVars.event.type = Event.MouseDown;
+			event.type = Event.MouseDown;
 			if (uMsg == WM_LBUTTONDOWN) {
-				windowVars.event.aux = 0;
+				event.aux = 0;
 			}
 			else if (uMsg == WM_RBUTTONDOWN) {
-				windowVars.event.aux = 1;
+				event.aux = 1;
 			}
 			else {
-				windowVars.event.aux = 2;
+				event.aux = 2;
 			}
 
 			SetFocus(hWnd);
@@ -461,66 +592,66 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			x = lParam & 0xffff;
 			y = (lParam >> 16)& 0xffff;
 
-			windowVars.event.info.mouse.x = x;
-			windowVars.event.info.mouse.y = y;
+			event.info.mouse.x = x;
+			event.info.mouse.y = y;
 
-			windowVars.haveEvent = true;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_LBUTTONUP:
 		case WM_RBUTTONUP:
 		case WM_MBUTTONUP:
-			windowVars.event.type = Event.MouseUp;
+			event.type = Event.MouseUp;
 			if (uMsg == WM_LBUTTONUP) {
-				windowVars.event.aux = 0;
+				event.aux = 0;
 			}
 			else if (uMsg == WM_RBUTTONUP) {
-				windowVars.event.aux = 1;
+				event.aux = 1;
 			}
 			else {
-				windowVars.event.aux = 2;
+				event.aux = 2;
 			}
 
 			ReleaseCapture();
 
 			int x, y;
 			x = lParam & 0xffff;
-			windowVars.event.info.mouse.x = x;
+			event.info.mouse.x = x;
 			y = (lParam >> 16) & 0xffff;
-			windowVars.event.info.mouse.y = y;
+			event.info.mouse.y = y;
 
-			windowVars.haveEvent = true;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_MOUSEWHEEL:
 		case WM_MOUSEHWHEEL:
 			if (uMsg == WM_MOUSEWHEEL) {
-				windowVars.event.type = Event.MouseWheelY;
+				event.type = Event.MouseWheelY;
 			}
 			else {
-				windowVars.event.type = Event.MouseWheelX;
+				event.type = Event.MouseWheelX;
 			}
 
 			short count = cast(short)((wParam >> 16) & 0xffff);
 			auto counts_per_tick = cast(double)WHEEL_DELTA;
-			windowVars.event.resolution = cast(double)count / counts_per_tick;
+			event.resolution = cast(double)count / counts_per_tick;
 
 			int x, y;
 			x = lParam & 0xffff;
-			windowVars.event.info.mouse.x = x;
+			event.info.mouse.x = x;
 			y = (lParam >> 16) & 0xffff;
-			windowVars.event.info.mouse.y = y;
+			event.info.mouse.y = y;
 
-			windowVars.haveEvent = true;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_MOUSEMOVE:
-			windowVars.event.type = Event.MouseMove;
+			event.type = Event.MouseMove;
 			int x, y;
 			x = lParam & 0xffff;
-			windowVars.event.info.mouse.x = x;
+			event.info.mouse.x = x;
 			y = (lParam >> 16) & 0xffff;
-			windowVars.event.info.mouse.y = y;
+			event.info.mouse.y = y;
 
 			if (x == windowVars.lastX && y == windowVars.lastY) {
 				// Redundant mouse move
@@ -534,7 +665,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				windowVars.hoverTimerSet = 1;
 			}
 
-			windowVars.haveEvent = true;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_TIMER:
@@ -565,14 +696,14 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 
 				// To make sure it is enqueued and thus retrieved
 				// upon GetMessage...
-				SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
+				//SendMessageW(hWnd, WM_MOUSELEAVE, 0,0);
 			}
 			return 1;
 
 		// Custom event that is triggered when the cursor leaves the window
 		case WM_MOUSELEAVE:
-			windowVars.event.type = Event.MouseLeave;
-			windowVars.haveEvent = true;
+			event.type = Event.MouseLeave;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_SYSKEYDOWN:
@@ -591,61 +722,59 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 			if (uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN) {
-				windowVars.event.type = Event.KeyDown;
+				event.type = Event.KeyDown;
 			}
 			else {
-				windowVars.event.type = Event.KeyUp;
+				event.type = Event.KeyUp;
 			}
 
 			// Get the scancode from the OEM section in LPARAM
 			// This should be something from scan code set 1
-			windowVars.event.info.key.scan = ((lParam >> 16) & 0xff);
+			event.info.key.scan = ((lParam >> 16) & 0xff);
 
-			windowVars.event.info.key.scan += ((lParam & (1 << 24)) * 0xe000);
+			event.info.key.scan += ((lParam & (1 << 24)) * 0xe000);
 
-		//	printf("invalid key: %x\n", windowVars.event.info.key.scan);
-			if (windowVars.event.info.key.scan == 0x45) {
+		//	printf("invalid key: %x\n", event.info.key.scan);
+			if (event.info.key.scan == 0x45) {
 				// PAUSE (Incorrect on windows)
-				windowVars.event.info.key.scan = 0xe11477;
+				event.info.key.scan = 0xe11477;
 			}
-			else if (windowVars.event.info.key.scan == 0xe045) {
+			else if (event.info.key.scan == 0xe045) {
 				// NUMLOCK (Incorrect on windows)
-				windowVars.event.info.key.scan = 0x77;
+				event.info.key.scan = 0x77;
 			}
 			else {
 				// Translate to scan code set 2
 				if (lParam & (1 << 24)) {
 					// Extended key (scan code is prefixed by 0xe0)
-					windowVars.event.info.key.scan = _set1ExToSet2[(windowVars.event.info.key.scan & 0xff)];
+					event.info.key.scan = _set1ExToSet2[(event.info.key.scan & 0xff)];
 				}
 				else {
-					windowVars.event.info.key.scan = _set1ToSet2[windowVars.event.info.key.scan];
+					event.info.key.scan = _set1ToSet2[event.info.key.scan];
 				}
 			}
 
-			if (windowVars.event.info.key.scan == 0xe11477) {
-				windowVars.event.info.key.code = Key.Pause;
+			if (event.info.key.scan == 0xe11477) {
+				event.info.key.code = Key.Pause;
 			}
-			else if (windowVars.event.info.key.scan < _translateScancode.length) {
-				windowVars.event.info.key.code = _translateScancode[windowVars.event.info.key.scan];
+			else if (event.info.key.scan < _translateScancode.length) {
+				event.info.key.code = _translateScancode[event.info.key.scan];
 			}
-			else if (windowVars.event.info.key.scan > 0xe000) {
-				windowVars.event.info.key.code = _translateScancodeEx[windowVars.event.info.key.scan & 0xff];
+			else if (event.info.key.scan > 0xe000) {
+				event.info.key.code = _translateScancodeEx[event.info.key.scan & 0xff];
 			}
 
-			windowVars.event.info.key.leftControl = GetKeyState(VK_LCONTROL) < 0;
-			windowVars.event.info.key.rightControl = GetKeyState(VK_RCONTROL) < 0;
-			windowVars.event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
-			windowVars.event.info.key.rightAlt = GetKeyState(VK_RMENU) < 0;
-			windowVars.event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
-			windowVars.event.info.key.capsLock = (GetKeyState(VK_CAPITAL) & 1) == 1;
+			event.info.key.leftControl = GetKeyState(VK_LCONTROL) < 0;
+			event.info.key.rightControl = GetKeyState(VK_RCONTROL) < 0;
+			event.info.key.shift = GetKeyState(VK_SHIFT) < 0;
+			event.info.key.rightAlt = GetKeyState(VK_RMENU) < 0;
+			event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
+			event.info.key.capsLock = (GetKeyState(VK_CAPITAL) & 1) == 1;
 
-			windowVars.haveEvent = true;
+			windowVars.eventQueue.add(event);
 			return 1;
 
 		case WM_USER_REDRAW:
-			windowVars.event.type = Event.Redraw;
-			windowVars.haveEvent = true;
 			return 1;
 
 		default:

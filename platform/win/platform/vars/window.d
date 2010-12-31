@@ -25,15 +25,15 @@ import binding.opengl.glu;
 //import opengl.window;
 
 import synch.thread;
+import synch.semaphore;
 
 import scaffold.opengl;
+
+import data.queue;
 
 struct WindowPlatformVars {
 	HWND hWnd;
 	HDC hdc;
-
-	Event* event;
-	bool haveEvent;
 
 	int hoverTimerSet;
 
@@ -44,4 +44,11 @@ struct WindowPlatformVars {
 	bool supress_WM_MOVE;
 
 	Window window;
+
+	ubyte[] pixelData;
+	HDC backbuffer;
+
+	Queue!(Event) eventQueue;
+	Thread messageThread;
+	Semaphore wait;
 }

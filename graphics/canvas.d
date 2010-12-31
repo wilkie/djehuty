@@ -1334,7 +1334,6 @@ public:
 
 	void drawCanvas(Canvas canvas, double x, double y) {
 		setContext();
-		putln("drawCanvas: x:", x, " y:", y, " w:", width, " h:", height, " cw:", canvas.width, " ch:", canvas.height);
 
 		x += 0.5;
 		y += 0.5;

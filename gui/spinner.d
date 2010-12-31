@@ -50,7 +50,7 @@ public:
 		super(x, y, width, height);
 
 		_canvas = new Bitmap(100, 100);
-		_img = new Image("tests/PNG/Knob Add.png");
+		_img = new Image("tests/PNG/Knob Blue.png");
 
 		_canvas.brush = new Brush(Color.fromRGBA(1,1,1,0.5));
 		_canvas.drawRectangle(0, 0, 100, 100);
@@ -101,8 +101,11 @@ public:
 		canvas.drawRegion(r);
 //		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 
-		canvas.drawCanvas(_img.canvas,15,15);
-		canvas.drawCanvas(_canvas, 300, 0);
+		canvas.drawCanvas(_img.canvas, 0, 0);
+		canvas.drawCanvas(_canvas, 100, 0);
+		canvas.drawCanvas(_canvas, 150, 0);
+		canvas.drawCanvas(_canvas, 200, 0);
+		canvas.drawCanvas(_canvas, 250, 0);
 
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 

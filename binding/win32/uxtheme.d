@@ -15,6 +15,8 @@ import binding.win32.windef;
 import binding.win32.winnt;
 import binding.win32.wingdi;
 
+extern(System):
+
 // XXX: CommCtrl.h
 alias HANDLE HIMAGELIST;
 

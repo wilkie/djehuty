@@ -39,7 +39,7 @@ import synch.thread;
 
 import io.console;
 
-void GuiNextEvent(Event* evt, WindowPlatformVars* vars) {
+/*void GuiNextEvent(Event* evt, WindowPlatformVars* vars) {
 	MSG msg;
 
 	vars.event = evt;
@@ -47,7 +47,7 @@ void GuiNextEvent(Event* evt, WindowPlatformVars* vars) {
 	auto ret = GetMessageW(&msg, vars.hWnd, 0, 0);
 	TranslateMessage(&msg);
 	DispatchMessageW(&msg);
-}
+}*/
 
 extern(Windows)
 static int WindowProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
