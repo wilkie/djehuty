@@ -181,9 +181,13 @@ void createWindow(WindowPlatformVars* windowVars) {
 	void* userData = cast(void*)windowVars;
 
 	DWORD style = WS_POPUP;
+	DWORD istyle = 0;
 
+	int w = cast(int)windowVars.window.width;
+	int h = cast(int)windowVars.window.height;
 	if (cast(Dialog)window !is null) {
-		style = WS_OVERLAPPED;
+		_clientSizeToWindowSize(cast(Dialog)windowVars.window, w, h);
+		_gatherStyleInformation(cast(Dialog)windowVars.window, style, istyle);
 	}
 
 	if (window.visible) {
@@ -194,10 +198,10 @@ void createWindow(WindowPlatformVars* windowVars) {
 
 	// Create the window as a normal app window to add it to the taskbar
 	windowVars.hWnd = CreateWindowExW(
-		WS_EX_APPWINDOW,
+		istyle | WS_EX_APPWINDOW,
 		className.ptr, "\0"w.ptr,
 		style,
-		cast(int)window.left, cast(int)window.top, cast(int)window.width, cast(int)window.height,
+		cast(int)window.left, cast(int)window.top, w, h,
 		null, null, null, userData);
 
 
@@ -207,12 +211,14 @@ void createWindow(WindowPlatformVars* windowVars) {
 
 	DWM_BLURBEHIND bb;
 
-	bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION;
-	bb.fEnable = FALSE;
-	bb.hRgnBlur = null;
+	bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION | DWM_BB_TRANSITIONONMAXIMIZED;
+	bb.fEnable = TRUE;
+	HRGN rgn = CreateRectRgn(0,0,1,1);
+	bb.hRgnBlur = rgn;
 	bb.fTransitionOnMaximized = TRUE;
 
 	DwmEnableBlurBehindWindow(windowVars.hWnd, &bb);
+	//DeleteObject(rgn);
 }
 
 class MessageThread : Thread {
@@ -240,6 +246,66 @@ public:
 				DispatchMessage(&msg);
 			}
 		}
+	}
+}
+
+void _clientSizeToWindowSize(Dialog window, ref int width, ref int height) {
+	if (width == Default) { 
+		width = CW_USEDEFAULT; 
+	}
+	else {
+		//normalize sizes
+
+		//account for borders and title bar...
+		//because windows is retarded in this
+		//respect
+
+		if (window.style == WindowStyle.Fixed) {
+			int border_width, border_height;
+			border_width = ( GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME) ) * 2;
+			border_height = (GetSystemMetrics(SM_CYDLGFRAME) * 2) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
+
+			width += border_width;
+			height += border_height;
+		}
+		else if (window.style == WindowStyle.Popup) {
+			//do nothing
+		}
+		else { // Sizable
+			int border_width, border_height;
+			border_width = GetSystemMetrics(SM_CXFRAME) * 2;
+			border_height = GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
+
+			width += border_width;
+			height += border_height;
+		}
+
+		// account for menubar
+	}
+}
+
+void _gatherStyleInformation(Dialog window, ref uint istyle, ref uint iexstyle) {
+	if (window.style == WindowStyle.Fixed) {
+		istyle = WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+
+		/+
+			istyle &= ~(WS_BORDER | WS_THICKFRAME);
+		iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+		istyle |= WS_CAPTION | WS_DLGFRAME;
+		iexstyle |= WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE;
+		+/
+
+		istyle &= ~(WS_THICKFRAME | WS_DLGFRAME);
+		iexstyle &= ~(WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE | WS_EX_WINDOWEDGE | WS_EX_STATICEDGE);
+
+		istyle |= WS_BORDER | WS_CAPTION;
+		iexstyle |= WS_EX_DLGMODALFRAME;
+	}
+	else if (window.style == WindowStyle.Popup) {
+		istyle = WS_POPUP;
+	}
+	else { // Sizable
+		istyle = WS_OVERLAPPEDWINDOW;
 	}
 }
 
@@ -548,7 +614,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				bf.SourceConstantAlpha = 255;
 				bf.AlphaFormat = AC_SRC_ALPHA;
 
-				DwmExtendFrameIntoClientArea(windowVars.hWnd, &margins);
+//				DwmExtendFrameIntoClientArea(windowVars.hWnd, &margins);
 				HBRUSH brsh = CreateSolidBrush(0);
 				FillRect(ps.hdc, &rt, brsh);
 				AlphaBlend(ps.hdc, 
