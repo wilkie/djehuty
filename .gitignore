@@ -5,6 +5,7 @@
 *.o
 *.obj
 *.dep
+*.swp
 
 .specs
 

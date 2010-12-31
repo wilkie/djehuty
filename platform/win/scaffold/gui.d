@@ -182,12 +182,15 @@ void createWindow(WindowPlatformVars* windowVars) {
 
 	DWORD style = WS_POPUP;
 	DWORD istyle = 0;
+	wstring title = "\0"w;
 
 	int w = cast(int)windowVars.window.width;
 	int h = cast(int)windowVars.window.height;
 	if (cast(Dialog)window !is null) {
-		_clientSizeToWindowSize(cast(Dialog)windowVars.window, w, h);
-		_gatherStyleInformation(cast(Dialog)windowVars.window, style, istyle);
+		Dialog d = cast(Dialog)windowVars.window;
+		_clientSizeToWindowSize(d, w, h);
+		_gatherStyleInformation(d, style, istyle);
+		title = Unicode.toUtf16(d.text) ~ "\0";
 	}
 
 	if (window.visible) {
@@ -199,7 +202,7 @@ void createWindow(WindowPlatformVars* windowVars) {
 	// Create the window as a normal app window to add it to the taskbar
 	windowVars.hWnd = CreateWindowExW(
 		istyle | WS_EX_APPWINDOW,
-		className.ptr, "\0"w.ptr,
+		className.ptr, title.ptr,
 		style,
 		cast(int)window.left, cast(int)window.top, w, h,
 		null, null, null, userData);
