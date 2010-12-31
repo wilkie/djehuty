@@ -31,7 +31,7 @@ public:
 	}
 
 	string text() {
-		return _title;
+		return _title.dup;
 	}
 
 	void style(WindowStyle value) {
