@@ -1,0 +1,7 @@
+LIBRARY 'dwmapi.dll'
+EXETYPE NT
+SUBSYSTEM WINDOWS
+EXPORTS
+
+_DwmExtendFrameIntoClientArea@8 = DwmExtendFrameIntoClientArea
+_DwmEnableBlurBehindWindow@8 = DwmEnableBlurBehindWindow
