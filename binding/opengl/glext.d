@@ -5541,38 +5541,38 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glResetHistogram (GLenum target);
 	void glResetMinmax (GLenum target);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-alias void (PFNGLCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLCOPYCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-alias void (PFNGLGETCOLORTABLEPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
-alias void (PFNGLGETCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
-alias void (PFNGLCOPYCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLCONVOLUTIONPARAMETERFPROC) (GLenum target, GLenum pname, GLfloat params);
-alias void (PFNGLCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLCONVOLUTIONPARAMETERIPROC) (GLenum target, GLenum pname, GLint params);
-alias void (PFNGLCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLCOPYCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCOPYCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLGETCONVOLUTIONFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLGETCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETSEPARABLEFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
-alias void (PFNGLSEPARABLEFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
-alias void (PFNGLGETHISTOGRAMPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-alias void (PFNGLGETHISTOGRAMPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETHISTOGRAMPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMINMAXPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-alias void (PFNGLGETMINMAXPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMINMAXPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLHISTOGRAMPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
-alias void (PFNGLMINMAXPROC) (GLenum target, GLenum internalformat, GLboolean sink);
-alias void (PFNGLRESETHISTOGRAMPROC) (GLenum target);
-alias void (PFNGLRESETMINMAXPROC) (GLenum target);
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table) PFNGLCOLORTABLEPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLCOLORTABLEPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLCOLORTABLEPARAMETERIVPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) PFNGLCOPYCOLORTABLEPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *table) PFNGLGETCOLORTABLEPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETCOLORTABLEPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETCOLORTABLEPARAMETERIVPROC;
+alias void function(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data) PFNGLCOLORSUBTABLEPROC;
+alias void function(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width) PFNGLCOPYCOLORSUBTABLEPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image) PFNGLCONVOLUTIONFILTER1DPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image) PFNGLCONVOLUTIONFILTER2DPROC;
+alias void function(GLenum target, GLenum pname, GLfloat params) PFNGLCONVOLUTIONPARAMETERFPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLCONVOLUTIONPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint params) PFNGLCONVOLUTIONPARAMETERIPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLCONVOLUTIONPARAMETERIVPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) PFNGLCOPYCONVOLUTIONFILTER1DPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYCONVOLUTIONFILTER2DPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *image) PFNGLGETCONVOLUTIONFILTERPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETCONVOLUTIONPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETCONVOLUTIONPARAMETERIVPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span) PFNGLGETSEPARABLEFILTERPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column) PFNGLSEPARABLEFILTER2DPROC;
+alias void function(GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values) PFNGLGETHISTOGRAMPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETHISTOGRAMPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETHISTOGRAMPARAMETERIVPROC;
+alias void function(GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values) PFNGLGETMINMAXPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETMINMAXPARAMETERFVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETMINMAXPARAMETERIVPROC;
+alias void function(GLenum target, GLsizei width, GLenum internalformat, GLboolean sink) PFNGLHISTOGRAMPROC;
+alias void function(GLenum target, GLenum internalformat, GLboolean sink) PFNGLMINMAXPROC;
+alias void function(GLenum target) PFNGLRESETHISTOGRAMPROC;
+alias void function(GLenum target) PFNGLRESETMINMAXPROC;
 
 static const auto GL_VERSION_1_3 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -5586,15 +5586,15 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glCompressedTexSubImage1D (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
 	void glGetCompressedTexImage (GLenum target, GLint level, GLvoid *img);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLACTIVETEXTUREPROC) (GLenum texture);
-alias void (PFNGLSAMPLECOVERAGEPROC) (GLclampf value, GLboolean invert);
-alias void (PFNGLCOMPRESSEDTEXIMAGE3DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXIMAGE2DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXIMAGE1DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLGETCOMPRESSEDTEXIMAGEPROC) (GLenum target, GLint level, GLvoid *img);
+alias void function(GLenum texture) PFNGLACTIVETEXTUREPROC;
+alias void function(GLclampf value, GLboolean invert) PFNGLSAMPLECOVERAGEPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE3DPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE2DPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE1DPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC;
+alias void function(GLenum target, GLint level, GLvoid *img) PFNGLGETCOMPRESSEDTEXIMAGEPROC;
 
 static const auto GL_VERSION_1_3_DEPRECATED = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -5636,43 +5636,43 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMultTransposeMatrixf (GLfloat *m);
 	void glMultTransposeMatrixd (GLdouble *m);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCLIENTACTIVETEXTUREPROC) (GLenum texture);
-alias void (PFNGLMULTITEXCOORD1DPROC) (GLenum target, GLdouble s);
-alias void (PFNGLMULTITEXCOORD1DVPROC) (GLenum target, GLdouble *v);
+alias void function(GLenum texture) PFNGLCLIENTACTIVETEXTUREPROC;
+alias void function(GLenum target, GLdouble s) PFNGLMULTITEXCOORD1DPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD1DVPROC;
 alias void function(GLenum target, GLfloat s) PFNGLMULTITEXCOORD1FPROC;
-alias void (PFNGLMULTITEXCOORD1FVPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD1IPROC) (GLenum target, GLint s);
-alias void (PFNGLMULTITEXCOORD1IVPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD1SPROC) (GLenum target, GLshort s);
-alias void (PFNGLMULTITEXCOORD1SVPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD2DPROC) (GLenum target, GLdouble s, GLdouble t);
-alias void (PFNGLMULTITEXCOORD2DVPROC) (GLenum target, GLdouble *v);
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD1FVPROC;
+alias void function(GLenum target, GLint s) PFNGLMULTITEXCOORD1IPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD1IVPROC;
+alias void function(GLenum target, GLshort s) PFNGLMULTITEXCOORD1SPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD1SVPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t) PFNGLMULTITEXCOORD2DPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD2DVPROC;
 alias void function(GLenum target, GLfloat s, GLfloat t) PFNGLMULTITEXCOORD2FPROC;
-alias void (PFNGLMULTITEXCOORD2FVPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD2IPROC) (GLenum target, GLint s, GLint t);
-alias void (PFNGLMULTITEXCOORD2IVPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD2SPROC) (GLenum target, GLshort s, GLshort t);
-alias void (PFNGLMULTITEXCOORD2SVPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD3DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
-alias void (PFNGLMULTITEXCOORD3DVPROC) (GLenum target, GLdouble *v);
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD2FVPROC;
+alias void function(GLenum target, GLint s, GLint t) PFNGLMULTITEXCOORD2IPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD2IVPROC;
+alias void function(GLenum target, GLshort s, GLshort t) PFNGLMULTITEXCOORD2SPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD2SVPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t, GLdouble r) PFNGLMULTITEXCOORD3DPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD3DVPROC;
 alias void function(GLenum target, GLfloat s, GLfloat t, GLfloat r) PFNGLMULTITEXCOORD3FPROC;
-alias void (PFNGLMULTITEXCOORD3FVPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD3IPROC) (GLenum target, GLint s, GLint t, GLint r);
-alias void (PFNGLMULTITEXCOORD3IVPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD3SPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
-alias void (PFNGLMULTITEXCOORD3SVPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD4DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
-alias void (PFNGLMULTITEXCOORD4DVPROC) (GLenum target, GLdouble *v);
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD3FVPROC;
+alias void function(GLenum target, GLint s, GLint t, GLint r) PFNGLMULTITEXCOORD3IPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD3IVPROC;
+alias void function(GLenum target, GLshort s, GLshort t, GLshort r) PFNGLMULTITEXCOORD3SPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD3SVPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q) PFNGLMULTITEXCOORD4DPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD4DVPROC;
 alias void function(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q) PFNGLMULTITEXCOORD4FPROC;
-alias void (PFNGLMULTITEXCOORD4FVPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD4IPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
-alias void (PFNGLMULTITEXCOORD4IVPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD4SPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
-alias void (PFNGLMULTITEXCOORD4SVPROC) (GLenum target, GLshort *v);
-alias void (PFNGLLOADTRANSPOSEMATRIXFPROC) (GLfloat *m);
-alias void (PFNGLLOADTRANSPOSEMATRIXDPROC) (GLdouble *m);
-alias void (PFNGLMULTTRANSPOSEMATRIXFPROC) (GLfloat *m);
-alias void (PFNGLMULTTRANSPOSEMATRIXDPROC) (GLdouble *m);
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD4FVPROC;
+alias void function(GLenum target, GLint s, GLint t, GLint r, GLint q) PFNGLMULTITEXCOORD4IPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD4IVPROC;
+alias void function(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q) PFNGLMULTITEXCOORD4SPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD4SVPROC;
+alias void function(GLfloat *m) PFNGLLOADTRANSPOSEMATRIXFPROC;
+alias void function(GLdouble *m) PFNGLLOADTRANSPOSEMATRIXDPROC;
+alias void function(GLfloat *m) PFNGLMULTTRANSPOSEMATRIXFPROC;
+alias void function(GLdouble *m) PFNGLMULTTRANSPOSEMATRIXDPROC;
 
 static const auto GL_VERSION_1_4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -5685,12 +5685,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameteriv (GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
 alias void function(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) PFNGLBLENDFUNCSEPARATEPROC;
-alias void (PFNGLMULTIDRAWARRAYSPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-alias void (PFNGLMULTIDRAWELEMENTSPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
-alias void (PFNGLPOINTPARAMETERFPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLPOINTPARAMETERFVPROC) (GLenum pname, GLfloat *params);
-alias void (PFNGLPOINTPARAMETERIPROC) (GLenum pname, GLint param);
-alias void (PFNGLPOINTPARAMETERIVPROC) (GLenum pname, GLint *params);
+alias void function(GLenum mode, GLint *first, GLsizei *count, GLsizei primcount) PFNGLMULTIDRAWARRAYSPROC;
+alias void function(GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount) PFNGLMULTIDRAWELEMENTSPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLPOINTPARAMETERFPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLPOINTPARAMETERFVPROC;
+alias void function(GLenum pname, GLint param) PFNGLPOINTPARAMETERIPROC;
+alias void function(GLenum pname, GLint *params) PFNGLPOINTPARAMETERIVPROC;
 
 static const auto GL_VERSION_1_4_DEPRECATED = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -5733,44 +5733,44 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glWindowPos3s (GLshort x, GLshort y, GLshort z);
 	void glWindowPos3sv (GLshort *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFOGCOORDFPROC) (GLfloat coord);
-alias void (PFNGLFOGCOORDFVPROC) (GLfloat *coord);
-alias void (PFNGLFOGCOORDDPROC) (GLdouble coord);
-alias void (PFNGLFOGCOORDDVPROC) (GLdouble *coord);
-alias void (PFNGLFOGCOORDPOINTERPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLSECONDARYCOLOR3BPROC) (GLbyte red, GLbyte green, GLbyte blue);
-alias void (PFNGLSECONDARYCOLOR3BVPROC) (GLbyte *v);
-alias void (PFNGLSECONDARYCOLOR3DPROC) (GLdouble red, GLdouble green, GLdouble blue);
-alias void (PFNGLSECONDARYCOLOR3DVPROC) (GLdouble *v);
-alias void (PFNGLSECONDARYCOLOR3FPROC) (GLfloat red, GLfloat green, GLfloat blue);
-alias void (PFNGLSECONDARYCOLOR3FVPROC) (GLfloat *v);
-alias void (PFNGLSECONDARYCOLOR3IPROC) (GLint red, GLint green, GLint blue);
-alias void (PFNGLSECONDARYCOLOR3IVPROC) (GLint *v);
-alias void (PFNGLSECONDARYCOLOR3SPROC) (GLshort red, GLshort green, GLshort blue);
-alias void (PFNGLSECONDARYCOLOR3SVPROC) (GLshort *v);
-alias void (PFNGLSECONDARYCOLOR3UBPROC) (GLubyte red, GLubyte green, GLubyte blue);
-alias void (PFNGLSECONDARYCOLOR3UBVPROC) (GLubyte *v);
-alias void (PFNGLSECONDARYCOLOR3UIPROC) (GLuint red, GLuint green, GLuint blue);
-alias void (PFNGLSECONDARYCOLOR3UIVPROC) (GLuint *v);
-alias void (PFNGLSECONDARYCOLOR3USPROC) (GLushort red, GLushort green, GLushort blue);
-alias void (PFNGLSECONDARYCOLOR3USVPROC) (GLushort *v);
-alias void (PFNGLSECONDARYCOLORPOINTERPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLWINDOWPOS2DPROC) (GLdouble x, GLdouble y);
-alias void (PFNGLWINDOWPOS2DVPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS2FPROC) (GLfloat x, GLfloat y);
-alias void (PFNGLWINDOWPOS2FVPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS2IPROC) (GLint x, GLint y);
-alias void (PFNGLWINDOWPOS2IVPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS2SPROC) (GLshort x, GLshort y);
-alias void (PFNGLWINDOWPOS2SVPROC) (GLshort *v);
-alias void (PFNGLWINDOWPOS3DPROC) (GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLWINDOWPOS3DVPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS3FPROC) (GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLWINDOWPOS3FVPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS3IPROC) (GLint x, GLint y, GLint z);
-alias void (PFNGLWINDOWPOS3IVPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS3SPROC) (GLshort x, GLshort y, GLshort z);
-alias void (PFNGLWINDOWPOS3SVPROC) (GLshort *v);
+alias void function(GLfloat coord) PFNGLFOGCOORDFPROC;
+alias void function(GLfloat *coord) PFNGLFOGCOORDFVPROC;
+alias void function(GLdouble coord) PFNGLFOGCOORDDPROC;
+alias void function(GLdouble *coord) PFNGLFOGCOORDDVPROC;
+alias void function(GLenum type, GLsizei stride, GLvoid *pointer) PFNGLFOGCOORDPOINTERPROC;
+alias void function(GLbyte red, GLbyte green, GLbyte blue) PFNGLSECONDARYCOLOR3BPROC;
+alias void function(GLbyte *v) PFNGLSECONDARYCOLOR3BVPROC;
+alias void function(GLdouble red, GLdouble green, GLdouble blue) PFNGLSECONDARYCOLOR3DPROC;
+alias void function(GLdouble *v) PFNGLSECONDARYCOLOR3DVPROC;
+alias void function(GLfloat red, GLfloat green, GLfloat blue) PFNGLSECONDARYCOLOR3FPROC;
+alias void function(GLfloat *v) PFNGLSECONDARYCOLOR3FVPROC;
+alias void function(GLint red, GLint green, GLint blue) PFNGLSECONDARYCOLOR3IPROC;
+alias void function(GLint *v) PFNGLSECONDARYCOLOR3IVPROC;
+alias void function(GLshort red, GLshort green, GLshort blue) PFNGLSECONDARYCOLOR3SPROC;
+alias void function(GLshort *v) PFNGLSECONDARYCOLOR3SVPROC;
+alias void function(GLubyte red, GLubyte green, GLubyte blue) PFNGLSECONDARYCOLOR3UBPROC;
+alias void function(GLubyte *v) PFNGLSECONDARYCOLOR3UBVPROC;
+alias void function(GLuint red, GLuint green, GLuint blue) PFNGLSECONDARYCOLOR3UIPROC;
+alias void function(GLuint *v) PFNGLSECONDARYCOLOR3UIVPROC;
+alias void function(GLushort red, GLushort green, GLushort blue) PFNGLSECONDARYCOLOR3USPROC;
+alias void function(GLushort *v) PFNGLSECONDARYCOLOR3USVPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLSECONDARYCOLORPOINTERPROC;
+alias void function(GLdouble x, GLdouble y) PFNGLWINDOWPOS2DPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS2DVPROC;
+alias void function(GLfloat x, GLfloat y) PFNGLWINDOWPOS2FPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS2FVPROC;
+alias void function(GLint x, GLint y) PFNGLWINDOWPOS2IPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS2IVPROC;
+alias void function(GLshort x, GLshort y) PFNGLWINDOWPOS2SPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS2SVPROC;
+alias void function(GLdouble x, GLdouble y, GLdouble z) PFNGLWINDOWPOS3DPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS3DVPROC;
+alias void function(GLfloat x, GLfloat y, GLfloat z) PFNGLWINDOWPOS3FPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS3FVPROC;
+alias void function(GLint x, GLint y, GLint z) PFNGLWINDOWPOS3IPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS3IVPROC;
+alias void function(GLshort x, GLshort y, GLshort z) PFNGLWINDOWPOS3SPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS3SVPROC;
 
 static const auto GL_VERSION_1_5 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -5794,25 +5794,25 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params);
 	void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGENQUERIESPROC) (GLsizei n, GLuint *ids);
-alias void (PFNGLDELETEQUERIESPROC) (GLsizei n, GLuint *ids);
-alias GLboolean (PFNGLISQUERYPROC) (GLuint id);
-alias void (PFNGLBEGINQUERYPROC) (GLenum target, GLuint id);
-alias void (PFNGLENDQUERYPROC) (GLenum target);
-alias void (PFNGLGETQUERYIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETQUERYOBJECTIVPROC) (GLuint id, GLenum pname, GLint *params);
-alias void (PFNGLGETQUERYOBJECTUIVPROC) (GLuint id, GLenum pname, GLuint *params);
-alias void (PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
-alias void (PFNGLDELETEBUFFERSPROC) (GLsizei n, GLuint *buffers);
-alias void (PFNGLGENBUFFERSPROC) (GLsizei n, GLuint *buffers);
-alias GLboolean (PFNGLISBUFFERPROC) (GLuint buffer);
-alias void (PFNGLBUFFERDATAPROC) (GLenum target, GLsizeiptr size, GLvoid *data, GLenum usage);
-alias void (PFNGLBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
-alias void (PFNGLGETBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
+alias void function(GLsizei n, GLuint *ids) PFNGLGENQUERIESPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLDELETEQUERIESPROC;
+alias GLboolean function(GLuint id) PFNGLISQUERYPROC;
+alias void function(GLenum target, GLuint id) PFNGLBEGINQUERYPROC;
+alias void function(GLenum target) PFNGLENDQUERYPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETQUERYIVPROC;
+alias void function(GLuint id, GLenum pname, GLint *params) PFNGLGETQUERYOBJECTIVPROC;
+alias void function(GLuint id, GLenum pname, GLuint *params) PFNGLGETQUERYOBJECTUIVPROC;
+alias void function(GLenum target, GLuint buffer) PFNGLBINDBUFFERPROC;
+alias void function(GLsizei n, GLuint *buffers) PFNGLDELETEBUFFERSPROC;
+alias void function(GLsizei n, GLuint *buffers) PFNGLGENBUFFERSPROC;
+alias GLboolean function(GLuint buffer) PFNGLISBUFFERPROC;
+alias void function(GLenum target, GLsizeiptr size, GLvoid *data, GLenum usage) PFNGLBUFFERDATAPROC;
+alias void function(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLBUFFERSUBDATAPROC;
+alias void function(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLGETBUFFERSUBDATAPROC;
 alias GLvoid* (PFNGLMAPBUFFERPROC) (GLenum target, GLenum access);
-alias GLboolean (PFNGLUNMAPBUFFERPROC) (GLenum target);
-alias void (PFNGLGETBUFFERPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETBUFFERPOINTERVPROC) (GLenum target, GLenum pname, GLvoid* *params);
+alias GLboolean function(GLenum target) PFNGLUNMAPBUFFERPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETBUFFERPARAMETERIVPROC;
+alias void function(GLenum target, GLenum pname, GLvoid* *params) PFNGLGETBUFFERPOINTERVPROC;
 
 static const auto GL_VERSION_2_0 = 1;
 
@@ -5912,98 +5912,98 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
 alias void function(GLenum modeRG, GLenum modeAlpha) PFNGLBLENDEQUATIONSEPARATEPROC;
-alias void (PFNGLDRAWBUFFERSPROC) (GLsizei n, GLenum *bufs);
-alias void (PFNGLSTENCILOPSEPARATEPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-alias void (PFNGLSTENCILFUNCSEPARATEPROC) (GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask);
-alias void (PFNGLSTENCILMASKSEPARATEPROC) (GLenum face, GLuint mask);
-alias void (PFNGLATTACHSHADERPROC) (GLuint program, GLuint shader);
-alias void (PFNGLBINDATTRIBLOCATIONPROC) (GLuint program, GLuint index, GLchar *name);
-alias void (PFNGLCOMPILESHADERPROC) (GLuint shader);
-alias GLuint (PFNGLCREATEPROGRAMPROC) ();
-alias GLuint (PFNGLCREATESHADERPROC) (GLenum type);
-alias void (PFNGLDELETEPROGRAMPROC) (GLuint program);
-alias void (PFNGLDELETESHADERPROC) (GLuint shader);
-alias void (PFNGLDETACHSHADERPROC) (GLuint program, GLuint shader);
-alias void (PFNGLDISABLEVERTEXATTRIBARRAYPROC) (GLuint index);
-alias void (PFNGLENABLEVERTEXATTRIBARRAYPROC) (GLuint index);
-alias void (PFNGLGETACTIVEATTRIBPROC) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-alias void (PFNGLGETACTIVEUNIFORMPROC) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-alias void (PFNGLGETATTACHEDSHADERSPROC) (GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
-alias GLint (PFNGLGETATTRIBLOCATIONPROC) (GLuint program, GLchar *name);
-alias void (PFNGLGETPROGRAMIVPROC) (GLuint program, GLenum pname, GLint *params);
-alias void (PFNGLGETPROGRAMINFOLOGPROC) (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-alias void (PFNGLGETSHADERIVPROC) (GLuint shader, GLenum pname, GLint *params);
-alias void (PFNGLGETSHADERINFOLOGPROC) (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-alias void (PFNGLGETSHADERSOURCEPROC) (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
-alias GLint (PFNGLGETUNIFORMLOCATIONPROC) (GLuint program, GLchar *name);
-alias void (PFNGLGETUNIFORMFVPROC) (GLuint program, GLint location, GLfloat *params);
-alias void (PFNGLGETUNIFORMIVPROC) (GLuint program, GLint location, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBDVPROC) (GLuint index, GLenum pname, GLdouble *params);
-alias void (PFNGLGETVERTEXATTRIBFVPROC) (GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVERTEXATTRIBIVPROC) (GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBPOINTERVPROC) (GLuint index, GLenum pname, GLvoid* *pointer);
-alias GLboolean (PFNGLISPROGRAMPROC) (GLuint program);
-alias GLboolean (PFNGLISSHADERPROC) (GLuint shader);
-alias void (PFNGLLINKPROGRAMPROC) (GLuint program);
-alias void (PFNGLSHADERSOURCEPROC) (GLuint shader, GLsizei count, GLchar* *string, GLint *length);
-alias void (PFNGLUSEPROGRAMPROC) (GLuint program);
-alias void (PFNGLUNIFORM1FPROC) (GLint location, GLfloat v0);
-alias void (PFNGLUNIFORM2FPROC) (GLint location, GLfloat v0, GLfloat v1);
-alias void (PFNGLUNIFORM3FPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-alias void (PFNGLUNIFORM4FPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-alias void (PFNGLUNIFORM1IPROC) (GLint location, GLint v0);
-alias void (PFNGLUNIFORM2IPROC) (GLint location, GLint v0, GLint v1);
-alias void (PFNGLUNIFORM3IPROC) (GLint location, GLint v0, GLint v1, GLint v2);
-alias void (PFNGLUNIFORM4IPROC) (GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-alias void (PFNGLUNIFORM1FVPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM2FVPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM3FVPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM4FVPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM1IVPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM2IVPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM3IVPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM4IVPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORMMATRIX2FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX3FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX4FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLVALIDATEPROGRAMPROC) (GLuint program);
-alias void (PFNGLVERTEXATTRIB1DPROC) (GLuint index, GLdouble x);
-alias void (PFNGLVERTEXATTRIB1DVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB1FPROC) (GLuint index, GLfloat x);
-alias void (PFNGLVERTEXATTRIB1FVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB1SPROC) (GLuint index, GLshort x);
-alias void (PFNGLVERTEXATTRIB1SVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB2DPROC) (GLuint index, GLdouble x, GLdouble y);
-alias void (PFNGLVERTEXATTRIB2DVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB2FPROC) (GLuint index, GLfloat x, GLfloat y);
-alias void (PFNGLVERTEXATTRIB2FVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB2SPROC) (GLuint index, GLshort x, GLshort y);
-alias void (PFNGLVERTEXATTRIB2SVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB3DPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLVERTEXATTRIB3DVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB3FPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLVERTEXATTRIB3FVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB3SPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
-alias void (PFNGLVERTEXATTRIB3SVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4NBVPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIB4NIVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIB4NSVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4NUBPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-alias void (PFNGLVERTEXATTRIB4NUBVPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIB4NUIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIB4NUSVPROC) (GLuint index, GLushort *v);
-alias void (PFNGLVERTEXATTRIB4BVPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIB4DPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLVERTEXATTRIB4DVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB4FPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLVERTEXATTRIB4FVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB4IVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIB4SPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-alias void (PFNGLVERTEXATTRIB4SVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4UBVPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIB4UIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIB4USVPROC) (GLuint index, GLushort *v);
-alias void (PFNGLVERTEXATTRIBPOINTERPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
+alias void function(GLsizei n, GLenum *bufs) PFNGLDRAWBUFFERSPROC;
+alias void function(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) PFNGLSTENCILOPSEPARATEPROC;
+alias void function(GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask) PFNGLSTENCILFUNCSEPARATEPROC;
+alias void function(GLenum face, GLuint mask) PFNGLSTENCILMASKSEPARATEPROC;
+alias void function(GLuint program, GLuint shader) PFNGLATTACHSHADERPROC;
+alias void function(GLuint program, GLuint index, GLchar *name) PFNGLBINDATTRIBLOCATIONPROC;
+alias void function(GLuint shader) PFNGLCOMPILESHADERPROC;
+alias GLuint function() PFNGLCREATEPROGRAMPROC;
+alias GLuint function(GLenum type) PFNGLCREATESHADERPROC;
+alias void function(GLuint program) PFNGLDELETEPROGRAMPROC;
+alias void function(GLuint shader) PFNGLDELETESHADERPROC;
+alias void function(GLuint program, GLuint shader) PFNGLDETACHSHADERPROC;
+alias void function(GLuint index) PFNGLDISABLEVERTEXATTRIBARRAYPROC;
+alias void function(GLuint index) PFNGLENABLEVERTEXATTRIBARRAYPROC;
+alias void function(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) PFNGLGETACTIVEATTRIBPROC;
+alias void function(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) PFNGLGETACTIVEUNIFORMPROC;
+alias void function(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj) PFNGLGETATTACHEDSHADERSPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETATTRIBLOCATIONPROC;
+alias void function(GLuint program, GLenum pname, GLint *params) PFNGLGETPROGRAMIVPROC;
+alias void function(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog) PFNGLGETPROGRAMINFOLOGPROC;
+alias void function(GLuint shader, GLenum pname, GLint *params) PFNGLGETSHADERIVPROC;
+alias void function(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog) PFNGLGETSHADERINFOLOGPROC;
+alias void function(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source) PFNGLGETSHADERSOURCEPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETUNIFORMLOCATIONPROC;
+alias void function(GLuint program, GLint location, GLfloat *params) PFNGLGETUNIFORMFVPROC;
+alias void function(GLuint program, GLint location, GLint *params) PFNGLGETUNIFORMIVPROC;
+alias void function(GLuint index, GLenum pname, GLdouble *params) PFNGLGETVERTEXATTRIBDVPROC;
+alias void function(GLuint index, GLenum pname, GLfloat *params) PFNGLGETVERTEXATTRIBFVPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBIVPROC;
+alias void function(GLuint index, GLenum pname, GLvoid* *pointer) PFNGLGETVERTEXATTRIBPOINTERVPROC;
+alias GLboolean function(GLuint program) PFNGLISPROGRAMPROC;
+alias GLboolean function(GLuint shader) PFNGLISSHADERPROC;
+alias void function(GLuint program) PFNGLLINKPROGRAMPROC;
+alias void function(GLuint shader, GLsizei count, GLchar* *string, GLint *length) PFNGLSHADERSOURCEPROC;
+alias void function(GLuint program) PFNGLUSEPROGRAMPROC;
+alias void function(GLint location, GLfloat v0) PFNGLUNIFORM1FPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1) PFNGLUNIFORM2FPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) PFNGLUNIFORM3FPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) PFNGLUNIFORM4FPROC;
+alias void function(GLint location, GLint v0) PFNGLUNIFORM1IPROC;
+alias void function(GLint location, GLint v0, GLint v1) PFNGLUNIFORM2IPROC;
+alias void function(GLint location, GLint v0, GLint v1, GLint v2) PFNGLUNIFORM3IPROC;
+alias void function(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) PFNGLUNIFORM4IPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM1FVPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM2FVPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM3FVPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM4FVPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM1IVPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM2IVPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM3IVPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM4IVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX2FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX3FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX4FVPROC;
+alias void function(GLuint program) PFNGLVALIDATEPROGRAMPROC;
+alias void function(GLuint index, GLdouble x) PFNGLVERTEXATTRIB1DPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB1DVPROC;
+alias void function(GLuint index, GLfloat x) PFNGLVERTEXATTRIB1FPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB1FVPROC;
+alias void function(GLuint index, GLshort x) PFNGLVERTEXATTRIB1SPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB1SVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y) PFNGLVERTEXATTRIB2DPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB2DVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y) PFNGLVERTEXATTRIB2FPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB2FVPROC;
+alias void function(GLuint index, GLshort x, GLshort y) PFNGLVERTEXATTRIB2SPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB2SVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z) PFNGLVERTEXATTRIB3DPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB3DVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z) PFNGLVERTEXATTRIB3FPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB3FVPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z) PFNGLVERTEXATTRIB3SPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB3SVPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIB4NBVPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIB4NIVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB4NSVPROC;
+alias void function(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) PFNGLVERTEXATTRIB4NUBPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIB4NUBVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIB4NUIVPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIB4NUSVPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIB4BVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLVERTEXATTRIB4DPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB4DVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLVERTEXATTRIB4FPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB4FVPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIB4IVPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) PFNGLVERTEXATTRIB4SPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB4SVPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIB4UBVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIB4UIVPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIB4USVPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer) PFNGLVERTEXATTRIBPOINTERPROC;
 
 static const auto GL_VERSION_2_1 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6014,12 +6014,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glUniformMatrix3x4fv (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
 	void glUniformMatrix4x3fv (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLUNIFORMMATRIX2X3FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX3X2FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX2X4FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX4X2FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX3X4FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX4X3FVPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX2X3FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX3X2FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX2X4FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX4X2FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX3X4FVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX4X3FVPROC;
 
 static const auto GL_VERSION_3_0 = 1;
 /* OpenGL 3.0 also reuses entry points from these extensions: */
@@ -6086,63 +6086,63 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glClearBufferfi (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
 	GLubyte * glGetStringi (GLenum name, GLuint index);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORMASKIPROC) (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
-alias void (PFNGLGETBOOLEANI_VPROC) (GLenum target, GLuint index, GLboolean *data);
-alias void (PFNGLGETINTEGERI_VPROC) (GLenum target, GLuint index, GLint *data);
-alias void (PFNGLENABLEIPROC) (GLenum target, GLuint index);
-alias void (PFNGLDISABLEIPROC) (GLenum target, GLuint index);
-alias GLboolean (PFNGLISENABLEDIPROC) (GLenum target, GLuint index);
-alias void (PFNGLBEGINTRANSFORMFEEDBACKPROC) (GLenum primitiveMode);
-alias void (PFNGLENDTRANSFORMFEEDBACKPROC) ();
-alias void (PFNGLBINDBUFFERRANGEPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-alias void (PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, GLuint buffer);
-alias void (PFNGLTRANSFORMFEEDBACKVARYINGSPROC) (GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode);
-alias void (PFNGLGETTRANSFORMFEEDBACKVARYINGPROC) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
-alias void (PFNGLCLAMPCOLORPROC) (GLenum target, GLenum clamp);
-alias void (PFNGLBEGINCONDITIONALRENDERPROC) (GLuint id, GLenum mode);
-alias void (PFNGLENDCONDITIONALRENDERPROC) ();
-alias void (PFNGLVERTEXATTRIBIPOINTERPROC) (GLuint index, GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLGETVERTEXATTRIBIIVPROC) (GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBIUIVPROC) (GLuint index, GLenum pname, GLuint *params);
-alias void (PFNGLVERTEXATTRIBI1IPROC) (GLuint index, GLint x);
-alias void (PFNGLVERTEXATTRIBI2IPROC) (GLuint index, GLint x, GLint y);
-alias void (PFNGLVERTEXATTRIBI3IPROC) (GLuint index, GLint x, GLint y, GLint z);
-alias void (PFNGLVERTEXATTRIBI4IPROC) (GLuint index, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLVERTEXATTRIBI1UIPROC) (GLuint index, GLuint x);
-alias void (PFNGLVERTEXATTRIBI2UIPROC) (GLuint index, GLuint x, GLuint y);
-alias void (PFNGLVERTEXATTRIBI3UIPROC) (GLuint index, GLuint x, GLuint y, GLuint z);
-alias void (PFNGLVERTEXATTRIBI4UIPROC) (GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-alias void (PFNGLVERTEXATTRIBI1IVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI2IVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI3IVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI4IVPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI1UIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI2UIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI3UIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI4UIVPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI4BVPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIBI4SVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIBI4UBVPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIBI4USVPROC) (GLuint index, GLushort *v);
-alias void (PFNGLGETUNIFORMUIVPROC) (GLuint program, GLint location, GLuint *params);
-alias void (PFNGLBINDFRAGDATALOCATIONPROC) (GLuint program, GLuint color, GLchar *name);
-alias GLint (PFNGLGETFRAGDATALOCATIONPROC) (GLuint program, GLchar *name);
-alias void (PFNGLUNIFORM1UIPROC) (GLint location, GLuint v0);
-alias void (PFNGLUNIFORM2UIPROC) (GLint location, GLuint v0, GLuint v1);
-alias void (PFNGLUNIFORM3UIPROC) (GLint location, GLuint v0, GLuint v1, GLuint v2);
-alias void (PFNGLUNIFORM4UIPROC) (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-alias void (PFNGLUNIFORM1UIVPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM2UIVPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM3UIVPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM4UIVPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLTEXPARAMETERIIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLTEXPARAMETERIUIVPROC) (GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLGETTEXPARAMETERIIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETTEXPARAMETERIUIVPROC) (GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLCLEARBUFFERIVPROC) (GLenum buffer, GLint drawbuffer, GLint *value);
-alias void (PFNGLCLEARBUFFERUIVPROC) (GLenum buffer, GLint drawbuffer, GLuint *value);
-alias void (PFNGLCLEARBUFFERFVPROC) (GLenum buffer, GLint drawbuffer, GLfloat *value);
-alias void (PFNGLCLEARBUFFERFIPROC) (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
+alias void function(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a) PFNGLCOLORMASKIPROC;
+alias void function(GLenum target, GLuint index, GLboolean *data) PFNGLGETBOOLEANI_VPROC;
+alias void function(GLenum target, GLuint index, GLint *data) PFNGLGETINTEGERI_VPROC;
+alias void function(GLenum target, GLuint index) PFNGLENABLEIPROC;
+alias void function(GLenum target, GLuint index) PFNGLDISABLEIPROC;
+alias GLboolean function(GLenum target, GLuint index) PFNGLISENABLEDIPROC;
+alias void function(GLenum primitiveMode) PFNGLBEGINTRANSFORMFEEDBACKPROC;
+alias void function() PFNGLENDTRANSFORMFEEDBACKPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size) PFNGLBINDBUFFERRANGEPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer) PFNGLBINDBUFFERBASEPROC;
+alias void function(GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode) PFNGLTRANSFORMFEEDBACKVARYINGSPROC;
+alias void function(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name) PFNGLGETTRANSFORMFEEDBACKVARYINGPROC;
+alias void function(GLenum target, GLenum clamp) PFNGLCLAMPCOLORPROC;
+alias void function(GLuint id, GLenum mode) PFNGLBEGINCONDITIONALRENDERPROC;
+alias void function() PFNGLENDCONDITIONALRENDERPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLVERTEXATTRIBIPOINTERPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBIIVPROC;
+alias void function(GLuint index, GLenum pname, GLuint *params) PFNGLGETVERTEXATTRIBIUIVPROC;
+alias void function(GLuint index, GLint x) PFNGLVERTEXATTRIBI1IPROC;
+alias void function(GLuint index, GLint x, GLint y) PFNGLVERTEXATTRIBI2IPROC;
+alias void function(GLuint index, GLint x, GLint y, GLint z) PFNGLVERTEXATTRIBI3IPROC;
+alias void function(GLuint index, GLint x, GLint y, GLint z, GLint w) PFNGLVERTEXATTRIBI4IPROC;
+alias void function(GLuint index, GLuint x) PFNGLVERTEXATTRIBI1UIPROC;
+alias void function(GLuint index, GLuint x, GLuint y) PFNGLVERTEXATTRIBI2UIPROC;
+alias void function(GLuint index, GLuint x, GLuint y, GLuint z) PFNGLVERTEXATTRIBI3UIPROC;
+alias void function(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w) PFNGLVERTEXATTRIBI4UIPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI1IVPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI2IVPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI3IVPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI4IVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI1UIVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI2UIVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI3UIVPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI4UIVPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIBI4BVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIBI4SVPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIBI4UBVPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIBI4USVPROC;
+alias void function(GLuint program, GLint location, GLuint *params) PFNGLGETUNIFORMUIVPROC;
+alias void function(GLuint program, GLuint color, GLchar *name) PFNGLBINDFRAGDATALOCATIONPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETFRAGDATALOCATIONPROC;
+alias void function(GLint location, GLuint v0) PFNGLUNIFORM1UIPROC;
+alias void function(GLint location, GLuint v0, GLuint v1) PFNGLUNIFORM2UIPROC;
+alias void function(GLint location, GLuint v0, GLuint v1, GLuint v2) PFNGLUNIFORM3UIPROC;
+alias void function(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) PFNGLUNIFORM4UIPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM1UIVPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM2UIVPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM3UIVPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM4UIVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLTEXPARAMETERIIVPROC;
+alias void function(GLenum target, GLenum pname, GLuint *params) PFNGLTEXPARAMETERIUIVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETTEXPARAMETERIIVPROC;
+alias void function(GLenum target, GLenum pname, GLuint *params) PFNGLGETTEXPARAMETERIUIVPROC;
+alias void function(GLenum buffer, GLint drawbuffer, GLint *value) PFNGLCLEARBUFFERIVPROC;
+alias void function(GLenum buffer, GLint drawbuffer, GLuint *value) PFNGLCLEARBUFFERUIVPROC;
+alias void function(GLenum buffer, GLint drawbuffer, GLfloat *value) PFNGLCLEARBUFFERFVPROC;
+alias void function(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil) PFNGLCLEARBUFFERFIPROC;
 alias GLubyte * (PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
 
 static const auto GL_VERSION_3_1 = 1;
@@ -6155,10 +6155,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTexBuffer (GLenum target, GLenum internalformat, GLuint buffer);
 	void glPrimitiveRestartIndex (GLuint index);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWARRAYSINSTANCEDPROC) (GLenum mode, GLint first, GLsizei count, GLsizei primcount);
-alias void (PFNGLDRAWELEMENTSINSTANCEDPROC) (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount);
-alias void (PFNGLTEXBUFFERPROC) (GLenum target, GLenum internalformat, GLuint buffer);
-alias void (PFNGLPRIMITIVERESTARTINDEXPROC) (GLuint index);
+alias void function(GLenum mode, GLint first, GLsizei count, GLsizei primcount) PFNGLDRAWARRAYSINSTANCEDPROC;
+alias void function(GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount) PFNGLDRAWELEMENTSINSTANCEDPROC;
+alias void function(GLenum target, GLenum internalformat, GLuint buffer) PFNGLTEXBUFFERPROC;
+alias void function(GLuint index) PFNGLPRIMITIVERESTARTINDEXPROC;
 
 
 static const auto GL_VERSION_3_2 = 1;
@@ -6173,10 +6173,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glProgramParameteri (GLuint program, GLenum pname, GLint value);
 	void glFramebufferTexture (GLenum target, GLenum attachment, GLuint texture, GLint level);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETINTEGER64I_VPROC) (GLenum target, GLuint index, GLint64 *data);
-alias void (PFNGLGETBUFFERPARAMETERI64VPROC) (GLenum target, GLenum pname, GLint64 *params);
-alias void (PFNGLPROGRAMPARAMETERIPROC) (GLuint program, GLenum pname, GLint value);
-alias void (PFNGLFRAMEBUFFERTEXTUREPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level);
+alias void function(GLenum target, GLuint index, GLint64 *data) PFNGLGETINTEGER64I_VPROC;
+alias void function(GLenum target, GLenum pname, GLint64 *params) PFNGLGETBUFFERPARAMETERI64VPROC;
+alias void function(GLuint program, GLenum pname, GLint value) PFNGLPROGRAMPARAMETERIPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level) PFNGLFRAMEBUFFERTEXTUREPROC;
 
 static const auto GL_VERSION_3_3 = 1;
 /* OpenGL 3.3 also reuses entry points from these extensions: */
@@ -6237,40 +6237,40 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMultiTexCoord4sARB (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
 	void glMultiTexCoord4svARB (GLenum target, GLshort *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLACTIVETEXTUREARBPROC) (GLenum texture);
-alias void (PFNGLCLIENTACTIVETEXTUREARBPROC) (GLenum texture);
-alias void (PFNGLMULTITEXCOORD1DARBPROC) (GLenum target, GLdouble s);
-alias void (PFNGLMULTITEXCOORD1DVARBPROC) (GLenum target, GLdouble *v);
-alias void (PFNGLMULTITEXCOORD1FARBPROC) (GLenum target, GLfloat s);
-alias void (PFNGLMULTITEXCOORD1FVARBPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD1IARBPROC) (GLenum target, GLint s);
-alias void (PFNGLMULTITEXCOORD1IVARBPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD1SARBPROC) (GLenum target, GLshort s);
-alias void (PFNGLMULTITEXCOORD1SVARBPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD2DARBPROC) (GLenum target, GLdouble s, GLdouble t);
-alias void (PFNGLMULTITEXCOORD2DVARBPROC) (GLenum target, GLdouble *v);
-alias void (PFNGLMULTITEXCOORD2FARBPROC) (GLenum target, GLfloat s, GLfloat t);
-alias void (PFNGLMULTITEXCOORD2FVARBPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, GLint t);
-alias void (PFNGLMULTITEXCOORD2IVARBPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD2SARBPROC) (GLenum target, GLshort s, GLshort t);
-alias void (PFNGLMULTITEXCOORD2SVARBPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD3DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
-alias void (PFNGLMULTITEXCOORD3DVARBPROC) (GLenum target, GLdouble *v);
-alias void (PFNGLMULTITEXCOORD3FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r);
-alias void (PFNGLMULTITEXCOORD3FVARBPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD3IARBPROC) (GLenum target, GLint s, GLint t, GLint r);
-alias void (PFNGLMULTITEXCOORD3IVARBPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD3SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
-alias void (PFNGLMULTITEXCOORD3SVARBPROC) (GLenum target, GLshort *v);
-alias void (PFNGLMULTITEXCOORD4DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
-alias void (PFNGLMULTITEXCOORD4DVARBPROC) (GLenum target, GLdouble *v);
-alias void (PFNGLMULTITEXCOORD4FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
-alias void (PFNGLMULTITEXCOORD4FVARBPROC) (GLenum target, GLfloat *v);
-alias void (PFNGLMULTITEXCOORD4IARBPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
-alias void (PFNGLMULTITEXCOORD4IVARBPROC) (GLenum target, GLint *v);
-alias void (PFNGLMULTITEXCOORD4SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
-alias void (PFNGLMULTITEXCOORD4SVARBPROC) (GLenum target, GLshort *v);
+alias void function(GLenum texture) PFNGLACTIVETEXTUREARBPROC;
+alias void function(GLenum texture) PFNGLCLIENTACTIVETEXTUREARBPROC;
+alias void function(GLenum target, GLdouble s) PFNGLMULTITEXCOORD1DARBPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD1DVARBPROC;
+alias void function(GLenum target, GLfloat s) PFNGLMULTITEXCOORD1FARBPROC;
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD1FVARBPROC;
+alias void function(GLenum target, GLint s) PFNGLMULTITEXCOORD1IARBPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD1IVARBPROC;
+alias void function(GLenum target, GLshort s) PFNGLMULTITEXCOORD1SARBPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD1SVARBPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t) PFNGLMULTITEXCOORD2DARBPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD2DVARBPROC;
+alias void function(GLenum target, GLfloat s, GLfloat t) PFNGLMULTITEXCOORD2FARBPROC;
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD2FVARBPROC;
+alias void function(GLenum target, GLint s, GLint t) PFNGLMULTITEXCOORD2IARBPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD2IVARBPROC;
+alias void function(GLenum target, GLshort s, GLshort t) PFNGLMULTITEXCOORD2SARBPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD2SVARBPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t, GLdouble r) PFNGLMULTITEXCOORD3DARBPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD3DVARBPROC;
+alias void function(GLenum target, GLfloat s, GLfloat t, GLfloat r) PFNGLMULTITEXCOORD3FARBPROC;
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD3FVARBPROC;
+alias void function(GLenum target, GLint s, GLint t, GLint r) PFNGLMULTITEXCOORD3IARBPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD3IVARBPROC;
+alias void function(GLenum target, GLshort s, GLshort t, GLshort r) PFNGLMULTITEXCOORD3SARBPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD3SVARBPROC;
+alias void function(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q) PFNGLMULTITEXCOORD4DARBPROC;
+alias void function(GLenum target, GLdouble *v) PFNGLMULTITEXCOORD4DVARBPROC;
+alias void function(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q) PFNGLMULTITEXCOORD4FARBPROC;
+alias void function(GLenum target, GLfloat *v) PFNGLMULTITEXCOORD4FVARBPROC;
+alias void function(GLenum target, GLint s, GLint t, GLint r, GLint q) PFNGLMULTITEXCOORD4IARBPROC;
+alias void function(GLenum target, GLint *v) PFNGLMULTITEXCOORD4IVARBPROC;
+alias void function(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q) PFNGLMULTITEXCOORD4SARBPROC;
+alias void function(GLenum target, GLshort *v) PFNGLMULTITEXCOORD4SVARBPROC;
 
 static const auto GL_ARB_transpose_matrix = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6279,16 +6279,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMultTransposeMatrixfARB (GLfloat *m);
 	void glMultTransposeMatrixdARB (GLdouble *m);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLLOADTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
-alias void (PFNGLLOADTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
-alias void (PFNGLMULTTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
-alias void (PFNGLMULTTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
+alias void function(GLfloat *m) PFNGLLOADTRANSPOSEMATRIXFARBPROC;
+alias void function(GLdouble *m) PFNGLLOADTRANSPOSEMATRIXDARBPROC;
+alias void function(GLfloat *m) PFNGLMULTTRANSPOSEMATRIXFARBPROC;
+alias void function(GLdouble *m) PFNGLMULTTRANSPOSEMATRIXDARBPROC;
 
 static const auto GL_ARB_multisample = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glSampleCoverageARB (GLclampf value, GLboolean invert);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSAMPLECOVERAGEARBPROC) (GLclampf value, GLboolean invert);
+alias void function(GLclampf value, GLboolean invert) PFNGLSAMPLECOVERAGEARBPROC;
 
 static const auto GL_ARB_texture_env_add = 1;
 
@@ -6304,13 +6304,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glCompressedTexSubImage1DARB (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
 	void glGetCompressedTexImageARB (GLenum target, GLint level, GLvoid *img);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOMPRESSEDTEXIMAGE3DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXIMAGE1DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
-alias void (PFNGLGETCOMPRESSEDTEXIMAGEARBPROC) (GLenum target, GLint level, GLvoid *img);
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE3DARBPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE2DARBPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXIMAGE1DARBPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data) PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC;
+alias void function(GLenum target, GLint level, GLvoid *img) PFNGLGETCOMPRESSEDTEXIMAGEARBPROC;
 
 static const auto GL_ARB_texture_border_clamp = 1;
 
@@ -6319,8 +6319,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameterfARB (GLenum pname, GLfloat param);
 	void glPointParameterfvARB (GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPOINTPARAMETERFARBPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLPOINTPARAMETERFVARBPROC) (GLenum pname, GLfloat *params);
+alias void function(GLenum pname, GLfloat param) PFNGLPOINTPARAMETERFARBPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLPOINTPARAMETERFVARBPROC;
 
 static const auto GL_ARB_vertex_blend = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6335,16 +6335,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glWeightPointerARB (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 	void glVertexBlendARB (GLint count);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLWEIGHTBVARBPROC) (GLint size, GLbyte *weights);
-alias void (PFNGLWEIGHTSVARBPROC) (GLint size, GLshort *weights);
-alias void (PFNGLWEIGHTIVARBPROC) (GLint size, GLint *weights);
-alias void (PFNGLWEIGHTFVARBPROC) (GLint size, GLfloat *weights);
-alias void (PFNGLWEIGHTDVARBPROC) (GLint size, GLdouble *weights);
-alias void (PFNGLWEIGHTUBVARBPROC) (GLint size, GLubyte *weights);
-alias void (PFNGLWEIGHTUSVARBPROC) (GLint size, GLushort *weights);
-alias void (PFNGLWEIGHTUIVARBPROC) (GLint size, GLuint *weights);
-alias void (PFNGLWEIGHTPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLVERTEXBLENDARBPROC) (GLint count);
+alias void function(GLint size, GLbyte *weights) PFNGLWEIGHTBVARBPROC;
+alias void function(GLint size, GLshort *weights) PFNGLWEIGHTSVARBPROC;
+alias void function(GLint size, GLint *weights) PFNGLWEIGHTIVARBPROC;
+alias void function(GLint size, GLfloat *weights) PFNGLWEIGHTFVARBPROC;
+alias void function(GLint size, GLdouble *weights) PFNGLWEIGHTDVARBPROC;
+alias void function(GLint size, GLubyte *weights) PFNGLWEIGHTUBVARBPROC;
+alias void function(GLint size, GLushort *weights) PFNGLWEIGHTUSVARBPROC;
+alias void function(GLint size, GLuint *weights) PFNGLWEIGHTUIVARBPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLWEIGHTPOINTERARBPROC;
+alias void function(GLint count) PFNGLVERTEXBLENDARBPROC;
 
 static const auto GL_ARB_matrix_palette = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6354,11 +6354,11 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMatrixIndexuivARB (GLint size, GLuint *indices);
 	void glMatrixIndexPointerARB (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCURRENTPALETTEMATRIXARBPROC) (GLint index);
-alias void (PFNGLMATRIXINDEXUBVARBPROC) (GLint size, GLubyte *indices);
-alias void (PFNGLMATRIXINDEXUSVARBPROC) (GLint size, GLushort *indices);
-alias void (PFNGLMATRIXINDEXUIVARBPROC) (GLint size, GLuint *indices);
-alias void (PFNGLMATRIXINDEXPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void function(GLint index) PFNGLCURRENTPALETTEMATRIXARBPROC;
+alias void function(GLint size, GLubyte *indices) PFNGLMATRIXINDEXUBVARBPROC;
+alias void function(GLint size, GLushort *indices) PFNGLMATRIXINDEXUSVARBPROC;
+alias void function(GLint size, GLuint *indices) PFNGLMATRIXINDEXUIVARBPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLMATRIXINDEXPOINTERARBPROC;
 
 static const auto GL_ARB_texture_env_combine = 1;
 
@@ -6393,22 +6393,22 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glWindowPos3sARB (GLshort x, GLshort y, GLshort z);
 	void glWindowPos3svARB (GLshort *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLWINDOWPOS2DARBPROC) (GLdouble x, GLdouble y);
-alias void (PFNGLWINDOWPOS2DVARBPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS2FARBPROC) (GLfloat x, GLfloat y);
-alias void (PFNGLWINDOWPOS2FVARBPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS2IARBPROC) (GLint x, GLint y);
-alias void (PFNGLWINDOWPOS2IVARBPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS2SARBPROC) (GLshort x, GLshort y);
-alias void (PFNGLWINDOWPOS2SVARBPROC) (GLshort *v);
-alias void (PFNGLWINDOWPOS3DARBPROC) (GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLWINDOWPOS3DVARBPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS3FARBPROC) (GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLWINDOWPOS3FVARBPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS3IARBPROC) (GLint x, GLint y, GLint z);
-alias void (PFNGLWINDOWPOS3IVARBPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS3SARBPROC) (GLshort x, GLshort y, GLshort z);
-alias void (PFNGLWINDOWPOS3SVARBPROC) (GLshort *v);
+alias void function(GLdouble x, GLdouble y) PFNGLWINDOWPOS2DARBPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS2DVARBPROC;
+alias void function(GLfloat x, GLfloat y) PFNGLWINDOWPOS2FARBPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS2FVARBPROC;
+alias void function(GLint x, GLint y) PFNGLWINDOWPOS2IARBPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS2IVARBPROC;
+alias void function(GLshort x, GLshort y) PFNGLWINDOWPOS2SARBPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS2SVARBPROC;
+alias void function(GLdouble x, GLdouble y, GLdouble z) PFNGLWINDOWPOS3DARBPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS3DVARBPROC;
+alias void function(GLfloat x, GLfloat y, GLfloat z) PFNGLWINDOWPOS3FARBPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS3FVARBPROC;
+alias void function(GLint x, GLint y, GLint z) PFNGLWINDOWPOS3IARBPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS3IVARBPROC;
+alias void function(GLshort x, GLshort y, GLshort z) PFNGLWINDOWPOS3SARBPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS3SVARBPROC;
 
 static const auto GL_ARB_vertex_program = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6475,68 +6475,68 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetVertexAttribPointervARB (GLuint index, GLenum pname, GLvoid* *pointer);
 	GLboolean glIsProgramARB (GLuint program);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXATTRIB1DARBPROC) (GLuint index, GLdouble x);
-alias void (PFNGLVERTEXATTRIB1DVARBPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB1FARBPROC) (GLuint index, GLfloat x);
-alias void (PFNGLVERTEXATTRIB1FVARBPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB1SARBPROC) (GLuint index, GLshort x);
-alias void (PFNGLVERTEXATTRIB1SVARBPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB2DARBPROC) (GLuint index, GLdouble x, GLdouble y);
-alias void (PFNGLVERTEXATTRIB2DVARBPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB2FARBPROC) (GLuint index, GLfloat x, GLfloat y);
-alias void (PFNGLVERTEXATTRIB2FVARBPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB2SARBPROC) (GLuint index, GLshort x, GLshort y);
-alias void (PFNGLVERTEXATTRIB2SVARBPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB3DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLVERTEXATTRIB3DVARBPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB3FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLVERTEXATTRIB3FVARBPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB3SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
-alias void (PFNGLVERTEXATTRIB3SVARBPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4NBVARBPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIB4NIVARBPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIB4NSVARBPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4NUBARBPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-alias void (PFNGLVERTEXATTRIB4NUBVARBPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIB4NUIVARBPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIB4NUSVARBPROC) (GLuint index, GLushort *v);
-alias void (PFNGLVERTEXATTRIB4BVARBPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIB4DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLVERTEXATTRIB4DVARBPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB4FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLVERTEXATTRIB4FVARBPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB4IVARBPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIB4SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-alias void (PFNGLVERTEXATTRIB4SVARBPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4UBVARBPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIB4UIVARBPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIB4USVARBPROC) (GLuint index, GLushort *v);
-alias void (PFNGLVERTEXATTRIBPOINTERARBPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLENABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
-alias void (PFNGLDISABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
+alias void function(GLuint index, GLdouble x) PFNGLVERTEXATTRIB1DARBPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB1DVARBPROC;
+alias void function(GLuint index, GLfloat x) PFNGLVERTEXATTRIB1FARBPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB1FVARBPROC;
+alias void function(GLuint index, GLshort x) PFNGLVERTEXATTRIB1SARBPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB1SVARBPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y) PFNGLVERTEXATTRIB2DARBPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB2DVARBPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y) PFNGLVERTEXATTRIB2FARBPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB2FVARBPROC;
+alias void function(GLuint index, GLshort x, GLshort y) PFNGLVERTEXATTRIB2SARBPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB2SVARBPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z) PFNGLVERTEXATTRIB3DARBPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB3DVARBPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z) PFNGLVERTEXATTRIB3FARBPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB3FVARBPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z) PFNGLVERTEXATTRIB3SARBPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB3SVARBPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIB4NBVARBPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIB4NIVARBPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB4NSVARBPROC;
+alias void function(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) PFNGLVERTEXATTRIB4NUBARBPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIB4NUBVARBPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIB4NUIVARBPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIB4NUSVARBPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIB4BVARBPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLVERTEXATTRIB4DARBPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB4DVARBPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLVERTEXATTRIB4FARBPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB4FVARBPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIB4IVARBPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) PFNGLVERTEXATTRIB4SARBPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB4SVARBPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIB4UBVARBPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIB4UIVARBPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIB4USVARBPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer) PFNGLVERTEXATTRIBPOINTERARBPROC;
+alias void function(GLuint index) PFNGLENABLEVERTEXATTRIBARRAYARBPROC;
+alias void function(GLuint index) PFNGLDISABLEVERTEXATTRIBARRAYARBPROC;
 alias void function(GLenum target, GLenum format, GLsizei len, GLvoid *string) PFNGLPROGRAMSTRINGARBPROC;
 alias void function(GLenum target, GLuint program) PFNGLBINDPROGRAMARBPROC;
 alias void function(GLsizei n, GLuint *programs) PFNGLDELETEPROGRAMSARBPROC;
 alias void function(GLsizei n, GLuint *programs) PFNGLGENPROGRAMSARBPROC;
-alias void (PFNGLPROGRAMENVPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLPROGRAMENVPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLPROGRAMENVPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLPROGRAMENVPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLPROGRAMLOCALPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLPROGRAMLOCALPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLPROGRAMLOCALPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLPROGRAMLOCALPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLGETPROGRAMENVPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLGETPROGRAMENVPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLGETPROGRAMIVARBPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETPROGRAMSTRINGARBPROC) (GLenum target, GLenum pname, GLvoid *string);
-alias void (PFNGLGETVERTEXATTRIBDVARBPROC) (GLuint index, GLenum pname, GLdouble *params);
-alias void (PFNGLGETVERTEXATTRIBFVARBPROC) (GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVERTEXATTRIBIVARBPROC) (GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBPOINTERVARBPROC) (GLuint index, GLenum pname, GLvoid* *pointer);
-alias GLboolean (PFNGLISPROGRAMARBPROC) (GLuint program);
+alias void function(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLPROGRAMENVPARAMETER4DARBPROC;
+alias void function(GLenum target, GLuint index, GLdouble *params) PFNGLPROGRAMENVPARAMETER4DVARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLPROGRAMENVPARAMETER4FARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat *params) PFNGLPROGRAMENVPARAMETER4FVARBPROC;
+alias void function(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLPROGRAMLOCALPARAMETER4DARBPROC;
+alias void function(GLenum target, GLuint index, GLdouble *params) PFNGLPROGRAMLOCALPARAMETER4DVARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLPROGRAMLOCALPARAMETER4FARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat *params) PFNGLPROGRAMLOCALPARAMETER4FVARBPROC;
+alias void function(GLenum target, GLuint index, GLdouble *params) PFNGLGETPROGRAMENVPARAMETERDVARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat *params) PFNGLGETPROGRAMENVPARAMETERFVARBPROC;
+alias void function(GLenum target, GLuint index, GLdouble *params) PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC;
+alias void function(GLenum target, GLuint index, GLfloat *params) PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETPROGRAMIVARBPROC;
+alias void function(GLenum target, GLenum pname, GLvoid *string) PFNGLGETPROGRAMSTRINGARBPROC;
+alias void function(GLuint index, GLenum pname, GLdouble *params) PFNGLGETVERTEXATTRIBDVARBPROC;
+alias void function(GLuint index, GLenum pname, GLfloat *params) PFNGLGETVERTEXATTRIBFVARBPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBIVARBPROC;
+alias void function(GLuint index, GLenum pname, GLvoid* *pointer) PFNGLGETVERTEXATTRIBPOINTERVARBPROC;
+alias GLboolean function(GLuint program) PFNGLISPROGRAMARBPROC;
 
 static const auto GL_ARB_fragment_program = 1;
 /* All ARB_fragment_program entry points are shared with ARB_vertex_program. */
@@ -6555,17 +6555,17 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetBufferParameterivARB (GLenum target, GLenum pname, GLint *params);
 	void glGetBufferPointervARB (GLenum target, GLenum pname, GLvoid* *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
-alias void (PFNGLDELETEBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
-alias void (PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
-alias GLboolean (PFNGLISBUFFERARBPROC) (GLuint buffer);
-alias void (PFNGLBUFFERDATAARBPROC) (GLenum target, GLsizeiptrARB size, GLvoid *data, GLenum usage);
-alias void (PFNGLBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
-alias void (PFNGLGETBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+alias void function(GLenum target, GLuint buffer) PFNGLBINDBUFFERARBPROC;
+alias void function(GLsizei n, GLuint *buffers) PFNGLDELETEBUFFERSARBPROC;
+alias void function(GLsizei n, GLuint *buffers) PFNGLGENBUFFERSARBPROC;
+alias GLboolean function(GLuint buffer) PFNGLISBUFFERARBPROC;
+alias void function(GLenum target, GLsizeiptrARB size, GLvoid *data, GLenum usage) PFNGLBUFFERDATAARBPROC;
+alias void function(GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) PFNGLBUFFERSUBDATAARBPROC;
+alias void function(GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) PFNGLGETBUFFERSUBDATAARBPROC;
 alias GLvoid* (PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access);
-alias GLboolean (PFNGLUNMAPBUFFERARBPROC) (GLenum target);
-alias void (PFNGLGETBUFFERPARAMETERIVARBPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETBUFFERPOINTERVARBPROC) (GLenum target, GLenum pname, GLvoid* *params);
+alias GLboolean function(GLenum target) PFNGLUNMAPBUFFERARBPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETBUFFERPARAMETERIVARBPROC;
+alias void function(GLenum target, GLenum pname, GLvoid* *params) PFNGLGETBUFFERPOINTERVARBPROC;
 
 static const auto GL_ARB_occlusion_query = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6578,14 +6578,14 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetQueryObjectivARB (GLuint id, GLenum pname, GLint *params);
 	void glGetQueryObjectuivARB (GLuint id, GLenum pname, GLuint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGENQUERIESARBPROC) (GLsizei n, GLuint *ids);
-alias void (PFNGLDELETEQUERIESARBPROC) (GLsizei n, GLuint *ids);
-alias GLboolean (PFNGLISQUERYARBPROC) (GLuint id);
-alias void (PFNGLBEGINQUERYARBPROC) (GLenum target, GLuint id);
-alias void (PFNGLENDQUERYARBPROC) (GLenum target);
-alias void (PFNGLGETQUERYIVARBPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETQUERYOBJECTIVARBPROC) (GLuint id, GLenum pname, GLint *params);
-alias void (PFNGLGETQUERYOBJECTUIVARBPROC) (GLuint id, GLenum pname, GLuint *params);
+alias void function(GLsizei n, GLuint *ids) PFNGLGENQUERIESARBPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLDELETEQUERIESARBPROC;
+alias GLboolean function(GLuint id) PFNGLISQUERYARBPROC;
+alias void function(GLenum target, GLuint id) PFNGLBEGINQUERYARBPROC;
+alias void function(GLenum target) PFNGLENDQUERYARBPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETQUERYIVARBPROC;
+alias void function(GLuint id, GLenum pname, GLint *params) PFNGLGETQUERYOBJECTIVARBPROC;
+alias void function(GLuint id, GLenum pname, GLuint *params) PFNGLGETQUERYOBJECTUIVARBPROC;
 
 static const auto GL_ARB_shader_objects = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6629,45 +6629,45 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetUniformivARB (GLhandleARB programObj, GLint location, GLint *params);
 	void glGetShaderSourceARB (GLhandleARB obj, GLsizei maxLength, GLsizei *length, GLcharARB *source);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDELETEOBJECTARBPROC) (GLhandleARB obj);
-alias GLhandleARB (PFNGLGETHANDLEARBPROC) (GLenum pname);
-alias void (PFNGLDETACHOBJECTARBPROC) (GLhandleARB containerObj, GLhandleARB attachedObj);
-alias GLhandleARB (PFNGLCREATESHADEROBJECTARBPROC) (GLenum shaderType);
-alias void (PFNGLSHADERSOURCEARBPROC) (GLhandleARB shaderObj, GLsizei count, GLcharARB* *string, GLint *length);
-alias void (PFNGLCOMPILESHADERARBPROC) (GLhandleARB shaderObj);
-alias GLhandleARB (PFNGLCREATEPROGRAMOBJECTARBPROC) ();
-alias void (PFNGLATTACHOBJECTARBPROC) (GLhandleARB containerObj, GLhandleARB obj);
-alias void (PFNGLLINKPROGRAMARBPROC) (GLhandleARB programObj);
-alias void (PFNGLUSEPROGRAMOBJECTARBPROC) (GLhandleARB programObj);
-alias void (PFNGLVALIDATEPROGRAMARBPROC) (GLhandleARB programObj);
-alias void (PFNGLUNIFORM1FARBPROC) (GLint location, GLfloat v0);
-alias void (PFNGLUNIFORM2FARBPROC) (GLint location, GLfloat v0, GLfloat v1);
-alias void (PFNGLUNIFORM3FARBPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-alias void (PFNGLUNIFORM4FARBPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-alias void (PFNGLUNIFORM1IARBPROC) (GLint location, GLint v0);
-alias void (PFNGLUNIFORM2IARBPROC) (GLint location, GLint v0, GLint v1);
-alias void (PFNGLUNIFORM3IARBPROC) (GLint location, GLint v0, GLint v1, GLint v2);
-alias void (PFNGLUNIFORM4IARBPROC) (GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-alias void (PFNGLUNIFORM1FVARBPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM2FVARBPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM3FVARBPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM4FVARBPROC) (GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLUNIFORM1IVARBPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM2IVARBPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM3IVARBPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORM4IVARBPROC) (GLint location, GLsizei count, GLint *value);
-alias void (PFNGLUNIFORMMATRIX2FVARBPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX3FVARBPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLUNIFORMMATRIX4FVARBPROC) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLGETOBJECTPARAMETERFVARBPROC) (GLhandleARB obj, GLenum pname, GLfloat *params);
-alias void (PFNGLGETOBJECTPARAMETERIVARBPROC) (GLhandleARB obj, GLenum pname, GLint *params);
-alias void (PFNGLGETINFOLOGARBPROC) (GLhandleARB obj, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog);
-alias void (PFNGLGETATTACHEDOBJECTSARBPROC) (GLhandleARB containerObj, GLsizei maxCount, GLsizei *count, GLhandleARB *obj);
-alias GLint (PFNGLGETUNIFORMLOCATIONARBPROC) (GLhandleARB programObj, GLcharARB *name);
-alias void (PFNGLGETACTIVEUNIFORMARBPROC) (GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name);
-alias void (PFNGLGETUNIFORMFVARBPROC) (GLhandleARB programObj, GLint location, GLfloat *params);
-alias void (PFNGLGETUNIFORMIVARBPROC) (GLhandleARB programObj, GLint location, GLint *params);
-alias void (PFNGLGETSHADERSOURCEARBPROC) (GLhandleARB obj, GLsizei maxLength, GLsizei *length, GLcharARB *source);
+alias void function(GLhandleARB obj) PFNGLDELETEOBJECTARBPROC;
+alias GLhandleARB function(GLenum pname) PFNGLGETHANDLEARBPROC;
+alias void function(GLhandleARB containerObj, GLhandleARB attachedObj) PFNGLDETACHOBJECTARBPROC;
+alias GLhandleARB function(GLenum shaderType) PFNGLCREATESHADEROBJECTARBPROC;
+alias void function(GLhandleARB shaderObj, GLsizei count, GLcharARB* *string, GLint *length) PFNGLSHADERSOURCEARBPROC;
+alias void function(GLhandleARB shaderObj) PFNGLCOMPILESHADERARBPROC;
+alias GLhandleARB function() PFNGLCREATEPROGRAMOBJECTARBPROC;
+alias void function(GLhandleARB containerObj, GLhandleARB obj) PFNGLATTACHOBJECTARBPROC;
+alias void function(GLhandleARB programObj) PFNGLLINKPROGRAMARBPROC;
+alias void function(GLhandleARB programObj) PFNGLUSEPROGRAMOBJECTARBPROC;
+alias void function(GLhandleARB programObj) PFNGLVALIDATEPROGRAMARBPROC;
+alias void function(GLint location, GLfloat v0) PFNGLUNIFORM1FARBPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1) PFNGLUNIFORM2FARBPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) PFNGLUNIFORM3FARBPROC;
+alias void function(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) PFNGLUNIFORM4FARBPROC;
+alias void function(GLint location, GLint v0) PFNGLUNIFORM1IARBPROC;
+alias void function(GLint location, GLint v0, GLint v1) PFNGLUNIFORM2IARBPROC;
+alias void function(GLint location, GLint v0, GLint v1, GLint v2) PFNGLUNIFORM3IARBPROC;
+alias void function(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) PFNGLUNIFORM4IARBPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM1FVARBPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM2FVARBPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM3FVARBPROC;
+alias void function(GLint location, GLsizei count, GLfloat *value) PFNGLUNIFORM4FVARBPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM1IVARBPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM2IVARBPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM3IVARBPROC;
+alias void function(GLint location, GLsizei count, GLint *value) PFNGLUNIFORM4IVARBPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX2FVARBPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX3FVARBPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLUNIFORMMATRIX4FVARBPROC;
+alias void function(GLhandleARB obj, GLenum pname, GLfloat *params) PFNGLGETOBJECTPARAMETERFVARBPROC;
+alias void function(GLhandleARB obj, GLenum pname, GLint *params) PFNGLGETOBJECTPARAMETERIVARBPROC;
+alias void function(GLhandleARB obj, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog) PFNGLGETINFOLOGARBPROC;
+alias void function(GLhandleARB containerObj, GLsizei maxCount, GLsizei *count, GLhandleARB *obj) PFNGLGETATTACHEDOBJECTSARBPROC;
+alias GLint function(GLhandleARB programObj, GLcharARB *name) PFNGLGETUNIFORMLOCATIONARBPROC;
+alias void function(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name) PFNGLGETACTIVEUNIFORMARBPROC;
+alias void function(GLhandleARB programObj, GLint location, GLfloat *params) PFNGLGETUNIFORMFVARBPROC;
+alias void function(GLhandleARB programObj, GLint location, GLint *params) PFNGLGETUNIFORMIVARBPROC;
+alias void function(GLhandleARB obj, GLsizei maxLength, GLsizei *length, GLcharARB *source) PFNGLGETSHADERSOURCEARBPROC;
 
 static const auto GL_ARB_vertex_shader = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6675,9 +6675,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetActiveAttribARB (GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name);
 	GLint glGetAttribLocationARB (GLhandleARB programObj, GLcharARB *name);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDATTRIBLOCATIONARBPROC) (GLhandleARB programObj, GLuint index, GLcharARB *name);
-alias void (PFNGLGETACTIVEATTRIBARBPROC) (GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name);
-alias GLint (PFNGLGETATTRIBLOCATIONARBPROC) (GLhandleARB programObj, GLcharARB *name);
+alias void function(GLhandleARB programObj, GLuint index, GLcharARB *name) PFNGLBINDATTRIBLOCATIONARBPROC;
+alias void function(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name) PFNGLGETACTIVEATTRIBARBPROC;
+alias GLint function(GLhandleARB programObj, GLcharARB *name) PFNGLGETATTRIBLOCATIONARBPROC;
 
 static const auto GL_ARB_fragment_shader = 1;
 
@@ -6693,7 +6693,7 @@ static const auto GL_ARB_draw_buffers = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawBuffersARB (GLsizei n, GLenum *bufs);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWBUFFERSARBPROC) (GLsizei n, GLenum *bufs);
+alias void function(GLsizei n, GLenum *bufs) PFNGLDRAWBUFFERSARBPROC;
 
 static const auto GL_ARB_texture_rectangle = 1;
 
@@ -6701,7 +6701,7 @@ static const auto GL_ARB_color_buffer_float = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glClampColorARB (GLenum target, GLenum clamp);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCLAMPCOLORARBPROC) (GLenum target, GLenum clamp);
+alias void function(GLenum target, GLenum clamp) PFNGLCLAMPCOLORARBPROC;
 
 static const auto GL_ARB_half_float_pixel = 1;
 
@@ -6716,8 +6716,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDrawArraysInstancedARB (GLenum mode, GLint first, GLsizei count, GLsizei primcount);
 	void glDrawElementsInstancedARB (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWARRAYSINSTANCEDARBPROC) (GLenum mode, GLint first, GLsizei count, GLsizei primcount);
-alias void (PFNGLDRAWELEMENTSINSTANCEDARBPROC) (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount);
+alias void function(GLenum mode, GLint first, GLsizei count, GLsizei primcount) PFNGLDRAWARRAYSINSTANCEDARBPROC;
+alias void function(GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount) PFNGLDRAWELEMENTSINSTANCEDARBPROC;
 
 static const auto GL_ARB_framebuffer_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6742,26 +6742,26 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glRenderbufferStorageMultisample (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
 	void glFramebufferTextureLayer (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLboolean (PFNGLISRENDERBUFFERPROC) (GLuint renderbuffer);
-alias void (PFNGLBINDRENDERBUFFERPROC) (GLenum target, GLuint renderbuffer);
-alias void (PFNGLDELETERENDERBUFFERSPROC) (GLsizei n, GLuint *renderbuffers);
-alias void (PFNGLGENRENDERBUFFERSPROC) (GLsizei n, GLuint *renderbuffers);
-alias void (PFNGLRENDERBUFFERSTORAGEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
-alias void (PFNGLGETRENDERBUFFERPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-alias GLboolean (PFNGLISFRAMEBUFFERPROC) (GLuint framebuffer);
-alias void (PFNGLBINDFRAMEBUFFERPROC) (GLenum target, GLuint framebuffer);
-alias void (PFNGLDELETEFRAMEBUFFERSPROC) (GLsizei n, GLuint *framebuffers);
-alias void (PFNGLGENFRAMEBUFFERSPROC) (GLsizei n, GLuint *framebuffers);
-alias GLenum (PFNGLCHECKFRAMEBUFFERSTATUSPROC) (GLenum target);
-alias void (PFNGLFRAMEBUFFERTEXTURE1DPROC) (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-alias void (PFNGLFRAMEBUFFERTEXTURE2DPROC) (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-alias void (PFNGLFRAMEBUFFERTEXTURE3DPROC) (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset);
-alias void (PFNGLFRAMEBUFFERRENDERBUFFERPROC) (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-alias void (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) (GLenum target, GLenum attachment, GLenum pname, GLint *params);
-alias void (PFNGLGENERATEMIPMAPPROC) (GLenum target);
-alias void (PFNGLBLITFRAMEBUFFERPROC) (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-alias void (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
-alias void (PFNGLFRAMEBUFFERTEXTURELAYERPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+alias GLboolean function(GLuint renderbuffer) PFNGLISRENDERBUFFERPROC;
+alias void function(GLenum target, GLuint renderbuffer) PFNGLBINDRENDERBUFFERPROC;
+alias void function(GLsizei n, GLuint *renderbuffers) PFNGLDELETERENDERBUFFERSPROC;
+alias void function(GLsizei n, GLuint *renderbuffers) PFNGLGENRENDERBUFFERSPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLsizei height) PFNGLRENDERBUFFERSTORAGEPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETRENDERBUFFERPARAMETERIVPROC;
+alias GLboolean function(GLuint framebuffer) PFNGLISFRAMEBUFFERPROC;
+alias void function(GLenum target, GLuint framebuffer) PFNGLBINDFRAMEBUFFERPROCGL;
+alias void function(GLsizei n, GLuint *framebuffers) PFNGLDELETEFRAMEBUFFERSPROC;
+alias void function(GLsizei n, GLuint *framebuffers) PFNGLGENFRAMEBUFFERSPROC;
+alias GLenum function(GLenum target) PFNGLCHECKFRAMEBUFFERSTATUSPROC;
+alias void function(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) PFNGLFRAMEBUFFERTEXTURE1DPROC;
+alias void function(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) PFNGLFRAMEBUFFERTEXTURE2DPROC;
+alias void function(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset) PFNGLFRAMEBUFFERTEXTURE3DPROC;
+alias void function(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) PFNGLFRAMEBUFFERRENDERBUFFERPROC;
+alias void function(GLenum target, GLenum attachment, GLenum pname, GLint *params) PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC;
+alias void function(GLenum target) PFNGLGENERATEMIPMAPPROC;
+alias void function(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) PFNGLBLITFRAMEBUFFERPROC;
+alias void function(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) PFNGLFRAMEBUFFERTEXTURELAYERPROC;
 
 static const auto GL_ARB_framebuffer_sRGB = 1;
 
@@ -6772,10 +6772,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFramebufferTextureLayerARB (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
 	void glFramebufferTextureFaceARB (GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMPARAMETERIARBPROC) (GLuint program, GLenum pname, GLint value);
-alias void (PFNGLFRAMEBUFFERTEXTUREARBPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level);
-alias void (PFNGLFRAMEBUFFERTEXTURELAYERARBPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
-alias void (PFNGLFRAMEBUFFERTEXTUREFACEARBPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face);
+alias void function(GLuint program, GLenum pname, GLint value) PFNGLPROGRAMPARAMETERIARBPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level) PFNGLFRAMEBUFFERTEXTUREARBPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) PFNGLFRAMEBUFFERTEXTURELAYERARBPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face) PFNGLFRAMEBUFFERTEXTUREFACEARBPROC;
 
 static const auto GL_ARB_half_float_vertex = 1;
 
@@ -6783,7 +6783,7 @@ static const auto GL_ARB_instanced_arrays = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribDivisorARB (GLuint index, GLuint divisor);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXATTRIBDIVISORARBPROC) (GLuint index, GLuint divisor);
+alias void function(GLuint index, GLuint divisor) PFNGLVERTEXATTRIBDIVISORARBPROC;
 
 static const auto GL_ARB_map_buffer_range = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6791,13 +6791,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFlushMappedBufferRange (GLenum target, GLintptr offset, GLsizeiptr length);
 } /* GL_GLEXT_PROTOTYPES */
 alias GLvoid* (PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
-alias void (PFNGLFLUSHMAPPEDBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length);
+alias void function(GLenum target, GLintptr offset, GLsizeiptr length) PFNGLFLUSHMAPPEDBUFFERRANGEPROC;
 
 static const auto GL_ARB_texture_buffer_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTexBufferARB (GLenum target, GLenum internalformat, GLuint buffer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXBUFFERARBPROC) (GLenum target, GLenum internalformat, GLuint buffer);
+alias void function(GLenum target, GLenum internalformat, GLuint buffer) PFNGLTEXBUFFERARBPROC;
 
 static const auto GL_ARB_texture_compression_rgtc = 1;
 
@@ -6810,10 +6810,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGenVertexArrays (GLsizei n, GLuint *arrays);
 	GLboolean glIsVertexArray (GLuint array);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDVERTEXARRAYPROC) (GLuint array);
-alias void (PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
-alias void (PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
-alias GLboolean (PFNGLISVERTEXARRAYPROC) (GLuint array);
+alias void function(GLuint array) PFNGLBINDVERTEXARRAYPROC;
+alias void function(GLsizei n, GLuint *arrays) PFNGLDELETEVERTEXARRAYSPROC;
+alias void function(GLsizei n, GLuint *arrays) PFNGLGENVERTEXARRAYSPROC;
+alias GLboolean function(GLuint array) PFNGLISVERTEXARRAYPROC;
 
 static const auto GL_ARB_uniform_buffer_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6825,13 +6825,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetActiveUniformBlockName (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
 	void glUniformBlockBinding (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETUNIFORMINDICESPROC) (GLuint program, GLsizei uniformCount, GLchar* *uniformNames, GLuint *uniformIndices);
-alias void (PFNGLGETACTIVEUNIFORMSIVPROC) (GLuint program, GLsizei uniformCount, GLuint *uniformIndices, GLenum pname, GLint *params);
-alias void (PFNGLGETACTIVEUNIFORMNAMEPROC) (GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
-alias GLuint (PFNGLGETUNIFORMBLOCKINDEXPROC) (GLuint program, GLchar *uniformBlockName);
-alias void (PFNGLGETACTIVEUNIFORMBLOCKIVPROC) (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
-alias void (PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC) (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
-alias void (PFNGLUNIFORMBLOCKBINDINGPROC) (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+alias void function(GLuint program, GLsizei uniformCount, GLchar* *uniformNames, GLuint *uniformIndices) PFNGLGETUNIFORMINDICESPROC;
+alias void function(GLuint program, GLsizei uniformCount, GLuint *uniformIndices, GLenum pname, GLint *params) PFNGLGETACTIVEUNIFORMSIVPROC;
+alias void function(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName) PFNGLGETACTIVEUNIFORMNAMEPROC;
+alias GLuint function(GLuint program, GLchar *uniformBlockName) PFNGLGETUNIFORMBLOCKINDEXPROC;
+alias void function(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params) PFNGLGETACTIVEUNIFORMBLOCKIVPROC;
+alias void function(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName) PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC;
+alias void function(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding) PFNGLUNIFORMBLOCKBINDINGPROC;
 
 static const auto GL_ARB_compatibility = 1;
 
@@ -6839,7 +6839,7 @@ static const auto GL_ARB_copy_buffer = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glCopyBufferSubData (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOPYBUFFERSUBDATAPROC) (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+alias void function(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size) PFNGLCOPYBUFFERSUBDATAPROC;
 
 static const auto GL_ARB_shader_texture_lod = 1;
 
@@ -6852,10 +6852,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDrawElementsInstancedBaseVertex (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount, GLint basevertex);
 	void glMultiDrawElementsBaseVertex (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint *basevertex);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWELEMENTSBASEVERTEXPROC) (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLint basevertex);
-alias void (PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices, GLint basevertex);
-alias void (PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC) (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount, GLint basevertex);
-alias void (PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint *basevertex);
+alias void function(GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLint basevertex) PFNGLDRAWELEMENTSBASEVERTEXPROC;
+alias void function(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices, GLint basevertex) PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC;
+alias void function(GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount, GLint basevertex) PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC;
+alias void function(GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint *basevertex) PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC;
 
 static const auto GL_ARB_fragment_coord_conventions = 1;
 
@@ -6863,7 +6863,7 @@ static const auto GL_ARB_provoking_vertex = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glProvokingVertex (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROVOKINGVERTEXPROC) (GLenum mode);
+alias void function(GLenum mode) PFNGLPROVOKINGVERTEXPROC;
 
 static const auto GL_ARB_seamless_cube_map = 1;
 
@@ -6877,13 +6877,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetInteger64v (GLenum pname, GLint64 *params);
 	void glGetSynciv (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLsync (PFNGLFENCESYNCPROC) (GLenum condition, GLbitfield flags);
-alias GLboolean (PFNGLISSYNCPROC) (GLsync sync);
-alias void (PFNGLDELETESYNCPROC) (GLsync sync);
-alias GLenum (PFNGLCLIENTWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64 timeout);
-alias void (PFNGLWAITSYNCPROC) (GLsync sync, GLbitfield flags, GLuint64 timeout);
-alias void (PFNGLGETINTEGER64VPROC) (GLenum pname, GLint64 *params);
-alias void (PFNGLGETSYNCIVPROC) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
+alias GLsync function(GLenum condition, GLbitfield flags) PFNGLFENCESYNCPROC;
+alias GLboolean function(GLsync sync) PFNGLISSYNCPROC;
+alias void function(GLsync sync) PFNGLDELETESYNCPROC;
+alias GLenum function(GLsync sync, GLbitfield flags, GLuint64 timeout) PFNGLCLIENTWAITSYNCPROC;
+alias void function(GLsync sync, GLbitfield flags, GLuint64 timeout) PFNGLWAITSYNCPROC;
+alias void function(GLenum pname, GLint64 *params) PFNGLGETINTEGER64VPROC;
+alias void function(GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values) PFNGLGETSYNCIVPROC;
 
 static const auto GL_ARB_texture_multisample = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6892,10 +6892,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetMultisamplefv (GLenum pname, GLuint index, GLfloat *val);
 	void glSampleMaski (GLuint index, GLbitfield mask);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXIMAGE2DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-alias void (PFNGLTEXIMAGE3DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
-alias void (PFNGLGETMULTISAMPLEFVPROC) (GLenum pname, GLuint index, GLfloat *val);
-alias void (PFNGLSAMPLEMASKIPROC) (GLuint index, GLbitfield mask);
+alias void function(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations) PFNGLTEXIMAGE2DMULTISAMPLEPROC;
+alias void function(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations) PFNGLTEXIMAGE3DMULTISAMPLEPROC;
+alias void function(GLenum pname, GLuint index, GLfloat *val) PFNGLGETMULTISAMPLEFVPROC;
+alias void function(GLuint index, GLbitfield mask) PFNGLSAMPLEMASKIPROC;
 
 static const auto GL_ARB_vertex_array_bgra = 1;
 
@@ -6906,16 +6906,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glBlendFunci (GLuint buf, GLenum src, GLenum dst);
 	void glBlendFuncSeparatei (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDEQUATIONIPROC) (GLuint buf, GLenum mode);
-alias void (PFNGLBLENDEQUATIONSEPARATEIPROC) (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
-alias void (PFNGLBLENDFUNCIPROC) (GLuint buf, GLenum src, GLenum dst);
-alias void (PFNGLBLENDFUNCSEPARATEIPROC) (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+alias void function(GLuint buf, GLenum mode) PFNGLBLENDEQUATIONIPROC;
+alias void function(GLuint buf, GLenum modeRGB, GLenum modeAlpha) PFNGLBLENDEQUATIONSEPARATEIPROC;
+alias void function(GLuint buf, GLenum src, GLenum dst) PFNGLBLENDFUNCIPROC;
+alias void function(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha) PFNGLBLENDFUNCSEPARATEIPROC;
 
 static const auto GL_ARB_sample_shading = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glMinSampleShading (GLclampf value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLMINSAMPLESHADINGPROC) (GLclampf value);
+alias void function(GLclampf value) PFNGLMINSAMPLESHADINGPROC;
 
 static const auto GL_ARB_texture_cube_map_array = 1;
 
@@ -6932,20 +6932,20 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetNamedStringARB (GLint namelen, GLchar *name, GLsizei bufSize, GLint *stringlen, GLchar *string);
 	void glGetNamedStringivARB (GLint namelen, GLchar *name, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLNAMEDSTRINGARBPROC) (GLenum type, GLint namelen, GLchar *name, GLint stringlen, GLchar *string);
-alias void (PFNGLDELETENAMEDSTRINGARBPROC) (GLint namelen, GLchar *name);
-alias void (PFNGLCOMPILESHADERINCLUDEARBPROC) (GLuint shader, GLsizei count, GLchar* *path, GLint *length);
-alias GLboolean (PFNGLISNAMEDSTRINGARBPROC) (GLint namelen, GLchar *name);
-alias void (PFNGLGETNAMEDSTRINGARBPROC) (GLint namelen, GLchar *name, GLsizei bufSize, GLint *stringlen, GLchar *string);
-alias void (PFNGLGETNAMEDSTRINGIVARBPROC) (GLint namelen, GLchar *name, GLenum pname, GLint *params);
+alias void function(GLenum type, GLint namelen, GLchar *name, GLint stringlen, GLchar *string) PFNGLNAMEDSTRINGARBPROC;
+alias void function(GLint namelen, GLchar *name) PFNGLDELETENAMEDSTRINGARBPROC;
+alias void function(GLuint shader, GLsizei count, GLchar* *path, GLint *length) PFNGLCOMPILESHADERINCLUDEARBPROC;
+alias GLboolean function(GLint namelen, GLchar *name) PFNGLISNAMEDSTRINGARBPROC;
+alias void function(GLint namelen, GLchar *name, GLsizei bufSize, GLint *stringlen, GLchar *string) PFNGLGETNAMEDSTRINGARBPROC;
+alias void function(GLint namelen, GLchar *name, GLenum pname, GLint *params) PFNGLGETNAMEDSTRINGIVARBPROC;
 
 static const auto GL_ARB_blend_func_extended = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBindFragDataLocationIndexed (GLuint program, GLuint colorNumber, GLuint index, GLchar *name);
 	GLint glGetFragDataIndex (GLuint program, GLchar *name);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDFRAGDATALOCATIONINDEXEDPROC) (GLuint program, GLuint colorNumber, GLuint index, GLchar *name);
-alias GLint (PFNGLGETFRAGDATAINDEXPROC) (GLuint program, GLchar *name);
+alias void function(GLuint program, GLuint colorNumber, GLuint index, GLchar *name) PFNGLBINDFRAGDATALOCATIONINDEXEDPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETFRAGDATAINDEXPROC;
 
 static const auto GL_ARB_sampler_objects = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6964,20 +6964,20 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetSamplerParameterfv (GLuint sampler, GLenum pname, GLfloat *params);
 	void glGetSamplerParameterIfv (GLuint sampler, GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGENSAMPLERSPROC) (GLsizei count, GLuint *samplers);
-alias void (PFNGLDELETESAMPLERSPROC) (GLsizei count, GLuint *samplers);
-alias GLboolean (PFNGLISSAMPLERPROC) (GLuint sampler);
-alias void (PFNGLBINDSAMPLERPROC) (GLenum unit, GLuint sampler);
-alias void (PFNGLSAMPLERPARAMETERIPROC) (GLuint sampler, GLenum pname, GLint param);
-alias void (PFNGLSAMPLERPARAMETERIVPROC) (GLuint sampler, GLenum pname, GLint *param);
-alias void (PFNGLSAMPLERPARAMETERFPROC) (GLuint sampler, GLenum pname, GLfloat param);
-alias void (PFNGLSAMPLERPARAMETERFVPROC) (GLuint sampler, GLenum pname, GLfloat *param);
-alias void (PFNGLSAMPLERPARAMETERIIVPROC) (GLuint sampler, GLenum pname, GLint *param);
-alias void (PFNGLSAMPLERPARAMETERIUIVPROC) (GLuint sampler, GLenum pname, GLuint *param);
-alias void (PFNGLGETSAMPLERPARAMETERIVPROC) (GLuint sampler, GLenum pname, GLint *params);
-alias void (PFNGLGETSAMPLERPARAMETERIIVPROC) (GLuint sampler, GLenum pname, GLint *params);
-alias void (PFNGLGETSAMPLERPARAMETERFVPROC) (GLuint sampler, GLenum pname, GLfloat *params);
-alias void (PFNGLGETSAMPLERPARAMETERIFVPROC) (GLuint sampler, GLenum pname, GLfloat *params);
+alias void function(GLsizei count, GLuint *samplers) PFNGLGENSAMPLERSPROC;
+alias void function(GLsizei count, GLuint *samplers) PFNGLDELETESAMPLERSPROC;
+alias GLboolean function(GLuint sampler) PFNGLISSAMPLERPROC;
+alias void function(GLenum unit, GLuint sampler) PFNGLBINDSAMPLERPROC;
+alias void function(GLuint sampler, GLenum pname, GLint param) PFNGLSAMPLERPARAMETERIPROC;
+alias void function(GLuint sampler, GLenum pname, GLint *param) PFNGLSAMPLERPARAMETERIVPROC;
+alias void function(GLuint sampler, GLenum pname, GLfloat param) PFNGLSAMPLERPARAMETERFPROC;
+alias void function(GLuint sampler, GLenum pname, GLfloat *param) PFNGLSAMPLERPARAMETERFVPROC;
+alias void function(GLuint sampler, GLenum pname, GLint *param) PFNGLSAMPLERPARAMETERIIVPROC;
+alias void function(GLuint sampler, GLenum pname, GLuint *param) PFNGLSAMPLERPARAMETERIUIVPROC;
+alias void function(GLuint sampler, GLenum pname, GLint *params) PFNGLGETSAMPLERPARAMETERIVPROC;
+alias void function(GLuint sampler, GLenum pname, GLint *params) PFNGLGETSAMPLERPARAMETERIIVPROC;
+alias void function(GLuint sampler, GLenum pname, GLfloat *params) PFNGLGETSAMPLERPARAMETERFVPROC;
+alias void function(GLuint sampler, GLenum pname, GLfloat *params) PFNGLGETSAMPLERPARAMETERIFVPROC;
 
 static const auto GL_ARB_timer_query = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -6985,9 +6985,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetQueryObjecti64v (GLuint id, GLenum pname, GLint64 *params);
 	void glGetQueryObjectui64v (GLuint id, GLenum pname, GLuint64 *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLQUERYCOUNTERPROC) (GLuint id, GLenum target);
-alias void (PFNGLGETQUERYOBJECTI64VPROC) (GLuint id, GLenum pname, GLint64 *params);
-alias void (PFNGLGETQUERYOBJECTUI64VPROC) (GLuint id, GLenum pname, GLuint64 *params);
+alias void function(GLuint id, GLenum target) PFNGLQUERYCOUNTERPROC;
+alias void function(GLuint id, GLenum pname, GLint64 *params) PFNGLGETQUERYOBJECTI64VPROC;
+alias void function(GLuint id, GLenum pname, GLuint64 *params) PFNGLGETQUERYOBJECTUI64VPROC;
 
 static const auto GL_ARB_vertex_type_2_10_10_10_rev = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7030,52 +7030,52 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribP4ui (GLuint index, GLenum type, GLboolean normalized, GLuint value);
 	void glVertexAttribP4uiv (GLuint index, GLenum type, GLboolean normalized, GLuint *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXP2UIPROC) (GLenum type, GLuint value);
-alias void (PFNGLVERTEXP2UIVPROC) (GLenum type, GLuint *value);
-alias void (PFNGLVERTEXP3UIPROC) (GLenum type, GLuint value);
-alias void (PFNGLVERTEXP3UIVPROC) (GLenum type, GLuint *value);
-alias void (PFNGLVERTEXP4UIPROC) (GLenum type, GLuint value);
-alias void (PFNGLVERTEXP4UIVPROC) (GLenum type, GLuint *value);
-alias void (PFNGLTEXCOORDP1UIPROC) (GLenum type, GLuint coords);
-alias void (PFNGLTEXCOORDP1UIVPROC) (GLenum type, GLuint *coords);
-alias void (PFNGLTEXCOORDP2UIPROC) (GLenum type, GLuint coords);
-alias void (PFNGLTEXCOORDP2UIVPROC) (GLenum type, GLuint *coords);
-alias void (PFNGLTEXCOORDP3UIPROC) (GLenum type, GLuint coords);
-alias void (PFNGLTEXCOORDP3UIVPROC) (GLenum type, GLuint *coords);
-alias void (PFNGLTEXCOORDP4UIPROC) (GLenum type, GLuint coords);
-alias void (PFNGLTEXCOORDP4UIVPROC) (GLenum type, GLuint *coords);
-alias void (PFNGLMULTITEXCOORDP1UIPROC) (GLenum texture, GLenum type, GLuint coords);
-alias void (PFNGLMULTITEXCOORDP1UIVPROC) (GLenum texture, GLenum type, GLuint *coords);
-alias void (PFNGLMULTITEXCOORDP2UIPROC) (GLenum texture, GLenum type, GLuint coords);
-alias void (PFNGLMULTITEXCOORDP2UIVPROC) (GLenum texture, GLenum type, GLuint *coords);
-alias void (PFNGLMULTITEXCOORDP3UIPROC) (GLenum texture, GLenum type, GLuint coords);
-alias void (PFNGLMULTITEXCOORDP3UIVPROC) (GLenum texture, GLenum type, GLuint *coords);
-alias void (PFNGLMULTITEXCOORDP4UIPROC) (GLenum texture, GLenum type, GLuint coords);
-alias void (PFNGLMULTITEXCOORDP4UIVPROC) (GLenum texture, GLenum type, GLuint *coords);
-alias void (PFNGLNORMALP3UIPROC) (GLenum type, GLuint coords);
-alias void (PFNGLNORMALP3UIVPROC) (GLenum type, GLuint *coords);
-alias void (PFNGLCOLORP3UIPROC) (GLenum type, GLuint color);
-alias void (PFNGLCOLORP3UIVPROC) (GLenum type, GLuint *color);
-alias void (PFNGLCOLORP4UIPROC) (GLenum type, GLuint color);
-alias void (PFNGLCOLORP4UIVPROC) (GLenum type, GLuint *color);
-alias void (PFNGLSECONDARYCOLORP3UIPROC) (GLenum type, GLuint color);
-alias void (PFNGLSECONDARYCOLORP3UIVPROC) (GLenum type, GLuint *color);
-alias void (PFNGLVERTEXATTRIBP1UIPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint value);
-alias void (PFNGLVERTEXATTRIBP1UIVPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint *value);
-alias void (PFNGLVERTEXATTRIBP2UIPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint value);
-alias void (PFNGLVERTEXATTRIBP2UIVPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint *value);
-alias void (PFNGLVERTEXATTRIBP3UIPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint value);
-alias void (PFNGLVERTEXATTRIBP3UIVPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint *value);
-alias void (PFNGLVERTEXATTRIBP4UIPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint value);
-alias void (PFNGLVERTEXATTRIBP4UIVPROC) (GLuint index, GLenum type, GLboolean normalized, GLuint *value);
+alias void function(GLenum type, GLuint value) PFNGLVERTEXP2UIPROC;
+alias void function(GLenum type, GLuint *value) PFNGLVERTEXP2UIVPROC;
+alias void function(GLenum type, GLuint value) PFNGLVERTEXP3UIPROC;
+alias void function(GLenum type, GLuint *value) PFNGLVERTEXP3UIVPROC;
+alias void function(GLenum type, GLuint value) PFNGLVERTEXP4UIPROC;
+alias void function(GLenum type, GLuint *value) PFNGLVERTEXP4UIVPROC;
+alias void function(GLenum type, GLuint coords) PFNGLTEXCOORDP1UIPROC;
+alias void function(GLenum type, GLuint *coords) PFNGLTEXCOORDP1UIVPROC;
+alias void function(GLenum type, GLuint coords) PFNGLTEXCOORDP2UIPROC;
+alias void function(GLenum type, GLuint *coords) PFNGLTEXCOORDP2UIVPROC;
+alias void function(GLenum type, GLuint coords) PFNGLTEXCOORDP3UIPROC;
+alias void function(GLenum type, GLuint *coords) PFNGLTEXCOORDP3UIVPROC;
+alias void function(GLenum type, GLuint coords) PFNGLTEXCOORDP4UIPROC;
+alias void function(GLenum type, GLuint *coords) PFNGLTEXCOORDP4UIVPROC;
+alias void function(GLenum texture, GLenum type, GLuint coords) PFNGLMULTITEXCOORDP1UIPROC;
+alias void function(GLenum texture, GLenum type, GLuint *coords) PFNGLMULTITEXCOORDP1UIVPROC;
+alias void function(GLenum texture, GLenum type, GLuint coords) PFNGLMULTITEXCOORDP2UIPROC;
+alias void function(GLenum texture, GLenum type, GLuint *coords) PFNGLMULTITEXCOORDP2UIVPROC;
+alias void function(GLenum texture, GLenum type, GLuint coords) PFNGLMULTITEXCOORDP3UIPROC;
+alias void function(GLenum texture, GLenum type, GLuint *coords) PFNGLMULTITEXCOORDP3UIVPROC;
+alias void function(GLenum texture, GLenum type, GLuint coords) PFNGLMULTITEXCOORDP4UIPROC;
+alias void function(GLenum texture, GLenum type, GLuint *coords) PFNGLMULTITEXCOORDP4UIVPROC;
+alias void function(GLenum type, GLuint coords) PFNGLNORMALP3UIPROC;
+alias void function(GLenum type, GLuint *coords) PFNGLNORMALP3UIVPROC;
+alias void function(GLenum type, GLuint color) PFNGLCOLORP3UIPROC;
+alias void function(GLenum type, GLuint *color) PFNGLCOLORP3UIVPROC;
+alias void function(GLenum type, GLuint color) PFNGLCOLORP4UIPROC;
+alias void function(GLenum type, GLuint *color) PFNGLCOLORP4UIVPROC;
+alias void function(GLenum type, GLuint color) PFNGLSECONDARYCOLORP3UIPROC;
+alias void function(GLenum type, GLuint *color) PFNGLSECONDARYCOLORP3UIVPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint value) PFNGLVERTEXATTRIBP1UIPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint *value) PFNGLVERTEXATTRIBP1UIVPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint value) PFNGLVERTEXATTRIBP2UIPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint *value) PFNGLVERTEXATTRIBP2UIVPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint value) PFNGLVERTEXATTRIBP3UIPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint *value) PFNGLVERTEXATTRIBP3UIVPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint value) PFNGLVERTEXATTRIBP4UIPROC;
+alias void function(GLuint index, GLenum type, GLboolean normalized, GLuint *value) PFNGLVERTEXATTRIBP4UIVPROC;
 
 static const auto GL_ARB_draw_indirect = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawArraysIndirect (GLenum mode, GLvoid *indirect);
 	void glDrawElementsIndirect (GLenum mode, GLenum type, GLvoid *indirect);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWARRAYSINDIRECTPROC) (GLenum mode, GLvoid *indirect);
-alias void (PFNGLDRAWELEMENTSINDIRECTPROC) (GLenum mode, GLenum type, GLvoid *indirect);
+alias void function(GLenum mode, GLvoid *indirect) PFNGLDRAWARRAYSINDIRECTPROC;
+alias void function(GLenum mode, GLenum type, GLvoid *indirect) PFNGLDRAWELEMENTSINDIRECTPROC;
 
 static const auto GL_ARB_gpu_shader_fp64 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7115,41 +7115,41 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glProgramUniformMatrix4x2dvEXT (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
 	void glProgramUniformMatrix4x3dvEXT (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLUNIFORM1DPROC) (GLint location, GLdouble x);
-alias void (PFNGLUNIFORM2DPROC) (GLint location, GLdouble x, GLdouble y);
-alias void (PFNGLUNIFORM3DPROC) (GLint location, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLUNIFORM4DPROC) (GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLUNIFORM1DVPROC) (GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLUNIFORM2DVPROC) (GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLUNIFORM3DVPROC) (GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLUNIFORM4DVPROC) (GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX2DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX3DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX4DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX2X3DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX2X4DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX3X2DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX3X4DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX4X2DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLUNIFORMMATRIX4X3DVPROC) (GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLGETUNIFORMDVPROC) (GLuint program, GLint location, GLdouble *params);
-alias void (PFNGLPROGRAMUNIFORM1DEXTPROC) (GLuint program, GLint location, GLdouble x);
-alias void (PFNGLPROGRAMUNIFORM2DEXTPROC) (GLuint program, GLint location, GLdouble x, GLdouble y);
-alias void (PFNGLPROGRAMUNIFORM3DEXTPROC) (GLuint program, GLint location, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLPROGRAMUNIFORM4DEXTPROC) (GLuint program, GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLPROGRAMUNIFORM1DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORM2DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORM3DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORM4DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2X3DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2X4DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3X2DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3X4DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4X2DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4X3DVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value);
+alias void function(GLint location, GLdouble x) PFNGLUNIFORM1DPROC;
+alias void function(GLint location, GLdouble x, GLdouble y) PFNGLUNIFORM2DPROC;
+alias void function(GLint location, GLdouble x, GLdouble y, GLdouble z) PFNGLUNIFORM3DPROC;
+alias void function(GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLUNIFORM4DPROC;
+alias void function(GLint location, GLsizei count, GLdouble *value) PFNGLUNIFORM1DVPROC;
+alias void function(GLint location, GLsizei count, GLdouble *value) PFNGLUNIFORM2DVPROC;
+alias void function(GLint location, GLsizei count, GLdouble *value) PFNGLUNIFORM3DVPROC;
+alias void function(GLint location, GLsizei count, GLdouble *value) PFNGLUNIFORM4DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX2DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX3DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX4DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX2X3DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX2X4DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX3X2DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX3X4DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX4X2DVPROC;
+alias void function(GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLUNIFORMMATRIX4X3DVPROC;
+alias void function(GLuint program, GLint location, GLdouble *params) PFNGLGETUNIFORMDVPROC;
+alias void function(GLuint program, GLint location, GLdouble x) PFNGLPROGRAMUNIFORM1DEXTPROC;
+alias void function(GLuint program, GLint location, GLdouble x, GLdouble y) PFNGLPROGRAMUNIFORM2DEXTPROC;
+alias void function(GLuint program, GLint location, GLdouble x, GLdouble y, GLdouble z) PFNGLPROGRAMUNIFORM3DEXTPROC;
+alias void function(GLuint program, GLint location, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLPROGRAMUNIFORM4DEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLdouble *value) PFNGLPROGRAMUNIFORM1DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLdouble *value) PFNGLPROGRAMUNIFORM2DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLdouble *value) PFNGLPROGRAMUNIFORM3DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLdouble *value) PFNGLPROGRAMUNIFORM4DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX2DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX3DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX4DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX2X3DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX2X4DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX3X2DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX3X4DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX4X2DVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLdouble *value) PFNGLPROGRAMUNIFORMMATRIX4X3DVEXTPROC;
 
 static const auto GL_ARB_shader_subroutine = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7162,22 +7162,22 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetUniformSubroutineuiv (GLenum shadertype, GLint location, GLuint *params);
 	void glGetProgramStageiv (GLuint program, GLenum shadertype, GLenum pname, GLint *values);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLint (PFNGLGETSUBROUTINEUNIFORMLOCATIONPROC) (GLuint program, GLenum shadertype, GLchar *name);
-alias GLuint (PFNGLGETSUBROUTINEINDEXPROC) (GLuint program, GLenum shadertype, GLchar *name);
-alias void (PFNGLGETACTIVESUBROUTINEUNIFORMIVPROC) (GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint *values);
-alias void (PFNGLGETACTIVESUBROUTINEUNIFORMNAMEPROC) (GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
-alias void (PFNGLGETACTIVESUBROUTINENAMEPROC) (GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name);
-alias void (PFNGLUNIFORMSUBROUTINESUIVPROC) (GLenum shadertype, GLsizei count, GLuint *indices);
-alias void (PFNGLGETUNIFORMSUBROUTINEUIVPROC) (GLenum shadertype, GLint location, GLuint *params);
-alias void (PFNGLGETPROGRAMSTAGEIVPROC) (GLuint program, GLenum shadertype, GLenum pname, GLint *values);
+alias GLint function(GLuint program, GLenum shadertype, GLchar *name) PFNGLGETSUBROUTINEUNIFORMLOCATIONPROC;
+alias GLuint function(GLuint program, GLenum shadertype, GLchar *name) PFNGLGETSUBROUTINEINDEXPROC;
+alias void function(GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint *values) PFNGLGETACTIVESUBROUTINEUNIFORMIVPROC;
+alias void function(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name) PFNGLGETACTIVESUBROUTINEUNIFORMNAMEPROC;
+alias void function(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei *length, GLchar *name) PFNGLGETACTIVESUBROUTINENAMEPROC;
+alias void function(GLenum shadertype, GLsizei count, GLuint *indices) PFNGLUNIFORMSUBROUTINESUIVPROC;
+alias void function(GLenum shadertype, GLint location, GLuint *params) PFNGLGETUNIFORMSUBROUTINEUIVPROC;
+alias void function(GLuint program, GLenum shadertype, GLenum pname, GLint *values) PFNGLGETPROGRAMSTAGEIVPROC;
 
 static const auto GL_ARB_tessellation_shader = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPatchParameteri (GLenum pname, GLint value);
 	void glPatchParameterfv (GLenum pname, GLfloat *values);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPATCHPARAMETERIPROC) (GLenum pname, GLint value);
-alias void (PFNGLPATCHPARAMETERFVPROC) (GLenum pname, GLfloat *values);
+alias void function(GLenum pname, GLint value) PFNGLPATCHPARAMETERIPROC;
+alias void function(GLenum pname, GLfloat *values) PFNGLPATCHPARAMETERFVPROC;
 
 static const auto GL_ARB_transform_feedback2 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7189,13 +7189,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glResumeTransformFeedback ();
 	void glDrawTransformFeedback (GLenum mode, GLuint id);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDTRANSFORMFEEDBACKPROC) (GLenum target, GLuint id);
-alias void (PFNGLDELETETRANSFORMFEEDBACKSPROC) (GLsizei n, GLuint *ids);
-alias void (PFNGLGENTRANSFORMFEEDBACKSPROC) (GLsizei n, GLuint *ids);
-alias GLboolean (PFNGLISTRANSFORMFEEDBACKPROC) (GLuint id);
-alias void (PFNGLPAUSETRANSFORMFEEDBACKPROC) ();
-alias void (PFNGLRESUMETRANSFORMFEEDBACKPROC) ();
-alias void (PFNGLDRAWTRANSFORMFEEDBACKPROC) (GLenum mode, GLuint id);
+alias void function(GLenum target, GLuint id) PFNGLBINDTRANSFORMFEEDBACKPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLDELETETRANSFORMFEEDBACKSPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLGENTRANSFORMFEEDBACKSPROC;
+alias GLboolean function(GLuint id) PFNGLISTRANSFORMFEEDBACKPROC;
+alias void function() PFNGLPAUSETRANSFORMFEEDBACKPROC;
+alias void function() PFNGLRESUMETRANSFORMFEEDBACKPROC;
+alias void function(GLenum mode, GLuint id) PFNGLDRAWTRANSFORMFEEDBACKPROC;
 
 static const auto GL_ARB_transform_feedback3 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7204,10 +7204,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glEndQueryIndexed (GLenum target, GLuint index);
 	void glGetQueryIndexediv (GLenum target, GLuint index, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC) (GLenum mode, GLuint id, GLuint stream);
-alias void (PFNGLBEGINQUERYINDEXEDPROC) (GLenum target, GLuint index, GLuint id);
-alias void (PFNGLENDQUERYINDEXEDPROC) (GLenum target, GLuint index);
-alias void (PFNGLGETQUERYINDEXEDIVPROC) (GLenum target, GLuint index, GLenum pname, GLint *params);
+alias void function(GLenum mode, GLuint id, GLuint stream) PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC;
+alias void function(GLenum target, GLuint index, GLuint id) PFNGLBEGINQUERYINDEXEDPROC;
+alias void function(GLenum target, GLuint index) PFNGLENDQUERYINDEXEDPROC;
+alias void function(GLenum target, GLuint index, GLenum pname, GLint *params) PFNGLGETQUERYINDEXEDIVPROC;
 
 static const auto GL_EXT_abgr = 1;
 
@@ -7215,13 +7215,13 @@ static const auto GL_EXT_blend_color = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlendColorEXT (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDCOLOREXTPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+alias void function(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) PFNGLBLENDCOLOREXTPROC;
 
 static const auto GL_EXT_polygon_offset = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPolygonOffsetEXT (GLfloat factor, GLfloat bias);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPOLYGONOFFSETEXTPROC) (GLfloat factor, GLfloat bias);
+alias void function(GLfloat factor, GLfloat bias) PFNGLPOLYGONOFFSETEXTPROC;
 
 static const auto GL_EXT_texture = 1;
 
@@ -7231,24 +7231,24 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTexSubImage3DEXT (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
 } /* GL_GLEXT_PROTOTYPES */
 
-alias void (PFNGLTEXIMAGE3DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXIMAGE3DEXTPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXSUBIMAGE3DEXTPROC;
 
 static const auto GL_SGIS_texture_filter4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glGetTexFilterFuncSGIS (GLenum target, GLenum filter, GLfloat *weights);
 	void glTexFilterFuncSGIS (GLenum target, GLenum filter, GLsizei n, GLfloat *weights);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLfloat *weights);
-alias void (PFNGLTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLsizei n, GLfloat *weights);
+alias void function(GLenum target, GLenum filter, GLfloat *weights) PFNGLGETTEXFILTERFUNCSGISPROC;
+alias void function(GLenum target, GLenum filter, GLsizei n, GLfloat *weights) PFNGLTEXFILTERFUNCSGISPROC;
 
 static const auto GL_EXT_subtexture = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTexSubImage1DEXT (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
 	void glTexSubImage2DEXT (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
+alias void function(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXSUBIMAGE1DEXTPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXSUBIMAGE2DEXTPROC;
 
 static const auto GL_EXT_copy_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7258,11 +7258,11 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glCopyTexSubImage2DEXT (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 	void glCopyTexSubImage3DEXT (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOPYTEXIMAGE1DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
-alias void (PFNGLCOPYTEXIMAGE2DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
-alias void (PFNGLCOPYTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCOPYTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLCOPYTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void function(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) PFNGLCOPYTEXIMAGE1DEXTPROC;
+alias void function(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border) PFNGLCOPYTEXIMAGE2DEXTPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width) PFNGLCOPYTEXSUBIMAGE1DEXTPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYTEXSUBIMAGE2DEXTPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYTEXSUBIMAGE3DEXTPROC;
 
 static const auto GL_EXT_histogram = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7277,16 +7277,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glResetHistogramEXT (GLenum target);
 	void glResetMinmaxEXT (GLenum target);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETHISTOGRAMEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-alias void (PFNGLGETHISTOGRAMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETHISTOGRAMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMINMAXEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-alias void (PFNGLGETMINMAXPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMINMAXPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLHISTOGRAMEXTPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
-alias void (PFNGLMINMAXEXTPROC) (GLenum target, GLenum internalformat, GLboolean sink);
-alias void (PFNGLRESETHISTOGRAMEXTPROC) (GLenum target);
-alias void (PFNGLRESETMINMAXEXTPROC) (GLenum target);
+alias void function(GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values) PFNGLGETHISTOGRAMEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETHISTOGRAMPARAMETERFVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETHISTOGRAMPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values) PFNGLGETMINMAXEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETMINMAXPARAMETERFVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETMINMAXPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLsizei width, GLenum internalformat, GLboolean sink) PFNGLHISTOGRAMEXTPROC;
+alias void function(GLenum target, GLenum internalformat, GLboolean sink) PFNGLMINMAXEXTPROC;
+alias void function(GLenum target) PFNGLRESETHISTOGRAMEXTPROC;
+alias void function(GLenum target) PFNGLRESETMINMAXEXTPROC;
 
 static const auto GL_EXT_convolution = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7304,19 +7304,19 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetSeparableFilterEXT (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
 	void glSeparableFilter2DEXT (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLCONVOLUTIONPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat params);
-alias void (PFNGLCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLCONVOLUTIONPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint params);
-alias void (PFNGLCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLGETCONVOLUTIONFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
-alias void (PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETSEPARABLEFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
-alias void (PFNGLSEPARABLEFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image) PFNGLCONVOLUTIONFILTER1DEXTPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image) PFNGLCONVOLUTIONFILTER2DEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat params) PFNGLCONVOLUTIONPARAMETERFEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLCONVOLUTIONPARAMETERFVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint params) PFNGLCONVOLUTIONPARAMETERIEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLCONVOLUTIONPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *image) PFNGLGETCONVOLUTIONFILTEREXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span) PFNGLGETSEPARABLEFILTEREXTPROC;
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column) PFNGLSEPARABLEFILTER2DEXTPROC;
 
 static const auto GL_SGI_color_matrix = 1;
 
@@ -7330,19 +7330,19 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetColorTableParameterfvSGI (GLenum target, GLenum pname, GLfloat *params);
 	void glGetColorTableParameterivSGI (GLenum target, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-alias void (PFNGLCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLCOPYCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-alias void (PFNGLGETCOLORTABLESGIPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
-alias void (PFNGLGETCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
+alias void function(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table) PFNGLCOLORTABLESGIPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLCOLORTABLEPARAMETERFVSGIPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLCOLORTABLEPARAMETERIVSGIPROC;
+alias void function(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) PFNGLCOPYCOLORTABLESGIPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *table) PFNGLGETCOLORTABLESGIPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETCOLORTABLEPARAMETERFVSGIPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETCOLORTABLEPARAMETERIVSGIPROC;
 
 static const auto GL_SGIX_pixel_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPixelTexGenSGIX (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPIXELTEXGENSGIXPROC) (GLenum mode);
+alias void function(GLenum mode) PFNGLPIXELTEXGENSGIXPROC;
 
 static const auto GL_SGIS_pixel_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7353,20 +7353,20 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetPixelTexGenParameterivSGIS (GLenum pname, GLint *params);
 	void glGetPixelTexGenParameterfvSGIS (GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPIXELTEXGENPARAMETERISGISPROC) (GLenum pname, GLint param);
-alias void (PFNGLPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
-alias void (PFNGLPIXELTEXGENPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
-alias void (PFNGLGETPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
-alias void (PFNGLGETPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
+alias void function(GLenum pname, GLint param) PFNGLPIXELTEXGENPARAMETERISGISPROC;
+alias void function(GLenum pname, GLint *params) PFNGLPIXELTEXGENPARAMETERIVSGISPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLPIXELTEXGENPARAMETERFSGISPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLPIXELTEXGENPARAMETERFVSGISPROC;
+alias void function(GLenum pname, GLint *params) PFNGLGETPIXELTEXGENPARAMETERIVSGISPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLGETPIXELTEXGENPARAMETERFVSGISPROC;
 
 static const auto GL_SGIS_texture4D = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTexImage4DSGIS (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLint border, GLenum format, GLenum type, GLvoid *pixels);
 	void glTexSubImage4DSGIS (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint woffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLenum format, GLenum type, GLvoid *pixels);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXIMAGE4DSGISPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXSUBIMAGE4DSGISPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint woffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLenum format, GLenum type, GLvoid *pixels);
+alias void function(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXIMAGE4DSGISPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint woffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXSUBIMAGE4DSGISPROC;
 
 static const auto GL_SGI_texture_color_table = 1;
 
@@ -7381,28 +7381,28 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLboolean glIsTextureEXT (GLuint texture);
 	void glPrioritizeTexturesEXT (GLsizei n, GLuint *textures, GLclampf *priorities);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLboolean (PFNGLARETEXTURESRESIDENTEXTPROC) (GLsizei n, GLuint *textures, GLboolean *residences);
-alias void (PFNGLBINDTEXTUREEXTPROC) (GLenum target, GLuint texture);
-alias void (PFNGLDELETETEXTURESEXTPROC) (GLsizei n, GLuint *textures);
-alias void (PFNGLGENTEXTURESEXTPROC) (GLsizei n, GLuint *textures);
-alias GLboolean (PFNGLISTEXTUREEXTPROC) (GLuint texture);
-alias void (PFNGLPRIORITIZETEXTURESEXTPROC) (GLsizei n, GLuint *textures, GLclampf *priorities);
+alias GLboolean function(GLsizei n, GLuint *textures, GLboolean *residences) PFNGLARETEXTURESRESIDENTEXTPROC;
+alias void function(GLenum target, GLuint texture) PFNGLBINDTEXTUREEXTPROC;
+alias void function(GLsizei n, GLuint *textures) PFNGLDELETETEXTURESEXTPROC;
+alias void function(GLsizei n, GLuint *textures) PFNGLGENTEXTURESEXTPROC;
+alias GLboolean function(GLuint texture) PFNGLISTEXTUREEXTPROC;
+alias void function(GLsizei n, GLuint *textures, GLclampf *priorities) PFNGLPRIORITIZETEXTURESEXTPROC;
 
 static const auto GL_SGIS_detail_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDetailTexFuncSGIS (GLenum target, GLsizei n, GLfloat *points);
 	void glGetDetailTexFuncSGIS (GLenum target, GLfloat *points);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDETAILTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
-alias void (PFNGLGETDETAILTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
+alias void function(GLenum target, GLsizei n, GLfloat *points) PFNGLDETAILTEXFUNCSGISPROC;
+alias void function(GLenum target, GLfloat *points) PFNGLGETDETAILTEXFUNCSGISPROC;
 
 static const auto GL_SGIS_sharpen_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glSharpenTexFuncSGIS (GLenum target, GLsizei n, GLfloat *points);
 	void glGetSharpenTexFuncSGIS (GLenum target, GLfloat *points);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSHARPENTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
-alias void (PFNGLGETSHARPENTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
+alias void function(GLenum target, GLsizei n, GLfloat *points) PFNGLSHARPENTEXFUNCSGISPROC;
+alias void function(GLenum target, GLfloat *points) PFNGLGETSHARPENTEXFUNCSGISPROC;
 
 static const auto GL_EXT_packed_pixels = 1;
 
@@ -7413,8 +7413,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glSampleMaskSGIS (GLclampf value, GLboolean invert);
 	void glSamplePatternSGIS (GLenum pattern);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSAMPLEMASKSGISPROC) (GLclampf value, GLboolean invert);
-alias void (PFNGLSAMPLEPATTERNSGISPROC) (GLenum pattern);
+alias void function(GLclampf value, GLboolean invert) PFNGLSAMPLEMASKSGISPROC;
+alias void function(GLenum pattern) PFNGLSAMPLEPATTERNSGISPROC;
 
 static const auto GL_EXT_rescale_normal = 1;
 
@@ -7430,15 +7430,15 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTexCoordPointerEXT (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
 	void glVertexPointerEXT (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLARRAYELEMENTEXTPROC) (GLint i);
-alias void (PFNGLCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-alias void (PFNGLDRAWARRAYSEXTPROC) (GLenum mode, GLint first, GLsizei count);
-alias void (PFNGLEDGEFLAGPOINTEREXTPROC) (GLsizei stride, GLsizei count, GLboolean *pointer);
-alias void (PFNGLGETPOINTERVEXTPROC) (GLenum pname, GLvoid* *params);
-alias void (PFNGLINDEXPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-alias void (PFNGLNORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-alias void (PFNGLTEXCOORDPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-alias void (PFNGLVERTEXPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void function(GLint i) PFNGLARRAYELEMENTEXTPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer) PFNGLCOLORPOINTEREXTPROC;
+alias void function(GLenum mode, GLint first, GLsizei count) PFNGLDRAWARRAYSEXTPROC;
+alias void function(GLsizei stride, GLsizei count, GLboolean *pointer) PFNGLEDGEFLAGPOINTEREXTPROC;
+alias void function(GLenum pname, GLvoid* *params) PFNGLGETPOINTERVEXTPROC;
+alias void function(GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer) PFNGLINDEXPOINTEREXTPROC;
+alias void function(GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer) PFNGLNORMALPOINTEREXTPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer) PFNGLTEXCOORDPOINTEREXTPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer) PFNGLVERTEXPOINTEREXTPROC;
 
 static const auto GL_EXT_misc_attribute = 1;
 
@@ -7456,7 +7456,7 @@ static const auto GL_EXT_blend_minmax = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlendEquationEXT (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDEQUATIONEXTPROC) (GLenum mode);
+alias void function(GLenum mode) PFNGLBLENDEQUATIONEXTPROC;
 
 static const auto GL_EXT_blend_subtract = 1;
 
@@ -7475,10 +7475,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glSpriteParameteriSGIX (GLenum pname, GLint param);
 	void glSpriteParameterivSGIX (GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSPRITEPARAMETERFSGIXPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLSPRITEPARAMETERFVSGIXPROC) (GLenum pname, GLfloat *params);
-alias void (PFNGLSPRITEPARAMETERISGIXPROC) (GLenum pname, GLint param);
-alias void (PFNGLSPRITEPARAMETERIVSGIXPROC) (GLenum pname, GLint *params);
+alias void function(GLenum pname, GLfloat param) PFNGLSPRITEPARAMETERFSGIXPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLSPRITEPARAMETERFVSGIXPROC;
+alias void function(GLenum pname, GLint param) PFNGLSPRITEPARAMETERISGIXPROC;
+alias void function(GLenum pname, GLint *params) PFNGLSPRITEPARAMETERIVSGIXPROC;
 
 static const auto GL_SGIX_texture_multi_buffer = 1;
 
@@ -7487,16 +7487,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameterfEXT (GLenum pname, GLfloat param);
 	void glPointParameterfvEXT (GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPOINTPARAMETERFEXTPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLPOINTPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
+alias void function(GLenum pname, GLfloat param) PFNGLPOINTPARAMETERFEXTPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLPOINTPARAMETERFVEXTPROC;
 
 static const auto GL_SGIS_point_parameters = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameterfSGIS (GLenum pname, GLfloat param);
 	void glPointParameterfvSGIS (GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPOINTPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLPOINTPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
+alias void function(GLenum pname, GLfloat param) PFNGLPOINTPARAMETERFSGISPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLPOINTPARAMETERFVSGISPROC;
 
 static const auto GL_SGIX_instruments = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7507,12 +7507,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glStartInstrumentsSGIX ();
 	void glStopInstrumentsSGIX (GLint marker);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLint (PFNGLGETINSTRUMENTSSGIXPROC) ();
-alias void (PFNGLINSTRUMENTSBUFFERSGIXPROC) (GLsizei size, GLint *buffer);
-alias GLint (PFNGLPOLLINSTRUMENTSSGIXPROC) (GLint *marker_p);
-alias void (PFNGLREADINSTRUMENTSSGIXPROC) (GLint marker);
-alias void (PFNGLSTARTINSTRUMENTSSGIXPROC) ();
-alias void (PFNGLSTOPINSTRUMENTSSGIXPROC) (GLint marker);
+alias GLint function() PFNGLGETINSTRUMENTSSGIXPROC;
+alias void function(GLsizei size, GLint *buffer) PFNGLINSTRUMENTSBUFFERSGIXPROC;
+alias GLint function(GLint *marker_p) PFNGLPOLLINSTRUMENTSSGIXPROC;
+alias void function(GLint marker) PFNGLREADINSTRUMENTSSGIXPROC;
+alias void function() PFNGLSTARTINSTRUMENTSSGIXPROC;
+alias void function(GLint marker) PFNGLSTOPINSTRUMENTSSGIXPROC;
 
 static const auto GL_SGIX_texture_scale_bias = 1;
 
@@ -7520,13 +7520,13 @@ static const auto GL_SGIX_framezoom = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glFrameZoomSGIX (GLint factor);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFRAMEZOOMSGIXPROC) (GLint factor);
+alias void function(GLint factor) PFNGLFRAMEZOOMSGIXPROC;
 
 static const auto GL_SGIX_tag_sample_buffer = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTagSampleBufferSGIX ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTAGSAMPLEBUFFERSGIXPROC) ();
+alias void function() PFNGLTAGSAMPLEBUFFERSGIXPROC;
 
 static const auto GL_SGIX_polynomial_ffd = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7535,22 +7535,22 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDeformSGIX (GLbitfield mask);
 	void glLoadIdentityDeformationMapSGIX (GLbitfield mask);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDEFORMATIONMAP3DSGIXPROC) (GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, GLdouble *points);
-alias void (PFNGLDEFORMATIONMAP3FSGIXPROC) (GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat w1, GLfloat w2, GLint wstride, GLint worder, GLfloat *points);
-alias void (PFNGLDEFORMSGIXPROC) (GLbitfield mask);
-alias void (PFNGLLOADIDENTITYDEFORMATIONMAPSGIXPROC) (GLbitfield mask);
+alias void function(GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, GLdouble *points) PFNGLDEFORMATIONMAP3DSGIXPROC;
+alias void function(GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat w1, GLfloat w2, GLint wstride, GLint worder, GLfloat *points) PFNGLDEFORMATIONMAP3FSGIXPROC;
+alias void function(GLbitfield mask) PFNGLDEFORMSGIXPROC;
+alias void function(GLbitfield mask) PFNGLLOADIDENTITYDEFORMATIONMAPSGIXPROC;
 
 static const auto GL_SGIX_reference_plane = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glReferencePlaneSGIX (GLdouble *equation);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLREFERENCEPLANESGIXPROC) (GLdouble *equation);
+alias void function(GLdouble *equation) PFNGLREFERENCEPLANESGIXPROC;
 
 static const auto GL_SGIX_flush_raster = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glFlushRasterSGIX ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFLUSHRASTERSGIXPROC) ();
+alias void function() PFNGLFLUSHRASTERSGIXPROC;
 
 static const auto GL_SGIX_depth_texture = 1;
 
@@ -7559,8 +7559,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFogFuncSGIS (GLsizei n, GLfloat *points);
 	void glGetFogFuncSGIS (GLfloat *points);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFOGFUNCSGISPROC) (GLsizei n, GLfloat *points);
-alias void (PFNGLGETFOGFUNCSGISPROC) (GLfloat *points);
+alias void function(GLsizei n, GLfloat *points) PFNGLFOGFUNCSGISPROC;
+alias void function(GLfloat *points) PFNGLGETFOGFUNCSGISPROC;
 
 static const auto GL_SGIX_fog_offset = 1;
 
@@ -7573,12 +7573,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetImageTransformParameterivHP (GLenum target, GLenum pname, GLint *params);
 	void glGetImageTransformParameterfvHP (GLenum target, GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLIMAGETRANSFORMPARAMETERIHPPROC) (GLenum target, GLenum pname, GLint param);
-alias void (PFNGLIMAGETRANSFORMPARAMETERFHPPROC) (GLenum target, GLenum pname, GLfloat param);
-alias void (PFNGLIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void function(GLenum target, GLenum pname, GLint param) PFNGLIMAGETRANSFORMPARAMETERIHPPROC;
+alias void function(GLenum target, GLenum pname, GLfloat param) PFNGLIMAGETRANSFORMPARAMETERFHPPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLIMAGETRANSFORMPARAMETERIVHPPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLIMAGETRANSFORMPARAMETERFVHPPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC;
 
 static const auto GL_HP_convolution_border_modes = 1;
 
@@ -7589,8 +7589,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glColorSubTableEXT (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
 	void glCopyColorSubTableEXT (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
-alias void (PFNGLCOPYCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
+alias void function(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data) PFNGLCOLORSUBTABLEEXTPROC;
+alias void function(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width) PFNGLCOPYCOLORSUBTABLEEXTPROC;
 
 static const auto GL_PGI_vertex_hints = 1;
 
@@ -7598,7 +7598,7 @@ static const auto GL_PGI_misc_hints = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glHintPGI (GLenum target, GLint mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLHINTPGIPROC) (GLenum target, GLint mode);
+alias void function(GLenum target, GLint mode) PFNGLHINTPGIPROC;
 
 static const auto GL_EXT_paletted_texture = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7607,10 +7607,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetColorTableParameterivEXT (GLenum target, GLenum pname, GLint *params);
 	void glGetColorTableParameterfvEXT (GLenum target, GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORTABLEEXTPROC) (GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-alias void (PFNGLGETCOLORTABLEEXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *data);
-alias void (PFNGLGETCOLORTABLEPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETCOLORTABLEPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void function(GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, GLvoid *table) PFNGLCOLORTABLEEXTPROC;
+alias void function(GLenum target, GLenum format, GLenum type, GLvoid *data) PFNGLGETCOLORTABLEEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETCOLORTABLEPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETCOLORTABLEPARAMETERFVEXTPROC;
 
 static const auto GL_EXT_clip_volume_hint = 1;
 
@@ -7623,12 +7623,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glListParameteriSGIX (GLuint list, GLenum pname, GLint param);
 	void glListParameterivSGIX (GLuint list, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
-alias void (PFNGLGETLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
-alias void (PFNGLLISTPARAMETERFSGIXPROC) (GLuint list, GLenum pname, GLfloat param);
-alias void (PFNGLLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
-alias void (PFNGLLISTPARAMETERISGIXPROC) (GLuint list, GLenum pname, GLint param);
-alias void (PFNGLLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
+alias void function(GLuint list, GLenum pname, GLfloat *params) PFNGLGETLISTPARAMETERFVSGIXPROC;
+alias void function(GLuint list, GLenum pname, GLint *params) PFNGLGETLISTPARAMETERIVSGIXPROC;
+alias void function(GLuint list, GLenum pname, GLfloat param) PFNGLLISTPARAMETERFSGIXPROC;
+alias void function(GLuint list, GLenum pname, GLfloat *params) PFNGLLISTPARAMETERFVSGIXPROC;
+alias void function(GLuint list, GLenum pname, GLint param) PFNGLLISTPARAMETERISGIXPROC;
+alias void function(GLuint list, GLenum pname, GLint *params) PFNGLLISTPARAMETERIVSGIXPROC;
 
 static const auto GL_SGIX_ir_instrument1 = 1;
 
@@ -7644,13 +7644,13 @@ static const auto GL_EXT_index_material = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glIndexMaterialEXT (GLenum face, GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLINDEXMATERIALEXTPROC) (GLenum face, GLenum mode);
+alias void function(GLenum face, GLenum mode) PFNGLINDEXMATERIALEXTPROC;
 
 static const auto GL_EXT_index_func = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glIndexFuncEXT (GLenum func, GLclampf _ref);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLINDEXFUNCEXTPROC) (GLenum func, GLclampf _ref);
+alias void function(GLenum func, GLclampf _ref) PFNGLINDEXFUNCEXTPROC;
 
 static const auto GL_EXT_index_array_formats = 1;
 
@@ -7659,16 +7659,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glLockArraysEXT (GLint first, GLsizei count);
 	void glUnlockArraysEXT ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
-alias void (PFNGLUNLOCKARRAYSEXTPROC) ();
+alias void function(GLint first, GLsizei count) PFNGLLOCKARRAYSEXTPROC;
+alias void function() PFNGLUNLOCKARRAYSEXTPROC;
 
 static const auto GL_EXT_cull_vertex = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glCullParameterdvEXT (GLenum pname, GLdouble *params);
 	void glCullParameterfvEXT (GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCULLPARAMETERDVEXTPROC) (GLenum pname, GLdouble *params);
-alias void (PFNGLCULLPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
+alias void function(GLenum pname, GLdouble *params) PFNGLCULLPARAMETERDVEXTPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLCULLPARAMETERFVEXTPROC;
 
 static const auto GL_SGIX_ycrcb = 1;
 
@@ -7693,24 +7693,24 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetFragmentMaterialivSGIX (GLenum face, GLenum pname, GLint *params);
 	void glLightEnviSGIX (GLenum pname, GLint param);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFRAGMENTCOLORMATERIALSGIXPROC) (GLenum face, GLenum mode);
-alias void (PFNGLFRAGMENTLIGHTFSGIXPROC) (GLenum light, GLenum pname, GLfloat param);
-alias void (PFNGLFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
-alias void (PFNGLFRAGMENTLIGHTISGIXPROC) (GLenum light, GLenum pname, GLint param);
-alias void (PFNGLFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
-alias void (PFNGLFRAGMENTLIGHTMODELFSGIXPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLFRAGMENTLIGHTMODELFVSGIXPROC) (GLenum pname, GLfloat *params);
-alias void (PFNGLFRAGMENTLIGHTMODELISGIXPROC) (GLenum pname, GLint param);
-alias void (PFNGLFRAGMENTLIGHTMODELIVSGIXPROC) (GLenum pname, GLint *params);
-alias void (PFNGLFRAGMENTMATERIALFSGIXPROC) (GLenum face, GLenum pname, GLfloat param);
-alias void (PFNGLFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
-alias void (PFNGLFRAGMENTMATERIALISGIXPROC) (GLenum face, GLenum pname, GLint param);
-alias void (PFNGLFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
-alias void (PFNGLGETFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
-alias void (PFNGLGETFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
-alias void (PFNGLGETFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
-alias void (PFNGLGETFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
-alias void (PFNGLLIGHTENVISGIXPROC) (GLenum pname, GLint param);
+alias void function(GLenum face, GLenum mode) PFNGLFRAGMENTCOLORMATERIALSGIXPROC;
+alias void function(GLenum light, GLenum pname, GLfloat param) PFNGLFRAGMENTLIGHTFSGIXPROC;
+alias void function(GLenum light, GLenum pname, GLfloat *params) PFNGLFRAGMENTLIGHTFVSGIXPROC;
+alias void function(GLenum light, GLenum pname, GLint param) PFNGLFRAGMENTLIGHTISGIXPROC;
+alias void function(GLenum light, GLenum pname, GLint *params) PFNGLFRAGMENTLIGHTIVSGIXPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLFRAGMENTLIGHTMODELFSGIXPROC;
+alias void function(GLenum pname, GLfloat *params) PFNGLFRAGMENTLIGHTMODELFVSGIXPROC;
+alias void function(GLenum pname, GLint param) PFNGLFRAGMENTLIGHTMODELISGIXPROC;
+alias void function(GLenum pname, GLint *params) PFNGLFRAGMENTLIGHTMODELIVSGIXPROC;
+alias void function(GLenum face, GLenum pname, GLfloat param) PFNGLFRAGMENTMATERIALFSGIXPROC;
+alias void function(GLenum face, GLenum pname, GLfloat *params) PFNGLFRAGMENTMATERIALFVSGIXPROC;
+alias void function(GLenum face, GLenum pname, GLint param) PFNGLFRAGMENTMATERIALISGIXPROC;
+alias void function(GLenum face, GLenum pname, GLint *params) PFNGLFRAGMENTMATERIALIVSGIXPROC;
+alias void function(GLenum light, GLenum pname, GLfloat *params) PFNGLGETFRAGMENTLIGHTFVSGIXPROC;
+alias void function(GLenum light, GLenum pname, GLint *params) PFNGLGETFRAGMENTLIGHTIVSGIXPROC;
+alias void function(GLenum face, GLenum pname, GLfloat *params) PFNGLGETFRAGMENTMATERIALFVSGIXPROC;
+alias void function(GLenum face, GLenum pname, GLint *params) PFNGLGETFRAGMENTMATERIALIVSGIXPROC;
+alias void function(GLenum pname, GLint param) PFNGLLIGHTENVISGIXPROC;
 
 static const auto GL_IBM_rasterpos_clip = 1;
 
@@ -7720,7 +7720,7 @@ static const auto GL_EXT_draw_range_elements = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawRangeElementsEXT (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWRANGEELEMENTSEXTPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
+alias void function(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices) PFNGLDRAWRANGEELEMENTSEXTPROC;
 
 static const auto GL_WIN_phong_shading = 1;
 
@@ -7732,9 +7732,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTextureLightEXT (GLenum pname);
 	void glTextureMaterialEXT (GLenum face, GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLAPPLYTEXTUREEXTPROC) (GLenum mode);
-alias void (PFNGLTEXTURELIGHTEXTPROC) (GLenum pname);
-alias void (PFNGLTEXTUREMATERIALEXTPROC) (GLenum face, GLenum mode);
+alias void function(GLenum mode) PFNGLAPPLYTEXTUREEXTPROC;
+alias void function(GLenum pname) PFNGLTEXTURELIGHTEXTPROC;
+alias void function(GLenum face, GLenum mode) PFNGLTEXTUREMATERIALEXTPROC;
 
 static const auto GL_SGIX_blend_alpha_minmax = 1;
 
@@ -7749,12 +7749,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDeleteAsyncMarkersSGIX (GLuint marker, GLsizei range);
 	GLboolean glIsAsyncMarkerSGIX (GLuint marker);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLASYNCMARKERSGIXPROC) (GLuint marker);
-alias GLint (PFNGLFINISHASYNCSGIXPROC) (GLuint *markerp);
-alias GLint (PFNGLPOLLASYNCSGIXPROC) (GLuint *markerp);
-alias GLuint (PFNGLGENASYNCMARKERSSGIXPROC) (GLsizei range);
-alias void (PFNGLDELETEASYNCMARKERSSGIXPROC) (GLuint marker, GLsizei range);
-alias GLboolean (PFNGLISASYNCMARKERSGIXPROC) (GLuint marker);
+alias void function(GLuint marker) PFNGLASYNCMARKERSGIXPROC;
+alias GLint function(GLuint *markerp) PFNGLFINISHASYNCSGIXPROC;
+alias GLint function(GLuint *markerp) PFNGLPOLLASYNCSGIXPROC;
+alias GLuint function(GLsizei range) PFNGLGENASYNCMARKERSSGIXPROC;
+alias void function(GLuint marker, GLsizei range) PFNGLDELETEASYNCMARKERSSGIXPROC;
+alias GLboolean function(GLuint marker) PFNGLISASYNCMARKERSGIXPROC;
 
 static const auto GL_SGIX_async_pixel = 1;
 
@@ -7767,10 +7767,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glColorPointervINTEL (GLint size, GLenum type, GLvoid* *pointer);
 	void glTexCoordPointervINTEL (GLint size, GLenum type, GLvoid* *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
-alias void (PFNGLNORMALPOINTERVINTELPROC) (GLenum type, GLvoid* *pointer);
-alias void (PFNGLCOLORPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
-alias void (PFNGLTEXCOORDPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
+alias void function(GLint size, GLenum type, GLvoid* *pointer) PFNGLVERTEXPOINTERVINTELPROC;
+alias void function(GLenum type, GLvoid* *pointer) PFNGLNORMALPOINTERVINTELPROC;
+alias void function(GLint size, GLenum type, GLvoid* *pointer) PFNGLCOLORPOINTERVINTELPROC;
+alias void function(GLint size, GLenum type, GLvoid* *pointer) PFNGLTEXCOORDPOINTERVINTELPROC;
 
 static const auto GL_HP_occlusion_test = 1;
 
@@ -7781,10 +7781,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glPixelTransformParameterivEXT (GLenum target, GLenum pname, GLint *params);
 	void glPixelTransformParameterfvEXT (GLenum target, GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPIXELTRANSFORMPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint param);
-alias void (PFNGLPIXELTRANSFORMPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat param);
-alias void (PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void function(GLenum target, GLenum pname, GLint param) PFNGLPIXELTRANSFORMPARAMETERIEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat param) PFNGLPIXELTRANSFORMPARAMETERFEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC;
 
 static const auto GL_EXT_pixel_transform_color_table = 1;
 
@@ -7812,37 +7812,37 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glSecondaryColor3usvEXT (GLushort *v);
 	void glSecondaryColorPointerEXT (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSECONDARYCOLOR3BEXTPROC) (GLbyte red, GLbyte green, GLbyte blue);
-alias void (PFNGLSECONDARYCOLOR3BVEXTPROC) (GLbyte *v);
-alias void (PFNGLSECONDARYCOLOR3DEXTPROC) (GLdouble red, GLdouble green, GLdouble blue);
-alias void (PFNGLSECONDARYCOLOR3DVEXTPROC) (GLdouble *v);
-alias void (PFNGLSECONDARYCOLOR3FEXTPROC) (GLfloat red, GLfloat green, GLfloat blue);
-alias void (PFNGLSECONDARYCOLOR3FVEXTPROC) (GLfloat *v);
-alias void (PFNGLSECONDARYCOLOR3IEXTPROC) (GLint red, GLint green, GLint blue);
-alias void (PFNGLSECONDARYCOLOR3IVEXTPROC) (GLint *v);
-alias void (PFNGLSECONDARYCOLOR3SEXTPROC) (GLshort red, GLshort green, GLshort blue);
-alias void (PFNGLSECONDARYCOLOR3SVEXTPROC) (GLshort *v);
-alias void (PFNGLSECONDARYCOLOR3UBEXTPROC) (GLubyte red, GLubyte green, GLubyte blue);
-alias void (PFNGLSECONDARYCOLOR3UBVEXTPROC) (GLubyte *v);
-alias void (PFNGLSECONDARYCOLOR3UIEXTPROC) (GLuint red, GLuint green, GLuint blue);
-alias void (PFNGLSECONDARYCOLOR3UIVEXTPROC) (GLuint *v);
-alias void (PFNGLSECONDARYCOLOR3USEXTPROC) (GLushort red, GLushort green, GLushort blue);
-alias void (PFNGLSECONDARYCOLOR3USVEXTPROC) (GLushort *v);
-alias void (PFNGLSECONDARYCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void function(GLbyte red, GLbyte green, GLbyte blue) PFNGLSECONDARYCOLOR3BEXTPROC;
+alias void function(GLbyte *v) PFNGLSECONDARYCOLOR3BVEXTPROC;
+alias void function(GLdouble red, GLdouble green, GLdouble blue) PFNGLSECONDARYCOLOR3DEXTPROC;
+alias void function(GLdouble *v) PFNGLSECONDARYCOLOR3DVEXTPROC;
+alias void function(GLfloat red, GLfloat green, GLfloat blue) PFNGLSECONDARYCOLOR3FEXTPROC;
+alias void function(GLfloat *v) PFNGLSECONDARYCOLOR3FVEXTPROC;
+alias void function(GLint red, GLint green, GLint blue) PFNGLSECONDARYCOLOR3IEXTPROC;
+alias void function(GLint *v) PFNGLSECONDARYCOLOR3IVEXTPROC;
+alias void function(GLshort red, GLshort green, GLshort blue) PFNGLSECONDARYCOLOR3SEXTPROC;
+alias void function(GLshort *v) PFNGLSECONDARYCOLOR3SVEXTPROC;
+alias void function(GLubyte red, GLubyte green, GLubyte blue) PFNGLSECONDARYCOLOR3UBEXTPROC;
+alias void function(GLubyte *v) PFNGLSECONDARYCOLOR3UBVEXTPROC;
+alias void function(GLuint red, GLuint green, GLuint blue) PFNGLSECONDARYCOLOR3UIEXTPROC;
+alias void function(GLuint *v) PFNGLSECONDARYCOLOR3UIVEXTPROC;
+alias void function(GLushort red, GLushort green, GLushort blue) PFNGLSECONDARYCOLOR3USEXTPROC;
+alias void function(GLushort *v) PFNGLSECONDARYCOLOR3USVEXTPROC;
+alias void function(GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLSECONDARYCOLORPOINTEREXTPROC;
 
 static const auto GL_EXT_texture_perturb_normal = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTextureNormalEXT (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXTURENORMALEXTPROC) (GLenum mode);
+alias void function(GLenum mode) PFNGLTEXTURENORMALEXTPROC;
 
 static const auto GL_EXT_multi_draw_arrays = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glMultiDrawArraysEXT (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
 	void glMultiDrawElementsEXT (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLMULTIDRAWARRAYSEXTPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-alias void (PFNGLMULTIDRAWELEMENTSEXTPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
+alias void function(GLenum mode, GLint *first, GLsizei *count, GLsizei primcount) PFNGLMULTIDRAWARRAYSEXTPROC;
+alias void function(GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount) PFNGLMULTIDRAWELEMENTSEXTPROC;
 
 static const auto GL_EXT_fog_coord = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7852,11 +7852,11 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFogCoorddvEXT (GLdouble *coord);
 	void glFogCoordPointerEXT (GLenum type, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFOGCOORDFEXTPROC) (GLfloat coord);
-alias void (PFNGLFOGCOORDFVEXTPROC) (GLfloat *coord);
-alias void (PFNGLFOGCOORDDEXTPROC) (GLdouble coord);
-alias void (PFNGLFOGCOORDDVEXTPROC) (GLdouble *coord);
-alias void (PFNGLFOGCOORDPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void function(GLfloat coord) PFNGLFOGCOORDFEXTPROC;
+alias void function(GLfloat *coord) PFNGLFOGCOORDFVEXTPROC;
+alias void function(GLdouble coord) PFNGLFOGCOORDDEXTPROC;
+alias void function(GLdouble *coord) PFNGLFOGCOORDDVEXTPROC;
+alias void function(GLenum type, GLsizei stride, GLvoid *pointer) PFNGLFOGCOORDPOINTEREXTPROC;
 
 static const auto GL_REND_screen_coordinates = 1;
 
@@ -7885,28 +7885,28 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTangentPointerEXT (GLenum type, GLsizei stride, GLvoid *pointer);
 	void glBinormalPointerEXT (GLenum type, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTANGENT3BEXTPROC) (GLbyte tx, GLbyte ty, GLbyte tz);
-alias void (PFNGLTANGENT3BVEXTPROC) (GLbyte *v);
-alias void (PFNGLTANGENT3DEXTPROC) (GLdouble tx, GLdouble ty, GLdouble tz);
-alias void (PFNGLTANGENT3DVEXTPROC) (GLdouble *v);
-alias void (PFNGLTANGENT3FEXTPROC) (GLfloat tx, GLfloat ty, GLfloat tz);
-alias void (PFNGLTANGENT3FVEXTPROC) (GLfloat *v);
-alias void (PFNGLTANGENT3IEXTPROC) (GLint tx, GLint ty, GLint tz);
-alias void (PFNGLTANGENT3IVEXTPROC) (GLint *v);
-alias void (PFNGLTANGENT3SEXTPROC) (GLshort tx, GLshort ty, GLshort tz);
-alias void (PFNGLTANGENT3SVEXTPROC) (GLshort *v);
-alias void (PFNGLBINORMAL3BEXTPROC) (GLbyte bx, GLbyte by, GLbyte bz);
-alias void (PFNGLBINORMAL3BVEXTPROC) (GLbyte *v);
-alias void (PFNGLBINORMAL3DEXTPROC) (GLdouble bx, GLdouble by, GLdouble bz);
-alias void (PFNGLBINORMAL3DVEXTPROC) (GLdouble *v);
-alias void (PFNGLBINORMAL3FEXTPROC) (GLfloat bx, GLfloat by, GLfloat bz);
-alias void (PFNGLBINORMAL3FVEXTPROC) (GLfloat *v);
-alias void (PFNGLBINORMAL3IEXTPROC) (GLint bx, GLint by, GLint bz);
-alias void (PFNGLBINORMAL3IVEXTPROC) (GLint *v);
-alias void (PFNGLBINORMAL3SEXTPROC) (GLshort bx, GLshort by, GLshort bz);
-alias void (PFNGLBINORMAL3SVEXTPROC) (GLshort *v);
-alias void (PFNGLTANGENTPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLBINORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void function(GLbyte tx, GLbyte ty, GLbyte tz) PFNGLTANGENT3BEXTPROC;
+alias void function(GLbyte *v) PFNGLTANGENT3BVEXTPROC;
+alias void function(GLdouble tx, GLdouble ty, GLdouble tz) PFNGLTANGENT3DEXTPROC;
+alias void function(GLdouble *v) PFNGLTANGENT3DVEXTPROC;
+alias void function(GLfloat tx, GLfloat ty, GLfloat tz) PFNGLTANGENT3FEXTPROC;
+alias void function(GLfloat *v) PFNGLTANGENT3FVEXTPROC;
+alias void function(GLint tx, GLint ty, GLint tz) PFNGLTANGENT3IEXTPROC;
+alias void function(GLint *v) PFNGLTANGENT3IVEXTPROC;
+alias void function(GLshort tx, GLshort ty, GLshort tz) PFNGLTANGENT3SEXTPROC;
+alias void function(GLshort *v) PFNGLTANGENT3SVEXTPROC;
+alias void function(GLbyte bx, GLbyte by, GLbyte bz) PFNGLBINORMAL3BEXTPROC;
+alias void function(GLbyte *v) PFNGLBINORMAL3BVEXTPROC;
+alias void function(GLdouble bx, GLdouble by, GLdouble bz) PFNGLBINORMAL3DEXTPROC;
+alias void function(GLdouble *v) PFNGLBINORMAL3DVEXTPROC;
+alias void function(GLfloat bx, GLfloat by, GLfloat bz) PFNGLBINORMAL3FEXTPROC;
+alias void function(GLfloat *v) PFNGLBINORMAL3FVEXTPROC;
+alias void function(GLint bx, GLint by, GLint bz) PFNGLBINORMAL3IEXTPROC;
+alias void function(GLint *v) PFNGLBINORMAL3IVEXTPROC;
+alias void function(GLshort bx, GLshort by, GLshort bz) PFNGLBINORMAL3SEXTPROC;
+alias void function(GLshort *v) PFNGLBINORMAL3SVEXTPROC;
+alias void function(GLenum type, GLsizei stride, GLvoid *pointer) PFNGLTANGENTPOINTEREXTPROC;
+alias void function(GLenum type, GLsizei stride, GLvoid *pointer) PFNGLBINORMALPOINTEREXTPROC;
 
 static const auto GL_EXT_texture_env_combine = 1;
 
@@ -7920,7 +7920,7 @@ static const auto GL_SUNX_constant_data = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glFinishTextureSUNX ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFINISHTEXTURESUNXPROC) ();
+alias void function() PFNGLFINISHTEXTURESUNXPROC;
 
 static const auto GL_SUN_global_alpha = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7933,14 +7933,14 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGlobalAlphaFactorusSUN (GLushort factor);
 	void glGlobalAlphaFactoruiSUN (GLuint factor);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGLOBALALPHAFACTORBSUNPROC) (GLbyte factor);
-alias void (PFNGLGLOBALALPHAFACTORSSUNPROC) (GLshort factor);
-alias void (PFNGLGLOBALALPHAFACTORISUNPROC) (GLint factor);
-alias void (PFNGLGLOBALALPHAFACTORFSUNPROC) (GLfloat factor);
-alias void (PFNGLGLOBALALPHAFACTORDSUNPROC) (GLdouble factor);
-alias void (PFNGLGLOBALALPHAFACTORUBSUNPROC) (GLubyte factor);
-alias void (PFNGLGLOBALALPHAFACTORUSSUNPROC) (GLushort factor);
-alias void (PFNGLGLOBALALPHAFACTORUISUNPROC) (GLuint factor);
+alias void function(GLbyte factor) PFNGLGLOBALALPHAFACTORBSUNPROC;
+alias void function(GLshort factor) PFNGLGLOBALALPHAFACTORSSUNPROC;
+alias void function(GLint factor) PFNGLGLOBALALPHAFACTORISUNPROC;
+alias void function(GLfloat factor) PFNGLGLOBALALPHAFACTORFSUNPROC;
+alias void function(GLdouble factor) PFNGLGLOBALALPHAFACTORDSUNPROC;
+alias void function(GLubyte factor) PFNGLGLOBALALPHAFACTORUBSUNPROC;
+alias void function(GLushort factor) PFNGLGLOBALALPHAFACTORUSSUNPROC;
+alias void function(GLuint factor) PFNGLGLOBALALPHAFACTORUISUNPROC;
 
 static const auto GL_SUN_triangle_list = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -7952,13 +7952,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glReplacementCodeubvSUN (GLubyte *code);
 	void glReplacementCodePointerSUN (GLenum type, GLsizei stride, GLvoid* *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLREPLACEMENTCODEUISUNPROC) (GLuint code);
-alias void (PFNGLREPLACEMENTCODEUSSUNPROC) (GLushort code);
-alias void (PFNGLREPLACEMENTCODEUBSUNPROC) (GLubyte code);
-alias void (PFNGLREPLACEMENTCODEUIVSUNPROC) (GLuint *code);
-alias void (PFNGLREPLACEMENTCODEUSVSUNPROC) (GLushort *code);
-alias void (PFNGLREPLACEMENTCODEUBVSUNPROC) (GLubyte *code);
-alias void (PFNGLREPLACEMENTCODEPOINTERSUNPROC) (GLenum type, GLsizei stride, GLvoid* *pointer);
+alias void function(GLuint code) PFNGLREPLACEMENTCODEUISUNPROC;
+alias void function(GLushort code) PFNGLREPLACEMENTCODEUSSUNPROC;
+alias void function(GLubyte code) PFNGLREPLACEMENTCODEUBSUNPROC;
+alias void function(GLuint *code) PFNGLREPLACEMENTCODEUIVSUNPROC;
+alias void function(GLushort *code) PFNGLREPLACEMENTCODEUSVSUNPROC;
+alias void function(GLubyte *code) PFNGLREPLACEMENTCODEUBVSUNPROC;
+alias void function(GLenum type, GLsizei stride, GLvoid* *pointer) PFNGLREPLACEMENTCODEPOINTERSUNPROC;
 
 static const auto GL_SUN_vertex = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8003,58 +8003,58 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN (GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
 	void glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN (GLuint *rc, GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLOR4UBVERTEX2FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y);
-alias void (PFNGLCOLOR4UBVERTEX2FVSUNPROC) (GLubyte *c, GLfloat *v);
-alias void (PFNGLCOLOR4UBVERTEX3FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLCOLOR4UBVERTEX3FVSUNPROC) (GLubyte *c, GLfloat *v);
-alias void (PFNGLCOLOR3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLCOLOR3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *v);
-alias void (PFNGLNORMAL3FVERTEX3FSUNPROC) (GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLNORMAL3FVERTEX3FVSUNPROC) (GLfloat *n, GLfloat *v);
-alias void (PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *n, GLfloat *v);
-alias void (PFNGLTEXCOORD2FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLTEXCOORD2FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *v);
-alias void (PFNGLTEXCOORD4FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLTEXCOORD4FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *v);
-alias void (PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC) (GLfloat *tc, GLubyte *c, GLfloat *v);
-alias void (PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *v);
-alias void (PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *n, GLfloat *v);
-alias void (PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
-alias void (PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC) (GLuint rc, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC) (GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC) (GLuint *rc, GLubyte *c, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *n, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *n, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *n, GLfloat *v);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
+alias void function(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y) PFNGLCOLOR4UBVERTEX2FSUNPROC;
+alias void function(GLubyte *c, GLfloat *v) PFNGLCOLOR4UBVERTEX2FVSUNPROC;
+alias void function(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z) PFNGLCOLOR4UBVERTEX3FSUNPROC;
+alias void function(GLubyte *c, GLfloat *v) PFNGLCOLOR4UBVERTEX3FVSUNPROC;
+alias void function(GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z) PFNGLCOLOR3FVERTEX3FSUNPROC;
+alias void function(GLfloat *c, GLfloat *v) PFNGLCOLOR3FVERTEX3FVSUNPROC;
+alias void function(GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLfloat *n, GLfloat *v) PFNGLNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLfloat *c, GLfloat *n, GLfloat *v) PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z) PFNGLTEXCOORD2FVERTEX3FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *v) PFNGLTEXCOORD2FVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLTEXCOORD4FVERTEX4FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *v) PFNGLTEXCOORD4FVERTEX4FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z) PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC;
+alias void function(GLfloat *tc, GLubyte *c, GLfloat *v) PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z) PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *c, GLfloat *v) PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *n, GLfloat *v) PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v) PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC;
+alias void function(GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v) PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC;
+alias void function(GLuint rc, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *v) PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLubyte *c, GLfloat *v) PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *c, GLfloat *v) PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *n, GLfloat *v) PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *c, GLfloat *n, GLfloat *v) PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *tc, GLfloat *v) PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *tc, GLfloat *n, GLfloat *v) PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC;
+alias void function(GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z) PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC;
+alias void function(GLuint *rc, GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v) PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC;
 
 static const auto GL_EXT_blend_func_separate = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlendFuncSeparateEXT (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDFUNCSEPARATEEXTPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void function(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) PFNGLBLENDFUNCSEPARATEEXTPROC;
 
 static const auto GL_INGR_blend_func_separate = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlendFuncSeparateINGR (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDFUNCSEPARATEINGRPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void function(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) PFNGLBLENDFUNCSEPARATEINGRPROC;
 
 static const auto GL_INGR_color_clamp = 1;
 
@@ -8080,9 +8080,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexWeightfvEXT (GLfloat *weight);
 	void glVertexWeightPointerEXT (GLsizei size, GLenum type, GLsizei stride, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXWEIGHTFEXTPROC) (GLfloat weight);
-alias void (PFNGLVERTEXWEIGHTFVEXTPROC) (GLfloat *weight);
-alias void (PFNGLVERTEXWEIGHTPOINTEREXTPROC) (GLsizei size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void function(GLfloat weight) PFNGLVERTEXWEIGHTFEXTPROC;
+alias void function(GLfloat *weight) PFNGLVERTEXWEIGHTFVEXTPROC;
+alias void function(GLsizei size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLVERTEXWEIGHTPOINTEREXTPROC;
 
 static const auto GL_NV_light_max_exponent = 1;
 
@@ -8091,8 +8091,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFlushVertexArrayRangeNV ();
 	void glVertexArrayRangeNV (GLsizei length, GLvoid *pointer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFLUSHVERTEXARRAYRANGENVPROC) ();
-alias void (PFNGLVERTEXARRAYRANGENVPROC) (GLsizei length, GLvoid *pointer);
+alias void function() PFNGLFLUSHVERTEXARRAYRANGENVPROC;
+alias void function(GLsizei length, GLvoid *pointer) PFNGLVERTEXARRAYRANGENVPROC;
 
 static const auto GL_NV_register_combiners = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8110,19 +8110,19 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetFinalCombinerInputParameterfvNV (GLenum variable, GLenum pname, GLfloat *params);
 	void glGetFinalCombinerInputParameterivNV (GLenum variable, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOMBINERPARAMETERFVNVPROC) (GLenum pname, GLfloat *params);
-alias void (PFNGLCOMBINERPARAMETERFNVPROC) (GLenum pname, GLfloat param);
-alias void (PFNGLCOMBINERPARAMETERIVNVPROC) (GLenum pname, GLint *params);
-alias void (PFNGLCOMBINERPARAMETERINVPROC) (GLenum pname, GLint param);
-alias void (PFNGLCOMBINERINPUTNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
-alias void (PFNGLCOMBINEROUTPUTNVPROC) (GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLboolean abDotProduct, GLboolean cdDotProduct, GLboolean muxSum);
-alias void (PFNGLFINALCOMBINERINPUTNVPROC) (GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
-alias void (PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLint *params);
-alias void (PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLint *params);
-alias void (PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC) (GLenum variable, GLenum pname, GLfloat *params);
-alias void (PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC) (GLenum variable, GLenum pname, GLint *params);
+alias void function(GLenum pname, GLfloat *params) PFNGLCOMBINERPARAMETERFVNVPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLCOMBINERPARAMETERFNVPROC;
+alias void function(GLenum pname, GLint *params) PFNGLCOMBINERPARAMETERIVNVPROC;
+alias void function(GLenum pname, GLint param) PFNGLCOMBINERPARAMETERINVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage) PFNGLCOMBINERINPUTNVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLboolean abDotProduct, GLboolean cdDotProduct, GLboolean muxSum) PFNGLCOMBINEROUTPUTNVPROC;
+alias void function(GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage) PFNGLFINALCOMBINERINPUTNVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLfloat *params) PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLint *params) PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum pname, GLfloat *params) PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC;
+alias void function(GLenum stage, GLenum portion, GLenum pname, GLint *params) PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC;
+alias void function(GLenum variable, GLenum pname, GLfloat *params) PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC;
+alias void function(GLenum variable, GLenum pname, GLint *params) PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC;
 
 static const auto GL_NV_fog_distance = 1;
 
@@ -8136,7 +8136,7 @@ static const auto GL_MESA_resize_buffers = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glResizeBuffersMESA ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLRESIZEBUFFERSMESAPROC) ();
+alias void function() PFNGLRESIZEBUFFERSMESAPROC;
 
 static const auto GL_MESA_window_pos = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8165,30 +8165,30 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glWindowPos4sMESA (GLshort x, GLshort y, GLshort z, GLshort w);
 	void glWindowPos4svMESA (GLshort *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLWINDOWPOS2DMESAPROC) (GLdouble x, GLdouble y);
-alias void (PFNGLWINDOWPOS2DVMESAPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS2FMESAPROC) (GLfloat x, GLfloat y);
-alias void (PFNGLWINDOWPOS2FVMESAPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS2IMESAPROC) (GLint x, GLint y);
-alias void (PFNGLWINDOWPOS2IVMESAPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS2SMESAPROC) (GLshort x, GLshort y);
-alias void (PFNGLWINDOWPOS2SVMESAPROC) (GLshort *v);
-alias void (PFNGLWINDOWPOS3DMESAPROC) (GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLWINDOWPOS3DVMESAPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS3FMESAPROC) (GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLWINDOWPOS3FVMESAPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS3IMESAPROC) (GLint x, GLint y, GLint z);
-alias void (PFNGLWINDOWPOS3IVMESAPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS3SMESAPROC) (GLshort x, GLshort y, GLshort z);
-alias void (PFNGLWINDOWPOS3SVMESAPROC) (GLshort *v);
-alias void (PFNGLWINDOWPOS4DMESAPROC) (GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLWINDOWPOS4DVMESAPROC) (GLdouble *v);
-alias void (PFNGLWINDOWPOS4FMESAPROC) (GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLWINDOWPOS4FVMESAPROC) (GLfloat *v);
-alias void (PFNGLWINDOWPOS4IMESAPROC) (GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLWINDOWPOS4IVMESAPROC) (GLint *v);
-alias void (PFNGLWINDOWPOS4SMESAPROC) (GLshort x, GLshort y, GLshort z, GLshort w);
-alias void (PFNGLWINDOWPOS4SVMESAPROC) (GLshort *v);
+alias void function(GLdouble x, GLdouble y) PFNGLWINDOWPOS2DMESAPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS2DVMESAPROC;
+alias void function(GLfloat x, GLfloat y) PFNGLWINDOWPOS2FMESAPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS2FVMESAPROC;
+alias void function(GLint x, GLint y) PFNGLWINDOWPOS2IMESAPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS2IVMESAPROC;
+alias void function(GLshort x, GLshort y) PFNGLWINDOWPOS2SMESAPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS2SVMESAPROC;
+alias void function(GLdouble x, GLdouble y, GLdouble z) PFNGLWINDOWPOS3DMESAPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS3DVMESAPROC;
+alias void function(GLfloat x, GLfloat y, GLfloat z) PFNGLWINDOWPOS3FMESAPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS3FVMESAPROC;
+alias void function(GLint x, GLint y, GLint z) PFNGLWINDOWPOS3IMESAPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS3IVMESAPROC;
+alias void function(GLshort x, GLshort y, GLshort z) PFNGLWINDOWPOS3SMESAPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS3SVMESAPROC;
+alias void function(GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLWINDOWPOS4DMESAPROC;
+alias void function(GLdouble *v) PFNGLWINDOWPOS4DVMESAPROC;
+alias void function(GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLWINDOWPOS4FMESAPROC;
+alias void function(GLfloat *v) PFNGLWINDOWPOS4FVMESAPROC;
+alias void function(GLint x, GLint y, GLint z, GLint w) PFNGLWINDOWPOS4IMESAPROC;
+alias void function(GLint *v) PFNGLWINDOWPOS4IVMESAPROC;
+alias void function(GLshort x, GLshort y, GLshort z, GLshort w) PFNGLWINDOWPOS4SMESAPROC;
+alias void function(GLshort *v) PFNGLWINDOWPOS4SVMESAPROC;
 
 static const auto GL_IBM_cull_vertex = 1;
 
@@ -8197,8 +8197,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMultiModeDrawArraysIBM (GLenum *mode, GLint *first, GLsizei *count, GLsizei primcount, GLint modestride);
 	void glMultiModeDrawElementsIBM (GLenum *mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint modestride);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLMULTIMODEDRAWARRAYSIBMPROC) (GLenum *mode, GLint *first, GLsizei *count, GLsizei primcount, GLint modestride);
-alias void (PFNGLMULTIMODEDRAWELEMENTSIBMPROC) (GLenum *mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint modestride);
+alias void function(GLenum *mode, GLint *first, GLsizei *count, GLsizei primcount, GLint modestride) PFNGLMULTIMODEDRAWARRAYSIBMPROC;
+alias void function(GLenum *mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint modestride) PFNGLMULTIMODEDRAWELEMENTSIBMPROC;
 
 static const auto GL_IBM_vertex_array_lists = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8211,14 +8211,14 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTexCoordPointerListIBM (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
 	void glVertexPointerListIBM (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLSECONDARYCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLEDGEFLAGPOINTERLISTIBMPROC) (GLint stride, GLboolean* *pointer, GLint ptrstride);
-alias void (PFNGLFOGCOORDPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLINDEXPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLNORMALPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLTEXCOORDPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-alias void (PFNGLVERTEXPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void function(GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLCOLORPOINTERLISTIBMPROC;
+alias void function(GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLSECONDARYCOLORPOINTERLISTIBMPROC;
+alias void function(GLint stride, GLboolean* *pointer, GLint ptrstride) PFNGLEDGEFLAGPOINTERLISTIBMPROC;
+alias void function(GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLFOGCOORDPOINTERLISTIBMPROC;
+alias void function(GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLINDEXPOINTERLISTIBMPROC;
+alias void function(GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLNORMALPOINTERLISTIBMPROC;
+alias void function(GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLTEXCOORDPOINTERLISTIBMPROC;
+alias void function(GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride) PFNGLVERTEXPOINTERLISTIBMPROC;
 
 static const auto GL_SGIX_subsample = 1;
 
@@ -8236,15 +8236,15 @@ static const auto GL_3DFX_tbuffer = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTbufferMask3DFX (GLuint mask);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTBUFFERMASK3DFXPROC) (GLuint mask);
+alias void function(GLuint mask) PFNGLTBUFFERMASK3DFXPROC;
 
 static const auto GL_EXT_multisample = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glSampleMaskEXT (GLclampf value, GLboolean invert);
 	void glSamplePatternEXT (GLenum pattern);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSAMPLEMASKEXTPROC) (GLclampf value, GLboolean invert);
-alias void (PFNGLSAMPLEPATTERNEXTPROC) (GLenum pattern);
+alias void function(GLclampf value, GLboolean invert) PFNGLSAMPLEMASKEXTPROC;
+alias void function(GLenum pattern) PFNGLSAMPLEPATTERNEXTPROC;
 
 static const auto GL_SGIX_vertex_preclip = 1;
 
@@ -8258,13 +8258,13 @@ static const auto GL_SGIS_texture_color_mask = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTextureColorMaskSGIS (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXTURECOLORMASKSGISPROC) (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+alias void function(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) PFNGLTEXTURECOLORMASKSGISPROC;
 
 static const auto GL_SGIX_igloo_interface = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glIglooInterfaceSGIX (GLenum pname, GLvoid *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLIGLOOINTERFACESGIXPROC) (GLenum pname, GLvoid *params);
+alias void function(GLenum pname, GLvoid *params) PFNGLIGLOOINTERFACESGIXPROC;
 
 static const auto GL_EXT_texture_env_dot3 = 1;
 
@@ -8280,13 +8280,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFinishFenceNV (GLuint fence);
 	void glSetFenceNV (GLuint fence, GLenum condition);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDELETEFENCESNVPROC) (GLsizei n, GLuint *fences);
-alias void (PFNGLGENFENCESNVPROC) (GLsizei n, GLuint *fences);
-alias GLboolean (PFNGLISFENCENVPROC) (GLuint fence);
-alias GLboolean (PFNGLTESTFENCENVPROC) (GLuint fence);
-alias void (PFNGLGETFENCEIVNVPROC) (GLuint fence, GLenum pname, GLint *params);
-alias void (PFNGLFINISHFENCENVPROC) (GLuint fence);
-alias void (PFNGLSETFENCENVPROC) (GLuint fence, GLenum condition);
+alias void function(GLsizei n, GLuint *fences) PFNGLDELETEFENCESNVPROC;
+alias void function(GLsizei n, GLuint *fences) PFNGLGENFENCESNVPROC;
+alias GLboolean function(GLuint fence) PFNGLISFENCENVPROC;
+alias GLboolean function(GLuint fence) PFNGLTESTFENCENVPROC;
+alias void function(GLuint fence, GLenum pname, GLint *params) PFNGLGETFENCEIVNVPROC;
+alias void function(GLuint fence) PFNGLFINISHFENCENVPROC;
+alias void function(GLuint fence, GLenum condition) PFNGLSETFENCENVPROC;
 
 static const auto GL_NV_evaluators = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8300,15 +8300,15 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetMapAttribParameterfvNV (GLenum target, GLuint index, GLenum pname, GLfloat *params);
 	void glEvalMapsNV (GLenum target, GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLint uorder, GLint vorder, GLboolean packed, GLvoid *points);
-alias void (PFNGLMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLboolean packed, GLvoid *points);
-alias void (PFNGLGETMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMAPATTRIBPARAMETERIVNVPROC) (GLenum target, GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETMAPATTRIBPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLEVALMAPSNVPROC) (GLenum target, GLenum mode);
+alias void function(GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLint uorder, GLint vorder, GLboolean packed, GLvoid *points) PFNGLMAPCONTROLPOINTSNVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLMAPPARAMETERIVNVPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLMAPPARAMETERFVNVPROC;
+alias void function(GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLboolean packed, GLvoid *points) PFNGLGETMAPCONTROLPOINTSNVPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETMAPPARAMETERIVNVPROC;
+alias void function(GLenum target, GLenum pname, GLfloat *params) PFNGLGETMAPPARAMETERFVNVPROC;
+alias void function(GLenum target, GLuint index, GLenum pname, GLint *params) PFNGLGETMAPATTRIBPARAMETERIVNVPROC;
+alias void function(GLenum target, GLuint index, GLenum pname, GLfloat *params) PFNGLGETMAPATTRIBPARAMETERFVNVPROC;
+alias void function(GLenum target, GLenum mode) PFNGLEVALMAPSNVPROC;
 
 static const auto GL_NV_packed_depth_stencil = 1;
 
@@ -8317,8 +8317,8 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glCombinerStageParameterfvNV (GLenum stage, GLenum pname, GLfloat *params);
 	void glGetCombinerStageParameterfvNV (GLenum stage, GLenum pname, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
-alias void (PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
+alias void function(GLenum stage, GLenum pname, GLfloat *params) PFNGLCOMBINERSTAGEPARAMETERFVNVPROC;
+alias void function(GLenum stage, GLenum pname, GLfloat *params) PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC;
 
 static const auto GL_NV_texture_compression_vtc = 1;
 
@@ -8397,70 +8397,70 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribs4svNV (GLuint index, GLsizei count, GLshort *v);
 	void glVertexAttribs4ubvNV (GLuint index, GLsizei count, GLubyte *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLboolean (PFNGLAREPROGRAMSRESIDENTNVPROC) (GLsizei n, GLuint *programs, GLboolean *residences);
-alias void (PFNGLBINDPROGRAMNVPROC) (GLenum target, GLuint id);
-alias void (PFNGLDELETEPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-alias void (PFNGLEXECUTEPROGRAMNVPROC) (GLenum target, GLuint id, GLfloat *params);
-alias void (PFNGLGENPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-alias void (PFNGLGETPROGRAMPARAMETERDVNVPROC) (GLenum target, GLuint index, GLenum pname, GLdouble *params);
-alias void (PFNGLGETPROGRAMPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLGETPROGRAMIVNVPROC) (GLuint id, GLenum pname, GLint *params);
-alias void (PFNGLGETPROGRAMSTRINGNVPROC) (GLuint id, GLenum pname, GLubyte *program);
-alias void (PFNGLGETTRACKMATRIXIVNVPROC) (GLenum target, GLuint address, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBDVNVPROC) (GLuint index, GLenum pname, GLdouble *params);
-alias void (PFNGLGETVERTEXATTRIBFVNVPROC) (GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVERTEXATTRIBIVNVPROC) (GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBPOINTERVNVPROC) (GLuint index, GLenum pname, GLvoid* *pointer);
-alias GLboolean (PFNGLISPROGRAMNVPROC) (GLuint id);
-alias void (PFNGLLOADPROGRAMNVPROC) (GLenum target, GLuint id, GLsizei len, GLubyte *program);
-alias void (PFNGLPROGRAMPARAMETER4DNVPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLPROGRAMPARAMETER4DVNVPROC) (GLenum target, GLuint index, GLdouble *v);
-alias void (PFNGLPROGRAMPARAMETER4FNVPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLPROGRAMPARAMETER4FVNVPROC) (GLenum target, GLuint index, GLfloat *v);
-alias void (PFNGLPROGRAMPARAMETERS4DVNVPROC) (GLenum target, GLuint index, GLuint count, GLdouble *v);
-alias void (PFNGLPROGRAMPARAMETERS4FVNVPROC) (GLenum target, GLuint index, GLuint count, GLfloat *v);
-alias void (PFNGLREQUESTRESIDENTPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-alias void (PFNGLTRACKMATRIXNVPROC) (GLenum target, GLuint address, GLenum matrix, GLenum transform);
-alias void (PFNGLVERTEXATTRIBPOINTERNVPROC) (GLuint index, GLint fsize, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLVERTEXATTRIB1DNVPROC) (GLuint index, GLdouble x);
-alias void (PFNGLVERTEXATTRIB1DVNVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB1FNVPROC) (GLuint index, GLfloat x);
-alias void (PFNGLVERTEXATTRIB1FVNVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB1SNVPROC) (GLuint index, GLshort x);
-alias void (PFNGLVERTEXATTRIB1SVNVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB2DNVPROC) (GLuint index, GLdouble x, GLdouble y);
-alias void (PFNGLVERTEXATTRIB2DVNVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB2FNVPROC) (GLuint index, GLfloat x, GLfloat y);
-alias void (PFNGLVERTEXATTRIB2FVNVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB2SNVPROC) (GLuint index, GLshort x, GLshort y);
-alias void (PFNGLVERTEXATTRIB2SVNVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB3DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLVERTEXATTRIB3DVNVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB3FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLVERTEXATTRIB3FVNVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB3SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
-alias void (PFNGLVERTEXATTRIB3SVNVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLVERTEXATTRIB4DVNVPROC) (GLuint index, GLdouble *v);
-alias void (PFNGLVERTEXATTRIB4FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLVERTEXATTRIB4FVNVPROC) (GLuint index, GLfloat *v);
-alias void (PFNGLVERTEXATTRIB4SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-alias void (PFNGLVERTEXATTRIB4SVNVPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIB4UBNVPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-alias void (PFNGLVERTEXATTRIB4UBVNVPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIBS1DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-alias void (PFNGLVERTEXATTRIBS1FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-alias void (PFNGLVERTEXATTRIBS1SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-alias void (PFNGLVERTEXATTRIBS2DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-alias void (PFNGLVERTEXATTRIBS2FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-alias void (PFNGLVERTEXATTRIBS2SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-alias void (PFNGLVERTEXATTRIBS3DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-alias void (PFNGLVERTEXATTRIBS3FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-alias void (PFNGLVERTEXATTRIBS3SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-alias void (PFNGLVERTEXATTRIBS4DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-alias void (PFNGLVERTEXATTRIBS4FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-alias void (PFNGLVERTEXATTRIBS4SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-alias void (PFNGLVERTEXATTRIBS4UBVNVPROC) (GLuint index, GLsizei count, GLubyte *v);
+alias GLboolean function(GLsizei n, GLuint *programs, GLboolean *residences) PFNGLAREPROGRAMSRESIDENTNVPROC;
+alias void function(GLenum target, GLuint id) PFNGLBINDPROGRAMNVPROC;
+alias void function(GLsizei n, GLuint *programs) PFNGLDELETEPROGRAMSNVPROC;
+alias void function(GLenum target, GLuint id, GLfloat *params) PFNGLEXECUTEPROGRAMNVPROC;
+alias void function(GLsizei n, GLuint *programs) PFNGLGENPROGRAMSNVPROC;
+alias void function(GLenum target, GLuint index, GLenum pname, GLdouble *params) PFNGLGETPROGRAMPARAMETERDVNVPROC;
+alias void function(GLenum target, GLuint index, GLenum pname, GLfloat *params) PFNGLGETPROGRAMPARAMETERFVNVPROC;
+alias void function(GLuint id, GLenum pname, GLint *params) PFNGLGETPROGRAMIVNVPROC;
+alias void function(GLuint id, GLenum pname, GLubyte *program) PFNGLGETPROGRAMSTRINGNVPROC;
+alias void function(GLenum target, GLuint address, GLenum pname, GLint *params) PFNGLGETTRACKMATRIXIVNVPROC;
+alias void function(GLuint index, GLenum pname, GLdouble *params) PFNGLGETVERTEXATTRIBDVNVPROC;
+alias void function(GLuint index, GLenum pname, GLfloat *params) PFNGLGETVERTEXATTRIBFVNVPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBIVNVPROC;
+alias void function(GLuint index, GLenum pname, GLvoid* *pointer) PFNGLGETVERTEXATTRIBPOINTERVNVPROC;
+alias GLboolean function(GLuint id) PFNGLISPROGRAMNVPROC;
+alias void function(GLenum target, GLuint id, GLsizei len, GLubyte *program) PFNGLLOADPROGRAMNVPROC;
+alias void function(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLPROGRAMPARAMETER4DNVPROC;
+alias void function(GLenum target, GLuint index, GLdouble *v) PFNGLPROGRAMPARAMETER4DVNVPROC;
+alias void function(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLPROGRAMPARAMETER4FNVPROC;
+alias void function(GLenum target, GLuint index, GLfloat *v) PFNGLPROGRAMPARAMETER4FVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint count, GLdouble *v) PFNGLPROGRAMPARAMETERS4DVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint count, GLfloat *v) PFNGLPROGRAMPARAMETERS4FVNVPROC;
+alias void function(GLsizei n, GLuint *programs) PFNGLREQUESTRESIDENTPROGRAMSNVPROC;
+alias void function(GLenum target, GLuint address, GLenum matrix, GLenum transform) PFNGLTRACKMATRIXNVPROC;
+alias void function(GLuint index, GLint fsize, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLVERTEXATTRIBPOINTERNVPROC;
+alias void function(GLuint index, GLdouble x) PFNGLVERTEXATTRIB1DNVPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB1DVNVPROC;
+alias void function(GLuint index, GLfloat x) PFNGLVERTEXATTRIB1FNVPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB1FVNVPROC;
+alias void function(GLuint index, GLshort x) PFNGLVERTEXATTRIB1SNVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB1SVNVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y) PFNGLVERTEXATTRIB2DNVPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB2DVNVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y) PFNGLVERTEXATTRIB2FNVPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB2FVNVPROC;
+alias void function(GLuint index, GLshort x, GLshort y) PFNGLVERTEXATTRIB2SNVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB2SVNVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z) PFNGLVERTEXATTRIB3DNVPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB3DVNVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z) PFNGLVERTEXATTRIB3FNVPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB3FVNVPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z) PFNGLVERTEXATTRIB3SNVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB3SVNVPROC;
+alias void function(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLVERTEXATTRIB4DNVPROC;
+alias void function(GLuint index, GLdouble *v) PFNGLVERTEXATTRIB4DVNVPROC;
+alias void function(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLVERTEXATTRIB4FNVPROC;
+alias void function(GLuint index, GLfloat *v) PFNGLVERTEXATTRIB4FVNVPROC;
+alias void function(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) PFNGLVERTEXATTRIB4SNVPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIB4SVNVPROC;
+alias void function(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) PFNGLVERTEXATTRIB4UBNVPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIB4UBVNVPROC;
+alias void function(GLuint index, GLsizei count, GLdouble *v) PFNGLVERTEXATTRIBS1DVNVPROC;
+alias void function(GLuint index, GLsizei count, GLfloat *v) PFNGLVERTEXATTRIBS1FVNVPROC;
+alias void function(GLuint index, GLsizei count, GLshort *v) PFNGLVERTEXATTRIBS1SVNVPROC;
+alias void function(GLuint index, GLsizei count, GLdouble *v) PFNGLVERTEXATTRIBS2DVNVPROC;
+alias void function(GLuint index, GLsizei count, GLfloat *v) PFNGLVERTEXATTRIBS2FVNVPROC;
+alias void function(GLuint index, GLsizei count, GLshort *v) PFNGLVERTEXATTRIBS2SVNVPROC;
+alias void function(GLuint index, GLsizei count, GLdouble *v) PFNGLVERTEXATTRIBS3DVNVPROC;
+alias void function(GLuint index, GLsizei count, GLfloat *v) PFNGLVERTEXATTRIBS3FVNVPROC;
+alias void function(GLuint index, GLsizei count, GLshort *v) PFNGLVERTEXATTRIBS3SVNVPROC;
+alias void function(GLuint index, GLsizei count, GLdouble *v) PFNGLVERTEXATTRIBS4DVNVPROC;
+alias void function(GLuint index, GLsizei count, GLfloat *v) PFNGLVERTEXATTRIBS4FVNVPROC;
+alias void function(GLuint index, GLsizei count, GLshort *v) PFNGLVERTEXATTRIBS4SVNVPROC;
+alias void function(GLuint index, GLsizei count, GLubyte *v) PFNGLVERTEXATTRIBS4UBVNVPROC;
 
 static const auto GL_SGIX_texture_coordinate_clamp = 1;
 
@@ -8481,10 +8481,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetTexBumpParameterivATI (GLenum pname, GLint *param);
 	void glGetTexBumpParameterfvATI (GLenum pname, GLfloat *param);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
-alias void (PFNGLTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
-alias void (PFNGLGETTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
-alias void (PFNGLGETTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
+alias void function(GLenum pname, GLint *param) PFNGLTEXBUMPPARAMETERIVATIPROC;
+alias void function(GLenum pname, GLfloat *param) PFNGLTEXBUMPPARAMETERFVATIPROC;
+alias void function(GLenum pname, GLint *param) PFNGLGETTEXBUMPPARAMETERIVATIPROC;
+alias void function(GLenum pname, GLfloat *param) PFNGLGETTEXBUMPPARAMETERFVATIPROC;
 
 static const auto GL_ATI_fragment_shader = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8503,28 +8503,28 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glAlphaFragmentOp3ATI (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
 	void glSetFragmentShaderConstantATI (GLuint dst, GLfloat *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLuint (PFNGLGENFRAGMENTSHADERSATIPROC) (GLuint range);
-alias void (PFNGLBINDFRAGMENTSHADERATIPROC) (GLuint id);
-alias void (PFNGLDELETEFRAGMENTSHADERATIPROC) (GLuint id);
-alias void (PFNGLBEGINFRAGMENTSHADERATIPROC) ();
-alias void (PFNGLENDFRAGMENTSHADERATIPROC) ();
-alias void (PFNGLPASSTEXCOORDATIPROC) (GLuint dst, GLuint coord, GLenum swizzle);
-alias void (PFNGLSAMPLEMAPATIPROC) (GLuint dst, GLuint interp, GLenum swizzle);
-alias void (PFNGLCOLORFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
-alias void (PFNGLCOLORFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
-alias void (PFNGLCOLORFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
-alias void (PFNGLALPHAFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
-alias void (PFNGLALPHAFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
-alias void (PFNGLALPHAFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
-alias void (PFNGLSETFRAGMENTSHADERCONSTANTATIPROC) (GLuint dst, GLfloat *value);
+alias GLuint function(GLuint range) PFNGLGENFRAGMENTSHADERSATIPROC;
+alias void function(GLuint id) PFNGLBINDFRAGMENTSHADERATIPROC;
+alias void function(GLuint id) PFNGLDELETEFRAGMENTSHADERATIPROC;
+alias void function() PFNGLBEGINFRAGMENTSHADERATIPROC;
+alias void function() PFNGLENDFRAGMENTSHADERATIPROC;
+alias void function(GLuint dst, GLuint coord, GLenum swizzle) PFNGLPASSTEXCOORDATIPROC;
+alias void function(GLuint dst, GLuint interp, GLenum swizzle) PFNGLSAMPLEMAPATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod) PFNGLCOLORFRAGMENTOP1ATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod) PFNGLCOLORFRAGMENTOP2ATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod) PFNGLCOLORFRAGMENTOP3ATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod) PFNGLALPHAFRAGMENTOP1ATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod) PFNGLALPHAFRAGMENTOP2ATIPROC;
+alias void function(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod) PFNGLALPHAFRAGMENTOP3ATIPROC;
+alias void function(GLuint dst, GLfloat *value) PFNGLSETFRAGMENTSHADERCONSTANTATIPROC;
 
 static const auto GL_ATI_pn_triangles = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPNTrianglesiATI (GLenum pname, GLint param);
 	void glPNTrianglesfATI (GLenum pname, GLfloat param);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPNTRIANGLESIATIPROC) (GLenum pname, GLint param);
-alias void (PFNGLPNTRIANGLESFATIPROC) (GLenum pname, GLfloat param);
+alias void function(GLenum pname, GLint param) PFNGLPNTRIANGLESIATIPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLPNTRIANGLESFATIPROC;
 
 static const auto GL_ATI_vertex_array_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8541,18 +8541,18 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetVariantArrayObjectfvATI (GLuint id, GLenum pname, GLfloat *params);
 	void glGetVariantArrayObjectivATI (GLuint id, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLuint (PFNGLNEWOBJECTBUFFERATIPROC) (GLsizei size, GLvoid *pointer, GLenum usage);
-alias GLboolean (PFNGLISOBJECTBUFFERATIPROC) (GLuint buffer);
-alias void (PFNGLUPDATEOBJECTBUFFERATIPROC) (GLuint buffer, GLuint offset, GLsizei size, GLvoid *pointer, GLenum preserve);
-alias void (PFNGLGETOBJECTBUFFERFVATIPROC) (GLuint buffer, GLenum pname, GLfloat *params);
-alias void (PFNGLGETOBJECTBUFFERIVATIPROC) (GLuint buffer, GLenum pname, GLint *params);
-alias void (PFNGLFREEOBJECTBUFFERATIPROC) (GLuint buffer);
-alias void (PFNGLARRAYOBJECTATIPROC) (GLenum array, GLint size, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
-alias void (PFNGLGETARRAYOBJECTFVATIPROC) (GLenum array, GLenum pname, GLfloat *params);
-alias void (PFNGLGETARRAYOBJECTIVATIPROC) (GLenum array, GLenum pname, GLint *params);
-alias void (PFNGLVARIANTARRAYOBJECTATIPROC) (GLuint id, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
-alias void (PFNGLGETVARIANTARRAYOBJECTFVATIPROC) (GLuint id, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVARIANTARRAYOBJECTIVATIPROC) (GLuint id, GLenum pname, GLint *params);
+alias GLuint function(GLsizei size, GLvoid *pointer, GLenum usage) PFNGLNEWOBJECTBUFFERATIPROC;
+alias GLboolean function(GLuint buffer) PFNGLISOBJECTBUFFERATIPROC;
+alias void function(GLuint buffer, GLuint offset, GLsizei size, GLvoid *pointer, GLenum preserve) PFNGLUPDATEOBJECTBUFFERATIPROC;
+alias void function(GLuint buffer, GLenum pname, GLfloat *params) PFNGLGETOBJECTBUFFERFVATIPROC;
+alias void function(GLuint buffer, GLenum pname, GLint *params) PFNGLGETOBJECTBUFFERIVATIPROC;
+alias void function(GLuint buffer) PFNGLFREEOBJECTBUFFERATIPROC;
+alias void function(GLenum array, GLint size, GLenum type, GLsizei stride, GLuint buffer, GLuint offset) PFNGLARRAYOBJECTATIPROC;
+alias void function(GLenum array, GLenum pname, GLfloat *params) PFNGLGETARRAYOBJECTFVATIPROC;
+alias void function(GLenum array, GLenum pname, GLint *params) PFNGLGETARRAYOBJECTIVATIPROC;
+alias void function(GLuint id, GLenum type, GLsizei stride, GLuint buffer, GLuint offset) PFNGLVARIANTARRAYOBJECTATIPROC;
+alias void function(GLuint id, GLenum pname, GLfloat *params) PFNGLGETVARIANTARRAYOBJECTFVATIPROC;
+alias void function(GLuint id, GLenum pname, GLint *params) PFNGLGETVARIANTARRAYOBJECTIVATIPROC;
 
 static const auto GL_EXT_vertex_shader = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8599,48 +8599,48 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetLocalConstantIntegervEXT (GLuint id, GLenum value, GLint *data);
 	void glGetLocalConstantFloatvEXT (GLuint id, GLenum value, GLfloat *data);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBEGINVERTEXSHADEREXTPROC) ();
-alias void (PFNGLENDVERTEXSHADEREXTPROC) ();
-alias void (PFNGLBINDVERTEXSHADEREXTPROC) (GLuint id);
-alias GLuint (PFNGLGENVERTEXSHADERSEXTPROC) (GLuint range);
-alias void (PFNGLDELETEVERTEXSHADEREXTPROC) (GLuint id);
-alias void (PFNGLSHADEROP1EXTPROC) (GLenum op, GLuint res, GLuint arg1);
-alias void (PFNGLSHADEROP2EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2);
-alias void (PFNGLSHADEROP3EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2, GLuint arg3);
-alias void (PFNGLSWIZZLEEXTPROC) (GLuint res, GLuint _in, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
-alias void (PFNGLWRITEMASKEXTPROC) (GLuint res, GLuint _in, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
-alias void (PFNGLINSERTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
-alias void (PFNGLEXTRACTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
-alias GLuint (PFNGLGENSYMBOLSEXTPROC) (GLenum datatype, GLenum storagetype, GLenum range, GLuint components);
-alias void (PFNGLSETINVARIANTEXTPROC) (GLuint id, GLenum type, GLvoid *addr);
-alias void (PFNGLSETLOCALCONSTANTEXTPROC) (GLuint id, GLenum type, GLvoid *addr);
-alias void (PFNGLVARIANTBVEXTPROC) (GLuint id, GLbyte *addr);
-alias void (PFNGLVARIANTSVEXTPROC) (GLuint id, GLshort *addr);
-alias void (PFNGLVARIANTIVEXTPROC) (GLuint id, GLint *addr);
-alias void (PFNGLVARIANTFVEXTPROC) (GLuint id, GLfloat *addr);
-alias void (PFNGLVARIANTDVEXTPROC) (GLuint id, GLdouble *addr);
-alias void (PFNGLVARIANTUBVEXTPROC) (GLuint id, GLubyte *addr);
-alias void (PFNGLVARIANTUSVEXTPROC) (GLuint id, GLushort *addr);
-alias void (PFNGLVARIANTUIVEXTPROC) (GLuint id, GLuint *addr);
-alias void (PFNGLVARIANTPOINTEREXTPROC) (GLuint id, GLenum type, GLuint stride, GLvoid *addr);
-alias void (PFNGLENABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
-alias void (PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
-alias GLuint (PFNGLBINDLIGHTPARAMETEREXTPROC) (GLenum light, GLenum value);
-alias GLuint (PFNGLBINDMATERIALPARAMETEREXTPROC) (GLenum face, GLenum value);
-alias GLuint (PFNGLBINDTEXGENPARAMETEREXTPROC) (GLenum unit, GLenum coord, GLenum value);
-alias GLuint (PFNGLBINDTEXTUREUNITPARAMETEREXTPROC) (GLenum unit, GLenum value);
-alias GLuint (PFNGLBINDPARAMETEREXTPROC) (GLenum value);
-alias GLboolean (PFNGLISVARIANTENABLEDEXTPROC) (GLuint id, GLenum cap);
-alias void (PFNGLGETVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-alias void (PFNGLGETVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-alias void (PFNGLGETVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
-alias void (PFNGLGETVARIANTPOINTERVEXTPROC) (GLuint id, GLenum value, GLvoid* *data);
-alias void (PFNGLGETINVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-alias void (PFNGLGETINVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-alias void (PFNGLGETINVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
-alias void (PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-alias void (PFNGLGETLOCALCONSTANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-alias void (PFNGLGETLOCALCONSTANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
+alias void function() PFNGLBEGINVERTEXSHADEREXTPROC;
+alias void function() PFNGLENDVERTEXSHADEREXTPROC;
+alias void function(GLuint id) PFNGLBINDVERTEXSHADEREXTPROC;
+alias GLuint function(GLuint range) PFNGLGENVERTEXSHADERSEXTPROC;
+alias void function(GLuint id) PFNGLDELETEVERTEXSHADEREXTPROC;
+alias void function(GLenum op, GLuint res, GLuint arg1) PFNGLSHADEROP1EXTPROC;
+alias void function(GLenum op, GLuint res, GLuint arg1, GLuint arg2) PFNGLSHADEROP2EXTPROC;
+alias void function(GLenum op, GLuint res, GLuint arg1, GLuint arg2, GLuint arg3) PFNGLSHADEROP3EXTPROC;
+alias void function(GLuint res, GLuint _in, GLenum outX, GLenum outY, GLenum outZ, GLenum outW) PFNGLSWIZZLEEXTPROC;
+alias void function(GLuint res, GLuint _in, GLenum outX, GLenum outY, GLenum outZ, GLenum outW) PFNGLWRITEMASKEXTPROC;
+alias void function(GLuint res, GLuint src, GLuint num) PFNGLINSERTCOMPONENTEXTPROC;
+alias void function(GLuint res, GLuint src, GLuint num) PFNGLEXTRACTCOMPONENTEXTPROC;
+alias GLuint function(GLenum datatype, GLenum storagetype, GLenum range, GLuint components) PFNGLGENSYMBOLSEXTPROC;
+alias void function(GLuint id, GLenum type, GLvoid *addr) PFNGLSETINVARIANTEXTPROC;
+alias void function(GLuint id, GLenum type, GLvoid *addr) PFNGLSETLOCALCONSTANTEXTPROC;
+alias void function(GLuint id, GLbyte *addr) PFNGLVARIANTBVEXTPROC;
+alias void function(GLuint id, GLshort *addr) PFNGLVARIANTSVEXTPROC;
+alias void function(GLuint id, GLint *addr) PFNGLVARIANTIVEXTPROC;
+alias void function(GLuint id, GLfloat *addr) PFNGLVARIANTFVEXTPROC;
+alias void function(GLuint id, GLdouble *addr) PFNGLVARIANTDVEXTPROC;
+alias void function(GLuint id, GLubyte *addr) PFNGLVARIANTUBVEXTPROC;
+alias void function(GLuint id, GLushort *addr) PFNGLVARIANTUSVEXTPROC;
+alias void function(GLuint id, GLuint *addr) PFNGLVARIANTUIVEXTPROC;
+alias void function(GLuint id, GLenum type, GLuint stride, GLvoid *addr) PFNGLVARIANTPOINTEREXTPROC;
+alias void function(GLuint id) PFNGLENABLEVARIANTCLIENTSTATEEXTPROC;
+alias void function(GLuint id) PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC;
+alias GLuint function(GLenum light, GLenum value) PFNGLBINDLIGHTPARAMETEREXTPROC;
+alias GLuint function(GLenum face, GLenum value) PFNGLBINDMATERIALPARAMETEREXTPROC;
+alias GLuint function(GLenum unit, GLenum coord, GLenum value) PFNGLBINDTEXGENPARAMETEREXTPROC;
+alias GLuint function(GLenum unit, GLenum value) PFNGLBINDTEXTUREUNITPARAMETEREXTPROC;
+alias GLuint function(GLenum value) PFNGLBINDPARAMETEREXTPROC;
+alias GLboolean function(GLuint id, GLenum cap) PFNGLISVARIANTENABLEDEXTPROC;
+alias void function(GLuint id, GLenum value, GLboolean *data) PFNGLGETVARIANTBOOLEANVEXTPROC;
+alias void function(GLuint id, GLenum value, GLint *data) PFNGLGETVARIANTINTEGERVEXTPROC;
+alias void function(GLuint id, GLenum value, GLfloat *data) PFNGLGETVARIANTFLOATVEXTPROC;
+alias void function(GLuint id, GLenum value, GLvoid* *data) PFNGLGETVARIANTPOINTERVEXTPROC;
+alias void function(GLuint id, GLenum value, GLboolean *data) PFNGLGETINVARIANTBOOLEANVEXTPROC;
+alias void function(GLuint id, GLenum value, GLint *data) PFNGLGETINVARIANTINTEGERVEXTPROC;
+alias void function(GLuint id, GLenum value, GLfloat *data) PFNGLGETINVARIANTFLOATVEXTPROC;
+alias void function(GLuint id, GLenum value, GLboolean *data) PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC;
+alias void function(GLuint id, GLenum value, GLint *data) PFNGLGETLOCALCONSTANTINTEGERVEXTPROC;
+alias void function(GLuint id, GLenum value, GLfloat *data) PFNGLGETLOCALCONSTANTFLOATVEXTPROC;
 
 static const auto GL_ATI_vertex_streams = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8690,51 +8690,51 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexBlendEnviATI (GLenum pname, GLint param);
 	void glVertexBlendEnvfATI (GLenum pname, GLfloat param);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXSTREAM1SATIPROC) (GLenum stream, GLshort x);
-alias void (PFNGLVERTEXSTREAM1SVATIPROC) (GLenum stream, GLshort *coords);
-alias void (PFNGLVERTEXSTREAM1IATIPROC) (GLenum stream, GLint x);
-alias void (PFNGLVERTEXSTREAM1IVATIPROC) (GLenum stream, GLint *coords);
-alias void (PFNGLVERTEXSTREAM1FATIPROC) (GLenum stream, GLfloat x);
-alias void (PFNGLVERTEXSTREAM1FVATIPROC) (GLenum stream, GLfloat *coords);
-alias void (PFNGLVERTEXSTREAM1DATIPROC) (GLenum stream, GLdouble x);
-alias void (PFNGLVERTEXSTREAM1DVATIPROC) (GLenum stream, GLdouble *coords);
-alias void (PFNGLVERTEXSTREAM2SATIPROC) (GLenum stream, GLshort x, GLshort y);
-alias void (PFNGLVERTEXSTREAM2SVATIPROC) (GLenum stream, GLshort *coords);
-alias void (PFNGLVERTEXSTREAM2IATIPROC) (GLenum stream, GLint x, GLint y);
-alias void (PFNGLVERTEXSTREAM2IVATIPROC) (GLenum stream, GLint *coords);
-alias void (PFNGLVERTEXSTREAM2FATIPROC) (GLenum stream, GLfloat x, GLfloat y);
-alias void (PFNGLVERTEXSTREAM2FVATIPROC) (GLenum stream, GLfloat *coords);
-alias void (PFNGLVERTEXSTREAM2DATIPROC) (GLenum stream, GLdouble x, GLdouble y);
-alias void (PFNGLVERTEXSTREAM2DVATIPROC) (GLenum stream, GLdouble *coords);
-alias void (PFNGLVERTEXSTREAM3SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z);
-alias void (PFNGLVERTEXSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
-alias void (PFNGLVERTEXSTREAM3IATIPROC) (GLenum stream, GLint x, GLint y, GLint z);
-alias void (PFNGLVERTEXSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
-alias void (PFNGLVERTEXSTREAM3FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLVERTEXSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
-alias void (PFNGLVERTEXSTREAM3DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLVERTEXSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
-alias void (PFNGLVERTEXSTREAM4SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z, GLshort w);
-alias void (PFNGLVERTEXSTREAM4SVATIPROC) (GLenum stream, GLshort *coords);
-alias void (PFNGLVERTEXSTREAM4IATIPROC) (GLenum stream, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLVERTEXSTREAM4IVATIPROC) (GLenum stream, GLint *coords);
-alias void (PFNGLVERTEXSTREAM4FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLVERTEXSTREAM4FVATIPROC) (GLenum stream, GLfloat *coords);
-alias void (PFNGLVERTEXSTREAM4DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLVERTEXSTREAM4DVATIPROC) (GLenum stream, GLdouble *coords);
-alias void (PFNGLNORMALSTREAM3BATIPROC) (GLenum stream, GLbyte nx, GLbyte ny, GLbyte nz);
-alias void (PFNGLNORMALSTREAM3BVATIPROC) (GLenum stream, GLbyte *coords);
-alias void (PFNGLNORMALSTREAM3SATIPROC) (GLenum stream, GLshort nx, GLshort ny, GLshort nz);
-alias void (PFNGLNORMALSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
-alias void (PFNGLNORMALSTREAM3IATIPROC) (GLenum stream, GLint nx, GLint ny, GLint nz);
-alias void (PFNGLNORMALSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
-alias void (PFNGLNORMALSTREAM3FATIPROC) (GLenum stream, GLfloat nx, GLfloat ny, GLfloat nz);
-alias void (PFNGLNORMALSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
-alias void (PFNGLNORMALSTREAM3DATIPROC) (GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz);
-alias void (PFNGLNORMALSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
-alias void (PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC) (GLenum stream);
-alias void (PFNGLVERTEXBLENDENVIATIPROC) (GLenum pname, GLint param);
-alias void (PFNGLVERTEXBLENDENVFATIPROC) (GLenum pname, GLfloat param);
+alias void function(GLenum stream, GLshort x) PFNGLVERTEXSTREAM1SATIPROC;
+alias void function(GLenum stream, GLshort *coords) PFNGLVERTEXSTREAM1SVATIPROC;
+alias void function(GLenum stream, GLint x) PFNGLVERTEXSTREAM1IATIPROC;
+alias void function(GLenum stream, GLint *coords) PFNGLVERTEXSTREAM1IVATIPROC;
+alias void function(GLenum stream, GLfloat x) PFNGLVERTEXSTREAM1FATIPROC;
+alias void function(GLenum stream, GLfloat *coords) PFNGLVERTEXSTREAM1FVATIPROC;
+alias void function(GLenum stream, GLdouble x) PFNGLVERTEXSTREAM1DATIPROC;
+alias void function(GLenum stream, GLdouble *coords) PFNGLVERTEXSTREAM1DVATIPROC;
+alias void function(GLenum stream, GLshort x, GLshort y) PFNGLVERTEXSTREAM2SATIPROC;
+alias void function(GLenum stream, GLshort *coords) PFNGLVERTEXSTREAM2SVATIPROC;
+alias void function(GLenum stream, GLint x, GLint y) PFNGLVERTEXSTREAM2IATIPROC;
+alias void function(GLenum stream, GLint *coords) PFNGLVERTEXSTREAM2IVATIPROC;
+alias void function(GLenum stream, GLfloat x, GLfloat y) PFNGLVERTEXSTREAM2FATIPROC;
+alias void function(GLenum stream, GLfloat *coords) PFNGLVERTEXSTREAM2FVATIPROC;
+alias void function(GLenum stream, GLdouble x, GLdouble y) PFNGLVERTEXSTREAM2DATIPROC;
+alias void function(GLenum stream, GLdouble *coords) PFNGLVERTEXSTREAM2DVATIPROC;
+alias void function(GLenum stream, GLshort x, GLshort y, GLshort z) PFNGLVERTEXSTREAM3SATIPROC;
+alias void function(GLenum stream, GLshort *coords) PFNGLVERTEXSTREAM3SVATIPROC;
+alias void function(GLenum stream, GLint x, GLint y, GLint z) PFNGLVERTEXSTREAM3IATIPROC;
+alias void function(GLenum stream, GLint *coords) PFNGLVERTEXSTREAM3IVATIPROC;
+alias void function(GLenum stream, GLfloat x, GLfloat y, GLfloat z) PFNGLVERTEXSTREAM3FATIPROC;
+alias void function(GLenum stream, GLfloat *coords) PFNGLVERTEXSTREAM3FVATIPROC;
+alias void function(GLenum stream, GLdouble x, GLdouble y, GLdouble z) PFNGLVERTEXSTREAM3DATIPROC;
+alias void function(GLenum stream, GLdouble *coords) PFNGLVERTEXSTREAM3DVATIPROC;
+alias void function(GLenum stream, GLshort x, GLshort y, GLshort z, GLshort w) PFNGLVERTEXSTREAM4SATIPROC;
+alias void function(GLenum stream, GLshort *coords) PFNGLVERTEXSTREAM4SVATIPROC;
+alias void function(GLenum stream, GLint x, GLint y, GLint z, GLint w) PFNGLVERTEXSTREAM4IATIPROC;
+alias void function(GLenum stream, GLint *coords) PFNGLVERTEXSTREAM4IVATIPROC;
+alias void function(GLenum stream, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLVERTEXSTREAM4FATIPROC;
+alias void function(GLenum stream, GLfloat *coords) PFNGLVERTEXSTREAM4FVATIPROC;
+alias void function(GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLVERTEXSTREAM4DATIPROC;
+alias void function(GLenum stream, GLdouble *coords) PFNGLVERTEXSTREAM4DVATIPROC;
+alias void function(GLenum stream, GLbyte nx, GLbyte ny, GLbyte nz) PFNGLNORMALSTREAM3BATIPROC;
+alias void function(GLenum stream, GLbyte *coords) PFNGLNORMALSTREAM3BVATIPROC;
+alias void function(GLenum stream, GLshort nx, GLshort ny, GLshort nz) PFNGLNORMALSTREAM3SATIPROC;
+alias void function(GLenum stream, GLshort *coords) PFNGLNORMALSTREAM3SVATIPROC;
+alias void function(GLenum stream, GLint nx, GLint ny, GLint nz) PFNGLNORMALSTREAM3IATIPROC;
+alias void function(GLenum stream, GLint *coords) PFNGLNORMALSTREAM3IVATIPROC;
+alias void function(GLenum stream, GLfloat nx, GLfloat ny, GLfloat nz) PFNGLNORMALSTREAM3FATIPROC;
+alias void function(GLenum stream, GLfloat *coords) PFNGLNORMALSTREAM3FVATIPROC;
+alias void function(GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz) PFNGLNORMALSTREAM3DATIPROC;
+alias void function(GLenum stream, GLdouble *coords) PFNGLNORMALSTREAM3DVATIPROC;
+alias void function(GLenum stream) PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC;
+alias void function(GLenum pname, GLint param) PFNGLVERTEXBLENDENVIATIPROC;
+alias void function(GLenum pname, GLfloat param) PFNGLVERTEXBLENDENVFATIPROC;
 
 static const auto GL_ATI_element_array = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8742,15 +8742,15 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDrawElementArrayATI (GLenum mode, GLsizei count);
 	void glDrawRangeElementArrayATI (GLenum mode, GLuint start, GLuint end, GLsizei count);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLELEMENTPOINTERATIPROC) (GLenum type, GLvoid *pointer);
-alias void (PFNGLDRAWELEMENTARRAYATIPROC) (GLenum mode, GLsizei count);
-alias void (PFNGLDRAWRANGEELEMENTARRAYATIPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count);
+alias void function(GLenum type, GLvoid *pointer) PFNGLELEMENTPOINTERATIPROC;
+alias void function(GLenum mode, GLsizei count) PFNGLDRAWELEMENTARRAYATIPROC;
+alias void function(GLenum mode, GLuint start, GLuint end, GLsizei count) PFNGLDRAWRANGEELEMENTARRAYATIPROC;
 
 static const auto GL_SUN_mesh_array = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawMeshArraysSUN (GLenum mode, GLint first, GLsizei count, GLsizei width);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWMESHARRAYSSUNPROC) (GLenum mode, GLint first, GLsizei count, GLsizei width);
+alias void function(GLenum mode, GLint first, GLsizei count, GLsizei width) PFNGLDRAWMESHARRAYSSUNPROC;
 
 static const auto GL_SUN_slice_accum = 1;
 
@@ -8768,21 +8768,21 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetOcclusionQueryivNV (GLuint id, GLenum pname, GLint *params);
 	void glGetOcclusionQueryuivNV (GLuint id, GLenum pname, GLuint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGENOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
-alias void (PFNGLDELETEOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
-alias GLboolean (PFNGLISOCCLUSIONQUERYNVPROC) (GLuint id);
-alias void (PFNGLBEGINOCCLUSIONQUERYNVPROC) (GLuint id);
-alias void (PFNGLENDOCCLUSIONQUERYNVPROC) ();
-alias void (PFNGLGETOCCLUSIONQUERYIVNVPROC) (GLuint id, GLenum pname, GLint *params);
-alias void (PFNGLGETOCCLUSIONQUERYUIVNVPROC) (GLuint id, GLenum pname, GLuint *params);
+alias void function(GLsizei n, GLuint *ids) PFNGLGENOCCLUSIONQUERIESNVPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLDELETEOCCLUSIONQUERIESNVPROC;
+alias GLboolean function(GLuint id) PFNGLISOCCLUSIONQUERYNVPROC;
+alias void function(GLuint id) PFNGLBEGINOCCLUSIONQUERYNVPROC;
+alias void function() PFNGLENDOCCLUSIONQUERYNVPROC;
+alias void function(GLuint id, GLenum pname, GLint *params) PFNGLGETOCCLUSIONQUERYIVNVPROC;
+alias void function(GLuint id, GLenum pname, GLuint *params) PFNGLGETOCCLUSIONQUERYUIVNVPROC;
 
 static const auto GL_NV_point_sprite = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPointParameteriNV (GLenum pname, GLint param);
 	void glPointParameterivNV (GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPOINTPARAMETERINVPROC) (GLenum pname, GLint param);
-alias void (PFNGLPOINTPARAMETERIVNVPROC) (GLenum pname, GLint *params);
+alias void function(GLenum pname, GLint param) PFNGLPOINTPARAMETERINVPROC;
+alias void function(GLenum pname, GLint *params) PFNGLPOINTPARAMETERIVNVPROC;
 
 static const auto GL_NV_texture_shader3 = 1;
 
@@ -8794,7 +8794,7 @@ static const auto GL_EXT_stencil_two_side = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glActiveStencilFaceEXT (GLenum face);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLACTIVESTENCILFACEEXTPROC) (GLenum face);
+alias void function(GLenum face) PFNGLACTIVESTENCILFACEEXTPROC;
 
 static const auto GL_ATI_text_fragment_shader = 1;
 
@@ -8808,11 +8808,11 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMultiDrawElementArrayAPPLE (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
 	void glMultiDrawRangeElementArrayAPPLE (GLenum mode, GLuint start, GLuint end, GLint *first, GLsizei *count, GLsizei primcount);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLELEMENTPOINTERAPPLEPROC) (GLenum type, GLvoid *pointer);
-alias void (PFNGLDRAWELEMENTARRAYAPPLEPROC) (GLenum mode, GLint first, GLsizei count);
-alias void (PFNGLDRAWRANGEELEMENTARRAYAPPLEPROC) (GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count);
-alias void (PFNGLMULTIDRAWELEMENTARRAYAPPLEPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-alias void (PFNGLMULTIDRAWRANGEELEMENTARRAYAPPLEPROC) (GLenum mode, GLuint start, GLuint end, GLint *first, GLsizei *count, GLsizei primcount);
+alias void function(GLenum type, GLvoid *pointer) PFNGLELEMENTPOINTERAPPLEPROC;
+alias void function(GLenum mode, GLint first, GLsizei count) PFNGLDRAWELEMENTARRAYAPPLEPROC;
+alias void function(GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count) PFNGLDRAWRANGEELEMENTARRAYAPPLEPROC;
+alias void function(GLenum mode, GLint *first, GLsizei *count, GLsizei primcount) PFNGLMULTIDRAWELEMENTARRAYAPPLEPROC;
+alias void function(GLenum mode, GLuint start, GLuint end, GLint *first, GLsizei *count, GLsizei primcount) PFNGLMULTIDRAWRANGEELEMENTARRAYAPPLEPROC;
 
 static const auto GL_APPLE_fence = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8825,14 +8825,14 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLboolean glTestObjectAPPLE (GLenum object, GLuint name);
 	void glFinishObjectAPPLE (GLenum object, GLint name);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGENFENCESAPPLEPROC) (GLsizei n, GLuint *fences);
-alias void (PFNGLDELETEFENCESAPPLEPROC) (GLsizei n, GLuint *fences);
-alias void (PFNGLSETFENCEAPPLEPROC) (GLuint fence);
-alias GLboolean (PFNGLISFENCEAPPLEPROC) (GLuint fence);
-alias GLboolean (PFNGLTESTFENCEAPPLEPROC) (GLuint fence);
-alias void (PFNGLFINISHFENCEAPPLEPROC) (GLuint fence);
-alias GLboolean (PFNGLTESTOBJECTAPPLEPROC) (GLenum object, GLuint name);
-alias void (PFNGLFINISHOBJECTAPPLEPROC) (GLenum object, GLint name);
+alias void function(GLsizei n, GLuint *fences) PFNGLGENFENCESAPPLEPROC;
+alias void function(GLsizei n, GLuint *fences) PFNGLDELETEFENCESAPPLEPROC;
+alias void function(GLuint fence) PFNGLSETFENCEAPPLEPROC;
+alias GLboolean function(GLuint fence) PFNGLISFENCEAPPLEPROC;
+alias GLboolean function(GLuint fence) PFNGLTESTFENCEAPPLEPROC;
+alias void function(GLuint fence) PFNGLFINISHFENCEAPPLEPROC;
+alias GLboolean function(GLenum object, GLuint name) PFNGLTESTOBJECTAPPLEPROC;
+alias void function(GLenum object, GLint name) PFNGLFINISHOBJECTAPPLEPROC;
 
 static const auto GL_APPLE_vertex_array_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8841,10 +8841,10 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGenVertexArraysAPPLE (GLsizei n, GLuint *arrays);
 	GLboolean glIsVertexArrayAPPLE (GLuint array);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDVERTEXARRAYAPPLEPROC) (GLuint array);
-alias void (PFNGLDELETEVERTEXARRAYSAPPLEPROC) (GLsizei n, GLuint *arrays);
-alias void (PFNGLGENVERTEXARRAYSAPPLEPROC) (GLsizei n, GLuint *arrays);
-alias GLboolean (PFNGLISVERTEXARRAYAPPLEPROC) (GLuint array);
+alias void function(GLuint array) PFNGLBINDVERTEXARRAYAPPLEPROC;
+alias void function(GLsizei n, GLuint *arrays) PFNGLDELETEVERTEXARRAYSAPPLEPROC;
+alias void function(GLsizei n, GLuint *arrays) PFNGLGENVERTEXARRAYSAPPLEPROC;
+alias GLboolean function(GLuint array) PFNGLISVERTEXARRAYAPPLEPROC;
 
 static const auto GL_APPLE_vertex_array_range = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8852,9 +8852,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFlushVertexArrayRangeAPPLE (GLsizei length, GLvoid *pointer);
 	void glVertexArrayParameteriAPPLE (GLenum pname, GLint param);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXARRAYRANGEAPPLEPROC) (GLsizei length, GLvoid *pointer);
-alias void (PFNGLFLUSHVERTEXARRAYRANGEAPPLEPROC) (GLsizei length, GLvoid *pointer);
-alias void (PFNGLVERTEXARRAYPARAMETERIAPPLEPROC) (GLenum pname, GLint param);
+alias void function(GLsizei length, GLvoid *pointer) PFNGLVERTEXARRAYRANGEAPPLEPROC;
+alias void function(GLsizei length, GLvoid *pointer) PFNGLFLUSHVERTEXARRAYRANGEAPPLEPROC;
+alias void function(GLenum pname, GLint param) PFNGLVERTEXARRAYPARAMETERIAPPLEPROC;
 
 static const auto GL_APPLE_ycbcr_422 = 1;
 
@@ -8864,7 +8864,7 @@ static const auto GL_ATI_draw_buffers = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawBuffersATI (GLsizei n, GLenum *bufs);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWBUFFERSATIPROC) (GLsizei n, GLenum *bufs);
+alias void function(GLsizei n, GLenum *bufs) PFNGLDRAWBUFFERSATIPROC;
 
 static const auto GL_ATI_pixel_format_float = 1;
 /* This is really a WGL extension, but defines some associated GL enums.
@@ -8887,12 +8887,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetProgramNamedParameterfvNV (GLuint id, GLsizei len, GLubyte *name, GLfloat *params);
 	void glGetProgramNamedParameterdvNV (GLuint id, GLsizei len, GLubyte *name, GLdouble *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMNAMEDPARAMETER4FNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLPROGRAMNAMEDPARAMETER4DNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat *v);
-alias void (PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble *v);
-alias void (PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat *params);
-alias void (PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble *params);
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLPROGRAMNAMEDPARAMETER4FNVPROC;
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLPROGRAMNAMEDPARAMETER4DNVPROC;
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLfloat *v) PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC;
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLdouble *v) PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC;
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLfloat *params) PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC;
+alias void function(GLuint id, GLsizei len, GLubyte *name, GLdouble *params) PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC;
 
 static const auto GL_NV_half_float = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -8943,68 +8943,68 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribs3hvNV (GLuint index, GLsizei n, GLhalfNV *v);
 	void glVertexAttribs4hvNV (GLuint index, GLsizei n, GLhalfNV *v);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEX2HNVPROC) (GLhalfNV x, GLhalfNV y);
-alias void (PFNGLVERTEX2HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLVERTEX3HNVPROC) (GLhalfNV x, GLhalfNV y, GLhalfNV z);
-alias void (PFNGLVERTEX3HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLVERTEX4HNVPROC) (GLhalfNV x, GLhalfNV y, GLhalfNV z, GLhalfNV w);
-alias void (PFNGLVERTEX4HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLNORMAL3HNVPROC) (GLhalfNV nx, GLhalfNV ny, GLhalfNV nz);
-alias void (PFNGLNORMAL3HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLCOLOR3HNVPROC) (GLhalfNV red, GLhalfNV green, GLhalfNV blue);
-alias void (PFNGLCOLOR3HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLCOLOR4HNVPROC) (GLhalfNV red, GLhalfNV green, GLhalfNV blue, GLhalfNV alpha);
-alias void (PFNGLCOLOR4HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLTEXCOORD1HNVPROC) (GLhalfNV s);
-alias void (PFNGLTEXCOORD1HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLTEXCOORD2HNVPROC) (GLhalfNV s, GLhalfNV t);
-alias void (PFNGLTEXCOORD2HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLTEXCOORD3HNVPROC) (GLhalfNV s, GLhalfNV t, GLhalfNV r);
-alias void (PFNGLTEXCOORD3HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLTEXCOORD4HNVPROC) (GLhalfNV s, GLhalfNV t, GLhalfNV r, GLhalfNV q);
-alias void (PFNGLTEXCOORD4HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLMULTITEXCOORD1HNVPROC) (GLenum target, GLhalfNV s);
-alias void (PFNGLMULTITEXCOORD1HVNVPROC) (GLenum target, GLhalfNV *v);
-alias void (PFNGLMULTITEXCOORD2HNVPROC) (GLenum target, GLhalfNV s, GLhalfNV t);
-alias void (PFNGLMULTITEXCOORD2HVNVPROC) (GLenum target, GLhalfNV *v);
-alias void (PFNGLMULTITEXCOORD3HNVPROC) (GLenum target, GLhalfNV s, GLhalfNV t, GLhalfNV r);
-alias void (PFNGLMULTITEXCOORD3HVNVPROC) (GLenum target, GLhalfNV *v);
-alias void (PFNGLMULTITEXCOORD4HNVPROC) (GLenum target, GLhalfNV s, GLhalfNV t, GLhalfNV r, GLhalfNV q);
-alias void (PFNGLMULTITEXCOORD4HVNVPROC) (GLenum target, GLhalfNV *v);
-alias void (PFNGLFOGCOORDHNVPROC) (GLhalfNV fog);
-alias void (PFNGLFOGCOORDHVNVPROC) (GLhalfNV *fog);
-alias void (PFNGLSECONDARYCOLOR3HNVPROC) (GLhalfNV red, GLhalfNV green, GLhalfNV blue);
-alias void (PFNGLSECONDARYCOLOR3HVNVPROC) (GLhalfNV *v);
-alias void (PFNGLVERTEXWEIGHTHNVPROC) (GLhalfNV weight);
-alias void (PFNGLVERTEXWEIGHTHVNVPROC) (GLhalfNV *weight);
-alias void (PFNGLVERTEXATTRIB1HNVPROC) (GLuint index, GLhalfNV x);
-alias void (PFNGLVERTEXATTRIB1HVNVPROC) (GLuint index, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIB2HNVPROC) (GLuint index, GLhalfNV x, GLhalfNV y);
-alias void (PFNGLVERTEXATTRIB2HVNVPROC) (GLuint index, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIB3HNVPROC) (GLuint index, GLhalfNV x, GLhalfNV y, GLhalfNV z);
-alias void (PFNGLVERTEXATTRIB3HVNVPROC) (GLuint index, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIB4HNVPROC) (GLuint index, GLhalfNV x, GLhalfNV y, GLhalfNV z, GLhalfNV w);
-alias void (PFNGLVERTEXATTRIB4HVNVPROC) (GLuint index, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIBS1HVNVPROC) (GLuint index, GLsizei n, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIBS2HVNVPROC) (GLuint index, GLsizei n, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIBS3HVNVPROC) (GLuint index, GLsizei n, GLhalfNV *v);
-alias void (PFNGLVERTEXATTRIBS4HVNVPROC) (GLuint index, GLsizei n, GLhalfNV *v);
+alias void function(GLhalfNV x, GLhalfNV y) PFNGLVERTEX2HNVPROC;
+alias void function(GLhalfNV *v) PFNGLVERTEX2HVNVPROC;
+alias void function(GLhalfNV x, GLhalfNV y, GLhalfNV z) PFNGLVERTEX3HNVPROC;
+alias void function(GLhalfNV *v) PFNGLVERTEX3HVNVPROC;
+alias void function(GLhalfNV x, GLhalfNV y, GLhalfNV z, GLhalfNV w) PFNGLVERTEX4HNVPROC;
+alias void function(GLhalfNV *v) PFNGLVERTEX4HVNVPROC;
+alias void function(GLhalfNV nx, GLhalfNV ny, GLhalfNV nz) PFNGLNORMAL3HNVPROC;
+alias void function(GLhalfNV *v) PFNGLNORMAL3HVNVPROC;
+alias void function(GLhalfNV red, GLhalfNV green, GLhalfNV blue) PFNGLCOLOR3HNVPROC;
+alias void function(GLhalfNV *v) PFNGLCOLOR3HVNVPROC;
+alias void function(GLhalfNV red, GLhalfNV green, GLhalfNV blue, GLhalfNV alpha) PFNGLCOLOR4HNVPROC;
+alias void function(GLhalfNV *v) PFNGLCOLOR4HVNVPROC;
+alias void function(GLhalfNV s) PFNGLTEXCOORD1HNVPROC;
+alias void function(GLhalfNV *v) PFNGLTEXCOORD1HVNVPROC;
+alias void function(GLhalfNV s, GLhalfNV t) PFNGLTEXCOORD2HNVPROC;
+alias void function(GLhalfNV *v) PFNGLTEXCOORD2HVNVPROC;
+alias void function(GLhalfNV s, GLhalfNV t, GLhalfNV r) PFNGLTEXCOORD3HNVPROC;
+alias void function(GLhalfNV *v) PFNGLTEXCOORD3HVNVPROC;
+alias void function(GLhalfNV s, GLhalfNV t, GLhalfNV r, GLhalfNV q) PFNGLTEXCOORD4HNVPROC;
+alias void function(GLhalfNV *v) PFNGLTEXCOORD4HVNVPROC;
+alias void function(GLenum target, GLhalfNV s) PFNGLMULTITEXCOORD1HNVPROC;
+alias void function(GLenum target, GLhalfNV *v) PFNGLMULTITEXCOORD1HVNVPROC;
+alias void function(GLenum target, GLhalfNV s, GLhalfNV t) PFNGLMULTITEXCOORD2HNVPROC;
+alias void function(GLenum target, GLhalfNV *v) PFNGLMULTITEXCOORD2HVNVPROC;
+alias void function(GLenum target, GLhalfNV s, GLhalfNV t, GLhalfNV r) PFNGLMULTITEXCOORD3HNVPROC;
+alias void function(GLenum target, GLhalfNV *v) PFNGLMULTITEXCOORD3HVNVPROC;
+alias void function(GLenum target, GLhalfNV s, GLhalfNV t, GLhalfNV r, GLhalfNV q) PFNGLMULTITEXCOORD4HNVPROC;
+alias void function(GLenum target, GLhalfNV *v) PFNGLMULTITEXCOORD4HVNVPROC;
+alias void function(GLhalfNV fog) PFNGLFOGCOORDHNVPROC;
+alias void function(GLhalfNV *fog) PFNGLFOGCOORDHVNVPROC;
+alias void function(GLhalfNV red, GLhalfNV green, GLhalfNV blue) PFNGLSECONDARYCOLOR3HNVPROC;
+alias void function(GLhalfNV *v) PFNGLSECONDARYCOLOR3HVNVPROC;
+alias void function(GLhalfNV weight) PFNGLVERTEXWEIGHTHNVPROC;
+alias void function(GLhalfNV *weight) PFNGLVERTEXWEIGHTHVNVPROC;
+alias void function(GLuint index, GLhalfNV x) PFNGLVERTEXATTRIB1HNVPROC;
+alias void function(GLuint index, GLhalfNV *v) PFNGLVERTEXATTRIB1HVNVPROC;
+alias void function(GLuint index, GLhalfNV x, GLhalfNV y) PFNGLVERTEXATTRIB2HNVPROC;
+alias void function(GLuint index, GLhalfNV *v) PFNGLVERTEXATTRIB2HVNVPROC;
+alias void function(GLuint index, GLhalfNV x, GLhalfNV y, GLhalfNV z) PFNGLVERTEXATTRIB3HNVPROC;
+alias void function(GLuint index, GLhalfNV *v) PFNGLVERTEXATTRIB3HVNVPROC;
+alias void function(GLuint index, GLhalfNV x, GLhalfNV y, GLhalfNV z, GLhalfNV w) PFNGLVERTEXATTRIB4HNVPROC;
+alias void function(GLuint index, GLhalfNV *v) PFNGLVERTEXATTRIB4HVNVPROC;
+alias void function(GLuint index, GLsizei n, GLhalfNV *v) PFNGLVERTEXATTRIBS1HVNVPROC;
+alias void function(GLuint index, GLsizei n, GLhalfNV *v) PFNGLVERTEXATTRIBS2HVNVPROC;
+alias void function(GLuint index, GLsizei n, GLhalfNV *v) PFNGLVERTEXATTRIBS3HVNVPROC;
+alias void function(GLuint index, GLsizei n, GLhalfNV *v) PFNGLVERTEXATTRIBS4HVNVPROC;
 
 static const auto GL_NV_pixel_data_range = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPixelDataRangeNV (GLenum target, GLsizei length, GLvoid *pointer);
 	void glFlushPixelDataRangeNV (GLenum target);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPIXELDATARANGENVPROC) (GLenum target, GLsizei length, GLvoid *pointer);
-alias void (PFNGLFLUSHPIXELDATARANGENVPROC) (GLenum target);
+alias void function(GLenum target, GLsizei length, GLvoid *pointer) PFNGLPIXELDATARANGENVPROC;
+alias void function(GLenum target) PFNGLFLUSHPIXELDATARANGENVPROC;
 
 static const auto GL_NV_primitive_restart = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glPrimitiveRestartNV ();
 	void glPrimitiveRestartIndexNV (GLuint index);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPRIMITIVERESTARTNVPROC) ();
-alias void (PFNGLPRIMITIVERESTARTINDEXNVPROC) (GLuint index);
+alias void function() PFNGLPRIMITIVERESTARTNVPROC;
+alias void function(GLuint index) PFNGLPRIMITIVERESTARTINDEXNVPROC;
 
 static const auto GL_NV_texture_expand_normal = 1;
 
@@ -9016,15 +9016,15 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glUnmapObjectBufferATI (GLuint buffer);
 } /* GL_GLEXT_PROTOTYPES */
 alias GLvoid* (PFNGLMAPOBJECTBUFFERATIPROC) (GLuint buffer);
-alias void (PFNGLUNMAPOBJECTBUFFERATIPROC) (GLuint buffer);
+alias void function(GLuint buffer) PFNGLUNMAPOBJECTBUFFERATIPROC;
 
 static const auto GL_ATI_separate_stencil = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glStencilOpSeparateATI (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
 	void glStencilFuncSeparateATI (GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSTENCILOPSEPARATEATIPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-alias void (PFNGLSTENCILFUNCSEPARATEATIPROC) (GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask);
+alias void function(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) PFNGLSTENCILOPSEPARATEATIPROC;
+alias void function(GLenum frontfunc, GLenum backfunc, GLint _ref, GLuint mask) PFNGLSTENCILFUNCSEPARATEATIPROC;
 
 static const auto GL_ATI_vertex_attrib_array_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9032,9 +9032,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetVertexAttribArrayObjectfvATI (GLuint index, GLenum pname, GLfloat *params);
 	void glGetVertexAttribArrayObjectivATI (GLuint index, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXATTRIBARRAYOBJECTATIPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLuint buffer, GLuint offset);
-alias void (PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC) (GLuint index, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVERTEXATTRIBARRAYOBJECTIVATIPROC) (GLuint index, GLenum pname, GLint *params);
+alias void function(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLuint buffer, GLuint offset) PFNGLVERTEXATTRIBARRAYOBJECTATIPROC;
+alias void function(GLuint index, GLenum pname, GLfloat *params) PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBARRAYOBJECTIVATIPROC;
 
 static const auto GL_OES_read_format = 1;
 
@@ -9042,7 +9042,7 @@ static const auto GL_EXT_depth_bounds_test = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDepthBoundsEXT (GLclampd zmin, GLclampd zmax);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDEPTHBOUNDSEXTPROC) (GLclampd zmin, GLclampd zmax);
+alias void function(GLclampd zmin, GLclampd zmax) PFNGLDEPTHBOUNDSEXTPROC;
 
 static const auto GL_EXT_texture_mirror_clamp = 1;
 
@@ -9050,7 +9050,7 @@ static const auto GL_EXT_blend_equation_separate = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlendEquationSeparateEXT (GLenum modeRGB, GLenum modeAlpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDEQUATIONSEPARATEEXTPROC) (GLenum modeRGB, GLenum modeAlpha);
+alias void function(GLenum modeRGB, GLenum modeAlpha) PFNGLBLENDEQUATIONSEPARATEEXTPROC;
 
 static const auto GL_MESA_pack_invert = 1;
 
@@ -9108,7 +9108,7 @@ static const auto GL_GREMEDY_string_marker = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glStringMarkerGREMEDY (GLsizei len, GLvoid *string);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSTRINGMARKERGREMEDYPROC) (GLsizei len, GLvoid *string);
+alias void function(GLsizei len, GLvoid *string) PFNGLSTRINGMARKERGREMEDYPROC;
 
 static const auto GL_EXT_packed_depth_stencil = 1;
 
@@ -9116,7 +9116,7 @@ static const auto GL_EXT_stencil_clear_tag = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glStencilClearTagEXT (GLsizei stencilTagBits, GLuint stencilClearTag);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLSTENCILCLEARTAGEXTPROC) (GLsizei stencilTagBits, GLuint stencilClearTag);
+alias void function(GLsizei stencilTagBits, GLuint stencilClearTag) PFNGLSTENCILCLEARTAGEXTPROC;
 
 static const auto GL_EXT_texture_sRGB = 1;
 
@@ -9124,7 +9124,7 @@ static const auto GL_EXT_framebuffer_blit = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBlitFramebufferEXT (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLITFRAMEBUFFEREXTPROC) (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+alias void function(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) PFNGLBLITFRAMEBUFFEREXTPROC;
 
 static const auto GL_EXT_framebuffer_multisample = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9139,24 +9139,24 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetQueryObjecti64vEXT (GLuint id, GLenum pname, GLint64EXT *params);
 	void glGetQueryObjectui64vEXT (GLuint id, GLenum pname, GLuint64EXT *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETQUERYOBJECTI64VEXTPROC) (GLuint id, GLenum pname, GLint64EXT *params);
-alias void (PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pname, GLuint64EXT *params);
+alias void function(GLuint id, GLenum pname, GLint64EXT *params) PFNGLGETQUERYOBJECTI64VEXTPROC;
+alias void function(GLuint id, GLenum pname, GLuint64EXT *params) PFNGLGETQUERYOBJECTUI64VEXTPROC;
 
 static const auto GL_EXT_gpu_program_parameters = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glProgramEnvParameters4fvEXT (GLenum target, GLuint index, GLsizei count, GLfloat *params);
 	void glProgramLocalParameters4fvEXT (GLenum target, GLuint index, GLsizei count, GLfloat *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMENVPARAMETERS4FVEXTPROC) (GLenum target, GLuint index, GLsizei count, GLfloat *params);
-alias void (PFNGLPROGRAMLOCALPARAMETERS4FVEXTPROC) (GLenum target, GLuint index, GLsizei count, GLfloat *params);
+alias void function(GLenum target, GLuint index, GLsizei count, GLfloat *params) PFNGLPROGRAMENVPARAMETERS4FVEXTPROC;
+alias void function(GLenum target, GLuint index, GLsizei count, GLfloat *params) PFNGLPROGRAMLOCALPARAMETERS4FVEXTPROC;
 
 static const auto GL_APPLE_flush_buffer_range = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBufferParameteriAPPLE (GLenum target, GLenum pname, GLint param);
 	void glFlushMappedBufferRangeAPPLE (GLenum target, GLintptr offset, GLsizeiptr size);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBUFFERPARAMETERIAPPLEPROC) (GLenum target, GLenum pname, GLint param);
-alias void (PFNGLFLUSHMAPPEDBUFFERRANGEAPPLEPROC) (GLenum target, GLintptr offset, GLsizeiptr size);
+alias void function(GLenum target, GLenum pname, GLint param) PFNGLBUFFERPARAMETERIAPPLEPROC;
+alias void function(GLenum target, GLintptr offset, GLsizeiptr size) PFNGLFLUSHMAPPEDBUFFERRANGEAPPLEPROC;
 
 static const auto GL_NV_gpu_program4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9177,22 +9177,22 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetProgramEnvParameterIivNV (GLenum target, GLuint index, GLint *params);
 	void glGetProgramEnvParameterIuivNV (GLenum target, GLuint index, GLuint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMLOCALPARAMETERI4INVPROC) (GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC) (GLenum target, GLuint index, GLint *params);
-alias void (PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC) (GLenum target, GLuint index, GLsizei count, GLint *params);
-alias void (PFNGLPROGRAMLOCALPARAMETERI4UINVPROC) (GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-alias void (PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC) (GLenum target, GLuint index, GLuint *params);
-alias void (PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC) (GLenum target, GLuint index, GLsizei count, GLuint *params);
-alias void (PFNGLPROGRAMENVPARAMETERI4INVPROC) (GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLPROGRAMENVPARAMETERI4IVNVPROC) (GLenum target, GLuint index, GLint *params);
-alias void (PFNGLPROGRAMENVPARAMETERSI4IVNVPROC) (GLenum target, GLuint index, GLsizei count, GLint *params);
-alias void (PFNGLPROGRAMENVPARAMETERI4UINVPROC) (GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-alias void (PFNGLPROGRAMENVPARAMETERI4UIVNVPROC) (GLenum target, GLuint index, GLuint *params);
-alias void (PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC) (GLenum target, GLuint index, GLsizei count, GLuint *params);
-alias void (PFNGLGETPROGRAMLOCALPARAMETERIIVNVPROC) (GLenum target, GLuint index, GLint *params);
-alias void (PFNGLGETPROGRAMLOCALPARAMETERIUIVNVPROC) (GLenum target, GLuint index, GLuint *params);
-alias void (PFNGLGETPROGRAMENVPARAMETERIIVNVPROC) (GLenum target, GLuint index, GLint *params);
-alias void (PFNGLGETPROGRAMENVPARAMETERIUIVNVPROC) (GLenum target, GLuint index, GLuint *params);
+alias void function(GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w) PFNGLPROGRAMLOCALPARAMETERI4INVPROC;
+alias void function(GLenum target, GLuint index, GLint *params) PFNGLPROGRAMLOCALPARAMETERI4IVNVPROC;
+alias void function(GLenum target, GLuint index, GLsizei count, GLint *params) PFNGLPROGRAMLOCALPARAMETERSI4IVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w) PFNGLPROGRAMLOCALPARAMETERI4UINVPROC;
+alias void function(GLenum target, GLuint index, GLuint *params) PFNGLPROGRAMLOCALPARAMETERI4UIVNVPROC;
+alias void function(GLenum target, GLuint index, GLsizei count, GLuint *params) PFNGLPROGRAMLOCALPARAMETERSI4UIVNVPROC;
+alias void function(GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w) PFNGLPROGRAMENVPARAMETERI4INVPROC;
+alias void function(GLenum target, GLuint index, GLint *params) PFNGLPROGRAMENVPARAMETERI4IVNVPROC;
+alias void function(GLenum target, GLuint index, GLsizei count, GLint *params) PFNGLPROGRAMENVPARAMETERSI4IVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w) PFNGLPROGRAMENVPARAMETERI4UINVPROC;
+alias void function(GLenum target, GLuint index, GLuint *params) PFNGLPROGRAMENVPARAMETERI4UIVNVPROC;
+alias void function(GLenum target, GLuint index, GLsizei count, GLuint *params) PFNGLPROGRAMENVPARAMETERSI4UIVNVPROC;
+alias void function(GLenum target, GLuint index, GLint *params) PFNGLGETPROGRAMLOCALPARAMETERIIVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint *params) PFNGLGETPROGRAMLOCALPARAMETERIUIVNVPROC;
+alias void function(GLenum target, GLuint index, GLint *params) PFNGLGETPROGRAMENVPARAMETERIIVNVPROC;
+alias void function(GLenum target, GLuint index, GLuint *params) PFNGLGETPROGRAMENVPARAMETERIUIVNVPROC;
 
 static const auto GL_NV_geometry_program4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9201,16 +9201,16 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glFramebufferTextureLayerEXT (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
 	void glFramebufferTextureFaceEXT (GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMVERTEXLIMITNVPROC) (GLenum target, GLint limit);
-alias void (PFNGLFRAMEBUFFERTEXTUREEXTPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level);
-alias void (PFNGLFRAMEBUFFERTEXTURELAYEREXTPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
-alias void (PFNGLFRAMEBUFFERTEXTUREFACEEXTPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face);
+alias void function(GLenum target, GLint limit) PFNGLPROGRAMVERTEXLIMITNVPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level) PFNGLFRAMEBUFFERTEXTUREEXTPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) PFNGLFRAMEBUFFERTEXTURELAYEREXTPROC;
+alias void function(GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face) PFNGLFRAMEBUFFERTEXTUREFACEEXTPROC;
 
 static const auto GL_EXT_geometry_shader4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glProgramParameteriEXT (GLuint program, GLenum pname, GLint value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMPARAMETERIEXTPROC) (GLuint program, GLenum pname, GLint value);
+alias void function(GLuint program, GLenum pname, GLint value) PFNGLPROGRAMPARAMETERIEXTPROC;
 
 static const auto GL_NV_vertex_program4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9238,29 +9238,29 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetVertexAttribIivEXT (GLuint index, GLenum pname, GLint *params);
 	void glGetVertexAttribIuivEXT (GLuint index, GLenum pname, GLuint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLVERTEXATTRIBI1IEXTPROC) (GLuint index, GLint x);
-alias void (PFNGLVERTEXATTRIBI2IEXTPROC) (GLuint index, GLint x, GLint y);
-alias void (PFNGLVERTEXATTRIBI3IEXTPROC) (GLuint index, GLint x, GLint y, GLint z);
-alias void (PFNGLVERTEXATTRIBI4IEXTPROC) (GLuint index, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLVERTEXATTRIBI1UIEXTPROC) (GLuint index, GLuint x);
-alias void (PFNGLVERTEXATTRIBI2UIEXTPROC) (GLuint index, GLuint x, GLuint y);
-alias void (PFNGLVERTEXATTRIBI3UIEXTPROC) (GLuint index, GLuint x, GLuint y, GLuint z);
-alias void (PFNGLVERTEXATTRIBI4UIEXTPROC) (GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-alias void (PFNGLVERTEXATTRIBI1IVEXTPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI2IVEXTPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI3IVEXTPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI4IVEXTPROC) (GLuint index, GLint *v);
-alias void (PFNGLVERTEXATTRIBI1UIVEXTPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI2UIVEXTPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI3UIVEXTPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI4UIVEXTPROC) (GLuint index, GLuint *v);
-alias void (PFNGLVERTEXATTRIBI4BVEXTPROC) (GLuint index, GLbyte *v);
-alias void (PFNGLVERTEXATTRIBI4SVEXTPROC) (GLuint index, GLshort *v);
-alias void (PFNGLVERTEXATTRIBI4UBVEXTPROC) (GLuint index, GLubyte *v);
-alias void (PFNGLVERTEXATTRIBI4USVEXTPROC) (GLuint index, GLushort *v);
-alias void (PFNGLVERTEXATTRIBIPOINTEREXTPROC) (GLuint index, GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLGETVERTEXATTRIBIIVEXTPROC) (GLuint index, GLenum pname, GLint *params);
-alias void (PFNGLGETVERTEXATTRIBIUIVEXTPROC) (GLuint index, GLenum pname, GLuint *params);
+alias void function(GLuint index, GLint x) PFNGLVERTEXATTRIBI1IEXTPROC;
+alias void function(GLuint index, GLint x, GLint y) PFNGLVERTEXATTRIBI2IEXTPROC;
+alias void function(GLuint index, GLint x, GLint y, GLint z) PFNGLVERTEXATTRIBI3IEXTPROC;
+alias void function(GLuint index, GLint x, GLint y, GLint z, GLint w) PFNGLVERTEXATTRIBI4IEXTPROC;
+alias void function(GLuint index, GLuint x) PFNGLVERTEXATTRIBI1UIEXTPROC;
+alias void function(GLuint index, GLuint x, GLuint y) PFNGLVERTEXATTRIBI2UIEXTPROC;
+alias void function(GLuint index, GLuint x, GLuint y, GLuint z) PFNGLVERTEXATTRIBI3UIEXTPROC;
+alias void function(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w) PFNGLVERTEXATTRIBI4UIEXTPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI1IVEXTPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI2IVEXTPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI3IVEXTPROC;
+alias void function(GLuint index, GLint *v) PFNGLVERTEXATTRIBI4IVEXTPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI1UIVEXTPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI2UIVEXTPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI3UIVEXTPROC;
+alias void function(GLuint index, GLuint *v) PFNGLVERTEXATTRIBI4UIVEXTPROC;
+alias void function(GLuint index, GLbyte *v) PFNGLVERTEXATTRIBI4BVEXTPROC;
+alias void function(GLuint index, GLshort *v) PFNGLVERTEXATTRIBI4SVEXTPROC;
+alias void function(GLuint index, GLubyte *v) PFNGLVERTEXATTRIBI4UBVEXTPROC;
+alias void function(GLuint index, GLushort *v) PFNGLVERTEXATTRIBI4USVEXTPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLVERTEXATTRIBIPOINTEREXTPROC;
+alias void function(GLuint index, GLenum pname, GLint *params) PFNGLGETVERTEXATTRIBIIVEXTPROC;
+alias void function(GLuint index, GLenum pname, GLuint *params) PFNGLGETVERTEXATTRIBIUIVEXTPROC;
 
 static const auto GL_EXT_gpu_shader4 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9276,25 +9276,25 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glUniform3uivEXT (GLint location, GLsizei count, GLuint *value);
 	void glUniform4uivEXT (GLint location, GLsizei count, GLuint *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETUNIFORMUIVEXTPROC) (GLuint program, GLint location, GLuint *params);
-alias void (PFNGLBINDFRAGDATALOCATIONEXTPROC) (GLuint program, GLuint color, GLchar *name);
-alias GLint (PFNGLGETFRAGDATALOCATIONEXTPROC) (GLuint program, GLchar *name);
-alias void (PFNGLUNIFORM1UIEXTPROC) (GLint location, GLuint v0);
-alias void (PFNGLUNIFORM2UIEXTPROC) (GLint location, GLuint v0, GLuint v1);
-alias void (PFNGLUNIFORM3UIEXTPROC) (GLint location, GLuint v0, GLuint v1, GLuint v2);
-alias void (PFNGLUNIFORM4UIEXTPROC) (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-alias void (PFNGLUNIFORM1UIVEXTPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM2UIVEXTPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM3UIVEXTPROC) (GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLUNIFORM4UIVEXTPROC) (GLint location, GLsizei count, GLuint *value);
+alias void function(GLuint program, GLint location, GLuint *params) PFNGLGETUNIFORMUIVEXTPROC;
+alias void function(GLuint program, GLuint color, GLchar *name) PFNGLBINDFRAGDATALOCATIONEXTPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETFRAGDATALOCATIONEXTPROC;
+alias void function(GLint location, GLuint v0) PFNGLUNIFORM1UIEXTPROC;
+alias void function(GLint location, GLuint v0, GLuint v1) PFNGLUNIFORM2UIEXTPROC;
+alias void function(GLint location, GLuint v0, GLuint v1, GLuint v2) PFNGLUNIFORM3UIEXTPROC;
+alias void function(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) PFNGLUNIFORM4UIEXTPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM1UIVEXTPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM2UIVEXTPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM3UIVEXTPROC;
+alias void function(GLint location, GLsizei count, GLuint *value) PFNGLUNIFORM4UIVEXTPROC;
 
 static const auto GL_EXT_draw_instanced = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glDrawArraysInstancedEXT (GLenum mode, GLint start, GLsizei count, GLsizei primcount);
 	void glDrawElementsInstancedEXT (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDRAWARRAYSINSTANCEDEXTPROC) (GLenum mode, GLint start, GLsizei count, GLsizei primcount);
-alias void (PFNGLDRAWELEMENTSINSTANCEDEXTPROC) (GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount);
+alias void function(GLenum mode, GLint start, GLsizei count, GLsizei primcount) PFNGLDRAWARRAYSINSTANCEDEXTPROC;
+alias void function(GLenum mode, GLsizei count, GLenum type, GLvoid *indices, GLsizei primcount) PFNGLDRAWELEMENTSINSTANCEDEXTPROC;
 
 static const auto GL_EXT_packed_float = 1;
 
@@ -9304,7 +9304,7 @@ static const auto GL_EXT_texture_buffer_object = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTexBufferEXT (GLenum target, GLenum internalformat, GLuint buffer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXBUFFEREXTPROC) (GLenum target, GLenum internalformat, GLuint buffer);
+alias void function(GLenum target, GLenum internalformat, GLuint buffer) PFNGLTEXBUFFEREXTPROC;
 
 static const auto GL_EXT_texture_compression_latc = 1;
 
@@ -9318,9 +9318,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glClearDepthdNV (GLdouble depth);
 	void glDepthBoundsdNV (GLdouble zmin, GLdouble zmax);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLDEPTHRANGEDNVPROC) (GLdouble zNear, GLdouble zFar);
-alias void (PFNGLCLEARDEPTHDNVPROC) (GLdouble depth);
-alias void (PFNGLDEPTHBOUNDSDNVPROC) (GLdouble zmin, GLdouble zmax);
+alias void function(GLdouble zNear, GLdouble zFar) PFNGLDEPTHRANGEDNVPROC;
+alias void function(GLdouble depth) PFNGLCLEARDEPTHDNVPROC;
+alias void function(GLdouble zmin, GLdouble zmax) PFNGLDEPTHBOUNDSDNVPROC;
 
 static const auto GL_NV_fragment_program4 = 1;
 
@@ -9328,7 +9328,7 @@ static const auto GL_NV_framebuffer_multisample_coverage = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glRenderbufferStorageMultisampleCoverageNV (GLenum target, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC) (GLenum target, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height);
+alias void function(GLenum target, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height) PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC;
 
 static const auto GL_EXT_framebuffer_sRGB = 1;
 
@@ -9340,9 +9340,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glProgramBufferParametersIivNV (GLenum target, GLuint buffer, GLuint index, GLsizei count, GLint *params);
 	void glProgramBufferParametersIuivNV (GLenum target, GLuint buffer, GLuint index, GLsizei count, GLuint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROGRAMBUFFERPARAMETERSFVNVPROC) (GLenum target, GLuint buffer, GLuint index, GLsizei count, GLfloat *params);
-alias void (PFNGLPROGRAMBUFFERPARAMETERSIIVNVPROC) (GLenum target, GLuint buffer, GLuint index, GLsizei count, GLint *params);
-alias void (PFNGLPROGRAMBUFFERPARAMETERSIUIVNVPROC) (GLenum target, GLuint buffer, GLuint index, GLsizei count, GLuint *params);
+alias void function(GLenum target, GLuint buffer, GLuint index, GLsizei count, GLfloat *params) PFNGLPROGRAMBUFFERPARAMETERSFVNVPROC;
+alias void function(GLenum target, GLuint buffer, GLuint index, GLsizei count, GLint *params) PFNGLPROGRAMBUFFERPARAMETERSIIVNVPROC;
+alias void function(GLenum target, GLuint buffer, GLuint index, GLsizei count, GLuint *params) PFNGLPROGRAMBUFFERPARAMETERSIUIVNVPROC;
 
 static const auto GL_EXT_draw_buffers2 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9353,12 +9353,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glDisableIndexedEXT (GLenum target, GLuint index);
 	GLboolean glIsEnabledIndexedEXT (GLenum target, GLuint index);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOLORMASKINDEXEDEXTPROC) (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
-alias void (PFNGLGETBOOLEANINDEXEDVEXTPROC) (GLenum target, GLuint index, GLboolean *data);
-alias void (PFNGLGETINTEGERINDEXEDVEXTPROC) (GLenum target, GLuint index, GLint *data);
-alias void (PFNGLENABLEINDEXEDEXTPROC) (GLenum target, GLuint index);
-alias void (PFNGLDISABLEINDEXEDEXTPROC) (GLenum target, GLuint index);
-alias GLboolean (PFNGLISENABLEDINDEXEDEXTPROC) (GLenum target, GLuint index);
+alias void function(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a) PFNGLCOLORMASKINDEXEDEXTPROC;
+alias void function(GLenum target, GLuint index, GLboolean *data) PFNGLGETBOOLEANINDEXEDVEXTPROC;
+alias void function(GLenum target, GLuint index, GLint *data) PFNGLGETINTEGERINDEXEDVEXTPROC;
+alias void function(GLenum target, GLuint index) PFNGLENABLEINDEXEDEXTPROC;
+alias void function(GLenum target, GLuint index) PFNGLDISABLEINDEXEDEXTPROC;
+alias GLboolean function(GLenum target, GLuint index) PFNGLISENABLEDINDEXEDEXTPROC;
 
 static const auto GL_NV_transform_feedback = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9374,17 +9374,17 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetActiveVaryingNV (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
 	void glGetTransformFeedbackVaryingNV (GLuint program, GLuint index, GLint *location);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBEGINTRANSFORMFEEDBACKNVPROC) (GLenum primitiveMode);
-alias void (PFNGLENDTRANSFORMFEEDBACKNVPROC) ();
-alias void (PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC) (GLuint count, GLint *attribs, GLenum bufferMode);
-alias void (PFNGLBINDBUFFERRANGENVPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-alias void (PFNGLBINDBUFFEROFFSETNVPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset);
-alias void (PFNGLBINDBUFFERBASENVPROC) (GLenum target, GLuint index, GLuint buffer);
-alias void (PFNGLTRANSFORMFEEDBACKVARYINGSNVPROC) (GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode);
-alias void (PFNGLACTIVEVARYINGNVPROC) (GLuint program, GLchar *name);
-alias GLint (PFNGLGETVARYINGLOCATIONNVPROC) (GLuint program, GLchar *name);
-alias void (PFNGLGETACTIVEVARYINGNVPROC) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
-alias void (PFNGLGETTRANSFORMFEEDBACKVARYINGNVPROC) (GLuint program, GLuint index, GLint *location);
+alias void function(GLenum primitiveMode) PFNGLBEGINTRANSFORMFEEDBACKNVPROC;
+alias void function() PFNGLENDTRANSFORMFEEDBACKNVPROC;
+alias void function(GLuint count, GLint *attribs, GLenum bufferMode) PFNGLTRANSFORMFEEDBACKATTRIBSNVPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size) PFNGLBINDBUFFERRANGENVPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer, GLintptr offset) PFNGLBINDBUFFEROFFSETNVPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer) PFNGLBINDBUFFERBASENVPROC;
+alias void function(GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode) PFNGLTRANSFORMFEEDBACKVARYINGSNVPROC;
+alias void function(GLuint program, GLchar *name) PFNGLACTIVEVARYINGNVPROC;
+alias GLint function(GLuint program, GLchar *name) PFNGLGETVARYINGLOCATIONNVPROC;
+alias void function(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name) PFNGLGETACTIVEVARYINGNVPROC;
+alias void function(GLuint program, GLuint index, GLint *location) PFNGLGETTRANSFORMFEEDBACKVARYINGNVPROC;
 
 static const auto GL_EXT_bindable_uniform = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9392,9 +9392,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLint glGetUniformBufferSizeEXT (GLuint program, GLint location);
 	GLintptr glGetUniformOffsetEXT (GLuint program, GLint location);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLUNIFORMBUFFEREXTPROC) (GLuint program, GLint location, GLuint buffer);
-alias GLint (PFNGLGETUNIFORMBUFFERSIZEEXTPROC) (GLuint program, GLint location);
-alias GLintptr (PFNGLGETUNIFORMOFFSETEXTPROC) (GLuint program, GLint location);
+alias void function(GLuint program, GLint location, GLuint buffer) PFNGLUNIFORMBUFFEREXTPROC;
+alias GLint function(GLuint program, GLint location) PFNGLGETUNIFORMBUFFERSIZEEXTPROC;
+alias GLintptr function(GLuint program, GLint location) PFNGLGETUNIFORMOFFSETEXTPROC;
 
 static const auto GL_EXT_texture_integer = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9405,26 +9405,26 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glClearColorIiEXT (GLint red, GLint green, GLint blue, GLint alpha);
 	void glClearColorIuiEXT (GLuint red, GLuint green, GLuint blue, GLuint alpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXPARAMETERIIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLTEXPARAMETERIUIVEXTPROC) (GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLGETTEXPARAMETERIIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETTEXPARAMETERIUIVEXTPROC) (GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLCLEARCOLORIIEXTPROC) (GLint red, GLint green, GLint blue, GLint alpha);
-alias void (PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GLuint blue, GLuint alpha);
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLTEXPARAMETERIIVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLuint *params) PFNGLTEXPARAMETERIUIVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETTEXPARAMETERIIVEXTPROC;
+alias void function(GLenum target, GLenum pname, GLuint *params) PFNGLGETTEXPARAMETERIUIVEXTPROC;
+alias void function(GLint red, GLint green, GLint blue, GLint alpha) PFNGLCLEARCOLORIIEXTPROC;
+alias void function(GLuint red, GLuint green, GLuint blue, GLuint alpha) PFNGLCLEARCOLORIUIEXTPROC;
 
 static const auto GL_GREMEDY_frame_terminator = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glFrameTerminatorGREMEDY ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLFRAMETERMINATORGREMEDYPROC) ();
+alias void function() PFNGLFRAMETERMINATORGREMEDYPROC;
 
 static const auto GL_NV_conditional_render = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glBeginConditionalRenderNV (GLuint id, GLenum mode);
 	void glEndConditionalRenderNV ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBEGINCONDITIONALRENDERNVPROC) (GLuint id, GLenum mode);
-alias void (PFNGLENDCONDITIONALRENDERNVPROC) ();
+alias void function(GLuint id, GLenum mode) PFNGLBEGINCONDITIONALRENDERNVPROC;
+alias void function() PFNGLENDCONDITIONALRENDERNVPROC;
 
 static const auto GL_NV_present_video = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9435,12 +9435,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glGetVideoi64vNV (GLuint video_slot, GLenum pname, GLint64EXT *params);
 	void glGetVideoui64vNV (GLuint video_slot, GLenum pname, GLuint64EXT *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPRESENTFRAMEKEYEDNVPROC) (GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLuint key0, GLenum target1, GLuint fill1, GLuint key1);
-alias void (PFNGLPRESENTFRAMEDUALFILLNVPROC) (GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLenum target1, GLuint fill1, GLenum target2, GLuint fill2, GLenum target3, GLuint fill3);
-alias void (PFNGLGETVIDEOIVNVPROC) (GLuint video_slot, GLenum pname, GLint *params);
-alias void (PFNGLGETVIDEOUIVNVPROC) (GLuint video_slot, GLenum pname, GLuint *params);
-alias void (PFNGLGETVIDEOI64VNVPROC) (GLuint video_slot, GLenum pname, GLint64EXT *params);
-alias void (PFNGLGETVIDEOUI64VNVPROC) (GLuint video_slot, GLenum pname, GLuint64EXT *params);
+alias void function(GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLuint key0, GLenum target1, GLuint fill1, GLuint key1) PFNGLPRESENTFRAMEKEYEDNVPROC;
+alias void function(GLuint video_slot, GLuint64EXT minPresentTime, GLuint beginPresentTimeId, GLuint presentDurationId, GLenum type, GLenum target0, GLuint fill0, GLenum target1, GLuint fill1, GLenum target2, GLuint fill2, GLenum target3, GLuint fill3) PFNGLPRESENTFRAMEDUALFILLNVPROC;
+alias void function(GLuint video_slot, GLenum pname, GLint *params) PFNGLGETVIDEOIVNVPROC;
+alias void function(GLuint video_slot, GLenum pname, GLuint *params) PFNGLGETVIDEOUIVNVPROC;
+alias void function(GLuint video_slot, GLenum pname, GLint64EXT *params) PFNGLGETVIDEOI64VNVPROC;
+alias void function(GLuint video_slot, GLenum pname, GLuint64EXT *params) PFNGLGETVIDEOUI64VNVPROC;
 
 static const auto GL_EXT_transform_feedback = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9452,13 +9452,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTransformFeedbackVaryingsEXT (GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode);
 	void glGetTransformFeedbackVaryingEXT (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBEGINTRANSFORMFEEDBACKEXTPROC) (GLenum primitiveMode);
-alias void (PFNGLENDTRANSFORMFEEDBACKEXTPROC) ();
-alias void (PFNGLBINDBUFFERRANGEEXTPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-alias void (PFNGLBINDBUFFEROFFSETEXTPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset);
-alias void (PFNGLBINDBUFFERBASEEXTPROC) (GLenum target, GLuint index, GLuint buffer);
-alias void (PFNGLTRANSFORMFEEDBACKVARYINGSEXTPROC) (GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode);
-alias void (PFNGLGETTRANSFORMFEEDBACKVARYINGEXTPROC) (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name);
+alias void function(GLenum primitiveMode) PFNGLBEGINTRANSFORMFEEDBACKEXTPROC;
+alias void function() PFNGLENDTRANSFORMFEEDBACKEXTPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size) PFNGLBINDBUFFERRANGEEXTPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer, GLintptr offset) PFNGLBINDBUFFEROFFSETEXTPROC;
+alias void function(GLenum target, GLuint index, GLuint buffer) PFNGLBINDBUFFERBASEEXTPROC;
+alias void function(GLuint program, GLsizei count, GLchar* *varyings, GLenum bufferMode) PFNGLTRANSFORMFEEDBACKVARYINGSEXTPROC;
+alias void function(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size, GLenum *type, GLchar *name) PFNGLGETTRANSFORMFEEDBACKVARYINGEXTPROC;
 
 static const auto GL_EXT_direct_state_access = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9649,192 +9649,192 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTextureRenderbufferEXT (GLuint texture, GLenum target, GLuint renderbuffer);
 	void glMultiTexRenderbufferEXT (GLenum texunit, GLenum target, GLuint renderbuffer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCLIENTATTRIBDEFAULTEXTPROC) (GLbitfield mask);
-alias void (PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC) (GLbitfield mask);
-alias void (PFNGLMATRIXLOADFEXTPROC) (GLenum mode, GLfloat *m);
-alias void (PFNGLMATRIXLOADDEXTPROC) (GLenum mode, GLdouble *m);
-alias void (PFNGLMATRIXMULTFEXTPROC) (GLenum mode, GLfloat *m);
-alias void (PFNGLMATRIXMULTDEXTPROC) (GLenum mode, GLdouble *m);
-alias void (PFNGLMATRIXLOADIDENTITYEXTPROC) (GLenum mode);
-alias void (PFNGLMATRIXROTATEFEXTPROC) (GLenum mode, GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLMATRIXROTATEDEXTPROC) (GLenum mode, GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLMATRIXSCALEFEXTPROC) (GLenum mode, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLMATRIXSCALEDEXTPROC) (GLenum mode, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLMATRIXTRANSLATEFEXTPROC) (GLenum mode, GLfloat x, GLfloat y, GLfloat z);
-alias void (PFNGLMATRIXTRANSLATEDEXTPROC) (GLenum mode, GLdouble x, GLdouble y, GLdouble z);
-alias void (PFNGLMATRIXFRUSTUMEXTPROC) (GLenum mode, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar);
-alias void (PFNGLMATRIXORTHOEXTPROC) (GLenum mode, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar);
-alias void (PFNGLMATRIXPOPEXTPROC) (GLenum mode);
-alias void (PFNGLMATRIXPUSHEXTPROC) (GLenum mode);
-alias void (PFNGLMATRIXLOADTRANSPOSEFEXTPROC) (GLenum mode, GLfloat *m);
-alias void (PFNGLMATRIXLOADTRANSPOSEDEXTPROC) (GLenum mode, GLdouble *m);
-alias void (PFNGLMATRIXMULTTRANSPOSEFEXTPROC) (GLenum mode, GLfloat *m);
-alias void (PFNGLMATRIXMULTTRANSPOSEDEXTPROC) (GLenum mode, GLdouble *m);
-alias void (PFNGLTEXTUREPARAMETERFEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLfloat param);
-alias void (PFNGLTEXTUREPARAMETERFVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLTEXTUREPARAMETERIEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLint param);
-alias void (PFNGLTEXTUREPARAMETERIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLTEXTUREIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXTUREIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXTURESUBIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXTURESUBIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLCOPYTEXTUREIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
-alias void (PFNGLCOPYTEXTUREIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
-alias void (PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLGETTEXTUREIMAGEEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLGETTEXTUREPARAMETERFVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETTEXTUREPARAMETERIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum pname, GLfloat *params);
-alias void (PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum pname, GLint *params);
-alias void (PFNGLTEXTUREIMAGE3DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXTURESUBIMAGE3DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLMULTITEXPARAMETERFEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat param);
-alias void (PFNGLMULTITEXPARAMETERFVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLMULTITEXPARAMETERIEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint param);
-alias void (PFNGLMULTITEXPARAMETERIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLMULTITEXIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLMULTITEXIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLMULTITEXSUBIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLMULTITEXSUBIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLCOPYMULTITEXIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
-alias void (PFNGLCOPYMULTITEXIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
-alias void (PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
-alias void (PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLGETMULTITEXIMAGEEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLGETMULTITEXPARAMETERFVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMULTITEXPARAMETERIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum pname, GLint *params);
-alias void (PFNGLMULTITEXIMAGE3DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLMULTITEXSUBIMAGE3DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-alias void (PFNGLBINDMULTITEXTUREEXTPROC) (GLenum texunit, GLenum target, GLuint texture);
-alias void (PFNGLENABLECLIENTSTATEINDEXEDEXTPROC) (GLenum array, GLuint index);
-alias void (PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC) (GLenum array, GLuint index);
-alias void (PFNGLMULTITEXCOORDPOINTEREXTPROC) (GLenum texunit, GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-alias void (PFNGLMULTITEXENVFEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat param);
-alias void (PFNGLMULTITEXENVFVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLMULTITEXENVIEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint param);
-alias void (PFNGLMULTITEXENVIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLMULTITEXGENDEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLdouble param);
-alias void (PFNGLMULTITEXGENDVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLdouble *params);
-alias void (PFNGLMULTITEXGENFEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLfloat param);
-alias void (PFNGLMULTITEXGENFVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLfloat *params);
-alias void (PFNGLMULTITEXGENIEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLint param);
-alias void (PFNGLMULTITEXGENIVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLint *params);
-alias void (PFNGLGETMULTITEXENVFVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMULTITEXENVIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMULTITEXGENDVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLdouble *params);
-alias void (PFNGLGETMULTITEXGENFVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLfloat *params);
-alias void (PFNGLGETMULTITEXGENIVEXTPROC) (GLenum texunit, GLenum coord, GLenum pname, GLint *params);
-alias void (PFNGLGETFLOATINDEXEDVEXTPROC) (GLenum target, GLuint index, GLfloat *data);
-alias void (PFNGLGETDOUBLEINDEXEDVEXTPROC) (GLenum target, GLuint index, GLdouble *data);
-alias void (PFNGLGETPOINTERINDEXEDVEXTPROC) (GLenum target, GLuint index, GLvoid* *data);
-alias void (PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC) (GLuint texture, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC) (GLuint texture, GLenum target, GLint lod, GLvoid *img);
-alias void (PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC) (GLenum texunit, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *bits);
-alias void (PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC) (GLenum texunit, GLenum target, GLint lod, GLvoid *img);
-alias void (PFNGLNAMEDPROGRAMSTRINGEXTPROC) (GLuint program, GLenum target, GLenum format, GLsizei len, GLvoid *string);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC) (GLuint program, GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC) (GLuint program, GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC) (GLuint program, GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC) (GLuint program, GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC) (GLuint program, GLenum target, GLuint index, GLdouble *params);
-alias void (PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC) (GLuint program, GLenum target, GLuint index, GLfloat *params);
-alias void (PFNGLGETNAMEDPROGRAMIVEXTPROC) (GLuint program, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETNAMEDPROGRAMSTRINGEXTPROC) (GLuint program, GLenum target, GLenum pname, GLvoid *string);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC) (GLuint program, GLenum target, GLuint index, GLsizei count, GLfloat *params);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC) (GLuint program, GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC) (GLuint program, GLenum target, GLuint index, GLint *params);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC) (GLuint program, GLenum target, GLuint index, GLsizei count, GLint *params);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC) (GLuint program, GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC) (GLuint program, GLenum target, GLuint index, GLuint *params);
-alias void (PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC) (GLuint program, GLenum target, GLuint index, GLsizei count, GLuint *params);
-alias void (PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC) (GLuint program, GLenum target, GLuint index, GLint *params);
-alias void (PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC) (GLuint program, GLenum target, GLuint index, GLuint *params);
-alias void (PFNGLTEXTUREPARAMETERIIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLTEXTUREPARAMETERIUIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLGETTEXTUREPARAMETERIIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETTEXTUREPARAMETERIUIVEXTPROC) (GLuint texture, GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLMULTITEXPARAMETERIIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLMULTITEXPARAMETERIUIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLGETMULTITEXPARAMETERIIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLint *params);
-alias void (PFNGLGETMULTITEXPARAMETERIUIVEXTPROC) (GLenum texunit, GLenum target, GLenum pname, GLuint *params);
-alias void (PFNGLPROGRAMUNIFORM1FEXTPROC) (GLuint program, GLint location, GLfloat v0);
-alias void (PFNGLPROGRAMUNIFORM2FEXTPROC) (GLuint program, GLint location, GLfloat v0, GLfloat v1);
-alias void (PFNGLPROGRAMUNIFORM3FEXTPROC) (GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-alias void (PFNGLPROGRAMUNIFORM4FEXTPROC) (GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-alias void (PFNGLPROGRAMUNIFORM1IEXTPROC) (GLuint program, GLint location, GLint v0);
-alias void (PFNGLPROGRAMUNIFORM2IEXTPROC) (GLuint program, GLint location, GLint v0, GLint v1);
-alias void (PFNGLPROGRAMUNIFORM3IEXTPROC) (GLuint program, GLint location, GLint v0, GLint v1, GLint v2);
-alias void (PFNGLPROGRAMUNIFORM4IEXTPROC) (GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-alias void (PFNGLPROGRAMUNIFORM1FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORM2FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORM3FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORM4FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORM1IVEXTPROC) (GLuint program, GLint location, GLsizei count, GLint *value);
-alias void (PFNGLPROGRAMUNIFORM2IVEXTPROC) (GLuint program, GLint location, GLsizei count, GLint *value);
-alias void (PFNGLPROGRAMUNIFORM3IVEXTPROC) (GLuint program, GLint location, GLsizei count, GLint *value);
-alias void (PFNGLPROGRAMUNIFORM4IVEXTPROC) (GLuint program, GLint location, GLsizei count, GLint *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC) (GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
-alias void (PFNGLPROGRAMUNIFORM1UIEXTPROC) (GLuint program, GLint location, GLuint v0);
-alias void (PFNGLPROGRAMUNIFORM2UIEXTPROC) (GLuint program, GLint location, GLuint v0, GLuint v1);
-alias void (PFNGLPROGRAMUNIFORM3UIEXTPROC) (GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2);
-alias void (PFNGLPROGRAMUNIFORM4UIEXTPROC) (GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-alias void (PFNGLPROGRAMUNIFORM1UIVEXTPROC) (GLuint program, GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLPROGRAMUNIFORM2UIVEXTPROC) (GLuint program, GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLPROGRAMUNIFORM3UIVEXTPROC) (GLuint program, GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLPROGRAMUNIFORM4UIVEXTPROC) (GLuint program, GLint location, GLsizei count, GLuint *value);
-alias void (PFNGLNAMEDBUFFERDATAEXTPROC) (GLuint buffer, GLsizeiptr size, GLvoid *data, GLenum usage);
-alias void (PFNGLNAMEDBUFFERSUBDATAEXTPROC) (GLuint buffer, GLintptr offset, GLsizeiptr size, GLvoid *data);
+alias void function(GLbitfield mask) PFNGLCLIENTATTRIBDEFAULTEXTPROC;
+alias void function(GLbitfield mask) PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC;
+alias void function(GLenum mode, GLfloat *m) PFNGLMATRIXLOADFEXTPROC;
+alias void function(GLenum mode, GLdouble *m) PFNGLMATRIXLOADDEXTPROC;
+alias void function(GLenum mode, GLfloat *m) PFNGLMATRIXMULTFEXTPROC;
+alias void function(GLenum mode, GLdouble *m) PFNGLMATRIXMULTDEXTPROC;
+alias void function(GLenum mode) PFNGLMATRIXLOADIDENTITYEXTPROC;
+alias void function(GLenum mode, GLfloat angle, GLfloat x, GLfloat y, GLfloat z) PFNGLMATRIXROTATEFEXTPROC;
+alias void function(GLenum mode, GLdouble angle, GLdouble x, GLdouble y, GLdouble z) PFNGLMATRIXROTATEDEXTPROC;
+alias void function(GLenum mode, GLfloat x, GLfloat y, GLfloat z) PFNGLMATRIXSCALEFEXTPROC;
+alias void function(GLenum mode, GLdouble x, GLdouble y, GLdouble z) PFNGLMATRIXSCALEDEXTPROC;
+alias void function(GLenum mode, GLfloat x, GLfloat y, GLfloat z) PFNGLMATRIXTRANSLATEFEXTPROC;
+alias void function(GLenum mode, GLdouble x, GLdouble y, GLdouble z) PFNGLMATRIXTRANSLATEDEXTPROC;
+alias void function(GLenum mode, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) PFNGLMATRIXFRUSTUMEXTPROC;
+alias void function(GLenum mode, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) PFNGLMATRIXORTHOEXTPROC;
+alias void function(GLenum mode) PFNGLMATRIXPOPEXTPROC;
+alias void function(GLenum mode) PFNGLMATRIXPUSHEXTPROC;
+alias void function(GLenum mode, GLfloat *m) PFNGLMATRIXLOADTRANSPOSEFEXTPROC;
+alias void function(GLenum mode, GLdouble *m) PFNGLMATRIXLOADTRANSPOSEDEXTPROC;
+alias void function(GLenum mode, GLfloat *m) PFNGLMATRIXMULTTRANSPOSEFEXTPROC;
+alias void function(GLenum mode, GLdouble *m) PFNGLMATRIXMULTTRANSPOSEDEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLfloat param) PFNGLTEXTUREPARAMETERFEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLfloat *params) PFNGLTEXTUREPARAMETERFVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLint param) PFNGLTEXTUREPARAMETERIEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLint *params) PFNGLTEXTUREPARAMETERIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTUREIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTUREIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTURESUBIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTURESUBIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) PFNGLCOPYTEXTUREIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border) PFNGLCOPYTEXTUREIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width) PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels) PFNGLGETTEXTUREIMAGEEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLfloat *params) PFNGLGETTEXTUREPARAMETERFVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLint *params) PFNGLGETTEXTUREPARAMETERIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum pname, GLfloat *params) PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum pname, GLint *params) PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTUREIMAGE3DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXTURESUBIMAGE3DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat param) PFNGLMULTITEXPARAMETERFEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat *params) PFNGLMULTITEXPARAMETERFVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint param) PFNGLMULTITEXPARAMETERIEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLMULTITEXPARAMETERIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXSUBIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXSUBIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) PFNGLCOPYMULTITEXIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border) PFNGLCOPYMULTITEXIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width) PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels) PFNGLGETMULTITEXIMAGEEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat *params) PFNGLGETMULTITEXPARAMETERFVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLGETMULTITEXPARAMETERIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum pname, GLfloat *params) PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum pname, GLint *params) PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels) PFNGLMULTITEXSUBIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLuint texture) PFNGLBINDMULTITEXTUREEXTPROC;
+alias void function(GLenum array, GLuint index) PFNGLENABLECLIENTSTATEINDEXEDEXTPROC;
+alias void function(GLenum array, GLuint index) PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC;
+alias void function(GLenum texunit, GLint size, GLenum type, GLsizei stride, GLvoid *pointer) PFNGLMULTITEXCOORDPOINTEREXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat param) PFNGLMULTITEXENVFEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat *params) PFNGLMULTITEXENVFVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint param) PFNGLMULTITEXENVIEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLMULTITEXENVIVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLdouble param) PFNGLMULTITEXGENDEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLdouble *params) PFNGLMULTITEXGENDVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLfloat param) PFNGLMULTITEXGENFEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLfloat *params) PFNGLMULTITEXGENFVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLint param) PFNGLMULTITEXGENIEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLint *params) PFNGLMULTITEXGENIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLfloat *params) PFNGLGETMULTITEXENVFVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLGETMULTITEXENVIVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLdouble *params) PFNGLGETMULTITEXGENDVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLfloat *params) PFNGLGETMULTITEXGENFVEXTPROC;
+alias void function(GLenum texunit, GLenum coord, GLenum pname, GLint *params) PFNGLGETMULTITEXGENIVEXTPROC;
+alias void function(GLenum target, GLuint index, GLfloat *data) PFNGLGETFLOATINDEXEDVEXTPROC;
+alias void function(GLenum target, GLuint index, GLdouble *data) PFNGLGETDOUBLEINDEXEDVEXTPROC;
+alias void function(GLenum target, GLuint index, GLvoid* *data) PFNGLGETPOINTERINDEXEDVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC;
+alias void function(GLuint texture, GLenum target, GLint lod, GLvoid *img) PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *bits) PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLint lod, GLvoid *img) PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC;
+alias void function(GLuint program, GLenum target, GLenum format, GLsizei len, GLvoid *string) PFNGLNAMEDPROGRAMSTRINGEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLdouble *params) PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLfloat *params) PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLdouble *params) PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLfloat *params) PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC;
+alias void function(GLuint program, GLenum target, GLenum pname, GLint *params) PFNGLGETNAMEDPROGRAMIVEXTPROC;
+alias void function(GLuint program, GLenum target, GLenum pname, GLvoid *string) PFNGLGETNAMEDPROGRAMSTRINGEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLsizei count, GLfloat *params) PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLint x, GLint y, GLint z, GLint w) PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLint *params) PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLsizei count, GLint *params) PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLuint x, GLuint y, GLuint z, GLuint w) PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLuint *params) PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLsizei count, GLuint *params) PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLint *params) PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC;
+alias void function(GLuint program, GLenum target, GLuint index, GLuint *params) PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLint *params) PFNGLTEXTUREPARAMETERIIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLuint *params) PFNGLTEXTUREPARAMETERIUIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLint *params) PFNGLGETTEXTUREPARAMETERIIVEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum pname, GLuint *params) PFNGLGETTEXTUREPARAMETERIUIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLMULTITEXPARAMETERIIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLuint *params) PFNGLMULTITEXPARAMETERIUIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLint *params) PFNGLGETMULTITEXPARAMETERIIVEXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum pname, GLuint *params) PFNGLGETMULTITEXPARAMETERIUIVEXTPROC;
+alias void function(GLuint program, GLint location, GLfloat v0) PFNGLPROGRAMUNIFORM1FEXTPROC;
+alias void function(GLuint program, GLint location, GLfloat v0, GLfloat v1) PFNGLPROGRAMUNIFORM2FEXTPROC;
+alias void function(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2) PFNGLPROGRAMUNIFORM3FEXTPROC;
+alias void function(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) PFNGLPROGRAMUNIFORM4FEXTPROC;
+alias void function(GLuint program, GLint location, GLint v0) PFNGLPROGRAMUNIFORM1IEXTPROC;
+alias void function(GLuint program, GLint location, GLint v0, GLint v1) PFNGLPROGRAMUNIFORM2IEXTPROC;
+alias void function(GLuint program, GLint location, GLint v0, GLint v1, GLint v2) PFNGLPROGRAMUNIFORM3IEXTPROC;
+alias void function(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3) PFNGLPROGRAMUNIFORM4IEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLfloat *value) PFNGLPROGRAMUNIFORM1FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLfloat *value) PFNGLPROGRAMUNIFORM2FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLfloat *value) PFNGLPROGRAMUNIFORM3FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLfloat *value) PFNGLPROGRAMUNIFORM4FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLint *value) PFNGLPROGRAMUNIFORM1IVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLint *value) PFNGLPROGRAMUNIFORM2IVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLint *value) PFNGLPROGRAMUNIFORM3IVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLint *value) PFNGLPROGRAMUNIFORM4IVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLboolean transpose, GLfloat *value) PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC;
+alias void function(GLuint program, GLint location, GLuint v0) PFNGLPROGRAMUNIFORM1UIEXTPROC;
+alias void function(GLuint program, GLint location, GLuint v0, GLuint v1) PFNGLPROGRAMUNIFORM2UIEXTPROC;
+alias void function(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2) PFNGLPROGRAMUNIFORM3UIEXTPROC;
+alias void function(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) PFNGLPROGRAMUNIFORM4UIEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLuint *value) PFNGLPROGRAMUNIFORM1UIVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLuint *value) PFNGLPROGRAMUNIFORM2UIVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLuint *value) PFNGLPROGRAMUNIFORM3UIVEXTPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLuint *value) PFNGLPROGRAMUNIFORM4UIVEXTPROC;
+alias void function(GLuint buffer, GLsizeiptr size, GLvoid *data, GLenum usage) PFNGLNAMEDBUFFERDATAEXTPROC;
+alias void function(GLuint buffer, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLNAMEDBUFFERSUBDATAEXTPROC;
 alias GLvoid* (PFNGLMAPNAMEDBUFFEREXTPROC) (GLuint buffer, GLenum access);
-alias GLboolean (PFNGLUNMAPNAMEDBUFFEREXTPROC) (GLuint buffer);
-alias void (PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC) (GLuint buffer, GLenum pname, GLint *params);
-alias void (PFNGLGETNAMEDBUFFERPOINTERVEXTPROC) (GLuint buffer, GLenum pname, GLvoid* *params);
-alias void (PFNGLGETNAMEDBUFFERSUBDATAEXTPROC) (GLuint buffer, GLintptr offset, GLsizeiptr size, GLvoid *data);
-alias void (PFNGLTEXTUREBUFFEREXTPROC) (GLuint texture, GLenum target, GLenum internalformat, GLuint buffer);
-alias void (PFNGLMULTITEXBUFFEREXTPROC) (GLenum texunit, GLenum target, GLenum internalformat, GLuint buffer);
-alias void (PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC) (GLuint renderbuffer, GLenum internalformat, GLsizei width, GLsizei height);
-alias void (PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC) (GLuint renderbuffer, GLenum pname, GLint *params);
-alias GLenum (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC) (GLuint framebuffer, GLenum target);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC) (GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC) (GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC) (GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset);
-alias void (PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC) (GLuint framebuffer, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-alias void (PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC) (GLuint framebuffer, GLenum attachment, GLenum pname, GLint *params);
-alias void (PFNGLGENERATETEXTUREMIPMAPEXTPROC) (GLuint texture, GLenum target);
-alias void (PFNGLGENERATEMULTITEXMIPMAPEXTPROC) (GLenum texunit, GLenum target);
-alias void (PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC) (GLuint framebuffer, GLenum mode);
-alias void (PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC) (GLuint framebuffer, GLsizei n, GLenum *bufs);
-alias void (PFNGLFRAMEBUFFERREADBUFFEREXTPROC) (GLuint framebuffer, GLenum mode);
-alias void (PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC) (GLuint framebuffer, GLenum pname, GLint *params);
-alias void (PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) (GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
-alias void (PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC) (GLuint renderbuffer, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC) (GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC) (GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer);
-alias void (PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC) (GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLenum face);
-alias void (PFNGLTEXTURERENDERBUFFEREXTPROC) (GLuint texture, GLenum target, GLuint renderbuffer);
-alias void (PFNGLMULTITEXRENDERBUFFEREXTPROC) (GLenum texunit, GLenum target, GLuint renderbuffer);
+alias GLboolean function(GLuint buffer) PFNGLUNMAPNAMEDBUFFEREXTPROC;
+alias void function(GLuint buffer, GLenum pname, GLint *params) PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC;
+alias void function(GLuint buffer, GLenum pname, GLvoid* *params) PFNGLGETNAMEDBUFFERPOINTERVEXTPROC;
+alias void function(GLuint buffer, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLGETNAMEDBUFFERSUBDATAEXTPROC;
+alias void function(GLuint texture, GLenum target, GLenum internalformat, GLuint buffer) PFNGLTEXTUREBUFFEREXTPROC;
+alias void function(GLenum texunit, GLenum target, GLenum internalformat, GLuint buffer) PFNGLMULTITEXBUFFEREXTPROC;
+alias void function(GLuint renderbuffer, GLenum internalformat, GLsizei width, GLsizei height) PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC;
+alias void function(GLuint renderbuffer, GLenum pname, GLint *params) PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC;
+alias GLenum function(GLuint framebuffer, GLenum target) PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level) PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level) PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset) PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLenum pname, GLint *params) PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC;
+alias void function(GLuint texture, GLenum target) PFNGLGENERATETEXTUREMIPMAPEXTPROC;
+alias void function(GLenum texunit, GLenum target) PFNGLGENERATEMULTITEXMIPMAPEXTPROC;
+alias void function(GLuint framebuffer, GLenum mode) PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC;
+alias void function(GLuint framebuffer, GLsizei n, GLenum *bufs) PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC;
+alias void function(GLuint framebuffer, GLenum mode) PFNGLFRAMEBUFFERREADBUFFEREXTPROC;
+alias void function(GLuint framebuffer, GLenum pname, GLint *params) PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC;
+alias void function(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC;
+alias void function(GLuint renderbuffer, GLsizei coverageSamples, GLsizei colorSamples, GLenum internalformat, GLsizei width, GLsizei height) PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level) PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC;
+alias void function(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLenum face) PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC;
+alias void function(GLuint texture, GLenum target, GLuint renderbuffer) PFNGLTEXTURERENDERBUFFEREXTPROC;
+alias void function(GLenum texunit, GLenum target, GLuint renderbuffer) PFNGLMULTITEXRENDERBUFFEREXTPROC;
 
 static const auto GL_EXT_vertex_array_bgra = 1;
 
@@ -9846,9 +9846,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glSampleMaskIndexedNV (GLuint index, GLbitfield mask);
 	void glTexRenderbufferNV (GLenum target, GLuint renderbuffer);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETMULTISAMPLEFVNVPROC) (GLenum pname, GLuint index, GLfloat *val);
-alias void (PFNGLSAMPLEMASKINDEXEDNVPROC) (GLuint index, GLbitfield mask);
-alias void (PFNGLTEXRENDERBUFFERNVPROC) (GLenum target, GLuint renderbuffer);
+alias void function(GLenum pname, GLuint index, GLfloat *val) PFNGLGETMULTISAMPLEFVNVPROC;
+alias void function(GLuint index, GLbitfield mask) PFNGLSAMPLEMASKINDEXEDNVPROC;
+alias void function(GLenum target, GLuint renderbuffer) PFNGLTEXRENDERBUFFERNVPROC;
 
 static const auto GL_NV_transform_feedback2 = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -9860,13 +9860,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glResumeTransformFeedbackNV ();
 	void glDrawTransformFeedbackNV (GLenum mode, GLuint id);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBINDTRANSFORMFEEDBACKNVPROC) (GLenum target, GLuint id);
-alias void (PFNGLDELETETRANSFORMFEEDBACKSNVPROC) (GLsizei n, GLuint *ids);
-alias void (PFNGLGENTRANSFORMFEEDBACKSNVPROC) (GLsizei n, GLuint *ids);
-alias GLboolean (PFNGLISTRANSFORMFEEDBACKNVPROC) (GLuint id);
-alias void (PFNGLPAUSETRANSFORMFEEDBACKNVPROC) ();
-alias void (PFNGLRESUMETRANSFORMFEEDBACKNVPROC) ();
-alias void (PFNGLDRAWTRANSFORMFEEDBACKNVPROC) (GLenum mode, GLuint id);
+alias void function(GLenum target, GLuint id) PFNGLBINDTRANSFORMFEEDBACKNVPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLDELETETRANSFORMFEEDBACKSNVPROC;
+alias void function(GLsizei n, GLuint *ids) PFNGLGENTRANSFORMFEEDBACKSNVPROC;
+alias GLboolean function(GLuint id) PFNGLISTRANSFORMFEEDBACKNVPROC;
+alias void function() PFNGLPAUSETRANSFORMFEEDBACKNVPROC;
+alias void function() PFNGLRESUMETRANSFORMFEEDBACKNVPROC;
+alias void function(GLenum mode, GLuint id) PFNGLDRAWTRANSFORMFEEDBACKNVPROC;
 
 static const auto GL_ATI_meminfo = 1;
 
@@ -9884,17 +9884,17 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glEndPerfMonitorAMD (GLuint monitor);
 	void glGetPerfMonitorCounterDataAMD (GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLGETPERFMONITORGROUPSAMDPROC) (GLint *numGroups, GLsizei groupsSize, GLuint *groups);
-alias void (PFNGLGETPERFMONITORCOUNTERSAMDPROC) (GLuint group, GLint *numCounters, GLint *maxActiveCounters, GLsizei counterSize, GLuint *counters);
-alias void (PFNGLGETPERFMONITORGROUPSTRINGAMDPROC) (GLuint group, GLsizei bufSize, GLsizei *length, GLchar *groupString);
-alias void (PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC) (GLuint group, GLuint counter, GLsizei bufSize, GLsizei *length, GLchar *counterString);
-alias void (PFNGLGETPERFMONITORCOUNTERINFOAMDPROC) (GLuint group, GLuint counter, GLenum pname, void *data);
-alias void (PFNGLGENPERFMONITORSAMDPROC) (GLsizei n, GLuint *monitors);
-alias void (PFNGLDELETEPERFMONITORSAMDPROC) (GLsizei n, GLuint *monitors);
-alias void (PFNGLSELECTPERFMONITORCOUNTERSAMDPROC) (GLuint monitor, GLboolean enable, GLuint group, GLint numCounters, GLuint *counterList);
-alias void (PFNGLBEGINPERFMONITORAMDPROC) (GLuint monitor);
-alias void (PFNGLENDPERFMONITORAMDPROC) (GLuint monitor);
-alias void (PFNGLGETPERFMONITORCOUNTERDATAAMDPROC) (GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten);
+alias void function(GLint *numGroups, GLsizei groupsSize, GLuint *groups) PFNGLGETPERFMONITORGROUPSAMDPROC;
+alias void function(GLuint group, GLint *numCounters, GLint *maxActiveCounters, GLsizei counterSize, GLuint *counters) PFNGLGETPERFMONITORCOUNTERSAMDPROC;
+alias void function(GLuint group, GLsizei bufSize, GLsizei *length, GLchar *groupString) PFNGLGETPERFMONITORGROUPSTRINGAMDPROC;
+alias void function(GLuint group, GLuint counter, GLsizei bufSize, GLsizei *length, GLchar *counterString) PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC;
+alias void function(GLuint group, GLuint counter, GLenum pname, void *data) PFNGLGETPERFMONITORCOUNTERINFOAMDPROC;
+alias void function(GLsizei n, GLuint *monitors) PFNGLGENPERFMONITORSAMDPROC;
+alias void function(GLsizei n, GLuint *monitors) PFNGLDELETEPERFMONITORSAMDPROC;
+alias void function(GLuint monitor, GLboolean enable, GLuint group, GLint numCounters, GLuint *counterList) PFNGLSELECTPERFMONITORCOUNTERSAMDPROC;
+alias void function(GLuint monitor) PFNGLBEGINPERFMONITORAMDPROC;
+alias void function(GLuint monitor) PFNGLENDPERFMONITORAMDPROC;
+alias void function(GLuint monitor, GLenum pname, GLsizei dataSize, GLuint *data, GLint *bytesWritten) PFNGLGETPERFMONITORCOUNTERDATAAMDPROC;
 
 static const auto GL_AMD_texture_texture4 = 1;
 
@@ -9903,14 +9903,14 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glTessellationFactorAMD (GLfloat factor);
 	void glTessellationModeAMD (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTESSELLATIONFACTORAMDPROC) (GLfloat factor);
-alias void (PFNGLTESSELLATIONMODEAMDPROC) (GLenum mode);
+alias void function(GLfloat factor) PFNGLTESSELLATIONFACTORAMDPROC;
+alias void function(GLenum mode) PFNGLTESSELLATIONMODEAMDPROC;
 
 static const auto GL_EXT_provoking_vertex = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glProvokingVertexEXT (GLenum mode);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLPROVOKINGVERTEXEXTPROC) (GLenum mode);
+alias void function(GLenum mode) PFNGLPROVOKINGVERTEXEXTPROC;
 
 static const auto GL_EXT_texture_snorm = 1;
 
@@ -9921,18 +9921,18 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glBlendEquationIndexedAMD (GLuint buf, GLenum mode);
 	void glBlendEquationSeparateIndexedAMD (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBLENDFUNCINDEXEDAMDPROC) (GLuint buf, GLenum src, GLenum dst);
-alias void (PFNGLBLENDFUNCSEPARATEINDEXEDAMDPROC) (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
-alias void (PFNGLBLENDEQUATIONINDEXEDAMDPROC) (GLuint buf, GLenum mode);
-alias void (PFNGLBLENDEQUATIONSEPARATEINDEXEDAMDPROC) (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+alias void function(GLuint buf, GLenum src, GLenum dst) PFNGLBLENDFUNCINDEXEDAMDPROC;
+alias void function(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha) PFNGLBLENDFUNCSEPARATEINDEXEDAMDPROC;
+alias void function(GLuint buf, GLenum mode) PFNGLBLENDEQUATIONINDEXEDAMDPROC;
+alias void function(GLuint buf, GLenum modeRGB, GLenum modeAlpha) PFNGLBLENDEQUATIONSEPARATEINDEXEDAMDPROC;
 
 static const auto GL_APPLE_texture_range = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTextureRangeAPPLE (GLenum target, GLsizei length, GLvoid *pointer);
 	void glGetTexParameterPointervAPPLE (GLenum target, GLenum pname, GLvoid* *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXTURERANGEAPPLEPROC) (GLenum target, GLsizei length, GLvoid *pointer);
-alias void (PFNGLGETTEXPARAMETERPOINTERVAPPLEPROC) (GLenum target, GLenum pname, GLvoid* *params);
+alias void function(GLenum target, GLsizei length, GLvoid *pointer) PFNGLTEXTURERANGEAPPLEPROC;
+alias void function(GLenum target, GLenum pname, GLvoid* *params) PFNGLGETTEXPARAMETERPOINTERVAPPLEPROC;
 
 static const auto GL_APPLE_float_pixels = 1;
 
@@ -9946,13 +9946,13 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glMapVertexAttrib2dAPPLE (GLuint index, GLuint size, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble *points);
 	void glMapVertexAttrib2fAPPLE (GLuint index, GLuint size, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat *points);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLENABLEVERTEXATTRIBAPPLEPROC) (GLuint index, GLenum pname);
-alias void (PFNGLDISABLEVERTEXATTRIBAPPLEPROC) (GLuint index, GLenum pname);
-alias GLboolean (PFNGLISVERTEXATTRIBENABLEDAPPLEPROC) (GLuint index, GLenum pname);
-alias void (PFNGLMAPVERTEXATTRIB1DAPPLEPROC) (GLuint index, GLuint size, GLdouble u1, GLdouble u2, GLint stride, GLint order, GLdouble *points);
-alias void (PFNGLMAPVERTEXATTRIB1FAPPLEPROC) (GLuint index, GLuint size, GLfloat u1, GLfloat u2, GLint stride, GLint order, GLfloat *points);
-alias void (PFNGLMAPVERTEXATTRIB2DAPPLEPROC) (GLuint index, GLuint size, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble *points);
-alias void (PFNGLMAPVERTEXATTRIB2FAPPLEPROC) (GLuint index, GLuint size, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat *points);
+alias void function(GLuint index, GLenum pname) PFNGLENABLEVERTEXATTRIBAPPLEPROC;
+alias void function(GLuint index, GLenum pname) PFNGLDISABLEVERTEXATTRIBAPPLEPROC;
+alias GLboolean function(GLuint index, GLenum pname) PFNGLISVERTEXATTRIBENABLEDAPPLEPROC;
+alias void function(GLuint index, GLuint size, GLdouble u1, GLdouble u2, GLint stride, GLint order, GLdouble *points) PFNGLMAPVERTEXATTRIB1DAPPLEPROC;
+alias void function(GLuint index, GLuint size, GLfloat u1, GLfloat u2, GLint stride, GLint order, GLfloat *points) PFNGLMAPVERTEXATTRIB1FAPPLEPROC;
+alias void function(GLuint index, GLuint size, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble *points) PFNGLMAPVERTEXATTRIB2DAPPLEPROC;
+alias void function(GLuint index, GLuint size, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat *points) PFNGLMAPVERTEXATTRIB2FAPPLEPROC;
 
 static const auto GL_APPLE_aux_depth_stencil = 1;
 
@@ -9962,9 +9962,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLenum glObjectUnpurgeableAPPLE (GLenum objectType, GLuint name, GLenum option);
 	void glGetObjectParameterivAPPLE (GLenum objectType, GLuint name, GLenum pname, GLint *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLenum (PFNGLOBJECTPURGEABLEAPPLEPROC) (GLenum objectType, GLuint name, GLenum option);
-alias GLenum (PFNGLOBJECTUNPURGEABLEAPPLEPROC) (GLenum objectType, GLuint name, GLenum option);
-alias void (PFNGLGETOBJECTPARAMETERIVAPPLEPROC) (GLenum objectType, GLuint name, GLenum pname, GLint *params);
+alias GLenum function(GLenum objectType, GLuint name, GLenum option) PFNGLOBJECTPURGEABLEAPPLEPROC;
+alias GLenum function(GLenum objectType, GLuint name, GLenum option) PFNGLOBJECTUNPURGEABLEAPPLEPROC;
+alias void function(GLenum objectType, GLuint name, GLenum pname, GLint *params) PFNGLGETOBJECTPARAMETERIVAPPLEPROC;
 
 static const auto GL_APPLE_row_bytes = 1;
 
@@ -9985,24 +9985,24 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVideoCaptureStreamParameterfvNV (GLuint video_capture_slot, GLuint stream, GLenum pname, GLfloat *params);
 	void glVideoCaptureStreamParameterdvNV (GLuint video_capture_slot, GLuint stream, GLenum pname, GLdouble *params);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBEGINVIDEOCAPTURENVPROC) (GLuint video_capture_slot);
-alias void (PFNGLBINDVIDEOCAPTURESTREAMBUFFERNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum frame_region, GLintptrARB offset);
-alias void (PFNGLBINDVIDEOCAPTURESTREAMTEXTURENVPROC) (GLuint video_capture_slot, GLuint stream, GLenum frame_region, GLenum target, GLuint texture);
-alias void (PFNGLENDVIDEOCAPTURENVPROC) (GLuint video_capture_slot);
-alias void (PFNGLGETVIDEOCAPTUREIVNVPROC) (GLuint video_capture_slot, GLenum pname, GLint *params);
-alias void (PFNGLGETVIDEOCAPTURESTREAMIVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLint *params);
-alias void (PFNGLGETVIDEOCAPTURESTREAMFVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLfloat *params);
-alias void (PFNGLGETVIDEOCAPTURESTREAMDVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLdouble *params);
-alias GLenum (PFNGLVIDEOCAPTURENVPROC) (GLuint video_capture_slot, GLuint *sequence_num, GLuint64EXT *capture_time);
-alias void (PFNGLVIDEOCAPTURESTREAMPARAMETERIVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLint *params);
-alias void (PFNGLVIDEOCAPTURESTREAMPARAMETERFVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLfloat *params);
-alias void (PFNGLVIDEOCAPTURESTREAMPARAMETERDVNVPROC) (GLuint video_capture_slot, GLuint stream, GLenum pname, GLdouble *params);
+alias void function(GLuint video_capture_slot) PFNGLBEGINVIDEOCAPTURENVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum frame_region, GLintptrARB offset) PFNGLBINDVIDEOCAPTURESTREAMBUFFERNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum frame_region, GLenum target, GLuint texture) PFNGLBINDVIDEOCAPTURESTREAMTEXTURENVPROC;
+alias void function(GLuint video_capture_slot) PFNGLENDVIDEOCAPTURENVPROC;
+alias void function(GLuint video_capture_slot, GLenum pname, GLint *params) PFNGLGETVIDEOCAPTUREIVNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLint *params) PFNGLGETVIDEOCAPTURESTREAMIVNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLfloat *params) PFNGLGETVIDEOCAPTURESTREAMFVNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLdouble *params) PFNGLGETVIDEOCAPTURESTREAMDVNVPROC;
+alias GLenum function(GLuint video_capture_slot, GLuint *sequence_num, GLuint64EXT *capture_time) PFNGLVIDEOCAPTURENVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLint *params) PFNGLVIDEOCAPTURESTREAMPARAMETERIVNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLfloat *params) PFNGLVIDEOCAPTURESTREAMPARAMETERFVNVPROC;
+alias void function(GLuint video_capture_slot, GLuint stream, GLenum pname, GLdouble *params) PFNGLVIDEOCAPTURESTREAMPARAMETERDVNVPROC;
 
 static const auto GL_NV_copy_image = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glCopyImageSubDataNV (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei width, GLsizei height, GLsizei depth);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLCOPYIMAGESUBDATANVPROC) (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei width, GLsizei height, GLsizei depth);
+alias void function(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei width, GLsizei height, GLsizei depth) PFNGLCOPYIMAGESUBDATANVPROC;
 
 static const auto GL_EXT_separate_shader_objects = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -10010,9 +10010,9 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glActiveProgramEXT (GLuint program);
 	GLuint glCreateShaderProgramEXT (GLenum type, GLchar *string);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLUSESHADERPROGRAMEXTPROC) (GLenum type, GLuint program);
-alias void (PFNGLACTIVEPROGRAMEXTPROC) (GLuint program);
-alias GLuint (PFNGLCREATESHADERPROGRAMEXTPROC) (GLenum type, GLchar *string);
+alias void function(GLenum type, GLuint program) PFNGLUSESHADERPROGRAMEXTPROC;
+alias void function(GLuint program) PFNGLACTIVEPROGRAMEXTPROC;
+alias GLuint function(GLenum type, GLchar *string) PFNGLCREATESHADERPROGRAMEXTPROC;
 
 static const auto GL_NV_parameter_buffer_object2 = 1;
 
@@ -10033,20 +10033,20 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glProgramUniformui64NV (GLuint program, GLint location, GLuint64EXT value);
 	void glProgramUniformui64vNV (GLuint program, GLint location, GLsizei count, GLuint64EXT *value);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLMAKEBUFFERRESIDENTNVPROC) (GLenum target, GLenum access);
-alias void (PFNGLMAKEBUFFERNONRESIDENTNVPROC) (GLenum target);
-alias GLboolean (PFNGLISBUFFERRESIDENTNVPROC) (GLenum target);
-alias void (PFNGLMAKENAMEDBUFFERRESIDENTNVPROC) (GLuint buffer, GLenum access);
-alias void (PFNGLMAKENAMEDBUFFERNONRESIDENTNVPROC) (GLuint buffer);
-alias GLboolean (PFNGLISNAMEDBUFFERRESIDENTNVPROC) (GLuint buffer);
-alias void (PFNGLGETBUFFERPARAMETERUI64VNVPROC) (GLenum target, GLenum pname, GLuint64EXT *params);
-alias void (PFNGLGETNAMEDBUFFERPARAMETERUI64VNVPROC) (GLuint buffer, GLenum pname, GLuint64EXT *params);
-alias void (PFNGLGETINTEGERUI64VNVPROC) (GLenum value, GLuint64EXT *result);
-alias void (PFNGLUNIFORMUI64NVPROC) (GLint location, GLuint64EXT value);
-alias void (PFNGLUNIFORMUI64VNVPROC) (GLint location, GLsizei count, GLuint64EXT *value);
-alias void (PFNGLGETUNIFORMUI64VNVPROC) (GLuint program, GLint location, GLuint64EXT *params);
-alias void (PFNGLPROGRAMUNIFORMUI64NVPROC) (GLuint program, GLint location, GLuint64EXT value);
-alias void (PFNGLPROGRAMUNIFORMUI64VNVPROC) (GLuint program, GLint location, GLsizei count, GLuint64EXT *value);
+alias void function(GLenum target, GLenum access) PFNGLMAKEBUFFERRESIDENTNVPROC;
+alias void function(GLenum target) PFNGLMAKEBUFFERNONRESIDENTNVPROC;
+alias GLboolean function(GLenum target) PFNGLISBUFFERRESIDENTNVPROC;
+alias void function(GLuint buffer, GLenum access) PFNGLMAKENAMEDBUFFERRESIDENTNVPROC;
+alias void function(GLuint buffer) PFNGLMAKENAMEDBUFFERNONRESIDENTNVPROC;
+alias GLboolean function(GLuint buffer) PFNGLISNAMEDBUFFERRESIDENTNVPROC;
+alias void function(GLenum target, GLenum pname, GLuint64EXT *params) PFNGLGETBUFFERPARAMETERUI64VNVPROC;
+alias void function(GLuint buffer, GLenum pname, GLuint64EXT *params) PFNGLGETNAMEDBUFFERPARAMETERUI64VNVPROC;
+alias void function(GLenum value, GLuint64EXT *result) PFNGLGETINTEGERUI64VNVPROC;
+alias void function(GLint location, GLuint64EXT value) PFNGLUNIFORMUI64NVPROC;
+alias void function(GLint location, GLsizei count, GLuint64EXT *value) PFNGLUNIFORMUI64VNVPROC;
+alias void function(GLuint program, GLint location, GLuint64EXT *params) PFNGLGETUNIFORMUI64VNVPROC;
+alias void function(GLuint program, GLint location, GLuint64EXT value) PFNGLPROGRAMUNIFORMUI64NVPROC;
+alias void function(GLuint program, GLint location, GLsizei count, GLuint64EXT *value) PFNGLPROGRAMUNIFORMUI64VNVPROC;
 
 static const auto GL_NV_vertex_buffer_unified_memory = 1;
 version(GL_GLEXT_PROTOTYPES) {
@@ -10063,24 +10063,24 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glVertexAttribIFormatNV (GLuint index, GLint size, GLenum type, GLsizei stride);
 	void glGetIntegerui64i_vNV (GLenum value, GLuint index, GLuint64EXT *result);
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLBUFFERADDRESSRANGENVPROC) (GLenum pname, GLuint index, GLuint64EXT address, GLsizeiptr length);
-alias void (PFNGLVERTEXFORMATNVPROC) (GLint size, GLenum type, GLsizei stride);
-alias void (PFNGLNORMALFORMATNVPROC) (GLenum type, GLsizei stride);
-alias void (PFNGLCOLORFORMATNVPROC) (GLint size, GLenum type, GLsizei stride);
-alias void (PFNGLINDEXFORMATNVPROC) (GLenum type, GLsizei stride);
-alias void (PFNGLTEXCOORDFORMATNVPROC) (GLint size, GLenum type, GLsizei stride);
-alias void (PFNGLEDGEFLAGFORMATNVPROC) (GLsizei stride);
-alias void (PFNGLSECONDARYCOLORFORMATNVPROC) (GLint size, GLenum type, GLsizei stride);
-alias void (PFNGLFOGCOORDFORMATNVPROC) (GLenum type, GLsizei stride);
-alias void (PFNGLVERTEXATTRIBFORMATNVPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride);
-alias void (PFNGLVERTEXATTRIBIFORMATNVPROC) (GLuint index, GLint size, GLenum type, GLsizei stride);
-alias void (PFNGLGETINTEGERUI64I_VNVPROC) (GLenum value, GLuint index, GLuint64EXT *result);
+alias void function(GLenum pname, GLuint index, GLuint64EXT address, GLsizeiptr length) PFNGLBUFFERADDRESSRANGENVPROC;
+alias void function(GLint size, GLenum type, GLsizei stride) PFNGLVERTEXFORMATNVPROC;
+alias void function(GLenum type, GLsizei stride) PFNGLNORMALFORMATNVPROC;
+alias void function(GLint size, GLenum type, GLsizei stride) PFNGLCOLORFORMATNVPROC;
+alias void function(GLenum type, GLsizei stride) PFNGLINDEXFORMATNVPROC;
+alias void function(GLint size, GLenum type, GLsizei stride) PFNGLTEXCOORDFORMATNVPROC;
+alias void function(GLsizei stride) PFNGLEDGEFLAGFORMATNVPROC;
+alias void function(GLint size, GLenum type, GLsizei stride) PFNGLSECONDARYCOLORFORMATNVPROC;
+alias void function(GLenum type, GLsizei stride) PFNGLFOGCOORDFORMATNVPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride) PFNGLVERTEXATTRIBFORMATNVPROC;
+alias void function(GLuint index, GLint size, GLenum type, GLsizei stride) PFNGLVERTEXATTRIBIFORMATNVPROC;
+alias void function(GLenum value, GLuint index, GLuint64EXT *result) PFNGLGETINTEGERUI64I_VNVPROC;
 
 static const auto GL_NV_texture_barrier = 1;
 version(GL_GLEXT_PROTOTYPES) {
 	void glTextureBarrierNV ();
 } /* GL_GLEXT_PROTOTYPES */
-alias void (PFNGLTEXTUREBARRIERNVPROC) ();
+alias void function() PFNGLTEXTUREBARRIERNVPROC;
 
 static const auto GL_AMD_shader_stencil_export = 1;
 
