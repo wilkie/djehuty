@@ -672,7 +672,7 @@ struct F2Dot14 {
 		else {
 			result += denominator;
 		}
-		putln("data: ", format("{x}", data), " vs ", result);
+
 		return result;
 	}
 }

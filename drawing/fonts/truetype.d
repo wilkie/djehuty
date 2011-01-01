@@ -12,6 +12,7 @@ import djehuty;
 import drawing.fonts.truetypetables;
 
 import io.console;
+import binding.c;
 
 import data.iterable;
 
@@ -75,8 +76,6 @@ private:
 
 		input.read(&_profile, MaximumProfile.sizeof);
 		fromBigEndian(_profile);
-
-		putln("Number of Glyphs: ", _profile.numGlyphs);
 	}
 
 	void readIndexToLocationTable(Stream input, ref TableRecord tbl) {
@@ -84,12 +83,10 @@ private:
 
 		_locations.offsets = new uint[](_profile.numGlyphs + 1);
 		if (_fontHeader.indexToLocFormat != 0) {
-			putln("Loca table indicates number of glyphs: ", (tbl.length / 4) - 1);
 			input.read(_locations.offsets.ptr, uint.sizeof * _locations.offsets.length);
 			fromBigEndian(_locations.offsets);
 		}
 		else {
-			putln("Loca table indicates number of glyphs: ", (tbl.length / 2) - 1);
 			// Note the <= here since the number of locations is one more than the number of glyphs
 			ushort offset;
 			for (int i = 0; i <= _profile.numGlyphs; i++) {
@@ -142,7 +139,6 @@ private:
 		// get the number of segments
 
 		int segCount = table.segCountX2 / 2;
-		putln("Segments: ", segCount);
 
 		table.endCode = new ushort[segCount];
 		table.startCode = new ushort[segCount];
@@ -202,8 +198,6 @@ private:
 		fromBigEndian(_characterGlyphIndexMappingTable);
 
 		with(_characterGlyphIndexMappingTable) {
-			putln("CMAP: version ", tableVersion);
-			putln("numEncodingTables: ", numEncodingTables);
 
 			encodingTables = new EncodingTable[](numEncodingTables);
 
@@ -213,10 +207,6 @@ private:
 
 			foreach(ref tbl; encodingTables) {
 				fromBigEndian(tbl);
-
-				putln(tbl.platformID);
-				putln(tbl.platformEncodingID);
-				putln(tbl.offsetToSubtable);
 
 				input.position = offset;
 				input.skip(tbl.offsetToSubtable);
@@ -261,8 +251,6 @@ private:
 					// read subtable
 					input.read(&tbl.subtable, size);
 				}
-
-				putln("Format: ", format);
 
 				switch(format) {
 					case 0:
@@ -373,13 +361,8 @@ private:
 		input.read(&instLength, ushort.sizeof);
 		fromBigEndian(instLength);
 
-		putln("Instruction Count: ", instLength);
-
 		g.instructions = new ubyte[](instLength);
 		input.read(g.instructions.ptr, ubyte.sizeof * instLength);
-
-		// set up glyph arrays that are set via flags
-		g.isOnCurve = new bool[](numberOfContours);
 
 		// flags...
 		int numberOfPoints = 0;
@@ -388,7 +371,9 @@ private:
 			numberOfPoints = g.endPtsOfContours[$-1] + 1;
 		}
 
-		putln("Number of points: ", numberOfPoints);
+		// set up glyph arrays that are set via flags
+		g.isOnCurve = new bool[](numberOfPoints);
+
 		ubyte[] flags = new ubyte[](numberOfPoints);
 
 		// flags may be applied to more than one point,
@@ -514,25 +499,19 @@ private:
 	}
 
 	void readGlyphData(Stream input, ref TableRecord record) {
-		putln("Length: ", record.length);
-
 		_glyphs = new Glyph[](_profile.numGlyphs);
 
 		for (int i = 0; i < _profile.numGlyphs; i++) {
 			if (_locations.offsets[i] == _locations.offsets[i+1]) {
 				// empty glyph
-				putln("continuing...");
 				continue;
 			}
 
 			input.position = record.offset + _locations.offsets[i];
-			putln("Offset: ", _locations.offsets[i]);
 
 			short numberOfContours;
 			input.read(&numberOfContours, short.sizeof);
 			fromBigEndian(numberOfContours);
-
-			putln("Glyph: numContours: ", numberOfContours);
 
 			input.read(&_glyphs[i].xMin, short.sizeof);
 			fromBigEndian(_glyphs[i].xMin);
@@ -558,12 +537,6 @@ public:
 	this(Stream input) {
 		input.read(&_offsetTable, _offsetTable.sizeof);
 		fromBigEndian(_offsetTable);
-
-		putln("Version: ", _offsetTable.versionMajor, ".", _offsetTable.versionMinor);
-		putln("Number of tables: ", _offsetTable.numTables);
-		putln("Search Range: ", _offsetTable.searchRange);
-		putln("Entry Selector: ", _offsetTable.entrySelector);
-		putln("Range Shift: ", _offsetTable.rangeShift);
 
 		_tableRecords = new TableRecord[](_offsetTable.numTables);
 		input.read(_tableRecords.ptr, TableRecord.sizeof * _offsetTable.numTables);
@@ -597,12 +570,12 @@ public:
 			}
 		}
 
-		foreach(ref tbl; _tableRecords) {
+/*		foreach(ref tbl; _tableRecords) {
 			putln("Table (", (cast(char*)(&tbl.tag))[0..4], ")");
 			putln("Checksum: ", tbl.checksum);
 			putln("Offset: ", tbl.offset);
 			putln("Length: ", tbl.length);
-		}
+		}//*/
 
 		if (headIndex == int.min) {
 			// error
