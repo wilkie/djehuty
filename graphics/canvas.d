@@ -619,6 +619,9 @@ END`;
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
+		// Hint that we would like to disable Perspective Correction
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
 		// Give default pens and brushes
 		this.pen = new Pen(Color.Black);
 		this.brush = new Brush(Color.White);
