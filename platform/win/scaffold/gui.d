@@ -226,6 +226,16 @@ void createWindow(WindowPlatformVars* windowVars) {
 		cast(int)window.left, cast(int)window.top, w, h,
 		null, null, null, userData);
 
+	DWM_BLURBEHIND bb;
+
+	bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION | DWM_BB_TRANSITIONONMAXIMIZED;
+	bb.fEnable = TRUE;
+	HRGN rgn = CreateRectRgn(0,0,1,1);
+	bb.hRgnBlur = rgn;
+	bb.fTransitionOnMaximized = TRUE;
+
+	DwmEnableBlurBehindWindow(windowVars.hWnd, &bb);
+	DeleteObject(rgn);
 
 	if (cast(Dialog)window is null) {
 		SetWindowLong(windowVars.hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
@@ -323,16 +333,6 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 
 			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&MessageProc);
 			SetWindowLongW(hWnd, GWLP_USERDATA, cast(LONG)cs.lpCreateParams);
-
-			DWM_BLURBEHIND bb;
-
-			bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION | DWM_BB_TRANSITIONONMAXIMIZED;
-			bb.fEnable = TRUE;
-			HRGN rgn = CreateRectRgn(0,0,1,1);
-			bb.hRgnBlur = rgn;
-			bb.fTransitionOnMaximized = TRUE;
-
-			DwmEnableBlurBehindWindow(w.hWnd, &bb);
 			break;
 
 		default:
@@ -591,7 +591,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			if (dialog !is null) {
 				PAINTSTRUCT ps;
 				HDC dc = BeginPaint(hWnd, &ps);
-				MARGINS margins;
+/*				MARGINS margins;
 
 				RECT rt;
 				GetClientRect(windowVars.hWnd, &rt);
@@ -605,18 +605,17 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				bf.BlendOp = AC_SRC_OVER;
 				bf.BlendFlags = 0;
 				bf.SourceConstantAlpha = 255;
-				bf.AlphaFormat = AC_SRC_ALPHA;
+				bf.AlphaFormat = AC_SRC_ALPHA;*/
 
 //				DwmExtendFrameIntoClientArea(windowVars.hWnd, &margins);
-				HBRUSH brsh = CreateSolidBrush(0);
-				FillRect(ps.hdc, &rt, brsh);
-				AlphaBlend(ps.hdc, 
-						0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(),
-						windowVars.backbuffer, 
-						0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(), 
-						bf);
-
-//				BitBlt(ps.hdc, 0, 0, cast(int)dialog.width, cast(int)dialog.height, windowVars.backbuffer, 0, 0, SRCCOPY);
+				//HBRUSH brsh = CreateSolidBrush(0);
+				//FillRect(ps.hdc, &rt, brsh);
+				//AlphaBlend(ps.hdc, 
+						//0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(),
+						//windowVars.backbuffer, 
+						//0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(), 
+						//bf);
+				BitBlt(ps.hdc, 0, 0, cast(int)dialog.width, cast(int)dialog.height, windowVars.backbuffer, 0, 0, SRCCOPY);
 				EndPaint(hWnd, &ps);
 			}
 			return 1;

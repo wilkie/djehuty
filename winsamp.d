@@ -509,7 +509,7 @@ public:
 int main(string[] args) {
 	auto app = new GuiApplication("MyApp");
 	//auto window = new Window(200, 200, 500, 500);
-	auto window = new Dialog(200, 200, 500, 500, "MyApp!", WindowStyle.Fixed);
+	auto window = new Dialog(200, 200, 500, 500, "MyApp!", WindowStyle.Sizable);
 //	auto window = new GameWindow(200, 100);
 /*	auto img = new Image("tests/Ape_walks.gif");
 	auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
