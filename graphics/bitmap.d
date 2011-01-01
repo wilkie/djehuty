@@ -29,7 +29,6 @@ import binding.win32.winuser;
 class Bitmap : Canvas {
 private:
 	bool _inited;
-	Semaphore _buffer_mutex;
 
 	bool _hasAlpha;
 	byte* _buffer;
@@ -37,22 +36,23 @@ private:
 public:
 
 	this(int width, int height) {
-		_buffer_mutex = new Semaphore(1);
 		super(width, height);
 	}
 
 	void* getBufferUnsafe() {
-		setContext();
+		lock();
 
 		_buffer = (new byte[](width * height * 4)).ptr;
 		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
+
+		unlock();
+
 		return _buffer;
 	}
 
 	void lockBuffer(void** bufferPtr, ref ulong length) {
 		putln("read?");
-		//_buffer_mutex.down();
-		setContext();
+		lock();
 
 		_buffer = (new byte[](width * height * 4)).ptr;
 		*bufferPtr = _buffer;
@@ -61,19 +61,19 @@ public:
 
 		glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, _buffer);
 		putln("read");
-		wglMakeCurrent(null, null);
+
+		unlock();
 	}
 
 	void unlockBuffer() {
 		putln("draw?");
-		setContext();
+		lock();
 
 		//glRasterPos2i(0, 0);
 		//glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, _buffer);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, _buffer);
 
 		putln("drawn");
-//		_buffer_mutex.up();
-		wglMakeCurrent(null, null);
+		unlock();
 	}
 }

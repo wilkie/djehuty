@@ -40,6 +40,8 @@ import gui.imagebox;
 import gui.listbox;
 import gui.filebox;
 
+import graphics.canvas;
+
 import synch.timer;
 import synch.thread;
 import synch.atomic;
@@ -430,9 +432,85 @@ public:
 	}
 }
 
+class GameWindow : Dialog {
+public:
+	static const double BLOCK_WIDTH = 70;
+	static const double BLOCK_HEIGHT = 35;
+
+	this(double x, double y) {
+		super(x, y, 800, 600, "Game", WindowStyle.Fixed);
+
+		rects = new List!(Rect);
+
+		Rect r;
+		r.left = 0;
+		r.right = BLOCK_WIDTH;
+		r.top = 0;
+		r.bottom = BLOCK_HEIGHT;
+
+		rects.add(r);
+	}
+
+	override bool asynchronous() {
+		return true;
+	}//*/
+
+	override void onIdle() {
+		static Time last;
+		if (last is null) {
+			last = Time.now;
+		}
+
+		Time t = Time.now;
+		double difference = (t - last).milliseconds;
+		difference /= 1000.0;
+
+		onUpdate(difference);
+		redraw();
+
+		last = t;
+	}
+
+	List!(Rect) rects;
+
+	override void onMouseDown(Mouse mouse, uint button) {
+		Rect r;
+		r.left = mouse.x - BLOCK_WIDTH/2;
+		r.right = mouse.x + BLOCK_WIDTH/2;
+		r.top = mouse.y - BLOCK_HEIGHT/2;
+		r.bottom = mouse.y + BLOCK_HEIGHT/2;
+		rects.add(r);
+	}
+
+	void onUpdate(double elapsed) {
+		foreach(ref r; rects) {
+			r.top += elapsed * 500;
+			if (r.top + BLOCK_HEIGHT > this.height) {
+				r.top = this.height - BLOCK_HEIGHT;
+			}
+		/*	foreach(ref r2; rects) {
+				if (r != r2 && r.intersects(r2) && r.top < r2.top) {
+					r.top = r2.top - BLOCK_HEIGHT;
+					break;
+				}
+			}*/
+			r.bottom = r.top + BLOCK_HEIGHT;
+		}
+	}
+
+	override void onDraw(Canvas canvas) {
+		canvas.clear(Color.Black);
+		foreach(ref r; rects) {
+			canvas.drawRectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
+		}
+	}
+}
+
 int main(string[] args) {
 	auto app = new GuiApplication("MyApp");
+	//auto window = new Window(200, 200, 500, 500);
 	auto window = new Dialog(200, 200, 500, 500, "MyApp!", WindowStyle.Fixed);
+//	auto window = new GameWindow(200, 100);
 /*	auto img = new Image("tests/Ape_walks.gif");
 	auto imagebox = new ImageBox(200, 200, "tests/Ape_walks.gif");
 	imagebox.buffered = false;
@@ -469,7 +547,7 @@ int main(string[] args) {
  	auto spinner = new Spinner(50, 50, 400, 400);
  	spinner.forecolor = Color.fromRGBA(0.3, 0.3, 0.7, 0.7);
  	spinner.backcolor = Color.fromRGBA(0.7, 0.7, 0.7, 0.5);
- 	window.attach(spinner);
+ 	window.attach(spinner);//*/
 
 	/*
 	auto progressbar = new ProgressBar(150,320,200,20);
@@ -479,7 +557,7 @@ int main(string[] args) {
 //  	app.attach(window);
 //  	app.attach(new Window(400,400,250,250));
 //	TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
-	putln(Trig.sin(3.1415926));
+/*	putln(Trig.sin(3.1415926));
 	putln(Trig.cos(3.1415926));
 
 	float d = -34;
@@ -488,7 +566,7 @@ int main(string[] args) {
 	putln(Log.baseE(20.0855369));
 	putln(Log.base10(10*10*10));
 	putln(Log.base2(8));
-
+*/
 	app.attach(window);
 	app.run();//*/
 

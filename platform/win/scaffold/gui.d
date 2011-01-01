@@ -57,30 +57,19 @@ void GuiCreateWindow(Window window, WindowPlatformVars* windowVars) {
 	windowVars.window = window;
 	windowVars.pixelData = new ubyte[](cast(int)window.width * cast(int)window.height * 4);
 
-	windowVars.eventQueue = new Queue!(Event);
-	windowVars.wait = new Semaphore(0);
-	windowVars.messageThread = new MessageThread(windowVars);
-
 	auto windhDC = GetDC(null);
 	windowVars.backbuffer = CreateCompatibleDC(windhDC);
 	ReleaseDC(null, windhDC);
 
 	// Start the message loop
 
-	windowVars.messageThread.start();
-
-	windowVars.wait.down();
-	windowVars.wait.up();
+	createWindow(windowVars);
 }
 
 static const uint WM_USER_REDRAW = WM_USER + 1;
 
 void GuiRedrawRequest(Window window, WindowPlatformVars* windowVars) {
-	Event evt;
-	evt.type = Event.Redraw;
-
-	windowVars.eventQueue.add(evt);
-//	PostMessage(windowVars.hWnd, WM_USER_REDRAW, 0, 0);
+	PostMessage(windowVars.hWnd, WM_USER_REDRAW, 0, 0);
 }
 
 void GuiDestroyWindow(Window window, WindowPlatformVars* windowVars) {
@@ -156,12 +145,40 @@ void GuiUpdateCursor(Canvas view, CanvasPlatformVars* viewVars) {
 void GuiRepositionWindow(Window window, WindowPlatformVars* windowVars) {
 }
 
+bool GuiTryNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
+	MSG msg;
+	BOOL ret = TRUE;
+
+	windowVars.hasEvent = false;
+	windowVars.event = evt;
+
+	ret = PeekMessageW(&msg, windowVars.hWnd, 0, 0, PM_REMOVE);
+	if (ret != 0) {
+		//TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	if (windowVars.hasEvent) {
+		return true;
+	}
+	return false;
+}
+
 void GuiNextEvent(Window window, WindowPlatformVars* windowVars, Event* evt) {
 	MSG msg;
 	BOOL ret = TRUE;
+
 	while (ret != 0) {
-		if (!windowVars.eventQueue.empty) {
-			*evt = windowVars.eventQueue.remove();
+		windowVars.hasEvent = false;
+		windowVars.event = evt;
+
+		ret = GetMessageW(&msg, windowVars.hWnd, 0, 0);
+		if (ret != 0) {
+			//TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		if (windowVars.hasEvent) {
 			return;
 		}
 	}
@@ -188,8 +205,10 @@ void createWindow(WindowPlatformVars* windowVars) {
 	int h = cast(int)windowVars.window.height;
 	if (cast(Dialog)window !is null) {
 		Dialog d = cast(Dialog)windowVars.window;
+
 		_clientSizeToWindowSize(d, w, h);
 		_gatherStyleInformation(d, style, istyle);
+
 		title = Unicode.toUtf16(d.text) ~ "\0";
 	}
 
@@ -211,45 +230,7 @@ void createWindow(WindowPlatformVars* windowVars) {
 	if (cast(Dialog)window is null) {
 		SetWindowLong(windowVars.hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
 	}
-
-	DWM_BLURBEHIND bb;
-
-	bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION | DWM_BB_TRANSITIONONMAXIMIZED;
-	bb.fEnable = TRUE;
-	HRGN rgn = CreateRectRgn(0,0,1,1);
-	bb.hRgnBlur = rgn;
-	bb.fTransitionOnMaximized = TRUE;
-
-	DwmEnableBlurBehindWindow(windowVars.hWnd, &bb);
 	//DeleteObject(rgn);
-}
-
-class MessageThread : Thread {
-private:
-	WindowPlatformVars* windowVars;
-
-public:
-	this(WindowPlatformVars* windowVars) {
-		this.windowVars = windowVars;
-		super();
-	}
-
-	override void run() {
-
-		createWindow(windowVars);
-
-		windowVars.wait.up();
-
-		MSG msg;
-		BOOL ret = TRUE;
-		while(ret != 0) {
-			ret = GetMessageW(&msg, windowVars.hWnd, 0, 0);
-			if (ret != 0) {
-				//TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-	}
 }
 
 void _clientSizeToWindowSize(Dialog window, ref int width, ref int height) {
@@ -343,6 +324,15 @@ int DefaultProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			SetWindowLongW(hWnd, GWLP_WNDPROC, cast(LONG)&MessageProc);
 			SetWindowLongW(hWnd, GWLP_USERDATA, cast(LONG)cs.lpCreateParams);
 
+			DWM_BLURBEHIND bb;
+
+			bb.dwFlags = DWM_BB_ENABLE | DWM_BB_BLURREGION | DWM_BB_TRANSITIONONMAXIMIZED;
+			bb.fEnable = TRUE;
+			HRGN rgn = CreateRectRgn(0,0,1,1);
+			bb.hRgnBlur = rgn;
+			bb.fTransitionOnMaximized = TRUE;
+
+			DwmEnableBlurBehindWindow(w.hWnd, &bb);
 			break;
 
 		default:
@@ -587,7 +577,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		0x5a: Key.KeypadReturn
 	];
 
-	Event event;
+	Event* event = windowVars.event;
 
 	switch(uMsg) {
 		case WM_ERASEBKGND:
@@ -626,7 +616,6 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 						0, 0, cast(int)windowVars.window.width(), cast(int)windowVars.window.height(), 
 						bf);
 
-
 //				BitBlt(ps.hdc, 0, 0, cast(int)dialog.width, cast(int)dialog.height, windowVars.backbuffer, 0, 0, SRCCOPY);
 				EndPaint(hWnd, &ps);
 			}
@@ -635,7 +624,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_SYSCOMMAND:
 			if (wParam == SC_CLOSE) {
 				event.type = Event.Close;
-				windowVars.eventQueue.add(event);
+				windowVars.hasEvent = true;
 				return 1;
 			}
 			break;
@@ -664,7 +653,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			event.info.mouse.x = x;
 			event.info.mouse.y = y;
 
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
 
 		case WM_LBUTTONUP:
@@ -689,9 +678,8 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			y = (lParam >> 16) & 0xffff;
 			event.info.mouse.y = y;
 
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
-
 		case WM_MOUSEWHEEL:
 		case WM_MOUSEHWHEEL:
 			if (uMsg == WM_MOUSEWHEEL) {
@@ -711,7 +699,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			y = (lParam >> 16) & 0xffff;
 			event.info.mouse.y = y;
 
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
 
 		case WM_MOUSEMOVE:
@@ -734,7 +722,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 				windowVars.hoverTimerSet = 1;
 			}
 
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
 
 		case WM_TIMER:
@@ -772,7 +760,7 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 		// Custom event that is triggered when the cursor leaves the window
 		case WM_MOUSELEAVE:
 			event.type = Event.MouseLeave;
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
 
 		case WM_SYSKEYDOWN:
@@ -840,10 +828,13 @@ int MessageProc(HWND hWnd, uint uMsg, WPARAM wParam, LPARAM lParam) {
 			event.info.key.leftAlt = GetKeyState(VK_LMENU) < 0;
 			event.info.key.capsLock = (GetKeyState(VK_CAPITAL) & 1) == 1;
 
-			windowVars.eventQueue.add(event);
+			windowVars.hasEvent = true;
 			return 1;
 
 		case WM_USER_REDRAW:
+			Event evt;
+			evt.type = Event.Redraw;
+			windowVars.window.onEvent(evt);
 			return 1;
 
 		default:

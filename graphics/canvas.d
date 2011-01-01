@@ -22,6 +22,7 @@ import scaffold.canvas;
 
 import synch.thread;
 import synch.semaphore;
+import synch.mutex;
 
 import binding.opengl.gl;
 import binding.opengl.glu;
@@ -131,6 +132,8 @@ END`;
 
 	Pen _pen;
 	Font _font;
+
+	Mutex _lock;
 
 	CanvasPlatformVars _pfvars;
 
@@ -302,10 +305,12 @@ END`;
 	}
 
 	static HGLRC _RC[Thread];
+	static Canvas _Canvas[Thread];
+
 	static void _threadInit() {
 		auto dummyhDC = GetDC(_hWnd);
 		if (_hRC is null) {
-//		if (!(Thread.current in _RC)) {
+	//	if (!(Thread.current in _RC)) {
 			// Get a dummy device context
 
 			putln("createcontext");
@@ -313,8 +318,9 @@ END`;
 			if ((_RC[Thread.current]=wglCreateContext(dummyhDC)) == null) { // Are We Able To Get A Rendering Context?
 				putln("Can't Create A GL Rendering Context. (ti)");
 				ReleaseDC(_hWnd, dummyhDC);
-				return ; // Return FALSE
+				return;
 			}
+
 			if (_hRC is null) {
 				_hRC = _RC[Thread.current];
 			}
@@ -323,14 +329,17 @@ END`;
 			}
 		}
 
-//		putln("makecurrent");
-		// Make this the current GL context
+//		auto context = _RC[Thread.current];
+		auto context = _hRC;
 
-		wglMakeCurrent(null, null);
-		if(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
-//		if(wglMakeCurrent(dummyhDC,_RC[Thread.current]) == 0) { // Try To Activate The Rendering Context
-			putln("Can't Activate The GL Rendering Context.");
-			//return ; // Return FALSE
+		if (wglGetCurrentContext() != context) {
+			//putln("makecurrent");
+			// Make this the current GL context
+
+			//wglMakeCurrent(null, null);
+			if(wglMakeCurrent(dummyhDC, context) == 0) { // Try To Activate The Rendering Context
+				putln("Can't Activate The GL Rendering Context.");
+			}
 		}
 
 		ReleaseDC(_hWnd, dummyhDC);
@@ -421,10 +430,6 @@ END`;
 		glEnd();
 	}
 
-	void _unsetContext() {
-		wglMakeCurrent(null, null);
-	}
-
 	// Yay for the many render buffers that we need.
 	GLuint color_rb, depth_rb, stencil_rb, packed_rb, tex;
 
@@ -432,6 +437,7 @@ END`;
 	GLuint fb;
 
 	void _create(int width, int height) {
+		_lock.lock();
 		putln("initing");
 		_init();
 		_threadInit();
@@ -443,6 +449,7 @@ END`;
 		_height = height;
 
 		if (width == 0 || height == 0) {
+			_lock.unlock();
 			return;
 		}
 
@@ -453,8 +460,6 @@ END`;
 			return ; // Return FALSE
 		}
 		ReleaseDC(_hWnd, dummyhDC);*/
-
-		setContext();
 
 		putln("setup ", width, " x ", height);
 
@@ -546,9 +551,6 @@ END`;
 			putln("Some video driver error or programming error occured. Framebuffer object status is invalid. (FBO - 823)");
 		}
 
-		// and now you can render to the FBO (also called RenderBuffer)
-		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
-
 		glEnable(GL_BLEND);
 /*
 		glEnable(GL_FRAGMENT_PROGRAM_ARB);
@@ -597,13 +599,11 @@ END`;
 		glViewport(0, 0, width, height);
 
 		// Reset the current viewport
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
 
 		// Set up an orthographic view
-		putln("glOrtho ", width, " x ", height);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
 		glOrtho(0, width, height, 0, -1, 1);
-
 		glGetFloatv(GL_PROJECTION_MATRIX, _projMatrix.ptr);
 
 		// And then switch over to the model matrix
@@ -613,24 +613,25 @@ END`;
 
 		glLineWidth(1);
 
-		this.pen = new Pen(Color.Black);
-		this.brush = new Brush(Color.White);
-
 		glEnable(GL_STENCIL_TEST);
 		glStencilMask(0x11);
 		glStencilFunc(GL_EQUAL, 0x00, 0x11);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-		_unsetContext();
+		// Give default pens and brushes
+		this.pen = new Pen(Color.Black);
+		this.brush = new Brush(Color.White);
 
 		// Clear the screen.
 		this.clear();
+		_lock.unlock();
 	}
 
 public:
 
 	this(int width, int height) {
+		_lock = new Mutex();
 		_create(width, height);
 	}
 
@@ -641,47 +642,35 @@ public:
 		_create(width, height);
 	}
 
-	void setContext() {
-		static Semaphore lock;
-		if (lock is null) lock = new Semaphore(1);
-		lock.down();
+	void lock() {
+		if (!_lock.hasLock()) {
+			_lock.lock();
+			setContext();
+		}
+		else {
+			_lock.lock();
+		}
+	}
+
+	void unlock() {
+		if (_lock.depth == 1) {
+			wglMakeCurrent(null, null);
+			_lock.unlock();
+		}
+		else {
+			_lock.unlock();
+		}
+	}
+
+	private	void setContext() {
 		_threadInit();
 
-		// Make this the current GL context
-/*		if (width == 0 || height == 0) {
-			return;
-		}*/
-/*
-		if (wglGetCurrentContext() == _hRC) {
-			return;
-		}
-		
-		auto dummyhDC = GetDC(_hWnd);
-		while(wglMakeCurrent(dummyhDC,_hRC) == 0) { // Try To Activate The Rendering Context
-			putln("sleep?!?!", dummyhDC, " ", _hRC);
-			putln(wglGetCurrentContext());
-			Thread.sleep(5);
-		}
-
-		ReleaseDC(_hWnd, dummyhDC);//*/
-/*
-		// Reset the current viewport
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
-		// Set up an orthographic view
-		glOrtho(0, width, 0, height, -1, 1);
-
-		// And then switch over to the model matrix
-		glMatrixMode(GL_MODELVIEW);
-*/
 		// Set up the viewport
 		glViewport(0, 0, width, height);
 
+		// (Re-)Set up an orthographic view
 		glMatrixMode(GL_PROJECTION);
-		// Set up an orthographic view
 		glLoadMatrixf(_projMatrix.ptr);
-
 
 		// And then switch over to the model matrix
 		glMatrixMode(GL_MODELVIEW);
@@ -690,15 +679,14 @@ public:
 		// and now you can render to the FBO (also called RenderBuffer)
 		glBindFramebufferEXTPtr(GL_FRAMEBUFFER_EXT, fb);
 		glBindTexture(GL_TEXTURE_2D, tex);
-		lock.up();
 	}
 
-	void clear() {
-		setContext();
-		glClearColor(0, 0, 0, 0);
+	void clear(Color clr = Color.None) {
+		lock();
+		glClearColor(clr.red, clr.green, clr.blue, clr.alpha);
 		glClearStencil(0);
 		glClear(GL_COLOR_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
-		_unsetContext();
+		unlock();
 	}
 
 	int width() {
@@ -712,7 +700,7 @@ public:
 	// Lines
 
 	void drawLine(double x1, double y1, double x2, double y2) {
-		setContext();
+		lock();
 		x1 += 0.5;
 		y1 += 0.5;
 		x2 += 0.5;
@@ -732,18 +720,20 @@ public:
 		if (_antialias) {
 			glDisable(GL_LINE_SMOOTH);
 		}
-		_unsetContext();
+		unlock();
 	}
 
 	// Rectangles
 
 	void drawRectangle(double x, double y, double width, double height) {
+		lock();
 		fillRectangle(x, y, width, height);
 		strokeRectangle(x, y, width, height);
+		unlock();
 	}
 
 	void strokeRectangle(double x, double y, double width, double height) {
-		setContext();
+		lock();
 
 		x+=0.5;
 		y+=0.5;
@@ -756,7 +746,8 @@ public:
 		glVertex3f(x+width-1, y+height-1, 0);
 		glVertex3f(x, y+height-1, 0);
 		glEnd();
-		_unsetContext();
+
+		unlock();
 	}
 
 	private void _drawRectangle(uint type, double x, double y, double width, double height) {
@@ -769,7 +760,7 @@ public:
 	}
 
 	void fillRectangle(double x, double y, double width, double height) {
-		setContext();
+		lock();
 
 		x+=0.5;
 		y+=0.5;
@@ -796,7 +787,7 @@ public:
 			glBegin(GL_QUADS);
 			glVertex3f(x-1, y-1, 0.0);
 			glVertex3f(x+width+2, y-1, 0.0);
-			glVertex3f(x+width+2, y+_height+2, 0.0);
+			glVertex3f(x+width+2, y+height+2, 0.0);
 			glVertex3f(x-1, y+height+2, 0.0);
 			glEnd();
 
@@ -806,8 +797,7 @@ public:
 			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
 			_drawRectangle(GL_QUADS, x, y, width, height);
 		}
-
-		_unsetContext();
+		unlock();
 	}
 
 	private void _drawQuadraticShader(GLenum type, double x1, double y1, double x2, double y2, double x3, double y3) {
@@ -878,7 +868,7 @@ public:
 	}
 
 	void drawQuadratic(double x1, double y1, double x2, double y2, double x3, double y3) {
-		setContext();
+		lock();
 
 		x1+=0.5;
 		y1+=0.5;
@@ -919,8 +909,6 @@ public:
 				glVertex3f(x2, y2, 0.0);
 				glVertex3f(x3, y3, 0.0);
 				glEnd();
-
-				_uninitMask();
 			}
 			else {
 				glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
@@ -930,36 +918,42 @@ public:
 			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
 
 		}
-		_unsetContext();
+		unlock();
 	}
 
 	// Rounded Rectangles
 
 	void drawRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		setContext();
+		lock();
+
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 		drawPath(tempPath);
-		_unsetContext();
+
+		unlock();
 	}
 
 	void strokeRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		setContext();
+		lock();
+
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 		strokePath(tempPath);
-		_unsetContext();
+
+		unlock();
 	}
 
 	void fillRoundedRectangle(double x, double y, double width, double height, double cornerWidth, double cornerHeight, double sweep) {
-		setContext();
+		lock();
+
 		Path tempPath = new Path();
 		tempPath.addRoundedRectangle(x, y, width, height, cornerWidth, cornerHeight, sweep);
 
 		fillPath(tempPath);
-		_unsetContext();
+
+		unlock();
 	}
 
 	// Contours
@@ -973,7 +967,7 @@ public:
 	}
 
 	void drawContour(Contour contour) {
-		setContext();
+		lock();
 
 		Triangle[] triangles = contour.tessellate();
 		Coord[] vertices = contour.compose();
@@ -993,7 +987,6 @@ public:
 			drawLine(last.x, last.y, vertices[0].x, vertices[0].y);
 		}*/
 
-		setContext();
 		if (_antialias) {
 			_initMask();
 
@@ -1045,8 +1038,7 @@ public:
 			drawLine(triangle.points[1].x, triangle.points[1].y,
 					triangle.points[2].x, triangle.points[2].y);
 		}*/
-
-		_unsetContext();
+		unlock();
 	}
 
 	// Glyphs
@@ -1072,14 +1064,16 @@ public:
 	}
 
 	void strokeRegion(Region region) {
-		setContext();
+		lock();
+
 		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
 		_strokeRegion(region.contours);
-		_unsetContext();
+
+		unlock();
 	}
 
 	void drawRegion(Region region) {
-		setContext();
+		lock();
 
 		// Tessellate
 		Triangle[] triangles = region.tessellate();
@@ -1137,13 +1131,13 @@ public:
 		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
 		_strokeRegion(region.contours);
 
-		_unsetContext();
+		unlock();
 	}
 
 	// Paths
 
 	void drawPath(Path path) {
-		setContext();
+		lock();
 
 		Curve[] curves = path.curves;
 
@@ -1171,30 +1165,33 @@ public:
 			}
 		}
 
-		_unsetContext();
+		unlock();
 	}
 
 	void strokePath(Path path) {
-		setContext();
-		_unsetContext();
+		lock();
+		unlock();
 	}
 
 	void fillPath(Path path) {
-		setContext();
-		_unsetContext();
+		lock();
+		unlock();
 	}
 
 	// Ellipses
 
 	void drawEllipse(double x, double y, double width, double height) {
-		setContext();
+		lock();
+
 		fillEllipse(x+(_pen.width/2), y+(_pen.width/2), width-_pen.width, height-_pen.width);
 		strokeEllipse(x, y, width, height);
-		_unsetContext();
+
+		unlock();
 	}
 
 	void strokeEllipse(double x, double y, double width, double height) {
-		setContext();
+		lock();
+
 		x+=0.5;
 		y+=0.5;
 
@@ -1242,10 +1239,13 @@ public:
 			glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
 			_drawRing(GL_TRIANGLE_STRIP, x, y, width, height, _pen.width());
 		}
-		_unsetContext();
+
+		unlock();
 	}
 
 	void fillEllipse(double x, double y, double width, double height) {
+		lock();
+
 		x+=0.5;
 		y+=0.5;
 
@@ -1289,21 +1289,27 @@ public:
 			glColor4f(_fillColor.red, _fillColor.green, _fillColor.blue, _fillColor.alpha);
 			_drawEllipse(GL_POLYGON, x, y, width, height);
 		}
-		_unsetContext();
+		unlock();
 	}
 
 	// Text
 
 	void drawString(string text, double x, double y) {
+		lock();
 		//		GraphicsScaffold.drawText(&_pfvars, x, y, text);
+		unlock();
 	}
 
 	void strokeString(string text, double x, double y) {
+		lock();
 		//		GraphicsScaffold.strokeText(&_pfvars, x, y, text);
+		unlock();
 	}
 
 	void fillString(string text, double x, double y) {
+		lock();
 		//		GraphicsScaffold.fillText(&_pfvars, x, y, text);
+		unlock();
 	}
 
 	// State
@@ -1311,29 +1317,30 @@ public:
 	private long _stackCount = 0;
 
 	long save() {
-		setContext();
+		lock();
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		_stackCount++;
-		_unsetContext();
+		unlock();
 		return _stackCount;
 	}
 
 	void restore(long state) {
+		lock();
 		// Inspect _stackCount and state
-		setContext();
 		glMatrixMode(GL_MODELVIEW);
 		while(_stackCount != state && _stackCount > 0) {
 			glPopMatrix();
 			_stackCount--;
 		}
-		_unsetContext();
+		unlock();
 	}
 
 	// Image
 
 	void drawCanvas(Canvas canvas, double x, double y) {
-		setContext();
+		lock();
+		canvas._lock.lock();
 
 		x += 0.5;
 		y += 0.5;
@@ -1355,9 +1362,11 @@ public:
 		glVertex3f(x, y, 0);
 		glEnd();
 
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 
-		_unsetContext();
+		canvas._lock.unlock();
+		unlock();
 	}
 
 	// Clipping
@@ -1367,7 +1376,7 @@ public:
 	}
 
 	void clipRectangle(double x, double y, double width, double height) {
-		setContext();
+		lock();
 
 		x+=0.5;
 		y+=0.5;
@@ -1385,7 +1394,7 @@ public:
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-		_unsetContext();//*/
+		unlock();
 	}
 
 	void clipPath(Path path) {
@@ -1393,44 +1402,44 @@ public:
 	}
 
 	void clipReset() {
-		setContext();
+		lock();
 		glClearStencil(0);
 		glClear(GL_STENCIL_BUFFER_BIT);
-		_unsetContext();
+		unlock();
 	}
 
 	// Transforms
 
 	void transformReset() {
-		setContext();
+		lock();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
-		_unsetContext();
+		unlock();
 	}
 
 	void transformTranslate(double x, double y) {
-		setContext();
+		lock();
 		glMatrixMode(GL_MODELVIEW);
 		glTranslated(x, y, 0.0);
 		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
-		_unsetContext();
+		unlock();
 	}
 
 	void transformScale(double x, double y) {
-		setContext();
+		lock();
 		glMatrixMode(GL_MODELVIEW);
 		glScaled(x, y, 1.0);
 		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
-		_unsetContext();
+		unlock();
 	}
 
 	void transformRotate(double angle) {
-		setContext();
+		lock();
 		glMatrixMode(GL_MODELVIEW);
 		glRotated(angle*180.0/3.141529, 0, 0, 1);
 		glGetFloatv(GL_MODELVIEW_MATRIX, _viewMatrix.ptr);
-		_unsetContext();
+		unlock();
 	}
 
 	// Properties
@@ -1444,8 +1453,10 @@ public:
 	}
 
 	void brush(Brush value) {
+		lock();
 		_brush = value;
 		_fillColor = value.color;
+		unlock();
 	}
 
 	Brush brush() {
@@ -1453,8 +1464,10 @@ public:
 	}
 
 	void pen(Pen value) {
+		lock();
 		_pen = value;
 		_strokeColor = value.color;
+		unlock();
 	}
 
 	Pen pen() {
@@ -1462,8 +1475,9 @@ public:
 	}
 
 	void font(Font value) {
+		lock();
 		_font = value;
-		//		GraphicsScaffold.setFont(&_pfvars, value.platformVariables);
+		unlock();
 	}
 
 	Font font() {

@@ -80,14 +80,18 @@ private:
 	bool _buffered = false;
 	bool _translucent = true;
 
+	// If it responds to onIdle
+	bool _async;
+
 	Thread _eventThread;
 	WindowPlatformVars _pfvars;
 
 	Semaphore _redrawLock;
 
 	void _update(Canvas canvas) {
-		canvas.setContext();
+		canvas.lock();
 		GuiUpdateWindow(this, &_pfvars, canvas.platformVariables);
+		canvas.unlock();
 	}
 
 	void _remove() {
@@ -131,13 +135,22 @@ private:
 		_allowRedraw = true;
 		this.redraw();
 
-		while(true) {
-			GuiNextEvent(this, &_pfvars, &evt);
-
-			this.onEvent(evt);
-
-			if (evt.type == Event.Close) {
-				break;
+		if (this.asynchronous) {
+			while(evt.type != Event.Close) {
+				if (GuiTryNextEvent(this, &_pfvars, &evt)) {
+					this.onEvent(evt);
+				}
+				else {
+					this.onIdle();
+				}
+				Thread.sleep(1);
+			}
+		}
+		else {
+			while(evt.type != Event.Close) {
+				GuiNextEvent(this, &_pfvars, &evt);
+	
+				this.onEvent(evt);
 			}
 		}
 
@@ -325,7 +338,9 @@ private:
 public:
 
 	enum Signal {
-		NeedRedraw
+		NeedRedraw,
+		ChildHidden,
+		ChildClosed
 	}
 
 	this(double x, double y, double width, double height, Color bg = Color.None) {
@@ -356,6 +371,14 @@ public:
 
 	// Properties
 
+	bool asynchronous() {
+		return _async;
+	}
+
+	void asynchronous(bool value) {
+		_async = value;
+	}
+
 	Window parent() {
 		return cast(Window)responder;
 	}
@@ -383,6 +406,9 @@ public:
 			else {
 				if (this.parent !is null) {
 					this.parent._numVisible--;
+					if (this.parent._numVisible == 0 && this.parent.parent is null) {
+						this.parent.raiseSignal(Signal.ChildHidden);
+					}
 				}
 			}
 		}
@@ -618,6 +644,9 @@ public:
 			_count--;
 			if (window.visible) {
 				_numVisible--;
+				if (this._numVisible == 0 && this.parent is null) {
+					this.raiseSignal(Signal.ChildClosed);
+				}
 			}
 
 			// Focus on this window (if it is visible)
@@ -662,6 +691,7 @@ public:
 				if (_canvas is null) {
 					_canvas = new Canvas(cast(int)this.width, cast(int)this.height);
 				}
+				_canvas.lock();
 
 				onDraw(_canvas);
 				onDrawChildren(_canvas);
@@ -669,6 +699,8 @@ public:
 				_update(_canvas);
 				_canvas.clear();
 				_canvas.transformReset();
+
+				_canvas.unlock();
 
 				_redrawLock.up();
 			}
@@ -709,6 +741,9 @@ public:
 			_eventThread.start();
 			_lock.down();
 		}
+	}
+
+	void onIdle() {
 	}
 
 	void onEvent(Event event) {

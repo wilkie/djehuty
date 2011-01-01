@@ -4,6 +4,9 @@ import platform.vars.thread;
 
 import scaffold.thread;
 
+import synch.atomic;
+import synch.semaphore;
+
 // access to exception handler
 import analyzing.debugger;
 
@@ -19,7 +22,19 @@ import io.console;
 class Thread {
 private:
 
+	static ulong _count = 0;
+	static Semaphore _waitForAll;
+
 	void end() {
+		Atomic.decrement(_count);
+		if (_count == 0) {
+			// If the count is 0, this is the last thread.
+			// No other thread could start something else,
+			//   so a race condition is not possible assuming
+			//   the rest of the system is well engineered
+			_waitForAll.up();
+		}
+
 		threadById[_id] = null;
 		_inited = false;
 	}
@@ -39,7 +54,16 @@ private:
 	// Description: Will create a normal thread that does not have any external callback functions.
 
 public:
+
+	static ulong count() {
+		return _count + 1;
+	}
+
 	this() {
+		if (_waitForAll is null) {
+			_waitForAll = new Semaphore(1);
+		}
+
 		// Check for creating thread
 		Thread callee = Thread.current();
 
@@ -53,6 +77,10 @@ public:
 
 	// Description: Will create a thread using the given delegate as the callback function.
 	this(void delegate(bool) callback) {
+		if (_waitForAll is null) {
+			_waitForAll = new Semaphore(1);
+		}
+
 		_thread_callback = callback;
 		_thread_f_callback = null;
 
@@ -61,6 +89,10 @@ public:
 
 	// Description: Will create a thread using the given function as the callback function.
 	this(void function(bool) callback) {
+		if (_waitForAll is null) {
+			_waitForAll = new Semaphore(1);
+		}
+
 		_thread_f_callback = callback;
 		_thread_callback = null;
 
@@ -112,6 +144,13 @@ public:
 	// Description: This function will start the thread and call the threadProc() function, which will in turn execute an external delegate if provided.
 	void start() {
 		if (!_inited) {
+			Atomic.increment(_count);
+			if (_count > 0) {
+				// push it down, do not wait if it cannot be
+				//   downed. This should avoid race conditions.
+				_waitForAll.down(0);
+			}
+
 			_inited = true;
 			_id = ThreadStart(_pfvars, this, &end);
 			threadById[_id] = this;
@@ -124,6 +163,9 @@ public:
 	void stop() {
 		if (_inited) {
 			ThreadStop(_pfvars);
+
+			// clean up code
+			end();
 		}
 		_inited = false;
 	}
@@ -162,5 +204,10 @@ public:
 		}
 
 		return null;
+	}
+
+	// Waits until all Thread classes end
+	static void waitForAll() {
+		_waitForAll.down();
 	}
 }

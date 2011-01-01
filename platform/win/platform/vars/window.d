@@ -48,7 +48,6 @@ struct WindowPlatformVars {
 	ubyte[] pixelData;
 	HDC backbuffer;
 
-	Queue!(Event) eventQueue;
-	Thread messageThread;
-	Semaphore wait;
+	Event* event;
+	bool hasEvent;
 }

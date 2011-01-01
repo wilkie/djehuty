@@ -36,6 +36,8 @@ import binding.c;
 
 class GuiApplication : Application {
 private:
+	Semaphore _wait;
+
 	GuiPlatformVars _pfvars;
 
 	// Window Management
@@ -50,6 +52,7 @@ private:
 public:
 
 	this() {
+		_wait = new Semaphore(0);
 		_mainWindow = new Window(0,0,0,0);
 		attach(_mainWindow);
 		super();
@@ -57,6 +60,7 @@ public:
 	}
 
 	this(string appName) {
+		_wait = new Semaphore(0);
 		_mainWindow = new Window(0,0,0,0);
 		attach(_mainWindow);
 		super(appName);
@@ -78,6 +82,19 @@ public:
 		}
 	}
 
+	override bool onSignal(Dispatcher dsp, uint signal) {
+		if (dsp is _mainWindow) {
+			if (signal == Window.Signal.ChildClosed ||
+					signal == Window.Signal.ChildHidden) {
+				if (isZombie()) {
+					_wait.up();
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 	Window root() {
 		return _mainWindow;
 	}
@@ -91,6 +108,6 @@ public:
 
 		// Block this function until all top level windows close (or become
 		// invisible)
-		while(this.isZombie is false) { Thread.sleep(1); }
+		_wait.down();
 	}
 }

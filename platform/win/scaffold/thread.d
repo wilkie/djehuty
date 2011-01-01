@@ -119,38 +119,6 @@ bool SemaphoreTry(ref SemaphorePlatformVars semVars) {
 	return ret != WAIT_TIMEOUT;
 }
 
-
-
-
-// Mutexes
-
-void MutexInit(ref MutexPlatformVars mutVars) {
-//	InitializeCriticalSection(mutVars._mutex);
-	mutVars._semaphore = CreateSemaphoreA(null, (1), 0xFFFFFFF, null);
-}
-
-void MutexUninit(ref MutexPlatformVars mutVars) {
-	//DeleteCriticalSection(mutVars._mutex);
-	CloseHandle(mutVars._semaphore);
-}
-
-void MutexLock(ref MutexPlatformVars mutVars) {
-//	EnterCriticalSection(mutVars._mutex);
-	WaitForSingleObject(mutVars._semaphore, INFINITE);
-}
-
-void MutexLock(ref MutexPlatformVars mutVars, ref uint ms) {
-	// XXX: Use TryEnterCriticalSection in a timed loop here
-	//EnterCriticalSection(mutVars._mutex);
-	WaitForSingleObject(mutVars._semaphore, ms);
-}
-
-void MutexUnlock(ref MutexPlatformVars mutVars) {
-	//LeaveCriticalSection(mutVars._mutex);
-	ReleaseSemaphore(mutVars._semaphore, 1, null);
-}
-
-
 // Conditions
 
 void ConditionInit(ref ConditionPlatformVars condVars) {
