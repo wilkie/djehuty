@@ -5499,12 +5499,12 @@ version(GL_GLEXT_PROTOTYPES) {
 	void glCopyTexSubImage3D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 } /* GL_GLEXT_PROTOTYPES */
 
-alias void (PFNGLBLENDCOLORPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-alias void (PFNGLBLENDEQUATIONPROC) (GLenum mode);
-alias void (PFNGLDRAWRANGEELEMENTSPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
-alias void (PFNGLTEXIMAGE3DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
-alias void (PFNGLCOPYTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void function(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) PFNGLBLENDCOLORPROC;
+alias void function(GLenum mode) PFNGLBLENDEQUATIONPROC;
+alias void function(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices) PFNGLDRAWRANGEELEMENTSPROC;
+alias void function(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXIMAGE3DPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels) PFNGLTEXSUBIMAGE3DPROC;
+alias void function(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) PFNGLCOPYTEXSUBIMAGE3DPROC;
 
 static const auto GL_VERSION_1_2_DEPRECATED = 1;
 version(GL_GLEXT_PROTOTYPES) {
