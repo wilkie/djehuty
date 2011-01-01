@@ -5809,7 +5809,7 @@ alias GLboolean function(GLuint buffer) PFNGLISBUFFERPROC;
 alias void function(GLenum target, GLsizeiptr size, GLvoid *data, GLenum usage) PFNGLBUFFERDATAPROC;
 alias void function(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLBUFFERSUBDATAPROC;
 alias void function(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLGETBUFFERSUBDATAPROC;
-alias GLvoid* (PFNGLMAPBUFFERPROC) (GLenum target, GLenum access);
+alias GLvoid* function(GLenum target, GLenum access) PFNGLMAPBUFFERPROC;
 alias GLboolean function(GLenum target) PFNGLUNMAPBUFFERPROC;
 alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETBUFFERPARAMETERIVPROC;
 alias void function(GLenum target, GLenum pname, GLvoid* *params) PFNGLGETBUFFERPOINTERVPROC;
@@ -6143,7 +6143,7 @@ alias void function(GLenum buffer, GLint drawbuffer, GLint *value) PFNGLCLEARBUF
 alias void function(GLenum buffer, GLint drawbuffer, GLuint *value) PFNGLCLEARBUFFERUIVPROC;
 alias void function(GLenum buffer, GLint drawbuffer, GLfloat *value) PFNGLCLEARBUFFERFVPROC;
 alias void function(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil) PFNGLCLEARBUFFERFIPROC;
-alias GLubyte * (PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
+alias GLubyte * function(GLenum name, GLuint index) PFNGLGETSTRINGIPROC;
 
 static const auto GL_VERSION_3_1 = 1;
 /* OpenGL 3.1 also reuses entry points from these extensions: */
@@ -6562,7 +6562,7 @@ alias GLboolean function(GLuint buffer) PFNGLISBUFFERARBPROC;
 alias void function(GLenum target, GLsizeiptrARB size, GLvoid *data, GLenum usage) PFNGLBUFFERDATAARBPROC;
 alias void function(GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) PFNGLBUFFERSUBDATAARBPROC;
 alias void function(GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) PFNGLGETBUFFERSUBDATAARBPROC;
-alias GLvoid* (PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access);
+alias GLvoid* function(GLenum target, GLenum access) PFNGLMAPBUFFERARBPROC;
 alias GLboolean function(GLenum target) PFNGLUNMAPBUFFERARBPROC;
 alias void function(GLenum target, GLenum pname, GLint *params) PFNGLGETBUFFERPARAMETERIVARBPROC;
 alias void function(GLenum target, GLenum pname, GLvoid* *params) PFNGLGETBUFFERPOINTERVARBPROC;
@@ -6790,7 +6790,7 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLvoid* glMapBufferRange (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 	void glFlushMappedBufferRange (GLenum target, GLintptr offset, GLsizeiptr length);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLvoid* (PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
+alias GLvoid* function(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) PFNGLMAPBUFFERRANGEPROC;
 alias void function(GLenum target, GLintptr offset, GLsizeiptr length) PFNGLFLUSHMAPPEDBUFFERRANGEPROC;
 
 static const auto GL_ARB_texture_buffer_object = 1;
@@ -9015,7 +9015,7 @@ version(GL_GLEXT_PROTOTYPES) {
 	GLvoid* glMapObjectBufferATI (GLuint buffer);
 	void glUnmapObjectBufferATI (GLuint buffer);
 } /* GL_GLEXT_PROTOTYPES */
-alias GLvoid* (PFNGLMAPOBJECTBUFFERATIPROC) (GLuint buffer);
+alias GLvoid* function(GLuint buffer) PFNGLMAPOBJECTBUFFERATIPROC;
 alias void function(GLuint buffer) PFNGLUNMAPOBJECTBUFFERATIPROC;
 
 static const auto GL_ATI_separate_stencil = 1;
@@ -9807,7 +9807,7 @@ alias void function(GLuint program, GLint location, GLsizei count, GLuint *value
 alias void function(GLuint program, GLint location, GLsizei count, GLuint *value) PFNGLPROGRAMUNIFORM4UIVEXTPROC;
 alias void function(GLuint buffer, GLsizeiptr size, GLvoid *data, GLenum usage) PFNGLNAMEDBUFFERDATAEXTPROC;
 alias void function(GLuint buffer, GLintptr offset, GLsizeiptr size, GLvoid *data) PFNGLNAMEDBUFFERSUBDATAEXTPROC;
-alias GLvoid* (PFNGLMAPNAMEDBUFFEREXTPROC) (GLuint buffer, GLenum access);
+alias GLvoid* function(GLuint buffer, GLenum access) PFNGLMAPNAMEDBUFFEREXTPROC;
 alias GLboolean function(GLuint buffer) PFNGLUNMAPNAMEDBUFFEREXTPROC;
 alias void function(GLuint buffer, GLenum pname, GLint *params) PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC;
 alias void function(GLuint buffer, GLenum pname, GLvoid* *params) PFNGLGETNAMEDBUFFERPOINTERVEXTPROC;
