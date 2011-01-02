@@ -1075,7 +1075,7 @@ public:
 		unlock();
 	}
 
-	void drawRegion(Region region) {
+	void fillRegion(Region region) {
 		lock();
 
 		// Tessellate
@@ -1115,24 +1115,14 @@ public:
 			_drawRegion(triangles);
 		}
 
-/*
-		foreach(triangle; triangles) {
-			drawLine(triangle.points[0].x, triangle.points[0].y,
-					triangle.points[1].x, triangle.points[1].y);
-			drawLine(triangle.points[0].x, triangle.points[0].y,
-					triangle.points[2].x, triangle.points[2].y);
-			drawLine(triangle.points[1].x, triangle.points[1].y,
-					triangle.points[2].x, triangle.points[2].y);
-		}
+		unlock();
+	}
+	
+	void drawRegion(Region region) {
+		lock();
 
-		foreach(triangle; triangles) {
-			foreach(point; triangle.points) {
-				drawEllipse(point.x - 3, point.y - 3, 6, 6);
-			}
-		}*/
-
-		glColor4f(_strokeColor.red, _strokeColor.green, _strokeColor.blue, _strokeColor.alpha);
-		_strokeRegion(region.contours);
+		fillRegion(region);
+		strokeRegion(region);
 
 		unlock();
 	}
