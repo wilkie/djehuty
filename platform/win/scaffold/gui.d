@@ -206,8 +206,8 @@ void createWindow(WindowPlatformVars* windowVars) {
 	if (cast(Dialog)window !is null) {
 		Dialog d = cast(Dialog)windowVars.window;
 
-		_clientSizeToWindowSize(d, w, h);
 		_gatherStyleInformation(d, style, istyle);
+		_clientSizeToWindowSize(d, style, w, h);
 
 		title = Unicode.toUtf16(d.text) ~ "\0";
 	}
@@ -243,39 +243,17 @@ void createWindow(WindowPlatformVars* windowVars) {
 	//DeleteObject(rgn);
 }
 
-void _clientSizeToWindowSize(Dialog window, ref int width, ref int height) {
-	if (width == Default) { 
-		width = CW_USEDEFAULT; 
-	}
-	else {
-		//normalize sizes
+void _clientSizeToWindowSize(Dialog window, uint style, ref int width, ref int height) {
+	RECT rt;
+	rt.right = width;
+	rt.bottom = height;
 
-		//account for borders and title bar...
-		//because windows is retarded in this
-		//respect
+	AdjustWindowRect(&rt, style, FALSE);
 
-		if (window.style == WindowStyle.Fixed) {
-			int border_width, border_height;
-			border_width = ( GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME) ) * 2;
-			border_height = (GetSystemMetrics(SM_CYDLGFRAME) * 2) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
+	width = rt.right - rt.left;
+	height = rt.bottom - rt.top;
 
-			width += border_width;
-			height += border_height;
-		}
-		else if (window.style == WindowStyle.Popup) {
-			//do nothing
-		}
-		else { // Sizable
-			int border_width, border_height;
-			border_width = GetSystemMetrics(SM_CXFRAME) * 2;
-			border_height = GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYCAPTION);
-
-			width += border_width;
-			height += border_height;
-		}
-
-		// account for menubar
-	}
+	// XXX: Account for menubar
 }
 
 void _gatherStyleInformation(Dialog window, ref uint istyle, ref uint iexstyle) {
