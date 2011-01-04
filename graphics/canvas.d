@@ -1121,7 +1121,7 @@ public:
 	void drawRegion(Region region) {
 		lock();
 
-		//fillRegion(region);
+		fillRegion(region);
 		strokeRegion(region);
 
 		unlock();

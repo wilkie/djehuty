@@ -102,7 +102,7 @@ public:
 //		c.addLine(300, 300, 350, 300);
 		c.addCurve(250, 150, 200, 150, 200, 125);
 //		c.addLine(250, 150, 200, 150);
-		canvas.drawContour(c);
+//		canvas.drawContour(c);
 //		Path p = new Path();
 //		p.addCurve(0, 0, this.width, 0, this.width/3, this.height);
 //		canvas.drawPath(p);

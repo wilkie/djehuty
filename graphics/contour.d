@@ -73,6 +73,7 @@ public:
 				continue;
 			}
 
+			//*
 			// Tessellate the curve
 			static const int MAX_TESSELATIONS = 10;
 
@@ -100,7 +101,8 @@ public:
 					ret ~= c;
 				}
 			}
-			else {
+			else { //*/ 
+				ret ~= curve.controls;
 				ret ~= curve.end;
 			}
 

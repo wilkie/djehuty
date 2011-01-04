@@ -10,6 +10,8 @@ import math.log;
 import math.round;
 import math.power;
 
+import data.iterable;
+
 import io.console;
 
 class Region {
@@ -407,18 +409,22 @@ public:
 
 					if ((trapezoids[t].d0 = trapezoids[tnext].d0) > 0) {
 						if (trapezoids[trapezoids[t].d0].u0 == tnext) {
+							putln("mt tr[", trapezoids[t].d0, "].u0 = ", t);
 							trapezoids[trapezoids[t].d0].u0 = t;
 						}
 						else if (trapezoids[trapezoids[t].d0].u1 == tnext) {
+							putln("mt tr[", trapezoids[t].d0, "].u1 = ", t);
 							trapezoids[trapezoids[t].d0].u1 = t;
 						}
 					}
 
 					if ((trapezoids[t].d1 = trapezoids[tnext].d1) > 0) {
 						if (trapezoids[trapezoids[t].d1].u0 == tnext) {
+							putln("mt tr[", trapezoids[t].d1, "].u0 = ", t);
 							trapezoids[trapezoids[t].d1].u0 = t;
 						}
 						else if (trapezoids[trapezoids[t].d1].u1 == tnext) {
+							putln("mt tr[", trapezoids[t].d1, "].u1 = ", t);
 							trapezoids[trapezoids[t].d1].u1 = t;
 						}
 					}
@@ -475,9 +481,11 @@ public:
 
 		if ((is_swapped && !_inserted(segment, LASTPT))
 				|| (!is_swapped && !_inserted(segment, FIRSTPT))) {
+			putln("A");
 			int tmp_d;
 
 			tu = _locateEndpoint(s.v0, s.v1, s.root0);
+			putln("tu = ", tu);
 
 			// tl is the new lower trapezoid
 			tl = newtrap();		
@@ -547,6 +555,7 @@ public:
 
 		if ((is_swapped && !_inserted(segment, FIRSTPT))
 				|| (!is_swapped && !_inserted(segment, LASTPT))) {
+			putln("B");
 
 			// Insert v1 in the tree
 			int tmp_d;
@@ -624,6 +633,8 @@ public:
 		t = tfirst;			/* topmost trapezoid */
 
 		while ((t > 0) && _greaterThanEqualTo(trapezoids[t].lo, trapezoids[tlast].lo)) {
+			putln("t: ", t);
+			putln("tr[t].d0: ", trapezoids[t].d0, " .d1: ", trapezoids[t].d1);
 			// Traverse from top to bottom
 
 			int t_sav, tn_sav;
@@ -667,6 +678,7 @@ public:
 
 			// Check for errors
 
+			putln("tr[t].d0: ", trapezoids[t].d0, " .d1: ", trapezoids[t].d1);
 			if ((trapezoids[t].d0 <= 0) && (trapezoids[t].d1 <= 0)) {
 				// Error : Case cannot arise
 				break;
@@ -795,6 +807,10 @@ public:
 					trapezoids[trapezoids[t].d0].u1 = tn;
 				}
 
+				putln("t: ", t);
+				putln("tr[t]: ", trapezoids[t].d0, " ", trapezoids[t].d1, " ", trapezoids[t].u0, " ", trapezoids[t].u1);
+				putln("tr[tn]: ", trapezoids[tn].d0, " ", trapezoids[tn].d1, " ", trapezoids[tn].u0, " ", trapezoids[tn].u1);
+
 				t = trapezoids[t].d0;
 			}
 
@@ -911,6 +927,10 @@ public:
 					trapezoids[trapezoids[t].d1].u0 = t;
 					trapezoids[trapezoids[t].d1].u1 = tn;
 				}
+
+				putln("t': ", t);
+				putln("tr[t]: ", trapezoids[t].d0, " ", trapezoids[t].d1, " ", trapezoids[t].u0, " ", trapezoids[t].u1);
+				putln("tr[tn]: ", trapezoids[tn].d0, " ", trapezoids[tn].d1, " ", trapezoids[tn].u0, " ", trapezoids[tn].u1);
 
 				t = trapezoids[t].d1;
 			}
@@ -1069,6 +1089,9 @@ public:
 					tnext2 = trapezoids[t].d1;
 				}	    
 
+				putln("t'': ", t);
+				putln("tr[t]: ", trapezoids[t].d0, " ", trapezoids[t].d1, " ", trapezoids[t].u0, " ", trapezoids[t].u1);
+				putln("tr[tn]: ", trapezoids[tn].d0, " ", trapezoids[tn].d1, " ", trapezoids[tn].u0, " ", trapezoids[tn].u1);
 				t = tnext2;
 			}
 
@@ -1189,6 +1212,8 @@ public:
 			mchain[i].prev = segments[i].prev;
 			mchain[i].next = segments[i].next;
 			mchain[i].vnum = i;
+			putln("mchain[", i, "]: prev: ", mchain[i].prev,
+				   " next: ", mchain[i].next, " vnum: ", mchain[i].vnum);	
 
 			vert[i].pt = segments[i].v0;
 			// Next vertex
@@ -1196,6 +1221,11 @@ public:
 			// Location of next vertex
 			vert[i].vpos[0] = i;
 			vert[i].nextfree = 1;
+			putln("vert[", i, "]: pt: x: ", vert[i].pt.x, " y: ", vert[i].pt.y,
+				   " vnext[0]: ", vert[i].vnext[0],
+				   " vpos[0]: ", vert[i].vpos[0],
+				   " nextfree: ", vert[i].nextfree);
+
 		}
 
 		chain_idx = n;
@@ -1206,12 +1236,14 @@ public:
 
 		// Traverse the polygon
 
+		putln("traverse");
 		if (tr_start < trapezoids.length && trapezoids[tr_start].u0 > 0) {
 			_traversePolygon(0, tr_start, trapezoids[tr_start].u0, TR_FROM_UP);
 		}
 		else if (tr_start < trapezoids.length && trapezoids[tr_start].d0 > 0) {
 			_traversePolygon(0, tr_start, trapezoids[tr_start].d0, TR_FROM_DN);
 		}
+		putln("done");
 
 		return newmon();
 	}
@@ -1316,6 +1348,11 @@ public:
 	 * two polygons using the diagonal (v0, v1) 
 	 */
 	private int _makeNewMonotonePolygon(int mcur, int v0, int v1) {
+		if (v0 < 0 || v1 < 0) {
+			putln("!!!!!!!!!!!!!!!!!!!!!!!!");
+			return -1;
+		}
+
 		int p, q, ip, iq;
 		int mnew = newmon();
 
@@ -1342,7 +1379,9 @@ public:
 		j = _newChainElement();
 
 		mchain[i].vnum = v0;
+		putln("updated mchain[", i, "].vnum: ", v0);
 		mchain[j].vnum = v1;
+		putln("updated mchain[", j, "].vnum: ", v1);
 
 		mchain[i].next = mchain[p].next;
 		mchain[mchain[p].next].prev = i;
@@ -1375,7 +1414,10 @@ public:
 
 	private void _traversePolygon(int mcur, int trnum, int from, int dir) {
 		static int i = 0;
-		Trapezoid* t = &trapezoids[trnum];
+
+		i++;
+		int j = i;
+		putln("traverse ", j);
 
 		int howsplit, mnew;
 		int v0, v1, v0next, v1next;
@@ -1383,13 +1425,17 @@ public:
 		int retval, tmp;
 		bool do_switch = false;
 
-		i++;
-		int j = i;
-		if (trnum <= 0 || visited[trnum]) {
+		if (trnum <= 0 || visited[trnum] || mcur < 0) {
+			putln("traverse ", j , " = 0");
 			return;
 		}
 
 		visited[trnum] = true;
+
+		Trapezoid* t = &trapezoids[trnum];
+
+		putln("yikes! ", trapezoids.length, " ", trnum);
+		putln("yikes! ", t.d0, " ", t.d1, " ", t.u0, " ", t.u1);
 	
 		// We have much more information available here
 		// rseg: goes upwards
@@ -1403,17 +1449,21 @@ public:
 		if (t.u0 <= 0 && t.u1 <= 0) {
 			if (t.d0 > 0 && t.d1 > 0) {
 				// Downward opening triangle
+				putln("downward opening triangle");
 				v0 = trapezoids[t.d1].lseg;
 				v1 = t.lseg;
 
 				if (from == t.d1) {
 					do_switch = true;
+					putln("m1 ", v0, " ", v1);
 
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
+					putln("eh?");
 					_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
 					_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 				}
 				else {
+					putln("m2");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 					_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
 					_traversePolygon(mnew, t.d1, trnum, TR_FROM_UP);
@@ -1432,6 +1482,7 @@ public:
 		else if (t.d0 <= 0 && t.d1 <= 0) {
 			if (t.u0 > 0 && t.u1 > 0) {
 				// Upward opening triangle
+				putln("upward opening triangle");
 
 				v0 = t.rseg;
 				v1 = trapezoids[t.u0].rseg;
@@ -1439,12 +1490,14 @@ public:
 				if (from == t.u1) {
 					do_switch = true;
 
+					putln("m3");
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 					_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
 					_traversePolygon(mnew, t.u0, trnum, TR_FROM_DN);
 				}
 				else {
+					putln("m4");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 					_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1465,8 +1518,11 @@ public:
 		else if (t.u0 > 0 && t.u1 > 0) {
 			if (t.d0 > 0 && t.d1 > 0) {
 				// Downward + upward cusps
+				putln("downward + upward cusps");
 				
+					putln("oh no?");
 				v0 = trapezoids[t.d1].lseg;
+					putln("oh no!");
 				v1 = trapezoids[t.u0].rseg;
 
 				retval = SP_2UP_2DN;
@@ -1475,6 +1531,7 @@ public:
 						|| (dir == TR_FROM_UP && t.u1 == from)) {
 					do_switch = true;
 
+					putln("m5");
 					mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 					_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1483,6 +1540,7 @@ public:
 					_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
 				}
 				else {
+					putln("m6");
 					mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 					
 					_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1493,6 +1551,7 @@ public:
 			}
 			else {
 				// Only Downward cusp
+				putln("only downward cusp");
 
 				if (_equalTo(t.lo, segments[t.lseg].v1)) {
 					v0 = trapezoids[t.u0].rseg;
@@ -1503,6 +1562,7 @@ public:
 						do_switch = true;
 
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
+						putln("m7");
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
 						_traversePolygon(mnew, t.d0, trnum, TR_FROM_UP);
@@ -1510,6 +1570,7 @@ public:
 						_traversePolygon(mnew, t.d1, trnum, TR_FROM_UP);
 					}
 					else {
+						putln("m8");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1527,6 +1588,7 @@ public:
 					if (dir == TR_FROM_UP && t.u1 == from) {
 						do_switch = true;
 
+						putln("m9");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
@@ -1535,6 +1597,7 @@ public:
 						_traversePolygon(mnew, t.u0, trnum, TR_FROM_DN);
 					}
 					else {
+						putln("m10");
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1549,7 +1612,9 @@ public:
 			// No Downward Cusp
 			if (t.d0 > 0 && t.d1 > 0) {
 				// Only upward cusp
+				putln("only upward cusp");
 				if (_equalTo(t.hi, segments[t.lseg].v0)) {
+				putln("only upward cusp");
 					v0 = trapezoids[t.d1].lseg;
 					v1 = t.lseg;
 
@@ -1559,6 +1624,7 @@ public:
 						do_switch = true;
 
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
+						putln("m11");
 
 						_traversePolygon(mcur, t.u1, trnum, TR_FROM_DN);
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
@@ -1567,6 +1633,7 @@ public:
 					}
 					else {
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
+						putln("m12");
 
 						_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
 						_traversePolygon(mnew, t.u0, trnum, TR_FROM_DN);
@@ -1575,6 +1642,7 @@ public:
 					}
 				}
 				else {
+				putln("only upward cusp!");
 					v0 = trapezoids[t.d1].lseg;
 					v1 = segments[t.rseg].next;
 
@@ -1583,6 +1651,7 @@ public:
 					if (dir == TR_FROM_DN && t.d1 == from) {
 						do_switch = true;
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
+						putln("m13");
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
 						_traversePolygon(mnew, t.u1, trnum, TR_FROM_DN);
@@ -1591,6 +1660,7 @@ public:
 					}
 					else {
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
+						putln("m14");
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
 						_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
@@ -1601,6 +1671,7 @@ public:
 			}
 			else {
 				// No cusp
+				putln("no cusp");
 
 				if (_equalTo(t.hi, segments[t.lseg].v0) 
 						&& _equalTo(t.lo, segments[t.rseg].v0)) {
@@ -1612,6 +1683,7 @@ public:
 					if (dir == TR_FROM_UP) {
 						do_switch = true;
 
+						putln("m15");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1621,6 +1693,7 @@ public:
 					}
 					else {
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
+						putln("m16");
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
 						_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
@@ -1638,6 +1711,7 @@ public:
 					if (dir == TR_FROM_UP) {
 						do_switch = true;
 
+						putln("m17");
 						mnew = _makeNewMonotonePolygon(mcur, v1, v0);
 
 						_traversePolygon(mcur, t.u0, trnum, TR_FROM_DN);
@@ -1647,6 +1721,7 @@ public:
 					}
 					else {
 						mnew = _makeNewMonotonePolygon(mcur, v0, v1);
+						putln("m18");
 
 						_traversePolygon(mcur, t.d1, trnum, TR_FROM_UP);
 						_traversePolygon(mcur, t.d0, trnum, TR_FROM_UP);
@@ -1666,6 +1741,7 @@ public:
 			}
 		}
 
+		putln("traverse done ", j);
 //		return retval;
 	}
 
@@ -1772,11 +1848,205 @@ public:
 		return ret;
 	}
 
+	// Ear-clipping algorithm
+	private Triangle[] _triangulateSinglePolygon(int posmax, int side) {
+		// Get vertices
+		Coord[] vertices;
+		
+		int vIndex = posmax;
+		int v;
+
+		do {
+			Coord c;
+			v = mchain[vIndex].vnum;
+			c.x = vert[v].pt.x;
+			c.y = vert[v].pt.y;
+			vertices ~= c;
+
+			vIndex = mchain[vIndex].prev;
+		} while(vIndex != posmax);
+
+		bool[] verticesTaken = new bool[vertices.length];
+		bool[] isConvex = new bool[vertices.length];
+
+		size_t[] convexIndices;
+		size_t[] reflexIndices;
+
+		size_t numVertices = vertices.length;
+
+		Triangle[] ret;
+
+		// Divide the vertices into a convex
+		// list and a reflex list.
+
+		// The convex list are points that are on
+		// the boundary of the convex hull of the
+		// contour.
+
+		// Convex points cannot be within a triangle
+		// This reduces the search space.
+		foreach(size_t idx, vertex; vertices) {
+			if (_isConvex(vertices, idx, verticesTaken)) {
+				isConvex[idx] = true;
+				convexIndices ~= idx;
+			}
+			else {
+				reflexIndices ~= idx;
+			}
+		}
+
+		// Ear clipping algorithm (no holes)
+
+		while(convexIndices.length > 0) {
+			// If all points are on the convex hull, then
+			// the contour is convex!
+			if (reflexIndices.length == 0) {
+				// Convex contours are a special case
+				// They can just be built from triangles that
+				// share a single point (triangle fan)
+//				break;
+			}
+
+			foreach(size_t idx, index; convexIndices) {
+				// For each triangle containing a point on the
+				// convex hull...
+				Triangle t;
+
+				t.points[0] = vertices[index];
+
+				size_t next = index+1;
+				if (index == vertices.length - 1) {
+					next = 0;
+				}
+
+				size_t prev = index-1;
+				if (index == 0) {
+					prev = vertices.length - 1;
+				}
+
+				while(verticesTaken[prev]) {
+					if (prev == 0) {
+						prev = vertices.length - 1;
+					}
+					else {
+						prev--;
+					}
+				}
+
+				while(verticesTaken[next]) {
+					if (next == vertices.length - 1) {
+						next = 0;
+					}
+					else {
+						next++;
+					}
+				}
+
+				t.points[1] = vertices[next];
+				t.points[2] = vertices[prev];
+
+				// ... Check to see that it is an "ear"
+				if (_isEar(t, reflexIndices, vertices)) {
+					// If so, add that ear as a triangle
+					ret ~= t;
+
+					// Remove the vertex from the polygon
+					verticesTaken[index] = true;
+					convexIndices = convexIndices[0..idx] ~ convexIndices[idx+1..$];
+
+					// Convert reflex points to convex if possible
+					if (!isConvex[prev] && _isConvex(vertices, prev, verticesTaken)) {
+						isConvex[prev] = true;
+						convexIndices ~= prev;
+						reflexIndices = reflexIndices.remove(prev);
+					}
+
+					if (!isConvex[next] && _isConvex(vertices, next, verticesTaken)) {
+						isConvex[next] = true;
+						convexIndices ~= next;
+						reflexIndices = reflexIndices.remove(prev);
+					}
+
+					break;
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	private bool _isConvex(Coord[] vertices, size_t idx, bool[] verticesTaken) {
+		size_t prev = 0;
+		size_t next = 0;
+
+		if (idx == 0) {
+			prev = vertices.length - 1;
+		}
+		else {
+			prev = idx - 1;
+		}
+
+		while(verticesTaken[prev]) {
+			if (prev == 0) {
+				prev = vertices.length - 1;
+			}
+			else {
+				prev--;
+			}
+		}
+
+		if (idx == vertices.length - 1) {
+			next = 0;
+		}
+		else {
+			next = idx + 1;
+		}
+
+		while(verticesTaken[next]) {
+			if (next == vertices.length - 1) {
+				next = 0;
+			}
+			else {
+				next++;
+			}
+		}
+
+		double area = vertices[idx].x * (vertices[next].y - vertices[prev].y);
+		area += vertices[prev].x * (vertices[idx].y - vertices[next].y);
+		area += vertices[next].x * (vertices[prev].y - vertices[idx].y);
+
+		if (area < 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool _isEar(Triangle t, size_t[] reflexIndices, Coord[] vertices) {
+		// Return false if there is a reflex point in this triangle
+		foreach(index; reflexIndices) {
+			Coord vertex = vertices[index];
+			if (vertex.x != t.points[0].x &&
+			  vertex.y != t.points[0].y &&
+			  vertex.x != t.points[1].x &&
+			  vertex.y != t.points[1].y &&
+			  vertex.x != t.points[2].x &&
+			  vertex.y != t.points[2].y) {
+				// check for contains
+				if (t.contains(vertex)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
 	/* A greedy corner-cutting algorithm to triangulate a y-monotone 
 	 * polygon in O(n) time.
 	 * Joseph O-Rourke, Computational Geometry in C.
 	 */
-	private Triangle[] _triangulateSinglePolygon(int posmax, int side) {
+	private Triangle[] _triangulateSinglePolygon2(int posmax, int side) {
 		int nvert = segments.length - 1;
 
 		int v;
@@ -1939,8 +2209,10 @@ public:
 
 		_generateRandomOrdering();
 
+		putln("construct");
 		_constructTrapezoids();
 
+		putln("monotonate");
 		int nmonpoly = _monotonateTrapezoids();
 		
 /*		foreach(idx; mon[0..nmonpoly]) {
@@ -1953,6 +2225,7 @@ public:
 			} while(cur != idx);
 		}*/
 
+		putln("triangulate ", nmonpoly);
 		return _triangulateMonotonePolygons(nmonpoly);
 	}
 
@@ -1970,6 +2243,11 @@ public:
 
 	private int newtrap() {
 		if (tr_idx < trapezoids.length) {
+			putln("newtrap ", tr_idx);
+			// XXX: REDUNDANT
+			trapezoids[tr_idx].lseg = -1;
+			trapezoids[tr_idx].rseg = -1;
+			trapezoids[tr_idx].state = ST_VALID;
 			return tr_idx++;
 		}
 		else {
@@ -2088,12 +2366,15 @@ public:
 		trapezoids[t2].d0 = t3;
 		trapezoids[t4].d0 = t1;
 		trapezoids[t3].u0 = t1;
+		trapezoids[t4].d1 = t2;
+		trapezoids[t3].u1 = t2;
 
 		trapezoids[t1].sink = i6;
 		trapezoids[t2].sink = i7;
 		trapezoids[t3].sink = i4;
 		trapezoids[t4].sink = i2;
 
+		// XXX: REDUNDANT
 		trapezoids[t1].state = ST_VALID;
 		trapezoids[t2].state = ST_VALID;
 		trapezoids[t3].state = ST_VALID;
@@ -2124,6 +2405,7 @@ public:
 			for (int i = _mathN(n, h - 1) + 1; i <= _mathN(n, h); i++) {
 				_addSegment(_chooseSegment());
 				segs++;
+				putln("added segment");
 			}
 
 			for (int i = 1; i <= n; i++) {
@@ -2134,8 +2416,10 @@ public:
 		for (int i = _mathN(n, _mathLogstarN(n)) + 1; i <= n; i++) {
 			_addSegment(_chooseSegment());
 			segs++;
+				putln("added segment");
 		}
 
+		putln("added ", segs, " segments");
 	}
 
 	private Triangle[] _tris;
@@ -2151,10 +2435,21 @@ public:
 
 			Coord c;
 			vertices ~= c;
+			putln(_contours.length);
+			putln();
 
 			foreach(size_t idx, contour; _contours) {
 				Coord[] contourVertices = contour.compose();
 
+				putln(contourVertices.length);
+				foreach(v; contourVertices) {
+					putln(v.x, " ", v.y);
+				}
+				putln();
+
+//				if (idx != 0) {
+//					contourVertices = contourVertices.reverse;
+//				}
 				vertices ~= contourVertices;
 				ppc[idx] = contourVertices.length;
 			}
