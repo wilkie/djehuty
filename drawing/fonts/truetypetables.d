@@ -758,8 +758,7 @@ struct Glyph {
 				// Whether or not the point is on the curve
 				bool[] isOnCurve;
 		
-				// First coordinates relative to (0,0), rest are relative
-				// to the previous point
+				// These are absolute coordinates.
 				// sizeOfArray = endPtsOfContours[$-1]+1
 				short[] xCoordinates;
 				short[] yCoordinates;

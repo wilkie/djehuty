@@ -11,10 +11,15 @@ import djehuty;
 
 import drawing.fonts.truetypetables;
 
+import graphics.contour;
+import graphics.region;
+
 import io.console;
 import binding.c;
 
 import data.iterable;
+
+static const auto GLYPH_INDEX = 36;
 
 // True-type fonts are specified jointly by Microsoft and Apple. Apple originated
 // the specification, but neither company truly complies with it.
@@ -56,6 +61,7 @@ private:
 	EncodingTable _encodingTables;
 
 	Glyph[] _glyphs;
+	Region[] _regions;
 
 	void readFontHeaderTable(Stream input, ref TableRecord tbl) {
 		input.position = tbl.offset;
@@ -84,6 +90,7 @@ private:
 		_locations.offsets = new uint[](_profile.numGlyphs + 1);
 		if (_fontHeader.indexToLocFormat != 0) {
 			input.read(_locations.offsets.ptr, uint.sizeof * _locations.offsets.length);
+			//putln("_locations read");
 			fromBigEndian(_locations.offsets);
 		}
 		else {
@@ -168,6 +175,12 @@ private:
 		input.read(table.idDelta.ptr, segCount * ushort.sizeof);
 		input.read(table.idRangeOffset.ptr, segCount * ushort.sizeof);
 		input.read(table.glyphIndexArray.ptr, glyphIndexCount * ushort.sizeof);
+
+		/*putln("segCount: ", segCount);
+		for(int i = 0; i < segCount; i++) {
+			putln("startCode: ", table.startCode[i]);
+			putln("endCode: ", table.startCode[i]);
+		}*/
 	}
 
 	void readTrimmedTableMappingTable(TrimmedTableMappingTable table, Stream input) {
@@ -217,6 +230,7 @@ private:
 				input.rewind(short.sizeof);
 
 				uint size = 0;
+				//putln("format: ", format);
 				switch(format) {
 					case 0:
 						size = ByteEncodingTable.sizeof;
@@ -255,6 +269,9 @@ private:
 				switch(format) {
 					case 0:
 						fromBigEndian(tbl.subtable.byteEncodingTable);
+						foreach(size_t idx, id; tbl.subtable.byteEncodingTable.glyphIDArray) {
+							//putln(idx, " -> ", id);
+						}
 
 						// format 0 requires no additional logic to read the
 						// rest of the table.
@@ -308,6 +325,7 @@ private:
 
 		short last = 0;
 		foreach(size_t idx, ref coord; array) {
+			//putln("flag: ", flags[idx]);
 			// When bit 1 is set, the point is a ubyte,
 			// otherwise, it is a short
 			if (flags[idx] & IS_NOT_SHORT) {
@@ -317,14 +335,14 @@ private:
 				// When bit 4 is set, in this case, it denotes
 				// that this value is positive
 				// Otherwise, it is negative
-				if (!(flags[idx] & SAME_FLAG)) {
+				if ((flags[idx] & SAME_FLAG) == 0) {
 					coord = -coord;
+					//putln(coord, " byte, negative");
 				}
 
-				if (idx > 0) {
-					// Convert to absolute coordinates
-					coord += last;
-				}
+				// Convert to absolute coordinates
+				coord += last;
+				//putln(coord, " byte, after convert");
 			}
 			else {
 				// The value is stored as a short
@@ -332,22 +350,24 @@ private:
 				// When bit 4 is set, it denotes that this coord
 				// is the same as the last coord...
 				if (flags[idx] & SAME_FLAG) {
-					if (idx > 0) {
-						coord = last;
-					}
+					coord = last;
+					//putln(coord, " short, same");
 				}
 				else {
 					// The value is then a 16-bit delta vector
 					input.read(&coord, short.sizeof);
+					//putln(coord, " short");
 					fromBigEndian(coord);
-					if (idx > 0) {
-						// Convert to absolute coordinates
-						coord += last;
-					}
+					//putln(coord, " short");
+
+					// Convert to absolute coordinates
+					coord += last;
+					//putln(coord, " short, after convert");
 				}
 			}
 			last = coord;
 		}
+		//putln("done");
 	}
 
 	void readSimpleGlyph(Stream input, ref Glyph g, int numberOfContours) {
@@ -405,11 +425,13 @@ private:
 		}
 
 		// xCoordinate array
+		if (&_glyphs[GLYPH_INDEX] == &g) {
 		g.xCoordinates = new short[](numberOfPoints);
 		readCoordinateArray!(true)(input, g.xCoordinates, flags);
 
 		g.yCoordinates = new short[](numberOfPoints);
 		readCoordinateArray!(false)(input, g.yCoordinates, flags);
+		}
 	}
 
 	void readComponent(Stream input, ref Component cdata) {
@@ -500,6 +522,7 @@ private:
 
 	void readGlyphData(Stream input, ref TableRecord record) {
 		_glyphs = new Glyph[](_profile.numGlyphs);
+		_regions = new Region[](_profile.numGlyphs);
 
 		for (int i = 0; i < _profile.numGlyphs; i++) {
 			if (_locations.offsets[i] == _locations.offsets[i+1]) {
@@ -525,6 +548,7 @@ private:
 			if (numberOfContours >= 0) {
 				// Simple Glyph
 				readSimpleGlyph(input, _glyphs[i], numberOfContours);
+				convertGlyphToRegion(i);
 			}
 			else {
 				// Composite Glyph
@@ -533,7 +557,120 @@ private:
 		}
 	}
 
+	void convertGlyphToRegion(uint i) {
+		if (i != GLYPH_INDEX) {
+			return;
+		}
+
+		//putln("i = ", GLYPH_INDEX);
+		Region r = new Region();
+		_regions[i] = r;
+
+		size_t lastPoint = 0;
+		bool lastIsOnCurve = true;
+
+		// XXX: Probably going to have to factor in 
+		//   the global yMax and yMin
+		double yMax = _glyphs[i].yMax;
+		double yMin = _glyphs[i].yMin;
+
+		double gHeight = yMax - yMin;
+
+		double x1 = 0;
+		double y1 = 0;
+
+		double cx = 0;
+		double cy = 0;
+
+		double x2 = 0;
+		double y2 = 0;
+
+		foreach(endpt; _glyphs[i].endPtsOfContours) {
+			Contour c = new Contour();
+
+			cx = 0;
+			cy = 0;
+
+			x1 = 0;
+			x2 = 0;
+
+			y1 = 0;
+			y2 = 0;
+
+			lastIsOnCurve = true;
+
+			// Go through each point in the contour
+			// Add curves as one finds them
+			bool last = false;
+			for(size_t idx = lastPoint; !last; idx++) {
+				// We need to re-evaluate the first point
+				if (idx == endpt+1) {
+					idx = lastPoint;
+					last = true;
+				}
+
+				if (_glyphs[i].isOnCurve[idx]) {
+					// It is on the curve
+					x2 = _glyphs[i].xCoordinates[idx];
+					y2 = gHeight - _glyphs[i].yCoordinates[idx];
+
+					if (idx == lastPoint && !last) {
+					}
+					else if (lastIsOnCurve) {
+						// A Line
+						//putln("adding line ", x1, ", ", y1, " -> ", x2, ", ", y2);
+						c.addLine(x1, y1, x2, y2);
+
+						lastIsOnCurve = false;
+					}
+					else {
+						// A curve
+						//putln("adding curve ", x1, ", ", y1, " -> ", cx, ", ", cy, " -> ", x2, ", ", y2);
+						c.addCurve(x1, y1, x2, y2, cx, cy);
+					}
+
+					x1 = x2;
+					y1 = y2;
+
+					lastIsOnCurve = true;
+				}
+				else {
+					// This is a control point
+					if (lastIsOnCurve == false) {
+						// Two off points, so add an intermediate point
+						x2 = (cx + _glyphs[i].xCoordinates[idx]) / 2;
+						y2 = (cy + gHeight - _glyphs[i].yCoordinates[idx]) / 2;
+
+						//putln("adding [intermediate] curve ", x1, ", ", y1, " -> ", cx, ", ", cy, " -> ", x2, ", ", y2);
+						c.addCurve(x1, y1, x2, y2, cx, cy);
+
+						x1 = x2;
+						y1 = y2;
+					}
+
+					cx = _glyphs[i].xCoordinates[idx];
+					cy = gHeight - _glyphs[i].yCoordinates[idx];
+
+					lastIsOnCurve = false;
+				}
+			}
+
+			lastPoint = endpt + 1;
+
+			// Add to the Region that represents this glyph
+			r.addContour(c);
+		}
+	}
+
 public:
+	Region glyph() {
+		uint i = GLYPH_INDEX;
+//		putln(_regions[i] is null, "+!");
+//		putln(_glyphs[i].xMin, ", ", _glyphs[i].yMin);
+//		putln(_glyphs[i].xMax, ", ", _glyphs[i].yMax);
+		return _regions[i];
+	}
+
 	this(Stream input) {
 		input.read(&_offsetTable, _offsetTable.sizeof);
 		fromBigEndian(_offsetTable);
@@ -597,18 +734,24 @@ public:
 
 		if (locaIndex == int.min) {
 			// error
+			putln("error: no loca");
 		}
 
+		putln("reading: LOCA");
 		readIndexToLocationTable(input, _tableRecords[locaIndex]);
+		putln("done reading: LOCA");
 
 		if (cmapIndex == int.min) {
 			// error
 		}
 
+			putln("reading: CMAP");
 		readCharacterToGlyphMappingTable(input, _tableRecords[cmapIndex].offset);
+			putln("done reading: CMAP");
 
 		if (glyfIndex == int.min) {
 			// error
+			putln("error: no GLYF");
 		}
 
 		readGlyphData(input, _tableRecords[glyfIndex]);
