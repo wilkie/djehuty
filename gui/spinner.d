@@ -9,6 +9,9 @@ module gui.spinner;
 
 import djehuty;
 
+import drawing.fonts.truetype;
+import io.file;
+
 import graphics.canvas;
 import graphics.bitmap;
 import graphics.brush;
@@ -49,10 +52,12 @@ public:
 		_timer.start();
 		super(x, y, width, height);
 
-		_canvas = new Bitmap(100, 100);
+		_canvas = new Bitmap(400, 400);
 		_img = new Image("tests/PNG/Knob Blue.png");
 
 		_canvas.brush = new Brush(Color.fromRGBA(1,1,1,0.5));
+		_canvas.transformTranslate(20, 0);
+		_canvas.transformScale(0.5, 0.5);
 		_canvas.drawRectangle(0, 0, 100, 100);
 		_canvas.drawRectangle(0, 0, 25, 25);
 		_canvas.drawRectangle(25, 25, 25, 25);
@@ -60,6 +65,10 @@ public:
 		_canvas.drawRectangle(50, 50, 25, 25);
 		_canvas.brush = new Brush(Color.Blue);
 		_canvas.drawRectangle(75, 75, 25, 25);
+		TrueTypeFont font = new TrueTypeFont(File.open("tests/newforlt.ttf"));
+		//TrueTypeFont font = new TrueTypeFont(File.open("tests/Strato-linked.ttf"));
+
+		_canvas.drawRegion(font.glyph());
 
 		r = new Region();
 		Contour c = new Contour();
@@ -68,8 +77,8 @@ public:
 		//c.addLine(50,500,200,500);
 		r.addContour(c);
 		c = new Contour();
-		c.addLine(100,125,150,125);
-		c.addLine(150,175,100,175);
+		c.addLine(150,125,100,125);
+		c.addLine(100,175,150,175);
 		r.addContour(c);
 
 		_canvas.drawRectangle(0, 75, 25, 25);
@@ -98,14 +107,14 @@ public:
 //		p.addCurve(0, 0, this.width, 0, this.width/3, this.height);
 //		canvas.drawPath(p);
 
-		canvas.drawRegion(r);
+//		canvas.drawRegion(r);
 //		canvas.drawQuadratic(0, 0, this.width, 0, this.width/3, this.height);
 
 		canvas.drawCanvas(_img.canvas, 0, 0);
 		canvas.drawCanvas(_canvas, 100, 0);
-		canvas.drawCanvas(_canvas, 150, 0);
-		canvas.drawCanvas(_canvas, 200, 0);
-		canvas.drawCanvas(_canvas, 250, 0);
+		//canvas.drawCanvas(_canvas, 150, 0);
+		//canvas.drawCanvas(_canvas, 200, 0);
+		//canvas.drawCanvas(_canvas, 250, 0);
 
 		canvas.transformTranslate(this.width/2.0, this.height/2.0);
 

@@ -2155,10 +2155,6 @@ public:
 			foreach(size_t idx, contour; _contours) {
 				Coord[] contourVertices = contour.compose();
 
-				if (idx != 0) {
-					contourVertices = contourVertices.reverse;
-				}
-
 				vertices ~= contourVertices;
 				ppc[idx] = contourVertices.length;
 			}
