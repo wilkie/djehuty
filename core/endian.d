@@ -9,16 +9,18 @@ module core.endian;
 
 import core.util;
 
+import io.console;
+
 private void _endian64(T)(ref T input) {
-	input = (input >> 56) | ((input >> 40) & 0xFF00) | ((input >> 24) & 0xFF0000) | ((input >> 8) & 0xFF000000) | ((input << 8) & 0xFF00000000UL) | ((input << 24) & 0xFF0000000000UL) | ((input << 40) & 0xFF000000000000UL) | ((input << 56) & 0xFF00000000000000UL);
+	input = (cast(ulong)input >> 56) | ((cast(ulong)input >> 40) & 0xFF00) | ((cast(ulong)input >> 24) & 0xFF0000) | ((cast(ulong)input >> 8) & 0xFF000000) | ((cast(ulong)input << 8) & 0xFF00000000UL) | ((cast(ulong)input << 24) & 0xFF0000000000UL) | ((cast(ulong)input << 40) & 0xFF000000000000UL) | ((cast(ulong)input << 56) & 0xFF00000000000000UL);
 }
 
 private void _endian32(T)(ref T input) {
-	input = (input >> 24) | ((input >> 8) & 0xFF00) | ((input << 8) & 0xFF0000) | ((input << 24) & 0xFF000000);
+	input = (cast(ulong)input >> 24) | ((cast(ulong)input >> 8) & 0xFF00) | ((cast(ulong)input << 8) & 0xFF0000) | ((cast(ulong)input << 24) & 0xFF000000);
 }
 
 private void _endian16(T)(ref T input) {
-	input = (input >> 8) | (input << 8);
+	input = cast(T)(cast(ushort)input >> 8) | (cast(ushort)input << 8);
 }
 
 private template EndianStructImpl(T, int idx = 0) {
