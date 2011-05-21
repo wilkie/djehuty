@@ -60,7 +60,7 @@ string DirectoryGetBinary() {
 }
 
 string DirectoryGetAppData() {
-	return "/usr/share/" ~ Djehuty.app.name;
+	return "/usr/share/" ~ Djehuty.application.name;
 }
 
 string DirectoryGetTempData() {
@@ -85,7 +85,7 @@ string DirectoryGetUserData() {
 
 		if (i != 0) {
 			homePath = result[0..i];
-			cached = homePath ~ "/." ~ Djehuty.app.name;
+			cached = homePath ~ "/." ~ Djehuty.application.name;
 		}
 		else {
 			cached = "";
