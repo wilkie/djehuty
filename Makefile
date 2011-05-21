@@ -8,7 +8,7 @@ DFLAGS =
 # can be changed
 PLATFORM = WINDOWS
 
-LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests
+LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests -I./runtime -nodefaultlib
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
 LFLAGS_WIN = -Iplatform/win -Icompiler
 
@@ -112,7 +112,7 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),"WINDOWS")
 else
-	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix -I./compiler -I./runtime -nodefaultlib
+	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix -I./compiler
 endif
 endif
 
@@ -195,12 +195,12 @@ all: lib
 	@echo linking...
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) winsamp.d $(DFLAGS) -d-version=PlatformOSX -c -ofwinsamp.o -O3 -J./tests -I./platform/osx 
-	@$(OBJCC) -m32 $(OBJS_MAC) winsamp.o -o winsamp $(LFLAGS_MAC) -ltango
+	@$(OBJCC) -m32 $(OBJS_MAC) winsamp.o -o winsamp $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	compiler/dmd/bin/dmd.exe -w -version=PlatformWindows winsamp.d $(OBJS_WIN) $(LFLAGS_WIN)
 else
-	@$(DC) $(LFLAGS_LINUX) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX)
+	$(DC) -d-version=PlatformLinux winsamp.d $(OBJS_LINUX) $(LFLAGS_LINUX)
 endif
 endif
 
@@ -208,7 +208,7 @@ sobek: lib
 
 ifeq (${MY_ARCH},Darwin)
 	for i in ${TOOLS_SOBEK}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/sobek -I./platform/osx; done
-	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/sobek/*.o` -o sobek $(LFLAGS_MAC) -ltango
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/sobek/*.o` -o sobek $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofsobek.exe $(TOOLS_SOBEK) $(OBJS_WIN) $(LFLAGS_WIN)
@@ -221,7 +221,7 @@ seshat: lib
 
 ifeq (${MY_ARCH},Darwin)
 	for i in ${TOOLS_SESHAT}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/seshat -I./platform/osx; done
-	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/seshat/*.o` -o seshat $(LFLAGS_MAC) -ltango
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/seshat/*.o` -o seshat $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofseshat.exe $(TOOLS_SESHAT) $(OBJS_WIN) $(LFLAGS_WIN)
@@ -236,7 +236,7 @@ dspec: lib
 ifeq (${MY_ARCH},Darwin)
 	#@$(DC) $(LFLAGS_MAC) -o winsamp winsamp.o $(OBJS_MAC)
 	for i in ${TOOLS_DSPEC}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./tools/dspec -I./platform/osx; done
-	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/dspec/*.o` -o dspec $(LFLAGS_MAC) -ltango
+	$(OBJCC) -m32 $(OBJS_MAC) `ls tools/dspec/*.o` -o dspec $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofdspec.exe $(TOOLS_DSPEC) $(OBJS_WIN) $(LFLAGS_WIN)
@@ -263,7 +263,7 @@ cuitetris: lib
 	@echo compiling CuiTetris example and linking...
 ifeq (${MY_ARCH},Darwin)
 	for i in ${EXAMPLES_CUITETRIS}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/CuiTetris -I./platform/osx; done
-	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/CuiTetris/*.o` -o cuitetris $(LFLAGS_MAC) -ltango
+	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/CuiTetris/*.o` -o cuitetris $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofcuitetris.exe $(EXAMPLES_CUITETRIS) $(OBJS_WIN) $(LFLAGS_WIN)
@@ -277,7 +277,7 @@ moreducks: lib
 	@echo compiling More Ducks example and linking...
 ifeq (${MY_ARCH},Darwin)
 	for i in ${EXAMPLES_MOREDUCKS}; do $(DC) "$${i}" $(DFLAGS) -d-version=PlatformOSX -c -of$${i}.o -O3 -J./tests -I./examples/MoreDucks -I./platform/osx; done
-	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/MoreDucks/*.o` -o moreducks $(LFLAGS_MAC) -ltango
+	$(OBJCC) -m32 $(OBJS_MAC) `ls examples/MoreDucks/*.o` -o moreducks $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofmoreducks.exe $(EXAMPLES_MOREDUCKS) $(OBJS_WIN) $(LFLAGS_WIN)
@@ -303,7 +303,7 @@ tests: lib
 	@echo compiling Test Suite...
 ifeq (${MY_ARCH},Darwin)
 	@$(DC) runtests.d $(DFLAGS) -d-version=PlatformOSX -c -ofruntests.o -O3 -J./tests -I./platform/osx 
-	@$(OBJCC) -m32 $(OBJS_MAC) runtests.o -o runtests $(LFLAGS_MAC) -ltango
+	@$(OBJCC) -m32 $(OBJS_MAC) runtests.o -o runtests $(LFLAGS_MAC)
 else
 ifeq ($(PLATFORM),WINDOWS)
 	@compiler/dmd/bin/dmd.exe -w -version=PlatformWindows -ofruntests.exe $(TOOLS_TESTS) $(OBJS_WIN) $(LFLAGS_WIN)
