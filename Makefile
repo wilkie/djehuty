@@ -112,7 +112,7 @@ ifeq (${MY_ARCH},Darwin)
 else
 ifeq ($(PLATFORM),"WINDOWS")
 else
-		@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix -I./compiler
+	@$(DC) $< $(DFLAGS) -d-version=PlatformLinux -c -of$@ -O3 -J./tests -I./platform/unix -I./compiler -I./runtime -nodefaultlib
 endif
 endif
 
