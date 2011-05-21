@@ -15,8 +15,6 @@ import synch.semaphore;
 
 import binding.c;
 
-import binding.win32.wincon;
-
 class CuiWindow : Responder {
 private:
 	Mouse _mouse;
