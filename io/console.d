@@ -363,6 +363,10 @@ public:
 		ConsoleGetChar(chr, code);
 	}
 
+	Key getKey() {
+		return ConsoleGetKey();
+	}
+
 	// Description: This function will save the current clipping context.
 	void clipSave() {
 		lock();
