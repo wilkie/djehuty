@@ -156,33 +156,31 @@ void ConsoleSetColors(Color fg, Color bg) {
 private int getChar() {
 	int ret;
 	while(true) {
-//		if (ftell(stdin) == 0) {
+		if (ApplicationController.instance.usingCurses) {
 			lock();
 			ret = Curses.wgetch(Curses.stdscr);
 			unlock();
 			if (ret != Curses.ERR) {
 				break;
 			}
-//			break;
-//		}
+		}
+		else {
+			ret = getc(stdin);
+			break;
+		}
 	}
 
 	return ret;
-//	return Curses.getch();
 }
 
 //will return the next character pressed
-Key consoleGetKey() {
+Key ConsoleGetKey() {
 	Key ret;
 
 	ubyte[18] tmp;
 	uint count;
 
 	ret.code = getChar();
-//	Curses.move(0,0);
-//	Console.put("                                                ");
-//	Curses.move(0,0);
-//	Console.put(ret.code, " ");
 
 	if (ret.code != 0x1B) {
 		// Not an escape sequence
@@ -191,7 +189,7 @@ Key consoleGetKey() {
 			return ret;
 		}
 
-		if (ret.code == 127 || ret.code == 8 || ret.code == 9 || ret.code == 13) {
+		if (ret.code == 127 || ret.code == 8 || ret.code == 9 || ret.code == 13 || ret.code == 10) {
 		}
 		// For ctrl+char
 		else if (ret.code < 26) {
@@ -223,17 +221,12 @@ Key consoleGetKey() {
 		}
 
 		consoleTranslateKey(ret);
-	//Curses.move(1,0);
-	//Console.put("                                                ");
-	//Curses.move(1,0);
-	//Console.put("alt: ", ret.alt, " ctrl: ", ret.ctrl, " shift: ", ret.shift, " code: ", ret.code);
 
 		return ret;
 	}
 
 	// Escape sequence...
 	ret.code = getChar();
-	//Console.put(ret.code, " ");
 
 	// Get extended commands
 	if (ret.code == 0x1B) {
@@ -242,22 +235,18 @@ Key consoleGetKey() {
 	}
 	else if (ret.code == '[') {
 		ret.code = getChar();
-	//Console.put(ret.code, " ");
 		if (ret.code == '1') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 			if (ret.code == '~') {
 				ret.code = Key.Home;
 			}
 			else if (ret.code == '#') {
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 				if (ret.code == '~') {
 					ret.code = Key.F5;
 				}
 				else if (ret.code == ';') {
 					ret.code = getChar();
-	//Console.put(ret.code, " ");
 					if (ret.code == '2') {
 						ret.shift = true;
 						ret.code = Key.F5;
@@ -266,13 +255,11 @@ Key consoleGetKey() {
 			}
 			else if (ret.code == '7') {
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 				if (ret.code == '~') {
 					ret.code = Key.F6;
 				}
 				else if (ret.code == ';') {
 					ret.code = getChar();
-	//Console.put(ret.code, " ");
 					if (ret.code == '2') {
 						ret.shift = true;
 						ret.code = Key.F6;
@@ -282,9 +269,7 @@ Key consoleGetKey() {
 			else if (ret.code == ';') {
 				// Arrow Keys
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 				getModifiers(ret);
-	//Console.put(ret.code, " ");
 
 				if (ret.code == 'A') {
 					ret.code = Key.Up;
@@ -301,20 +286,16 @@ Key consoleGetKey() {
 			}
 			else {
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 			}
 		}
 		else if (ret.code == '2') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 			if (ret.code == '~') {
 			}
 			else if (ret.code == ';') {
 				// Alt + Insert
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 				getModifiers(ret);
-	//Console.put(ret.code, " ");
 				if (ret.code == '~') {
 					ret.code = Key.Insert;
 				}
@@ -322,19 +303,15 @@ Key consoleGetKey() {
 		}
 		else if (ret.code == '3') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '4') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '5') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 		}
 		else if (ret.code == '6') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 		}
 		else {
 		}
@@ -345,12 +322,9 @@ Key consoleGetKey() {
 		// F1, F2, F3, F4
 		if (ret.code == '1') {
 			ret.code = getChar();
-	//Console.put(ret.code, " ");
 			if (ret.code == ';') {
 				ret.code = getChar();
-	//Console.put(ret.code, " ");
 				getModifiers(ret);
-	//Console.put(ret.code, " ");
 
 				if (ret.code == 'P') {
 					ret.code = Key.F1;
@@ -390,11 +364,6 @@ Key consoleGetKey() {
 		ret.alt = true;
 		consoleTranslateKey(ret);
 	}
-
-	//Curses.move(1,0);
-	//Console.put("                                                ");
-	//Curses.move(1,0);
-	//Console.put("alt: ", ret.alt, " ctrl: ", ret.ctrl, " shift: ", ret.shift, " code: ", ret.code);
 
 	return ret;
 }
@@ -609,13 +578,34 @@ termios m_term_info_working;
 
 //signal handler for terminal Size
 
+extern(C) int tcgetattr(int, termios*);
+extern(C) int tcsetattr(int, int, termios*);
+
 extern(C) void close_sig_handler(int signal) {
 	ConsoleUninit();
 	exit(0);
 }
 
+static const int TCSANOW = 0;
+
+/* Initialize new terminal i/o settings */
+void initTermios(bool echo) {
+	tcgetattr(0, &m_term_info_saved); /* grab old terminal i/o settings */
+	m_term_info_working = m_term_info_saved; /* make new settings same as old settings */
+	m_term_info_working.c_lflag &= ~ICANON; /* disable buffered i/o */
+	m_term_info_working.c_lflag &= echo ? ECHO : ~ECHO; /* set echo mode */
+	tcsetattr(0, TCSANOW, &m_term_info_working); /* use these new terminal i/o settings now */
+}
+
+/* Restore old terminal i/o settings */
+void resetTermios() {
+	tcsetattr(0, TCSANOW, &m_term_info_saved);
+}
+
 void ConsoleInit() {
+	// Preserve console
 	printf("\x1B7");
+
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
 
@@ -623,10 +613,15 @@ void ConsoleInit() {
 
 	setlocale(LC_ALL, "");
 	setlocale(LC_CTYPE, "");
+
+	initTermios(false);
 }
 
 void ConsoleUninit() {
+	// Reset colors
 	printf("\x1B[0m");
+
+	resetTermios();
 }
 
 void ConsoleClear() {

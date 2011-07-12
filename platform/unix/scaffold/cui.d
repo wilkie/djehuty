@@ -124,7 +124,7 @@ start:
 
 	ulong ky; uint tky;
 
-	Key key = consoleGetKey();
+	Key key = ConsoleGetKey();
 
 	if (key.code == Curses.KEY_RESIZE) {
 		// Resize
