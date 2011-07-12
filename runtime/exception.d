@@ -12,16 +12,24 @@ module runtime.exception;
 // current EH implementation works on x86
 // if it has a working unwind runtime
 version(X86) {
-    version(linux) version=X86_UNWIND;
-    version(darwin) version=X86_UNWIND;
-    version(solaris) version=X86_UNWIND;
-    version(freebsd) version=X86_UNWIND;
+	version(PlatformXOmB) {
+	}
+	else {
+		version(linux) version=X86_UNWIND;
+		version(darwin) version=X86_UNWIND;
+		version(solaris) version=X86_UNWIND;
+		version(freebsd) version=X86_UNWIND;
+	}
 }
 version(X86_64) {
-    version(linux) version=X86_UNWIND;
-    version(darwin) version=X86_UNWIND;
-    version(solaris) version=X86_UNWIND;
-    version(freebsd) version=X86_UNWIND;
+	version(PlatformXOmB) {
+	}
+	else {
+		version(linux) version=X86_UNWIND;
+		version(darwin) version=X86_UNWIND;
+		version(solaris) version=X86_UNWIND;
+		version(freebsd) version=X86_UNWIND;
+	}
 }
 
 //version = HP_LIBUNWIND;
