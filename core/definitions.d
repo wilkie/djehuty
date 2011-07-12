@@ -144,6 +144,7 @@ struct Key {
 	bool capsLock;
 
 	dchar printable;
+	dchar deadChar;
 
 	enum : uint {
 		Invalid,
