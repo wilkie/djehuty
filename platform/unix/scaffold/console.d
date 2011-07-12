@@ -193,7 +193,8 @@ Key ConsoleGetKey() {
 		}
 		// For ctrl+char
 		else if (ret.code < 26) {
-			ret.ctrl = true;
+			ret.leftControl = true;
+			ret.rightControl = true;
 			ret.code = Key.A + ret.code - 1;
 	//Curses.move(1,0);
 	//Console.put("                                                ");
@@ -208,16 +209,19 @@ Key ConsoleGetKey() {
 		}
 		else if (ret.code >= 293 && ret.code <= 304) {
 			ret.code -= 24;
-			ret.ctrl = true;
+			ret.leftControl = true;
+			ret.rightControl = true;
 		}
 		else if (ret.code >= 305 && ret.code <= 316) {
 			ret.code -= 36;
-			ret.ctrl = true;
+			ret.leftControl = true;
+			ret.rightControl = true;
 			ret.shift = true;
 		}
 		else if (ret.code >= 317 && ret.code <= 328) {
 			ret.code -= 48;
-			ret.alt = true;
+			ret.leftAlt = true;
+			ret.rightAlt = true;
 		}
 
 		consoleTranslateKey(ret);
@@ -361,7 +365,8 @@ Key ConsoleGetKey() {
 	}
 	else {
 		// Alt + Char
-		ret.alt = true;
+		ret.rightAlt = true;
+		ret.leftAlt = true;
 		consoleTranslateKey(ret);
 	}
 
@@ -374,14 +379,16 @@ void getModifiers(ref Key key) {
 	}
 
 	if (key.code == '3' || key.code == '4' || key.code == '7' || key.code == '8') {
-		key.alt = true;
+		key.leftAlt = true;
+		key.rightAlt = true;
 	}
 
 	if (key.code == '5' || key.code == '6' || key.code == '7' || key.code == '8') {
-		key.ctrl = true;
+		key.leftControl = true;
+		key.rightControl = true;
 	}
 
-	if (key.shift || key.alt || key.ctrl) {
+	if (key.shift || key.alt || key.control) {
 		key.code = getChar();
 	}
 }
