@@ -164,7 +164,7 @@ static uint _translation[] = [
 	SysKey.Num7: Key.Seven,
 	SysKey.Num8: Key.Eight,
 	SysKey.Num9: Key.Nine,
-	SysKey.Quote: Key.Quote,
+	SysKey.Quote: Key.Apostrophe,
 	SysKey.Minus: Key.Minus,
 	SysKey.Equals: Key.Equals,
 	SysKey.Slash: Key.Foreslash,
@@ -199,18 +199,56 @@ static uint _translation[] = [
 	SysKey.Comma: Key.Comma,
 	SysKey.Period: Key.Period,
 	SysKey.Backslash: Key.Backslash,
+	SysKey.Down: Key.Down,
+	SysKey.Up: Key.Up,
+	SysKey.Left: Key.Left,
+	SysKey.Right: Key.Right,
+	SysKey.Semicolon: Key.Semicolon,
 ];
+
+static bool lshift=false;
+static bool rshift=false;
+static bool lctrl=false;
+static bool rctrl=false;
+static bool lalt=false;
+static bool ralt=false;
 
 Key ConsoleGetKey() {
 	Key ret;
 
 	bool released=true;
 	SysKey key;
+
 	while (released) {
 		key = SysK.Keyboard.nextKey(released);
+
+		if (key == SysKey.LeftControl) {
+			lctrl = !released;
+		}
+		else if (key == SysKey.RightControl) {
+			rctrl = !released;
+		}
+		else if (key == SysKey.LeftAlt) {
+			lalt = !released;
+		}
+		else if (key == SysKey.RightAlt) {
+			ralt = !released;
+		}
+		else if (key == SysKey.LeftShift) {
+			lshift = !released;
+		}
+		else if (key == SysKey.RightShift) {
+			rshift = !released;
+		}
 	}
 
 	ret.code = _translation[key];
+
+	ret.shift = lshift | rshift;
+	ret.leftControl = lctrl;
+	ret.rightControl = rctrl;
+	ret.leftAlt = lalt;
+	ret.rightAlt = ralt;
 
 	return ret;
 }
@@ -226,6 +264,14 @@ void ConsoleClear() {
 }
 
 void ConsoleSetRelative(int x, int y) {
+	uint x_, y_;
+	Sys.Console.getPosition(x_, y_);
+	int nx, ny;
+	nx = cast(int)x_ + x;
+	ny = cast(int)y_ + y;
+	if (nx < 0) { nx = 0; }
+	if (ny < 0) { ny = 0; }
+	Sys.Console.setPosition(nx, ny);
 }
 
 void ConsoleGetPosition(uint* x, uint* y) {
