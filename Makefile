@@ -11,6 +11,7 @@ PLATFORM = WINDOWS
 LFLAGS_LINUX = -Iplatform/unix -Icompiler -L-lGL -L-lcairo -L-lpango-1.0 -L-lpangocairo-1.0 -L-llua5.1 -L-lncursesw -J./tests -I./runtime -nodefaultlib
 LFLAGS_MAC = -lobjc -framework Cocoa -framework Foundation -framework OpenGL -lncurses -llua5.1 -Icompiler
 LFLAGS_WIN = -Iplatform/win -Icompiler
+LFLAGS_XOMB = -Iplatform/xomb -Icompiler -I./runtime -nodefaultlib -I../xomb
 
 ifeq (${MY_ARCH},MINGW32_NT-5.1)
 	OBJEXT = .obj
@@ -35,7 +36,8 @@ OBJC_FILES = platform/osx/objc/window.m platform/osx/objc/app.m platform/osx/obj
 
 DFILES_PLATFORM_UNIX = platform/unix/platform/application.d platform/unix/scaffold/system.d platform/unix/scaffold/thread.d platform/unix/scaffold/time.d platform/unix/scaffold/console.d platform/unix/platform/definitions.d platform/unix/common.d binding/cairo/cairo.d binding/x/Xlib.d binding/x/X.d platform/unix/main.d platform/unix/scaffold/graphics.d platform/unix/scaffold/file.d platform/unix/scaffold/socket.d platform/unix/scaffold/color.d platform/unix/scaffold/menu.d platform/unix/scaffold/wave.d platform/unix/scaffold/view.d platform/unix/scaffold/directory.d binding/c.d binding/ncurses/ncurses.d platform/unix/scaffold/cui.d platform/unix/platform/vars/cui.d platform/unix/platform/vars/wave.d platform/unix/platform/vars/window.d platform/unix/platform/vars/menu.d platform/unix/platform/vars/view.d platform/unix/platform/vars/region.d platform/unix/platform/vars/brush.d platform/unix/platform/vars/pen.d platform/unix/platform/vars/font.d binding/pango/pango.d platform/unix/platform/vars/directory.d platform/unix/platform/vars/file.d platform/unix/platform/vars/thread.d platform/unix/platform/vars/mutex.d platform/unix/platform/vars/semaphore.d platform/unix/platform/vars/library.d platform/unix/platform/vars/socket.d platform/unix/platform/vars/condition.d binding/cairo/xlib.d binding/cairo/features.d binding/pango/font.d binding/pango/types.d binding/pango/context.d binding/pango/pbreak.d binding/pango/engine.d binding/pango/fontset.d binding/pango/coverage.d binding/pango/glyph.d binding/pango/matrix.d binding/pango/attributes.d binding/pango/layout.d binding/pango/cairo.d binding/pango/script.d binding/pango/gravity.d binding/pango/fontmap.d binding/pango/item.d binding/pango/tabs.d binding/pango/glyphitem.d compiler/ldc/vararg.d compiler/ldc/cstdarg.d
 DFILES_PLATFORM_WIN = compiler/dmd/bullshit.d compiler/dmd/minit.d compiler/dmd/cstdarg.d compiler/dmd/eh.d compiler/dmd/invariant.d compiler/dmd/memset.d platform/win/platform/vars/thread.d binding/win32/gdipluscolormatrix.d binding/win32/gdiplusinit.d binding/win32/gdiplusmem.d binding/win32/gdiplusbase.d binding/win32/gdiplusflat.d binding/win32/gdiplusstringformat.d binding/win32/gdiplusmetafile.d binding/win32/gdipluslinecaps.d binding/win32/gdiplusimagecodec.d binding/win32/gdiplusgpstubs.d binding/win32/gdiplusfontfamily.d binding/win32/gdiplusfontcollection.d binding/win32/gdiplusfont.d binding/win32/gdiplusenums.d binding/win32/gdiplustypes.d binding/win32/gdiplusregion.d binding/win32/gdipluscolor.d binding/win32/gdiplusbitmap.d binding/win32/gdipluseffects.d binding/win32/gdipluscachedbitmap.d binding/win32/gdipluspath.d binding/win32/gdiplusbrush.d binding/win32/gdipluspen.d binding/win32/gdiplusgraphics.d binding/win32/ws2def.d binding/win32/winsock2.d binding/win32/inaddr.d binding/win32/mmsystem.d  binding/win32/wincon.d binding/win32/winbase.d binding/win32/winuser.d binding/win32/windef.d binding/win32/wingdi.d platform/win/platform/application.d platform/win/platform/vars/cui.d platform/win/scaffold/cui.d platform/win/scaffold/system.d platform/win/main.d platform/win/common.d platform/win/platform/vars/menu.d platform/win/platform/vars/view.d platform/win/platform/vars/semaphore.d platform/win/platform/vars/mutex.d platform/win/platform/vars/region.d platform/win/platform/vars/library.d platform/win/platform/vars/wave.d platform/win/platform/vars/pen.d platform/win/platform/vars/brush.d platform/win/platform/vars/window.d platform/win/platform/vars/file.d platform/win/platform/vars/directory.d platform/win/platform/vars/font.d platform/win/platform/vars/socket.d platform/win/scaffold/console.d platform/win/platform/definitions.d platform/win/scaffold/wave.d platform/win/scaffold/directory.d platform/win/scaffold/graphics.d platform/win/scaffold/thread.d platform/win/scaffold/menu.d platform/win/scaffold/color.d platform/win/scaffold/file.d platform/win/scaffold/socket.d platform/win/scaffold/time.d platform/win/scaffold/opengl.d platform/win/scaffold/view.d
-DFILES_PLATFORM_XOMB = platform/xomb/main.d platform/xomb/common.d platform/xomb/scaffold.d platform/xomb/vars.d platform/xomb/console.d platform/xomb/definitions.d platform/xomb/scaffolds/wave.d platform/xomb/scaffolds/graphics.d platform/xomb/scaffolds/thread.d platform/xomb/scaffolds/menu.d platform/xomb/scaffolds/window.d platform/xomb/scaffolds/view.d platform/xomb/scaffolds/color.d platform/xomb/scaffolds/file.d platform/xomb/scaffolds/socket.d platform/xomb/scaffolds/app.d platform/xomb/scaffolds/time.d platform/xomb/oscontrolinterface.d
+
+DFILES_PLATFORM_XOMB = platform/xomb/platform/application.d platform/xomb/scaffold/system.d platform/xomb/scaffold/thread.d platform/xomb/scaffold/time.d platform/xomb/scaffold/console.d platform/xomb/platform/definitions.d platform/xomb/main.d platform/xomb/scaffold/graphics.d platform/xomb/scaffold/file.d platform/xomb/scaffold/socket.d platform/xomb/scaffold/color.d platform/xomb/scaffold/menu.d platform/xomb/scaffold/wave.d platform/xomb/scaffold/view.d platform/xomb/scaffold/directory.d platform/xomb/scaffold/cui.d platform/xomb/platform/vars/cui.d platform/xomb/platform/vars/wave.d platform/xomb/platform/vars/window.d platform/xomb/platform/vars/menu.d platform/xomb/platform/vars/view.d platform/xomb/platform/vars/region.d platform/xomb/platform/vars/brush.d platform/xomb/platform/vars/pen.d platform/xomb/platform/vars/font.d platform/xomb/platform/vars/directory.d platform/xomb/platform/vars/file.d platform/xomb/platform/vars/thread.d platform/xomb/platform/vars/mutex.d platform/xomb/platform/vars/semaphore.d platform/xomb/platform/vars/library.d platform/xomb/platform/vars/socket.d platform/xomb/platform/vars/condition.d compiler/ldc/vararg.d compiler/ldc/cstdarg.d platform/xomb/common.d
 
 DFILES_ANALYZING = analyzing/debugger.d
 DFILES_LOCALES = locales/en_us.d locales/fr_fr.d locales/all.d
@@ -57,8 +59,8 @@ DFILES_CODEC = decoders/decoder.d
 DFILES_HASHES = hashes/digest.d hashes/all.d hashes/md5.d hashes/sha1.d hashes/sha224.d hashes/sha256.d
 DFILES_CONSOLE = console/prompt.d
 DFILES_CUI = cui/dialog.d cui/window.d cui/canvas.d cui/application.d cui/label.d cui/textfield.d cui/textbox.d cui/tabbox.d cui/button.d cui/progressbar.d cui/scrollbar.d cui/listbox.d cui/filebox.d cui/togglefield.d cui/spinner.d cui/listfield.d
-DFILES_SCRIPTING = scripting/lua.d
-DFILES_BINDING = binding/opengl/gl.d binding/opengl/glu.d binding/lua.d
+#DFILES_SCRIPTING = scripting/lua.d
+#DFILES_BINDING = binding/opengl/gl.d binding/opengl/glu.d binding/lua.d
 DFILES_INTERFACES =
 DFILES_MATH = math/random.d math/currency.d math/fixed.d math/integer.d math/common.d math/vector.d math/matrix.d math/mathobject.d math/sin.d math/cos.d math/pow.d math/tan.d math/sqrt.d math/definitions.d math/abs.d
 DFILES_OPENGL = 
@@ -68,7 +70,7 @@ DFILES_SYNCH = synch/atomic.d synch/condition.d synch/barrier.d synch/mutex.d sy
 DFILES_RSC =
 DFILES_SPECS = .specs/runtime/array.d .specs/runtime/foreach.d .specs/core/application.d .specs/core/arguments.d .specs/core/date.d .specs/core/exception.d .specs/core/regex.d .specs/core/string.d .specs/core/time.d .specs/core/unicode.d .specs/core/util.d .specs/core/variant.d .specs/data/fibonacci.d .specs/data/heap.d .specs/data/queue.d .specs/data/stack.d .specs/hashes/digest.d .specs/hashes/md5.d .specs/hashes/sha1.d .specs/hashes/sha224.d .specs/hashes/sha256.d .specs/math/random.d .specs/runtime/switch.d .specs/runtime/synchronized.d .specs/math/abs.d
 
-SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_SCRIPTING) $(DFILES_BINDING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
+SOURCES = $(DFILES_SPECS) $(DFILES) $(DFILES_RUNTIME) $(DFILES_LOCALES) $(DFILES_RESOURCE) $(DFILES_IO) $(DFILES_SYNCH) $(DFILES_PARSING) $(DFILES_OPENGL) $(DFILES_CUI) $(DFILES_ANALYZING) $(DFILES_TESTING) $(DFILES_MATH) $(DFILES_GRAPHICS) $(DFILES_HASHES) $(DFILES_RSC) $(DFILES_NETWORKING) $(DFILES_INTERFACES) $(DFILES_DATA) $(DFILES_CONSOLE) $(DFILES_BINARY_CODECS) $(DFILES_CODEC) $(DFILES_IMAGE_CODECS) $(DFILES_AUDIO_CODECS) $(DFILES_CORE) $(DFILES_GUI) $(DFILES_PARSERS)
 
 OBJS_CORE = $(SOURCES:.d=.o)
 
@@ -78,7 +80,7 @@ OBJS_LINUX = $(OBJS_CORE) $(DFILES_PLATFORM_UNIX:.d=.o)
 
 OBJS_WIN = $(OBJS_CORE:.o=.obj) $(DFILES_PLATFORM_WIN:.d=.obj)
 
-OBJS_XOMB = $(OBJS_CORE:.o=_xomb.obj) $(DFILES_PLATFORM_XOMB:.d=_xomb.obj)
+OBJS_XOMB = $(OBJS_CORE:.o=_xomb.o) $(DFILES_PLATFORM_XOMB:.d=_xomb.o)
 
 TOOLS_DSPEC = tools/dspec/main.d tools/dspec/feeder.d tools/dspec/filelist.d tools/dspec/ast.d tools/dspec/parser.d tools/dspec/parseunit.d tools/dspec/output.d
 TOOLS_DSCRIBE = tools/dscribe/main.d tools/dscribe/lexer.d
@@ -116,15 +118,9 @@ else
 endif
 endif
 
-%_xomb.obj: %.d
+%_xomb.o: %.d
 	@echo \-\-\-\> $<
-ifeq (${MY_ARCH},Darwin)
-else
-ifeq ($(PLATFORM),WINDOWS)
-	@compiler/dmd/bin/dmd.exe -w -c -of$@ -J./tests -version=PlatformXOmB -unittest $<
-else
-endif
-endif
+	@$(DC) $< $(DFLAGS) -d-version=PlatformXOmB -c -of$@ -O3 -J./tests ${LFLAGS_XOMB}
 
 %.obj: %.d
 	@echo \-\-\-\> $<
@@ -187,7 +183,10 @@ $(DFILES_SPECS):
 	mkdir -p .specs/math
 	touch $(DFILES_SPECS)
 
-
+xomb: libdeps_xomb
+	@echo linking...
+	$(DC) -d-version=PlatformXOmB winsamp.d -c -ofwinsamp.o -O3 -J./tests $(DFLAGS) ${LFLAGS_XOMB}
+	ld winsamp.o $(OBJS_XOMB) $(LFLAGS_XOMB) -T../xomb/app/build/elf.ld ../xomb/runtimes/mindrt/drt0.a -nostdlib -o winsamp ../xomb/app/d/hello/dsss_objs/O/user.environment.o ../xomb/app/d/hello/dsss_objs/O/libos.libdeepmajik.threadscheduler.o ../xomb/app/d/hello/dsss_objs/O/user.syscall.o ../xomb/app/d/hello/dsss_objs/O/libos.libdeepmajik.umm.o ../xomb/app/d/hello/dsss_objs/O/user.nativecall.o ../xomb/app/d/hello/dsss_objs/O/libos.libkeyboard.o ../xomb/app/d/hello/dsss_objs/O/libos.console.o -gc-sections
 
 # compiles the library framework, and then the test app
 all: lib
