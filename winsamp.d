@@ -3,6 +3,8 @@ import djehuty;
 import data.list;
 import hashes.digest;
 
+import system.keyboard;
+
 import resource.menu;
 
 import graphics.graphics;
@@ -405,7 +407,10 @@ void foobarfunc(bool f) {
 
 int main(string[] args) {
 	string[] buffer = new string[50];
+	string old;
+	size_t cur = 1;
 	size_t entries = 1;
+	size_t col = 1;
 
 	Console.forecolor = Color.Blue;
 	putln("Welcome to XOmB");
@@ -417,15 +422,86 @@ int main(string[] args) {
 
 	while (true) {
 		put("root@localhost:/$ ");
+		col = 1;
 
 		do {
 			k = Console.getKey();
 			switch(k.code) {
 				case Key.Return:
 					break;
+				case Key.Left:
+					col--;
+					if (col == 0) {
+						col = 1;
+					}
+					else {
+						Console.setRelative(-1,0);
+					}
+					break;
+				case Key.Right:
+					col++;
+					if (col > buffer[entries-1].length) {
+						col = buffer[entries-1].length;
+					}
+					else {
+						Console.setRelative(1,0);
+					}
+					break;
+				case Key.Up:
+					if (cur == entries) {
+						old = buffer[entries-1];
+					}
+					cur--;
+					if (cur == 0) {
+						cur = 1;
+					}
+					else {
+						Console.setRelative(-col+1, 0);
+						put(" ".times(buffer[entries-1].length));
+						Console.setRelative(-buffer[entries-1].length, 0);
+
+						if (cur == entries) {
+							buffer[entries-1] = old;
+						}
+						else {
+							buffer[entries-1] = buffer[cur-1];
+						}
+						col = buffer[entries-1].length+1;
+						put(buffer[entries-1]);
+					}
+					break;
+				case Key.Down:
+					if (cur == entries) {
+						old = buffer[entries-1];
+					}
+					cur++;
+					if (cur > entries) {
+						cur = entries;
+					}
+					else {
+						Console.setRelative(-col+1, 0);
+						put(" ".times(buffer[entries-1].length));
+						Console.setRelative(-buffer[entries-1].length, 0);
+
+						if (cur == entries) {
+							buffer[entries-1] = old;
+						}
+						else {
+							buffer[entries-1] = buffer[cur-1];
+						}
+						col = buffer[entries-1].length+1;
+						put(buffer[entries-1]);
+					}
+					break;
 				default:
-					buffer[entries-1] ~= 'a';
-					put('a');
+					k = Keyboard.translate(k);
+					if (k.printable != '\0') {
+//						buffer[entries-1] ~= k.printable;
+						buffer[entries-1] = buffer[entries-1][0..col-1] ~ cast(char[])[k.printable] ~ buffer[entries-1][col-1..$];
+						put(buffer[entries-1][col-1..$]);
+						Console.setRelative(-(buffer[entries-1].length - col), 0);
+						col++;
+					}
 					break;
 			}
 		} while(k.code != Key.Return)
@@ -438,6 +514,8 @@ int main(string[] args) {
 		if (entries > buffer.length) {
 			entries = buffer.length;
 		}
+
+		cur = entries;
 
 		if (cmd == "exit") {
 			break;
