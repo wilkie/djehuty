@@ -317,6 +317,18 @@ Key ConsoleGetKey() {
 		else if (ret.code == '6') {
 			ret.code = getChar();
 		}
+		else if (ret.code == 'A') {
+			ret.code = Key.Up;
+		}
+		else if (ret.code == 'B') {
+			ret.code = Key.Down;
+		}
+		else if (ret.code == 'C') {
+			ret.code = Key.Right;
+		}
+		else if (ret.code == 'D') {
+			ret.code = Key.Left;
+		}
 		else {
 		}
 	}
@@ -609,6 +621,7 @@ void resetTermios() {
 	tcsetattr(0, TCSANOW, &m_term_info_saved);
 }
 
+static uint _x = 0;
 void ConsoleInit() {
 	// Preserve console
 	printf("\x1B7");
@@ -622,6 +635,8 @@ void ConsoleInit() {
 	setlocale(LC_CTYPE, "");
 
 	initTermios(false);
+
+	_x = 0;
 }
 
 void ConsoleUninit() {
@@ -647,22 +662,38 @@ void ConsoleSetRelative(int x, int y) {
 	int newx;
 	int newy;
 
-	lock();
-	Curses.getyx(Curses.stdscr, m_y, m_x);
+	if (ApplicationController.instance.usingCurses) {
+		lock();
+		Curses.getyx(Curses.stdscr, m_y, m_x);
 
-	newx = m_x + x;
-	newy = m_y + y;
+		newx = m_x + x;
+		newy = m_y + y;
 
-	Curses.wmove(Curses.stdscr, newy, newx);
-	unlock();
+		Curses.wmove(Curses.stdscr, newy, newx);
+		unlock();
+	}
+	else {
+		if (x < 0) {
+			printf("\x1B[%dD", -x);
+		}
+		else if (x > 0) {
+			printf("\x1B[%dC", x);
+		}
+	}
 }
 
 void ConsoleGetPosition(uint* x, uint* y) {
-	lock();
-	Curses.getyx(Curses.stdscr, m_y, m_x);
-	unlock();
-	*x = m_x;
-	*y = m_y;
+	if (ApplicationController.instance.usingCurses) {
+		lock();
+		Curses.getyx(Curses.stdscr, m_y, m_x);
+		unlock();
+		*x = m_x;
+		*y = m_y;
+	}
+	else {
+		*x = _x;
+		*y = 0;
+	}
 }
 
 void ConsoleSetPosition(uint x, uint y) {
@@ -674,22 +705,32 @@ void ConsoleSetPosition(uint x, uint y) {
 
     if (y < 0) { y = 0; }
 
-	lock();
-	Curses.wmove(Curses.stdscr, y,x);
-	unlock();
+	if (ApplicationController.instance.usingCurses) {
+		lock();
+		Curses.wmove(Curses.stdscr, y,x);
+		unlock();
+	}
+	else {
+		y = 0;
+		printf("\x1B[%dG", x);
+	}
 }
 
 void ConsoleHideCaret() {
 	lock();
 	printf("\x1B[?25l");
-	Curses.curs_set(0);
+	if (ApplicationController.instance.usingCurses) {
+		Curses.curs_set(0);
+	}
 	unlock();
 }
 
 void ConsoleShowCaret() {
 	lock();
 	printf("\x1B[?25h");
-	Curses.curs_set(1);
+	if (ApplicationController.instance.usingCurses) {
+		Curses.curs_set(1);
+	}
 	unlock();
 }
 
@@ -702,6 +743,7 @@ void ConsoleSetHome() {
 		unlock();
 	}
 	else {
+		_x = 0;
 		printf("\x1B[0G");
 	}
 }
@@ -736,7 +778,22 @@ void ConsolePutString(char[] chrs) {
 		}
 	}
 	else {
-		printf("%s", utf8.ptr);
+		int printed = printf("%s", utf8.ptr);
+		int last_line = 0;
+		bool newline = false;
+		foreach_reverse(c; utf8) {
+			if (c == '\n') {
+				newline = true;
+				break;
+			}
+			last_line++;
+		}
+		if (newline) {
+			_x = last_line;
+		}
+		else {
+			_x += printed;
+		}
 	}
 	unlock();
 }
