@@ -404,6 +404,50 @@ void foobarfunc(bool f) {
 }
 
 int main(string[] args) {
+	string[] buffer = new string[50];
+	size_t entries = 1;
+
+	Console.forecolor = Color.Blue;
+	putln("Welcome to XOmB");
+
+	Console.forecolor = Color.White;
+	putln("-=-=-=-=-=-=-=-");
+
+	Key k;
+
+	while (true) {
+		put("root@localhost:/$ ");
+
+		do {
+			k = Console.getKey();
+			switch(k.code) {
+				case Key.Return:
+					break;
+				default:
+					buffer[entries-1] ~= 'a';
+					put('a');
+					break;
+			}
+		} while(k.code != Key.Return)
+
+		putln();
+
+		string cmd = buffer[entries-1];
+
+		entries++;
+		if (entries > buffer.length) {
+			entries = buffer.length;
+		}
+
+		if (cmd == "exit") {
+			break;
+		}
+	}
+
+	return 0;
+}
+
+/*int main(string[] args) {
 //  	auto app = new Application("MyApp");
 // 	Timer tmr = new Timer();
 // 	tmr.interval = 250;
@@ -412,7 +456,6 @@ int main(string[] args) {
 // 	tmr.stop();
 // 	tmr.start();
 // 	Thread.sleep(1000);
-	//*/
 	auto app = new CuiApplication("MyApp");
 	app.attach(new Rogue());
 	app.attach(new CuiScrollBar(0,0,25,1,Orientation.Horizontal));
@@ -448,6 +491,6 @@ int main(string[] args) {
 	}
 	app.attach(lf);
 
-	app.run();//*/
+	app.run();//*
 	return 0;
-}
+}*/
